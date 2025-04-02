@@ -1,0 +1,88 @@
+﻿  CAnimation.cpp
+  CAnimator.cpp
+  CAudioClip.cpp
+  CAudioSource.cpp
+  CBelt.cpp
+  CBeltManager.cpp
+  CBMP.cpp
+  CBurnerDrill.cpp
+  CButton.cpp
+  CCamera.cpp
+  CCanvas.cpp
+  CCollider.cpp
+  CCollider_Rect.cpp
+  CConsole.cpp
+  CCreateItemBtn.cpp
+  CCreatingSlot.cpp
+  CDropItem.cpp
+  CGameObject.cpp
+  CImage.cpp
+  CInOutStructure.cpp
+  코드를 생성하고 있습니다...
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CCamera.cpp(119,1): warning C4172: 지역 변수 또는 임시 : result의 주소를 반환하는 중
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CBeltManager.cpp(116,1): warning C4172: 지역 변수 또는 임시 : result의 주소를 반환하는 중
+  컴파일하고 있습니다...
+  CInventory.cpp
+  CItemSlot.cpp
+  CInventoryUI.cpp
+  CItem.cpp
+  CItemManager.cpp
+  CMainProcess.cpp
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CMainProcess.cpp(20,9): warning C4005: 'new': 매크로 재정의
+      C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\pch.h(25,9):
+      'new'의 이전 정의를 참조하십시오.
+  
+  CMianScene.cpp
+  CMonoBehaviour.cpp
+  CControlManager.cpp
+  CMonster.cpp
+  CMonsterManager.cpp
+  CMonster_Biter.cpp
+  CObjHpSlot.cpp
+  CPhysics.cpp
+  CPlayer.cpp
+  CRectTransform.cpp
+  CResourceManager.cpp
+  CResourceTile.cpp
+  CScene.cpp
+  CSceneManager.cpp
+  코드를 생성하고 있습니다...
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CRectTransform.cpp(28,1): warning C4172: 지역 변수 또는 임시 : result의 주소를 반환하는 중
+  컴파일하고 있습니다...
+  CScreen.cpp
+  CAudioManager.cpp
+  CSpriteRenderer.cpp
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(215,120): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(214,120): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(235,19): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(237,11): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(238,11): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(239,15): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(240,16): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(281,127): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CSpriteRenderer.cpp(280,127): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CStoneFurnace.cpp
+  CStructure.cpp
+  CTestScene.cpp
+  CText.cpp
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,22): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,22): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,67): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,67): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,112): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,112): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,157): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\Jusin_FactorioProject\CText.cpp(73,157): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTile.cpp
+  CTileMap.cpp
+  CTime.cpp
+  CInput.cpp
+  CUI.cpp
+  Jusin_FactorioProject.cpp
+  CMapManager.cpp
+  CSpriteRender_Level.cpp
+  CRandom.cpp
+  Particle_Ore.cpp
+  struct.cpp
+  코드를 생성하고 있습니다...
+  Jusin_FactorioProject.vcxproj -> C:\Users\dk601\OneDrive\문서\카카오톡 받은 파일\TK_FactorioProject_0325\x64\Debug\Jusin_FactorioProject.exe

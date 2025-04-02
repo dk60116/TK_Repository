@@ -1,0 +1,326 @@
+﻿  CAnimation.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CAnimation.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CAnimation.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CAnimation.cpp(47,73): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CAnimation.cpp(46,73): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CAnimation.cpp(102,23): warning C4244: '초기화 중': 'float'에서 'BYTE'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CAnimator.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CAnimator.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CAnimator.cpp'을(를) 컴파일하는 중)
+  
+  CBMP.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CBMP.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CBMP.cpp'을(를) 컴파일하는 중)
+  
+  CButton.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CButton.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CButton.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CButton.cpp(12,38): warning C4244: '인수': 'float'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CCamera.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CCamera.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CCamera.cpp'을(를) 컴파일하는 중)
+  
+  CCanvas.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CCanvas.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CCanvas.cpp'을(를) 컴파일하는 중)
+  
+  CGameObject.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CGameObject.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CGameObject.cpp'을(를) 컴파일하는 중)
+  
+  CImage.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CImage.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CImage.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(10,38): warning C4244: '인수': 'float'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(80,58): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(80,37): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(86,68): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(85,68): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(84,81): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CImage.cpp(83,81): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CInventory.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInventory.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInventory.cpp'을(를) 컴파일하는 중)
+  
+  CInventorySlot.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInventorySlot.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInventorySlot.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CInventorySlot.cpp(3,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+  CInventoryUI.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInventoryUI.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInventoryUI.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CInventoryUI.cpp(42,23): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CInventoryUI.cpp(110,14): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CInventoryUI.cpp(167,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  CItem.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CItem.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CItem.cpp'을(를) 컴파일하는 중)
+  
+  CItemManager.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CItemManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CItemManager.cpp'을(를) 컴파일하는 중)
+  
+  CMainProcess.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMainProcess.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMainProcess.cpp'을(를) 컴파일하는 중)
+  
+  CMonoBehaviour.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMonoBehaviour.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMonoBehaviour.cpp'을(를) 컴파일하는 중)
+  
+  CControlManager.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CControlManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CControlManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CControlManager.cpp(35,43): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CControlManager.cpp(35,24): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CPlayer.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CPlayer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CPlayer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CResourceTile.h(33,30): warning C4244: 'return': 'float'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CPlayer.cpp'을(를) 컴파일하는 중)
+  
+  CRectTransform.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CRectTransform.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CRectTransform.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CRectTransform.cpp(37,52): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CRectTransform.cpp(38,51): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CRectTransform.cpp(39,53): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CRectTransform.cpp(40,54): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CResourceManager.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CResourceManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CResourceManager.cpp'을(를) 컴파일하는 중)
+  
+  CResourceTile.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CResourceTile.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CResourceTile.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CResourceTile.h(33,30): warning C4244: 'return': 'float'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CResourceTile.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다...
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CRectTransform.cpp(28,1): warning C4172: 지역 변수 또는 임시 : result의 주소를 반환하는 중
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CResourceTile.h(33,1): warning C4172: 지역 변수 또는 임시 의 주소를 반환하는 중
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CCamera.cpp(107,1): warning C4172: 지역 변수 또는 임시 : result의 주소를 반환하는 중
+  컴파일하고 있습니다...
+  CScene.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CScene.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CScene.cpp'을(를) 컴파일하는 중)
+  
+  CSceneManager.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CSceneManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CSceneManager.cpp'을(를) 컴파일하는 중)
+  
+  CScreen.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CScreen.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CScreen.cpp'을(를) 컴파일하는 중)
+  
+  CSpriteRenderer.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CSpriteRenderer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CSpriteRenderer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(190,33): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(189,33): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(188,120): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(187,120): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(207,19): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(210,11): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(211,11): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(212,15): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(213,16): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(249,27): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(248,27): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(247,120): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRenderer.cpp(246,120): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTestScene.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTestScene.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTestScene.cpp'을(를) 컴파일하는 중)
+  
+  CText.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CText.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CText.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,22): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,22): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,60): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,60): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,98): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,98): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,136): warning C4838: 'float'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CText.cpp(73,136): warning C4244: '초기화 중': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CTile.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTile.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTile.cpp'을(를) 컴파일하는 중)
+  
+  CTileMap.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTileMap.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTileMap.cpp'을(를) 컴파일하는 중)
+  
+  CTime.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTime.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTime.cpp'을(를) 컴파일하는 중)
+  
+  CTransform.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTransform.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CTransform.cpp'을(를) 컴파일하는 중)
+  
+  CInput.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInput.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CInput.cpp'을(를) 컴파일하는 중)
+  
+  CUI.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CUI.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CUI.cpp'을(를) 컴파일하는 중)
+  
+  Item.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Item.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Item.cpp'을(를) 컴파일하는 중)
+  
+  Jusin_FactorioProject.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Jusin_FactorioProject.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Jusin_FactorioProject.cpp'을(를) 컴파일하는 중)
+  
+  CMapManager.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMapManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMapManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CResourceTile.h(33,30): warning C4244: 'return': 'float'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CMapManager.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CMapManager.cpp(90,25): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  CSpriteRender_Level.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CSpriteRender_Level.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CSpriteRender_Level.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\CSpriteRender_Level.cpp(40,34): warning C4244: '=': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CRandom.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CRandom.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CRandom.cpp'을(를) 컴파일하는 중)
+  
+  Particle_Ore.cpp
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(215,19): warning C4244: 'return': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Particle_Ore.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Jusin_FactorioProject\struct.h(220,19): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Particle_Ore.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다...
+  Jusin_FactorioProject.vcxproj -> C:\Users\dk601\Documents\카카오톡 받은 파일\Jusin_FactorioProject 0313\Debug\Jusin_FactorioProject.exe
