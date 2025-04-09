@@ -69,6 +69,7 @@ void CSpriteRenderer::Render()
 
 void CSpriteRenderer::OnDestroy()
 {
+	CComponent::OnDestroy();
 	Safe_Delete(m_pTexture);
 }
 

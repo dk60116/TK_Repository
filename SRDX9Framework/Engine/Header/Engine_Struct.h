@@ -84,6 +84,11 @@ namespace Engine
             return !(*this == rhs);
         }
 
+        static const float Distance(const vector3& _a, const vector3& _b)
+        {
+            return vector3(_b.x - _a.x, _b.y - _a.y, _b.z - _a.z).length();
+        }
+
         static vector3 zero()
         {
             return vector3(0.f, 0.f, 0.f);
@@ -160,6 +165,15 @@ namespace Engine
             return vector3(result);
         }
 
+        static vector3 Cross(const vector3& a, const vector3& b)
+        {
+            D3DXVECTOR3 va(a.x, a.y, a.z);
+            D3DXVECTOR3 vb(b.x, b.y, b.z);
+            D3DXVECTOR3 result;
+            D3DXVec3Cross(&result, &va, &vb);
+            return vector3(result);
+        }
+
         operator D3DXVECTOR3() const
         {
             return D3DXVECTOR3(x, y, z);
@@ -210,6 +224,117 @@ namespace Engine
     {
         return vector3(-v.x, -v.y, -v.z);
     }
+
+    struct quaternion
+    {
+        float x, y, z, w;
+
+        quaternion()
+            : x(0.f), y(0.f), z(0.f), w(1.f)
+        {
+        }
+
+        quaternion(float _x, float _y, float _z, float _w)
+            : x(_x), y(_y), z(_z), w(_w)
+        {
+        }
+
+        quaternion(const D3DXQUATERNION& q)
+            : x(q.x), y(q.y), z(q.z), w(q.w)
+        {
+        }
+
+        quaternion& operator=(const quaternion& rhs)
+        {
+            x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
+            return *this;
+        }
+
+        quaternion& operator=(const D3DXQUATERNION& rhs)
+        {
+            x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
+            return *this;
+        }
+
+        bool operator==(const quaternion& rhs) const
+        {
+            return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
+        }
+
+        bool operator!=(const quaternion& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        quaternion operator*(const quaternion& rhs) const
+        {
+            D3DXQUATERNION a(x, y, z, w);
+            D3DXQUATERNION b(rhs.x, rhs.y, rhs.z, rhs.w);
+            D3DXQUATERNION result;
+            D3DXQuaternionMultiply(&result, &a, &b);
+            return quaternion(result);
+        }
+
+        quaternion& operator*=(const quaternion& rhs)
+        {
+            *this = *this * rhs;
+            return *this;
+        }
+
+        quaternion normalized() const
+        {
+            D3DXQUATERNION q(x, y, z, w);
+            D3DXQuaternionNormalize(&q, &q);
+            return quaternion(q);
+        }
+
+        quaternion conjugated() const
+        {
+            return quaternion(-x, -y, -z, w);
+        }
+
+        float dot(const quaternion& rhs) const
+        {
+            D3DXQUATERNION a(x, y, z, w);
+            D3DXQUATERNION b(rhs.x, rhs.y, rhs.z, rhs.w);
+            return D3DXQuaternionDot(&a, &b);
+        }
+
+        static quaternion identity()
+        {
+            return quaternion(0.f, 0.f, 0.f, 1.f);
+        }
+
+        static quaternion from_euler(const vector3& euler_deg)
+        {
+            return from_euler(euler_deg.x, euler_deg.y, euler_deg.z);
+        }
+
+        static quaternion from_euler(float pitch, float yaw, float roll)
+        {
+            D3DXQUATERNION q;
+            D3DXQuaternionRotationYawPitchRoll(
+                &q,
+                D3DXToRadian(yaw),
+                D3DXToRadian(pitch),
+                D3DXToRadian(roll)
+            );
+            return quaternion(q);
+        }
+
+        D3DXMATRIX to_matrix() const
+        {
+            D3DXMATRIX mat;
+            D3DXQUATERNION q(x, y, z, w);
+            D3DXMatrixRotationQuaternion(&mat, &q);
+            return mat;
+        }
+
+        operator D3DXQUATERNION() const
+        {
+            return D3DXQUATERNION(x, y, z, w);
+        }
+    };
 
     struct ColorValue
     {

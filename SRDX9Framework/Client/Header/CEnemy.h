@@ -22,7 +22,12 @@ public:
 	void OnDestroy() override;
 
 public:
+	void SetTarget(CTransform* _target) { m_pTarget = _target; }
+
+public:
 	CSpriteRenderer* m_pRenderer;
 	float m_fMoveSpeed, m_fRotaionSpeed;
+
+	CTransform* m_pTarget;
 };
 

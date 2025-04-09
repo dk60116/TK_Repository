@@ -5,6 +5,7 @@
 
 CMainScene::CMainScene()
 	: m_pPlayer(nullptr)
+	, m_pEnemy(nullptr)
 {
 }
 
@@ -35,6 +36,12 @@ void CMainScene::Awake()
 	playerHead->getTransform().SetPosition(0.f, 0.5f, 0.f);
 	playerHead->getTransform().SetScale(0.25f, 1.f, 1.f);
 	playerHead->getTransform().SetParent(playerObj->getTransform());
+
+	CGameObject* enemy = new CGameObject(L"Enemy", CManagement::GetInstance().getGraphicDevice());
+	m_pEnemy = enemy->AddComponent<CEnemy>();
+	AddObject(enemy, Layer::DEFAULT);
+	m_pEnemy->getObject()->getTransform().SetPosition(2.f, 2.f, 0.f);
+	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
 
 	m_vCameraList.back()->getTransform().SetPosition(0.f, 0.f, -10.f);
 }

@@ -83,9 +83,8 @@ void CVIBuffer::OnDisable()
 
 void CVIBuffer::OnDestroy()
 {
-	Safe_Release(m_pVB);
-
 	CComponent::OnDestroy();
+	Safe_Release(m_pVB);
 }
 
 HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, size_t size)

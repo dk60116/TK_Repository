@@ -52,6 +52,21 @@ void CDebug::Print(const wstring format, ...)
     Print(WStringToString(format));
 }
 
+void CDebug::Print(const int format, ...)
+{
+    Print(to_string(format));
+}
+
+void CDebug::Print(const float format, ...)
+{
+    Print(to_string(format));
+}
+
+void CDebug::Print(const vector3 format, ...)
+{
+    Print("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
+}
+
 string CDebug::WStringToString(const std::wstring& wstr)
 {
     if (wstr.empty()) return string();
@@ -68,4 +83,7 @@ void CDebug::Release() {}
 void CDebug::Print(const char*, ...) {}
 void CDebug::Print(const std::string format, ...) {}
 void CDebug::Print(const wstring format, ...) {}
-#endif
+void CDebug::Print(const int foramt, ...) {}
+void CDebug::Print(const float format, ...) {}
+void CDebug::Print(const vector3 format, ...) {}
+ #endif

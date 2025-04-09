@@ -2,6 +2,7 @@
 
 #include "CScene.h"
 #include "CPlayer.h"
+#include "CEnemy.h"
 
 class CMainScene :
     public CScene
@@ -21,5 +22,6 @@ public:
 
 private:
     CPlayer* m_pPlayer;
+    CEnemy* m_pEnemy;
 };
 

@@ -163,6 +163,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CInput.h" />
     <ClInclude Include="..\Header\CManagement.h" />
     <ClInclude Include="..\Header\CRectCol.h" />
+    <ClInclude Include="..\Header\CResources.h" />
     <ClInclude Include="..\Header\CScene.h" />
     <ClInclude Include="..\Header\CTimer.h" />
     <ClInclude Include="..\Header\CTimeMgr.h" />
@@ -189,6 +190,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CInput.cpp" />
     <ClCompile Include="..\Code\CManagement.cpp" />
     <ClCompile Include="..\Code\CRectCol.cpp" />
+    <ClCompile Include="..\Code\CResources.cpp" />
     <ClCompile Include="..\Code\CScene.cpp" />
     <ClCompile Include="..\Code\CTimer.cpp" />
     <ClCompile Include="..\Code\CTimeMgr.cpp" />

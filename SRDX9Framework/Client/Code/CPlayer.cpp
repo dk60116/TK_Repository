@@ -18,7 +18,7 @@ void CPlayer::Awake()
 	CComponent::Awake();
 
 	m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
-	m_pRenderer->SetTintColor(ColorValue::red());
+	m_pRenderer->SetTintColor(ColorValue::green());
 }
 
 void CPlayer::Start()
@@ -74,18 +74,18 @@ void CPlayer::KeyInput()
 	}
 	if (CInput::GetInstance().GetKey(A))
 	{
-		getTransform().AddRotation(vector3::forward() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddEulerAngles(vector3::forward() * DELTA_TIME * m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(D))
 	{
-		getTransform().AddRotation(vector3::backward() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddEulerAngles(vector3::backward() * DELTA_TIME * m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(Q))
 	{
-		getTransform().AddRotation(vector3::up() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddEulerAngles(vector3::up() * DELTA_TIME * m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(E))
 	{
-		getTransform().AddRotation(vector3::down() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddEulerAngles(vector3::down() * DELTA_TIME * m_fRotaionSpeed);
 	}
 }

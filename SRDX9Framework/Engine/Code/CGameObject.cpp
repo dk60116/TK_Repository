@@ -21,7 +21,7 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_bKill(false)
 	, m_isClone(true)
 	, m_pGraphicDev(_rhs.m_pGraphicDev)
-	, m_pTransform(nullptr)
+	, m_pTransform(_rhs.m_pTransform)
 {
 	m_pGraphicDev->AddRef();
 }
