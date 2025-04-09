@@ -1,0 +1,9 @@
+﻿  pch.cpp
+  CEnemy.cpp
+  CMainApp.cpp
+  CMainScene.cpp
+  CPlayer.cpp
+  Client.cpp
+  코드를 생성하고 있습니다...
+     ../Bin\Client.lib 라이브러리 및 ../Bin\Client.exp 개체를 생성하고 있습니다.
+  Client.vcxproj -> C:\Git\TK_Repository\SRDX9Framework\Client\Bin\Client.exe
