@@ -22,7 +22,7 @@ void CDebug::Release()
     FreeConsole();
 }
 
-void CDebug::Print(const char* format, ...)
+void CDebug::Log(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -32,7 +32,7 @@ void CDebug::Print(const char* format, ...)
     fflush(stdout);
 }
 
-void CDebug::Print(const string format, ...)
+void CDebug::Log(const string format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -46,25 +46,24 @@ void CDebug::Print(const string format, ...)
     fflush(stdout);
 }
 
-
-void CDebug::Print(const wstring format, ...)
+void CDebug::Log(const wstring format, ...)
 {
-    Print(WStringToString(format));
+    Log(WStringToString(format));
 }
 
-void CDebug::Print(const int format, ...)
+void CDebug::Log(const int format, ...)
 {
-    Print(to_string(format));
+    Log(to_string(format));
 }
 
-void CDebug::Print(const float format, ...)
+void CDebug::Log(const float format, ...)
 {
-    Print(to_string(format));
+    Log(to_string(format));
 }
 
-void CDebug::Print(const vector3 format, ...)
+void CDebug::Log(const vector3 format, ...)
 {
-    Print("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
+    Log("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
 string CDebug::WStringToString(const std::wstring& wstr)
@@ -77,13 +76,82 @@ string CDebug::WStringToString(const std::wstring& wstr)
     return str;
 }
 
+void CDebug::LogError(const char* format, ...)
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    WORD saved_attributes = consoleInfo.wAttributes;
+
+    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+
+    printf("\n");
+    fflush(stdout);
+
+    SetConsoleTextAttribute(hConsole, saved_attributes);
+}
+
+void CDebug::LogError(const string format, ...)
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    WORD saved_attributes = consoleInfo.wAttributes;
+
+    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+    va_list args;
+    va_start(args, format);
+
+    char buffer[256];
+    vsnprintf(buffer, sizeof(buffer), format.c_str(), args);
+
+    va_end(args);
+
+    printf("%s\n", buffer);
+    fflush(stdout);
+
+    SetConsoleTextAttribute(hConsole, saved_attributes);
+}
+
+void CDebug::LogError(const wstring format, ...)
+{
+    LogError(WStringToString(format));
+}
+
+void CDebug::LogError(const int format, ...)
+{
+    LogError(to_string(format));
+}
+
+void CDebug::LogError(const float format, ...)
+{
+    LogError(to_string(format));
+}
+
+void CDebug::LogError(const vector3 format, ...)
+{
+    LogError("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
+}
+
 #else
 void CDebug::Init() {}
 void CDebug::Release() {}
-void CDebug::Print(const char*, ...) {}
-void CDebug::Print(const std::string format, ...) {}
-void CDebug::Print(const wstring format, ...) {}
-void CDebug::Print(const int foramt, ...) {}
-void CDebug::Print(const float format, ...) {}
-void CDebug::Print(const vector3 format, ...) {}
+void CDebug::Log(const char*, ...) {}
+void CDebug::Log(const std::string format, ...) {}
+void CDebug::Log(const wstring format, ...) {}
+void CDebug::Log(const int foramt, ...) {}
+void CDebug::Log(const float format, ...) {}
+void CDebug::Log(const vector3 format, ...) {}
+void CDebug::LogError(const char* format, ...) {}
+void CDebug::LogError(const string format, ...) {}
+void CDebug::LogError(const wstring format, ...) {}
+void CDebug::LogError(const int format, ...) {}
+void CDebug::LogError(const float format, ...) {}
+void CDebug::LogError(const vector3 format, ...) {}
  #endif

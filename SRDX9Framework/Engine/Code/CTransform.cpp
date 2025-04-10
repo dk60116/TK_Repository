@@ -340,3 +340,37 @@ void CTransform::LookAt(CTransform& _target)
 {
 	LookAt(_target.getTransform().getPosition());
 }
+
+void CTransform::LookAt(vector3 _target, vector3 _front)
+{
+	vector3 world_target_dir = (_target - m_v3Position).normalized();
+
+	_matrix rotMatrix;
+	D3DXVECTOR3 vFrom = _front.vector();
+	D3DXVECTOR3 vTo = world_target_dir.vector();
+
+	D3DXQUATERNION qRot;
+	D3DXVECTOR3 upVector = vector3::up();
+	D3DXQuaternionRotationAxis(&qRot, &upVector, 0);
+
+	if (D3DXVec3LengthSq(&vFrom) > 0.0001f && D3DXVec3LengthSq(&vTo) > 0.0001f)
+	{
+		D3DXVec3Normalize(&vFrom, &vFrom);
+		D3DXVec3Normalize(&vTo, &vTo);
+
+		D3DXVECTOR3 axis;
+		D3DXVec3Cross(&axis, &vFrom, &vTo);
+		_float angle = acosf(D3DXVec3Dot(&vFrom, &vTo));
+
+		if (fabs(angle) > 0.0001f)
+		{
+			D3DXQuaternionRotationAxis(&qRot, &axis, angle);
+		}
+	}
+
+	m_v4Quaternion = quaternion(qRot);
+}
+
+void CTransform::LookAt(CTransform& _target, vector3 _front)
+{
+}

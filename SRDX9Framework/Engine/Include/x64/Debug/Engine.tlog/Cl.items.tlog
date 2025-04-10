@@ -8,7 +8,10 @@ C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CGraphicDev.cp
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CInput.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CInput.obj
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CManagement.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CManagement.obj
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CRectCol.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CRectCol.obj
+C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CResource.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CResource.obj
+C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CResources.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CResources.obj
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CScene.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CScene.obj
+C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CTexture.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CTexture.obj
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CTimer.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CTimer.obj
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CTimeMgr.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CTimeMgr.obj
 C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Code\CTransform.cpp;C:\Users\dk601\Documents\TK_Repository\SRDX9Framework\Engine\Include\x64\Debug\CTransform.obj

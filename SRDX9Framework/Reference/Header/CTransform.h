@@ -86,6 +86,8 @@ public:
 
 	void LookAt(vector3 _target);
 	void LookAt(CTransform& _target);
+	void LookAt(vector3 _target, vector3 _front);
+	void LookAt(CTransform& _target, vector3 _front);
 	const _matrix& getWorldMatrix() const { return m_matWorld; }
 	const Directions& getDirections() const { return m_sDirections; }
 

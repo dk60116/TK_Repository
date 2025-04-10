@@ -34,8 +34,8 @@ void CEnemy::Update()
 
 	if (m_pTarget && distance > 0.1f)
 	{
-		getTransform().LookAt(*m_pTarget);
-		getTransform().AddPosition(getTransform().getDirections().forward * DELTA_TIME * m_fMoveSpeed);
+		getTransform().LookAt(m_pTarget->getPosition(), vector3::up());
+		getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * m_fMoveSpeed);
 	}
 }
 

@@ -49,6 +49,9 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{7cc4f899-cd53-4aaa-ba6b-2c128fced140}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Resource">
+      <UniqueIdentifier>{7d94d3ef-9e65-4574-ba14-be22ce5d6379}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CGraphicDev.h">
@@ -124,6 +127,12 @@
     <ClInclude Include="..\Header\CResources.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CResource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTexture.h">
+      <Filter>Resources\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -179,6 +188,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CResources.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CResource.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTexture.cpp">
+      <Filter>Resources\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -13,12 +13,21 @@ class ENGINE_DLL CDebug
 public:
     static void Init();
     static void Release();
-    static void Print(const char* format, ...);
-    static void Print(const string format, ...);
-    static void Print(const wstring format, ...);
-    static void Print(const int format, ...);
-    static void Print(const float format, ...);
-    static void Print(const vector3 format, ...);
+
+public:
+    static void Log(const char* format, ...);
+    static void Log(const string format, ...);
+    static void Log(const wstring format, ...);
+    static void Log(const int format, ...);
+    static void Log(const float format, ...);
+    static void Log(const vector3 format, ...);
+
+    static void LogError(const char* format, ...);
+    static void LogError(const string format, ...);
+    static void LogError(const wstring format, ...);
+    static void LogError(const int format, ...);
+    static void LogError(const float format, ...);
+    static void LogError(const vector3 format, ...);
 
 public:
     static string WStringToString(const std::wstring& wstr);

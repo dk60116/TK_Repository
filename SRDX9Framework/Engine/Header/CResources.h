@@ -8,8 +8,11 @@ class ENGINE_DLL CResources
 {
 	SingletonClass(CResources);
 
-private:
+public:
+	template<typename T>
+	void CreateResource(wstring _name, wstring _path);
 
+private:
 };
 
 END
