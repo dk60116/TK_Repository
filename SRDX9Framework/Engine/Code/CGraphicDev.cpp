@@ -1,4 +1,5 @@
 #include "CGraphicDev.h"
+#include "CScreen.h"
 
 IMPLEMENT_SINGLETON(CGraphicDev)
 
@@ -64,7 +65,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 
 	d3dpp.hDeviceWindow = hWnd;
 
-	d3dpp.Windowed = eMode;		// 창 모드 또는 전체 화면 모드
+	d3dpp.Windowed = (eMode == MODE_WIN);;		// 창 모드 또는 전체 화면 모드
 	
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
@@ -86,13 +87,23 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 // 후면 버퍼 동작 원리
 void CGraphicDev::Render_Begin(D3DXCOLOR Color)
 {
-	m_pGraphicDev->Clear(0,		// 렉트의 개수
-						NULL,	// 렉트 배열의 첫 번째 주소
-						D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER, 
-						Color,  // 후면 버퍼 텍스처 색상 값
-						1.f,	// 깊이 버퍼 초기화 값
-						0);		// 스텐실 버퍼 초기화 값
+	// 1. 기본 Viewport (전체 영역) 적용
+	D3DVIEWPORT9 gameViewport = {};
+	gameViewport.X = 0;
+	gameViewport.Y = 0;
+	gameViewport.Width = CScreen::GetInstance().getResolution().x;
+	gameViewport.Height = CScreen::GetInstance().getResolution().y;
+	gameViewport.MinZ = 0.0f;
+	gameViewport.MaxZ = 1.0f;
 
+	m_pGraphicDev->SetViewport(&gameViewport);
+
+	// 2. 전체 화면 Clear (버튼 영역 포함)
+	m_pGraphicDev->Clear(0, NULL,
+		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
+		Color, 1.f, 0);
+
+	// 4. 렌더링 시작
 	m_pGraphicDev->BeginScene();
 }
 

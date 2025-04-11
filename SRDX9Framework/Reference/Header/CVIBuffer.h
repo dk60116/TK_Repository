@@ -21,6 +21,9 @@ class ENGINE_DLL CVIBuffer :
     public CComponent
 {
 public:
+	enum BufferType { Buffer_Color, Buffer_Texture };
+
+public:
 	explicit CVIBuffer();
 	virtual ~CVIBuffer();
 
@@ -38,13 +41,17 @@ public:
 	void OnDestroy() override;
 
 public:
-	HRESULT FillVertexBuffer(const void* pVertices, size_t size);
-	HRESULT FillIndexBuffer(const void* pIndices, size_t size);
+	BufferType& getRenderType() { return m_eRenderType; }
+	void SetRenderType(const BufferType _type) { m_eRenderType = _type; }
+	HRESULT FillVertexBuffer(const void* pVertices, UINT size);
+	HRESULT FillIndexBuffer(const void* pIndices, UINT size);
 	virtual void UpdateColor() PURE;
 
 	VIBufferOptions& getOptions() { return m_sOptions; }
 
 protected:
+	BufferType m_eRenderType;
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVB;
 	LPDIRECT3DINDEXBUFFER9 m_pIB;
 

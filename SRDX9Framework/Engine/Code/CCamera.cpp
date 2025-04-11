@@ -1,4 +1,5 @@
 #include "CCamera.h"
+#include "CScreen.h"
 #include "CGameObject.h"
 
 CCamera::CCamera()
@@ -101,6 +102,6 @@ void CCamera::UpdateViewMatrix()
 
 void CCamera::ResetAspectFromResolution()
 {
-	if (WINCY > 0)
-		m_sParameters.m_fAspect = static_cast<float>(WINCX) / WINCY;
+	if (CScreen::GetInstance().getResolution().y > 0)
+		m_sParameters.m_fAspect = (float)CScreen::GetInstance().getResolution().x / (float)CScreen::GetInstance().getResolution().y;
 }

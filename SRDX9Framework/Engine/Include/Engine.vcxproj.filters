@@ -52,6 +52,12 @@
     <Filter Include="Resources\Resource">
       <UniqueIdentifier>{7d94d3ef-9e65-4574-ba14-be22ce5d6379}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Screen">
+      <UniqueIdentifier>{ea213aa8-81c9-41bf-893f-48a72a027c23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{48211558-388d-4dd7-8a25-d1e6b77efc59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CGraphicDev.h">
@@ -133,6 +139,12 @@
     <ClInclude Include="..\Header\CTexture.h">
       <Filter>Resources\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CScreen.h">
+      <Filter>Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEngineEditor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -194,6 +206,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CTexture.cpp">
       <Filter>Resources\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CScreen.cpp">
+      <Filter>Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEngineEditor.cpp">
+      <Filter>Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

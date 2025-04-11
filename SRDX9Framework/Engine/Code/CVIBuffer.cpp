@@ -1,7 +1,8 @@
 #include "CVIBuffer.h"
 
 CVIBuffer::CVIBuffer()
-	: m_pIB(nullptr)
+	: m_eRenderType(Buffer_Color)
+	, m_pIB(nullptr)
 	, m_pVB(nullptr)
 	, m_sOptions({})
 {
@@ -87,7 +88,7 @@ void CVIBuffer::OnDestroy()
 	Safe_Release(m_pVB);
 }
 
-HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, size_t size)
+HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, UINT size)
 {
 	if (!m_pVB) return E_FAIL;
 
@@ -101,7 +102,7 @@ HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, size_t size)
 	return S_OK;
 }
 
-HRESULT CVIBuffer::FillIndexBuffer(const void* pIndices, size_t size)
+HRESULT CVIBuffer::FillIndexBuffer(const void* pIndices, UINT size)
 {
 	if (!m_pIB) return E_FAIL;
 

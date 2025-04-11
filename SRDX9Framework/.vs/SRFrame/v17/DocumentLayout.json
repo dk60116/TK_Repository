@@ -1,0 +1,1281 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Git\\TK_Repository\\SRDX9Framework\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CGraphicDev.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CGraphicDev.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\Client.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\Client.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CMainScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Code\\CMainScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CMainProcess.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Code\\CMainProcess.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CGraphicDev.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CGraphicDev.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CMainProcess.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Header\\CMainProcess.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Enum.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\Engine_Enum.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTimeMgr.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CTimeMgr.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTimer.cpp||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CTimer.cpp||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\targetver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\targetver.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CEngineEditor.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CEngineEditor.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CManagement.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CManagement.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CScreen.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CScreen.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CScreen.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CScreen.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CEngineEditor.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CEngineEditor.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\GIT\\TK_REPOSITORY\\SRDX9FRAMEWORK\\REFERENCE\\HEADER\\CENGINEEDITOR.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:REFERENCE\\HEADER\\CENGINEEDITOR.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\pch.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\pch.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\framework.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\framework.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CSpriteRenderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CSpriteRenderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\pch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\pch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CCamera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CCamera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CCamera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CCamera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CRectCol.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CRectCol.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Define.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\Engine_Define.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Macro.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\Engine_Macro.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\GIT\\TK_REPOSITORY\\SRDX9FRAMEWORK\\REFERENCE\\HEADER\\ENGINE_MACRO.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:REFERENCE\\HEADER\\ENGINE_MACRO.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.ico||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\Client.ico||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Resource.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Include\\Resource.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_debug.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar_size.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_scalar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTransform.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CTransform.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTimer.h||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CTimer.h||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CComponent.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CComponent.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTransform.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CTransform.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CEnemy.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Header\\CEnemy.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CPlayer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Code\\CPlayer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CEnemy.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Code\\CEnemy.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTimeMgr.h||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CTimeMgr.h||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CDebug.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CDebug.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\GIT\\TK_REPOSITORY\\SRDX9FRAMEWORK\\REFERENCE\\HEADER\\CTIMER.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:REFERENCE\\HEADER\\CTIMER.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\GIT\\TK_REPOSITORY\\SRDX9FRAMEWORK\\REFERENCE\\HEADER\\CTIMEMGR.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:REFERENCE\\HEADER\\CTIMEMGR.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CGameObject.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CGameObject.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CMainScene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Header\\CMainScene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CComponent.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CComponent.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CGameObject.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CGameObject.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CScene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CScene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CManagement.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CManagement.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Struct.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\Engine_Struct.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\GIT\\TK_REPOSITORY\\SRDX9FRAMEWORK\\REFERENCE\\HEADER\\CSCENE.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:REFERENCE\\HEADER\\CSCENE.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CVIBuffer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CVIBuffer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CGameObject.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Reference\\Header\\CGameObject.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CPlayer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BD11A313-4F34-491D-A437-F471BABEBC3D}|Client\\Include\\Client.vcxproj|solutionrelative:Client\\Header\\CPlayer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CRectCol.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CRectCol.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\Engine_Struct.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Reference\\Header\\Engine_Struct.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CSpriteRenderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CSpriteRenderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTriCol.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CTriCol.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CVIBuffer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CVIBuffer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTexture.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CTexture.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTexture.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CTexture.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CResources.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CResources.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CResources.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CResources.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CResource.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CResource.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CResource.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Code\\CResource.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CDebug.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\CDebug.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Function.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}|Engine\\Include\\Engine.vcxproj|solutionrelative:Engine\\Header\\Engine_Function.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CDebug.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Reference\\Header\\CDebug.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\objidl.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\include\\xiosbase||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\Shlwapi.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CSpriteRenderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Reference\\Header\\CSpriteRenderer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CResources.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Reference\\Header\\CResources.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{c9c0ae26-aa77-11d2-b3f0-0000f87570ee}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CGraphicDev.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CGraphicDev.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CGraphicDev.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CGraphicDev.cpp",
+              "RelativeToolTip": "Engine\\Code\\CGraphicDev.cpp",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAqwGkAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T15:27:07.721Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Engine_Enum.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Enum.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\Engine_Enum.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Enum.h",
+              "RelativeToolTip": "Engine\\Header\\Engine_Enum.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T16:32:07.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CMainProcess.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CMainProcess.h",
+              "RelativeDocumentMoniker": "Client\\Header\\CMainProcess.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CMainProcess.h",
+              "RelativeToolTip": "Client\\Header\\CMainProcess.h",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABQAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T07:17:35.506Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CMainScene.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CMainScene.cpp",
+              "RelativeDocumentMoniker": "Client\\Code\\CMainScene.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CMainScene.cpp",
+              "RelativeToolTip": "Client\\Code\\CMainScene.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T17:57:38.064Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CGraphicDev.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CGraphicDev.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CGraphicDev.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CGraphicDev.h",
+              "RelativeToolTip": "Engine\\Header\\CGraphicDev.h",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T16:16:26.91Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Client.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.h",
+              "RelativeDocumentMoniker": "Client\\Include\\Client.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.h",
+              "RelativeToolTip": "Client\\Include\\Client.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:32:01.415Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Client.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.cpp",
+              "RelativeDocumentMoniker": "Client\\Include\\Client.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.cpp",
+              "RelativeToolTip": "Client\\Include\\Client.cpp",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAawJYAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T16:32:05.555Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CMainProcess.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CMainProcess.cpp",
+              "RelativeDocumentMoniker": "Client\\Code\\CMainProcess.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CMainProcess.cpp",
+              "RelativeToolTip": "Client\\Code\\CMainProcess.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T16:36:50.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CTimeMgr.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTimeMgr.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CTimeMgr.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTimeMgr.cpp",
+              "RelativeToolTip": "Engine\\Code\\CTimeMgr.cpp",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAqwCwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T16:26:05.745Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CTimer.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTimer.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CTimer.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTimer.cpp",
+              "RelativeToolTip": "Engine\\Code\\CTimer.cpp",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T12:30:48.444Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "targetver.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\targetver.h",
+              "RelativeDocumentMoniker": "Client\\Include\\targetver.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\targetver.h",
+              "RelativeToolTip": "Client\\Include\\targetver.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:32:38.744Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CEngineEditor.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CEngineEditor.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CEngineEditor.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CEngineEditor.cpp",
+              "RelativeToolTip": "Engine\\Code\\CEngineEditor.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T18:34:11.918Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "CManagement.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CManagement.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CManagement.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CManagement.cpp",
+              "RelativeToolTip": "Engine\\Code\\CManagement.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T10:21:48.16Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "CScreen.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CScreen.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CScreen.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CScreen.cpp",
+              "RelativeToolTip": "Engine\\Code\\CScreen.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T16:20:25.354Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "CScreen.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CScreen.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CScreen.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CScreen.h",
+              "RelativeToolTip": "Engine\\Header\\CScreen.h",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T16:04:23.481Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "CEngineEditor.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CEngineEditor.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CEngineEditor.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CEngineEditor.h",
+              "RelativeToolTip": "Engine\\Header\\CEngineEditor.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T18:21:46.719Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "CEngineEditor.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CEngineEditor.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CEngineEditor.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CEngineEditor.h",
+              "RelativeToolTip": "Reference\\Header\\CEngineEditor.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T18:42:06.971Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "pch.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\pch.h",
+              "RelativeDocumentMoniker": "Client\\Include\\pch.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\pch.h",
+              "RelativeToolTip": "Client\\Include\\pch.h",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAuwBEAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T18:44:39.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "CSpriteRenderer.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CSpriteRenderer.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CSpriteRenderer.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CSpriteRenderer.cpp",
+              "RelativeToolTip": "Engine\\Code\\CSpriteRenderer.cpp",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T18:42:39.55Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "framework.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\framework.h",
+              "RelativeDocumentMoniker": "Client\\Include\\framework.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\framework.h",
+              "RelativeToolTip": "Client\\Include\\framework.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T18:10:09.086Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "pch.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\pch.cpp",
+              "RelativeDocumentMoniker": "Client\\Include\\pch.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\pch.cpp",
+              "RelativeToolTip": "Client\\Include\\pch.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T12:32:13.722Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "CCamera.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CCamera.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CCamera.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CCamera.cpp",
+              "RelativeToolTip": "Engine\\Code\\CCamera.cpp",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAswGgAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T16:12:57.068Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "CCamera.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CCamera.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CCamera.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CCamera.h",
+              "RelativeToolTip": "Engine\\Header\\CCamera.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T16:13:58.045Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "CRectCol.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CRectCol.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CRectCol.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CRectCol.cpp",
+              "RelativeToolTip": "Engine\\Code\\CRectCol.cpp",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T18:57:30.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Engine_Define.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Define.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\Engine_Define.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Define.h",
+              "RelativeToolTip": "Engine\\Header\\Engine_Define.h",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAABwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T15:31:51.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Engine_Macro.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\Engine_Macro.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\Engine_Macro.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\Engine_Macro.h",
+              "RelativeToolTip": "Reference\\Header\\Engine_Macro.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T16:12:18.477Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "Client.ico - Icon [256x256, 32\uBE44\uD2B8, PNG]",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.ico",
+              "RelativeDocumentMoniker": "Client\\Include\\Client.ico",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Client.ico - Icon [256x256, 32\uBE44\uD2B8, PNG]",
+              "RelativeToolTip": "Client\\Include\\Client.ico - Icon [256x256, 32\uBE44\uD2B8, PNG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001525|",
+              "WhenOpened": "2025-04-11T16:11:32.6Z",
+              "EditorCaption": " - Icon [256x256, 32\uBE44\uD2B8, PNG]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "CTimer.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTimer.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CTimer.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTimer.h",
+              "RelativeToolTip": "Engine\\Header\\CTimer.h",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:30:48.489Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Resource.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Resource.h",
+              "RelativeDocumentMoniker": "Client\\Include\\Resource.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Include\\Resource.h",
+              "RelativeToolTip": "Client\\Include\\Resource.h",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:32:36.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Engine_Macro.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Macro.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\Engine_Macro.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Macro.h",
+              "RelativeToolTip": "Engine\\Header\\Engine_Macro.h",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T17:13:16.778Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "new_debug.cpp",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_debug.cpp",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_debug.cpp",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_debug.cpp",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_debug.cpp",
+              "ViewState": "AgIAABgAAAAAAAAAAAAcwCIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T13:56:17.862Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "delete_scalar_size.cpp",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar_size.cpp",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar_size.cpp",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar_size.cpp",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar_size.cpp",
+              "ViewState": "AgIAABQAAAAAAAAAAAAcwB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T13:46:44.543Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "CComponent.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CComponent.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CComponent.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CComponent.cpp",
+              "RelativeToolTip": "Engine\\Code\\CComponent.cpp",
+              "ViewState": "AgIAABIAAAAAAAAAAAAWwBsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T10:30:43.219Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "delete_scalar.cpp",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar.cpp",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar.cpp",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar.cpp",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\delete_scalar.cpp",
+              "ViewState": "AgIAABcAAAAAAAAAAAAuwCEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T18:57:24.029Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "new_scalar.cpp",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_scalar.cpp",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_scalar.cpp",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_scalar.cpp",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\crt\\src\\vcruntime\\new_scalar.cpp",
+              "ViewState": "AgIAABkAAAAAAAAAAAAcwCMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T13:44:37.743Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "CTransform.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTransform.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CTransform.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTransform.cpp",
+              "RelativeToolTip": "Engine\\Code\\CTransform.cpp",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAWwG8AAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T19:35:36.463Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "CTransform.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTransform.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CTransform.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTransform.h",
+              "RelativeToolTip": "Engine\\Header\\CTransform.h",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T13:39:03.92Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "CEnemy.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CEnemy.h",
+              "RelativeDocumentMoniker": "Client\\Header\\CEnemy.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CEnemy.h",
+              "RelativeToolTip": "Client\\Header\\CEnemy.h",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAwB8AAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T19:34:04.345Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "CPlayer.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CPlayer.cpp",
+              "RelativeDocumentMoniker": "Client\\Code\\CPlayer.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CPlayer.cpp",
+              "RelativeToolTip": "Client\\Code\\CPlayer.cpp",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T18:43:32.06Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "CTimeMgr.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTimeMgr.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CTimeMgr.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTimeMgr.h",
+              "RelativeToolTip": "Engine\\Header\\CTimeMgr.h",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAwAwAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:30:24.605Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "CDebug.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CDebug.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CDebug.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CDebug.cpp",
+              "RelativeToolTip": "Engine\\Code\\CDebug.cpp",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAuwCwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T17:56:08.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "CEnemy.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CEnemy.cpp",
+              "RelativeDocumentMoniker": "Client\\Code\\CEnemy.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Code\\CEnemy.cpp",
+              "RelativeToolTip": "Client\\Code\\CEnemy.cpp",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAADUAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T18:45:08.513Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "CTimer.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CTimer.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CTimer.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CTimer.h",
+              "RelativeToolTip": "Reference\\Header\\CTimer.h",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAWwBAAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:39:41.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "CTimeMgr.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CTimeMgr.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CTimeMgr.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CTimeMgr.h",
+              "RelativeToolTip": "Reference\\Header\\CTimeMgr.h",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABEAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T12:27:40.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "CMainScene.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CMainScene.h",
+              "RelativeDocumentMoniker": "Client\\Header\\CMainScene.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CMainScene.h",
+              "RelativeToolTip": "Client\\Header\\CMainScene.h",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAwBgAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T02:27:35.435Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "CComponent.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CComponent.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CComponent.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CComponent.h",
+              "RelativeToolTip": "Engine\\Header\\CComponent.h",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAwB0AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T10:30:34.584Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "CGameObject.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CGameObject.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CGameObject.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CGameObject.cpp",
+              "RelativeToolTip": "Engine\\Code\\CGameObject.cpp",
+              "ViewState": "AgIAACUAAAAAAAAAAAAswDAAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T02:25:22.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "CScene.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CScene.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CScene.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CScene.h",
+              "RelativeToolTip": "Engine\\Header\\CScene.h",
+              "ViewState": "AgIAABIAAAAAAAAAAAAWwBAAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T08:01:03.451Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "CManagement.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CManagement.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CManagement.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CManagement.h",
+              "RelativeToolTip": "Engine\\Header\\CManagement.h",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T10:21:48.678Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "CGameObject.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CGameObject.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CGameObject.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CGameObject.h",
+              "RelativeToolTip": "Engine\\Header\\CGameObject.h",
+              "ViewState": "AgIAACQAAAAAAAAAAAAAwDEAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T10:29:23.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "CScene.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CScene.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CScene.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CScene.cpp",
+              "RelativeToolTip": "Engine\\Code\\CScene.cpp",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABwAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-11T03:44:33.768Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "Engine_Struct.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Struct.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\Engine_Struct.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Struct.h",
+              "RelativeToolTip": "Engine\\Header\\Engine_Struct.h",
+              "ViewState": "AgIAAG4BAAAAAAAAAAAuwHgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T16:26:17.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "CVIBuffer.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CVIBuffer.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CVIBuffer.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CVIBuffer.cpp",
+              "RelativeToolTip": "Engine\\Code\\CVIBuffer.cpp",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAWwGgAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T16:13:33.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "CScene.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CScene.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CScene.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CScene.h",
+              "RelativeToolTip": "Reference\\Header\\CScene.h",
+              "ViewState": "AgIAABIAAAAAAAAAAAAWwB4AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T08:05:03.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "CGameObject.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CGameObject.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CGameObject.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CGameObject.h",
+              "RelativeToolTip": "Reference\\Header\\CGameObject.h",
+              "ViewState": "AgIAADMAAAAAAAAAAAAtwD0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T07:32:59.019Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "CPlayer.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CPlayer.h",
+              "RelativeDocumentMoniker": "Client\\Header\\CPlayer.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Client\\Header\\CPlayer.h",
+              "RelativeToolTip": "Client\\Header\\CPlayer.h",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAB4AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T18:46:57.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "CRectCol.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CRectCol.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CRectCol.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CRectCol.h",
+              "RelativeToolTip": "Engine\\Header\\CRectCol.h",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABYAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T19:28:23.927Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "Engine_Struct.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\Engine_Struct.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\Engine_Struct.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\Engine_Struct.h",
+              "RelativeToolTip": "Reference\\Header\\Engine_Struct.h",
+              "ViewState": "AgIAAKgBAAAAAAAAAAAtwLIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T03:40:02.871Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "CSpriteRenderer.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CSpriteRenderer.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CSpriteRenderer.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CSpriteRenderer.h",
+              "RelativeToolTip": "Engine\\Header\\CSpriteRenderer.h",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAWwBcAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T18:44:07.616Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "CTexture.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTexture.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CTexture.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTexture.cpp",
+              "RelativeToolTip": "Engine\\Code\\CTexture.cpp",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAA8AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T15:32:27.009Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "CTriCol.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTriCol.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CTriCol.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CTriCol.cpp",
+              "RelativeToolTip": "Engine\\Code\\CTriCol.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T18:55:29.208Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
+              "Title": "CTexture.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTexture.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CTexture.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CTexture.h",
+              "RelativeToolTip": "Engine\\Header\\CTexture.h",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAmwBQAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T15:32:28.528Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "CVIBuffer.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CVIBuffer.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CVIBuffer.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CVIBuffer.h",
+              "RelativeToolTip": "Engine\\Header\\CVIBuffer.h",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACsAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T16:14:08.302Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 73,
+              "Title": "CSpriteRenderer.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CSpriteRenderer.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CSpriteRenderer.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CSpriteRenderer.h",
+              "RelativeToolTip": "Reference\\Header\\CSpriteRenderer.h",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAWwBgAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-11T02:00:21.747Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 65,
+              "Title": "CResource.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CResource.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CResource.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CResource.h",
+              "RelativeToolTip": "Engine\\Header\\CResource.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T15:37:19.172Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "CResources.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CResources.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CResources.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CResources.h",
+              "RelativeToolTip": "Engine\\Header\\CResources.h",
+              "ViewState": "AgIAADIAAAAAAAAAAAAswDoAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T15:32:00.134Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "CResources.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CResources.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CResources.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CResources.cpp",
+              "RelativeToolTip": "Engine\\Code\\CResources.cpp",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAmwEsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T15:31:57.81Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "CResource.cpp",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CResource.cpp",
+              "RelativeDocumentMoniker": "Engine\\Code\\CResource.cpp",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Code\\CResource.cpp",
+              "RelativeToolTip": "Engine\\Code\\CResource.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-10T15:31:56.416Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 74,
+              "Title": "CResources.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CResources.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CResources.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CResources.h",
+              "RelativeToolTip": "Reference\\Header\\CResources.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T18:45:46.763Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "Engine_Function.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Function.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\Engine_Function.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\Engine_Function.h",
+              "RelativeToolTip": "Engine\\Header\\Engine_Function.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T17:19:17.97Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "CDebug.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CDebug.h",
+              "RelativeDocumentMoniker": "Engine\\Header\\CDebug.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Engine\\Header\\CDebug.h",
+              "RelativeToolTip": "Engine\\Header\\CDebug.h",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAswA0AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T17:56:09.337Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "CDebug.h",
+              "DocumentMoniker": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CDebug.h",
+              "RelativeDocumentMoniker": "Reference\\Header\\CDebug.h",
+              "ToolTip": "C:\\Git\\TK_Repository\\SRDX9Framework\\Reference\\Header\\CDebug.h",
+              "RelativeToolTip": "Reference\\Header\\CDebug.h",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAswA0AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T17:56:14.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 70,
+              "Title": "objidl.h",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\objidl.h",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\objidl.h",
+              "ToolTip": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\objidl.h",
+              "RelativeToolTip": "..\\..\\..\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\objidl.h",
+              "ViewState": "AgIAADg7AAAAAAAAAAAswEM7AAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T17:56:28.815Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 71,
+              "Title": "xiosbase",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\include\\xiosbase",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\include\\xiosbase",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\include\\xiosbase",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.43.34808\\include\\xiosbase",
+              "ViewState": "AgIAAHMAAAAAAAAAAAAswH4AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-04-10T17:56:32.878Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 72,
+              "Title": "Shlwapi.h",
+              "DocumentMoniker": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\Shlwapi.h",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\Shlwapi.h",
+              "ToolTip": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\Shlwapi.h",
+              "RelativeToolTip": "..\\..\\..\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um\\Shlwapi.h",
+              "ViewState": "AgIAAPEGAAAAAAAAAAAswPwGAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-10T17:56:38.602Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -34,6 +34,8 @@ CGameObject::~CGameObject()
 void CGameObject::Awake()
 {
 	m_pTransform = AddComponent<CTransform>();
+
+	
 }
 
 void CGameObject::Start()

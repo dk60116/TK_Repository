@@ -29,5 +29,6 @@ public:
 	float m_fMoveSpeed, m_fRotaionSpeed;
 
 	CTransform* m_pTarget;
+	_bool m_bInit;
 };
 

@@ -26,7 +26,7 @@ public:
     void SetName(const wstring _name) { m_strSceneName = _name; }
     wstring& getName() { return m_strSceneName; }
 
-    void AddObject(CGameObject* _obj, Layer _layer);
+    CGameObject* AddObject(LPDIRECT3DDEVICE9 _device, wstring _objName, Layer _layer);
 
     CCamera* getCamera(const int _index) { return m_vCameraList[_index]; }
 

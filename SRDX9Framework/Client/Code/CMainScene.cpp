@@ -18,32 +18,24 @@ void CMainScene::Awake()
 {
 	CScene::Awake();
 
-#ifdef  _DEBUG
-	CDebug::Init();
-#endif
+	auto device = CManagement::GetInstance().getGraphicDevice();
 
-	CGameObject* cameraObj = new CGameObject(L"Main Camera", CManagement::GetInstance().getGraphicDevice());
+	CGameObject* cameraObj = AddObject(device, L"Main Camera", Layer::DEFAULT);
 	m_vCameraList.push_back(cameraObj->AddComponent<CCamera>());
-	AddObject(cameraObj, Layer::DEFAULT);
+	m_vCameraList.back()->getTransform().SetPosition(0.f, 0.f, -10.f);
 
-	CGameObject* playerObj = new CGameObject(L"Player", CManagement::GetInstance().getGraphicDevice());
+	 CGameObject* playerObj = AddObject(device, L"Player", Layer::DEFAULT);
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
-	AddObject(playerObj, Layer::DEFAULT);
 
-	CGameObject* playerHead = new CGameObject(L"PlayerHead", CManagement::GetInstance().getGraphicDevice());
+	CGameObject* playerHead = AddObject(device, L"PlayerHead", Layer::DEFAULT);
 	playerHead->AddComponent<CSpriteRenderer>();
-	AddObject(playerHead, Layer::DEFAULT);
 	playerHead->getTransform().SetPosition(0.f, 0.5f, 0.f);
 	playerHead->getTransform().SetScale(0.25f, 1.f, 1.f);
 	playerHead->getTransform().SetParent(playerObj->getTransform());
 
-	CGameObject* enemy = new CGameObject(L"Enemy", CManagement::GetInstance().getGraphicDevice());
+	CGameObject* enemy = AddObject(device, L"Enemy", Layer::DEFAULT);
 	m_pEnemy = enemy->AddComponent<CEnemy>();
-	AddObject(enemy, Layer::DEFAULT);
-	m_pEnemy->getObject()->getTransform().SetPosition(2.f, 2.f, 0.f);
 	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
-
-	m_vCameraList.back()->getTransform().SetPosition(0.f, 0.f, -10.f);
 }
 
 void CMainScene::Start()

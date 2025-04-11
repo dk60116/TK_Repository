@@ -5,6 +5,352 @@
 
 namespace Engine
 {	
+#pragma region vector2
+    struct vector2
+    {
+        float x;
+        float y;
+
+        vector2()
+            : x(0.f), y(0.f)
+        {
+        }
+
+        vector2(float _x, float _y)
+            : x(_x), y(_y)
+        {
+        }
+
+        vector2(const D3DXVECTOR2& v)
+            : x(v.x), y(v.y)
+        {
+        }
+
+        vector2& operator=(const vector2& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            return *this;
+        }
+
+        vector2& operator=(const D3DXVECTOR2& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            return *this;
+        }
+
+        vector2& operator+=(const vector2& rhs)
+        {
+            x += rhs.x;
+            y += rhs.y;
+            return *this;
+        }
+
+        vector2& operator-=(const vector2& rhs)
+        {
+            x -= rhs.x;
+            y -= rhs.y;
+            return *this;
+        }
+
+        vector2& operator*=(float scalar)
+        {
+            x *= scalar;
+            y *= scalar;
+            return *this;
+        }
+
+        vector2& operator/=(float scalar)
+        {
+            x /= scalar;
+            y /= scalar;
+            return *this;
+        }
+
+        bool operator==(const vector2& rhs) const
+        {
+            return x == rhs.x && y == rhs.y;
+        }
+
+        bool operator!=(const vector2& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        float length() const
+        {
+            D3DXVECTOR2 v(x, y);
+            return D3DXVec2Length(&v);
+        }
+
+        float lengthSq() const
+        {
+            D3DXVECTOR2 v(x, y);
+            return D3DXVec2LengthSq(&v);
+        }
+
+        vector2 normalized() const
+        {
+            D3DXVECTOR2 v(x, y);
+            D3DXVECTOR2 result;
+            D3DXVec2Normalize(&result, &v);
+            return vector2(result);
+        }
+
+        float dot(const vector2& other) const
+        {
+            D3DXVECTOR2 a(x, y);
+            D3DXVECTOR2 b(other.x, other.y);
+            return D3DXVec2Dot(&a, &b);
+        }
+
+        static vector2 zero()
+        {
+            return vector2(0.f, 0.f);
+        }
+
+        static vector2 one()
+        {
+            return vector2(1.f, 1.f);
+        }
+
+        static vector2 right()
+        {
+            return vector2(1.f, 0.f);
+        }
+
+        static vector2 left()
+        {
+            return vector2(-1.f, 0.f);
+        }
+
+        static vector2 up()
+        {
+            return vector2(0.f, 1.f);
+        }
+
+        static vector2 down()
+        {
+            return vector2(0.f, -1.f);
+        }
+
+        static float Distance(const vector2& a, const vector2& b)
+        {
+            return vector2(b.x - a.x, b.y - a.y).length();
+        }
+
+        operator D3DXVECTOR2() const
+        {
+            return D3DXVECTOR2(x, y);
+        }
+
+        D3DXVECTOR2 vector() const
+        {
+            return D3DXVECTOR2(x, y);
+        }
+    };
+
+    // 연산자 오버로딩
+    inline vector2 operator+(const vector2& lhs, const vector2& rhs)
+    {
+        return vector2(lhs.x + rhs.x, lhs.y + rhs.y);
+    }
+
+    inline vector2 operator-(const vector2& lhs, const vector2& rhs)
+    {
+        return vector2(lhs.x - rhs.x, lhs.y - rhs.y);
+    }
+
+    inline vector2 operator*(const vector2& vec, float scalar)
+    {
+        return vector2(vec.x * scalar, vec.y * scalar);
+    }
+
+    inline vector2 operator*(float scalar, const vector2& vec)
+    {
+        return vector2(vec.x * scalar, vec.y * scalar);
+    }
+
+    inline vector2 operator/(const vector2& vec, float scalar)
+    {
+        return vector2(vec.x / scalar, vec.y / scalar);
+    }
+
+    inline vector2 operator*(const vector2& lhs, const vector2& rhs)
+    {
+        return vector2(lhs.x * rhs.x, lhs.y * rhs.y);
+    }
+
+    inline vector2 operator/(const vector2& lhs, const vector2& rhs)
+    {
+        return vector2(lhs.x / rhs.x, lhs.y / rhs.y);
+    }
+
+    inline vector2 operator-(const vector2& v)
+    {
+        return vector2(-v.x, -v.y);
+    }
+
+#pragma endregion
+
+#pragma region vector2Int
+    struct vector2Int
+    {
+        int x;
+        int y;
+
+        vector2Int()
+            : x(0), y(0)
+        {
+        }
+
+        vector2Int(int _x, int _y)
+            : x(_x), y(_y)
+        {
+        }
+
+        vector2Int(const vector2& v)
+            : x(static_cast<int>(v.x)), y(static_cast<int>(v.y))
+        {
+        }
+
+        vector2Int& operator=(const vector2Int& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            return *this;
+        }
+
+        vector2Int& operator+=(const vector2Int& rhs)
+        {
+            x += rhs.x;
+            y += rhs.y;
+            return *this;
+        }
+
+        vector2Int& operator-=(const vector2Int& rhs)
+        {
+            x -= rhs.x;
+            y -= rhs.y;
+            return *this;
+        }
+
+        vector2Int& operator*=(int scalar)
+        {
+            x *= scalar;
+            y *= scalar;
+            return *this;
+        }
+
+        vector2Int& operator/=(int scalar)
+        {
+            x /= scalar;
+            y /= scalar;
+            return *this;
+        }
+
+        bool operator==(const vector2Int& rhs) const
+        {
+            return x == rhs.x && y == rhs.y;
+        }
+
+        bool operator!=(const vector2Int& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        float length() const
+        {
+            return sqrtf(static_cast<float>(x * x + y * y));
+        }
+
+        int lengthSq() const
+        {
+            return x * x + y * y;
+        }
+
+        vector2 to_float() const
+        {
+            return vector2(static_cast<float>(x), static_cast<float>(y));
+        }
+
+        static vector2Int zero()
+        {
+            return vector2Int(0, 0);
+        }
+
+        static vector2Int one()
+        {
+            return vector2Int(1, 1);
+        }
+
+        static vector2Int up()
+        {
+            return vector2Int(0, 1);
+        }
+
+        static vector2Int down()
+        {
+            return vector2Int(0, -1);
+        }
+
+        static vector2Int left()
+        {
+            return vector2Int(-1, 0);
+        }
+
+        static vector2Int right()
+        {
+            return vector2Int(1, 0);
+        }
+
+        static int Distance(const vector2Int& a, const vector2Int& b)
+        {
+            int dx = b.x - a.x;
+            int dy = b.y - a.y;
+            return static_cast<int>(sqrtf(static_cast<float>(dx * dx + dy * dy)));
+        }
+
+        static int ManhattanDistance(const vector2Int& a, const vector2Int& b)
+        {
+            return abs(b.x - a.x) + abs(b.y - a.y);
+        }
+    };
+
+    // 연산자 오버로딩
+    inline vector2Int operator+(const vector2Int& lhs, const vector2Int& rhs)
+    {
+        return vector2Int(lhs.x + rhs.x, lhs.y + rhs.y);
+    }
+
+    inline vector2Int operator-(const vector2Int& lhs, const vector2Int& rhs)
+    {
+        return vector2Int(lhs.x - rhs.x, lhs.y - rhs.y);
+    }
+
+    inline vector2Int operator*(const vector2Int& vec, int scalar)
+    {
+        return vector2Int(vec.x * scalar, vec.y * scalar);
+    }
+
+    inline vector2Int operator*(int scalar, const vector2Int& vec)
+    {
+        return vector2Int(vec.x * scalar, vec.y * scalar);
+    }
+
+    inline vector2Int operator/(const vector2Int& vec, int scalar)
+    {
+        return vector2Int(vec.x / scalar, vec.y / scalar);
+    }
+
+    inline vector2Int operator-(const vector2Int& v)
+    {
+        return vector2Int(-v.x, -v.y);
+    }
+#pragma endregion
+
+#pragma region vector3
     struct vector3
     {
         float x;
@@ -224,7 +570,9 @@ namespace Engine
     {
         return vector3(-v.x, -v.y, -v.z);
     }
+#pragma endregion
 
+#pragma region quaternion
     struct quaternion
     {
         float x, y, z, w;
@@ -336,6 +684,9 @@ namespace Engine
         }
     };
 
+#pragma endregion
+
+#pragma region ColorValue
     struct ColorValue
     {
         BYTE r;
@@ -392,6 +743,7 @@ namespace Engine
         static ColorValue magenta() { return ColorValue(255, 0, 255); }
         static ColorValue transparent() { return ColorValue(0, 0, 0, 0); }
     };
+#pragma endregion
 
 	typedef struct tagVertexColor
 	{
@@ -418,7 +770,7 @@ namespace Engine
 
 	}VTXCUBE;
 
-	const _ulong	FVF_CUBE = D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE3(0); // 텍스처의 UV 좌표 값을 FLOAT형 3개로 표현하겠다는 매크로(괄호안의 숫자 0의 의미는 본래 버텍스에 텍스쳐 UV값이 여러개가 올 수 있는데 그중 0번째 값을 지정하겠다는 의미)
+	const _ulong	FVF_CUBE = D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE3(0);
 
 	typedef struct tagIndex16
 	{

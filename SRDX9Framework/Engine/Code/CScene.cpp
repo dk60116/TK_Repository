@@ -65,9 +65,12 @@ void CScene::Release()
 	}
 }
 
-void CScene::AddObject(CGameObject* _obj, Layer _layer)
+CGameObject* CScene::AddObject(LPDIRECT3DDEVICE9 _device, wstring _objName, Layer _layer)
 {
-	_obj->SetScene(this);
-	m_lObjectList[_layer].push_back(_obj);
-	m_lObjectList[_layer].back()->Awake();
+	CGameObject* obj = new CGameObject(_objName, _device);
+	obj->SetScene(this);
+	m_lObjectList[_layer].push_back(obj);
+	obj->Awake();
+
+	return obj;
 }

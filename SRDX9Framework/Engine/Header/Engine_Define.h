@@ -12,6 +12,8 @@
 #include <string>
 #include <unordered_map>
 #include <ctime>
+#include <typeindex>
+#include <memory>
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"
@@ -42,6 +44,5 @@
 
 using namespace std;
 using namespace Engine;
-
 
 #endif // Engine_Define_h__

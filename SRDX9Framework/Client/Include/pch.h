@@ -16,11 +16,8 @@
 #include <algorithm>
 
 #include "framework.h"
-#include "CManagement.h"
 
 #define DELTA_TIME CTimeMgr::GetInstance().Get_TimeDelta()
-
-extern HWND g_hWnd;
 
 #ifdef _DEBUG
 

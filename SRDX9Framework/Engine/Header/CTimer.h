@@ -13,12 +13,12 @@ public:
 	virtual ~CTimer();
 
 public:
-	int Get_FPS() const { return m_iFPS; }
-	_float Get_TimeDelta() const { return m_fTimeDelta; }
+	const int Get_FPS() const { return m_iFPS; }
+	const _float Get_TimeDelta() const { return m_fTimeDelta; }
 
 public:
 	HRESULT Ready_Timer();
-	void Update_Timer();
+	void Update();
 
 private:
 	LARGE_INTEGER m_FrameTime;
@@ -32,6 +32,9 @@ private:
 
 private:
 	virtual void Free();
+
+private:
+	_bool m_bFirstUpdate;
 };
 
 END

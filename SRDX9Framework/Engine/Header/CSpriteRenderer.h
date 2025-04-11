@@ -2,6 +2,7 @@
 
 #include "CComponent.h"
 #include "CRectCol.h"
+#include "CTexture.h"
 
 BEGIN(Engine)
 
@@ -20,11 +21,11 @@ public:
     void OnDestroy() override;
 
 public:
-    void SetTexture(LPDIRECT3DTEXTURE9 _texture) { m_pTexture = _texture; }
+    void SetTexture(CTexture* _texture);
     void SetTintColor(ColorValue _color);
 
 private:
-    LPDIRECT3DTEXTURE9 m_pTexture;
+    CTexture* m_pTexture;
     CVIBuffer* m_pBuffer;
     RECT m_rcUV;
     ColorValue m_sColorTint;

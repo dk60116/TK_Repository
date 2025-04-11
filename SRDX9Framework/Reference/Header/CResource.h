@@ -11,14 +11,16 @@ public:
 	~CResource();
 
 public:
-	virtual HRESULT Load();
-	virtual void Release();
+	virtual HRESULT Load(LPDIRECT3DDEVICE9 _device) PURE;
+	virtual void Release() PURE;
 
 public:
 	const wstring& getPath() { return m_strFilePath; };
-	const wstring& getName() { return m_strFilePath; };
+	void SetPath(const wstring _path) { m_strFilePath = _path; }
+	const wstring& getName() { return m_strName; };
+	void SetName(const wstring _name) { m_strName = _name; }
 
-private:
+protected:
 	wstring m_strFilePath;
 	wstring m_strName;
 	_bool m_bLoaded;

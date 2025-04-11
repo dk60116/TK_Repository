@@ -1,10 +1,11 @@
 #include "CTimer.h"
 
-CTimer::CTimer() 
+CTimer::CTimer()
 	: m_fTimeDelta(0.f)
 	, m_fFPSTimer(0.f)
 	, m_iFrameCount(0)
 	, m_iFPS(0)
+	, m_bFirstUpdate(true)
 {
 	ZeroMemory(&m_FixTime, sizeof(LARGE_INTEGER));
 	ZeroMemory(&m_LastTime, sizeof(LARGE_INTEGER));
@@ -27,9 +28,9 @@ HRESULT CTimer::Ready_Timer()
     return S_OK;
 }
 
-void CTimer::Update_Timer()
+void CTimer::Update()
 {
-	QueryPerformanceCounter(&m_FrameTime);			// 1500
+	QueryPerformanceCounter(&m_FrameTime);
 
 	if (m_FrameTime.QuadPart - m_FixTime.QuadPart >= m_CpuTick.QuadPart)
 	{
@@ -39,13 +40,24 @@ void CTimer::Update_Timer()
 
 	m_fTimeDelta = (m_FrameTime.QuadPart - m_LastTime.QuadPart) / (_float)m_CpuTick.QuadPart;
 
+	if (m_bFirstUpdate)
+	{
+		m_fTimeDelta = 0.f;
+		m_bFirstUpdate = false;
+	}
+	else
+	{
+		const float MAX_DELTA = 0.1f;
+		m_fTimeDelta = min(m_fTimeDelta, MAX_DELTA);
+	}
+
 	m_LastTime = m_FrameTime;
 
 	// FPS 계산
 	m_fFPSTimer += m_fTimeDelta;
 	++m_iFrameCount;
 
-	if (m_fFPSTimer >= 1.f) // 1초마다 FPS 업데이트
+	if (m_fFPSTimer >= 1.f)
 	{
 		m_iFPS = m_iFrameCount;
 		m_iFrameCount = 0;

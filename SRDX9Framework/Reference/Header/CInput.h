@@ -6,7 +6,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CInput
 {
-	SingletonClass(CInput);
+	SINGLETONCLASS(CInput);
 
 public:
     bool GetKey(int _iKey);

@@ -7,7 +7,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CManagement
 {
-	SingletonClass(CManagement);
+	SINGLETONCLASS(CManagement);
 
 public:
 	void CreateScene(CScene* _newScene, wstring _name);

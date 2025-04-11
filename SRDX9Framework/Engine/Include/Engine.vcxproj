@@ -156,6 +156,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CCamera.h" />
     <ClInclude Include="..\Header\CComponent.h" />
     <ClInclude Include="..\Header\CDebug.h" />
+    <ClInclude Include="..\Header\CEngineEditor.h" />
     <ClInclude Include="..\Header\CFrame.h" />
     <ClInclude Include="..\Header\CFrameMgr.h" />
     <ClInclude Include="..\Header\CGameObject.h" />
@@ -166,6 +167,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CResource.h" />
     <ClInclude Include="..\Header\CResources.h" />
     <ClInclude Include="..\Header\CScene.h" />
+    <ClInclude Include="..\Header\CScreen.h" />
     <ClInclude Include="..\Header\CTexture.h" />
     <ClInclude Include="..\Header\CTimer.h" />
     <ClInclude Include="..\Header\CTimeMgr.h" />
@@ -185,6 +187,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CCamera.cpp" />
     <ClCompile Include="..\Code\CComponent.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
+    <ClCompile Include="..\Code\CEngineEditor.cpp" />
     <ClCompile Include="..\Code\CFrame.cpp" />
     <ClCompile Include="..\Code\CFrameMgr.cpp" />
     <ClCompile Include="..\Code\CGameObject.cpp" />
@@ -195,6 +198,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CResource.cpp" />
     <ClCompile Include="..\Code\CResources.cpp" />
     <ClCompile Include="..\Code\CScene.cpp" />
+    <ClCompile Include="..\Code\CScreen.cpp" />
     <ClCompile Include="..\Code\CTexture.cpp" />
     <ClCompile Include="..\Code\CTimer.cpp" />
     <ClCompile Include="..\Code\CTimeMgr.cpp" />

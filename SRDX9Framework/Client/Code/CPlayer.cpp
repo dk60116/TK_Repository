@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "CPlayer.h"
-#include "CInput.h"
 
 CPlayer::CPlayer()
 	: m_pRenderer(nullptr)
@@ -18,7 +17,10 @@ void CPlayer::Awake()
 	CComponent::Awake();
 
 	m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
-	m_pRenderer->SetTintColor(ColorValue::green());
+	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
+	if (tex)
+		m_pRenderer->SetTexture(tex);
+	//m_pRenderer->SetTintColor(ColorValue::green());
 }
 
 void CPlayer::Start()
@@ -27,14 +29,10 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
-	vector3 pos = getTransform().getPosition();
+	CComponent::Update();
 
-	char buffer[128];
-	sprintf_s(buffer, "Position: X = %.2f, Y = %.2f, Z = %.2f", pos.x, pos.y, pos.z);
-
-	HWND hWnd = ::GetActiveWindow();
-	//SetWindowTextA(hWnd, buffer);
-
+	//if (CInput::GetInstance().GetKeyDown(W))
+	//getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * 0.00001f);
 	KeyInput();
 }
 
@@ -82,10 +80,10 @@ void CPlayer::KeyInput()
 	}
 	if (CInput::GetInstance().GetKey(Q))
 	{
-		getTransform().AddEulerAngles(vector3::up() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalYAxis(DELTA_TIME * -m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(E))
 	{
-		getTransform().AddEulerAngles(vector3::down() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalYAxis(DELTA_TIME * m_fRotaionSpeed);
 	}
 }

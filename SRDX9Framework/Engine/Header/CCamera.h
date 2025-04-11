@@ -1,13 +1,14 @@
 #pragma once
 
 #include "CComponent.h"
+#include "CScreen.h"
 
 BEGIN(Engine)
 
 struct CameraViewParameters
 {
 	float m_fFovY = D3DXToRadian(60.f);
-	float m_fAspect = (float)WINCX / (float)WINCY;
+	float m_fAspect = (float)CScreen::GetInstance().getResolution().x / (float)CScreen::GetInstance().getResolution().y;
 	float m_fNearZ = 0.1f;
 	float m_fFarZ = 600.f;
 };

@@ -27,5 +27,7 @@ private:
 public:
     CSpriteRenderer* m_pRenderer;
 	float m_fMoveSpeed, m_fRotaionSpeed;
+
+	int updateCnt = 0;
 };
 

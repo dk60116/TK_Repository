@@ -15,9 +15,19 @@
 #define IDC_MYICON				2
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
+
 #endif
 // 다음은 새 개체에 사용할 기본값입니다.
 //
+
+#define IDM_GAME_PLAY    20001
+#define IDM_GAME_PAUSE    20002
+#define IDM_GAME_STOP     20003
+
+#define ID_BTN_PLAY   30001
+#define ID_BTN_PAUSE  30002
+#define ID_BTN_STOP   30003
+
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 

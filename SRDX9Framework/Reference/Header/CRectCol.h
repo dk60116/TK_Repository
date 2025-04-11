@@ -18,6 +18,10 @@ public:
 
 public:
     virtual CComponent* Clone();
+
+private:
+    HRESULT ReadyColorRect();
+    HRESULT ReadyTextureRect();
 };
 
 END

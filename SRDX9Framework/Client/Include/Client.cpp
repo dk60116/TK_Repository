@@ -4,18 +4,19 @@
 #include "pch.h"
 #include "framework.h"
 #include "Client.h"
-#include "CMainApp.h"
+#include "CMainProcess.h"
 #include "CFrameMgr.h"
-#include "CInput.h"
+
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#endif
 
 #define MAX_LOADSTRING 100
 
-// 전역 변수:
-HINSTANCE hInst;                                // 현재 인스턴스입니다.
+// 전역 변수:                            
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
-WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
-
-HWND g_hWnd;
+WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -23,12 +24,20 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+HWND g_hTopBar;
+HWND g_hBtnPause;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+#ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetBreakAlloc(229);
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#endif
 
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -46,15 +55,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    CMainProcess::GetInstance().Ready_MainApp();
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
     MSG msg;
     msg.message = WM_NULL;
-
-    CMainApp* pMainApp = CMainApp::Create();
-
-    if (nullptr == pMainApp)
-        return FALSE;
 
     // 기본 메시지 루프입니다:
     while (true)
@@ -70,30 +76,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 DispatchMessage(&msg);
             }
         }
-
         else
         {
-            wstring fpsTxt = L"FPS: " + to_wstring(CTimeMgr::GetInstance().Get_FPS());
-            SetWindowText(g_hWnd, fpsTxt.c_str());
-
-            CTimeMgr::GetInstance().Update_Timer();
-            CInput::GetInstance().Update();
-            pMainApp->Update_MainApp();
-
-            pMainApp->LateUpdate_MainApp();
-            pMainApp->Render_MainApp();
-
-            CInput::GetInstance().LateUpdate();
+            if (CMainProcess::GetInstance().getGameState() == CMainProcess::RUNNING)
+                CMainProcess::GetInstance().Update_MainApp();
         }        
     }
 
     _ulong  dwRefCnt = 0;
-
-    if (dwRefCnt = Engine::Safe_Release(pMainApp))
-    {
-        MSG_BOX("MainApp Release Failed");
-        return FALSE;
-    }
 
     return (int) msg.wParam;
 }
@@ -138,9 +128,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   RECT rc{ 0, 0, WINCX, WINCY };
+   RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y + 30 };
 
    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -150,11 +140,31 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
-   {
       return FALSE;
-   }
 
-   g_hWnd = hWnd;
+   CEngineEditor::GetInstance().Init(hInstance, hWnd);
+
+   RECT crc = { 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y };
+   AdjustWindowRect(&crc, WS_OVERLAPPEDWINDOW, FALSE);
+
+   HWND hChildDXWnd = CreateWindowW(L"STATIC", nullptr, WS_CHILD | WS_VISIBLE,
+       0, 30, crc.right - crc.left, crc.bottom - crc.top,
+       hWnd, nullptr, CEngineEditor::GetInstance().getHInst(), nullptr);
+
+   CScreen::GetInstance().Start_Window(hChildDXWnd);
+
+   int screenXCenter = CScreen::GetInstance().getResolution().x / 2;
+
+   g_hTopBar = CreateWindowW(L"STATIC", nullptr,
+       WS_VISIBLE | WS_CHILD | SS_OWNERDRAW,
+       0, 0, CScreen::GetInstance().getResolution().x, 30,
+       CScreen::GetInstance().getHandle(), nullptr, hInstance, nullptr);
+
+   g_hBtnPause = CreateWindowW(L"BUTTON", L"Ⅱ", WS_VISIBLE | WS_CHILD,
+       screenXCenter - 52, 1, 40, 28, hWnd, (HMENU)ID_BTN_PAUSE, hInstance, nullptr);
+
+   CreateWindowW(L"BUTTON", L"■", WS_VISIBLE | WS_CHILD,
+       screenXCenter - 8, 1, 40, 28, hWnd, (HMENU)ID_BTN_STOP, hInstance, nullptr);
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -183,10 +193,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
             case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+                DialogBox(CEngineEditor::GetInstance().getHInst(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
+                break;
+            case IDM_GAME_PLAY:
+                CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+                break;
+            case IDM_GAME_PAUSE:
+                CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
+                break;
+            case IDM_GAME_STOP:
+                PostQuitMessage(0);
+                break;
+            case ID_BTN_PLAY:
+                CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+                break;
+            case ID_BTN_PAUSE:
+            {
+                static bool bPaused = false;
+
+                if (!bPaused)
+                {
+                    CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
+                    SetWindowText(g_hBtnPause, L"▶");
+                }
+                else
+                {
+                    CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+                    SetWindowText(g_hBtnPause, L"Ⅱ");
+                }
+
+                bPaused = !bPaused;
+            }
+                break;
+            case ID_BTN_STOP:
+                PostQuitMessage(0);
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
@@ -194,12 +237,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        RECT topBarRect = { 0, 0, CScreen::GetInstance().getResolution().x, 30 };
+        HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+        FillRect(hdc, &topBarRect, hBrush);
+        DeleteObject(hBrush);
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+
     case WM_KEYDOWN:
         switch (wParam)
         {
-        case VK_ESCAPE:
-            PostQuitMessage(0);
-            break;
         }
         break;
   

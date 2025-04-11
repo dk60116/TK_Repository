@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "CEnemy.h"
-#include "CInput.h"
 
 CEnemy::CEnemy()
 	: m_pRenderer(nullptr)
 	, m_fMoveSpeed(0.5f)
 	, m_fRotaionSpeed(45.f)
 	, m_pTarget(nullptr)
+	, m_bInit(false)
 {
 }
 
@@ -18,24 +18,39 @@ void CEnemy::Awake()
 {
 	CComponent::Awake();
 
+	CDebug::Log("Awake");
+	CTransform& tf = getTransform();
+	getTransform().SetPosition(2.f, 2.f, 0.f);
+	getTransform().SetScale(1.5f, 1.5f, 1.f);
 	m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
 	m_pRenderer->SetTintColor(ColorValue::red());
+
+	m_bInit = true;
 }
 
 void CEnemy::Start()
 {
+	CComponent::Start();
 }
 
 void CEnemy::Update()
 {
 	CComponent::Update();
 
-	float distance = vector3::Distance(getTransform().getPosition(), m_pTarget->getPosition());
+	//if (DELTA_TIME > 1.f)
+		//return;
 
-	if (m_pTarget && distance > 0.1f)
+	CTransform& t = getTransform();
+
+	if (m_pTarget)
 	{
-		getTransform().LookAt(m_pTarget->getPosition(), vector3::up());
-		getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * m_fMoveSpeed);
+		float distance = vector3::Distance(getTransform().getPosition(), m_pTarget->getPosition());
+
+		if (distance > 0.1f)
+		{
+			getTransform().LookAt(m_pTarget->getPosition(), vector3::up());
+			getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * m_fMoveSpeed);
+		}
 	}
 }
 

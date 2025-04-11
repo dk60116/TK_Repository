@@ -3,9 +3,6 @@
 
 namespace Engine
 {
-#define	WINCX		800
-#define	WINCY		600
-
 #define	VTXCNTX		129
 #define VTXCNTZ		129
 #define VTXITV		1
@@ -53,7 +50,7 @@ namespace Engine
 			}											\
 		}
 
-#define SingletonClass(c) \
+#define SINGLETONCLASS(c) \
 private: \
     c(); \
     c(const c& rhs) = delete; \

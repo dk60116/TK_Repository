@@ -6,7 +6,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CTimeMgr
 {
-	SingletonClass(CTimeMgr);
+	SINGLETONCLASS(CTimeMgr);
 
 public:
 	_int Get_FPS();
@@ -15,7 +15,7 @@ public:
 
 public:
 	HRESULT Ready_Timer();
-	void Update_Timer();
+	void Update();
 	void Release();
 
 private:
