@@ -1,5 +1,6 @@
 .vs/
 *.pch
+*.ipch
 
 # User-specific files
 *.user
