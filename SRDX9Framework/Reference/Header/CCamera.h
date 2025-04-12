@@ -37,7 +37,6 @@ public:
 private:
 	void UpdateProjectionMatrix();
 	void UpdateViewMatrix();
-	void ResetAspectFromResolution();
 
 public:
 	const CameraViewMode getMode() { return m_eCamViewMode; }
@@ -45,6 +44,7 @@ public:
 	_matrix& getProjMatrix() { return m_matProjMatrix; }
 	_matrix& getViewMatrix() { return m_matViewMatrix; }
 	CameraViewParameters& getParameters() { return m_sParameters; };
+	void ResetAspectFromResolution();
 
 private:
 	CameraViewMode m_eCamViewMode;

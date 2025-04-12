@@ -9,6 +9,7 @@ CMainProcess::CMainProcess()
 	, m_pGraphicDev(nullptr)
 	, m_pVB(nullptr)
 	, m_eGameState(RUNNING)
+	, m_bStepOneFrame(false)
 {
 }
 
@@ -21,7 +22,7 @@ HRESULT CMainProcess::Ready_MainApp()
 {
 	if (FAILED(CGraphicDev::GetInstance()->Ready_GraphicDev
 	(
-		CScreen::GetInstance().getHandle(), MODE_WIN, 
+		CScreen::GetInstance().getGameHandle(), MODE_WIN,
 		CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y, 
 		&m_pDevClass
 	)))
@@ -52,7 +53,7 @@ _int CMainProcess::Update_MainApp()
 	CTimeMgr::GetInstance().Update();
 
 	wstring fpsTxt = L"FPS: " + to_wstring(CTimeMgr::GetInstance().Get_FPS());
-	SetWindowText(CEngineEditor::GetInstance().getMainHandle(), fpsTxt.c_str());
+	SetWindowText(CScreen::GetInstance().getMainHandle(), fpsTxt.c_str());
 
 	CInput::GetInstance().Update();
 	CManagement::GetInstance().getCrtScene()->Update();
@@ -61,6 +62,8 @@ _int CMainProcess::Update_MainApp()
 
 	CManagement::GetInstance().getCrtScene()->LateUpdate();
 	CInput::GetInstance().LateUpdate();
+
+	m_bStepOneFrame = false;
 
 	return 0;
 }
@@ -84,4 +87,17 @@ void CMainProcess::Release()
 	{
 		Safe_Release(m_pDevClass);
 	}
+}
+
+void CMainProcess::OnScreenChange(const _uint& _width, const _uint& _height)
+{
+	if (!m_pGraphicDev)
+		return;
+
+	if (FAILED(m_pDevClass->ReSize(_width, _height)))
+		return;
+
+	CScreen::GetInstance().UpdateResolution(_width, _height);
+
+	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution();
 }

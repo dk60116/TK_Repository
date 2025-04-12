@@ -29,6 +29,7 @@ public:
     CGameObject* AddObject(LPDIRECT3DDEVICE9 _device, wstring _objName, Layer _layer);
 
     CCamera* getCamera(const int _index) { return m_vCameraList[_index]; }
+    void UpdateAllCameraResolution();
 
 protected:
     wstring m_strSceneName;

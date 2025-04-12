@@ -74,3 +74,9 @@ CGameObject* CScene::AddObject(LPDIRECT3DDEVICE9 _device, wstring _objName, Laye
 
 	return obj;
 }
+
+void CScene::UpdateAllCameraResolution()
+{
+	for (TRAVERSAL_ITER(m_vCameraList, it))
+		(*it)->ResetAspectFromResolution();
+}

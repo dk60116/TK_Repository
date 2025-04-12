@@ -18,11 +18,13 @@ void CEnemy::Awake()
 {
 	CComponent::Awake();
 
-	CDebug::Log("Awake");
-	CTransform& tf = getTransform();
 	getTransform().SetPosition(2.f, 2.f, 0.f);
 	getTransform().SetScale(1.5f, 1.5f, 1.f);
 	m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
+	auto tex = CResources::GetInstance().getResource<CTexture>(L"Enemy").get();
+	if (tex)
+		m_pRenderer->SetTexture(tex);
+	m_pRenderer->SetTexture(tex);
 	m_pRenderer->SetTintColor(ColorValue::red());
 
 	m_bInit = true;
@@ -36,9 +38,6 @@ void CEnemy::Start()
 void CEnemy::Update()
 {
 	CComponent::Update();
-
-	//if (DELTA_TIME > 1.f)
-		//return;
 
 	CTransform& t = getTransform();
 

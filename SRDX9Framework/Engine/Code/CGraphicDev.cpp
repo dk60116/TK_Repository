@@ -3,7 +3,9 @@
 
 IMPLEMENT_SINGLETON(CGraphicDev)
 
-CGraphicDev::CGraphicDev() : m_pSDK(NULL), m_pGraphicDev(NULL)
+CGraphicDev::CGraphicDev() 
+	: m_pSDK(NULL)
+	, m_pGraphicDev(NULL)
 {
 			
 }
@@ -45,8 +47,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 	else
 		dwFlag |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 
-
-	D3DPRESENT_PARAMETERS		d3dpp;
+	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(D3DPRESENT_PARAMETERS));
 
 	d3dpp.BackBufferWidth  = iSizeX;
@@ -65,7 +66,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 
 	d3dpp.hDeviceWindow = hWnd;
 
-	d3dpp.Windowed = (eMode == MODE_WIN);;		// 창 모드 또는 전체 화면 모드
+	d3dpp.Windowed = (eMode == MODE_WIN);		// 창 모드 또는 전체 화면 모드
 	
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
@@ -75,9 +76,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 
 	if (FAILED(m_pSDK->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
 		hWnd, dwFlag, &d3dpp, &m_pGraphicDev)))
-	{
 		return E_FAIL;
-	}
 
 	*ppGraphicDev = this;
 
@@ -85,9 +84,14 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 }
 
 // 후면 버퍼 동작 원리
-void CGraphicDev::Render_Begin(D3DXCOLOR Color)
+void CGraphicDev::Render_Begin(D3DXCOLOR _color)
 {
-	// 1. 기본 Viewport (전체 영역) 적용
+	// 화면 Clear
+	m_pGraphicDev->Clear(0, NULL,
+		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
+		_color, 1.f, 0);
+
+	// 기본 Viewport (전체 영역) 적용
 	D3DVIEWPORT9 gameViewport = {};
 	gameViewport.X = 0;
 	gameViewport.Y = 0;
@@ -98,12 +102,7 @@ void CGraphicDev::Render_Begin(D3DXCOLOR Color)
 
 	m_pGraphicDev->SetViewport(&gameViewport);
 
-	// 2. 전체 화면 Clear (버튼 영역 포함)
-	m_pGraphicDev->Clear(0, NULL,
-		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
-		Color, 1.f, 0);
-
-	// 4. 렌더링 시작
+	// 렌더링 시작
 	m_pGraphicDev->BeginScene();
 }
 
@@ -113,8 +112,59 @@ void CGraphicDev::Render_End()
 	m_pGraphicDev->Present(NULL, NULL, NULL, NULL);
 }
 
+HRESULT CGraphicDev::ReSize(_uint _newWidth, _uint _newHeight)
+{
+	if (!m_pGraphicDev)
+		return E_FAIL;
+
+	D3DPRESENT_PARAMETERS d3dpp;
+	ZeroMemory(&d3dpp, sizeof(D3DPRESENT_PARAMETERS));
+
+	d3dpp.BackBufferWidth = _newWidth;
+	d3dpp.BackBufferHeight = _newHeight;
+	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+	d3dpp.BackBufferCount = 1;
+	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
+	d3dpp.MultiSampleQuality = 0;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.hDeviceWindow = CScreen::GetInstance().getGameHandle();
+	d3dpp.Windowed = TRUE;
+	d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+	// 디바이스 리셋
+	if (FAILED(m_pGraphicDev->Reset(&d3dpp)))
+	{
+		MessageBox(NULL, L"Device Reset Failed", L"Error", MB_OK);
+		return E_FAIL;
+	}
+
+	// 뷰포트 및 프로젝션 재설정
+	D3DVIEWPORT9 vp = {};
+	vp.X = 0;
+	vp.Y = 0;
+	vp.Width = _newWidth;
+	vp.Height = _newHeight;
+	vp.MinZ = 0.0f;
+	vp.MaxZ = 1.0f;
+	m_pGraphicDev->SetViewport(&vp);
+
+	_matrix matProj;
+	D3DXMatrixOrthoLH(&matProj, (float)_newWidth, (float)_newHeight, 0.0f, 1.0f);
+	m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &matProj);
+
+	return S_OK;
+}
+
 void CGraphicDev::Free()
 {
 	Safe_Release(m_pGraphicDev);
 	Safe_Release(m_pSDK);
+}
+
+void IDeviceResetListener::RegisterResetListener(IDeviceResetListener* pListener)
+{
+	m_vecResetListeners.push_back(pListener);
 }

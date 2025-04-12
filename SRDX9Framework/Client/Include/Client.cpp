@@ -24,9 +24,6 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-HWND g_hTopBar;
-HWND g_hBtnPause;
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -78,8 +75,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            if (CMainProcess::GetInstance().getGameState() == CMainProcess::RUNNING)
+#ifdef _DEBUG
+            if (CMainProcess::GetInstance().getStepOne() || CMainProcess::GetInstance().getGameState() == CEngineEditor::RUNNING)
                 CMainProcess::GetInstance().Update_MainApp();
+#else
+            CMainProcess::GetInstance().Update_MainApp();
+#endif
         }        
     }
 
@@ -130,7 +131,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y + 30 };
+#ifdef _DEBUG
+    RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y + 60};
+#else
+    RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y };
+#endif
 
    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -142,29 +147,30 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    if (!hWnd)
       return FALSE;
 
+#if _DEBUG
    CEngineEditor::GetInstance().Init(hInstance, hWnd);
+#endif
 
    RECT crc = { 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y };
    AdjustWindowRect(&crc, WS_OVERLAPPEDWINDOW, FALSE);
 
+   _int offset = 0;
+
+#ifdef _DEBUG
+   offset = 30;
+#else
+   offset = 0;
+#endif
+
    HWND hChildDXWnd = CreateWindowW(L"STATIC", nullptr, WS_CHILD | WS_VISIBLE,
-       0, 30, crc.right - crc.left, crc.bottom - crc.top,
-       hWnd, nullptr, CEngineEditor::GetInstance().getHInst(), nullptr);
+       0, offset, crc.right - crc.left, crc.bottom - crc.top,
+       hWnd, nullptr, CScreen::GetInstance().getHInstance(), nullptr);
 
-   CScreen::GetInstance().Start_Window(hChildDXWnd);
+   CScreen::GetInstance().Start_Window(hInstance, hWnd, hChildDXWnd);
 
-   int screenXCenter = CScreen::GetInstance().getResolution().x / 2;
-
-   g_hTopBar = CreateWindowW(L"STATIC", nullptr,
-       WS_VISIBLE | WS_CHILD | SS_OWNERDRAW,
-       0, 0, CScreen::GetInstance().getResolution().x, 30,
-       CScreen::GetInstance().getHandle(), nullptr, hInstance, nullptr);
-
-   g_hBtnPause = CreateWindowW(L"BUTTON", L"Ⅱ", WS_VISIBLE | WS_CHILD,
-       screenXCenter - 52, 1, 40, 28, hWnd, (HMENU)ID_BTN_PAUSE, hInstance, nullptr);
-
-   CreateWindowW(L"BUTTON", L"■", WS_VISIBLE | WS_CHILD,
-       screenXCenter - 8, 1, 40, 28, hWnd, (HMENU)ID_BTN_STOP, hInstance, nullptr);
+#ifdef _DEBUG
+   CEngineEditor::GetInstance().Init(hInstance, hWnd);
+#endif
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -193,43 +199,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
             case IDM_ABOUT:
+#ifdef _DEBUG
                 DialogBox(CEngineEditor::GetInstance().getHInst(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+#endif // DEBUG
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
             case IDM_GAME_PLAY:
+#ifdef _DEBUG
                 CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+#endif
                 break;
             case IDM_GAME_PAUSE:
+#ifdef _DEBUG
                 CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
+#endif
                 break;
             case IDM_GAME_STOP:
                 PostQuitMessage(0);
                 break;
             case ID_BTN_PLAY:
+#ifdef _DEBUG
                 CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+#endif
                 break;
             case ID_BTN_PAUSE:
-            {
-                static bool bPaused = false;
-
-                if (!bPaused)
-                {
-                    CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
-                    SetWindowText(g_hBtnPause, L"▶");
-                }
-                else
-                {
-                    CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
-                    SetWindowText(g_hBtnPause, L"Ⅱ");
-                }
-
-                bPaused = !bPaused;
-            }
+#ifdef _DEBUG
+                CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
+#endif
                 break;
             case ID_BTN_STOP:
                 PostQuitMessage(0);
+                break;
+            case ID_BTN_NEXTFRAME:
+                CMainProcess::GetInstance().SetStepOne(true);
+
+#ifdef _DEBUG
+                CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
+#endif
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
@@ -237,20 +245,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-    case WM_PAINT:
+    case WM_CTLCOLORSTATIC:
     {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
+#ifdef _DEBUG
+        HDC hdcStatic = (HDC)wParam;
+        HWND hStatic = (HWND)lParam;
 
-        RECT topBarRect = { 0, 0, CScreen::GetInstance().getResolution().x, 30 };
-        HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
-        FillRect(hdc, &topBarRect, hBrush);
-        DeleteObject(hBrush);
-
-        EndPaint(hWnd, &ps);
+        if (hStatic == CEngineEditor::GetInstance().getTopBar())
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, RGB(0, 0, 0));
+            static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+            return (INT_PTR)hBlackBrush;
+        }
+#endif 
+        break;
     }
     break;
 
+    case WM_SIZE:
+    {
+        RECT rcClient;
+        GetClientRect(hWnd, &rcClient);
+        _int width = rcClient.right - rcClient.left;
+        _int height = rcClient.bottom - rcClient.top;
+
+        CMainProcess::GetInstance().OnScreenChange(width, height);
+
+        // 자식 렌더 타겟 창 크기 조정
+        HWND hChildWnd = CScreen::GetInstance().getGameHandle();
+        if (hChildWnd)
+        {
+            int offset = 0;
+#ifdef _DEBUG
+            offset = 30;
+
+            CEngineEditor::GetInstance().UpdateResolution();
+#endif
+            MoveWindow(hChildWnd, 0, offset, width, height, TRUE);
+        }
+    }
+        break;
     case WM_KEYDOWN:
         switch (wParam)
         {

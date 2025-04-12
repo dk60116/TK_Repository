@@ -3,6 +3,15 @@
 
 namespace Engine
 {
+#define IDM_GAME_PLAY    20001
+#define IDM_GAME_PAUSE    20002
+#define IDM_GAME_STOP     20003
+
+#define ID_BTN_PLAY   30001
+#define ID_BTN_PAUSE  30002
+#define ID_BTN_STOP   30003
+#define ID_BTN_NEXTFRAME 30004
+
 #define	VTXCNTX		129
 #define VTXCNTZ		129
 #define VTXITV		1

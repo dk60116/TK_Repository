@@ -9,7 +9,9 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#if _DEBUG
 #include "CEngineEditor.h"
+#endif
 #include "CScreen.h"
 #include "CTimeMgr.h"
 #include "CInput.h"
