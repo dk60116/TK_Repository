@@ -75,18 +75,18 @@ void CPlayer::KeyInput()
 	}
 	if (CInput::GetInstance().GetKey(A))
 	{
-		getTransform().AddLocalEulerAngles(vector3::forward() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalZAxis(DELTA_TIME * m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(D))
 	{
-		getTransform().AddLocalEulerAngles(vector3::backward() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalZAxis(DELTA_TIME * -m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(Q))
 	{
-		getTransform().AddEulerAnglesY(DELTA_TIME * -m_fRotaionSpeed);
+		getTransform().AddLocalXAxis(DELTA_TIME * -m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(E))
 	{
-		getTransform().AddEulerAnglesY(DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalXAxis(DELTA_TIME * m_fRotaionSpeed);
 	}
 }

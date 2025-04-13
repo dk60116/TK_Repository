@@ -163,6 +163,9 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CGraphicDev.h" />
     <ClInclude Include="..\Header\CInput.h" />
     <ClInclude Include="..\Header\CManagement.h" />
+    <ClInclude Include="..\Header\CMaterial.h" />
+    <ClInclude Include="..\Header\CMeshFilter.h" />
+    <ClInclude Include="..\Header\CMeshRenderer.h" />
     <ClInclude Include="..\Header\CRectCol.h" />
     <ClInclude Include="..\Header\CResource.h" />
     <ClInclude Include="..\Header\CResources.h" />
@@ -194,6 +197,9 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CGraphicDev.cpp" />
     <ClCompile Include="..\Code\CInput.cpp" />
     <ClCompile Include="..\Code\CManagement.cpp" />
+    <ClCompile Include="..\Code\CMaterial.cpp" />
+    <ClCompile Include="..\Code\CMeshFilter.cpp" />
+    <ClCompile Include="..\Code\CMeshRenderer.cpp" />
     <ClCompile Include="..\Code\CRectCol.cpp" />
     <ClCompile Include="..\Code\CResource.cpp" />
     <ClCompile Include="..\Code\CResources.cpp" />
