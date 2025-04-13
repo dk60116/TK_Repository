@@ -1,4 +1,5 @@
 #include "CTransform.h"
+#include "CGameObject.h"
 #include "CDebug.h"
 
 CTransform::CTransform()
@@ -62,14 +63,14 @@ void CTransform::OnDestroy()
 
 void CTransform::UpdateWorld()
 {
-	D3DXMATRIX matScale;
+	_matrix matScale;
 	D3DXMatrixScaling(&matScale, m_v3Scale.x, m_v3Scale.y, m_v3Scale.z);
 
-	D3DXMATRIX matRotation;
+	_matrix matRotation;
 	D3DXQUATERNION quat = m_v4Quaternion;
 	D3DXMatrixRotationQuaternion(&matRotation, &quat);
 
-	D3DXMATRIX matTranslation;
+	_matrix matTranslation;
 	D3DXMatrixTranslation(&matTranslation, m_v3Position.x, m_v3Position.y, m_v3Position.z);
 
 	m_matWorld = matScale * matRotation * matTranslation;
@@ -78,11 +79,22 @@ void CTransform::UpdateWorld()
 	{
 		m_matWorld *= m_pParent->m_matWorld;
 	}
+
+	m_v3WorldPos = vector3(m_matWorld._41, m_matWorld._42, m_matWorld._43);
+
+	D3DXVECTOR3 dummyScale, dummyTranslation;
+	D3DXQUATERNION worldQuat;
+	D3DXMatrixDecompose(&dummyScale, &worldQuat, &dummyTranslation, &m_matWorld);
+
+	D3DXVECTOR3 worldEuler;
+	D3DXQuaternionToAxisAngle(&worldQuat, nullptr, &worldEuler.x);
+
+	m_vWorldEulerAngle = quaternion::to_euler(worldQuat);
 }
 
 void CTransform::UpdateDirections()
 {
-	D3DXMATRIX rotMatrix;
+	_matrix rotMatrix;
 	D3DXQUATERNION quat = m_v4Quaternion;
 	D3DXMatrixRotationQuaternion(&rotMatrix, &quat);
 
@@ -104,149 +116,320 @@ void CTransform::UpdateDirections()
 	m_sDirections.left = -m_sDirections.right;
 }
 
-void CTransform::SetPosition(const vector3 _pos)
+const wstring CTransform::getName()
 {
-	m_v3Position = _pos;
+	return m_pGameObject->getName();
+}
+
+void CTransform::SetPosition(const vector3 _world_pos)
+{
+	if (m_pParent)
+	{
+		_matrix invParent;
+		D3DXMatrixInverse(&invParent, nullptr, &m_pParent->getWorldMatrix());
+
+		_vec3 world = _world_pos.vector();
+		_vec3 local;
+		D3DXVec3TransformCoord(&local, &world, &invParent);
+
+		m_v3Position = vector3(local);
+	}
+	else
+		m_v3Position = _world_pos;
 }
 
 void CTransform::SetPosition(const _float _x, const _float _y, const _float _z)
 {
-	m_v3Position = vector3(_x, _y, _z);
+	vector3 pos = vector3(_x, _y, _z);
+
+	SetPosition(pos);
 }
 
-void CTransform::AddPosition(const vector3 _pos)
+void CTransform::AddPosition(const vector3 _world_delta)
 {
-	m_v3Position += _pos;
+	if (m_pParent)
+	{
+		_matrix invParent;
+		D3DXMatrixInverse(&invParent, nullptr, &m_pParent->getWorldMatrix());
+
+		D3DXVECTOR3 deltaWorld = _world_delta.vector();
+		D3DXVECTOR3 deltaLocal;
+		D3DXVec3TransformNormal(&deltaLocal, &deltaWorld, &invParent);
+
+		m_v3Position += vector3(deltaLocal);
+	}
+	else
+		m_v3Position += _world_delta;
 }
 
 void CTransform::AddPosition(const _float _x, const _float _y, const _float _z)
 {
-	m_v3Position += vector3(_x, _y, _z);
+	vector3 pos = vector3(_x, _y, _z);
+
+	AddPosition(pos);
 }
 
 void CTransform::SetPositionX(const _float _x)
 {
-	m_v3Position.x = _x;
+	vector3 current = getPosition();
+	current.x = _x;
+	SetPosition(current);
 }
 
 void CTransform::SetPositionY(const _float _y)
 {
-	m_v3Position.y = _y;
+	vector3 current = getPosition();
+	current.y = _y;
+	SetPosition(current);
 }
 
 void CTransform::SetPositionZ(const _float _z)
 {
-	m_v3Position.z = _z;
+	vector3 current = getPosition();
+	current.z = _z;
+	SetPosition(current);
 }
 
 void CTransform::AddPositionX(const _float _x)
 {
-	m_v3Position.x += _x;
+	AddPosition(vector3(_x, 0.f, 0.f));
 }
 
 void CTransform::AddPositionY(const _float _y)
 {
-	m_v3Position.y += _y;
+	AddPosition(vector3(0.f, _y, 0.f));
 }
 
 void CTransform::AddPositionZ(const _float _z)
 {
+	AddPosition(vector3(0.f, 0.f, _z));
+}
+
+void CTransform::SetEulerAngles(const vector3 _world_euler_deg)
+{
+	D3DXQUATERNION worldQuat = quaternion::from_euler(_world_euler_deg).dQuaternion();
+
+	if (m_pParent)
+	{
+		D3DXQUATERNION parentQuat = m_pParent->m_v4Quaternion.dQuaternion();
+
+		D3DXQUATERNION invParent;
+		D3DXQuaternionInverse(&invParent, &parentQuat);
+
+		D3DXQUATERNION localQuat;
+		D3DXQuaternionMultiply(&localQuat, &worldQuat, &invParent);
+
+		m_v4Quaternion = quaternion(localQuat);
+		m_v3EulerAngles = quaternion::to_euler(localQuat);
+	}
+	else
+	{
+		m_v4Quaternion = quaternion(worldQuat);
+		m_v3EulerAngles = _world_euler_deg;
+	}
+}
+
+void CTransform::SetEulerAngles(const _float _x, const _float _y, const _float _z)
+{
+	vector3 angle = vector3(_x, _y, _z);
+
+	SetEulerAngles(angle);
+}
+
+void CTransform::AddEulerAngles(const vector3 _delta)
+{
+	vector3 newEuler = m_vWorldEulerAngle + _delta;
+	SetEulerAngles(newEuler);
+}
+
+void CTransform::AddEulerAngles(const _float _x, const _float _y, const _float _z)
+{
+	vector3 angle = vector3(_x, _y, _z);
+	AddEulerAngles(angle);
+}
+
+void CTransform::SetEulerAnglesX(const _float _x)
+{
+	vector3 newEuler = m_vWorldEulerAngle;
+	newEuler.x = _x;
+	SetEulerAngles(newEuler);
+}
+
+void CTransform::SetEulerAnglesY(const _float _y)
+{
+	vector3 newEuler = m_vWorldEulerAngle;
+	newEuler.y = _y;
+	SetEulerAngles(newEuler);
+}
+
+void CTransform::SetEulerAnglesZ(const _float _z)
+{
+	vector3 newEuler = m_vWorldEulerAngle;
+	newEuler.z = _z;
+	SetEulerAngles(newEuler);
+}
+
+void CTransform::AddEulerAnglesX(const _float _x)
+{
+	vector3 angle = vector3(_x, 0.f, 0.f);
+	AddEulerAngles(angle);
+}
+
+void CTransform::AddEulerAnglesY(const _float _y)
+{
+	vector3 angle = vector3(0.f, _y, 0.f);
+	AddEulerAngles(angle);
+}
+
+void CTransform::AddEulerAnglesZ(const _float _z)
+{
+	vector3 angle = vector3(0.f, 0.f, _z);
+	AddEulerAngles(angle);
+}
+
+void CTransform::SetLocalPosition(const vector3 _pos)
+{
+	m_v3Position = _pos;
+}
+
+void CTransform::SetLocalPosition(const _float _x, const _float _y, const _float _z)
+{
+	m_v3Position = vector3(_x, _y, _z);
+}
+
+void CTransform::AddLocalPosition(const vector3 _pos)
+{
+	m_v3Position += _pos;
+}
+
+void CTransform::AddLocalPosition(const _float _x, const _float _y, const _float _z)
+{
+	m_v3Position += vector3(_x, _y, _z);
+}
+
+void CTransform::SetLocalPositionX(const _float _x)
+{
+	m_v3Position.x = _x;
+}
+
+void CTransform::SetLocalPositionY(const _float _y)
+{
+	m_v3Position.y = _y;
+}
+
+void CTransform::SetLocalPositionZ(const _float _z)
+{
+	m_v3Position.z = _z;
+}
+
+void CTransform::AddLocalPositionX(const _float _x)
+{
+	m_v3Position.x += _x;
+}
+
+void CTransform::AddLocalPositionY(const _float _y)
+{
+	m_v3Position.y += _y;
+}
+
+void CTransform::AddLocalPositionZ(const _float _z)
+{
 	m_v3Position.z += _z;
 }
 
-void CTransform::SetScale(const vector3 _scale)
+void CTransform::SetLocalScale(const vector3 _scale)
 {
 	m_v3Scale = _scale;
 }
 
-void CTransform::SetScale(const _float _x, const _float _y, const _float _z)
+void CTransform::SetLocalScale(const _float _x, const _float _y, const _float _z)
 {
 	m_v3Scale = vector3(_x, _y, _z);
 }
 
-void CTransform::AddScale(const vector3 _scale)
+void CTransform::AddLocalScale(const vector3 _scale)
 {
 	m_v3Scale += _scale;
 }
 
-void CTransform::AddScale(const _float _x, const _float _y, const _float _z)
+void CTransform::AddLocalScale(const _float _x, const _float _y, const _float _z)
 {
 	m_v3Scale += vector3(_x, _y, _z);
 }
 
-void CTransform::SetScaleX(const _float _x)
+void CTransform::SetLocalScaleX(const _float _x)
 {
 	m_v3Scale.x = _x;
 }
 
-void CTransform::SetScaleY(const _float _y)
+void CTransform::SetLocalScaleY(const _float _y)
 {
 	m_v3Scale.y = _y;
 }
 
-void CTransform::SetScaleZ(const _float _z)
+void CTransform::SetLocalScaleZ(const _float _z)
 {
 	m_v3Scale.z = _z;
 }
 
-void CTransform::AddScaleX(const _float _x)
+void CTransform::AddLocalScaleX(const _float _x)
 {
 	m_v3Scale.x += _x;
 }
 
-void CTransform::AddScaleY(const _float _y)
+void CTransform::AddLocalScaleY(const _float _y)
 {
 	m_v3Scale.y += _y;
 }
 
-void CTransform::AddScaleZ(const _float _z)
+void CTransform::AddLocalScaleZ(const _float _z)
 {
 	m_v3Scale.z += _z;
 }
 
-void CTransform::SetEulerAngles(const vector3 _rot)
+void CTransform::SetLocalEulerAngles(const vector3 _rot)
 {
 	m_v3EulerAngles = _rot;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::SetEulerAngles(const _float _x, const _float _y, const _float _z)
+void CTransform::SetLocalEulerAngles(const _float _x, const _float _y, const _float _z)
 {
 	m_v3EulerAngles = vector3(_x, _y, _z);
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::SetEulerAnglesX(const _float _x)
+void CTransform::SetLocalEulerAnglesX(const _float _x)
 {
 	m_v3EulerAngles.x = _x;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::SetEulerAnglesY(const _float _y)
+void CTransform::SetLocalEulerAnglesY(const _float _y)
 {
 	m_v3EulerAngles.y = _y;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::SetEulerAnglesZ(const _float _z)
+void CTransform::SetLocalEulerAnglesZ(const _float _z)
 {
 	m_v3EulerAngles.z = _z;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::AddEulerAnglesX(const _float _x)
+void CTransform::AddLocalEulerAnglesX(const _float _x)
 {
 	m_v3EulerAngles.x += _x;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::AddEulerAnglesY(const _float _y)
+void CTransform::AddLocalEulerAnglesY(const _float _y)
 {
 	m_v3EulerAngles.y += _y;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::AddEulerAnglesZ(const _float _z)
+void CTransform::AddLocalEulerAnglesZ(const _float _z)
 {
 	m_v3EulerAngles.z += _z;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
@@ -311,13 +494,13 @@ void CTransform::RotateLocalAxis(const vector3 local_axis, _float angle_deg)
 	m_v4Quaternion = quaternion(qRot) * m_v4Quaternion;
 }
 
-void CTransform::AddEulerAngles(const vector3 _rot)
+void CTransform::AddLocalEulerAngles(const vector3 _rot)
 {
 	m_v3EulerAngles += _rot;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::AddEulerAngles(const _float _x, const _float _y, const _float _z)
+void CTransform::AddLocalEulerAngles(const _float _x, const _float _y, const _float _z)
 {
 	m_v3EulerAngles += vector3(_x, _y, _z);
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
@@ -325,7 +508,7 @@ void CTransform::AddEulerAngles(const _float _x, const _float _y, const _float _
 
 void CTransform::LookAt(vector3 _target)
 {
-	vector3 dir = (_target - m_v3Position).normalized();
+	vector3 dir = (_target - m_v3WorldPos).normalized();
 
 	_float pitch = asinf(-dir.y);
 	_float yaw = atan2f(dir.x, dir.z);
@@ -333,7 +516,7 @@ void CTransform::LookAt(vector3 _target)
 
 	vector3 euler = vector3(D3DXToDegree(pitch), D3DXToDegree(yaw), D3DXToDegree(roll));
 
-	SetEulerAngles(euler);
+	SetLocalEulerAngles(euler);
 }
 
 void CTransform::LookAt(CTransform& _target)
@@ -343,7 +526,7 @@ void CTransform::LookAt(CTransform& _target)
 
 void CTransform::LookAt(vector3 _target, vector3 _front)
 {
-	vector3 world_target_dir = (_target - m_v3Position).normalized();
+	vector3 world_target_dir = (_target - m_v3WorldPos).normalized();
 
 	_matrix rotMatrix;
 	D3DXVECTOR3 vFrom = _front.vector();
@@ -369,8 +552,4 @@ void CTransform::LookAt(vector3 _target, vector3 _front)
 	}
 
 	m_v4Quaternion = quaternion(qRot);
-}
-
-void CTransform::LookAt(CTransform& _target, vector3 _front)
-{
 }

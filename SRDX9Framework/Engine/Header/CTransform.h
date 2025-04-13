@@ -40,14 +40,20 @@ private:
 	void UpdateDirections();
 
 public:
+	const wstring getName();
+	CTransform* getParent() const { return m_pParent; }
 	void SetParent(CTransform& _parent) { m_pParent = &_parent; }
-	vector3& getPosition() { return m_v3Position; }
-	vector3& getScale() { return m_v3Scale; }
-	vector3& getEulerAngle() { return m_v3EulerAngles; }
 
-	void SetPosition(const vector3 _pos);
+	vector3& getPosition() { return m_v3WorldPos; };
+	vector3& getEulerAngles() { return m_v3EulerAngles; };
+
+	vector3& getLocalPosition() { return m_v3Position; }
+	vector3& getLocalScale() { return m_v3Scale; }
+	vector3& getLocalEulerAngles() { return m_v3EulerAngles; }
+
+	void SetPosition(const vector3 world_pos);
 	void SetPosition(const _float _x, const _float _y, const _float _z);
-	void AddPosition(const vector3 _pos);
+	void AddPosition(const vector3 _world_delta);
 	void AddPosition(const _float _x, const _float _y, const _float _z);
 	void SetPositionX(const _float _x);
 	void SetPositionY(const _float _y);
@@ -55,21 +61,10 @@ public:
 	void AddPositionX(const _float _x);
 	void AddPositionY(const _float _y);
 	void AddPositionZ(const _float _z);
-	
-	void SetScale(const vector3 _scale);
-	void SetScale(const _float _x, const _float _y, const _float _z);
-	void AddScale(const vector3 _scale);
-	void AddScale(const _float _x, const _float _y, const _float _z);
-	void SetScaleX(const _float _x);
-	void SetScaleY(const _float _y);
-	void SetScaleZ(const _float _z);
-	void AddScaleX(const _float _x);
-	void AddScaleY(const _float _y);
-	void AddScaleZ(const _float _z);
 
-	void SetEulerAngles(const vector3 _rot);
+	void SetEulerAngles(const vector3 _world_euler_deg);
 	void SetEulerAngles(const _float _x, const _float _y, const _float _z);
-	void AddEulerAngles(const vector3 _rot);
+	void AddEulerAngles(const vector3 _delta);
 	void AddEulerAngles(const _float _x, const _float _y, const _float _z);
 	void SetEulerAnglesX(const _float _x);
 	void SetEulerAnglesY(const _float _y);
@@ -77,6 +72,39 @@ public:
 	void AddEulerAnglesX(const _float _x);
 	void AddEulerAnglesY(const _float _y);
 	void AddEulerAnglesZ(const _float _z);
+
+	void SetLocalPosition(const vector3 _pos);
+	void SetLocalPosition(const _float _x, const _float _y, const _float _z);
+	void AddLocalPosition(const vector3 _pos);
+	void AddLocalPosition(const _float _x, const _float _y, const _float _z);
+	void SetLocalPositionX(const _float _x);
+	void SetLocalPositionY(const _float _y);
+	void SetLocalPositionZ(const _float _z);
+	void AddLocalPositionX(const _float _x);
+	void AddLocalPositionY(const _float _y);
+	void AddLocalPositionZ(const _float _z);
+	
+	void SetLocalScale(const vector3 _scale);
+	void SetLocalScale(const _float _x, const _float _y, const _float _z);
+	void AddLocalScale(const vector3 _scale);
+	void AddLocalScale(const _float _x, const _float _y, const _float _z);
+	void SetLocalScaleX(const _float _x);
+	void SetLocalScaleY(const _float _y);
+	void SetLocalScaleZ(const _float _z);
+	void AddLocalScaleX(const _float _x);
+	void AddLocalScaleY(const _float _y);
+	void AddLocalScaleZ(const _float _z);
+
+	void SetLocalEulerAngles(const vector3 _rot);
+	void SetLocalEulerAngles(const _float _x, const _float _y, const _float _z);
+	void AddLocalEulerAngles(const vector3 _rot);
+	void AddLocalEulerAngles(const _float _x, const _float _y, const _float _z);
+	void SetLocalEulerAnglesX(const _float _x);
+	void SetLocalEulerAnglesY(const _float _y);
+	void SetLocalEulerAnglesZ(const _float _z);
+	void AddLocalEulerAnglesX(const _float _x);
+	void AddLocalEulerAnglesY(const _float _y);
+	void AddLocalEulerAnglesZ(const _float _z);
 
 	void SetQuaternion(const quaternion _q);
 	void AddLocalXAxis(_float _angle);
@@ -87,13 +115,13 @@ public:
 	void LookAt(vector3 _target);
 	void LookAt(CTransform& _target);
 	void LookAt(vector3 _target, vector3 _front);
-	void LookAt(CTransform& _target, vector3 _front);
 	const _matrix& getWorldMatrix() const { return m_matWorld; }
 	const Directions& getDirections() const { return m_sDirections; }
 
 private:
 	CTransform* m_pParent;
 	vector3 m_v3Position, m_v3Scale, m_v3EulerAngles;
+	vector3 m_v3WorldPos, m_vWorldEulerAngle;
 	quaternion m_v4Quaternion;
 	_matrix m_matWorld;
 	Directions m_sDirections;

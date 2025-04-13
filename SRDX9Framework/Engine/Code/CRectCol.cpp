@@ -1,5 +1,6 @@
 #include "CRectCol.h"
 #include "CDebug.h"
+#include "CGameObject.h"
 
 CRectCol::CRectCol()
     : CVIBuffer()
@@ -31,14 +32,34 @@ HRESULT CRectCol::Ready_Buffer()
 
 void CRectCol::UpdateColor()
 {
-    if (m_eRenderType != Buffer_Color)
-        return;
+    switch (m_eRenderType)
+    {
+    case CVIBuffer::Buffer_Color: 
+    {
+        VTXCOL* pVertices = nullptr;
+        if (SUCCEEDED(m_pVB->Lock(0, 0, (void**)&pVertices, 0)))
+        {
+            for (int i = 0; i < 4; ++i)
+                pVertices[i].dwColor = m_sOptions.color;
+            m_pVB->Unlock();
+        }
+    }
+        break;
+    case CVIBuffer::Buffer_Texture:
+    {
+        VTXTEX* pVertices = nullptr;
+        if (SUCCEEDED(m_pVB->Lock(0, 0, (void**)&pVertices, 0)))
+        {
+            for (int i = 0; i < 4; ++i)
+                pVertices[i].color = m_sOptions.color.dColor();
 
-    VTXCOL* pVertices = nullptr;
-    m_pVB->Lock(0, 0, (void**)&pVertices, 0);
-    for (int i = 0; i < 4; ++i)
-        pVertices[i].dwColor = m_sOptions.color;
-    m_pVB->Unlock();
+            m_pVB->Unlock();
+        }
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 CComponent* CRectCol::Clone()
@@ -65,6 +86,9 @@ HRESULT CRectCol::ReadyColorRect()
         {{  0.5f, -0.5f, 0.f }, m_sOptions.color.dColor()},
         {{ -0.5f, -0.5f, 0.f }, m_sOptions.color.dColor()}
     };
+
+    if (m_pGameObject->getName() == L"Player")
+        int a = 0;
 
     if (FAILED(FillVertexBuffer(vertices, sizeof(vertices))))
         return E_FAIL;
@@ -95,10 +119,10 @@ HRESULT CRectCol::ReadyTextureRect()
 
     VTXTEX vertices[4] =
     {
-        { { -0.5f,  0.5f, 0.f }, { 0.f, 0.f } },
-        { {  0.5f,  0.5f, 0.f }, { 1.f, 0.f } },
-        { {  0.5f, -0.5f, 0.f }, { 1.f, 1.f } },
-        { { -0.5f, -0.5f, 0.f }, { 0.f, 1.f } }
+        { { -0.5f,  0.5f, 0.f }, m_sOptions.color.dColor(), {0.f, 0.f}},
+        { {  0.5f,  0.5f, 0.f }, m_sOptions.color.dColor(), { 1.f, 0.f } },
+        { {  0.5f, -0.5f, 0.f }, m_sOptions.color.dColor(), { 1.f, 1.f } },
+        { { -0.5f, -0.5f, 0.f }, m_sOptions.color.dColor(), { 0.f, 1.f } }
     };
 
     if (FAILED(FillVertexBuffer(vertices, sizeof(vertices))))

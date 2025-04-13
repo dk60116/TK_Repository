@@ -19,7 +19,7 @@ void CEnemy::Awake()
 	CComponent::Awake();
 
 	getTransform().SetPosition(2.f, 2.f, 0.f);
-	getTransform().SetScale(1.5f, 1.5f, 1.f);
+	getTransform().SetLocalScale(1.5f, 1.5f, 1.f);
 	m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
 	auto tex = CResources::GetInstance().getResource<CTexture>(L"Enemy").get();
 	if (tex)

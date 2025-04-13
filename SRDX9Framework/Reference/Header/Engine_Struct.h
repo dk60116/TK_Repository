@@ -502,6 +502,13 @@ namespace Engine
             return D3DXVec3Dot(&a, &b);
         }
 
+        static float dot(const vector3& a, const vector3& b)
+        {
+            D3DXVECTOR3 da(a.x, a.y, a.z);
+            D3DXVECTOR3 db(b.x, b.y, b.z);
+            return D3DXVec3Dot(&da, &db);
+        }
+
         vector3 cross(const vector3& other) const
         {
             D3DXVECTOR3 a(x, y, z);
@@ -592,6 +599,11 @@ namespace Engine
         {
         }
 
+        D3DXQUATERNION dQuaternion() const
+        {
+            return D3DXQUATERNION(x, y, z, w);
+        }
+
         quaternion& operator=(const quaternion& rhs)
         {
             x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
@@ -658,16 +670,35 @@ namespace Engine
             return from_euler(euler_deg.x, euler_deg.y, euler_deg.z);
         }
 
-        static quaternion from_euler(float pitch, float yaw, float roll)
+        static quaternion from_euler(float _pitch, float _yaw, float _roll)
         {
             D3DXQUATERNION q;
+
             D3DXQuaternionRotationYawPitchRoll(
                 &q,
-                D3DXToRadian(yaw),
-                D3DXToRadian(pitch),
-                D3DXToRadian(roll)
+                D3DXToRadian(_yaw),
+                D3DXToRadian(_pitch),
+                D3DXToRadian(_roll)
             );
+
             return quaternion(q);
+        }
+
+        static vector3 to_euler(const D3DXQUATERNION& _q)
+        {
+            vector3 euler;
+
+            euler.y = atan2f(2.f * (_q.w * _q.y + _q.x * _q.z), 1.f - 2.f * (_q.y * _q.y + _q.z * _q.z));
+
+            float sinp = 2.f * (_q.w * _q.x - _q.z * _q.y);
+            if (fabs(sinp) >= 1)
+                euler.x = D3DX_PI / 2 * (sinp > 0 ? 1 : -1);
+            else
+                euler.x = asinf(sinp);
+
+            euler.z = atan2f(2.f * (_q.w * _q.z + _q.x * _q.y), 1.f - 2.f * (_q.x * _q.x + _q.z * _q.z));
+
+            return vector3(D3DXToDegree(euler.x), D3DXToDegree(euler.y), D3DXToDegree(euler.z));
         }
 
         D3DXMATRIX to_matrix() const
@@ -757,11 +788,12 @@ namespace Engine
 	typedef struct tagVertexTexture
 	{
 		_vec3		vPosition;
+        D3DCOLOR color;
 		_vec2		vTexUV;
 
 	}VTXTEX;
-	const _ulong	FVF_TEX = D3DFVF_XYZ | D3DFVF_TEX1;
 
+	const _ulong	FVF_TEX = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 	typedef struct tagVertexCubeTexture
 	{

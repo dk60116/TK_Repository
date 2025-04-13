@@ -20,22 +20,26 @@ void CMainScene::Awake()
 
 	auto device = CManagement::GetInstance().getGraphicDevice();
 
-	CGameObject* cameraObj = AddObject(device, L"Main Camera", Layer::DEFAULT);
+	CGameObject* cameraObj = AddObject(L"Main Camera", Layer::DEFAULT);
 	m_vCameraList.push_back(cameraObj->AddComponent<CCamera>());
-	m_vCameraList.back()->getTransform().SetPosition(0.f, 0.f, -10.f);
+	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
 
-	 CGameObject* playerObj = AddObject(device, L"Player", Layer::DEFAULT);
+	 CGameObject* playerObj = AddObject(L"Player", Layer::DEFAULT);
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	CGameObject* playerHead = AddObject(device, L"PlayerHead", Layer::DEFAULT);
+	CGameObject* playerHead = AddObject(L"PlayerHead", Layer::DEFAULT);
 	playerHead->AddComponent<CSpriteRenderer>();
-	playerHead->getTransform().SetPosition(0.f, 0.5f, 0.f);
-	playerHead->getTransform().SetScale(0.25f, 1.f, 1.f);
+	playerHead->getTransform().SetLocalPosition(0.f, 0.5f, 0.f);
+	playerHead->getTransform().SetLocalScale(0.25f, 1.f, 1.f);
 	playerHead->getTransform().SetParent(playerObj->getTransform());
 
-	CGameObject* enemy = AddObject(device, L"Enemy", Layer::DEFAULT);
-	m_pEnemy = enemy->AddComponent<CEnemy>();
+	CGameObject* enemyObj = AddObject(L"Enemy", Layer::DEFAULT);
+	m_pEnemy = enemyObj->AddComponent<CEnemy>();
 	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
+
+	CGameObject* boxObj = AddObject(L"Box", Layer::DEFAULT);
+	boxObj->AddComponent<CSpriteRenderer>();
+	boxObj->getTransform().SetPosition(-2.f, -2.f, 0.f);
 }
 
 void CMainScene::Start()
@@ -45,6 +49,21 @@ void CMainScene::Start()
 void CMainScene::Update()
 {
 	CScene::Update();
+
+	//vector3 camDir = vector3::zero();
+
+	//if (CInput::GetInstance().GetKey(UP))
+	//	camDir.y += 1.f;
+	//if (CInput::GetInstance().GetKey(DOWN))
+	//	camDir.y += -1.f;
+	//if (CInput::GetInstance().GetKey(LEFT))
+	//	camDir.x += -1.f;
+	//if (CInput::GetInstance().GetKey(RIGHT))
+	//	camDir.x += 1.f;
+
+	m_vCameraList[0]->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::backward() * 10.f);
+
+	//m_vCameraList[0]->getTransform().AddPosition(camDir.normalized() * 1.f * DELTA_TIME);
 }
 
 void CMainScene::FixedUpdate()

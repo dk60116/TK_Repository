@@ -20,7 +20,7 @@ void CPlayer::Awake()
 	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
 	if (tex)
 		m_pRenderer->SetTexture(tex);
-	//m_pRenderer->SetTintColor(ColorValue::green());
+	m_pRenderer->SetTintColor(ColorValue::green());
 }
 
 void CPlayer::Start()
@@ -62,6 +62,9 @@ void CPlayer::OnDestroy()
 
 void CPlayer::KeyInput()
 {
+	if (CInput::GetInstance().GetKey(ONE))
+		m_pRenderer->SetTintColor(ColorValue::red());
+
 	if (CInput::GetInstance().GetKey(W))
 	{
 		getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * m_fMoveSpeed);
@@ -72,18 +75,18 @@ void CPlayer::KeyInput()
 	}
 	if (CInput::GetInstance().GetKey(A))
 	{
-		getTransform().AddEulerAngles(vector3::forward() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalEulerAngles(vector3::forward() * DELTA_TIME * m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(D))
 	{
-		getTransform().AddEulerAngles(vector3::backward() * DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddLocalEulerAngles(vector3::backward() * DELTA_TIME * m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(Q))
 	{
-		getTransform().AddLocalYAxis(DELTA_TIME * -m_fRotaionSpeed);
+		getTransform().AddEulerAnglesY(DELTA_TIME * -m_fRotaionSpeed);
 	}
 	if (CInput::GetInstance().GetKey(E))
 	{
-		getTransform().AddLocalYAxis(DELTA_TIME * m_fRotaionSpeed);
+		getTransform().AddEulerAnglesY(DELTA_TIME * m_fRotaionSpeed);
 	}
 }

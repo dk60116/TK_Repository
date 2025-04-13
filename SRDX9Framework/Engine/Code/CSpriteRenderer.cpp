@@ -8,6 +8,7 @@ CSpriteRenderer::CSpriteRenderer()
 	, m_pBuffer(nullptr)
 	, m_sColorTint(ColorValue::white())
 	, m_rcUV({})
+    , m_iSotOrdr(0)
 {
 	SetRect(&m_rcUV, 0, 0, 1, 1);
 }
@@ -42,12 +43,17 @@ void CSpriteRenderer::Render()
         return;
 
     _matrix world = getTransform().getWorldMatrix();
+
     world._31 = 0.0f;
     world._32 = 0.0f;
     world._33 = 1.0f;
-    world._34 = 0.0f;
+
+    world._43 = static_cast<_float>(-m_iSotOrdr) * 0.001f;
 
     m_pGraphicDev->SetTransform(D3DTS_WORLD, &world);
+
+    if (CManagement::GetInstance().getCrtScene()->getCamList().size() <= 0)
+        return;
 
     CCamera& cam = *CManagement::GetInstance().getCrtScene()->getCamera(0);
     m_pGraphicDev->SetTransform(D3DTS_VIEW, &cam.getViewMatrix());
@@ -85,6 +91,10 @@ void CSpriteRenderer::SetTexture(CTexture* _texture)
 void CSpriteRenderer::SetTintColor(ColorValue _color)
 {
 	m_sColorTint = _color;
-	m_pBuffer->getOptions().color = m_sColorTint;
-	m_pBuffer->UpdateColor();
+
+    if (m_pBuffer)
+    {
+        m_pBuffer->getOptions().color = m_sColorTint;
+        m_pBuffer->UpdateColor();
+    }
 }

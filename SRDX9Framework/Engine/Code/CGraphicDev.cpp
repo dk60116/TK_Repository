@@ -18,13 +18,13 @@ CGraphicDev::~CGraphicDev()
 HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 	const _uint& iSizeX, const _uint& iSizeY, Engine::CGraphicDev** ppGraphicDev)
 {
-	// 1. 장치를 조사할 객체를 생성
+	// 장치를 조사할 객체를 생성
 	m_pSDK = Direct3DCreate9(D3D_SDK_VERSION);
 	
 	if (nullptr == m_pSDK)
 		return E_FAIL;
 
-	// 2. 하드웨어 장치(비디오 카드) 성능을 조사
+	// 하드웨어 장치(비디오 카드) 성능을 조사
 
 	D3DCAPS9	DeviceCaps;
 	ZeroMemory(&DeviceCaps, sizeof(D3DCAPS9));
@@ -37,7 +37,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 		return E_FAIL;
 	}
 
-	// 3. 그리기 객체를 생성
+	// 그리기 객체를 생성
 
 	_ulong	dwFlag(0);
 
@@ -66,7 +66,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 
 	d3dpp.hDeviceWindow = hWnd;
 
-	d3dpp.Windowed = (eMode == MODE_WIN);		// 창 모드 또는 전체 화면 모드
+	d3dpp.Windowed = (eMode == MODE_WIN);
 	
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
@@ -83,7 +83,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 	return S_OK;
 }
 
-// 후면 버퍼 동작 원리
+// 후면 버퍼
 void CGraphicDev::Render_Begin(D3DXCOLOR _color)
 {
 	// 화면 Clear
@@ -102,7 +102,11 @@ void CGraphicDev::Render_Begin(D3DXCOLOR _color)
 
 	m_pGraphicDev->SetViewport(&gameViewport);
 
-	// 렌더링 시작
+	m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_pGraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_pGraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	m_pGraphicDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+
 	m_pGraphicDev->BeginScene();
 }
 

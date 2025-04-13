@@ -11,10 +11,12 @@ CCamera::CCamera()
 
 CCamera::~CCamera()
 {
+	CComponent::OnDestroy();
 }
 
 void CCamera::Awake()
 {
+	CComponent::Awake();
 }
 
 void CCamera::Start()
@@ -23,6 +25,8 @@ void CCamera::Start()
 
 void CCamera::Update()
 {
+	CComponent::Update();
+
 	UpdateViewMatrix();
 	UpdateProjectionMatrix();
 }
@@ -59,23 +63,24 @@ void CCamera::UpdateProjectionMatrix()
 		D3DXMatrixPerspectiveFovLH
 		(
 			&m_matProjMatrix,
-			m_sParameters.m_fFovY,
-			m_sParameters.m_fAspect,
-			m_sParameters.m_fNearZ,
-			m_sParameters.m_fFarZ
+			m_sParameters.size,
+			m_sParameters.ascpect,
+			m_sParameters.nearZ,
+			m_sParameters.farZ
 		);
 		break;
 	case ORTHOGRAPHIC:
 	{
-		float width = m_sParameters.m_fFovY * m_sParameters.m_fAspect;
-		float height = m_sParameters.m_fFovY;
+		float width = m_sParameters.fov * m_sParameters.ascpect;
+		float height = m_sParameters.fov;
 
-		D3DXMatrixOrthoLH(
+		D3DXMatrixOrthoLH
+		(
 			&m_matProjMatrix,
 			width,
 			height,
-			m_sParameters.m_fNearZ,
-			m_sParameters.m_fFarZ
+			m_sParameters.nearZ,
+			m_sParameters.farZ
 		);
 	}
 		break;
@@ -103,5 +108,5 @@ void CCamera::UpdateViewMatrix()
 void CCamera::ResetAspectFromResolution()
 {
 	if (CScreen::GetInstance().getResolution().y > 0)
-		m_sParameters.m_fAspect = (float)CScreen::GetInstance().getResolution().x / (float)CScreen::GetInstance().getResolution().y;
+		m_sParameters.ascpect = (float)CScreen::GetInstance().getResolution().x / (float)CScreen::GetInstance().getResolution().y;
 }

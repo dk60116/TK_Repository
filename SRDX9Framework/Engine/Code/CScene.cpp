@@ -1,4 +1,5 @@
 #include "CScene.h"
+#include "CManagement.h"
 
 CScene::CScene()
 	: m_lObjectList()
@@ -41,13 +42,47 @@ void CScene::LateUpdate()
 
 void CScene::Render()
 {
+	//for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	//{
+	//	for (TRAVERSAL_ITER(m_lObjectList[i], it))
+	//	{
+	//		if ((*it)->isActive() && (*it)->isEnable())
+	//			(*it)->Render();
+	//	}
+	//}
+
+	if (m_vCameraList.empty())
+		return;
+
+	CCamera* mainCam = m_vCameraList[0]; // 첫 번째 카메라 기준
+	vector3 cam_pos = mainCam->getTransform().getPosition();
+	vector3 cam_forward = mainCam->getTransform().getDirections().forward;
+
+	vector<CGameObject*> sortedRenderList;
+
+	// 전체 렌더 가능한 오브젝트 수집
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
+		for (auto& obj : m_lObjectList[i])
 		{
-			if ((*it)->isActive() && (*it)->isEnable())
-				(*it)->Render();
+			if (obj->isActive() && obj->isEnable())
+				sortedRenderList.push_back(obj);
 		}
+	}
+
+	// 깊이 기준 정렬 (멀리 있는 것 먼저)
+	sort(sortedRenderList.begin(), sortedRenderList.end(),
+		[&](CGameObject* a, CGameObject* b)
+		{
+			float depthA = vector3::dot((a->getTransform().getPosition() - cam_pos), cam_forward);
+			float depthB = vector3::dot((b->getTransform().getPosition() - cam_pos), cam_forward);
+			return depthA > depthB;
+		});
+
+	// 정렬된 순서대로 렌더링
+	for (auto& obj : sortedRenderList)
+	{
+		obj->Render();
 	}
 }
 
@@ -65,9 +100,9 @@ void CScene::Release()
 	}
 }
 
-CGameObject* CScene::AddObject(LPDIRECT3DDEVICE9 _device, wstring _objName, Layer _layer)
+CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 {
-	CGameObject* obj = new CGameObject(_objName, _device);
+	CGameObject* obj = new CGameObject(_objName, CManagement::GetInstance().getGraphicDevice());
 	obj->SetScene(this);
 	m_lObjectList[_layer].push_back(obj);
 	obj->Awake();
