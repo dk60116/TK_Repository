@@ -163,6 +163,9 @@
     <ClInclude Include="..\Header\CMaterial.h">
       <Filter>Component\Render\Material</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMesh.h">
+      <Filter>Component\Render\Buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -239,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMaterial.cpp">
       <Filter>Component\Render\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMesh.cpp">
+      <Filter>Component\Render\Buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

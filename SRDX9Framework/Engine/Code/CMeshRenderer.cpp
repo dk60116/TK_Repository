@@ -8,6 +8,7 @@ CMeshRenderer::CMeshRenderer()
 
 CMeshRenderer::~CMeshRenderer()
 {
+	OnDestroy();
 }
 
 void CMeshRenderer::Awake()

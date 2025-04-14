@@ -2,8 +2,8 @@
 
 #include "CComponent.h"
 
-class CMeshFilter :
-    public CComponent
+class CMeshFilter 
+    : public CComponent
 {
 };
 

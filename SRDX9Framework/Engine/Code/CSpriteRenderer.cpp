@@ -8,7 +8,7 @@ CSpriteRenderer::CSpriteRenderer()
 	, m_pBuffer(nullptr)
 	, m_sColorTint(ColorValue::white())
 	, m_rcUV({})
-    , m_iSotOrdr(0)
+    , m_iSortOrder(0)
 {
 	SetRect(&m_rcUV, 0, 0, 1, 1);
 }
@@ -42,13 +42,19 @@ void CSpriteRenderer::Render()
     if (!m_pBuffer || !m_pGraphicDev)
         return;
 
+    m_pGraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    m_pGraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_pGraphicDev->SetRenderState(D3DRS_ALPHAREF, 1);
+    m_pGraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
     _matrix world = getTransform().getWorldMatrix();
 
     world._31 = 0.0f;
     world._32 = 0.0f;
     world._33 = 1.0f;
 
-    world._43 = static_cast<_float>(-m_iSotOrdr) * 0.001f;
+    world._43 += static_cast<_float>(-m_iSortOrder) * 0.001f;
 
     m_pGraphicDev->SetTransform(D3DTS_WORLD, &world);
 

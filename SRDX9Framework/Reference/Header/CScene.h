@@ -9,6 +9,11 @@ BEGIN(Engine)
 
 class CManagement;
 
+struct SceneOptions
+{
+    _bool lighting;
+};
+
 class ENGINE_DLL CScene
 {
 public:

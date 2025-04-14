@@ -1,9 +1,27 @@
 #pragma once
 
 #include "CComponent.h"
+#include "CMesh.h"
 
-class CMeshFilter :
-    public CComponent
+class CMeshFilter 
+    : public CComponent
 {
+public:
+    CMeshFilter();
+    ~CMeshFilter();
+
+public:
+    void Awake() override;
+    void Start() override;
+    void Update() override;
+    void Render() override;
+    void OnDestroy() override;
+
+public:
+    CMesh* getMesh() const { return m_pMesh; }
+    void SetMesh(CMesh* _mesh) { m_pMesh = _mesh; }
+
+private:
+    CMesh* m_pMesh;
 };
 

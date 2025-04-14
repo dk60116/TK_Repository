@@ -15,6 +15,7 @@ CTransform::CTransform()
 
 CTransform::~CTransform()
 {
+	OnDestroy();
 }
 
 void CTransform::Awake()

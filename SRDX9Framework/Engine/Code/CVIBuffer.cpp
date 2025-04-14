@@ -10,6 +10,7 @@ CVIBuffer::CVIBuffer()
 
 CVIBuffer::~CVIBuffer()
 {
+	OnDestroy();
 }
 
 HRESULT CVIBuffer::Ready_Buffer()

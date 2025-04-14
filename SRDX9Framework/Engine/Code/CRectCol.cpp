@@ -13,6 +13,7 @@ CRectCol::CRectCol(const CRectCol& _rhs)
 
 CRectCol::~CRectCol()
 {
+    OnDestroy();
 }
 
 HRESULT CRectCol::Ready_Buffer()

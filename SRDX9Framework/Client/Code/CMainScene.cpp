@@ -28,7 +28,8 @@ void CMainScene::Awake()
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
 	CGameObject* playerHead = AddObject(L"PlayerHead", Layer::DEFAULT);
-	playerHead->AddComponent<CSpriteRenderer>();
+	CSpriteRenderer* phRender = playerHead->AddComponent<CSpriteRenderer>();
+	phRender->SetSortOrder(1);
 	playerHead->getTransform().SetLocalPosition(0.f, 0.5f, 0.f);
 	playerHead->getTransform().SetLocalScale(0.25f, 1.f, 1.f);
 	playerHead->getTransform().SetParent(playerObj->getTransform());
@@ -38,8 +39,11 @@ void CMainScene::Awake()
 	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
 
 	CGameObject* boxObj = AddObject(L"Box", Layer::DEFAULT);
-	boxObj->AddComponent<CSpriteRenderer>();
-	boxObj->getTransform().SetPosition(-2.f, -2.f, 0.f);
+	CSpriteRenderer* boxRender = boxObj->AddComponent<CSpriteRenderer>();
+	boxObj->getTransform().SetPosition(-2.f, -2.f, -1.f);
+	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
+	if (tex)
+		boxRender->SetTexture(tex);
 }
 
 void CMainScene::Start()

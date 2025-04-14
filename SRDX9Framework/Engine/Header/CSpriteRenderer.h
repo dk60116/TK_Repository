@@ -23,14 +23,15 @@ public:
 public:
     void SetTexture(CTexture* _texture);
     void SetTintColor(ColorValue _color);
-    void SetSortOrder(const _int _value) { m_iSotOrdr = _value; }
+    const _int& getSortOrder() { return m_iSortOrder; }
+    void SetSortOrder(const _int _value) { m_iSortOrder = _value; }
 
 private:
     CTexture* m_pTexture;
     CVIBuffer* m_pBuffer;
     RECT m_rcUV;
     ColorValue m_sColorTint;
-    _int m_iSotOrdr;
+    _int m_iSortOrder;
 };
 
 END
