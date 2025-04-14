@@ -54,20 +54,20 @@ void CMainScene::Update()
 {
 	CScene::Update();
 
-	//vector3 camDir = vector3::zero();
+	vector3 camDir = vector3::zero();
 
-	//if (CInput::GetInstance().GetKey(UP))
-	//	camDir.y += 1.f;
-	//if (CInput::GetInstance().GetKey(DOWN))
-	//	camDir.y += -1.f;
-	//if (CInput::GetInstance().GetKey(LEFT))
-	//	camDir.x += -1.f;
-	//if (CInput::GetInstance().GetKey(RIGHT))
-	//	camDir.x += 1.f;
+	if (CInput::GetInstance().GetKey(UP))
+		camDir.y += 1.f;
+	if (CInput::GetInstance().GetKey(DOWN))
+		camDir.y += -1.f;
+	if (CInput::GetInstance().GetKey(LEFT))
+		camDir.x += -1.f;
+	if (CInput::GetInstance().GetKey(RIGHT))
+		camDir.x += 1.f;
 
-	m_vCameraList[0]->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::backward() * 10.f);
+	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::backward() * 10.f);
 
-	//m_vCameraList[0]->getTransform().AddPosition(camDir.normalized() * 1.f * DELTA_TIME);
+	//m_vCameraList.back()->getTransform().AddPosition(camDir.normalized() * 1.f * DELTA_TIME);
 }
 
 void CMainScene::FixedUpdate()

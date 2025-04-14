@@ -63,7 +63,7 @@ void CCamera::UpdateProjectionMatrix()
 		D3DXMatrixPerspectiveFovLH
 		(
 			&m_matProjMatrix,
-			m_sParameters.size,
+			m_sParameters.fov,
 			m_sParameters.ascpect,
 			m_sParameters.nearZ,
 			m_sParameters.farZ

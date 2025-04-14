@@ -21,6 +21,10 @@ public:
     void Render() override;
     void OnDestroy() override;
 
+public:
+    CMeshFilter* getMeshFilter() const { return m_pMeshFilter; }
+    void SetMeshFilter(CMeshFilter* _mf) { m_pMeshFilter = _mf; }
+
 private:
     CMeshFilter* m_pMeshFilter;
     CMaterial* m_pMaterial;

@@ -3,7 +3,9 @@
 #include "CComponent.h"
 #include "CMesh.h"
 
-class CMeshFilter 
+BEGIN(Engine)
+
+class ENGINE_DLL CMeshFilter 
     : public CComponent
 {
 public:
@@ -19,9 +21,10 @@ public:
 
 public:
     CMesh* getMesh() const { return m_pMesh; }
-    void SetMesh(CMesh* _mesh) { m_pMesh = _mesh; }
+    void SetMesh(CMesh::MeshType _type);
 
 private:
     CMesh* m_pMesh;
 };
 
+END

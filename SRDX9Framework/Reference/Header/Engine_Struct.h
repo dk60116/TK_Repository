@@ -764,14 +764,14 @@ namespace Engine
             return D3DCOLOR_ARGB(a, r, g, b);
         }
 
-        static ColorValue red() { return ColorValue(255, 0, 0); }
-        static ColorValue green() { return ColorValue(0, 255, 0); }
-        static ColorValue blue() { return ColorValue(0, 0, 255); }
-        static ColorValue white() { return ColorValue(255, 255, 255); }
-        static ColorValue black() { return ColorValue(0, 0, 0); }
-        static ColorValue yellow() { return ColorValue(255, 255, 0); }
-        static ColorValue cyan() { return ColorValue(0, 255, 255); }
-        static ColorValue magenta() { return ColorValue(255, 0, 255); }
+        static ColorValue red() { return ColorValue(255, 0, 0, 255); }
+        static ColorValue green() { return ColorValue(0, 255, 0, 255); }
+        static ColorValue blue() { return ColorValue(0, 0, 255, 255); }
+        static ColorValue white() { return ColorValue(255, 255, 255, 255); }
+        static ColorValue black() { return ColorValue(0, 0, 0, 255); }
+        static ColorValue yellow() { return ColorValue(255, 255, 0, 255); }
+        static ColorValue cyan() { return ColorValue(0, 255, 255, 255); }
+        static ColorValue magenta() { return ColorValue(255, 0, 255, 255); }
         static ColorValue transparent() { return ColorValue(0, 0, 0, 0); }
     };
 #pragma endregion

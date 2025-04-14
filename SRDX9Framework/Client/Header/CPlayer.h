@@ -2,6 +2,7 @@
 
 #include "CComponent.h"
 #include "CSpriteRenderer.h"
+#include "CMeshRenderer.h"
 
 class CPlayer :
     public CComponent
@@ -26,6 +27,7 @@ private:
 
 public:
     CSpriteRenderer* m_pRenderer;
+	CMeshRenderer* m_pMeshRenderer;
 	float m_fMoveSpeed, m_fRotaionSpeed;
 
 	int updateCnt = 0;

@@ -43,6 +43,7 @@ void CSpriteRenderer::Render()
         return;
 
     m_pGraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    m_pGraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 
     m_pGraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHAREF, 1);
@@ -61,7 +62,7 @@ void CSpriteRenderer::Render()
     if (CManagement::GetInstance().getCrtScene()->getCamList().size() <= 0)
         return;
 
-    CCamera& cam = *CManagement::GetInstance().getCrtScene()->getCamera(0);
+    CCamera& cam = *CManagement::GetInstance().getCrtScene()->getCamera();
     m_pGraphicDev->SetTransform(D3DTS_VIEW, &cam.getViewMatrix());
     m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &cam.getProjMatrix());
 
@@ -73,6 +74,12 @@ void CSpriteRenderer::Render()
         m_pGraphicDev->SetTexture(0, nullptr);
 
     m_pBuffer->Render_Buffer();
+
+    m_pGraphicDev->SetTexture(0, nullptr);
+
+    m_pGraphicDev->SetTexture(0, nullptr);
+    m_pGraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 void CSpriteRenderer::OnDestroy()

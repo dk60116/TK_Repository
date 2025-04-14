@@ -3,6 +3,7 @@
 
 CPlayer::CPlayer()
 	: m_pRenderer(nullptr)
+	, m_pMeshRenderer(nullptr)
 	, m_fMoveSpeed(1.f)
 	, m_fRotaionSpeed(90.f)
 {
@@ -16,11 +17,16 @@ void CPlayer::Awake()
 {
 	CComponent::Awake();
 
-	m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
-	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
-	if (tex)
-		m_pRenderer->SetTexture(tex);
-	m_pRenderer->SetTintColor(ColorValue::green());
+	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
+	CMeshFilter* mf = m_pGameObject->AddComponent<CMeshFilter>();
+	m_pMeshRenderer->SetMeshFilter(mf);
+	mf->SetMesh(CMesh::CUBE);
+
+	//m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
+	//auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
+	//if (tex)
+		//m_pRenderer->SetTexture(tex);
+	//m_pRenderer->SetTintColor(ColorValue::green());
 }
 
 void CPlayer::Start()
@@ -31,8 +37,6 @@ void CPlayer::Update()
 {
 	CComponent::Update();
 
-	//if (CInput::GetInstance().GetKeyDown(W))
-	//getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * 0.00001f);
 	KeyInput();
 }
 

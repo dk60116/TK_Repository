@@ -36,7 +36,8 @@ public:
     CGameObject* AddObject(wstring _objName, Layer _layer);
 
     vector<CCamera*>& getCamList() { return m_vCameraList; }
-    CCamera* getCamera(const int _index) { return m_vCameraList[_index]; }
+    CCamera* getCamera(const int _index) const { return m_vCameraList[_index]; }
+    CCamera* getCamera() const { return m_vCameraList.back(); }
     void UpdateAllCameraResolution();
 
 protected:
