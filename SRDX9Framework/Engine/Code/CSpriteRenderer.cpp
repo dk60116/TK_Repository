@@ -59,7 +59,7 @@ void CSpriteRenderer::Render()
 
     m_pGraphicDev->SetTransform(D3DTS_WORLD, &world);
 
-    if (CManagement::GetInstance().getCrtScene()->getCamList().size() <= 0)
+    if (CManagement::GetInstance().getCrtScene()->getCamList().empty())
         return;
 
     CCamera& cam = *CManagement::GetInstance().getCrtScene()->getCamera();

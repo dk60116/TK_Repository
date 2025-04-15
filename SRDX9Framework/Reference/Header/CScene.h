@@ -11,7 +11,7 @@ class CManagement;
 
 struct SceneOptions
 {
-    _bool lighting;
+    _bool lighting = true;
 };
 
 class ENGINE_DLL CScene
@@ -39,13 +39,15 @@ public:
     CCamera* getCamera(const int _index) const { return m_vCameraList[_index]; }
     CCamera* getCamera() const { return m_vCameraList.back(); }
     void UpdateAllCameraResolution();
+    SceneOptions& getOptions() { return m_sOptions; }
 
 protected:
     wstring m_strSceneName;
 
     list<CGameObject*> m_lObjectList[Layer::LAYER_END];
-
     vector<CCamera*> m_vCameraList;
+
+    SceneOptions m_sOptions;
 };
 
 END

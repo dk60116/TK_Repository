@@ -18,7 +18,7 @@ void CMainScene::Awake()
 {
 	CScene::Awake();
 
-	auto device = CManagement::GetInstance().getGraphicDevice();
+	m_sOptions.lighting = false;
 
 	CGameObject* cameraObj = AddObject(L"Main Camera", Layer::DEFAULT);
 	m_vCameraList.push_back(cameraObj->AddComponent<CCamera>());
