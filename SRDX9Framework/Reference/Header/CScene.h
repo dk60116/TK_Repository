@@ -11,7 +11,7 @@ class CManagement;
 
 struct SceneOptions
 {
-    _bool lighting = true;
+    _bool lighting;
 };
 
 class ENGINE_DLL CScene

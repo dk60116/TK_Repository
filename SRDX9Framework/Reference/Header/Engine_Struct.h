@@ -793,7 +793,16 @@ namespace Engine
 
 	}VTXTEX;
 
-	const _ulong	FVF_TEX = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    typedef struct tagVertexLightTexture
+    {
+        _vec3 vPosition;
+        _vec3 vNormalVector;
+        _vec3 vTexUV;
+
+    }VTLTEX;
+
+	const _ulong FVF_TEX = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    const _ulong FVF_LTEX = (D3DFVF_XYZ | D3DFVF_NORMAL);
 
 	typedef struct tagVertexCubeTexture
 	{

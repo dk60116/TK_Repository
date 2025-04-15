@@ -67,7 +67,8 @@ void CMainScene::Update()
 
 	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::backward() * 10.f);
 
-	//m_vCameraList.back()->getTransform().AddPosition(camDir.normalized() * 1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKeyDown(TWO))
+		m_sOptions.lighting = !m_sOptions.lighting;
 }
 
 void CMainScene::FixedUpdate()
