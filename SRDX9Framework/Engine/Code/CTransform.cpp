@@ -129,7 +129,7 @@ void CTransform::SetPosition(const vector3 _world_pos)
 		_matrix invParent;
 		D3DXMatrixInverse(&invParent, nullptr, &m_pParent->getWorldMatrix());
 
-		_vec3 world = _world_pos.vector();
+		_vec3 world = _world_pos.dVector();
 		_vec3 local;
 		D3DXVec3TransformCoord(&local, &world, &invParent);
 
@@ -153,7 +153,7 @@ void CTransform::AddPosition(const vector3 _world_delta)
 		_matrix invParent;
 		D3DXMatrixInverse(&invParent, nullptr, &m_pParent->getWorldMatrix());
 
-		D3DXVECTOR3 deltaWorld = _world_delta.vector();
+		D3DXVECTOR3 deltaWorld = _world_delta.dVector();
 		D3DXVECTOR3 deltaLocal;
 		D3DXVec3TransformNormal(&deltaLocal, &deltaWorld, &invParent);
 
@@ -446,7 +446,7 @@ void CTransform::AddLocalXAxis(_float _angle)
 	_float angle_rad = D3DXToRadian(_angle);
 
 	D3DXQUATERNION xRot;
-	D3DXVECTOR3 euler = vector3::right().vector();
+	D3DXVECTOR3 euler = vector3::right().dVector();
 	D3DXQuaternionRotationAxis(&xRot, &euler, angle_rad);
 
 	m_v4Quaternion = quaternion(xRot) * m_v4Quaternion;
@@ -457,7 +457,7 @@ void CTransform::AddLocalYAxis(_float _angle)
 	_float angle_rad = D3DXToRadian(_angle);
 
 	D3DXQUATERNION yRot;
-	D3DXVECTOR3 euler = vector3::up().vector();
+	D3DXVECTOR3 euler = vector3::up().dVector();
 	D3DXQuaternionRotationAxis(&yRot, &euler, angle_rad);
 
 	m_v4Quaternion = quaternion(yRot) * m_v4Quaternion;
@@ -468,7 +468,7 @@ void CTransform::AddLocalZAxis(_float _angle)
 	_float angle_rad = D3DXToRadian(_angle);
 
 	D3DXQUATERNION zRot;
-	D3DXVECTOR3 euler = vector3::forward().vector();
+	D3DXVECTOR3 euler = vector3::forward().dVector();
 	D3DXQuaternionRotationAxis(&zRot, &euler, angle_rad);
 
 	m_v4Quaternion = quaternion(zRot) * m_v4Quaternion;
@@ -530,8 +530,8 @@ void CTransform::LookAt(vector3 _target, vector3 _front)
 	vector3 world_target_dir = (_target - m_v3WorldPos).normalized();
 
 	_matrix rotMatrix;
-	D3DXVECTOR3 vFrom = _front.vector();
-	D3DXVECTOR3 vTo = world_target_dir.vector();
+	D3DXVECTOR3 vFrom = _front.dVector();
+	D3DXVECTOR3 vTo = world_target_dir.dVector();
 
 	D3DXQUATERNION qRot;
 	D3DXVECTOR3 upVector = vector3::up();

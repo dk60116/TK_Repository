@@ -15,6 +15,7 @@ CManagement::~CManagement()
 void CManagement::CreateScene(CScene* _newScene, wstring _name)
 {
 	_newScene->SetName(_name);
+	_newScene->SetGraphicDev(m_pGraphicDev);
 
 	m_mSceneList.insert({ _name, _newScene });
 }

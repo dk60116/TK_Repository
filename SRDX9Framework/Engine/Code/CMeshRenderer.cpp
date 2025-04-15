@@ -14,6 +14,9 @@ CMeshRenderer::~CMeshRenderer()
 
 void CMeshRenderer::Awake()
 {
+    CComponent::Awake();
+
+    m_pMaterial = new CMaterial();
 }
 
 void CMeshRenderer::Start()
@@ -45,14 +48,18 @@ void CMeshRenderer::Render()
     m_pGraphicDev->SetTransform(D3DTS_VIEW, &pCamera->getViewMatrix());
     m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &pCamera->getProjMatrix());
 
-    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-    // 텍스처나 머티리얼이 있다면 여기서 바인딩
-    // ex) m_pMaterial->Bind();
+    m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+    m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, true);
+
+    if (m_pMaterial)
+        m_pMaterial->Apply(m_pGraphicDev);
 
     pMesh->Render_Buffer();
 }
 
 void CMeshRenderer::OnDestroy()
 {
+    Safe_Delete(m_pMaterial);
 }

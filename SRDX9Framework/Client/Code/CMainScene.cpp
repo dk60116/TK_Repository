@@ -18,11 +18,15 @@ void CMainScene::Awake()
 {
 	CScene::Awake();
 
-	m_sOptions.lighting = false;
+	m_sOptions.lighting = true;
 
 	CGameObject* cameraObj = AddObject(L"Main Camera", Layer::DEFAULT);
 	m_vCameraList.push_back(cameraObj->AddComponent<CCamera>());
-	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
+	cameraObj->getTransform().SetPosition(0.f, 0.f, -5.f);
+
+	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
+	m_pLight = lightObj->AddComponent<CLight>();
+	m_pLight->Init();
 
 	 CGameObject* playerObj = AddObject(L"Player", Layer::DEFAULT);
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
@@ -54,6 +58,8 @@ void CMainScene::Update()
 {
 	CScene::Update();
 
+	m_pLight->Apply(m_pGraphicDev, 0);
+
 	vector3 camDir = vector3::zero();
 
 	if (CInput::GetInstance().GetKey(UP))
@@ -65,7 +71,7 @@ void CMainScene::Update()
 	if (CInput::GetInstance().GetKey(RIGHT))
 		camDir.x += 1.f;
 
-	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::backward() * 10.f);
+	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 5.f);
 
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;

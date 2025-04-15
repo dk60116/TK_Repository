@@ -98,9 +98,9 @@ void CCamera::UpdateViewMatrix()
 	vector3 at = eye + fwd;
 	vector3 up = tf.getDirections().up;
 
-	D3DXVECTOR3 eyePos = eye.vector();
-	D3DXVECTOR3 atPos = at.vector();
-	D3DXVECTOR3 upVec = up.vector();
+	D3DXVECTOR3 eyePos = eye.dVector();
+	D3DXVECTOR3 atPos = at.dVector();
+	D3DXVECTOR3 upVec = up.dVector();
 
 	D3DXMatrixLookAtLH(&m_matViewMatrix, &eyePos, &atPos, &upVec);
 }

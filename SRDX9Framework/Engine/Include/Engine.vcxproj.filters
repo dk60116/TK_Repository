@@ -67,6 +67,9 @@
     <Filter Include="Component\Render\Material">
       <UniqueIdentifier>{a37fdac9-0238-496b-a79b-e90911025b7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Component\Light">
+      <UniqueIdentifier>{ea7cb677-e686-4812-9418-e31568312679}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CGraphicDev.h">
@@ -166,6 +169,9 @@
     <ClInclude Include="..\Header\CMesh.h">
       <Filter>Component\Render\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CLight.h">
+      <Filter>Component\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -245,6 +251,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMesh.cpp">
       <Filter>Component\Render\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CLight.cpp">
+      <Filter>Component\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

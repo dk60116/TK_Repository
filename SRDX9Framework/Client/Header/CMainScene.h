@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CScene.h"
+#include "CLight.h"
 #include "CPlayer.h"
 #include "CEnemy.h"
 
@@ -21,6 +22,7 @@ public:
     void Release() override;
 
 private:
+    CLight* m_pLight;
     CPlayer* m_pPlayer;
     CEnemy* m_pEnemy;
 };

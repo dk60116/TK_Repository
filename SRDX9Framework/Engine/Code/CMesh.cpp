@@ -61,43 +61,43 @@ HRESULT CMesh::Create_Cube()
 
     D3DCOLOR color = ColorValue::white().dColor();
 
-    static const VTXTEX vertices[] =
+    static const VTLTEX vertices[] =
     {
         // Front
-        { {-s, s, s}, ColorValue::blue().dColor(), {0.f, 0.f}},
-        { {s, s, s}, ColorValue::blue().dColor(), {1.f, 0.f} },
-        { {s, -s, s}, ColorValue::blue().dColor(), {1.f, 1.f} },
-        { {-s, -s, s}, ColorValue::blue().dColor(), {0.f, 1.f} },
+        { {-s, s, s}, vector3::forward().dVector(), {0.f, 0.f}},
+        { {s, s, s}, vector3::forward().dVector(), {1.f, 0.f} },
+        { {s, -s, s}, vector3::forward().dVector(), {1.f, 1.f} },
+        { {-s, -s, s}, vector3::forward().dVector(), {0.f, 1.f} },
 
         // Back
-        { {s, s, -s},  ColorValue::red().dColor(), {0.f, 0.f} },
-        { {-s, s, -s}, ColorValue::red().dColor(), {1.f, 0.f} },
-        { {-s, -s, -s},ColorValue::red().dColor(), {1.f, 1.f} },
-        { {s, -s, -s}, ColorValue::red().dColor(), {0.f, 1.f} },
+        { {s, s, -s},  vector3::back().dVector(), {0.f, 0.f} },
+        { {-s, s, -s}, vector3::back().dVector(), {1.f, 0.f} },
+        { {-s, -s, -s},vector3::back().dVector(), {1.f, 1.f} },
+        { {s, -s, -s}, vector3::back().dVector(), {0.f, 1.f} },
 
         // Top
-        { {-s, s, -s}, ColorValue::yellow().dColor(), {0.f, 0.f} },
-        { {s, s, -s},  ColorValue::yellow().dColor(), {1.f, 0.f} },
-        { {s, s, s},   ColorValue::yellow().dColor(), {1.f, 1.f} },
-        { {-s, s, s},  ColorValue::yellow().dColor(), {0.f, 1.f} },
+        { {-s, s, -s}, vector3::up().dVector(), {0.f, 0.f} },
+        { {s, s, -s},  vector3::up().dVector(), {1.f, 0.f} },
+        { {s, s, s},   vector3::up().dVector(), {1.f, 1.f} },
+        { {-s, s, s},  vector3::up().dVector(), {0.f, 1.f} },
 
         // Bottom
-        { {-s, -s, s}, ColorValue::green().dColor(), {0.f, 0.f} },
-        { {s, -s, s},  ColorValue::green().dColor(), {1.f, 0.f} },
-        { {s, -s, -s}, ColorValue::green().dColor(), {1.f, 1.f} },
-        { {-s, -s, -s},ColorValue::green().dColor(), {0.f, 1.f} },
+        { {-s, -s, s}, vector3::down().dVector(), {0.f, 0.f} },
+        { {s, -s, s}, vector3::down().dVector(), {1.f, 0.f} },
+        { {s, -s, -s}, vector3::down().dVector(), {1.f, 1.f} },
+        { {-s, -s, -s}, vector3::down().dVector(), {0.f, 1.f} },
 
         // Left
-        { {-s, s, -s},  ColorValue::black().dColor(), {0.f, 0.f} },
-        { {-s, s, s},  ColorValue::black().dColor(), {1.f, 0.f} },
-        { {-s, -s, s}, ColorValue::black().dColor(), {1.f, 1.f} },
-        { {-s, -s, -s},ColorValue::black().dColor(), {0.f, 1.f} },
+        { {-s, s, -s},  vector3::left().dVector(), {0.f, 0.f} },
+        { {-s, s, s},  vector3::left().dVector(), {1.f, 0.f} },
+        { {-s, -s, s}, vector3::left().dVector(), {1.f, 1.f} },
+        { {-s, -s, -s}, vector3::left().dVector(), {0.f, 1.f} },
 
         // Right
-        { {s, s, s},   color, {0.f, 0.f} },
-        { {s, s, -s},  color, {1.f, 0.f} },
-        { {s, -s, -s}, color, {1.f, 1.f} },
-        { {s, -s, s},  color, {0.f, 1.f} },
+        { {s, s, s},   vector3::right().dVector(), {0.f, 0.f} },
+        { {s, s, -s},  vector3::right().dVector(), {1.f, 0.f} },
+        { {s, -s, -s}, vector3::right().dVector(), {1.f, 1.f} },
+        { {s, -s, s},  vector3::right().dVector(), {0.f, 1.f} },
     };
 
     static const INDEX16 indices[] =
@@ -111,8 +111,8 @@ HRESULT CMesh::Create_Cube()
     };
 
     m_sOptions.vtxCnt = 24;
-    m_sOptions.vtxSize = sizeof(VTXTEX);
-    m_sOptions.fvf = FVF_TEX;
+    m_sOptions.vtxSize = sizeof(VTLTEX);
+    m_sOptions.fvf = FVF_LTEX;
     m_sOptions.triCnt = 12;
     m_sOptions.idxFmt = D3DFMT_INDEX16;
     m_sOptions.idxSize = sizeof(INDEX16);

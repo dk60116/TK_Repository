@@ -470,7 +470,7 @@ namespace Engine
             return vector3(0.f, 0.f, 1.f);
         }
 
-        static vector3 backward()
+        static vector3 back()
         {
             return vector3(0.f, 0.f, -1.f);
         }
@@ -532,7 +532,7 @@ namespace Engine
             return D3DXVECTOR3(x, y, z);
         }
 
-        D3DXVECTOR3 vector() const
+        D3DXVECTOR3 dVector() const
         {
             return D3DXVECTOR3(x, y, z);
         }
@@ -736,6 +736,16 @@ namespace Engine
         }
 
         D3DCOLOR dColor() const { return D3DCOLOR_ARGB(a, r, g, b); }
+        
+        D3DCOLORVALUE dvColor() const
+        {
+            D3DCOLORVALUE color;
+            color.r = float(r / 255.f);
+            color.g = float(g / 255.f);
+            color.b = float(b / 255.f);
+            color.a = float(a / 255.f);
+            return color;
+        }
 
         ColorValue(D3DCOLOR d3dColor)
         {
@@ -771,6 +781,12 @@ namespace Engine
         static ColorValue black() { return ColorValue(0, 0, 0, 255); }
         static ColorValue yellow() { return ColorValue(255, 255, 0, 255); }
         static ColorValue cyan() { return ColorValue(0, 255, 255, 255); }
+        static ColorValue gray() { return ColorValue(128, 128, 128, 255); }
+        static ColorValue gray(float _value)
+        {
+            BYTE v = BYTE(255 * _value);
+            return ColorValue(v, v, v, 255); 
+        }
         static ColorValue magenta() { return ColorValue(255, 0, 255, 255); }
         static ColorValue transparent() { return ColorValue(0, 0, 0, 0); }
     };
@@ -796,13 +812,13 @@ namespace Engine
     typedef struct tagVertexLightTexture
     {
         _vec3 vPosition;
-        _vec3 vNormalVector;
-        _vec3 vTexUV;
+        _vec3 vNormal;
+        _vec2 vTexUV;
 
     }VTLTEX;
 
 	const _ulong FVF_TEX = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-    const _ulong FVF_LTEX = (D3DFVF_XYZ | D3DFVF_NORMAL);
+    const _ulong FVF_LTEX = (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1);
 
 	typedef struct tagVertexCubeTexture
 	{

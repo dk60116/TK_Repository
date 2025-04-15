@@ -41,6 +41,8 @@ public:
     void UpdateAllCameraResolution();
     SceneOptions& getOptions() { return m_sOptions; }
 
+    void SetGraphicDev(LPDIRECT3DDEVICE9 _device) { m_pGraphicDev = _device; }
+
 protected:
     wstring m_strSceneName;
 
@@ -48,6 +50,8 @@ protected:
     vector<CCamera*> m_vCameraList;
 
     SceneOptions m_sOptions;
+
+    LPDIRECT3DDEVICE9 m_pGraphicDev;
 };
 
 END
