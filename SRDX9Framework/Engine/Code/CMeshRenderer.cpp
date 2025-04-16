@@ -51,11 +51,16 @@ void CMeshRenderer::Render()
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-    m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, true);
-    m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, true);
+    m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+    m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
 
     if (m_pMaterial)
         m_pMaterial->Apply(m_pGraphicDev);
+
+    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+    m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
+    m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
 
     pMesh->Render_Buffer();
 }

@@ -1,8 +1,7 @@
 #include "CVIBuffer.h"
 
 CVIBuffer::CVIBuffer()
-	: m_eRenderType(Buffer_Color)
-	, m_pIB(nullptr)
+	: m_pIB(nullptr)
 	, m_pVB(nullptr)
 	, m_sOptions({})
 {

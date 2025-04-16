@@ -9,7 +9,7 @@ struct MaterialOptions
 	ColorValue diffuseColor = ColorValue::white();
 	ColorValue ambientColor = ColorValue::gray(0.3f);
 	ColorValue specularColor = ColorValue::white();
-	_float power = 10.f;
+	_float power = 5.f;
 };
 
 class ENGINE_DLL CMaterial

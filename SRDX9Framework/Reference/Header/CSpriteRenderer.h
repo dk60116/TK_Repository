@@ -2,6 +2,7 @@
 
 #include "CComponent.h"
 #include "CRectCol.h"
+#include "CMaterial.h"
 #include "CTexture.h"
 
 BEGIN(Engine)
@@ -32,6 +33,7 @@ private:
     RECT m_rcUV;
     ColorValue m_sColorTint;
     _int m_iSortOrder;
+    CMaterial* m_pMaterial;
 };
 
 END

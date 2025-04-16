@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-struct ENGINE_DLL VIBufferOptions
+struct VIBufferOptions
 {
 	_ulong vtxSize;
 	_ulong vtxCnt;
@@ -20,9 +20,6 @@ struct ENGINE_DLL VIBufferOptions
 class ENGINE_DLL CVIBuffer :
     public CComponent
 {
-public:
-	enum BufferType { Buffer_Color, Buffer_Texture };
-
 public:
 	explicit CVIBuffer();
 	virtual ~CVIBuffer();
@@ -41,8 +38,6 @@ public:
 	void OnDestroy() override;
 
 public:
-	BufferType& getRenderType() { return m_eRenderType; }
-	void SetRenderType(const BufferType _type) { m_eRenderType = _type; }
 	HRESULT FillVertexBuffer(const void* pVertices, UINT size);
 	HRESULT FillIndexBuffer(const void* pIndices, UINT size);
 	virtual void UpdateColor() PURE;
@@ -50,8 +45,6 @@ public:
 	VIBufferOptions& getOptions() { return m_sOptions; }
 
 protected:
-	BufferType m_eRenderType;
-
 	LPDIRECT3DVERTEXBUFFER9 m_pVB;
 	LPDIRECT3DINDEXBUFFER9 m_pIB;
 

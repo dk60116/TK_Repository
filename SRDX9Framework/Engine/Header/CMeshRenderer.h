@@ -24,6 +24,7 @@ public:
 public:
     CMeshFilter* getMeshFilter() const { return m_pMeshFilter; }
     void SetMeshFilter(CMeshFilter* _mf) { m_pMeshFilter = _mf; }
+    void SetMaterial(CMaterial* _mat) { m_pMaterial = _mat; }
 
 private:
     CMeshFilter* m_pMeshFilter;

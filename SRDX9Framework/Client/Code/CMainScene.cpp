@@ -22,7 +22,7 @@ void CMainScene::Awake()
 
 	CGameObject* cameraObj = AddObject(L"Main Camera", Layer::DEFAULT);
 	cameraObj->AddComponent<CCamera>();
-	cameraObj->getTransform().SetPosition(0.f, 0.f, -5.f);
+	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
 
 	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
 	lightObj->AddComponent<CLight>();
@@ -71,7 +71,7 @@ void CMainScene::Update()
 	if (m_vCameraList.empty())
 		return;
 
-	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 5.f);
+	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
