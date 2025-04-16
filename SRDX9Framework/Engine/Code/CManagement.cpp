@@ -12,14 +12,6 @@ CManagement::~CManagement()
 	Release();
 }
 
-void CManagement::CreateScene(CScene* _newScene, wstring _name)
-{
-	_newScene->SetName(_name);
-	_newScene->SetGraphicDev(m_pGraphicDev);
-
-	m_mSceneList.insert({ _name, _newScene });
-}
-
 HRESULT CManagement::ChangeScene(wstring _scene)
 {
 	auto iter = m_mSceneList.find(_scene);

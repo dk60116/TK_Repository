@@ -10,7 +10,8 @@ class ENGINE_DLL CManagement
 	SINGLETONCLASS(CManagement);
 
 public:
-	void CreateScene(CScene* _newScene, wstring _name);
+	template<typename T>
+	void CreateScene(wstring _name);
 	CScene* getCrtScene() { return m_pCrtScene; }
 	HRESULT ChangeScene(wstring _scene);
 
@@ -27,3 +28,19 @@ private:
 };
 
 END
+
+template<typename T>
+inline void CManagement::CreateScene(wstring _name)
+{
+	T* newScene = new T;
+
+	CScene* scene = dynamic_cast<CScene*>(newScene);
+
+	if (scene)
+	{
+		scene->SetName(_name);
+		scene->SetGraphicDev(m_pGraphicDev);
+
+		m_mSceneList.insert({ _name, scene });
+	}
+}
