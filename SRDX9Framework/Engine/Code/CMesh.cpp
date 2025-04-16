@@ -131,7 +131,65 @@ HRESULT CMesh::Create_Cube()
 
 HRESULT CMesh::Create_Sphere()
 {
-	return E_NOTIMPL;
+    const int stacks = 18;
+    const int slices = 36;
+    const float radius = 0.5f;
+
+    std::vector<VTLTEX> vertices;
+    std::vector<INDEX16> indices;
+
+    for (int stack = 0; stack <= stacks; ++stack)
+    {
+        float phi = D3DX_PI * stack / stacks;
+        float y = cosf(phi);
+        float r = sinf(phi);
+
+        for (int slice = 0; slice <= slices; ++slice)
+        {
+            float theta = D3DX_PI * 2 * slice / slices;
+            float x = r * cosf(theta);
+            float z = r * sinf(theta);
+
+            vector3 pos = vector3(x, y, z) * radius;
+            vector3 normal = vector3(x, y, z).normalized();
+
+            float u = static_cast<float>(slice) / slices;
+            float v = static_cast<float>(stack) / stacks;
+
+            vertices.push_back({ pos.dVector(), normal.dVector(), {u, v} });
+        }
+    }
+
+    for (int stack = 0; stack < stacks; ++stack)
+    {
+        for (int slice = 0; slice < slices; ++slice)
+        {
+            int first = (stack * (slices + 1)) + slice;
+            int second = first + slices + 1;
+
+            indices.push_back({ static_cast<WORD>(first), static_cast<WORD>(second), static_cast<WORD>(first + 1) });
+            indices.push_back({ static_cast<WORD>(second), static_cast<WORD>(second + 1), static_cast<WORD>(first + 1) });
+        }
+    }
+
+    m_sOptions.vtxCnt = static_cast<_uint>(vertices.size());
+    m_sOptions.vtxSize = sizeof(VTLTEX);
+    m_sOptions.fvf = FVF_LTEX;
+
+    m_sOptions.triCnt = static_cast<_uint>(indices.size());
+    m_sOptions.idxSize = sizeof(INDEX16);
+    m_sOptions.idxFmt = D3DFMT_INDEX16;
+
+    if (FAILED(Ready_Buffer()))
+        return E_FAIL;
+
+    if (FAILED(FillVertexBuffer(vertices.data(), static_cast<UINT>(vertices.size() * sizeof(VTLTEX)))))
+        return E_FAIL;
+
+    if (FAILED(FillIndexBuffer(indices.data(), static_cast<UINT>(indices.size() * sizeof(INDEX16)))))
+        return E_FAIL;
+
+    return S_OK;
 }
 
 HRESULT CMesh::Create_Capsule()

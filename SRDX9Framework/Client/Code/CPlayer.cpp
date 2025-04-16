@@ -17,10 +17,12 @@ void CPlayer::Awake()
 {
 	CComponent::Awake();
 
+	getTransform().SetLocalScaleX(2.f);
+
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
 	CMeshFilter* mf = m_pGameObject->AddComponent<CMeshFilter>();
 	m_pMeshRenderer->SetMeshFilter(mf);
-	mf->SetMesh(CMesh::CUBE);
+	mf->SetMesh(CMesh::SPHERE);
 
 	//m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
 	//auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();

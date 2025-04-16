@@ -20,7 +20,7 @@ CMainProcess::~CMainProcess()
 
 HRESULT CMainProcess::Ready_MainApp()
 {
-	if (FAILED(CGraphicDev::GetInstance()->Ready_GraphicDev
+	if (FAILED(CGraphicDev::GetInstance().Ready_GraphicDev
 	(
 		CScreen::GetInstance().getGameHandle(), MODE_WIN,
 		CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y, 
@@ -83,10 +83,6 @@ void CMainProcess::Render_MainApp()
 
 void CMainProcess::Release()
 {
-	if (m_pDevClass)
-	{
-		Safe_Release(m_pDevClass);
-	}
 }
 
 void CMainProcess::OnScreenChange(const _uint& _width, const _uint& _height)

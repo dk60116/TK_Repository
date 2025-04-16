@@ -21,11 +21,7 @@ private:
 
 class ENGINE_DLL CGraphicDev : public CBase
 {
-	DECLARE_SINGLETON(CGraphicDev)
-
-private:
-	explicit CGraphicDev();
-	virtual ~CGraphicDev();
+	SINGLETONCLASS(CGraphicDev);
 
 public:
 	LPDIRECT3DDEVICE9	Get_GraphicDev() { return m_pGraphicDev; }

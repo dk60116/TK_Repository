@@ -1,8 +1,6 @@
 #include "CGraphicDev.h"
 #include "CScreen.h"
 
-IMPLEMENT_SINGLETON(CGraphicDev)
-
 CGraphicDev::CGraphicDev() 
 	: m_pSDK(NULL)
 	, m_pGraphicDev(NULL)
