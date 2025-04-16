@@ -22,7 +22,6 @@ public:
     void Release() override;
 
 private:
-    CLight* m_pLight;
     CPlayer* m_pPlayer;
     CEnemy* m_pEnemy;
 };

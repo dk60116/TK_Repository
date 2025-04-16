@@ -1,5 +1,6 @@
 #include "CMeshRenderer.h"
 #include "CManagement.h"
+#include "CTransform.h"
 
 CMeshRenderer::CMeshRenderer()
 	: m_pMeshFilter(nullptr)
@@ -48,7 +49,7 @@ void CMeshRenderer::Render()
     m_pGraphicDev->SetTransform(D3DTS_VIEW, &pCamera->getViewMatrix());
     m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &pCamera->getProjMatrix());
 
-    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
     m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, true);
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, true);

@@ -2,12 +2,13 @@
 
 #include "Base.h"
 #include "Engine_Define.h"
-#include "CGameObject.h"
 #include "CCamera.h"
+#include "CLight.h"
 
 BEGIN(Engine)
 
 class CManagement;
+class CGameObject;
 
 struct SceneOptions
 {
@@ -35,9 +36,13 @@ public:
 
     CGameObject* AddObject(wstring _objName, Layer _layer);
 
+    void AddCamera(CCamera* _cam);
+    void AddLight(CLight* _light);
     vector<CCamera*>& getCamList() { return m_vCameraList; }
+    vector<CLight*>& getLightList() { return m_vLightList; }
     CCamera* getCamera(const int _index) const { return m_vCameraList[_index]; }
     CCamera* getCamera() const { return m_vCameraList.back(); }
+    void UpdateAllLight();
     void UpdateAllCameraResolution();
     SceneOptions& getOptions() { return m_sOptions; }
 
@@ -48,6 +53,7 @@ protected:
 
     list<CGameObject*> m_lObjectList[Layer::LAYER_END];
     vector<CCamera*> m_vCameraList;
+    vector<CLight*> m_vLightList;
 
     SceneOptions m_sOptions;
 

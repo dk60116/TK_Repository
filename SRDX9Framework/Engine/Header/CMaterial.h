@@ -7,7 +7,7 @@ BEGIN(Engine)
 struct MaterialOptions
 {
 	ColorValue diffuseColor = ColorValue::white();
-	ColorValue ambientColor = ColorValue::gray(85);
+	ColorValue ambientColor = ColorValue::gray(0.3f);
 	ColorValue specularColor = ColorValue::white();
 	_float power = 10.f;
 };

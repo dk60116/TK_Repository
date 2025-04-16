@@ -1,9 +1,13 @@
 #include "CScene.h"
 #include "CManagement.h"
+#include "CGameObject.h"
 
 CScene::CScene()
-	: m_lObjectList()
+	: m_pGraphicDev(nullptr)
+	, m_lObjectList()
 	, m_vCameraList({})
+	, m_vLightList({})
+	, m_sOptions({})
 {
 }
 
@@ -22,6 +26,8 @@ void CScene::Start()
 
 void CScene::Update()
 {
+	UpdateAllLight();
+
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
@@ -110,8 +116,29 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 	return obj;
 }
 
+void CScene::AddCamera(CCamera* _cam)
+{
+	if (_cam)
+		m_vCameraList.push_back(_cam);
+}
+
+void CScene::AddLight(CLight* _light)
+{
+	if (_light)
+	{
+		_light->SetIndex((DWORD)m_vLightList.size());
+		m_vLightList.push_back(_light);
+	}
+}
+
 void CScene::UpdateAllCameraResolution()
 {
 	for (TRAVERSAL_ITER(m_vCameraList, it))
 		(*it)->ResetAspectFromResolution();
+}
+
+void CScene::UpdateAllLight()
+{
+	for (TRAVERSAL_ITER(m_vLightList, it))
+		(*it)->Apply();
 }

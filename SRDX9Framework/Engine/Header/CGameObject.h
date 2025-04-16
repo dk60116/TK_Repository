@@ -4,10 +4,11 @@
 #include "Engine_Define.h"
 #include "CComponent.h"
 #include "CTransform.h"
+#include "CCamera.h"
+#include "CLight.h"
+#include "CScene.h"
 
 BEGIN(Engine)
-
-class CScene;
 
 class ENGINE_DLL CGameObject
 {
@@ -60,6 +61,12 @@ inline T* CGameObject::AddComponent()
 	dynamic_cast<CComponent*>(_newComponent)->SetObject(this);
 	m_lComponentlist.push_back(_newComponent);
 	m_lComponentlist.back()->Awake();
+
+	if (dynamic_cast<CCamera*>(_newComponent))
+		m_pScene->AddCamera(dynamic_cast<CCamera*>(_newComponent));
+
+	if (dynamic_cast<CLight*>(_newComponent))
+		m_pScene->AddLight(dynamic_cast<CLight*>(_newComponent));
 
 	return _newComponent;
 }

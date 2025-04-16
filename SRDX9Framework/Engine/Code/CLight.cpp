@@ -2,7 +2,8 @@
 #include "CTransform.h"
 
 CLight::CLight()
-	: m_eType(DIRECTIONALLIGHT)
+	: m_iIndex(0)
+	, m_eType(DIRECTIONALLIGHT)
 	, m_sLightInfo({})
 	, m_sOptions({})
 {
@@ -22,7 +23,7 @@ void CLight::Init()
 	m_sLightInfo.Specular = m_sOptions.specularColor.dvColor();
 }
 
-void CLight::Apply(LPDIRECT3DDEVICE9 _device, DWORD _index)
+void CLight::Apply()
 {
 	vector3 pos = getTransform().getPosition();
 	vector3 dir = getTransform().getDirections().forward;
@@ -54,6 +55,6 @@ void CLight::Apply(LPDIRECT3DDEVICE9 _device, DWORD _index)
 	m_sLightInfo.Ambient = m_sOptions.ambientColor.dvColor();
 	m_sLightInfo.Specular = m_sOptions.specularColor.dvColor();
 
-	_device->SetLight(_index, &m_sLightInfo);
-	_device->LightEnable(_index, TRUE);
+	m_pGraphicDev->SetLight(m_iIndex, &m_sLightInfo);
+	m_pGraphicDev->LightEnable(m_iIndex, TRUE);
 }

@@ -29,15 +29,18 @@ public:
 
 public:
 	void Init();
-	void Apply(LPDIRECT3DDEVICE9 _device, DWORD _index);
+	void Apply();
 	D3DLIGHT9& getInfo() { return m_sLightInfo; };
 
 public:
+	const _int& getIndex() { return m_iIndex; }
+	void SetIndex(const DWORD _index) { m_iIndex = (DWORD)_index; }
 	LightType& getType() { return m_eType; }
 	void SetType(const LightType _type) { m_eType = _type; }
 	LightOptions& getOptions() { return m_sOptions; };
 
 private:
+	DWORD m_iIndex;
 	D3DLIGHT9 m_sLightInfo;
 	LightType m_eType;
 	LightOptions m_sOptions;
