@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Header; ../../Base;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Header</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,7 +137,7 @@ call Copy.bat</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Header; ../../Base;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Header</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,8 +157,6 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CComponent.h" />
     <ClInclude Include="..\Header\CDebug.h" />
     <ClInclude Include="..\Header\CEngineEditor.h" />
-    <ClInclude Include="..\Header\CFrame.h" />
-    <ClInclude Include="..\Header\CFrameMgr.h" />
     <ClInclude Include="..\Header\CGameObject.h" />
     <ClInclude Include="..\Header\CGraphicDev.h" />
     <ClInclude Include="..\Header\CInput.h" />
@@ -186,6 +184,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Engine_Struct.h" />
     <ClInclude Include="..\Header\Engine_Typedef.h" />
     <ClInclude Include="..\Header\CSpriteRenderer.h" />
+    <ClInclude Include="..\Header\UObject.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -193,8 +192,6 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CComponent.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
     <ClCompile Include="..\Code\CEngineEditor.cpp" />
-    <ClCompile Include="..\Code\CFrame.cpp" />
-    <ClCompile Include="..\Code\CFrameMgr.cpp" />
     <ClCompile Include="..\Code\CGameObject.cpp" />
     <ClCompile Include="..\Code\CGraphicDev.cpp" />
     <ClCompile Include="..\Code\CInput.cpp" />
@@ -216,6 +213,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CTriCol.cpp" />
     <ClCompile Include="..\Code\CVIBuffer.cpp" />
     <ClCompile Include="..\Code\CSpriteRenderer.cpp" />
+    <ClCompile Include="..\Code\UObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />

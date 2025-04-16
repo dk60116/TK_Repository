@@ -66,7 +66,6 @@ void CScene::Render()
 
 	vector<CGameObject*> sortedRenderList;
 
-	// 전체 렌더 가능한 오브젝트 수집
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
 		for (auto& obj : m_lObjectList[i])
@@ -76,7 +75,7 @@ void CScene::Render()
 		}
 	}
 
-	// 깊이 기준 정렬 (멀리 있는 것 먼저)
+	// 깊이 기준 정렬
 	sort(sortedRenderList.begin(), sortedRenderList.end(),
 		[&](CGameObject* a, CGameObject* b)
 		{
@@ -85,7 +84,6 @@ void CScene::Render()
 			return depthA > depthB;
 		});
 
-	// 정렬된 순서대로 렌더링
 	for (auto& obj : sortedRenderList)
 	{
 		obj->Render();
@@ -99,7 +97,7 @@ void CScene::Release()
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
 			(*it)->OnDestroy();
-			Safe_Delete(*it);
+			Safe_Release(*it);
 		}
 
 		m_lObjectList[i].clear();
@@ -110,6 +108,7 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 {
 	CGameObject* obj = new CGameObject(_objName, CManagement::GetInstance().getGraphicDevice());
 	obj->SetScene(this);
+	obj->AddRef();
 	m_lObjectList[_layer].push_back(obj);
 	obj->Awake();
 

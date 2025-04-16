@@ -5,7 +5,6 @@
 #include "framework.h"
 #include "Client.h"
 #include "CMainProcess.h"
-#include "CFrameMgr.h"
 
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC

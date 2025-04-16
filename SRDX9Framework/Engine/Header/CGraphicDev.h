@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine_Define.h"
-#include "Base.h"
+#include "UObject.h"
 
 BEGIN(Engine)
 
@@ -19,7 +19,8 @@ private:
 	vector<IDeviceResetListener*> m_vecResetListeners;
 };
 
-class ENGINE_DLL CGraphicDev : public CBase
+class ENGINE_DLL CGraphicDev 
+	: public UObject
 {
 	SINGLETONCLASS(CGraphicDev);
 

@@ -14,6 +14,7 @@
 #include <ctime>
 #include <typeindex>
 #include <memory>
+#include <atomic>
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"

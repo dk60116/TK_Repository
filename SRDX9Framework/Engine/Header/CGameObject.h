@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.h"
+#include "UObject.h"
 #include "Engine_Define.h"
 #include "CComponent.h"
 #include "CTransform.h"
@@ -11,6 +11,7 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject
+	: public UObject
 {
 public:
 	explicit CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev);

@@ -34,8 +34,6 @@ CGameObject::~CGameObject()
 void CGameObject::Awake()
 {
 	m_pTransform = AddComponent<CTransform>();
-
-	
 }
 
 void CGameObject::Start()
@@ -78,6 +76,8 @@ void CGameObject::OnDisable()
 
 void CGameObject::OnDestroy()
 {
+	Release();
+
 	for (TRAVERSAL_ITER(m_lComponentlist, it))
 	{
 		Safe_Delete(*it);

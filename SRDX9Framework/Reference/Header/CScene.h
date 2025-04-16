@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.h"
+#include "UObject.h"
 #include "Engine_Define.h"
 #include "CCamera.h"
 #include "CLight.h"
@@ -16,6 +16,7 @@ struct SceneOptions
 };
 
 class ENGINE_DLL CScene
+    : public UObject
 {
 public:
     CScene();

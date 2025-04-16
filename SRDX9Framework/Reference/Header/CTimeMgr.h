@@ -1,10 +1,11 @@
 #pragma once
-#include "Base.h"
+#include "UObject.h"
 #include "CTimer.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CTimeMgr
+	: public UObject
 {
 	SINGLETONCLASS(CTimeMgr);
 

@@ -9,12 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{77FB94
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Include\Client.vcxproj", "{BD11A313-4F34-491D-A437-F471BABEBC3D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{C359AB77-0FB9-4C43-ACAD-E8787F7B4389}"
-	ProjectSection(SolutionItems) = preProject
-		Base\Base.h = Base\Base.h
-		Base\Base.inl = Base\Base.inl
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Include\Engine.vcxproj", "{44798D95-6C77-4D73-A1D5-3C9B1B4566B8}"
 EndProject
 Global

@@ -4,12 +4,6 @@
     <Filter Include="GraphicDev">
       <UniqueIdentifier>{98cf3306-a664-4dba-9273-491527de9b9a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FrameMgr">
-      <UniqueIdentifier>{008d917b-1a80-4e5d-90f0-a48b5db8478c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FrameMgr\Frame">
-      <UniqueIdentifier>{450e7762-9a5c-472e-9243-e60db2a293b3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers">
       <UniqueIdentifier>{8d6c19de-3eb8-493b-b6a8-064a21bc2d1b}</UniqueIdentifier>
     </Filter>
@@ -70,6 +64,9 @@
     <Filter Include="Component\Light">
       <UniqueIdentifier>{ea7cb677-e686-4812-9418-e31568312679}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{a524ce89-3cbe-4217-8db2-74a5f9d27688}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CGraphicDev.h">
@@ -98,12 +95,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\CTimer.h">
       <Filter>Time\Timer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CFrame.h">
-      <Filter>FrameMgr\Frame</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CFrameMgr.h">
-      <Filter>FrameMgr</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CInput.h">
       <Filter>Input</Filter>
@@ -172,6 +163,9 @@
     <ClInclude Include="..\Header\CLight.h">
       <Filter>Component\Light</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\UObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -182,12 +176,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CTimer.cpp">
       <Filter>Time\Timer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CFrame.cpp">
-      <Filter>FrameMgr\Frame</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CFrameMgr.cpp">
-      <Filter>FrameMgr</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CInput.cpp">
       <Filter>Input</Filter>
@@ -254,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CLight.cpp">
       <Filter>Component\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UObject.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
