@@ -102,6 +102,9 @@ void CScene::Release()
 
 		m_lObjectList[i].clear();
 	}
+
+	m_vCameraList.clear();
+	m_vLightList.clear();
 }
 
 CGameObject* CScene::AddObject(wstring _objName, Layer _layer)

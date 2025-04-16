@@ -3,7 +3,7 @@
 #include "CDebug.h"
 
 CResources::CResources()
-	: m_strBasePath(L"..\\Resources")
+	: m_strBasePath(L"Resources")
 {
 }
 
@@ -14,7 +14,6 @@ CResources::~CResources()
 
 HRESULT CResources::LoadAllFiles(LPDIRECT3DDEVICE9 _device)
 {
-    // 현재 작업 디렉토리 출력
     wchar_t cwd[MAX_PATH];
     GetCurrentDirectory(MAX_PATH, cwd);
     CDebug::Log(L"[Working Directory] " + wstring(cwd));

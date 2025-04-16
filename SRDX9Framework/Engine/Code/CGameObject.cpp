@@ -1,19 +1,19 @@
 #include "CGameObject.h"
 
-CGameObject::CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
+CGameObject::CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _graphicDev)
 	: m_pScene(nullptr)
 	, m_strName(_name)
 	, m_bIsActive(true)
 	, m_bIsEnable(true)
 	, m_bKill(false)
 	, m_isClone(false)
-	, m_pGraphicDev(_pGraphicDev)
+	, m_pGraphicDev(_graphicDev)
 	, m_pTransform(nullptr)
 {
 	m_pGraphicDev->AddRef();
 }
 
-CGameObject::CGameObject(const CGameObject& _rhs)
+CGameObject::CGameObject(CGameObject& _rhs)
 	: m_pScene(_rhs.m_pScene)
 	, m_strName(_rhs.m_strName + L"_Clone")
 	, m_bIsActive(_rhs.m_bIsActive)

@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CCamera.h"
 #include "CLight.h"
+#include "CManagement.h"
 #include "CScene.h"
 
 BEGIN(Engine)
@@ -13,9 +14,9 @@ BEGIN(Engine)
 class ENGINE_DLL CGameObject
 	: public UObject
 {
-public:
-	explicit CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev);
-	explicit CGameObject(const CGameObject& _rhs);
+private:
+	explicit CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _graphicDev);
+	explicit CGameObject(CGameObject& _rhs);
 	virtual ~CGameObject();
 
 public:
@@ -53,6 +54,8 @@ protected:
 	LPDIRECT3DDEVICE9 m_pGraphicDev;
 	CTransform* m_pTransform;
 	list<CComponent*> m_lComponentlist;
+
+	friend class CScene;
 };
 
 template<typename T>
