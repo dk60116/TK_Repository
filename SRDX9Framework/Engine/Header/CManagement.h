@@ -12,8 +12,7 @@ class ENGINE_DLL CManagement
 	SINGLETONCLASS(CManagement);
 
 public:
-	template<typename T>
-	void CreateScene(wstring _name);
+	void CreateScene(CScene* _newScene, wstring _name);
 	CScene* getCrtScene() { return m_pCrtScene; }
 	HRESULT ChangeScene(wstring _scene);
 
@@ -47,3 +46,4 @@ inline void CManagement::CreateScene(wstring _name)
 		m_mSceneList.insert({ _name, scene });
 	}
 }
+END

@@ -40,8 +40,9 @@ HRESULT CMainProcess::Ready_MainApp()
 
 	CManagement::GetInstance().SetGraphicDevice(m_pGraphicDev);
 
-	CManagement::GetInstance().CreateScene<CMainScene>(L"Main Scene");
-	CManagement::GetInstance().ChangeScene(L"Main Scene");
+	CMainScene* mainScene = new CMainScene();
+	CManagement::GetInstance().CreateScene(mainScene, L"MainScene");
+	CManagement::GetInstance().ChangeScene(L"MainScene");
 
 	return S_OK;
 }
