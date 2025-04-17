@@ -2,6 +2,8 @@
 #include "CMainScene.h"
 #include "CTriCol.h"
 #include "CSpriteRenderer.h"
+#include "CMeshRenderer.h"
+#include "CMeshRenderer.h"
 
 CMainScene::CMainScene()
 	: m_pPlayer(nullptr)
@@ -43,12 +45,19 @@ void CMainScene::Awake()
 	m_pEnemy = enemyObj->AddComponent<CEnemy>();
 	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
 
-	CGameObject* boxObj = AddObject(L"Box", Layer::DEFAULT);
-	CSpriteRenderer* boxRender = boxObj->AddComponent<CSpriteRenderer>();
-	boxObj->getTransform().SetPosition(-2.f, -2.f, -1.f);
+	CGameObject* triObj = AddObject(L"Tri", Layer::DEFAULT);
+	CSpriteRenderer* tSRender = triObj->AddComponent<CSpriteRenderer>();
+	triObj->getTransform().SetPosition(-2.f, -2.f, -1.f);
 	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
 	if (tex)
-		boxRender->SetTexture(tex);
+		tSRender->SetTexture(tex);
+
+	CGameObject* boxObj = AddObject(L"Box", Layer::DEFAULT);
+	boxObj->getTransform().SetPosition(2.f, -2.f, 0.f);
+	CMeshRenderer* boxRender = boxObj->AddComponent<CMeshRenderer>();
+	CMeshFilter* filter = boxObj->AddComponent<CMeshFilter>();
+	filter->SetMesh(CMesh::CUBE);
+	boxRender->SetMeshFilter(filter);
 }
 
 void CMainScene::Start()

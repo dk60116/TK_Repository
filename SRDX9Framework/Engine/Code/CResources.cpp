@@ -3,7 +3,7 @@
 #include "CDebug.h"
 
 CResources::CResources()
-	: m_strBasePath(L"..\\Resources")
+	: m_strBasePath(L"Resources")
 {
 }
 
