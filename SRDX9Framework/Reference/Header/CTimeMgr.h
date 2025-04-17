@@ -5,7 +5,6 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CTimeMgr
-	: public UObject
 {
 	SINGLETONCLASS(CTimeMgr);
 

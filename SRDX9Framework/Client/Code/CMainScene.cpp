@@ -24,6 +24,8 @@ void CMainScene::Awake()
 	cameraObj->AddComponent<CCamera>();
 	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
 
+	return;
+
 	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
 	lightObj->AddComponent<CLight>();
 

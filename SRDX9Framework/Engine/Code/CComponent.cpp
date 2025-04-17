@@ -14,10 +14,10 @@ CComponent::CComponent()
 CComponent::CComponent(const CComponent& _rhs)
 	: m_pGameObject(_rhs.m_pGameObject)
 	, m_bEnable(_rhs.m_bEnable)
-	, m_pGraphicDev(_rhs.m_pGraphicDev)
+	, m_pGraphicDev(nullptr)
 	, m_bClone(true)
 {
-	m_pGraphicDev->AddRef();
+	SetDevice();
 }
 
 CComponent::~CComponent()
@@ -59,7 +59,6 @@ void CComponent::OnDisable()
 
 void CComponent::OnDestroy()
 {
-	Release();
 	Safe_Release(m_pGraphicDev);
 }
 

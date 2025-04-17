@@ -9,16 +9,11 @@ class CGameObject;
 class CTransform;
 
 class ENGINE_DLL CComponent
-	: public UObject
 {
-protected:
+public:
 	explicit CComponent();
 	explicit CComponent(const CComponent& _rhs);
 	virtual ~CComponent();
-
-public:
-	template <typename T>
-	static T* Create();
 
 public:
 	virtual void Awake();
@@ -42,15 +37,7 @@ protected:
 	CGameObject* m_pGameObject;
 	_bool m_bEnable;
 	LPDIRECT3DDEVICE9 m_pGraphicDev;
-	_bool	 m_bClone;
+	_bool m_bClone;
 };
 
 END
-
-template<typename T>
-inline T* CComponent::Create()
-{
-	T* newComponent = new T();
-
-	return newComponent;
-}

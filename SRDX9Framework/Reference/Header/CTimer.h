@@ -6,7 +6,6 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CTimer 
-	: public UObject
 {
 public:
 	explicit CTimer();

@@ -92,14 +92,11 @@ void CScene::Render()
 
 void CScene::Destroy()
 {
-	Release();
-
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
-			//(*it)->OnDestroy();
-			Safe_Release(*it);
+			(*it)->OnDestroy();
 		}
 
 		m_lObjectList[i].clear();
@@ -110,7 +107,6 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 {
 	CGameObject* obj = new CGameObject(_objName, CManagement::GetInstance().getGraphicDevice());
 	obj->SetScene(this);
-	obj->AddRef();
 	m_lObjectList[_layer].push_back(obj);
 	obj->Awake();
 

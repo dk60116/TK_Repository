@@ -76,12 +76,9 @@ void CGameObject::OnDisable()
 
 void CGameObject::OnDestroy()
 {
-	Release();
-
 	for (TRAVERSAL_ITER(m_lComponentlist, it))
 	{
-		(*it)->OnDestroy();
-		Safe_Release(*it);
+		Safe_Delete(*it);
 	}
 
 	m_lComponentlist.clear();

@@ -7,7 +7,6 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CManagement
-	: public UObject
 {
 	SINGLETONCLASS(CManagement);
 

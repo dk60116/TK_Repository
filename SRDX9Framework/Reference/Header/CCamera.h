@@ -51,9 +51,6 @@ private:
 	CameraViewMode m_eCamViewMode;
 	CameraViewParameters m_sParameters;
 	_matrix m_matProjMatrix, m_matViewMatrix;
-
-	template<typename T>
-	friend T* CComponent::Create();
 };
 
 END

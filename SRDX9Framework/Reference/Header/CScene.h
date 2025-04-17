@@ -16,7 +16,6 @@ struct SceneOptions
 };
 
 class ENGINE_DLL CScene
-    : public UObject
 {
 public:
     CScene();

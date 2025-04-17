@@ -7,7 +7,6 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CManagement
-	: public UObject
 {
 	SINGLETONCLASS(CManagement);
 
@@ -28,22 +27,4 @@ private:
 	map<wstring, CScene*> m_mSceneList;
 };
 
-END
-
-template<typename T>
-inline void CManagement::CreateScene(wstring _name)
-{
-	T* newScene = new T;
-
-	CScene* scene = dynamic_cast<CScene*>(newScene);
-
-	if (scene)
-	{
-		scene->SetName(_name);
-		scene->SetGraphicDev(m_pGraphicDev);
-		scene->AddRef();
-
-		m_mSceneList.insert({ _name, scene });
-	}
-}
 END

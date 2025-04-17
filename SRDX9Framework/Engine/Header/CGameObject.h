@@ -11,7 +11,6 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject
-	: public UObject
 {
 public:
 	explicit CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev);
@@ -58,10 +57,9 @@ protected:
 template<typename T>
 inline T* CGameObject::AddComponent()
 {
-	T* newComponent = dynamic_cast<T*>(CComponent::Create<T>());
+	T* newComponent = new T();
 	dynamic_cast<CComponent*>(newComponent)->SetObject(this);
 	m_lComponentlist.push_back(newComponent);
-	//newComponent->AddRef();
 	m_lComponentlist.back()->Awake();
 
 	if (dynamic_cast<CCamera*>(newComponent))

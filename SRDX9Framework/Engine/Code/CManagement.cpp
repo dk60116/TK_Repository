@@ -40,8 +40,7 @@ void CManagement::Destroy()
 {
 	for (TRAVERSAL_ITER(m_mSceneList, it))
 	{
-		Safe_Release((*it).second);
-		//Safe_Delete((*it).second);
+		Safe_Delete((*it).second);
 	}
 
 	m_mSceneList.clear();
