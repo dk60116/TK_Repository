@@ -6,10 +6,9 @@
 CSpriteRenderer::CSpriteRenderer()
 	: m_pTexture(nullptr)
 	, m_pBuffer(nullptr)
-	, m_sColorTint(ColorValue::white())
 	, m_rcUV({})
-    , m_iSortOrder(0)
     , m_pMaterial(nullptr)
+    , m_sOptions({})
 {
 	SetRect(&m_rcUV, 0, 0, 1, 1);
 }
@@ -58,7 +57,7 @@ void CSpriteRenderer::Render()
 
     _matrix world = getTransform().getWorldMatrix();
     world._31 = 0.f; world._32 = 0.f; world._33 = 1.f;
-    world._43 += static_cast<_float>(-m_iSortOrder) * 0.001f;
+    world._43 += static_cast<_float>(-m_sOptions.sortOrder) * 0.001f;
     m_pGraphicDev->SetTransform(D3DTS_WORLD, &world);
 
     if (CManagement::GetInstance().getCrtScene()->getCamList().empty())
@@ -75,7 +74,13 @@ void CSpriteRenderer::Render()
 
     m_pGraphicDev->SetTexture(0, m_pTexture ? m_pTexture->getTexture() : nullptr);
 
+    if (!m_sOptions.lighting)
+        m_pGraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+
     m_pBuffer->Render_Buffer(m_pGraphicDev);
+
+    _bool originLight = CManagement::GetInstance().getCrtScene()->getOptions().lighting;
+    m_pGraphicDev->SetRenderState(D3DRS_LIGHTING, originLight);
 
     m_pGraphicDev->SetTexture(0, nullptr);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -101,11 +106,5 @@ void CSpriteRenderer::SetTexture(CTexture* _texture)
 
 void CSpriteRenderer::SetTintColor(ColorValue _color)
 {
-	m_sColorTint = _color;
-
-    if (m_pBuffer)
-    {
-        m_pBuffer->getOptions().color = m_sColorTint;
-        m_pBuffer->UpdateColor();
-    }
+    m_pMaterial->getOptions().diffuseColor = _color;
 }

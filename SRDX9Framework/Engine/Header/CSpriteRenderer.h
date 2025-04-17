@@ -7,6 +7,13 @@
 
 BEGIN(Engine)
 
+struct SpriteRendererOptions
+{
+    ColorValue colorTint = ColorValue::white();
+    _int sortOrder = 0;
+    _bool lighting = false;
+};
+
 class ENGINE_DLL CSpriteRenderer final
     : public CComponent
 {
@@ -24,16 +31,16 @@ public:
 public:
     void SetTexture(CTexture* _texture);
     void SetTintColor(ColorValue _color);
-    const _int& getSortOrder() { return m_iSortOrder; }
-    void SetSortOrder(const _int _value) { m_iSortOrder = _value; }
+
+    SpriteRendererOptions& getOptions() { return m_sOptions; }
 
 private:
     CTexture* m_pTexture;
     CVIBuffer* m_pBuffer;
     RECT m_rcUV;
-    ColorValue m_sColorTint;
-    _int m_iSortOrder;
     CMaterial* m_pMaterial;
+
+    SpriteRendererOptions m_sOptions;
 };
 
 END

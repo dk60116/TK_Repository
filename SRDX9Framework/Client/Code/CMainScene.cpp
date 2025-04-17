@@ -37,7 +37,7 @@ void CMainScene::Awake()
 
 	CGameObject* playerHead = AddObject(L"PlayerHead", Layer::DEFAULT);
 	CSpriteRenderer* phRender = playerHead->AddComponent<CSpriteRenderer>();
-	phRender->SetSortOrder(1);
+	phRender->getOptions().sortOrder = 1;
 	playerHead->getTransform().SetLocalPosition(0.f, 0.5f, 0.f);
 	playerHead->getTransform().SetLocalScale(0.25f, 1.f, 1.f);
 	playerHead->getTransform().SetParent(playerObj->getTransform());
@@ -101,8 +101,8 @@ void CMainScene::Update()
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
 
-	//m_pGraphicDev->AddRef();
-	//ULONG rcount = m_pGraphicDev->Release();
+	//m_pPlayer->getObject()->AddRef();
+	//ULONG rcount = m_pPlayer->getObject()->Release();
 	//CDebug::Log((int)rcount);
 }
 
