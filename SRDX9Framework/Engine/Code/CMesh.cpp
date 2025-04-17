@@ -135,8 +135,8 @@ HRESULT CMesh::Create_Sphere()
     const int slices = 36;
     const float radius = 0.5f;
 
-    std::vector<VTLTEX> vertices;
-    std::vector<INDEX16> indices;
+    vector<VTLTEX> vertices;
+    vector<INDEX16> indices;
 
     for (int stack = 0; stack <= stacks; ++stack)
     {

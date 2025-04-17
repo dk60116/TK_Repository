@@ -30,6 +30,7 @@ void CMainScene::Awake()
 
 	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
 	lightObj->AddComponent<CLight>();
+	lightObj->getTransform().SetEulerAngles(20.f, 30.f, 0.f);
 
 	 CGameObject* playerObj = AddObject(L"Player", Layer::DEFAULT);
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
@@ -70,23 +71,39 @@ void CMainScene::Update()
 
 	vector3 camDir = vector3::zero();
 
-	if (CInput::GetInstance().GetKey(UP))
-		camDir.y += 1.f;
-	if (CInput::GetInstance().GetKey(DOWN))
-		camDir.y += -1.f;
+	if (CInput::GetInstance().GetKey(W))
+		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().forward * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(S))
+		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().back * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(A))
+		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().left * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(D))
+		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().right * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(Q))
+		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().down * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(E))
+		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().up * DELTA_TIME);
+
 	if (CInput::GetInstance().GetKey(LEFT))
-		camDir.x += -1.f;
+		m_vCameraList.back()->getTransform().AddLocalYAxis(-45.f * DELTA_TIME);
 	if (CInput::GetInstance().GetKey(RIGHT))
-		camDir.x += 1.f;
+		m_vCameraList.back()->getTransform().AddLocalYAxis(45.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(UP))
+		m_vCameraList.back()->getTransform().AddLocalXAxis(-45.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(DOWN))
+		m_vCameraList.back()->getTransform().AddLocalXAxis(45.f * DELTA_TIME);
+
+	//m_vCameraList.back()->getTransform().AddLocalPosition(camDir.normalized() * DELTA_TIME);
+
 
 	//m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
 
-	m_pGraphicDev->AddRef();
-	ULONG rcount = m_pGraphicDev->Release();
-	CDebug::Log((int)rcount);
+	//m_pGraphicDev->AddRef();
+	//ULONG rcount = m_pGraphicDev->Release();
+	//CDebug::Log((int)rcount);
 }
 
 void CMainScene::FixedUpdate()

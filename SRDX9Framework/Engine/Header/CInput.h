@@ -16,7 +16,7 @@ public:
     bool GetMouseButtonDown(int _button);
     bool GetMouseButtonUp(int button);
 
-    //const vector2Int GetMousePos();
+    const vector2Int GetMousePos();
     //const int GetMouseWheelValue();
 
 public:

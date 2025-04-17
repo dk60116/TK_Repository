@@ -1,4 +1,5 @@
 #include "CInput.h"
+#include "CScreen.h"
 
 CInput::CInput()
 {
@@ -69,14 +70,14 @@ bool CInput::GetMouseButtonUp(int _button)
 }
 
 
-//const vector2Int CInput::GetMousePos()
-//{
-//    POINT ptMouse;
-//    GetCursorPos(&ptMouse);
-//    ScreenToClient(g_hWnd, &ptMouse);
-//
-//    return vector2Int((int)ptMouse.x, (int)ptMouse.y);
-//}
+const vector2Int CInput::GetMousePos()
+{
+    POINT ptMouse;
+    GetCursorPos(&ptMouse);
+    ScreenToClient(CScreen::GetInstance().getGameHandle(), &ptMouse);
+
+    return vector2Int((int)ptMouse.x, (int)ptMouse.y);
+}
 
 //const int CInput::GetMouseWheelValue()
 //{
