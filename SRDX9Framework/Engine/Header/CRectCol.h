@@ -13,14 +13,11 @@ public:
     ~CRectCol();
 
 public:
-    HRESULT Ready_Buffer() override;
+    HRESULT Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
     void UpdateColor() override;
 
-public:
-    virtual CComponent* Clone();
-
 private:
-    HRESULT ReadyRect();
+    HRESULT ReadyRect(LPDIRECT3DDEVICE9 _device);
 };
 
 END

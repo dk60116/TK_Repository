@@ -62,7 +62,7 @@ void CMeshRenderer::Render()
     m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
 
-    pMesh->Render_Buffer();
+    pMesh->Render_Buffer(m_pGraphicDev);
 }
 
 void CMeshRenderer::OnDestroy()

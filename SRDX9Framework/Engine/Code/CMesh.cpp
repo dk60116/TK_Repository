@@ -7,42 +7,33 @@ CMesh::CMesh()
 
 CMesh::~CMesh()
 {
-    OnDestroy();
 }
 
-void CMesh::Awake()
+HRESULT CMesh::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-}
-
-void CMesh::Render()
-{
-}
-
-HRESULT CMesh::Ready_Buffer()
-{
-    return CVIBuffer::Ready_Buffer();
+    return CVIBuffer::Ready_Buffer(_device);
 }
 
 void CMesh::UpdateColor()
 {
 }
 
-HRESULT CMesh::Ready_Mesh()
+HRESULT CMesh::Ready_Mesh(LPDIRECT3DDEVICE9 _device)
 {
     switch (m_eMeshType)
     {
     case CMesh::CUBE:
-        return Create_Cube();
+        return Create_Cube(_device);
     case CMesh::SPHERE:
-        return Create_Sphere();
+        return Create_Sphere(_device);
     case CMesh::CAPSULE:
-        return Create_Capsule();
+        return Create_Capsule(_device);
     case CMesh::CYLINDER:
-        return Create_Cylinder();
+        return Create_Cylinder(_device);
     case CMesh::PLANE:
-        return Create_Plane();
+        return Create_Plane(_device);
     case CMesh::QUAD:
-        return Create_Quad();
+        return Create_Quad(_device);
     default:
         break;
     }
@@ -55,7 +46,7 @@ HRESULT CMesh::Create_Mesh(const void* _pVertices, UINT vertexSize, UINT vertexC
 	return E_NOTIMPL;
 }
 
-HRESULT CMesh::Create_Cube()
+HRESULT CMesh::Create_Cube(LPDIRECT3DDEVICE9 _device)
 {
     const _float s = 0.5f;
 
@@ -117,7 +108,7 @@ HRESULT CMesh::Create_Cube()
     m_sOptions.idxFmt = D3DFMT_INDEX16;
     m_sOptions.idxSize = sizeof(INDEX16);
 
-    if (FAILED(Ready_Buffer()))
+    if (FAILED(Ready_Buffer(_device)))
         return E_FAIL;
 
     if (FAILED(FillVertexBuffer(vertices, sizeof(vertices))))
@@ -129,7 +120,7 @@ HRESULT CMesh::Create_Cube()
     return S_OK;
 }
 
-HRESULT CMesh::Create_Sphere()
+HRESULT CMesh::Create_Sphere(LPDIRECT3DDEVICE9 _device)
 {
     const int stacks = 18;
     const int slices = 36;
@@ -180,7 +171,7 @@ HRESULT CMesh::Create_Sphere()
     m_sOptions.idxSize = sizeof(INDEX16);
     m_sOptions.idxFmt = D3DFMT_INDEX16;
 
-    if (FAILED(Ready_Buffer()))
+    if (FAILED(Ready_Buffer(_device)))
         return E_FAIL;
 
     if (FAILED(FillVertexBuffer(vertices.data(), static_cast<UINT>(vertices.size() * sizeof(VTLTEX)))))
@@ -192,27 +183,27 @@ HRESULT CMesh::Create_Sphere()
     return S_OK;
 }
 
-HRESULT CMesh::Create_Capsule()
+HRESULT CMesh::Create_Capsule(LPDIRECT3DDEVICE9 _device)
 {
 	return E_NOTIMPL;
 }
 
-HRESULT CMesh::Create_Cylinder()
+HRESULT CMesh::Create_Cylinder(LPDIRECT3DDEVICE9 _device)
 {
 	return E_NOTIMPL;
 }
 
-HRESULT CMesh::Create_Plane()
+HRESULT CMesh::Create_Plane(LPDIRECT3DDEVICE9 _device)
 {
 	return E_NOTIMPL;
 }
 
-HRESULT CMesh::Create_Quad()
+HRESULT CMesh::Create_Quad(LPDIRECT3DDEVICE9 _device)
 {
 	return E_NOTIMPL;
 }
 
-HRESULT CMesh::Create_Custom()
+HRESULT CMesh::Create_Custom(LPDIRECT3DDEVICE9 _device)
 {
     return E_NOTIMPL;
 }

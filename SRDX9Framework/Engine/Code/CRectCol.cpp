@@ -13,12 +13,12 @@ CRectCol::CRectCol(const CRectCol& _rhs)
 
 CRectCol::~CRectCol()
 {
-    OnDestroy();
+    Destroy();
 }
 
-HRESULT CRectCol::Ready_Buffer()
+HRESULT CRectCol::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-    return ReadyRect();
+    return ReadyRect(_device);
 
     return E_FAIL;
 }
@@ -35,12 +35,7 @@ void CRectCol::UpdateColor()
     }
 }
 
-CComponent* CRectCol::Clone()
-{
-    return new CRectCol(*this);
-}
-
-HRESULT CRectCol::ReadyRect()
+HRESULT CRectCol::ReadyRect(LPDIRECT3DDEVICE9 _device)
 {
     m_sOptions.vtxSize = sizeof(VTLTEX);
     m_sOptions.vtxCnt = 4;
@@ -49,7 +44,7 @@ HRESULT CRectCol::ReadyRect()
     m_sOptions.idxSize = sizeof(INDEX16);
     m_sOptions.idxFmt = D3DFMT_INDEX16;
 
-    if (FAILED(CVIBuffer::Ready_Buffer()))
+    if (FAILED(CVIBuffer::Ready_Buffer(_device)))
         return E_FAIL;
 
     VTLTEX vertices[4] =

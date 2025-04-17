@@ -13,12 +13,8 @@ public:
 	virtual ~CTriCol();
 
 public:
-	void Awake() override;
-	void Render() override;
-
-public:
-	HRESULT Ready_Buffer() override;
-	void Render_Buffer() override;
+	HRESULT Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
+	void Render_Buffer(LPDIRECT3DDEVICE9 _device) override;
 
 public:
 	virtual CComponent* Clone();

@@ -16,15 +16,11 @@ public:
 	~CMesh();
 
 public:
-	void Awake() override;
-	void Render() override;
-
-public:
-	HRESULT Ready_Buffer() override;
+	HRESULT Ready_Buffer(LPDIRECT3DDEVICE9 _device) override;
 	void UpdateColor() override;
 
 public:
-	HRESULT Ready_Mesh();
+	HRESULT Ready_Mesh(LPDIRECT3DDEVICE9 _device);
 	const MeshType& getMeshType() { return m_eMeshType; }
 	void SetMeshType(const MeshType _type) { m_eMeshType = _type; }
 
@@ -32,13 +28,13 @@ public:
 		const void* _pIndices, UINT indexSize, UINT _indexCount, DWORD _fvf, D3DFORMAT _idxFormat);
 
 private:
-	HRESULT Create_Cube();
-	HRESULT Create_Sphere();
-	HRESULT Create_Capsule();
-	HRESULT Create_Cylinder();
-	HRESULT Create_Plane();
-	HRESULT Create_Quad();
-	HRESULT Create_Custom();
+	HRESULT Create_Cube(LPDIRECT3DDEVICE9 _device);
+	HRESULT Create_Sphere(LPDIRECT3DDEVICE9 _device);
+	HRESULT Create_Capsule(LPDIRECT3DDEVICE9 _device);
+	HRESULT Create_Cylinder(LPDIRECT3DDEVICE9 _device);
+	HRESULT Create_Plane(LPDIRECT3DDEVICE9 _device);
+	HRESULT Create_Quad(LPDIRECT3DDEVICE9 _device);
+	HRESULT Create_Custom(LPDIRECT3DDEVICE9 _device);
 
 private:
 	MeshType m_eMeshType;

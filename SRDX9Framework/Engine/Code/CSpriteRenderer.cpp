@@ -23,9 +23,9 @@ void CSpriteRenderer::Awake()
 {
     CComponent::Awake();
 
-	m_pBuffer = m_pGameObject->AddComponent<CRectCol>();
+    m_pBuffer = new CRectCol();
 
-	if (FAILED(m_pBuffer->Ready_Buffer()))
+	if (FAILED(m_pBuffer->Ready_Buffer(m_pGraphicDev)))
 		OutputDebugStringA("[SpriteRenderer] Failed to Ready_Buffer()\n");
 
     m_pMaterial = new CMaterial();
@@ -75,7 +75,7 @@ void CSpriteRenderer::Render()
 
     m_pGraphicDev->SetTexture(0, m_pTexture ? m_pTexture->getTexture() : nullptr);
 
-    m_pBuffer->Render_Buffer();
+    m_pBuffer->Render_Buffer(m_pGraphicDev);
 
     m_pGraphicDev->SetTexture(0, nullptr);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -86,6 +86,7 @@ void CSpriteRenderer::OnDestroy()
 {
 	CComponent::OnDestroy();
     
+    Safe_Delete(m_pBuffer);
     Safe_Delete(m_pMaterial);
 
 	m_pTexture = nullptr;
@@ -95,7 +96,7 @@ void CSpriteRenderer::SetTexture(CTexture* _texture)
 {
     m_pTexture = _texture;
 
-    m_pBuffer->Ready_Buffer();
+    m_pBuffer->Ready_Buffer(m_pGraphicDev);
 }
 
 void CSpriteRenderer::SetTintColor(ColorValue _color)

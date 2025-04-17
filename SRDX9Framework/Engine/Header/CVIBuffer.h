@@ -18,24 +18,15 @@ struct VIBufferOptions
 };
 
 class ENGINE_DLL CVIBuffer
-    : public CComponent
 {
 public:
 	explicit CVIBuffer();
 	virtual ~CVIBuffer();
 
 public:
-	virtual HRESULT	Ready_Buffer();
-	virtual void Render_Buffer();
-
-public:
-	void Start() override;
-	void Update() override;
-	void FixedUpdate() override;
-	void LateUpdate() override;
-	void OnEnable() override;
-	void OnDisable() override;
-	void OnDestroy() override;
+	virtual HRESULT	Ready_Buffer(LPDIRECT3DDEVICE9 _device);
+	virtual void Render_Buffer(LPDIRECT3DDEVICE9 _device);
+	void Destroy();
 
 public:
 	HRESULT FillVertexBuffer(const void* pVertices, UINT size);

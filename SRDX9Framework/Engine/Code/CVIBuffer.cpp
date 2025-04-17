@@ -9,12 +9,12 @@ CVIBuffer::CVIBuffer()
 
 CVIBuffer::~CVIBuffer()
 {
-	OnDestroy();
+	Destroy();
 }
 
-HRESULT CVIBuffer::Ready_Buffer()
+HRESULT CVIBuffer::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-	if (FAILED(m_pGraphicDev->CreateVertexBuffer(m_sOptions.vtxCnt * m_sOptions.vtxSize, // 버텍스 버퍼의 크기
+	if (FAILED(_device->CreateVertexBuffer(m_sOptions.vtxCnt * m_sOptions.vtxSize, // 버텍스 버퍼의 크기
 		0,						// 정적 버퍼로 생성(D3DUSAGE_DYNAMIC : 동적 버퍼)
 		m_sOptions.fvf,				// 버텍스 속성 정보
 		D3DPOOL_MANAGED,		// 정적 버퍼이기 때문에 MANAGED
@@ -22,7 +22,7 @@ HRESULT CVIBuffer::Ready_Buffer()
 		NULL)))
 		return E_FAIL;
 
-	if (FAILED(m_pGraphicDev->CreateIndexBuffer(m_sOptions.triCnt * m_sOptions.idxSize, // 인덱스 버퍼의 크기
+	if (FAILED(_device->CreateIndexBuffer(m_sOptions.triCnt * m_sOptions.idxSize, // 인덱스 버퍼의 크기
 		0,						// 정적 버퍼로 생성(D3DUSAGE_DYNAMIC : 동적 버퍼)
 		m_sOptions.idxFmt,				// 인덱스 속성 정보
 		D3DPOOL_MANAGED,		// 정적 버퍼이기 때문에 MANAGED
@@ -33,18 +33,18 @@ HRESULT CVIBuffer::Ready_Buffer()
 	return S_OK;
 }
 
-void CVIBuffer::Render_Buffer()
+void CVIBuffer::Render_Buffer(LPDIRECT3DDEVICE9 _device)
 {
 	if (!m_pVB)
 		return;
 
-	m_pGraphicDev->SetStreamSource(0, m_pVB, 0, m_sOptions.vtxSize);
-	m_pGraphicDev->SetFVF(m_sOptions.fvf);
+	_device->SetStreamSource(0, m_pVB, 0, m_sOptions.vtxSize);
+	_device->SetFVF(m_sOptions.fvf);
 
 	if (m_pIB)
 	{
-		m_pGraphicDev->SetIndices(m_pIB);
-		m_pGraphicDev->DrawIndexedPrimitive
+		_device->SetIndices(m_pIB);
+		_device->DrawIndexedPrimitive
 		(
 			D3DPT_TRIANGLELIST,
 			0, 0,
@@ -54,37 +54,12 @@ void CVIBuffer::Render_Buffer()
 	}
 	else
 	{
-		m_pGraphicDev->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_sOptions.triCnt);
+		_device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_sOptions.triCnt);
 	}
 }
 
-void CVIBuffer::Start()
+void CVIBuffer::Destroy()
 {
-}
-
-void CVIBuffer::Update()
-{
-}
-
-void CVIBuffer::FixedUpdate()
-{
-}
-
-void CVIBuffer::LateUpdate()
-{
-}
-
-void CVIBuffer::OnEnable()
-{
-}
-
-void CVIBuffer::OnDisable()
-{
-}
-
-void CVIBuffer::OnDestroy()
-{
-	CComponent::OnDestroy();
 	Safe_Release(m_pVB);
 }
 

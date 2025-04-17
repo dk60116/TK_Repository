@@ -15,7 +15,7 @@ void CMeshFilter::Awake()
 {
 	CComponent::Awake();
 
-	m_pMesh = m_pGameObject->AddComponent<CMesh>();
+	m_pMesh = new CMesh();
 }
 
 void CMeshFilter::Start()
@@ -32,11 +32,11 @@ void CMeshFilter::Render()
 
 void CMeshFilter::OnDestroy()
 {
-	m_pMesh = nullptr;
+	Safe_Delete(m_pMesh);
 }
 
 void CMeshFilter::SetMesh(CMesh::MeshType _type)
 {
 	m_pMesh->SetMeshType(_type);
-	m_pMesh->Ready_Mesh();
+	m_pMesh->Ready_Mesh(m_pGraphicDev);
 }
