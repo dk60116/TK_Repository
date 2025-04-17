@@ -4,11 +4,11 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CTexture :
-    public CResource
+class ENGINE_DLL CTexture final
+    : public CResource
 {
 public:
-    CTexture();
+    explicit CTexture();
     ~CTexture();
 
 public:

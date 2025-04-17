@@ -12,7 +12,7 @@ struct MaterialOptions
 	_float power = 5.f;
 };
 
-class ENGINE_DLL CMaterial
+class ENGINE_DLL CMaterial final
 {
 public:
 	CMaterial();

@@ -21,7 +21,7 @@ private:
 	enum CameraViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
 public:
-    CCamera();
+    explicit CCamera();
     ~CCamera();
 
 public:

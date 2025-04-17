@@ -17,7 +17,7 @@ struct Directions
 	vector3 down = vector3::zero();
 };
 
-class ENGINE_DLL CTransform
+class ENGINE_DLL CTransform final
 	: public CComponent
 {
 public:

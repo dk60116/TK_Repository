@@ -9,6 +9,7 @@ class CGameObject;
 class CTransform;
 
 class ENGINE_DLL CComponent
+	: public UObject
 {
 public:
 	explicit CComponent();

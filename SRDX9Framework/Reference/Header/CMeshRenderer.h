@@ -7,11 +7,11 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CMeshRenderer 
+class ENGINE_DLL CMeshRenderer final
     : public CComponent
 {
 public:
-    CMeshRenderer();
+    explicit CMeshRenderer();
     ~CMeshRenderer();
 
 public:

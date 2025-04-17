@@ -17,8 +17,8 @@ struct VIBufferOptions
 	ColorValue color;
 };
 
-class ENGINE_DLL CVIBuffer :
-    public CComponent
+class ENGINE_DLL CVIBuffer
+    : public CComponent
 {
 public:
 	explicit CVIBuffer();

@@ -4,8 +4,8 @@
 
 BEGIN(Engine)
 
-class CRectCol :
-    public CVIBuffer
+class CRectCol final
+    : public CVIBuffer
 {
 public:
     explicit CRectCol();

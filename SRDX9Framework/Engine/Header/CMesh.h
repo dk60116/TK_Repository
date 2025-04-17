@@ -5,14 +5,14 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CMesh
+class ENGINE_DLL CMesh final
 	: public CVIBuffer
 {
 public:
 	enum MeshType { CUBE, SPHERE, CAPSULE, CYLINDER, PLANE, QUAD, CUSTOM };
 
 public:
-	CMesh();
+	explicit CMesh();
 	~CMesh();
 
 public:

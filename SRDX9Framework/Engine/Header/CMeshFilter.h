@@ -5,11 +5,11 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CMeshFilter 
+class ENGINE_DLL CMeshFilter final
     : public CComponent
 {
 public:
-    CMeshFilter();
+    explicit CMeshFilter();
     ~CMeshFilter();
 
 public:

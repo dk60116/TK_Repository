@@ -4,8 +4,8 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CTriCol :
-    public CVIBuffer
+class ENGINE_DLL CTriCol final
+    : public CVIBuffer
 {
 public:
 	explicit CTriCol();

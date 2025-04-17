@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CResource
 {
 public:
-	CResource();
+	explicit CResource();
 	~CResource();
 
 public:

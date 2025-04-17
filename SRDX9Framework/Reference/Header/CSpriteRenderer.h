@@ -7,7 +7,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CSpriteRenderer 
+class ENGINE_DLL CSpriteRenderer final
     : public CComponent
 {
 public:
