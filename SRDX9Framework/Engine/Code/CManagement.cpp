@@ -45,3 +45,9 @@ void CManagement::Destroy()
 
 	m_mSceneList.clear();
 }
+
+void CManagement::SetGraphicDevice(LPDIRECT3DDEVICE9 _gd)
+{
+	m_pGraphicDev = _gd;
+	//m_pGraphicDev->AddRef();
+}

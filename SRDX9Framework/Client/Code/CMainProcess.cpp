@@ -32,7 +32,6 @@ HRESULT CMainProcess::Ready_MainApp()
 #endif
 
 	m_pGraphicDev = m_pDevClass->Get_GraphicDev();
-	m_pGraphicDev->AddRef();
 
 	CTimeMgr::GetInstance().Ready_Timer();
 

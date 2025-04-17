@@ -24,7 +24,7 @@ void CMainScene::Awake()
 	cameraObj->AddComponent<CCamera>();
 	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
 
-	return;
+	//return;
 
 	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
 	lightObj->AddComponent<CLight>();
@@ -70,13 +70,14 @@ void CMainScene::Update()
 	if (CInput::GetInstance().GetKey(RIGHT))
 		camDir.x += 1.f;
 
-	if (m_vCameraList.empty())
-		return;
-
 	//m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
+
+	m_pGraphicDev->AddRef();
+	ULONG rcount = m_pGraphicDev->Release();
+	CDebug::Log((int)rcount);
 }
 
 void CMainScene::FixedUpdate()

@@ -59,7 +59,6 @@ void CComponent::OnDisable()
 
 void CComponent::OnDestroy()
 {
-	Safe_Release(m_pGraphicDev);
 }
 
 void CComponent::SetDevice()

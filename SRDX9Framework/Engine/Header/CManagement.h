@@ -19,10 +19,10 @@ public:
 
 public:
 	LPDIRECT3DDEVICE9 getGraphicDevice() { return m_pGraphicDev; }
-	void SetGraphicDevice(LPDIRECT3DDEVICE9 _gd) { m_pGraphicDev = _gd; }
+	void SetGraphicDevice(LPDIRECT3DDEVICE9 _gd);
 
 private:
-	LPDIRECT3DDEVICE9	m_pGraphicDev;
+	LPDIRECT3DDEVICE9 m_pGraphicDev;
 	CScene* m_pCrtScene;
 	map<wstring, CScene*> m_mSceneList;
 };

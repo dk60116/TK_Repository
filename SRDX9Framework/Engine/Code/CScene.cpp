@@ -97,6 +97,7 @@ void CScene::Destroy()
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
 			(*it)->OnDestroy();
+			Safe_Delete(*it);
 		}
 
 		m_lObjectList[i].clear();

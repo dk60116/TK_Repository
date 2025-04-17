@@ -10,7 +10,7 @@ CGameObject::CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 	, m_pGraphicDev(_pGraphicDev)
 	, m_pTransform(nullptr)
 {
-	m_pGraphicDev->AddRef();
+	//m_pGraphicDev->AddRef();
 }
 
 CGameObject::CGameObject(const CGameObject& _rhs)
@@ -23,7 +23,7 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_pGraphicDev(_rhs.m_pGraphicDev)
 	, m_pTransform(_rhs.m_pTransform)
 {
-	m_pGraphicDev->AddRef();
+	//m_pGraphicDev->AddRef();
 }
 
 CGameObject::~CGameObject()

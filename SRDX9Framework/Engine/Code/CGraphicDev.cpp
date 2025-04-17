@@ -162,8 +162,8 @@ HRESULT CGraphicDev::ReSize(_uint _newWidth, _uint _newHeight)
 
 void CGraphicDev::Free()
 {
-	Safe_Release(m_pGraphicDev);
 	Safe_Release(m_pSDK);
+	Safe_Release(m_pGraphicDev);
 }
 
 void IDeviceResetListener::RegisterResetListener(IDeviceResetListener* pListener)

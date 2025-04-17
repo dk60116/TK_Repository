@@ -20,12 +20,11 @@ private:
 };
 
 class ENGINE_DLL CGraphicDev 
-	: public UObject
 {
 	SINGLETONCLASS(CGraphicDev);
 
 public:
-	LPDIRECT3DDEVICE9	Get_GraphicDev() { return m_pGraphicDev; }
+	LPDIRECT3DDEVICE9 Get_GraphicDev() { return m_pGraphicDev; }
 
 public:
 	HRESULT Ready_GraphicDev(HWND hWnd, 
