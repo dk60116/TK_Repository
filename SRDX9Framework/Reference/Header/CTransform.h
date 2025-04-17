@@ -20,7 +20,7 @@ struct Directions
 class ENGINE_DLL CTransform
 	: public CComponent
 {
-public:
+private:
 	explicit CTransform();
 	~CTransform();
 
@@ -125,6 +125,9 @@ private:
 	quaternion m_v4Quaternion;
 	_matrix m_matWorld;
 	Directions m_sDirections;
+
+	template<typename T>
+	friend T* CComponent::Create();
 };
 
 END

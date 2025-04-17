@@ -19,7 +19,7 @@ public:
     void FixedUpdate() override;
     void LateUpdate() override;
     void Render() override;
-    void Release() override;
+    void Destroy() override;
 
 private:
     CPlayer* m_pPlayer;

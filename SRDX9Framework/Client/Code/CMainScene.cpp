@@ -11,7 +11,7 @@ CMainScene::CMainScene()
 
 CMainScene::~CMainScene()
 {
-	CScene::Release();
+	CScene::Destroy();
 }
 
 void CMainScene::Awake()
@@ -71,7 +71,7 @@ void CMainScene::Update()
 	if (m_vCameraList.empty())
 		return;
 
-	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
+	//m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
@@ -90,7 +90,7 @@ void CMainScene::Render()
 	CScene::Render();
 }
 
-void CMainScene::Release()
+void CMainScene::Destroy()
 {
 #ifdef  _DEBUG
 	CDebug::Release();

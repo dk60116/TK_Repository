@@ -14,10 +14,10 @@ struct CameraViewParameters
 	float farZ = 600.f;
 };
 
-class ENGINE_DLL CCamera :
-    public CComponent
+class ENGINE_DLL CCamera final 
+	: public CComponent
 {
-public:
+private:
 	enum CameraViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
 public:
@@ -51,6 +51,9 @@ private:
 	CameraViewMode m_eCamViewMode;
 	CameraViewParameters m_sParameters;
 	_matrix m_matProjMatrix, m_matViewMatrix;
+
+	template<typename T>
+	friend T* CComponent::Create();
 };
 
 END

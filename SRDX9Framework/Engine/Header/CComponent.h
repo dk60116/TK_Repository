@@ -1,4 +1,6 @@
 #pragma once
+
+#include "UObject.h"
 #include "Engine_Define.h"
 
 BEGIN(Engine)
@@ -7,11 +9,16 @@ class CGameObject;
 class CTransform;
 
 class ENGINE_DLL CComponent
+	: public UObject
 {
-public:
+protected:
 	explicit CComponent();
 	explicit CComponent(const CComponent& _rhs);
 	virtual ~CComponent();
+
+public:
+	template <typename T>
+	static T* Create();
 
 public:
 	virtual void Awake();
@@ -39,3 +46,11 @@ protected:
 };
 
 END
+
+template<typename T>
+inline T* CComponent::Create()
+{
+	T* newComponent = new T();
+
+	return newComponent;
+}

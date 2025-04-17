@@ -29,7 +29,7 @@ public:
     virtual void FixedUpdate();
     virtual void LateUpdate();
     virtual void Render();
-    virtual void Release();
+    virtual void Destroy();
 
 public:
     void SetName(const wstring _name) { m_strSceneName = _name; }

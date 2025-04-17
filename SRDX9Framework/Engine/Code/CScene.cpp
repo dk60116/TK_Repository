@@ -13,7 +13,7 @@ CScene::CScene()
 
 CScene::~CScene()
 {
-	Release();
+	Destroy();
 }
 
 void CScene::Awake()
@@ -90,13 +90,15 @@ void CScene::Render()
 	}
 }
 
-void CScene::Release()
+void CScene::Destroy()
 {
+	Release();
+
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
-			(*it)->OnDestroy();
+			//(*it)->OnDestroy();
 			Safe_Release(*it);
 		}
 

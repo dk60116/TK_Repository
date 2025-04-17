@@ -22,6 +22,7 @@ CComponent::CComponent(const CComponent& _rhs)
 
 CComponent::~CComponent()
 {
+	OnDestroy();
 }
 
 void CComponent::Awake()
@@ -58,6 +59,7 @@ void CComponent::OnDisable()
 
 void CComponent::OnDestroy()
 {
+	Release();
 	Safe_Release(m_pGraphicDev);
 }
 

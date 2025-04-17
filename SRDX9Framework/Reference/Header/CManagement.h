@@ -1,11 +1,13 @@
 #pragma once
 
+#include "UObject.h"
 #include "Engine_Define.h"
 #include "CScene.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CManagement
+	: public UObject
 {
 	SINGLETONCLASS(CManagement);
 
@@ -15,7 +17,7 @@ public:
 	CScene* getCrtScene() { return m_pCrtScene; }
 	HRESULT ChangeScene(wstring _scene);
 
-	void Release();
+	void Destroy();
 
 public:
 	LPDIRECT3DDEVICE9 getGraphicDevice() { return m_pGraphicDev; }
@@ -40,6 +42,7 @@ inline void CManagement::CreateScene(wstring _name)
 	{
 		scene->SetName(_name);
 		scene->SetGraphicDev(m_pGraphicDev);
+		scene->AddRef();
 
 		m_mSceneList.insert({ _name, scene });
 	}

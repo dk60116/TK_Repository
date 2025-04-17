@@ -9,7 +9,7 @@ CManagement::CManagement()
 
 CManagement::~CManagement()
 {
-	Release();
+	Destroy();
 }
 
 HRESULT CManagement::ChangeScene(wstring _scene)
@@ -20,7 +20,7 @@ HRESULT CManagement::ChangeScene(wstring _scene)
 		return E_FAIL;
 
 	if (m_pCrtScene)
-		m_pCrtScene->Release();
+		m_pCrtScene->Destroy();
 
 	m_pCrtScene = iter->second;
 	iter->second->Awake();
@@ -28,11 +28,12 @@ HRESULT CManagement::ChangeScene(wstring _scene)
 	return S_OK;
 }
 
-void CManagement::Release()
+void CManagement::Destroy()
 {
 	for (TRAVERSAL_ITER(m_mSceneList, it))
 	{
-		Safe_Delete((*it).second);
+		Safe_Release((*it).second);
+		//Safe_Delete((*it).second);
 	}
 
 	m_mSceneList.clear();

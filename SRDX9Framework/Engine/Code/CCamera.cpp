@@ -11,7 +11,7 @@ CCamera::CCamera()
 
 CCamera::~CCamera()
 {
-	CComponent::OnDestroy();
+	OnDestroy();
 }
 
 void CCamera::Awake()
@@ -53,6 +53,7 @@ void CCamera::OnDisable()
 
 void CCamera::OnDestroy()
 {
+	CComponent::OnDestroy();
 }
 
 void CCamera::UpdateProjectionMatrix()

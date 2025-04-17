@@ -61,18 +61,19 @@ protected:
 template<typename T>
 inline T* CGameObject::AddComponent()
 {
-	T* _newComponent = new T();
-	dynamic_cast<CComponent*>(_newComponent)->SetObject(this);
-	m_lComponentlist.push_back(_newComponent);
+	T* newComponent = dynamic_cast<T*>(CComponent::Create<T>());
+	dynamic_cast<CComponent*>(newComponent)->SetObject(this);
+	m_lComponentlist.push_back(newComponent);
+	//newComponent->AddRef();
 	m_lComponentlist.back()->Awake();
 
-	if (dynamic_cast<CCamera*>(_newComponent))
-		m_pScene->AddCamera(dynamic_cast<CCamera*>(_newComponent));
+	if (dynamic_cast<CCamera*>(newComponent))
+		m_pScene->AddCamera(dynamic_cast<CCamera*>(newComponent));
 
-	if (dynamic_cast<CLight*>(_newComponent))
-		m_pScene->AddLight(dynamic_cast<CLight*>(_newComponent));
+	if (dynamic_cast<CLight*>(newComponent))
+		m_pScene->AddLight(dynamic_cast<CLight*>(newComponent));
 
-	return _newComponent;
+	return newComponent;
 }
 
 template<typename T>

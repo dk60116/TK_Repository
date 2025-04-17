@@ -17,7 +17,7 @@ struct LightOptions
 	_float phi = 1.f;
 };
 
-class ENGINE_DLL CLight
+class ENGINE_DLL CLight final
 	: public CComponent
 {
 public:
