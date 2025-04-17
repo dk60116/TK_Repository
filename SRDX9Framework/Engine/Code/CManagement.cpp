@@ -49,5 +49,5 @@ void CManagement::Destroy()
 void CManagement::SetGraphicDevice(LPDIRECT3DDEVICE9 _gd)
 {
 	m_pGraphicDev = _gd;
-	//m_pGraphicDev->AddRef();
+	m_pGraphicDev->AddRef();
 }

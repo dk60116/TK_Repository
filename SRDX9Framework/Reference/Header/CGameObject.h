@@ -11,8 +11,11 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject
+	: public UObject
 {
-public:
+	friend class CScene;
+
+private:
 	explicit CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev);
 	explicit CGameObject(const CGameObject& _rhs);
 	virtual ~CGameObject();

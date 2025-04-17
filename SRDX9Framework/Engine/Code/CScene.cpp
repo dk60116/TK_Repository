@@ -97,7 +97,7 @@ void CScene::Destroy()
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
 			(*it)->OnDestroy();
-			Safe_Delete(*it);
+			Safe_Release(*it);
 		}
 
 		m_lObjectList[i].clear();
@@ -107,6 +107,7 @@ void CScene::Destroy()
 CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 {
 	CGameObject* obj = new CGameObject(_objName, CManagement::GetInstance().getGraphicDevice());
+	obj->AddRef();
 	obj->SetScene(this);
 	m_lObjectList[_layer].push_back(obj);
 	obj->Awake();
