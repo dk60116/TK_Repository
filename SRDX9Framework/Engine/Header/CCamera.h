@@ -14,7 +14,7 @@ struct CameraViewParameters
 	float farZ = 600.f;
 };
 
-class ENGINE_DLL CCamera final 
+class ENGINE_DLL CCamera 
 	: public CComponent
 {
 private:

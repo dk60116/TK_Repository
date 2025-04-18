@@ -7,7 +7,9 @@ BEGIN(Engine)
 class CRectCol final
     : public CVIBuffer
 {
-public:
+    friend class CSpriteRenderer;
+
+private:
     explicit CRectCol();
     explicit CRectCol(const CRectCol& _rhs);
     ~CRectCol();

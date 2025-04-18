@@ -5,7 +5,7 @@ CGraphicDev::CGraphicDev()
 	: m_pSDK(NULL)
 	, m_pGraphicDev(NULL)
 {
-			
+	m_strName = L"GraphicDevice";
 }
 
 CGraphicDev::~CGraphicDev()

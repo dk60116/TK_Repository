@@ -54,9 +54,7 @@ void CMainScene::Awake()
 	CGameObject* boxObj = AddObject(L"Box", Layer::DEFAULT);
 	boxObj->getTransform().SetPosition(2.f, -2.f, 0.f);
 	CMeshRenderer* boxRender = boxObj->AddComponent<CMeshRenderer>();
-	CMeshFilter* filter = boxObj->AddComponent<CMeshFilter>();
-	filter->SetMesh(CMesh::CUBE);
-	boxRender->SetMeshFilter(filter);
+	boxRender->SetMeshFilterType(CMesh::CUBE);
 }
 
 void CMainScene::Start()

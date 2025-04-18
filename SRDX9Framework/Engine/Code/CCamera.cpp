@@ -7,6 +7,7 @@ CCamera::CCamera()
 	, m_sParameters({})
 	, m_matProjMatrix()
 {
+	m_strName = L"Camera";
 }
 
 CCamera::~CCamera()

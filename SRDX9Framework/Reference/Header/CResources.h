@@ -1,5 +1,6 @@
 #pragma once
 
+#include "UObject.h"
 #include "Engine_Define.h"
 #include "CResource.h"
 #include "CDebug.h"
@@ -10,6 +11,7 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CResources
+	: public UObject
 {
 	SINGLETONCLASS(CResources);
 

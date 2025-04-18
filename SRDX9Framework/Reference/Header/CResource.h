@@ -1,10 +1,12 @@
 #pragma once
 
+#include "UObject.h"
 #include "Engine_Define.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CResource
+class ENGINE_DLL CResource abstract
+	: public UObject
 {
 public:
 	explicit CResource();

@@ -10,7 +10,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CGameObject
+class ENGINE_DLL CGameObject final
 	: public UObject
 {
 	friend class CScene;

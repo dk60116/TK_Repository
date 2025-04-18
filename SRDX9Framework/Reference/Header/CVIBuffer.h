@@ -1,5 +1,6 @@
 #pragma once
 
+#include "UObject.h"
 #include "CComponent.h"
 
 BEGIN(Engine)
@@ -17,7 +18,8 @@ struct VIBufferOptions
 	ColorValue color;
 };
 
-class ENGINE_DLL CVIBuffer
+class ENGINE_DLL CVIBuffer abstract
+	: public UObject
 {
 public:
 	explicit CVIBuffer();

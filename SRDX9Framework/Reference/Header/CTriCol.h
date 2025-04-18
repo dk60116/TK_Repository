@@ -9,7 +9,6 @@ class ENGINE_DLL CTriCol final
 {
 public:
 	explicit CTriCol();
-	explicit CTriCol(const CTriCol& _rhs);
 	virtual ~CTriCol();
 
 public:

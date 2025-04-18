@@ -4,6 +4,7 @@
 CMeshFilter::CMeshFilter()
 	: m_pMesh(nullptr)
 {
+	m_strName = L"MeshFilter";
 }
 
 CMeshFilter::~CMeshFilter()
@@ -16,6 +17,7 @@ void CMeshFilter::Awake()
 	CComponent::Awake();
 
 	m_pMesh = new CMesh();
+	m_pMesh->AddRef();
 }
 
 void CMeshFilter::Start()
@@ -33,7 +35,8 @@ void CMeshFilter::Render()
 void CMeshFilter::OnDestroy()
 {
 	CComponent::OnDestroy();
-	Safe_Delete(m_pMesh);
+	Safe_Release(m_pMesh);
+	Release();
 }
 
 void CMeshFilter::SetMesh(CMesh::MeshType _type)

@@ -11,7 +11,9 @@ class ENGINE_DLL CMesh final
 public:
 	enum MeshType { CUBE, SPHERE, CAPSULE, CYLINDER, PLANE, QUAD, CUSTOM };
 
-public:
+	friend class CMeshFilter;
+
+private:
 	explicit CMesh();
 	~CMesh();
 

@@ -20,9 +20,10 @@ void CMeshRenderer::Awake()
     CComponent::Awake();
 
     m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
-    m_pMaterial = new CMaterial();
-
+    m_pMeshFilter->AddRef();
     m_pMeshFilter->SetMesh(CMesh::CUBE);
+
+    m_pMaterial = new CMaterial();
 }
 
 void CMeshRenderer::Start()
@@ -74,4 +75,9 @@ void CMeshRenderer::OnDestroy()
 {
     CComponent::OnDestroy();
     Safe_Delete(m_pMaterial);
+}
+
+void CMeshRenderer::SetMeshFilterType(CMesh::MeshType _type)
+{
+    m_pMeshFilter->SetMesh(_type);
 }

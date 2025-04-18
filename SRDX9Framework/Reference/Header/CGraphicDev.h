@@ -19,7 +19,8 @@ private:
 	vector<IDeviceResetListener*> m_vecResetListeners;
 };
 
-class ENGINE_DLL CGraphicDev 
+class ENGINE_DLL CGraphicDev
+	: public UObject
 {
 	SINGLETONCLASS(CGraphicDev);
 

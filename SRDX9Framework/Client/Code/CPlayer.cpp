@@ -21,6 +21,7 @@ void CPlayer::Awake()
 	getTransform().SetLocalScaleX(2.f);
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
+	m_pMeshRenderer->SetMeshFilterType(CMesh::SPHERE);
 
 	//m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
 	//auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();

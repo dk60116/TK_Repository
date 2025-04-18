@@ -10,6 +10,7 @@ CSpriteRenderer::CSpriteRenderer()
     , m_pMaterial(nullptr)
     , m_sOptions({})
 {
+    m_strName = L"SpriteRenderer";
 	SetRect(&m_rcUV, 0, 0, 1, 1);
 }
 
@@ -23,6 +24,7 @@ void CSpriteRenderer::Awake()
     CComponent::Awake();
 
     m_pBuffer = new CRectCol();
+    m_pBuffer->AddRef();
 
 	if (FAILED(m_pBuffer->Ready_Buffer(m_pGraphicDev)))
 		OutputDebugStringA("[SpriteRenderer] Failed to Ready_Buffer()\n");
@@ -91,7 +93,7 @@ void CSpriteRenderer::OnDestroy()
 {
 	CComponent::OnDestroy();
     
-    Safe_Delete(m_pBuffer);
+    Safe_Release(m_pBuffer);
     Safe_Delete(m_pMaterial);
 
 	m_pTexture = nullptr;

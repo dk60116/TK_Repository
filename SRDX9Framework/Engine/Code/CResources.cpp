@@ -5,6 +5,7 @@
 CResources::CResources()
 	: m_strBasePath(L"Resources")
 {
+    m_strName = L"Resourecs";
 }
 
 CResources::~CResources()

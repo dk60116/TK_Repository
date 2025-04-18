@@ -4,13 +4,9 @@ CTriCol::CTriCol()
 {
 }
 
-CTriCol::CTriCol(const CTriCol& _rhs)
-    : CVIBuffer(_rhs)
-{
-}
-
 CTriCol::~CTriCol()
 {
+    Destroy();
 }
 
 HRESULT CTriCol::Ready_Buffer(LPDIRECT3DDEVICE9 _device)

@@ -7,11 +7,13 @@ CLight::CLight()
 	, m_sLightInfo({})
 	, m_sOptions({})
 {
+	m_strName = L"Light";
 	Init();
 }
 
 CLight::~CLight()
 {
+	OnDestroy();
 }
 
 void CLight::Init()

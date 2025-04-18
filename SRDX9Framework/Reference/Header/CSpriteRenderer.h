@@ -36,7 +36,7 @@ public:
 
 private:
     CTexture* m_pTexture;
-    CVIBuffer* m_pBuffer;
+    CRectCol* m_pBuffer;
     RECT m_rcUV;
     CMaterial* m_pMaterial;
 

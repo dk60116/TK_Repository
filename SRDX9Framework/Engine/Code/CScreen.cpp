@@ -14,7 +14,7 @@ CScreen::~CScreen()
 {
 }
 
-void CScreen::Start_Window(HINSTANCE _hInst, HWND _hMainWnd, HWND _hGameWnd)
+void CScreen::Start_Window(HINSTANCE _hInst, HWND _hMainWnd, HWND _hSceneWnd, HWND _hGameWnd)
 {
 	m_hInstance = _hInst;
 	m_hMainWnd = _hMainWnd;

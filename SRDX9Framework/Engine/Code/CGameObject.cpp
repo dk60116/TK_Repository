@@ -10,6 +10,7 @@ CGameObject::CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 	, m_pGraphicDev(_pGraphicDev)
 	, m_pTransform(nullptr)
 {
+	m_strName = L"GameObject";
 }
 
 CGameObject::CGameObject(const CGameObject& _rhs)

@@ -8,13 +8,13 @@ BEGIN(Engine)
 class CGameObject;
 class CTransform;
 
-class ENGINE_DLL CComponent
+class ENGINE_DLL CComponent abstract
 	: public UObject
 {
 public:
 	explicit CComponent();
 	explicit CComponent(const CComponent& _rhs);
-	virtual ~CComponent();
+	~CComponent();
 
 public:
 	virtual void Awake();
