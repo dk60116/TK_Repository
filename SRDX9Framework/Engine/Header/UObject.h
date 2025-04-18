@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL UObject
+class ENGINE_DLL UObject abstract
 {
 public:
 	UObject();

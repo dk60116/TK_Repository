@@ -59,6 +59,7 @@ void CComponent::OnDisable()
 
 void CComponent::OnDestroy()
 {
+	Release();
 }
 
 void CComponent::SetDevice()

@@ -8,7 +8,7 @@ BEGIN(Engine)
 class IDeviceResetListener
 {
 public:
-	virtual void OnDeviceLost() = 0;
+	virtual void OnDeviceLost() PURE;
 	virtual void OnDeviceReset(LPDIRECT3DDEVICE9 pDevice, _uint _width, _uint _height) PURE;
 	virtual ~IDeviceResetListener() = default;
 
@@ -24,7 +24,7 @@ class ENGINE_DLL CGraphicDev
 	SINGLETONCLASS(CGraphicDev);
 
 public:
-	LPDIRECT3DDEVICE9& Get_GraphicDev();
+	LPDIRECT3DDEVICE9 Get_GraphicDev();
 
 public:
 	HRESULT Ready_GraphicDev(HWND hWnd, 

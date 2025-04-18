@@ -8,7 +8,7 @@ BEGIN(Engine)
 class IDeviceResetListener
 {
 public:
-	virtual void OnDeviceLost() = 0;
+	virtual void OnDeviceLost() PURE;
 	virtual void OnDeviceReset(LPDIRECT3DDEVICE9 pDevice, _uint _width, _uint _height) PURE;
 	virtual ~IDeviceResetListener() = default;
 

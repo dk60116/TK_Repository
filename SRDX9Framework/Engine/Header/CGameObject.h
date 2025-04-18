@@ -62,6 +62,7 @@ inline T* CGameObject::AddComponent()
 {
 	T* newComponent = new T();
 	dynamic_cast<CComponent*>(newComponent)->SetObject(this);
+	newComponent->AddRef();
 	m_lComponentlist.push_back(newComponent);
 	m_lComponentlist.back()->Awake();
 

@@ -78,7 +78,8 @@ void CGameObject::OnDestroy()
 
 	for (TRAVERSAL_ITER(m_lComponentlist, it))
 	{
-		Safe_Delete(*it);
+		(*it)->OnDestroy();
+		Safe_Release(*it);
 	}
 
 	m_lComponentlist.clear();

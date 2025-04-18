@@ -49,7 +49,7 @@ void CMeshRenderer::Render()
     m_pGraphicDev->SetTransform(D3DTS_VIEW, &pCamera->getViewMatrix());
     m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &pCamera->getProjMatrix());
 
-    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
     m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
@@ -57,12 +57,12 @@ void CMeshRenderer::Render()
     if (m_pMaterial)
         m_pMaterial->Apply(m_pGraphicDev);
 
+    pMesh->Render_Buffer(m_pGraphicDev);
+
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
     m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
-
-    pMesh->Render_Buffer(m_pGraphicDev);
 }
 
 void CMeshRenderer::OnDestroy()

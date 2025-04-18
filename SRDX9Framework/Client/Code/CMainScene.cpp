@@ -20,7 +20,7 @@ void CMainScene::Awake()
 {
 	CScene::Awake();
 
-	return;
+	//return;
 
 	m_sOptions.lighting = true;
 
@@ -36,6 +36,8 @@ void CMainScene::Awake()
 
 	 CGameObject* playerObj = AddObject(L"Player", Layer::DEFAULT);
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
+
+	return;
 
 	CGameObject* playerHead = AddObject(L"PlayerHead", Layer::DEFAULT);
 	CSpriteRenderer* phRender = playerHead->AddComponent<CSpriteRenderer>();
