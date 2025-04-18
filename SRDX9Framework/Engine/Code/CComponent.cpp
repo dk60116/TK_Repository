@@ -64,7 +64,6 @@ void CComponent::OnDestroy()
 void CComponent::SetDevice()
 {
 	m_pGraphicDev = CGraphicDev::GetInstance().Get_GraphicDev();
-	m_pGraphicDev->AddRef();
 }
 
 CTransform& CComponent::getTransform()

@@ -31,7 +31,6 @@ private:
 private:
 	GameRunningState m_eGameState;
 	CGraphicDev* m_pDevClass;
-	LPDIRECT3DDEVICE9	m_pGraphicDev;
 	_bool m_bStepOneFrame;
 };
 

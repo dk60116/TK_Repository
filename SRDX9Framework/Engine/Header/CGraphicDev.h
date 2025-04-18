@@ -24,7 +24,7 @@ class ENGINE_DLL CGraphicDev
 	SINGLETONCLASS(CGraphicDev);
 
 public:
-	LPDIRECT3DDEVICE9 Get_GraphicDev() { return m_pGraphicDev; }
+	LPDIRECT3DDEVICE9& Get_GraphicDev();
 
 public:
 	HRESULT Ready_GraphicDev(HWND hWnd, 

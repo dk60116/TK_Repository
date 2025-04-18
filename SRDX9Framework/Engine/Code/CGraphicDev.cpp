@@ -13,6 +13,11 @@ CGraphicDev::~CGraphicDev()
 	Free();
 }
 
+LPDIRECT3DDEVICE9& CGraphicDev::Get_GraphicDev()
+{
+	return m_pGraphicDev;
+}
+
 HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 	const _uint& iSizeX, const _uint& iSizeY, Engine::CGraphicDev** ppGraphicDev)
 {
@@ -163,7 +168,7 @@ HRESULT CGraphicDev::ReSize(_uint _newWidth, _uint _newHeight)
 void CGraphicDev::Free()
 {
 	Safe_Release(m_pSDK);
-	Safe_Release(m_pGraphicDev);
+	Sawfe_Release(m_pGraphicDev);
 }
 
 void IDeviceResetListener::RegisterResetListener(IDeviceResetListener* pListener)
