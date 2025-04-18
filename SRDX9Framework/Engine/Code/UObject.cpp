@@ -19,10 +19,11 @@ void UObject::AddRef()
 
 UINT UObject::Release() 
 {
+    int prevRefCount = m_iRefCount;
     int refCount = --m_iRefCount;
 
     if (refCount == 0)
         delete this;
 
-    return refCount;
+    return prevRefCount;
 }

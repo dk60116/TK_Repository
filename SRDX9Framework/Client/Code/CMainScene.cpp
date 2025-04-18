@@ -20,24 +20,18 @@ void CMainScene::Awake()
 {
 	CScene::Awake();
 
-	//return;
-
 	m_sOptions.lighting = true;
 
 	CGameObject* cameraObj = AddObject(L"Main Camera", Layer::DEFAULT);
 	cameraObj->AddComponent<CCamera>();
 	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
 
-	//return;
-
 	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
 	lightObj->AddComponent<CLight>();
 	lightObj->getTransform().SetEulerAngles(20.f, 30.f, 0.f);
 
-	 CGameObject* playerObj = AddObject(L"Player", Layer::DEFAULT);
+	CGameObject* playerObj = AddObject(L"Player", Layer::DEFAULT);
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
-
-	return;
 
 	CGameObject* playerHead = AddObject(L"PlayerHead", Layer::DEFAULT);
 	CSpriteRenderer* phRender = playerHead->AddComponent<CSpriteRenderer>();
@@ -104,9 +98,9 @@ void CMainScene::Update()
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
 
-	m_pGraphicDev->AddRef();
-	ULONG rcount = m_pGraphicDev->Release();
-	CDebug::Log((int)rcount);
+	//m_pPlayer->AddRef();
+	//ULONG rcount = m_pPlayer->Release();
+	//CDebug::Log((int)rcount);
 }
 
 void CMainScene::FixedUpdate()
@@ -124,7 +118,4 @@ void CMainScene::Render()
 
 void CMainScene::Destroy()
 {
-#ifdef  _DEBUG
-	CDebug::Release();
-#endif
 }

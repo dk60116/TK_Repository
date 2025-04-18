@@ -1,11 +1,13 @@
 #include "CMeshRenderer.h"
 #include "CManagement.h"
+#include "CGameObject.h"
 #include "CTransform.h"
 
 CMeshRenderer::CMeshRenderer()
 	: m_pMeshFilter(nullptr)
 	, m_pMaterial(nullptr)
 {
+    m_strName = L"MeshRenderer";
 }
 
 CMeshRenderer::~CMeshRenderer()
@@ -17,7 +19,10 @@ void CMeshRenderer::Awake()
 {
     CComponent::Awake();
 
+    m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
     m_pMaterial = new CMaterial();
+
+    m_pMeshFilter->SetMesh(CMesh::CUBE);
 }
 
 void CMeshRenderer::Start()
@@ -67,5 +72,6 @@ void CMeshRenderer::Render()
 
 void CMeshRenderer::OnDestroy()
 {
+    CComponent::OnDestroy();
     Safe_Delete(m_pMaterial);
 }

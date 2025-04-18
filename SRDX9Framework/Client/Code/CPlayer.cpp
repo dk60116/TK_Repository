@@ -11,6 +11,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
+	OnDestroy();
 }
 
 void CPlayer::Awake()
@@ -20,14 +21,12 @@ void CPlayer::Awake()
 	getTransform().SetLocalScaleX(2.f);
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	CMeshFilter* mf = m_pGameObject->AddComponent<CMeshFilter>();
-	m_pMeshRenderer->SetMeshFilter(mf);
-	mf->SetMesh(CMesh::SPHERE);
 
 	//m_pRenderer = m_pGameObject->AddComponent<CSpriteRenderer>();
 	//auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
 	//if (tex)
 		//m_pRenderer->SetTexture(tex);
+		// 
 	//m_pRenderer->SetTintColor(ColorValue::green());
 }
 
@@ -64,6 +63,7 @@ void CPlayer::OnDisable()
 
 void CPlayer::OnDestroy()
 {
+	CComponent::OnDestroy();
 }
 
 void CPlayer::KeyInput()

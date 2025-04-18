@@ -11,6 +11,7 @@ CTransform::CTransform()
 	, m_matWorld()
 	, m_sDirections({})
 {
+	m_strName = L"Transform";
 }
 
 CTransform::~CTransform()

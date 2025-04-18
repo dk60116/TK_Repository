@@ -32,6 +32,7 @@ void CMeshFilter::Render()
 
 void CMeshFilter::OnDestroy()
 {
+	CComponent::OnDestroy();
 	Safe_Delete(m_pMesh);
 }
 

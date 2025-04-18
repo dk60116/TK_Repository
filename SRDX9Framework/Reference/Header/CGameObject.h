@@ -64,7 +64,7 @@ inline T* CGameObject::AddComponent()
 	dynamic_cast<CComponent*>(newComponent)->SetObject(this);
 	newComponent->AddRef();
 	m_lComponentlist.push_back(newComponent);
-	m_lComponentlist.back()->Awake();
+	newComponent->Awake();
 
 	if (dynamic_cast<CCamera*>(newComponent))
 		m_pScene->AddCamera(dynamic_cast<CCamera*>(newComponent));
