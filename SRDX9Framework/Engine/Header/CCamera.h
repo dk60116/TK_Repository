@@ -9,7 +9,7 @@ struct CameraViewParameters
 {
 	float fov = D3DXToRadian(60.f);
 	float size = 1.f;
-	float ascpect = (float)CScreen::GetInstance().getResolution().x / (float)CScreen::GetInstance().getResolution().y;
+	float ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
 	float nearZ = 0.1f;
 	float farZ = 600.f;
 };

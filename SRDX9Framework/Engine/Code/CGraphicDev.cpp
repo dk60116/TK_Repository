@@ -18,8 +18,8 @@ LPDIRECT3DDEVICE9 CGraphicDev::Get_GraphicDev()
 	return m_pGraphicDev;
 }
 
-HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
-	const _uint& iSizeX, const _uint& iSizeY, Engine::CGraphicDev** ppGraphicDev)
+HRESULT CGraphicDev::Ready_GraphicDev(HWND _hWnd, WINMODE _eMode,
+	const _uint& _iSizeX, const _uint& iSizeY, CGraphicDev** _ppGraphicDev)
 {
 	// 장치를 조사할 객체를 생성
 	m_pSDK = Direct3DCreate9(D3D_SDK_VERSION);
@@ -53,7 +53,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(D3DPRESENT_PARAMETERS));
 
-	d3dpp.BackBufferWidth  = iSizeX;
+	d3dpp.BackBufferWidth  = _iSizeX;
 	d3dpp.BackBufferHeight = iSizeY;
 	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
 	d3dpp.BackBufferCount  = 1;
@@ -67,9 +67,9 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-	d3dpp.hDeviceWindow = hWnd;
+	d3dpp.hDeviceWindow = _hWnd;
 
-	d3dpp.Windowed = (eMode == MODE_WIN);
+	d3dpp.Windowed = (_eMode == MODE_WIN);
 	
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
@@ -78,16 +78,16 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND hWnd, WINMODE eMode,
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	if (FAILED(m_pSDK->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
-		hWnd, dwFlag, &d3dpp, &m_pGraphicDev)))
+		_hWnd, dwFlag, &d3dpp, &m_pGraphicDev)))
 		return E_FAIL;
 
-	*ppGraphicDev = this;
+	*_ppGraphicDev = this;
 
 	return S_OK;
 }
 
 // 후면 버퍼
-void CGraphicDev::Render_Begin(D3DXCOLOR _color)
+void CGraphicDev::Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color)
 {
 	// 화면 Clear
 	m_pGraphicDev->Clear(0, NULL,
@@ -95,15 +95,15 @@ void CGraphicDev::Render_Begin(D3DXCOLOR _color)
 		_color, 1.f, 0);
 
 	// 기본 Viewport (전체 영역) 적용
-	D3DVIEWPORT9 gameViewport = {};
-	gameViewport.X = 0;
-	gameViewport.Y = 0;
-	gameViewport.Width = CScreen::GetInstance().getResolution().x;
-	gameViewport.Height = CScreen::GetInstance().getResolution().y;
-	gameViewport.MinZ = 0.0f;
-	gameViewport.MaxZ = 1.0f;
+	//D3DVIEWPORT9 gameViewport = {};
+	//gameViewport.X = 0;
+	//gameViewport.Y = 0;
+	//gameViewport.Width = CScreen::GetInstance().getResolution().x;
+	//gameViewport.Height = CScreen::GetInstance().getResolution().y;
+	//gameViewport.MinZ = 0.0f;
+	//gameViewport.MaxZ = 1.0f;
 
-	m_pGraphicDev->SetViewport(&gameViewport);
+	m_pGraphicDev->SetViewport(&_viewPort);
 
 	m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -113,10 +113,10 @@ void CGraphicDev::Render_Begin(D3DXCOLOR _color)
 	m_pGraphicDev->BeginScene();
 }
 
-void CGraphicDev::Render_End()
+void CGraphicDev::Render_End(HWND _window)
 {
 	m_pGraphicDev->EndScene();
-	m_pGraphicDev->Present(NULL, NULL, NULL, NULL);
+	m_pGraphicDev->Present(NULL, NULL, _window, NULL);
 }
 
 HRESULT CGraphicDev::ReSize(_uint _newWidth, _uint _newHeight)

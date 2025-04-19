@@ -22,7 +22,7 @@ void CEngineEditor::Init(HINSTANCE _hInst, HWND _mainWnd)
 	m_hInst = _hInst;
 	m_bPaused = false;
 
-	int screenX = CScreen::GetInstance().getResolution().x;
+	int screenX = 1920;
 	int screenXCenter = screenX / 2;
 
 	// 상단바 영역
@@ -31,15 +31,15 @@ void CEngineEditor::Init(HINSTANCE _hInst, HWND _mainWnd)
 		0, 0, screenX, 30,
 		m_hMainWnd, nullptr, m_hInst, nullptr);
 
-	// 일시정지/재생 버튼
-	m_hBtnPause = CreateWindowW(L"BUTTON", L"II", WS_VISIBLE | WS_CHILD,
-		screenXCenter - 40 - 20, 1, 40, 28,
-		m_hMainWnd, (HMENU)ID_BTN_PAUSE, m_hInst, nullptr);
-
 	// 종료 버튼
 	m_hBtnStop = CreateWindowW(L"BUTTON", L"■", WS_VISIBLE | WS_CHILD,
-		screenXCenter - 20, 1, 40, 28,
+		screenXCenter - 40 - 20, 1, 40, 28,
 		m_hMainWnd, (HMENU)ID_BTN_STOP, m_hInst, nullptr);
+
+	// 일시정지/재생 버튼
+	m_hBtnPause = CreateWindowW(L"BUTTON", L"II", WS_VISIBLE | WS_CHILD,
+		screenXCenter - 20, 1, 40, 28,
+		m_hMainWnd, (HMENU)ID_BTN_PAUSE, m_hInst, nullptr);
 
 	// 다음 프레임 버튼
 	m_hBtnNextFrame = CreateWindowW(L"BUTTON", L"▶I", WS_VISIBLE | WS_CHILD,
@@ -91,12 +91,12 @@ void CEngineEditor::UpdateResolution(const vector2Int _resolution)
 		screenX, 30,
 		true);
 
-	MoveWindow(m_hBtnPause,
+	MoveWindow(m_hBtnStop,
 		screenXCenter - 40 - 20, 1,
 		40, 28,
 		true);
 
-	MoveWindow(m_hBtnStop,
+	MoveWindow(m_hBtnPause,
 		screenXCenter - 20, 1,
 		40, 28,
 		true);

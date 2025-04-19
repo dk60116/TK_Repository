@@ -26,9 +26,6 @@ public:
 	void SetStepOne(_bool _value) { m_bStepOneFrame = _value; }
 
 private:
-	LPDIRECT3DVERTEXBUFFER9 m_pVB;
-
-private:
 	GameRunningState m_eGameState;
 	CGraphicDev* m_pDevClass;
 	_bool m_bStepOneFrame;

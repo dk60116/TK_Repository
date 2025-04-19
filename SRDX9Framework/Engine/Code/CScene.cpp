@@ -48,15 +48,6 @@ void CScene::LateUpdate()
 
 void CScene::Render()
 {
-	//for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
-	//{
-	//	for (TRAVERSAL_ITER(m_lObjectList[i], it))
-	//	{
-	//		if ((*it)->isActive() && (*it)->isEnable())
-	//			(*it)->Render();
-	//	}
-	//}
-
 	if (m_vCameraList.empty())
 		return;
 

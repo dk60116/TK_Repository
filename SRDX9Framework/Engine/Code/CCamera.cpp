@@ -109,6 +109,6 @@ void CCamera::UpdateViewMatrix()
 
 void CCamera::ResetAspectFromResolution()
 {
-	if (CScreen::GetInstance().getResolution().y > 0)
-		m_sParameters.ascpect = (float)CScreen::GetInstance().getResolution().x / (float)CScreen::GetInstance().getResolution().y;
+	if (CScreen::GetInstance().getGameResolution().y > 0)
+		m_sParameters.ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
 }

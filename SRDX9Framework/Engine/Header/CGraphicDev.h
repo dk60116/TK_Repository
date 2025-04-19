@@ -28,20 +28,20 @@ public:
 	LPDIRECT3DDEVICE9 Get_GraphicDev();
 
 public:
-	HRESULT Ready_GraphicDev(HWND hWnd, 
-								WINMODE eMode, 
-								const _uint& iSizeX, 
-								const _uint& iSizeY, 
-								Engine::CGraphicDev * *ppGraphicDev);
+	HRESULT Ready_GraphicDev(HWND _hWnd, 
+								WINMODE _eMode, 
+								const _uint& _iSizeX, 
+								const _uint& _iSizeY, 
+								CGraphicDev * *_ppGraphicDev);
 
-	void	Render_Begin(D3DXCOLOR _color);
-	void	Render_End();
+	void Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color);
+	void Render_End(HWND _window);
 
 	HRESULT ReSize(_uint _newWidth, _uint _newHeight);
 
 private:
-	LPDIRECT3D9				m_pSDK;
-	LPDIRECT3DDEVICE9		m_pGraphicDev;
+	LPDIRECT3D9 m_pSDK;
+	LPDIRECT3DDEVICE9 m_pGraphicDev;
 public:
 	virtual void Free();
 };

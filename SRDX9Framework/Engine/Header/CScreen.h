@@ -16,16 +16,18 @@ public:
 	HWND getMainHandle() { return m_hMainWnd; }
 	HWND getSceneHandle() { return m_hSceneWnd; }
 	HWND getGameHandle() { return m_hGameWnd; }
-	const vector2Int& getResolution() { return m_v2Resolution; }
+	const vector2Int& getSceneResolution() { return m_v2GameResolution; }
+	const vector2Int& getGameResolution() { return m_v2GameResolution; }
 	const _int& getDPI() { return m_iDPI; }
 
 public:
-	void UpdateResolution(const _int& _width, const _int& _height);
+	void UpdateSceneResolution(const _int& _width, const _int& _height);
+	void UpdateGameResolution(const _int& _width, const _int& _height);
 
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hMainWnd, m_hSceneWnd, m_hGameWnd;
-	vector2Int m_v2Resolution;
+	vector2Int m_v2SceneResolution, m_v2GameResolution;
 	bool m_bFullScreen;
 	_int m_iDPI;
 };
