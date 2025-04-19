@@ -18,14 +18,6 @@ CEngineEditor::~CEngineEditor()
 
 void CEngineEditor::Init(HINSTANCE _hInst, HWND _mainWnd)
 {
-	HWND hSceneWnd = CreateWindowW(
-		L"STATIC", nullptr,
-		WS_VISIBLE | WS_OVERLAPPEDWINDOW, // 독립 창!
-		200, 200, 800, 600,
-		nullptr, nullptr, _hInst, nullptr);
-
-	//CScreen::GetInstance().SetSceneHandle(hSceneWnd);
-
 	m_hMainWnd = _mainWnd;
 	m_hInst = _hInst;
 	m_bPaused = false;
@@ -84,14 +76,19 @@ CEngineEditor::GameRunningState CEngineEditor::HandleCommand(WPARAM _wParam)
 	return STOPPED;
 }
 
-void CEngineEditor::UpdateResolution()
+LRESULT CALLBACK CEngineEditor::UpdateProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int screenX = CScreen::GetInstance().getResolution().x;
+	return FALSE;
+}
+
+void CEngineEditor::UpdateResolution(const vector2Int _resolution)
+{
+	int screenX = _resolution.x;
 	int screenXCenter = screenX / 2;
 
 	MoveWindow(m_hTopBar,
 		0, 0,
-		CScreen::GetInstance().getResolution().x, 30,
+		screenX, 30,
 		true);
 
 	MoveWindow(m_hBtnPause,

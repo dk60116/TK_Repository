@@ -185,7 +185,6 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Engine_Typedef.h" />
     <ClInclude Include="..\Header\CSpriteRenderer.h" />
     <ClInclude Include="..\Header\UObject.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CCamera.cpp" />

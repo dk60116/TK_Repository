@@ -25,7 +25,8 @@ public:
 
 	HWND getTopBar() { return m_hTopBar;  }
 
-	void UpdateResolution();
+	LRESULT CALLBACK UpdateProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	void UpdateResolution(vector2Int _resolution);
 
 private:
 	HINSTANCE m_hInst;

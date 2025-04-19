@@ -47,9 +47,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance (hInstance, nCmdShow))
-    {
         return FALSE;
-    }
 
     CMainProcess::GetInstance().Ready_MainApp();
 
@@ -130,18 +128,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-#ifdef _DEBUG
-    RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y + 30};
-#else
-    RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y };
-#endif
+   CScreen::GetInstance().Start_Window(szWindowClass, hInstance, nCmdShow);
 
-   AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, 
-      rc.right - rc.left, 
-      rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CScreen::GetInstance().getMainHandle();
 
    if (!hWnd)
       return FALSE;
@@ -149,30 +138,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 #if _DEBUG
    CEngineEditor::GetInstance().Init(hInstance, hWnd);
 #endif
-
-   RECT crc = { 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y };
-   AdjustWindowRect(&crc, WS_OVERLAPPEDWINDOW, FALSE);
-
-   _int offset = 0;
-
-#ifdef _DEBUG
-   offset = 30;
-#else
-   offset = 0;
-#endif
-
-   HWND hChildDXWnd = CreateWindowW(L"STATIC", nullptr, WS_CHILD | WS_VISIBLE,
-       0, offset, crc.right - crc.left, crc.bottom - crc.top,
-       hWnd, nullptr, CScreen::GetInstance().getHInstance(), nullptr);
-
-   CScreen::GetInstance().Start_Window(hInstance, hWnd, hChildDXWnd);
-
-#ifdef _DEBUG
-   CEngineEditor::GetInstance().Init(hInstance, hWnd);
-#endif
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
 
    return TRUE;
 }
@@ -192,57 +157,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        // 메뉴 선택을 구문 분석합니다:
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
+        case IDM_ABOUT:
 #ifdef _DEBUG
-                DialogBox(CEngineEditor::GetInstance().getHInst(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            DialogBox(CEngineEditor::GetInstance().getHInst(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 #endif // DEBUG
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            case IDM_GAME_PLAY:
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        case IDM_GAME_PLAY:
 #ifdef _DEBUG
-                CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+            CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
 #endif
-                break;
-            case IDM_GAME_PAUSE:
+            break;
+        case IDM_GAME_PAUSE:
 #ifdef _DEBUG
-                CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
+            CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
 #endif
-                break;
-            case IDM_GAME_STOP:
-                PostQuitMessage(0);
-                break;
-            case ID_BTN_PLAY:
+            break;
+        case IDM_GAME_STOP:
+            PostQuitMessage(0);
+            break;
+        case ID_BTN_PLAY:
 #ifdef _DEBUG
-                CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
+            CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
 #endif
-                break;
-            case ID_BTN_PAUSE:
+            break;
+        case ID_BTN_PAUSE:
 #ifdef _DEBUG
-                CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
+            CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
 #endif
-                break;
-            case ID_BTN_STOP:
-                PostQuitMessage(0);
-                break;
-            case ID_BTN_NEXTFRAME:
-                CMainProcess::GetInstance().SetStepOne(true);
+            break;
+        case ID_BTN_STOP:
+            PostQuitMessage(0);
+            break;
+        case ID_BTN_NEXTFRAME:
+            CMainProcess::GetInstance().SetStepOne(true);
 
 #ifdef _DEBUG
-                CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
+            CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
 #endif
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
         }
-        break;
+    }
+    break;
 
     case WM_CTLCOLORSTATIC:
     {
@@ -269,30 +234,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _int width = rcClient.right - rcClient.left;
         _int height = rcClient.bottom - rcClient.top;
 
-        CMainProcess::GetInstance().OnScreenChange(width, height);
-
-        // 자식 렌더 타겟 창 크기 조정
-        HWND hChildWnd = CScreen::GetInstance().getGameHandle();
-        if (hChildWnd)
+        if (hWnd == CScreen::GetInstance().getMainHandle())
         {
-            int offset = 0;
-#ifdef _DEBUG
-            offset = 30;
+            HWND hMainWnd = CScreen::GetInstance().getMainHandle();
 
-            CEngineEditor::GetInstance().UpdateResolution();
+            if (hMainWnd)
+            {
+                int offset = 0;
+#ifdef _DEBUG
+                offset = 30;
+
+                CEngineEditor::GetInstance().UpdateResolution(vector2Int(width, height));
 #endif
-            MoveWindow(hChildWnd, 0, offset, width, height, TRUE);
+                //MoveWindow(hMainWnd, 0, offset, width, height, TRUE);
+            }
+        }
+        else if (hWnd == CScreen::GetInstance().getGameHandle())
+        {
+            CMainProcess::GetInstance().OnScreenChange(width, height);
         }
     }
-        break;
+    break;
     case WM_KEYDOWN:
         switch (wParam)
         {
+        default:
+            break;
         }
         break;
-  
+
     case WM_DESTROY:
-        PostQuitMessage(0);
+        if (hWnd == CScreen::GetInstance().getMainHandle())
+            PostQuitMessage(0);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

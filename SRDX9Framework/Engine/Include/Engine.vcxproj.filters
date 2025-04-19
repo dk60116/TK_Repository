@@ -99,7 +99,6 @@
     <ClInclude Include="..\Header\CInput.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="..\Header\CGameObject.h">
       <Filter>GameObject</Filter>
     </ClInclude>

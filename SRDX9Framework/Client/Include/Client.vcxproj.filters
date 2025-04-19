@@ -35,9 +35,6 @@
     <ClInclude Include="pch.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMainProcess.h">
-      <Filter>MainApp</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CMainScene.h">
       <Filter>Scene\MainScene</Filter>
     </ClInclude>
@@ -50,11 +47,11 @@
     <ClInclude Include="Client.h">
       <Filter>MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMainProcess.h">
+      <Filter>MainApp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Code\CMainProcess.cpp">
-      <Filter>MainApp</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CMainScene.cpp">
       <Filter>Scene\MainScene</Filter>
     </ClCompile>
@@ -69,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CEnemy.cpp">
       <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMainProcess.cpp">
+      <Filter>MainApp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

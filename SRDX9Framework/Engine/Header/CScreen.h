@@ -9,7 +9,7 @@ class ENGINE_DLL CScreen
 	SINGLETONCLASS(CScreen);
 
 public:
-	void Start_Window(HINSTANCE _hInst, HWND _hMainWnd, HWND _hSceneWnd, HWND _hGameWnd);
+	void Start_Window(LPWCH _winClass, HINSTANCE _hInst, int _cmdShow);
 
 public:
 	HINSTANCE getHInstance() { return m_hInstance; }
