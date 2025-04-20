@@ -4,7 +4,7 @@
 #include "Engine_Define.h"
 #include "CComponent.h"
 #include "CTransform.h"
-#include "CCamera.h"
+#include "CEditorCamera.h"
 #include "CLight.h"
 #include "CScene.h"
 
@@ -26,6 +26,7 @@ public:
 	virtual void Update();
 	virtual void FixedUpdate();
 	virtual void LateUpdate();
+	virtual void RenderEditor();
 	virtual void Render();
 	virtual void OnEnable();
 	virtual void OnDisable();
@@ -67,7 +68,10 @@ inline T* CGameObject::AddComponent()
 	newComponent->Awake();
 
 	if (dynamic_cast<CCamera*>(newComponent))
-		m_pScene->AddCamera(dynamic_cast<CCamera*>(newComponent));
+	{
+		if (!dynamic_cast<CEditorCamera*>(newComponent))
+			m_pScene->AddCamera(dynamic_cast<CCamera*>(newComponent));
+	}
 
 	if (dynamic_cast<CLight*>(newComponent))
 		m_pScene->AddLight(dynamic_cast<CLight*>(newComponent));

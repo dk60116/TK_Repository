@@ -4,6 +4,7 @@
 #include "Engine_Define.h"
 #include "CMeshFilter.h"
 #include "CMaterial.h"
+#include "CCamera.h"
 
 BEGIN(Engine)
 
@@ -18,8 +19,12 @@ public:
     void Awake() override;
     void Start() override;
     void Update() override;
+    void RenderEditor() override;
     void Render() override;
     void OnDestroy() override;
+
+private:
+    void Render_Final(CCamera* _camera);
 
 public:
     CMeshFilter* getMeshFilter() const { return m_pMeshFilter; }

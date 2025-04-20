@@ -41,7 +41,29 @@ void CSpriteRenderer::Update()
     CComponent::Update();
 }
 
+void CSpriteRenderer::RenderEditor()
+{
+    CComponent::RenderEditor();
+    Render_Final(CManagement::GetInstance().getCrtScene()->getEditorCamera());
+}
+
 void CSpriteRenderer::Render()
+{
+    CComponent::Render();
+    Render_Final(CManagement::GetInstance().getCrtScene()->getCamera());
+}
+
+void CSpriteRenderer::OnDestroy()
+{
+	CComponent::OnDestroy();
+    
+    Safe_Release(m_pBuffer);
+    Safe_Delete(m_pMaterial);
+
+	m_pTexture = nullptr;
+}
+
+void CSpriteRenderer::Render_Final(CCamera* _camera)
 {
     if (!m_pBuffer || !m_pGraphicDev)
         return;
@@ -65,9 +87,8 @@ void CSpriteRenderer::Render()
     if (CManagement::GetInstance().getCrtScene()->getCamList().empty())
         return;
 
-    CCamera& cam = *CManagement::GetInstance().getCrtScene()->getCamera();
-    m_pGraphicDev->SetTransform(D3DTS_VIEW, &cam.getViewMatrix());
-    m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &cam.getProjMatrix());
+    m_pGraphicDev->SetTransform(D3DTS_VIEW, &_camera->getViewMatrix());
+    m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &_camera->getProjMatrix());
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
@@ -87,16 +108,6 @@ void CSpriteRenderer::Render()
     m_pGraphicDev->SetTexture(0, nullptr);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-}
-
-void CSpriteRenderer::OnDestroy()
-{
-	CComponent::OnDestroy();
-    
-    Safe_Release(m_pBuffer);
-    Safe_Delete(m_pMaterial);
-
-	m_pTexture = nullptr;
 }
 
 void CSpriteRenderer::SetTexture(CTexture* _texture)

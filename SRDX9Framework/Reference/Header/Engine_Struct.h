@@ -270,7 +270,7 @@ namespace Engine
             return x * x + y * y;
         }
 
-        vector2 to_float() const
+        vector2 to_vector2() const
         {
             return vector2(static_cast<float>(x), static_cast<float>(y));
         }

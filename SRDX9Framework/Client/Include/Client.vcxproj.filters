@@ -8,18 +8,18 @@
     <Filter Include="MainApp">
       <UniqueIdentifier>{99f2e93f-1863-405c-9814-df15c0538f1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{4e6c65c5-d248-4809-a6bb-0a66225bd85d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\MainScene">
-      <UniqueIdentifier>{420dcaac-835f-489c-b35f-026ba9fe305f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts">
       <UniqueIdentifier>{1c14d798-1495-4321-b108-4fb797ab809a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{4e6c65c5-d248-4809-a6bb-0a66225bd85d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\MainScene">
+      <UniqueIdentifier>{420dcaac-835f-489c-b35f-026ba9fe305f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +36,7 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMainScene.h">
-      <Filter>Scene\MainScene</Filter>
+      <Filter>Scenes\MainScene</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CPlayer.h">
       <Filter>Scripts</Filter>
@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CMainScene.cpp">
-      <Filter>Scene\MainScene</Filter>
+      <Filter>Scenes\MainScene</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CPlayer.cpp">
       <Filter>Scripts</Filter>

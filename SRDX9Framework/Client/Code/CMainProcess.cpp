@@ -50,10 +50,13 @@ _int CMainProcess::Update_MainApp()
 	SetWindowText(CScreen::GetInstance().getMainHandle(), fpsTxt.c_str());
 
 	CInput::GetInstance().Update();
+
+	CManagement::GetInstance().getCrtScene()->UpdateEditor();
 	CManagement::GetInstance().getCrtScene()->Update();
 
 	Render_MainApp();
 
+	CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
 	CManagement::GetInstance().getCrtScene()->LateUpdate();
 	CInput::GetInstance().LateUpdate();
 
@@ -86,14 +89,14 @@ void CMainProcess::Render_MainApp()
 
 	m_pDevClass->Render_Begin(sceneViewport, D3DCOLOR_XRGB(50, 50, 50));
 
-	CManagement::GetInstance().getCrtScene()->Render();
+	CManagement::GetInstance().getCrtScene()->Render_CScene();
 
 	m_pDevClass->Render_End(CScreen::GetInstance().getSceneHandle());
 
 
 	m_pDevClass->Render_Begin(gameViewport, D3DCOLOR_XRGB(49, 77, 121));
 
-	CManagement::GetInstance().getCrtScene()->Render();
+	CManagement::GetInstance().getCrtScene()->Render_Game();
 
 	m_pDevClass->Render_End(CScreen::GetInstance().getGameHandle());
 }

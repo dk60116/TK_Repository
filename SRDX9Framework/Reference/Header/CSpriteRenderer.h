@@ -4,6 +4,7 @@
 #include "CRectCol.h"
 #include "CMaterial.h"
 #include "CTexture.h"
+#include "CCamera.h"
 
 BEGIN(Engine)
 
@@ -25,8 +26,12 @@ public:
     void Awake() override;
     void Start() override;
     void Update() override;
+    void RenderEditor() override;
     void Render() override;
     void OnDestroy() override;
+
+private:
+    void Render_Final(CCamera* _camera);
 
 public:
     void SetTexture(CTexture* _texture);

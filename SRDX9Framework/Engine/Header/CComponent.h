@@ -22,6 +22,7 @@ public:
 	virtual void Update();
 	virtual void FixedUpdate();
 	virtual void LateUpdate();
+	virtual void RenderEditor();
 	virtual void Render();
 	virtual void OnEnable();
 	virtual void OnDisable();

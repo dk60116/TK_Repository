@@ -34,7 +34,25 @@ void CMeshRenderer::Update()
 {
 }
 
+void CMeshRenderer::RenderEditor()
+{
+    CComponent::RenderEditor();
+    Render_Final(CManagement::GetInstance().getCrtScene()->getEditorCamera());
+}
+
 void CMeshRenderer::Render()
+{
+    CComponent::Render();
+    Render_Final(CManagement::GetInstance().getCrtScene()->getCamera());
+}
+
+void CMeshRenderer::OnDestroy()
+{
+    CComponent::OnDestroy();
+    Safe_Delete(m_pMaterial);
+}
+
+void CMeshRenderer::Render_Final(CCamera* _camera)
 {
     if (!m_pMeshFilter)
         return;
@@ -50,10 +68,8 @@ void CMeshRenderer::Render()
     if (CManagement::GetInstance().getCrtScene()->getCamList().empty())
         return;
 
-    CCamera* pCamera = CManagement::GetInstance().getCrtScene()->getCamera();
-
-    m_pGraphicDev->SetTransform(D3DTS_VIEW, &pCamera->getViewMatrix());
-    m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &pCamera->getProjMatrix());
+    m_pGraphicDev->SetTransform(D3DTS_VIEW, &_camera->getViewMatrix());
+    m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &_camera->getProjMatrix());
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
@@ -69,12 +85,6 @@ void CMeshRenderer::Render()
 
     m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
-}
-
-void CMeshRenderer::OnDestroy()
-{
-    CComponent::OnDestroy();
-    Safe_Delete(m_pMaterial);
 }
 
 void CMeshRenderer::SetMeshFilterType(CMesh::MeshType _type)

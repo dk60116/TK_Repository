@@ -18,7 +18,7 @@ public:
     void Update() override;
     void FixedUpdate() override;
     void LateUpdate() override;
-    void Render() override;
+    void Render_Game() override;
     void Destroy() override;
 
 private:

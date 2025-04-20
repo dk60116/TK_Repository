@@ -45,6 +45,10 @@ void CComponent::LateUpdate()
 {
 }
 
+void CComponent::RenderEditor()
+{
+}
+
 void CComponent::Render()
 {
 }

@@ -56,6 +56,15 @@ void CGameObject::LateUpdate()
 {
 }
 
+void CGameObject::RenderEditor()
+{
+	for (TRAVERSAL_ITER(m_lComponentlist, it))
+	{
+		if ((*it)->IsEnable())
+			(*it)->RenderEditor();
+	}
+}
+
 void CGameObject::Render()
 {
 	for (TRAVERSAL_ITER(m_lComponentlist, it))

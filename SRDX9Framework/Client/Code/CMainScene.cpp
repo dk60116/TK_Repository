@@ -65,30 +65,6 @@ void CMainScene::Update()
 {
 	CScene::Update();
 
-	vector3 camDir = vector3::zero();
-
-	if (CInput::GetInstance().GetKey(W))
-		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().forward * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(S))
-		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().back * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(A))
-		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().left * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(D))
-		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().right * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(Q))
-		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().down * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(E))
-		m_vCameraList.back()->getTransform().AddLocalPosition(m_vCameraList.back()->getTransform().getDirections().up * DELTA_TIME);
-
-	if (CInput::GetInstance().GetKey(LEFT))
-		m_vCameraList.back()->getTransform().AddLocalYAxis(-45.f * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(RIGHT))
-		m_vCameraList.back()->getTransform().AddLocalYAxis(45.f * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(UP))
-		m_vCameraList.back()->getTransform().AddLocalXAxis(-45.f * DELTA_TIME);
-	if (CInput::GetInstance().GetKey(DOWN))
-		m_vCameraList.back()->getTransform().AddLocalXAxis(45.f * DELTA_TIME);
-
 	//m_vCameraList.back()->getTransform().AddLocalPosition(camDir.normalized() * DELTA_TIME);
 
 	//m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
@@ -109,9 +85,9 @@ void CMainScene::LateUpdate()
 {
 }
 
-void CMainScene::Render()
+void CMainScene::Render_Game()
 {
-	CScene::Render();
+	CScene::Render_Game();
 }
 
 void CMainScene::Destroy()

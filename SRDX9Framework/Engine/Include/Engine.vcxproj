@@ -156,6 +156,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CCamera.h" />
     <ClInclude Include="..\Header\CComponent.h" />
     <ClInclude Include="..\Header\CDebug.h" />
+    <ClInclude Include="..\Header\CEditorCamera.h" />
     <ClInclude Include="..\Header\CEngineEditor.h" />
     <ClInclude Include="..\Header\CGameObject.h" />
     <ClInclude Include="..\Header\CGraphicDev.h" />
@@ -190,6 +191,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CCamera.cpp" />
     <ClCompile Include="..\Code\CComponent.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
+    <ClCompile Include="..\Code\CEditorCamera.cpp" />
     <ClCompile Include="..\Code\CEngineEditor.cpp" />
     <ClCompile Include="..\Code\CGameObject.cpp" />
     <ClCompile Include="..\Code\CGraphicDev.cpp" />
