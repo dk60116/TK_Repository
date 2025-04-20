@@ -53,6 +53,9 @@ public:
 
     void SetGraphicDev(LPDIRECT3DDEVICE9 _device) { m_pGraphicDev = _device; }
 
+private:
+    void Render_Grid();
+
 protected:
     wstring m_strSceneName;
 

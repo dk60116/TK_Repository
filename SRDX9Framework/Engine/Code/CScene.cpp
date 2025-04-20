@@ -74,6 +74,8 @@ void CScene::Render_CScene()
 	if (!m_pEditorCamera)
 		return;
 
+	Render_Grid();
+
 	CCamera* editorCam = m_pEditorCamera; // 에디터 카메라 기준
 	vector3 cam_pos = editorCam->getTransform().getPosition();
 	vector3 cam_forward = editorCam->getTransform().getDirections().forward;
@@ -195,6 +197,51 @@ void CScene::UpdateAllCameraResolution(const vector2Int& _resolution)
 {
 	for (TRAVERSAL_ITER(m_vCameraList, it))
 		(*it)->ResetAspectFromResolution(_resolution);
+}
+
+void CScene::Render_Grid()
+{
+	const int GRID_HALF = 50;
+	const float GRID_SPACING = 1.f;
+	const D3DCOLOR gridColor = D3DCOLOR_XRGB(100, 100, 100);
+	const int lineCount = (GRID_HALF * 2 + 1) * 2;
+
+	VTXLINE* pVertices = new VTXLINE[lineCount * 2];
+	int idx = 0;
+
+	// Z 방향 그리드 (X 고정)
+	for (int i = -GRID_HALF; i <= GRID_HALF; ++i)
+	{
+		float x = i * GRID_SPACING;
+		pVertices[idx++] = { D3DXVECTOR3(x, 0.f, -GRID_HALF * GRID_SPACING), gridColor };
+		pVertices[idx++] = { D3DXVECTOR3(x, 0.f, GRID_HALF * GRID_SPACING), gridColor };
+	}
+
+	// X 방향 그리드 (Z 고정)
+	for (int i = -GRID_HALF; i <= GRID_HALF; ++i)
+	{
+		float z = i * GRID_SPACING;
+		pVertices[idx++] = { D3DXVECTOR3(-GRID_HALF * GRID_SPACING, 0.f, z), gridColor };
+		pVertices[idx++] = { D3DXVECTOR3(GRID_HALF * GRID_SPACING, 0.f, z), gridColor };
+	}
+
+	LPDIRECT3DDEVICE9 pDevice = CManagement::GetInstance().getGraphicDevice();
+
+	// ===== 뷰-프로젝션 설정 =====
+	_matrix matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	pDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	pDevice->SetTransform(D3DTS_VIEW, &m_pEditorCamera->getViewMatrix());
+	pDevice->SetTransform(D3DTS_PROJECTION, &m_pEditorCamera->getProjMatrix());
+
+	// ===== 그리기 =====
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	pDevice->SetFVF(FVF_LINE);
+	pDevice->DrawPrimitiveUP(D3DPT_LINELIST, lineCount, pVertices, sizeof(VTXLINE));
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	delete[] pVertices;
 }
 
 void CScene::UpdateAllLight()

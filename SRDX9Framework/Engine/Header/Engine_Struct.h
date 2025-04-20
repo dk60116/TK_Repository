@@ -792,6 +792,14 @@ namespace Engine
     };
 #pragma endregion
 
+    typedef struct tagVertexLine
+    {
+        D3DXVECTOR3 vPos;
+        D3DCOLOR    color;
+    }VTXLINE;
+
+    const _ulong FVF_LINE(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+
 	typedef struct tagVertexColor
 	{
 		_vec3		vPosition;		
