@@ -13,7 +13,7 @@
 #include "CEngineEditor.h"
 #endif
 #include "CScreen.h"
-#include "CTimeMgr.h"
+#include "CTime.h"
 #include "CInput.h"
 #include "CManagement.h"
 #include "CResources.h"

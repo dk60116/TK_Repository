@@ -1,5 +1,5 @@
 #include "CScene.h"
-#include "CTimeMgr.h"
+#include "CTime.h"
 #include "CInput.h"
 #include "CManagement.h"
 #include "CGameObject.h"

@@ -1,24 +1,24 @@
-#include "CTimeMgr.h"
+#include "CTime.h"
 
-CTimeMgr::CTimeMgr()
+CTime::CTime()
 	:m_pTimer(nullptr)
 	, m_fTimeScale(1.f)
 {
 }
 
-CTimeMgr::~CTimeMgr()
+CTime::~CTime()
 {
 	Release();
 }
 
-_int CTimeMgr::Get_FPS()
+_int CTime::Get_FPS()
 {
 	_int result = m_pTimer->Get_FPS();
 
 	return result;
 }
 
-_float CTimeMgr::Get_TimeDelta()
+_float CTime::Get_TimeDelta()
 {
 	float result = m_pTimer->Get_TimeDelta() * m_fTimeScale;
 
@@ -28,7 +28,7 @@ _float CTimeMgr::Get_TimeDelta()
 	return result;
 }
 
-HRESULT CTimeMgr::Ready_Timer()
+HRESULT CTime::Ready_Timer()
 {
 	m_pTimer = new CTimer();
 
@@ -40,12 +40,12 @@ HRESULT CTimeMgr::Ready_Timer()
 	return S_OK;
 }
 
-void CTimeMgr::Update()
+void CTime::Update()
 {
 	m_pTimer->Update();
 }
 
-void CTimeMgr::Release()
+void CTime::Release()
 {
 	Safe_Delete(m_pTimer);
 }

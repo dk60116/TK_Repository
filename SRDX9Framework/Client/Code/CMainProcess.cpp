@@ -20,7 +20,7 @@ HRESULT CMainProcess::Ready_MainApp()
 	if (FAILED(CGraphicDev::GetInstance().Ready_GraphicDev
 	(
 		CScreen::GetInstance().getSceneHandle(), MODE_WIN,
-		CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y,
+		CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y,
 		&m_pDevClass
 	)))
 		return E_FAIL;
@@ -29,7 +29,7 @@ HRESULT CMainProcess::Ready_MainApp()
 	CDebug::Init();
 #endif
 
-	CTimeMgr::GetInstance().Ready_Timer();
+	CTime::GetInstance().Ready_Timer();
 
 	CResources::GetInstance().LoadAllFiles(m_pDevClass->Get_GraphicDev());
 
@@ -39,14 +39,17 @@ HRESULT CMainProcess::Ready_MainApp()
 	CManagement::GetInstance().CreateScene(mainScene, L"MainScene");
 	CManagement::GetInstance().ChangeScene(L"MainScene");
 
+	CMainProcess::GetInstance().OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
+	CMainProcess::GetInstance().OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
+
 	return S_OK;
 }
 
 _int CMainProcess::Update_MainApp()
 {
-	CTimeMgr::GetInstance().Update();
+	CTime::GetInstance().Update();
 
-	wstring fpsTxt = L"FPS: " + to_wstring(CTimeMgr::GetInstance().Get_FPS());
+	wstring fpsTxt = L"FPS: " + to_wstring(CTime::GetInstance().Get_FPS());
 	SetWindowText(CScreen::GetInstance().getMainHandle(), fpsTxt.c_str());
 
 	CInput::GetInstance().Update();
@@ -71,29 +74,27 @@ void CMainProcess::Render_MainApp()
 {
 	m_pDevClass->Get_GraphicDev()->SetRenderState(D3DRS_LIGHTING, CManagement::GetInstance().getCrtScene()->getOptions().lighting);
 
-	m_pDevClass->Get_GraphicDev()->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
-
 	D3DVIEWPORT9 sceneViewport = {};
 	sceneViewport.X = 0;
-	sceneViewport.Y = 0;
+	sceneViewport.Y = 30;
 	sceneViewport.Width = CScreen::GetInstance().getSceneResolution().x;
 	sceneViewport.Height = CScreen::GetInstance().getSceneResolution().y;
 	sceneViewport.MinZ = 0.0f;
 	sceneViewport.MaxZ = 1.0f;
-
-	D3DVIEWPORT9 gameViewport = {};
-	gameViewport.X = 0;
-	gameViewport.Y = 0;
-	gameViewport.Width = CScreen::GetInstance().getGameResolution().x;
-	gameViewport.Height = CScreen::GetInstance().getGameResolution().y;
-	gameViewport.MinZ = 0.0f;
-	gameViewport.MaxZ = 1.0f;
 
 	m_pDevClass->Render_Begin(sceneViewport, D3DCOLOR_XRGB(50, 50, 50));
 
 	CManagement::GetInstance().getCrtScene()->Render_CScene();
 
 	m_pDevClass->Render_End(CScreen::GetInstance().getSceneHandle());
+
+	D3DVIEWPORT9 gameViewport = {};
+	gameViewport.X = 0;
+	gameViewport.Y = 0;
+	gameViewport.Width = CScreen::GetInstance().getGameResolution().x;
+	gameViewport.Height = CScreen::GetInstance().getGameResolution().y - 60;
+	gameViewport.MinZ = 0.0f;
+	gameViewport.MaxZ = 1.0f;
 
 	m_pDevClass->Render_Begin(gameViewport, D3DCOLOR_XRGB(49, 77, 121));
 

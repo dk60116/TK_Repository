@@ -9,14 +9,14 @@ class ENGINE_DLL CScreen
 	SINGLETONCLASS(CScreen);
 
 public:
-	void Start_Window(LPWCH _winClass, HINSTANCE _hInst, int _cmdShow);
+	void Start_Window(HINSTANCE _hInst, int _cmdShow);
 
 public:
 	HINSTANCE getHInstance() { return m_hInstance; }
 	HWND getMainHandle() { return m_hMainWnd; }
 	HWND getSceneHandle() { return m_hSceneWnd; }
 	HWND getGameHandle() { return m_hGameWnd; }
-	const vector2Int& getSceneResolution() { return m_v2GameResolution; }
+	const vector2Int& getSceneResolution() { return m_v2SceneResolution; }
 	const vector2Int& getGameResolution() { return m_v2GameResolution; }
 	const _int& getDPI() { return m_iDPI; }
 

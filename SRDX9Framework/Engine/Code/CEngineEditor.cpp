@@ -6,6 +6,8 @@ CEngineEditor::CEngineEditor()
 	, m_hMainWnd(nullptr)
 	, m_bPaused(false)
 	, m_hTopBar(nullptr)
+	, m_hTop_Scene(nullptr)
+	, m_hTop_Game(nullptr)
 	, m_hBtnPause(nullptr)
 	, m_hBtnStop(nullptr)
 	, m_hBtnNextFrame(nullptr)
@@ -16,13 +18,15 @@ CEngineEditor::~CEngineEditor()
 {
 }
 
-void CEngineEditor::Init(HINSTANCE _hInst, HWND _mainWnd)
+void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 {
 	m_hMainWnd = _mainWnd;
 	m_hInst = _hInst;
-	m_bPaused = false;
 
-	int screenX = 1920;
+	RECT windowRect;
+	GetWindowRect(m_hMainWnd, &windowRect);
+
+	int screenX = windowRect.right - windowRect.left;
 	int screenXCenter = screenX / 2;
 
 	// 상단바 영역
@@ -49,6 +53,49 @@ void CEngineEditor::Init(HINSTANCE _hInst, HWND _mainWnd)
 	EnableWindow(m_hBtnNextFrame, m_bPaused);
 }
 
+void CEngineEditor::Init_Scene(HWND _gameWnd)
+{
+	RECT windowRect;
+	GetWindowRect(_gameWnd, &windowRect);
+
+	int screenX = windowRect.right - windowRect.left;
+	int screenXCenter = screenX / 2;
+
+	// 상단바 영역
+	m_hTop_Scene = CreateWindowW(L"STATIC", nullptr,
+		WS_VISIBLE | WS_CHILD,
+		0, 0, screenX, 30,
+		_gameWnd, nullptr, m_hInst, nullptr);
+
+	HFONT hFont = CreateFontW
+	(
+		16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Areal"
+	);
+
+	HWND ee = CreateWindowW(L"BUTTON", L"Pivot", WS_VISIBLE | WS_CHILD,
+		10, 1, 80, 28,
+		_gameWnd, (HMENU)ID_BTN_STOP, m_hInst, nullptr);
+
+	SendMessageW(ee, WM_SETFONT, (WPARAM)hFont, TRUE);
+}
+
+void CEngineEditor::Init_Game(HWND _sceneWnd)
+{
+	RECT windowRect;
+	GetWindowRect(_sceneWnd, &windowRect);
+
+	int screenX = windowRect.right - windowRect.left;
+	int screenXCenter = screenX / 2;
+
+	// 상단바 영역
+	m_hTop_Scene = CreateWindowW(L"STATIC", nullptr,
+		WS_VISIBLE | WS_CHILD,
+		0, 0, screenX, 30,
+		_sceneWnd, nullptr, m_hInst, nullptr);
+}
+
 CEngineEditor::GameRunningState CEngineEditor::HandleCommand(WPARAM _wParam)
 {
 	switch (LOWORD(_wParam))
@@ -56,7 +103,7 @@ CEngineEditor::GameRunningState CEngineEditor::HandleCommand(WPARAM _wParam)
 	case ID_BTN_PAUSE:
 		m_bPaused = !m_bPaused;
 		SetWindowText(m_hBtnPause, m_bPaused ? L"▶" : L"II");
-		
+
 		EnableWindow(m_hBtnNextFrame, m_bPaused);
 
 		return m_bPaused ? PAUSED : RUNNING;
@@ -74,11 +121,6 @@ CEngineEditor::GameRunningState CEngineEditor::HandleCommand(WPARAM _wParam)
 	}
 
 	return STOPPED;
-}
-
-LRESULT CALLBACK CEngineEditor::UpdateProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	return FALSE;
 }
 
 void CEngineEditor::UpdateResolution(const vector2Int _resolution)

@@ -17,7 +17,7 @@
 
 #include "framework.h"
 
-#define DELTA_TIME CTimeMgr::GetInstance().Get_TimeDelta()
+#define DELTA_TIME CTime::GetInstance().Get_TimeDelta()
 
 #ifdef _DEBUG
 

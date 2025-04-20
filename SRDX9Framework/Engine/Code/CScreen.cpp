@@ -1,4 +1,5 @@
 #include "CScreen.h"
+#include "CManagement.h"
 
 CScreen::CScreen()
 	: m_hInstance(nullptr)
@@ -15,7 +16,7 @@ CScreen::~CScreen()
 {
 }
 
-void CScreen::Start_Window(LPWCH _winClass, HINSTANCE _hInst, int _cmdShow)
+void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 {
 	DEVMODE devMode = {};
 	devMode.dmSize = sizeof(DEVMODE);
@@ -39,20 +40,17 @@ void CScreen::Start_Window(LPWCH _winClass, HINSTANCE _hInst, int _cmdShow)
 #ifdef _DEBUG
 	offset = 30;
 
-	m_hMainWnd = CreateWindowW(_winClass, L"Main",
+	m_hMainWnd = CreateWindowW(L"MaindowClass", L"Main",
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
 		rc.left, rc.top + offset + 10,
 		rc.right - rc.left, rc.bottom - rc.top + offset - 10,
 		nullptr, nullptr, _hInst, nullptr);
 #endif
 
-	RECT windowRect, clientRect;
+	RECT windowRect;
 	GetWindowRect(m_hMainWnd, &windowRect);
-	GetClientRect(m_hMainWnd, &clientRect);
 
-	int clientHeight = clientRect.bottom - clientRect.top;
-
-	int windowHeight = windowRect.bottom - windowRect.top;
+	int clientHeight = windowRect.bottom - windowRect.top;
 
 	RECT grc;
 
@@ -70,23 +68,23 @@ void CScreen::Start_Window(LPWCH _winClass, HINSTANCE _hInst, int _cmdShow)
 
 	int totalHeight = titleBarHeight + frameHeight + menuBarHeight;
 
-	m_hSceneWnd = CreateWindowW(_winClass, L"Scene",
-		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+	m_hSceneWnd = CreateWindowW(L"SceneWindowClass", L"Scene",
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		pt.x, pt.y,
 		width,
-		(clientHeight / 2) - totalHeight - 5,
+		(clientHeight / 2) - totalHeight - 65,
 		m_hMainWnd, nullptr, _hInst, nullptr);
 
-	UpdateSceneResolution(width, (clientHeight / 2) - totalHeight - 5);
+	UpdateSceneResolution(width, (clientHeight / 2) - totalHeight - 70 - 60);
 
-	m_hGameWnd = CreateWindowW(_winClass, L"Game",
-		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		pt.x, offset + clientHeight / 2 - totalHeight + offset,
+	m_hGameWnd = CreateWindowW(L"GameWindowClass", L"Game",
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		pt.x, offset + clientHeight / 2 - totalHeight + offset - 60,
 		width,
-		(clientHeight / 2) - totalHeight - 5,
+		(clientHeight / 2) - totalHeight - 30,
 		m_hMainWnd, nullptr, _hInst, nullptr);
 
-	UpdateSceneResolution(width, (clientHeight / 2) - totalHeight - 5);
+	UpdateGameResolution(width, (clientHeight / 2) - totalHeight - 35);
 
 	ShowWindow(m_hMainWnd, SW_SHOWMAXIMIZED);
 	UpdateWindow(m_hMainWnd);

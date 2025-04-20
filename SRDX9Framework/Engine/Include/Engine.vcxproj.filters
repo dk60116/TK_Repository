@@ -90,7 +90,7 @@
     <ClInclude Include="..\Header\Engine_Typedef.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTimeMgr.h">
+    <ClInclude Include="..\Header\CTime.h">
       <Filter>Time</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTimer.h">
@@ -173,7 +173,7 @@
     <ClCompile Include="..\Code\CGraphicDev.cpp">
       <Filter>GraphicDev</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTimeMgr.cpp">
+    <ClCompile Include="..\Code\CTime.cpp">
       <Filter>Time</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTimer.cpp">

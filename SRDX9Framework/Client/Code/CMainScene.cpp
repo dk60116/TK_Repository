@@ -65,16 +65,10 @@ void CMainScene::Update()
 {
 	CScene::Update();
 
-	//m_vCameraList.back()->getTransform().AddLocalPosition(camDir.normalized() * DELTA_TIME);
-
-	//m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
+	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(TWO))
 		m_sOptions.lighting = !m_sOptions.lighting;
-
-	//m_pPlayer->AddRef();
-	//ULONG rcount = m_pPlayer->Release();
-	//CDebug::Log((int)rcount);
 }
 
 void CMainScene::FixedUpdate()

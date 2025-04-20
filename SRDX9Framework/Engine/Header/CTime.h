@@ -4,9 +4,9 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CTimeMgr
+class ENGINE_DLL CTime
 {
-	SINGLETONCLASS(CTimeMgr);
+	SINGLETONCLASS(CTime);
 
 public:
 	_int Get_FPS();

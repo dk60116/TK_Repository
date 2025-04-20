@@ -89,19 +89,12 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND _hWnd, WINMODE _eMode,
 // 후면 버퍼
 void CGraphicDev::Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color)
 {
+	RECT rcClear = { 0, 30, _viewPort.Width, _viewPort.Height + 30 };
+
 	// 화면 Clear
-	m_pGraphicDev->Clear(0, NULL,
+	m_pGraphicDev->Clear(1, (const D3DRECT*)&rcClear,
 		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
 		_color, 1.f, 0);
-
-	// 기본 Viewport (전체 영역) 적용
-	//D3DVIEWPORT9 gameViewport = {};
-	//gameViewport.X = 0;
-	//gameViewport.Y = 0;
-	//gameViewport.Width = CScreen::GetInstance().getResolution().x;
-	//gameViewport.Height = CScreen::GetInstance().getResolution().y;
-	//gameViewport.MinZ = 0.0f;
-	//gameViewport.MaxZ = 1.0f;
 
 	m_pGraphicDev->SetViewport(&_viewPort);
 

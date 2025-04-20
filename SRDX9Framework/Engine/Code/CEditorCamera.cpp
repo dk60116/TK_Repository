@@ -1,5 +1,5 @@
 #include "CEditorCamera.h"
-#include "CTimeMgr.h"
+#include "CTime.h"
 #include "CInput.h"
 #include "CTransform.h"
 
@@ -18,7 +18,7 @@ CEditorCamera::~CEditorCamera()
 
 void CEditorCamera::UpdateEditor()
 {
-	float delta = CTimeMgr::GetInstance().Get_TimeDelta();
+	float delta = CTime::GetInstance().Get_TimeDelta();
 	CTransform& camTransform = getTransform();
 
 	bool isRightMouseDown = CInput::GetInstance().GetMouseButton_Editor(1);

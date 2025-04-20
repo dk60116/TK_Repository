@@ -96,22 +96,36 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
-
     wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    // Main Window
+    wcex.lpszClassName = L"MaindowClass";
     wcex.lpszMenuName = MAKEINTRESOURCE(IDC_CLIENT);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    if (!RegisterClassExW(&wcex))
+        return 0;
 
-    return RegisterClassExW(&wcex);
+    // Scene Window
+    wcex.lpszClassName = L"SceneWindowClass";
+    wcex.lpszMenuName = NULL;
+    if (!RegisterClassExW(&wcex))
+        return 0;
+
+    // Game Window
+    wcex.lpszClassName = L"GameWindowClass";
+    wcex.lpszMenuName = nullptr;
+    if (!RegisterClassExW(&wcex))
+        return 0;
+
+    return 1;
 }
 
 //
@@ -126,18 +140,11 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-    hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+   CScreen::GetInstance().Start_Window(hInstance, nCmdShow);
 
-   CScreen::GetInstance().Start_Window(szWindowClass, hInstance, nCmdShow);
-
-   HWND hWnd = CScreen::GetInstance().getMainHandle();
-
-   if (!hWnd)
-      return FALSE;
-
-#if _DEBUG
-   CEngineEditor::GetInstance().Init(hInstance, hWnd);
-#endif
+   CEngineEditor::GetInstance().Init_Main(hInstance, CScreen::GetInstance().getMainHandle());
+   CEngineEditor::GetInstance().Init_Scene(CScreen::GetInstance().getSceneHandle());
+   CEngineEditor::GetInstance().Init_Game(CScreen::GetInstance().getGameHandle());
 
    return TRUE;
 }
@@ -208,6 +215,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+        FillRect(hdc, &ps.rcPaint, blackBrush);
+        DeleteObject(blackBrush);
+
+        EndPaint(hWnd, &ps);
+    }
+        break;
 
     case WM_CTLCOLORSTATIC:
     {
