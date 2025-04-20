@@ -186,10 +186,15 @@ void CScene::AddLight(CLight* _light)
 	}
 }
 
-void CScene::UpdateAllCameraResolution()
+void CScene::UpdateSceneCameraResolution(const vector2Int& _resolution)
+{
+	m_pEditorCamera->ResetAspectFromResolution(_resolution);
+}
+
+void CScene::UpdateAllCameraResolution(const vector2Int& _resolution)
 {
 	for (TRAVERSAL_ITER(m_vCameraList, it))
-		(*it)->ResetAspectFromResolution();
+		(*it)->ResetAspectFromResolution(_resolution);
 }
 
 void CScene::UpdateAllLight()

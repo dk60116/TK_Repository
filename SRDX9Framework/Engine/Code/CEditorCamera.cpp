@@ -21,7 +21,7 @@ void CEditorCamera::UpdateEditor()
 	float delta = CTimeMgr::GetInstance().Get_TimeDelta();
 	CTransform& camTransform = getTransform();
 
-	bool isRightMouseDown = CInput::GetInstance().GetMouseButton(1);
+	bool isRightMouseDown = CInput::GetInstance().GetMouseButton_Editor(1);
 
 	if (isRightMouseDown)
 	{
@@ -34,17 +34,17 @@ void CEditorCamera::UpdateEditor()
 			return;
 		}
 
-		if (CInput::GetInstance().GetKey(W))
+		if (CInput::GetInstance().GetKey_Editor(W))
 			camTransform.AddLocalPosition(camTransform.getDirections().forward * delta * m_fMoveSpeed);
-		if (CInput::GetInstance().GetKey(S))
+		if (CInput::GetInstance().GetKey_Editor(S))
 			camTransform.AddLocalPosition(camTransform.getDirections().back * delta * m_fMoveSpeed);
-		if (CInput::GetInstance().GetKey(A))
+		if (CInput::GetInstance().GetKey_Editor(A))
 			camTransform.AddLocalPosition(camTransform.getDirections().left * delta * m_fMoveSpeed);
-		if (CInput::GetInstance().GetKey(D))
+		if (CInput::GetInstance().GetKey_Editor(D))
 			camTransform.AddLocalPosition(camTransform.getDirections().right * delta * m_fMoveSpeed);
-		if (CInput::GetInstance().GetKey(Q))
+		if (CInput::GetInstance().GetKey_Editor(Q))
 			camTransform.AddLocalPosition(camTransform.getDirections().down * delta * m_fMoveSpeed);
-		if (CInput::GetInstance().GetKey(E))
+		if (CInput::GetInstance().GetKey_Editor(E))
 			camTransform.AddLocalPosition(camTransform.getDirections().up * delta * m_fMoveSpeed);
 
 		m_v2MouseDragDelta = (currentMouse - m_v2PrevMosuePos).to_vector2();

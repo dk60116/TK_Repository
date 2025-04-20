@@ -9,12 +9,17 @@ class ENGINE_DLL CInput
 	SINGLETONCLASS(CInput);
 
 public:
-    bool GetKey(int _iKey);
-    bool GetKeyDown(int _iKey);
-    bool GetKeyUp(int _iKey);
-    bool GetMouseButton(int _button);
-    bool GetMouseButtonDown(int _button);
-    bool GetMouseButtonUp(int button);
+    bool GetKey(_int _iKey);
+    bool GetKey_Editor(_int _iKey);
+    bool GetKeyDown(_int _iKey);
+    bool GetKeyDown_Editor(_int _iKey);
+    bool GetKeyUp(_int _iKey);
+    bool GetMouseButton(_int _button);
+    bool GetMouseButton_Editor(_int _button);
+    bool GetMouseButtonDown(_int _button);
+    bool GetMouseButtonDown_Editor(_int _button);
+    bool GetMouseButtonUp(_int _button);
+    bool GetMouseButtonUp_Editor(_int button);
 
     const vector2Int GetMousePos();
     //const int GetMouseWheelValue();

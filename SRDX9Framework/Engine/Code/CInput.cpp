@@ -18,22 +18,32 @@ CInput::~CInput()
     Release();
 }
 
-bool CInput::GetKey(int _iKey)
+bool CInput::GetKey(_int _iKey)
 {
-    return m_bKeyState[_iKey];
+    return m_bKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getGameHandle();
 }
 
-bool CInput::GetKeyDown(int _iKey)
+bool CInput::GetKey_Editor(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey];
+    return m_bKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getSceneHandle();
 }
 
-bool CInput::GetKeyUp(int _iKey)
+bool CInput::GetKeyDown(_int _iKey)
+{
+    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getGameHandle();
+}
+
+bool CInput::GetKeyDown_Editor(_int _iKey)
+{
+    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getSceneHandle();
+}
+
+bool CInput::GetKeyUp(_int _iKey)
 {
     return !m_bKeyState[_iKey] && m_bPrevKeyState[_iKey];
 }
 
-bool CInput::GetMouseButton(int _button)
+bool CInput::GetMouseButton(_int _button)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -42,10 +52,10 @@ bool CInput::GetMouseButton(int _button)
     else
         return false;
 
-    return m_bKeyState[_button];
+    return m_bKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getGameHandle();
 }
 
-bool CInput::GetMouseButtonDown(int _button)
+bool CInput::GetMouseButton_Editor(_int _button)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -54,10 +64,34 @@ bool CInput::GetMouseButtonDown(int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !m_bPrevKeyState[_button];
+    return m_bKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getSceneHandle();
 }
 
-bool CInput::GetMouseButtonUp(int _button)
+bool CInput::GetMouseButtonDown(_int _button)
+{
+    if (_button == 0)
+        _button = MOUSE_L;
+    else if (_button == 1)
+        _button = MOUSE_R;
+    else
+        return false;
+
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getGameHandle();
+}
+
+bool CInput::GetMouseButtonDown_Editor(_int _button)
+{
+    if (_button == 0)
+        _button = MOUSE_L;
+    else if (_button == 1)
+        _button = MOUSE_R;
+    else
+        return false;
+
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getSceneHandle();
+}
+
+bool CInput::GetMouseButtonUp(_int _button)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -67,6 +101,18 @@ bool CInput::GetMouseButtonUp(int _button)
         return false;
 
     return !m_bKeyState[_button] && m_bPrevKeyState[_button];
+}
+
+bool CInput::GetMouseButtonUp_Editor(_int _button)
+{
+    if (_button == 0)
+        _button = MOUSE_L;
+    else if (_button == 1)
+        _button = MOUSE_R;
+    else
+        return false;
+
+    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getSceneHandle();
 }
 
 

@@ -19,7 +19,8 @@ public:
 
 	const GameRunningState getGameState() { return m_eGameState; };
 	void SetGameState(const GameRunningState _status) { m_eGameState = _status; };
-	void OnScreenChange(const _uint& _width, const _uint& _height);
+	void OnSceneScreenChange(const _uint& _width, const _uint& _height);
+	void OnGameScreenChange(const _uint& _width, const _uint& _height);
 
 public:
 	const _bool& getStepOne() { return m_bStepOneFrame; }

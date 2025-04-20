@@ -51,12 +51,14 @@ _int CMainProcess::Update_MainApp()
 
 	CInput::GetInstance().Update();
 
-	CManagement::GetInstance().getCrtScene()->UpdateEditor();
+	if (GetForegroundWindow() == CScreen::GetInstance().getSceneHandle())
+		CManagement::GetInstance().getCrtScene()->UpdateEditor();
 	CManagement::GetInstance().getCrtScene()->Update();
 
 	Render_MainApp();
 
-	CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
+	if (GetForegroundWindow() == CScreen::GetInstance().getSceneHandle())
+		CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
 	CManagement::GetInstance().getCrtScene()->LateUpdate();
 	CInput::GetInstance().LateUpdate();
 
@@ -93,7 +95,6 @@ void CMainProcess::Render_MainApp()
 
 	m_pDevClass->Render_End(CScreen::GetInstance().getSceneHandle());
 
-
 	m_pDevClass->Render_Begin(gameViewport, D3DCOLOR_XRGB(49, 77, 121));
 
 	CManagement::GetInstance().getCrtScene()->Render_Game();
@@ -105,15 +106,22 @@ void CMainProcess::Release()
 {
 }
 
-void CMainProcess::OnScreenChange(const _uint& _width, const _uint& _height)
+void CMainProcess::OnSceneScreenChange(const _uint& _width, const _uint& _height)
 {
 	if (!m_pDevClass || !m_pDevClass->Get_GraphicDev())
 		return;
 
-	if (FAILED(m_pDevClass->ReSize(_width, _height)))
+	//CScreen::GetInstance().UpdateSceneResolution(_width, _height);
+
+	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height));
+}
+
+void CMainProcess::OnGameScreenChange(const _uint& _width, const _uint& _height)
+{
+	if (!m_pDevClass || !m_pDevClass->Get_GraphicDev())
 		return;
 
-	CScreen::GetInstance().UpdateGameResolution(_width, _height);
+	//CScreen::GetInstance().UpdateGameResolution(_width, _height); 
 
-	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution();
+	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution(vector2Int(_width, _height));
 }

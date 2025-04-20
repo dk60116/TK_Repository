@@ -47,7 +47,8 @@ public:
     CCamera* getCamera(const int _index) const { return m_vCameraList[_index]; }
     CCamera* getCamera() const { return m_vCameraList.back(); }
     void UpdateAllLight();
-    void UpdateAllCameraResolution();
+    void UpdateSceneCameraResolution(const vector2Int& _resolution);
+    void UpdateAllCameraResolution(const vector2Int& _resolution);
     SceneOptions& getOptions() { return m_sOptions; }
 
     void SetGraphicDev(LPDIRECT3DDEVICE9 _device) { m_pGraphicDev = _device; }

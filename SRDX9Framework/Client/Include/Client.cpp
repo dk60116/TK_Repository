@@ -250,11 +250,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         else if (hWnd == CScreen::GetInstance().getSceneHandle())
         {
-            CMainProcess::GetInstance().OnScreenChange(width, height);
+            CMainProcess::GetInstance().OnSceneScreenChange(width, height);
         }
         else if (hWnd == CScreen::GetInstance().getGameHandle())
         {
-            CMainProcess::GetInstance().OnScreenChange(width, height);
+            CMainProcess::GetInstance().OnGameScreenChange(width, height);
         }
     }
     break;

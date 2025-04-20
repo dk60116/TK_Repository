@@ -39,7 +39,7 @@ void CPlayer::Update()
 {
 	CComponent::Update();
 
-	//KeyInput();
+	KeyInput();
 }
 
 void CPlayer::FixedUpdate()

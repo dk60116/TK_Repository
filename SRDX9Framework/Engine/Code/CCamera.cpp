@@ -107,8 +107,8 @@ void CCamera::UpdateViewMatrix()
 	D3DXMatrixLookAtLH(&m_matViewMatrix, &eyePos, &atPos, &upVec);
 }
 
-void CCamera::ResetAspectFromResolution()
+void CCamera::ResetAspectFromResolution(const vector2Int& _resolution)
 {
 	if (CScreen::GetInstance().getGameResolution().y > 0)
-		m_sParameters.ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
+		m_sParameters.ascpect = (float)_resolution.x / (float)_resolution.y;
 }
