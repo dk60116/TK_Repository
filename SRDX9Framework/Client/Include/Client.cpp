@@ -161,6 +161,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if (CEngineEditor::GetInstance().WndProcHandle(hWnd, message, wParam, lParam))
+        return TRUE;
+
     switch (message)
     {
     case WM_COMMAND:
@@ -231,18 +234,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_CTLCOLORSTATIC:
     {
-#ifdef _DEBUG
         HDC hdcStatic = (HDC)wParam;
         HWND hStatic = (HWND)lParam;
 
-        if (hStatic == CEngineEditor::GetInstance().getTopBar())
+        if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
+            || hStatic == CEngineEditor::GetInstance().getSceneTopBar()
+            || hStatic == CEngineEditor::GetInstance().getGameTopBar())
         {
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, RGB(0, 0, 0));
             static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
             return (INT_PTR)hBlackBrush;
         }
-#endif 
+
         break;
     }
     break;
@@ -293,6 +297,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+    
     return 0;
 }
 

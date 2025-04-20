@@ -13,16 +13,21 @@ public:
 
 public:
 	HINSTANCE getHInstance() { return m_hInstance; }
+
 	HWND getMainHandle() { return m_hMainWnd; }
 	HWND getSceneHandle() { return m_hSceneWnd; }
 	HWND getGameHandle() { return m_hGameWnd; }
+
 	const vector2Int& getSceneResolution() { return m_v2SceneResolution; }
 	const vector2Int& getGameResolution() { return m_v2GameResolution; }
+
 	const _int& getDPI() { return m_iDPI; }
 
 public:
 	void UpdateSceneResolution(const _int& _width, const _int& _height);
 	void UpdateGameResolution(const _int& _width, const _int& _height);
+
+	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
 
 private:
 	HINSTANCE m_hInstance;

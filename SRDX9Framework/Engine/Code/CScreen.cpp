@@ -27,25 +27,17 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 
 	m_hInstance = _hInst;
 
-#ifdef _DEBUG
 	RECT rc{ 0, 0, screenWidth, screenHeight };
-#else
-	RECT rc{ 0, 0, CScreen::GetInstance().getResolution().x, CScreen::GetInstance().getResolution().y };
-#endif
 
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-	int offset = 0;
-
-#ifdef _DEBUG
-	offset = 30;
+	int offset = MAINTOPBARHEIGHT;
 
 	m_hMainWnd = CreateWindowW(L"MaindowClass", L"Main",
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-		rc.left, rc.top + offset + 10,
-		rc.right - rc.left, rc.bottom - rc.top + offset - 10,
+		rc.left, rc.top + offset,
+		rc.right - rc.left, rc.bottom - rc.top + offset,
 		nullptr, nullptr, _hInst, nullptr);
-#endif
 
 	RECT windowRect;
 	GetWindowRect(m_hMainWnd, &windowRect);
@@ -53,38 +45,48 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	int clientHeight = windowRect.bottom - windowRect.top;
 
 	RECT grc;
-
 	GetClientRect(m_hMainWnd, &grc);
 
-	POINT pt = { -10 , 12 };
+	POINT pt = { 0 , 14 };
 	ClientToScreen(m_hMainWnd, &pt);
-
-	int width = grc.right / 2;
-	int height = grc.bottom;
 
 	int titleBarHeight = GetSystemMetrics(SM_CYCAPTION);
 	int frameHeight = GetSystemMetrics(SM_CYFRAME);
 	int menuBarHeight = GetSystemMetrics(SM_CYMENU);
 
-	int totalHeight = titleBarHeight + frameHeight + menuBarHeight;
+	int menuHeight = titleBarHeight + frameHeight + menuBarHeight;
+
+	int width = grc.right / 2;
+	int height = (clientHeight / 2) - (menuHeight * 2) - (15);
+
+	RECT rcClient, rcWindow;
+	GetClientRect(m_hMainWnd, &rcClient);
+	GetWindowRect(m_hMainWnd, &rcWindow);
+
+	int offsetX = (rcWindow.left - rcClient.left);
+	int offsetY = (rcWindow.top - rcClient.top);
 
 	m_hSceneWnd = CreateWindowW(L"SceneWindowClass", L"Scene",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-		pt.x, pt.y,
+		pt.x + offsetX,
+		pt.y + offsetY,
 		width,
-		(clientHeight / 2) - totalHeight - 65,
+		height,
 		m_hMainWnd, nullptr, _hInst, nullptr);
 
-	UpdateSceneResolution(width, (clientHeight / 2) - totalHeight - 70 - 60);
+	RemoveBtnsAndRoundedCorners(m_hSceneWnd);
+	UpdateSceneResolution(width, height - 30);
 
 	m_hGameWnd = CreateWindowW(L"GameWindowClass", L"Game",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-		pt.x, offset + clientHeight / 2 - totalHeight + offset - 60,
+		pt.x + offsetX, 
+		pt.y + offsetY + height + offsetX,
 		width,
-		(clientHeight / 2) - totalHeight - 30,
+		height,
 		m_hMainWnd, nullptr, _hInst, nullptr);
 
-	UpdateGameResolution(width, (clientHeight / 2) - totalHeight - 35);
+	RemoveBtnsAndRoundedCorners(m_hGameWnd);
+	UpdateGameResolution(width, height - 30);
 
 	ShowWindow(m_hMainWnd, SW_SHOWMAXIMIZED);
 	UpdateWindow(m_hMainWnd);
@@ -98,4 +100,28 @@ void CScreen::UpdateSceneResolution(const _int& _width, const _int& _height)
 void CScreen::UpdateGameResolution(const _int& _width, const _int& _height)
 {
 	m_v2GameResolution = vector2Int(_width, _height);
+}
+
+void CScreen::RemoveBtnsAndRoundedCorners(HWND _hWnd)
+{
+	LONG style = GetWindowLong(_hWnd, GWL_STYLE);
+
+	style &= ~WS_MINIMIZEBOX;
+	style &= ~WS_MAXIMIZEBOX;
+	style &= ~WS_SYSMENU;
+
+	SetWindowLong(_hWnd, GWL_STYLE, style);
+
+	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
+		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+	DWM_WINDOW_CORNER_PREFERENCE preference = DWMWCP_DONOTROUND;
+
+	HRESULT hr = DwmSetWindowAttribute
+	(
+		_hWnd,
+		DWMWA_WINDOW_CORNER_PREFERENCE, // 33
+		&preference,
+		sizeof(preference)
+	);
 }

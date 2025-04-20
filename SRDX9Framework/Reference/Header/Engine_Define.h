@@ -15,6 +15,8 @@
 #include <typeindex>
 #include <memory>
 #include <atomic>
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"
@@ -26,6 +28,8 @@
 #include <dinput.h>
 
 #define TRAVERSAL_ITER(p, n) auto n = p.begin(); n != p.end(); ++n
+
+#define MAINTOPBARHEIGHT 40
 
 #pragma warning(disable : 4251)
 

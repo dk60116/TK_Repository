@@ -89,10 +89,8 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND _hWnd, WINMODE _eMode,
 // 후면 버퍼
 void CGraphicDev::Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color)
 {
-	RECT rcClear = { 0, 30, _viewPort.Width, _viewPort.Height + 30 };
-
 	// 화면 Clear
-	m_pGraphicDev->Clear(1, (const D3DRECT*)&rcClear,
+	m_pGraphicDev->Clear(1, nullptr,
 		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
 		_color, 1.f, 0);
 
