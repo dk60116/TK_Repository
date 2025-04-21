@@ -6,6 +6,7 @@
 BEGIN(Engine)
 
 class IDeviceResetListener
+	: UObject
 {
 public:
 	virtual void OnDeviceLost() PURE;

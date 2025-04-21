@@ -51,9 +51,9 @@ public:
 	vector3& getLocalScale() { return m_v3Scale; }
 	vector3& getLocalEulerAngles() { return m_v3EulerAngles; }
 
-	void SetPosition(const vector3 world_pos);
+	void SetPosition(const vector3& world_pos);
 	void SetPosition(const _float _x, const _float _y, const _float _z);
-	void AddPosition(const vector3 _world_delta);
+	void AddPosition(const vector3& _world_delta);
 	void AddPosition(const _float _x, const _float _y, const _float _z);
 	void SetPositionX(const _float _x);
 	void SetPositionY(const _float _y);
@@ -62,9 +62,9 @@ public:
 	void AddPositionY(const _float _y);
 	void AddPositionZ(const _float _z);
 
-	void SetEulerAngles(const vector3 _world_euler_deg);
+	void SetEulerAngles(const vector3& _world_euler_deg);
 	void SetEulerAngles(const _float _x, const _float _y, const _float _z);
-	void AddEulerAngles(const vector3 _delta);
+	void AddEulerAngles(const vector3& _delta);
 	void AddEulerAngles(const _float _x, const _float _y, const _float _z);
 	void SetEulerAnglesX(const _float _x);
 	void SetEulerAnglesY(const _float _y);
@@ -73,9 +73,9 @@ public:
 	void AddEulerAnglesY(const _float _y);
 	void AddEulerAnglesZ(const _float _z);
 
-	void SetLocalPosition(const vector3 _pos);
+	void SetLocalPosition(const vector3& _pos);
 	void SetLocalPosition(const _float _x, const _float _y, const _float _z);
-	void AddLocalPosition(const vector3 _pos);
+	void AddLocalPosition(const vector3& _pos);
 	void AddLocalPosition(const _float _x, const _float _y, const _float _z);
 	void SetLocalPositionX(const _float _x);
 	void SetLocalPositionY(const _float _y);
@@ -84,9 +84,9 @@ public:
 	void AddLocalPositionY(const _float _y);
 	void AddLocalPositionZ(const _float _z);
 	
-	void SetLocalScale(const vector3 _scale);
+	void SetLocalScale(const vector3& _scale);
 	void SetLocalScale(const _float _x, const _float _y, const _float _z);
-	void AddLocalScale(const vector3 _scale);
+	void AddLocalScale(const vector3& _scale);
 	void AddLocalScale(const _float _x, const _float _y, const _float _z);
 	void SetLocalScaleX(const _float _x);
 	void SetLocalScaleY(const _float _y);
@@ -95,9 +95,9 @@ public:
 	void AddLocalScaleY(const _float _y);
 	void AddLocalScaleZ(const _float _z);
 
-	void SetLocalEulerAngles(const vector3 _rot);
+	void SetLocalEulerAngles(const vector3& _rot);
 	void SetLocalEulerAngles(const _float _x, const _float _y, const _float _z);
-	void AddLocalEulerAngles(const vector3 _rot);
+	void AddLocalEulerAngles(const vector3& _rot);
 	void AddLocalEulerAngles(const _float _x, const _float _y, const _float _z);
 	void SetLocalEulerAnglesX(const _float _x);
 	void SetLocalEulerAnglesY(const _float _y);
@@ -106,15 +106,15 @@ public:
 	void AddLocalEulerAnglesY(const _float _y);
 	void AddLocalEulerAnglesZ(const _float _z);
 
-	void SetQuaternion(const quaternion _q);
+	void SetQuaternion(const quaternion& _q);
 	void AddLocalXAxis(_float _angle);
 	void AddLocalYAxis(_float _angle);
 	void AddLocalZAxis(_float _angle);
-	void RotateLocalAxis(const vector3 local_axis, _float angle_deg);
+	void RotateLocalAxis(const vector3& local_axis, _float angle_deg);
 
-	void LookAt(vector3 _target);
+	void LookAt(const vector3 _target);
 	void LookAt(CTransform& _target);
-	void LookAt(vector3 _target, vector3 _front);
+	void LookAt(const vector3 _target, const vector3 _front);
 	const _matrix& getWorldMatrix() const { return m_matWorld; }
 	const Directions& getDirections() const { return m_sDirections; }
 

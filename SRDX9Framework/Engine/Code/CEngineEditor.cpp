@@ -26,7 +26,7 @@ void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 	RECT windowRect;
 	GetWindowRect(m_hMainWnd, &windowRect);
 
-	int screenX = windowRect.right - windowRect.left;
+	int screenX = windowRect.right + windowRect.left;
 	int screenXCenter = screenX / 2;
 
 	int buttonsWidth = 34;
@@ -47,7 +47,7 @@ void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 		buttonsWidth, buttonsHeight,
 		m_hMainWnd, (HMENU)ID_BTN_STOP, m_hInst, nullptr);
 
-	// 일시정지/재생 버튼
+	// 일시정지 / 재생 버튼
 	m_hBtnPause = CreateWindowW(L"BUTTON", L"II", 
 		WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
 		screenXCenter - buttonsWidth / 2, buttonsYPos,
@@ -60,6 +60,23 @@ void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 		screenXCenter + spacing, buttonsYPos,
 		buttonsWidth, buttonsHeight,
 		m_hMainWnd, (HMENU)ID_BTN_NEXTFRAME, m_hInst, nullptr);
+
+	RECT mainRC;
+	GetClientRect(m_hMainWnd, &mainRC);
+
+	_int bottomY = mainRC.bottom;
+
+	// 하단바 영역
+	m_hBottomBar = CreateWindowW
+	(
+		L"STATIC", nullptr,
+		WS_VISIBLE | WS_CHILD,
+		0, 
+		bottomY - CHILDTOPBARHEIGHT,
+		screenX,
+		bottomY,
+		m_hMainWnd, nullptr, m_hInst, nullptr
+	);
 
 	EnableWindow(m_hBtnNextFrame, m_bPaused);
 }
@@ -75,7 +92,7 @@ void CEngineEditor::Init_Scene(HWND _gameWnd)
 	// 상단바 영역
 	m_hTop_Scene = CreateWindowW(L"STATIC", nullptr,
 		WS_VISIBLE | WS_CHILD,
-		0, 0, screenX, 30,
+		0, 0, screenX, CHILDTOPBARHEIGHT,
 		_gameWnd, nullptr, m_hInst, nullptr);
 
 	HFONT hFont = CreateFontW

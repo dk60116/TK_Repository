@@ -6,7 +6,7 @@ CScreen::CScreen()
 	, m_hMainWnd(nullptr)
 	, m_hSceneWnd(nullptr)
 	, m_hGameWnd(nullptr)
-	, m_v2GameResolution(vector2(960, 540))
+	, m_v2GameResolution(vector2(0, 0))
 	, m_bFullScreen(false)
 	, m_iDPI(0)
 {
@@ -18,46 +18,40 @@ CScreen::~CScreen()
 
 void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 {
+	m_hInstance = _hInst;
+
+	_int mainOffset = MAINTOPBARHEIGHT;
+	_int childOffset = CHILDTOPBARHEIGHT;
+
+	_int captionHeight = GetSystemMetrics(SM_CYCAPTION);
+	_int frameHeight = GetSystemMetrics(SM_CYFRAME);
+	_int menuBarHeight = GetSystemMetrics(SM_CYMENU);
+
+	_int menuHeight = captionHeight + frameHeight;
+
 	DEVMODE devMode = {};
 	devMode.dmSize = sizeof(DEVMODE);
 	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devMode);
 
-	int screenWidth = devMode.dmPelsWidth;
-	int screenHeight = devMode.dmPelsHeight;
+	_int screenWidth = devMode.dmPelsWidth;
+	_int screenHeight = devMode.dmPelsHeight;
 
-	m_hInstance = _hInst;
+	RECT winRect = { 0, menuHeight, screenWidth, screenHeight };
+	AdjustWindowRect(&winRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	RECT rc{ 0, 0, screenWidth, screenHeight };
-
-	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-
-	int offset = MAINTOPBARHEIGHT;
+	_int winWidth = winRect.right - winRect.left;
+	_int winHeight = winRect.bottom - winRect.top - mainOffset;
 
 	m_hMainWnd = CreateWindowW(L"MaindowClass", L"Main",
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-		rc.left, rc.top + offset,
-		rc.right - rc.left, rc.bottom - rc.top + offset,
+		winRect.left,
+		winRect.top,
+		winWidth,
+		winHeight,
 		nullptr, nullptr, _hInst, nullptr);
 
-	RECT windowRect;
-	GetWindowRect(m_hMainWnd, &windowRect);
-
-	int clientHeight = windowRect.bottom - windowRect.top;
-
-	RECT grc;
-	GetClientRect(m_hMainWnd, &grc);
-
-	POINT pt = { 0 , 14 };
-	ClientToScreen(m_hMainWnd, &pt);
-
-	int titleBarHeight = GetSystemMetrics(SM_CYCAPTION);
-	int frameHeight = GetSystemMetrics(SM_CYFRAME);
-	int menuBarHeight = GetSystemMetrics(SM_CYMENU);
-
-	int menuHeight = titleBarHeight + frameHeight + menuBarHeight;
-
-	int width = grc.right / 2;
-	int height = (clientHeight / 2) - (menuHeight * 2) - (15);
+	ShowWindow(m_hMainWnd, SW_SHOW);
+	UpdateWindow(m_hMainWnd);
 
 	RECT rcClient, rcWindow;
 	GetClientRect(m_hMainWnd, &rcClient);
@@ -66,30 +60,57 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	int offsetX = (rcWindow.left - rcClient.left);
 	int offsetY = (rcWindow.top - rcClient.top);
 
+	POINT clientPoint = { offsetX, mainOffset };
+	ClientToScreen(m_hMainWnd, &clientPoint);
+
+	_int clientWidth = rcClient.right - rcClient.left;
+	_int clientHeight = rcClient.bottom - rcClient.top;
+
+	_int width = (clientWidth / 2);
+	_int height = (clientHeight / 2) - menuHeight;
+
 	m_hSceneWnd = CreateWindowW(L"SceneWindowClass", L"Scene",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-		pt.x + offsetX,
-		pt.y + offsetY,
+		clientPoint.x,
+		clientPoint.y,
 		width,
 		height,
 		m_hMainWnd, nullptr, _hInst, nullptr);
 
+	RECT sceneRect = {};
+	GetClientRect(m_hSceneWnd, &sceneRect);
+
+	_int childMenuHeight = captionHeight + frameHeight;
+
+	_int sceneWidth = sceneRect.right - sceneRect.left;
+	_int sceneHeight = sceneRect.bottom - sceneRect.top;
+
 	RemoveBtnsAndRoundedCorners(m_hSceneWnd);
-	UpdateSceneResolution(width, height - 30);
+	UpdateSceneResolution(sceneWidth, sceneHeight);
+
+	POINT scenePT = { 0, sceneRect.bottom };
+
+	ClientToScreen(m_hSceneWnd, &scenePT);
+
+	_int sceneBottomY = scenePT.y + 1;
 
 	m_hGameWnd = CreateWindowW(L"GameWindowClass", L"Game",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-		pt.x + offsetX, 
-		pt.y + offsetY + height + offsetX,
+		clientPoint.x,
+		sceneBottomY,
 		width,
 		height,
 		m_hMainWnd, nullptr, _hInst, nullptr);
 
-	RemoveBtnsAndRoundedCorners(m_hGameWnd);
-	UpdateGameResolution(width, height - 30);
+	RECT gameRect = {};
 
-	ShowWindow(m_hMainWnd, SW_SHOWMAXIMIZED);
-	UpdateWindow(m_hMainWnd);
+	GetClientRect(m_hGameWnd, &gameRect);
+
+	_int gameWidth = gameRect.right - gameRect.left;
+	_int gameHeight = gameRect.bottom - gameRect.top;
+
+	RemoveBtnsAndRoundedCorners(m_hGameWnd);
+	UpdateGameResolution(gameWidth, gameHeight);
 }
 
 void CScreen::UpdateSceneResolution(const _int& _width, const _int& _height)

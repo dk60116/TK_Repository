@@ -30,6 +30,7 @@
 #define TRAVERSAL_ITER(p, n) auto n = p.begin(); n != p.end(); ++n
 
 #define MAINTOPBARHEIGHT 40
+#define CHILDTOPBARHEIGHT 28
 
 #pragma warning(disable : 4251)
 

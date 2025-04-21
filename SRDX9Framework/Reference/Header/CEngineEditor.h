@@ -39,6 +39,7 @@ private:
 	HWND m_hMainWnd;
 
 	HWND m_hTopBar, m_hTop_Scene, m_hTop_Game;
+	HWND m_hBottomBar;
 	HWND m_hBtnPause;
 	HWND m_hBtnStop;
 	HWND m_hBtnNextFrame;

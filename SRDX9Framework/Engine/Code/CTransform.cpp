@@ -123,7 +123,7 @@ const wstring CTransform::getName()
 	return m_pGameObject->getName();
 }
 
-void CTransform::SetPosition(const vector3 _world_pos)
+void CTransform::SetPosition(const vector3& _world_pos)
 {
 	if (m_pParent)
 	{
@@ -147,7 +147,7 @@ void CTransform::SetPosition(const _float _x, const _float _y, const _float _z)
 	SetPosition(pos);
 }
 
-void CTransform::AddPosition(const vector3 _world_delta)
+void CTransform::AddPosition(const vector3& _world_delta)
 {
 	if (m_pParent)
 	{
@@ -207,7 +207,7 @@ void CTransform::AddPositionZ(const _float _z)
 	AddPosition(vector3(0.f, 0.f, _z));
 }
 
-void CTransform::SetEulerAngles(const vector3 _world_euler_deg)
+void CTransform::SetEulerAngles(const vector3& _world_euler_deg)
 {
 	D3DXQUATERNION worldQuat = quaternion::from_euler(_world_euler_deg).dQuaternion();
 
@@ -238,7 +238,7 @@ void CTransform::SetEulerAngles(const _float _x, const _float _y, const _float _
 	SetEulerAngles(angle);
 }
 
-void CTransform::AddEulerAngles(const vector3 _delta)
+void CTransform::AddEulerAngles(const vector3& _delta)
 {
 	vector3 newEuler = m_vWorldEulerAngle + _delta;
 	SetEulerAngles(newEuler);
@@ -289,7 +289,7 @@ void CTransform::AddEulerAnglesZ(const _float _z)
 	AddEulerAngles(angle);
 }
 
-void CTransform::SetLocalPosition(const vector3 _pos)
+void CTransform::SetLocalPosition(const vector3& _pos)
 {
 	m_v3Position = _pos;
 }
@@ -299,7 +299,7 @@ void CTransform::SetLocalPosition(const _float _x, const _float _y, const _float
 	m_v3Position = vector3(_x, _y, _z);
 }
 
-void CTransform::AddLocalPosition(const vector3 _pos)
+void CTransform::AddLocalPosition(const vector3& _pos)
 {
 	m_v3Position += _pos;
 }
@@ -339,7 +339,7 @@ void CTransform::AddLocalPositionZ(const _float _z)
 	m_v3Position.z += _z;
 }
 
-void CTransform::SetLocalScale(const vector3 _scale)
+void CTransform::SetLocalScale(const vector3& _scale)
 {
 	m_v3Scale = _scale;
 }
@@ -349,7 +349,7 @@ void CTransform::SetLocalScale(const _float _x, const _float _y, const _float _z
 	m_v3Scale = vector3(_x, _y, _z);
 }
 
-void CTransform::AddLocalScale(const vector3 _scale)
+void CTransform::AddLocalScale(const vector3& _scale)
 {
 	m_v3Scale += _scale;
 }
@@ -389,7 +389,7 @@ void CTransform::AddLocalScaleZ(const _float _z)
 	m_v3Scale.z += _z;
 }
 
-void CTransform::SetLocalEulerAngles(const vector3 _rot)
+void CTransform::SetLocalEulerAngles(const vector3& _rot)
 {
 	m_v3EulerAngles = _rot;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
@@ -437,7 +437,7 @@ void CTransform::AddLocalEulerAnglesZ(const _float _z)
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::SetQuaternion(const quaternion _q)
+void CTransform::SetQuaternion(const quaternion& _q)
 {
 	m_v4Quaternion = _q;
 }
@@ -475,7 +475,7 @@ void CTransform::AddLocalZAxis(_float _angle)
 	m_v4Quaternion = quaternion(zRot) * m_v4Quaternion;
 }
 
-void CTransform::RotateLocalAxis(const vector3 local_axis, _float angle_deg)
+void CTransform::RotateLocalAxis(const vector3& local_axis, _float angle_deg)
 {
 	_float angle_rad = D3DXToRadian(angle_deg);
 
@@ -496,7 +496,7 @@ void CTransform::RotateLocalAxis(const vector3 local_axis, _float angle_deg)
 	m_v4Quaternion = quaternion(qRot) * m_v4Quaternion;
 }
 
-void CTransform::AddLocalEulerAngles(const vector3 _rot)
+void CTransform::AddLocalEulerAngles(const vector3& _rot)
 {
 	m_v3EulerAngles += _rot;
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
@@ -508,7 +508,7 @@ void CTransform::AddLocalEulerAngles(const _float _x, const _float _y, const _fl
 	m_v4Quaternion = quaternion::from_euler(m_v3EulerAngles);
 }
 
-void CTransform::LookAt(vector3 _target)
+void CTransform::LookAt(const vector3 _target)
 {
 	vector3 dir = (_target - m_v3WorldPos).normalized();
 
@@ -526,7 +526,7 @@ void CTransform::LookAt(CTransform& _target)
 	LookAt(_target.getTransform().getPosition());
 }
 
-void CTransform::LookAt(vector3 _target, vector3 _front)
+void CTransform::LookAt(const vector3 _target, const vector3 _front)
 {
 	vector3 world_target_dir = (_target - m_v3WorldPos).normalized();
 
