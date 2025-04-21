@@ -169,7 +169,6 @@ void CDebug::Log(const int foramt, ...) {}
 void CDebug::Log(const float format, ...) {}
 void CDebug::Log(const vector3 format, ...) {}
 void CDebug::Log(const vector2Int format, ...) {}
-void CDebug::Log(const vector3 format, ...) {}
 void CDebug::LogError(const char* format, ...) {}
 void CDebug::LogError(const string format, ...) {}
 void CDebug::LogError(const wstring format, ...) {}

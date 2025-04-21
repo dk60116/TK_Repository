@@ -66,7 +66,7 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int clientWidth = rcClient.right - rcClient.left;
 	_int clientHeight = rcClient.bottom - rcClient.top;
 
-	_int width = (clientWidth / 2);
+	_int width = (clientWidth / 2) - clientPoint.x * 2;
 	_int height = (clientHeight / 2) - menuHeight;
 
 	m_hSceneWnd = CreateWindowW(L"SceneWindowClass", L"Scene",

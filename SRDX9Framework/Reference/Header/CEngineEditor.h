@@ -29,6 +29,7 @@ public:
 	const bool& IsPaused() { return m_bPaused; }
 
 	HWND getMainTopBar() { return m_hTopBar; }
+	HWND getMainBottomBar() { return m_hBottomBar; }
 	HWND getSceneTopBar() { return m_hTop_Scene; }
 	HWND getGameTopBar() { return m_hTop_Game; }
 

@@ -34,7 +34,7 @@ public:
     static void LogError(const vector3 format, ...);
 
 public:
-    static string WStringToString(const std::wstring& wstr);
+    static string WStringToString(const wstring& wstr);
 };
 
 END

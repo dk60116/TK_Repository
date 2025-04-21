@@ -172,45 +172,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wmId)
         {
         case IDM_ABOUT:
-#ifdef _DEBUG
             DialogBox(CEngineEditor::GetInstance().getHInst(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-#endif // DEBUG
             break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
         case IDM_GAME_PLAY:
-#ifdef _DEBUG
             CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
-#endif
             break;
         case IDM_GAME_PAUSE:
-#ifdef _DEBUG
             CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
-#endif
             break;
         case IDM_GAME_STOP:
             PostQuitMessage(0);
             break;
         case ID_BTN_PLAY:
-#ifdef _DEBUG
             CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
-#endif
             break;
         case ID_BTN_PAUSE:
-#ifdef _DEBUG
             CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
-#endif
             break;
         case ID_BTN_STOP:
             PostQuitMessage(0);
             break;
         case ID_BTN_NEXTFRAME:
             CMainProcess::GetInstance().SetStepOne(true);
-
-#ifdef _DEBUG
             CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
-#endif
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -233,18 +220,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_CTLCOLORSTATIC:
     {
-        //HDC hdcStatic = (HDC)wParam;
-        //HWND hStatic = (HWND)lParam;
+        HDC hdcStatic = (HDC)wParam;
+        HWND hStatic = (HWND)lParam;
 
-        //if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
-        //    || hStatic == CEngineEditor::GetInstance().getSceneTopBar()
-        //    || hStatic == CEngineEditor::GetInstance().getGameTopBar())
-        //{
-        //    SetBkMode(hdcStatic, TRANSPARENT);
-        //    SetBkColor(hdcStatic, RGB(0, 0, 0));
-        //    static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
-        //    return (INT_PTR)hBlackBrush;
-        //}
+        if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
+            || hStatic == CEngineEditor::GetInstance().getMainBottomBar()
+            || hStatic == CEngineEditor::GetInstance().getSceneTopBar()
+            || hStatic == CEngineEditor::GetInstance().getGameTopBar())
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, RGB(0, 0, 0));
+            static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+            return (INT_PTR)hBlackBrush;
+        }
 
         break;
     }
@@ -263,12 +251,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             if (hMainWnd)
             {
-                int offset = 0;
-#ifdef _DEBUG
-                offset = 30;
+                int offset = 30;
 
                 CEngineEditor::GetInstance().UpdateResolution(vector2Int(width, height));
-#endif
             }
         }
         else if (hWnd == CScreen::GetInstance().getSceneHandle())
