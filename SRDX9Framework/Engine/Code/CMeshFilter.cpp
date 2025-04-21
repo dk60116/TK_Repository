@@ -14,7 +14,7 @@ CMeshFilter::~CMeshFilter()
 
 void CMeshFilter::Awake()
 {
-	CComponent::Awake();
+	__super::Awake();
 
 	m_pMesh = new CMesh();
 	m_pMesh->AddRef();
@@ -34,7 +34,7 @@ void CMeshFilter::Render()
 
 void CMeshFilter::OnDestroy()
 {
-	CComponent::OnDestroy();
+	__super::OnDestroy();
 	Safe_Release(m_pMesh);
 	Release();
 }

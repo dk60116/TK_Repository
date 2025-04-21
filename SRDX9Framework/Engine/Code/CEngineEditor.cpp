@@ -4,12 +4,15 @@
 CEngineEditor::CEngineEditor()
 	: m_hInst(nullptr)
 	, m_hMainWnd(nullptr)
+	, m_bPlaying(false)
 	, m_bPaused(false)
+	, m_bNextFrame(false)
 	, m_hTopBar(nullptr)
+	, m_hBottomBar(nullptr)
 	, m_hTop_Scene(nullptr)
 	, m_hTop_Game(nullptr)
+	, m_hBtnPlay(nullptr)
 	, m_hBtnPause(nullptr)
-	, m_hBtnStop(nullptr)
 	, m_hBtnNextFrame(nullptr)
 {
 }
@@ -40,12 +43,12 @@ void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 		0, 0, screenX, MAINTOPBARHEIGHT,
 		m_hMainWnd, nullptr, m_hInst, nullptr);
 
-	// 종료 버튼
-	m_hBtnStop = CreateWindowW(L"BUTTON", L"■", 
+	// 플레이 버튼
+	m_hBtnPlay = CreateWindowW(L"BUTTON", L"▶",
 		WS_VISIBLE | WS_CHILD | BS_OWNERDRAW,
 		screenXCenter - buttonsWidth - spacing, buttonsYPos,
 		buttonsWidth, buttonsHeight,
-		m_hMainWnd, (HMENU)ID_BTN_STOP, m_hInst, nullptr);
+		m_hMainWnd, (HMENU)ID_BTN_PLAY, m_hInst, nullptr);
 
 	// 일시정지 / 재생 버튼
 	m_hBtnPause = CreateWindowW(L"BUTTON", L"II", 
@@ -81,11 +84,11 @@ void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 	HFONT hFont14 = CreateDefaultFont(L"Arial", 18);
 	HFONT hFont16 = CreateDefaultFont(L"Arial", 16, TRUE);
 
-	SendMessageW(m_hBtnStop, WM_SETFONT, (WPARAM)hFont14, TRUE);
+	SendMessageW(m_hBtnPlay, WM_SETFONT, (WPARAM)hFont14, TRUE);
 	SendMessageW(m_hBtnPause, WM_SETFONT, (WPARAM)hFont16, TRUE);
 	SendMessageW(m_hBtnNextFrame, WM_SETFONT, (WPARAM)hFont14, TRUE);
 	
-	EnableWindow(m_hBtnStop, TRUE);
+	EnableWindow(m_hBtnPlay, TRUE);
 	EnableWindow(m_hBtnPause, TRUE);
 	EnableWindow(m_hBtnNextFrame, m_bPaused);
 }
@@ -146,19 +149,66 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 {
 	switch (message)
 	{
+		case WM_COMMAND:
+		{
+			int wmId = LOWORD(wParam);
+
+			switch (wmId)
+			{
+			case ID_BTN_PLAY:
+				m_bPlaying = !m_bPlaying;
+				EnableWindow(m_hBtnPause, m_bPlaying);
+
+				if (!m_bPlaying)
+					m_bPaused = false;
+
+				InvalidateRect(m_hBtnPlay, nullptr, TRUE);
+				UpdateWindow(m_hBtnPlay);
+				InvalidateRect(m_hBtnPause, nullptr, TRUE);
+				UpdateWindow(m_hBtnPause);
+				break;
+			case ID_BTN_PAUSE:
+				m_bPaused = !m_bPaused;
+				EnableWindow(m_hBtnNextFrame, m_bPaused);
+
+				InvalidateRect(m_hBtnPause, nullptr, TRUE);
+				UpdateWindow(m_hBtnPause);
+				break;
+			case ID_BTN_NEXTFRAME:
+				m_bNextFrame = true;
+				break;
+			default:
+				return DefWindowProc(hWnd, message, wParam, lParam);
+			}
+			break;
+		}
+		break;
+
 		case WM_DRAWITEM:
 		{
 			LPDRAWITEMSTRUCT lpDraw = (LPDRAWITEMSTRUCT)lParam;
 
-			if (lpDraw->CtlID == ID_BTN_STOP || lpDraw->CtlID == ID_BTN_PAUSE || lpDraw->CtlID == ID_BTN_NEXTFRAME)
+			if (lpDraw->CtlID == ID_BTN_PLAY || lpDraw->CtlID == ID_BTN_PAUSE || lpDraw->CtlID == ID_BTN_NEXTFRAME)
 			{
 				HDC hdc = lpDraw->hDC;
 				RECT rc = lpDraw->rcItem;
 
 				COLORREF bgColor = RGB(0, 0, 0);
 				COLORREF btnColor = (lpDraw->itemState & ODS_SELECTED) ? RGB(60, 60, 60) : RGB(80, 80, 80);
+				COLORREF btnColor_Selected = RGB(63, 98, 120);
 				HBRUSH hBGBrush = CreateSolidBrush(bgColor);
 				HBRUSH hBrush = CreateSolidBrush(btnColor);
+				
+				if (lpDraw->CtlID == ID_BTN_PLAY)
+				{
+					if (m_bPlaying)
+						hBrush = CreateSolidBrush(btnColor_Selected);
+				}
+				else if (lpDraw->CtlID == ID_BTN_PAUSE)
+				{
+					if (m_bPaused)
+						hBrush = CreateSolidBrush(btnColor_Selected);
+				}
 
 				// 둥근 사각형
 				int cornerRadius = 8;
@@ -174,19 +224,19 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 				SetTextColor(hdc, RGB(255, 255, 255));
 
 				LPCWSTR text = L"";
-				if (lpDraw->CtlID == ID_BTN_STOP)
-					text = L"■";
+				if (lpDraw->CtlID == ID_BTN_PLAY)
+					text = m_bPlaying ? L"■" : L"▶";
 				else if (lpDraw->CtlID == ID_BTN_PAUSE)
 					text = L"❚❚";
 				else if (lpDraw->CtlID == ID_BTN_NEXTFRAME)
 					text = L"▶❚";
 
-				if (lpDraw->CtlID == ID_BTN_STOP)
+				if (lpDraw->CtlID == ID_BTN_PLAY)
 				{
 					RECT textRect = rc;
 					OffsetRect(&textRect, 0, 0);
 
-					HFONT hFont = CreateDefaultFont(L"Segoe UI Variable", 14);
+					HFONT hFont = CreateDefaultFont(L"Segoe UI Variable", 12);
 
 					HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
@@ -239,33 +289,6 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return 0;
 }
 
-CEngineEditor::GameRunningState CEngineEditor::HandleCommand(WPARAM _wParam)
-{
-	switch (LOWORD(_wParam))
-	{
-	case ID_BTN_PAUSE:
-		m_bPaused = !m_bPaused;
-		SetWindowText(m_hBtnPause, m_bPaused ? L"▶" : L"II");
-
-		EnableWindow(m_hBtnNextFrame, m_bPaused);
-
-		return m_bPaused ? PAUSED : RUNNING;
-
-	case ID_BTN_STOP:
-		PostQuitMessage(0);
-		return STOPPED;
-
-	case ID_BTN_NEXTFRAME:
-		SetWindowText(m_hBtnPause, L"▶");
-		return PAUSED;
-
-	default:
-		return STOPPED;
-	}
-
-	return STOPPED;
-}
-
 void CEngineEditor::UpdateResolution(const vector2Int _resolution)
 {
 	int screenX = _resolution.x;
@@ -276,7 +299,7 @@ void CEngineEditor::UpdateResolution(const vector2Int _resolution)
 		screenX, 30,
 		true);
 
-	MoveWindow(m_hBtnStop,
+	MoveWindow(m_hBtnPlay,
 		screenXCenter - 40 - 20, 1,
 		40, 28,
 		true);

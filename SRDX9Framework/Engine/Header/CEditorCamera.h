@@ -12,7 +12,7 @@ public:
     ~CEditorCamera();
 
 public:
-    void UpdateEditor();
+    void UpdateEditor() override;
 
 private:
     float m_fMoveSpeed, m_fRotateSpeed;

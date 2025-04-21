@@ -16,6 +16,11 @@ CLight::~CLight()
 	OnDestroy();
 }
 
+void CLight::UpdateEditor()
+{
+	__super::UpdateEditor();
+}
+
 void CLight::Init()
 {
 	ZeroMemory(&m_sLightInfo, sizeof(D3DLIGHT9));

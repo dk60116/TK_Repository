@@ -11,7 +11,7 @@ CMesh::~CMesh()
 
 HRESULT CMesh::Ready_Buffer(LPDIRECT3DDEVICE9 _device)
 {
-    return CVIBuffer::Ready_Buffer(_device);
+    return __super::Ready_Buffer(_device);
 }
 
 void CMesh::UpdateColor()

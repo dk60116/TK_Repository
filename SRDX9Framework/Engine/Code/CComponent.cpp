@@ -33,6 +33,10 @@ void CComponent::Start()
 {
 }
 
+void CComponent::UpdateEditor()
+{
+}
+
 void CComponent::Update()
 {
 }

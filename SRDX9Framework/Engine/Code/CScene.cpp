@@ -34,6 +34,20 @@ void CScene::Start()
 {
 }
 
+void CScene::UpdateEditor()
+{
+	UpdateAllLight();
+
+	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	{
+		for (TRAVERSAL_ITER(m_lObjectList[i], it))
+		{
+			if ((*it)->isActive() && (*it)->isEnable())
+				(*it)->UpdateEditor();
+		}
+	}
+}
+
 void CScene::Update()
 {
 	UpdateAllLight();
@@ -155,11 +169,6 @@ void CScene::Destroy()
 
 		m_lObjectList[i].clear();
 	}
-}
-
-void CScene::UpdateEditor()
-{
-	m_pEditorCamera->UpdateEditor();
 }
 
 CGameObject* CScene::AddObject(wstring _objName, Layer _layer)

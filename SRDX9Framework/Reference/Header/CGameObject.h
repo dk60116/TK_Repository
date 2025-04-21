@@ -23,6 +23,7 @@ private:
 public:
 	virtual void Awake();
 	virtual void Start();
+	virtual void UpdateEditor();
 	virtual void Update();
 	virtual void FixedUpdate();
 	virtual void LateUpdate();

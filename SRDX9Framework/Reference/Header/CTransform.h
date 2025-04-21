@@ -27,6 +27,7 @@ public:
 public:
 	void Awake() override;
 	void Start() override;
+	void UpdateEditor() override;
 	void Update() override;
 	void FixedUpdate() override;
 	void LateUpdate() override;

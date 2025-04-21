@@ -5,8 +5,6 @@
 
 CMainProcess::CMainProcess()
 	: m_pDevClass(nullptr)
-	, m_eGameState(RUNNING)
-	, m_bStepOneFrame(false)
 {
 }
 
@@ -42,6 +40,9 @@ HRESULT CMainProcess::Ready_MainApp()
 	CMainProcess::GetInstance().OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
 	CMainProcess::GetInstance().OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
 
+	CManagement::GetInstance().getCrtScene()->UpdateEditor();
+	CManagement::GetInstance().getCrtScene()->Update();
+
 	return S_OK;
 }
 
@@ -56,16 +57,23 @@ _int CMainProcess::Update_MainApp()
 
 	if (GetForegroundWindow() == CScreen::GetInstance().getSceneHandle())
 		CManagement::GetInstance().getCrtScene()->UpdateEditor();
-	CManagement::GetInstance().getCrtScene()->Update();
+
+	if (CEngineEditor::GetInstance().isPlaying())
+	{
+		if (!CEngineEditor::GetInstance().isPaused() || CEngineEditor::GetInstance().isNextFrame())
+			CManagement::GetInstance().getCrtScene()->Update();
+	}
 
 	Render_MainApp();
 
 	if (GetForegroundWindow() == CScreen::GetInstance().getSceneHandle())
 		CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
+
 	CManagement::GetInstance().getCrtScene()->LateUpdate();
+	
 	CInput::GetInstance().LateUpdate();
 
-	m_bStepOneFrame = false;
+	CEngineEditor::GetInstance().SetNextFrame(false);
 
 	return 0;
 }

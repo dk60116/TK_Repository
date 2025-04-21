@@ -39,6 +39,15 @@ void CGameObject::Start()
 {
 }
 
+void CGameObject::UpdateEditor()
+{
+	for (TRAVERSAL_ITER(m_lComponentlist, it))
+	{
+		if ((*it)->IsEnable())
+			(*it)->UpdateEditor();
+	}
+}
+
 void CGameObject::Update()
 {
 	for (TRAVERSAL_ITER(m_lComponentlist, it))

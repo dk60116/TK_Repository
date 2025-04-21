@@ -18,6 +18,8 @@ CEditorCamera::~CEditorCamera()
 
 void CEditorCamera::UpdateEditor()
 {
+	__super::UpdateEditor();
+
 	float delta = CTime::GetInstance().Get_TimeDelta();
 	CTransform& camTransform = getTransform();
 

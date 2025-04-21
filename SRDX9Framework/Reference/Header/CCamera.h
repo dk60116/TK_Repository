@@ -25,15 +25,16 @@ public:
     ~CCamera();
 
 public:
-	virtual void Awake();
-	virtual void Start();
-	virtual void Update();
-	virtual void FixedUpdate();
-	virtual void LateUpdate();
-	virtual void Render();
-	virtual void OnEnable();
-	virtual void OnDisable();
-	virtual void OnDestroy();
+	void Awake() override;
+	void Start() override;
+	void UpdateEditor() override;
+	void Update() override;
+	void FixedUpdate() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnEnable() override;
+	void OnDisable() override;
+	void OnDestroy() override;
 
 private:
 	void UpdateProjectionMatrix();

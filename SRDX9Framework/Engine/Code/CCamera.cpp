@@ -24,9 +24,17 @@ void CCamera::Start()
 {
 }
 
+void CCamera::UpdateEditor()
+{
+	__super::UpdateEditor();
+
+	UpdateViewMatrix();
+	UpdateProjectionMatrix();
+}
+
 void CCamera::Update()
 {
-	CComponent::Update();
+	__super::Update();
 
 	UpdateViewMatrix();
 	UpdateProjectionMatrix();
@@ -54,7 +62,7 @@ void CCamera::OnDisable()
 
 void CCamera::OnDestroy()
 {
-	CComponent::OnDestroy();
+	__super::OnDestroy();
 }
 
 void CCamera::UpdateProjectionMatrix()

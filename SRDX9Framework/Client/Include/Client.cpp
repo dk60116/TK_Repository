@@ -72,12 +72,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-#ifdef _DEBUG
-            if (CMainProcess::GetInstance().getStepOne() || CMainProcess::GetInstance().getGameState() == CEngineEditor::RUNNING)
-                CMainProcess::GetInstance().Update_MainApp();
-#else
             CMainProcess::GetInstance().Update_MainApp();
-#endif
         }        
     }
 
@@ -177,28 +172,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
-            break;
-        case IDM_GAME_PLAY:
-            CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
-            break;
-        case IDM_GAME_PAUSE:
-            CMainProcess::GetInstance().SetGameState(CMainProcess::PAUSED);
-            break;
-        case IDM_GAME_STOP:
-            PostQuitMessage(0);
-            break;
-        case ID_BTN_PLAY:
-            CMainProcess::GetInstance().SetGameState(CMainProcess::RUNNING);
-            break;
-        case ID_BTN_PAUSE:
-            CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
-            break;
-        case ID_BTN_STOP:
-            PostQuitMessage(0);
-            break;
-        case ID_BTN_NEXTFRAME:
-            CMainProcess::GetInstance().SetStepOne(true);
-            CMainProcess::GetInstance().SetGameState((CMainProcess::GameRunningState)CEngineEditor::GetInstance().HandleCommand(wParam));
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);

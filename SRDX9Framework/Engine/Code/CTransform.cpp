@@ -1,5 +1,6 @@
 #include "CTransform.h"
 #include "CGameObject.h"
+#include "CEngineEditor.h"
 #include "CDebug.h"
 
 CTransform::CTransform()
@@ -21,7 +22,7 @@ CTransform::~CTransform()
 
 void CTransform::Awake()
 {
-	CComponent::Awake();
+	__super::Awake();
 
 	D3DXMatrixIdentity(&m_matWorld);
 }
@@ -30,9 +31,17 @@ void CTransform::Start()
 {
 }
 
+void CTransform::UpdateEditor()
+{
+	__super::UpdateEditor();
+
+	UpdateWorld();
+	UpdateDirections();
+}
+
 void CTransform::Update()
 {
-	CComponent::Update();
+	__super::Update();
 
 	UpdateWorld();
 	UpdateDirections();
@@ -60,7 +69,7 @@ void CTransform::OnDisable()
 
 void CTransform::OnDestroy()
 {
-	CComponent::OnDestroy();
+	__super::OnDestroy();
 }
 
 void CTransform::UpdateWorld()
@@ -510,6 +519,9 @@ void CTransform::AddLocalEulerAngles(const _float _x, const _float _y, const _fl
 
 void CTransform::LookAt(const vector3 _target)
 {
+	if (!CEngineEditor::GetInstance().isPlaying() && !CEngineEditor::GetInstance().isNextFrame())
+		return;
+
 	vector3 dir = (_target - m_v3WorldPos).normalized();
 
 	_float pitch = asinf(-dir.y);
@@ -523,11 +535,17 @@ void CTransform::LookAt(const vector3 _target)
 
 void CTransform::LookAt(CTransform& _target)
 {
+	if (!CEngineEditor::GetInstance().isPlaying() && !CEngineEditor::GetInstance().isNextFrame())
+		return;
+
 	LookAt(_target.getTransform().getPosition());
 }
 
 void CTransform::LookAt(const vector3 _target, const vector3 _front)
 {
+	if (!CEngineEditor::GetInstance().isPlaying() && !CEngineEditor::GetInstance().isNextFrame())
+		return;
+
 	vector3 world_target_dir = (_target - m_v3WorldPos).normalized();
 
 	_matrix rotMatrix;

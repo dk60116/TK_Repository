@@ -28,6 +28,9 @@ public:
 	~CLight();
 
 public:
+	void UpdateEditor() override;
+
+public:
 	void Init();
 	void Apply();
 	D3DLIGHT9& getInfo() { return m_sLightInfo; };

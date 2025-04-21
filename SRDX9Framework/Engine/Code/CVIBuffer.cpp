@@ -65,7 +65,8 @@ void CVIBuffer::Destroy()
 
 HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, UINT size)
 {
-	if (!m_pVB) return E_FAIL;
+	if (!m_pVB) 
+		return E_FAIL;
 
 	void* pData = nullptr;
 	if (FAILED(m_pVB->Lock(0, size, &pData, 0)))
