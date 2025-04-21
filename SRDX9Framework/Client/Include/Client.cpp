@@ -161,7 +161,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    CEngineEditor::GetInstance().WndProcHandle(hWnd, message, wParam, lParam);
+    if (CEngineEditor::GetInstance().WndProcHandle(hWnd, message, wParam, lParam))
+        return TRUE;
 
     switch (message)
     {

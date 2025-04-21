@@ -36,6 +36,9 @@ public:
 	void UpdateResolution(vector2Int _resolution);
 
 private:
+	HFONT CreateDefaultFont(LPCWSTR _font, _float _size, _bool _bold = false);
+
+private:
 	HINSTANCE m_hInst;
 	HWND m_hMainWnd;
 
