@@ -76,9 +76,9 @@ void CMainProcess::Render_MainApp()
 
 	D3DVIEWPORT9 sceneViewport = {};
 	sceneViewport.X = 0;
-	sceneViewport.Y = 30;
+	sceneViewport.Y = CHILDTOPBARHEIGHT;
 	sceneViewport.Width = CScreen::GetInstance().getSceneResolution().x;
-	sceneViewport.Height = CScreen::GetInstance().getSceneResolution().y - 30;
+	sceneViewport.Height = CScreen::GetInstance().getSceneResolution().y - CHILDTOPBARHEIGHT;
 	sceneViewport.MinZ = 0.0f;
 	sceneViewport.MaxZ = 1.0f;
 
@@ -90,9 +90,9 @@ void CMainProcess::Render_MainApp()
 
 	D3DVIEWPORT9 gameViewport = {};
 	gameViewport.X = 0;
-	gameViewport.Y = 30;
+	gameViewport.Y = CHILDTOPBARHEIGHT;
 	gameViewport.Width = CScreen::GetInstance().getGameResolution().x;
-	gameViewport.Height = CScreen::GetInstance().getGameResolution().y - 30;
+	gameViewport.Height = CScreen::GetInstance().getGameResolution().y - CHILDTOPBARHEIGHT;
 	gameViewport.MinZ = 0.0f;
 	gameViewport.MaxZ = 1.0f;
 

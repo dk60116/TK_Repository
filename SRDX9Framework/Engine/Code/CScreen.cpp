@@ -86,7 +86,7 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int sceneHeight = sceneRect.bottom - sceneRect.top;
 
 	RemoveBtnsAndRoundedCorners(m_hSceneWnd);
-	UpdateSceneResolution(sceneWidth, sceneHeight);
+	UpdateSceneResolution(sceneWidth, sceneHeight - CHILDTOPBARHEIGHT);
 
 	POINT scenePT = { 0, sceneRect.bottom };
 
@@ -110,7 +110,7 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int gameHeight = gameRect.bottom - gameRect.top;
 
 	RemoveBtnsAndRoundedCorners(m_hGameWnd);
-	UpdateGameResolution(gameWidth, gameHeight);
+	UpdateGameResolution(gameWidth, gameHeight - CHILDTOPBARHEIGHT);
 }
 
 void CScreen::UpdateSceneResolution(const _int& _width, const _int& _height)
