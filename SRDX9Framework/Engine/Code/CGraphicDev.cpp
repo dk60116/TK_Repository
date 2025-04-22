@@ -125,7 +125,7 @@ HRESULT CGraphicDev::ReSize(_uint _newWidth, _uint _newHeight)
 	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	d3dpp.MultiSampleQuality = 0;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.hDeviceWindow = CScreen::GetInstance().getGameHandle();
+	d3dpp.hDeviceWindow = CScreen::GetInstance().getWindowHandle(L"Game");
 	d3dpp.Windowed = TRUE;
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;

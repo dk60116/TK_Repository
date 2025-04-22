@@ -14,9 +14,7 @@ public:
 public:
 	HINSTANCE getHInstance() { return m_hInstance; }
 
-	HWND getMainHandle() { return m_hMainWnd; }
-	HWND getSceneHandle() { return m_hSceneWnd; }
-	HWND getGameHandle() { return m_hGameWnd; }
+	HWND getWindowHandle(wstring _window);
 
 	const vector2Int& getSceneResolution() { return m_v2SceneResolution; }
 	const vector2Int& getGameResolution() { return m_v2GameResolution; }
@@ -31,7 +29,7 @@ public:
 
 private:
 	HINSTANCE m_hInstance;
-	HWND m_hMainWnd, m_hSceneWnd, m_hGameWnd;
+	map<wstring, HWND> m_mWHandleList;
 	vector2Int m_v2SceneResolution, m_v2GameResolution;
 	bool m_bFullScreen;
 	_int m_iDPI;

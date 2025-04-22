@@ -137,9 +137,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    CScreen::GetInstance().Start_Window(hInstance, nCmdShow);
 
-   CEngineEditor::GetInstance().Init_Main(hInstance, CScreen::GetInstance().getMainHandle());
-   CEngineEditor::GetInstance().Init_Scene(CScreen::GetInstance().getSceneHandle());
-   CEngineEditor::GetInstance().Init_Game(CScreen::GetInstance().getGameHandle());
+   CEngineEditor::GetInstance().Init_Main(hInstance, CScreen::GetInstance().getWindowHandle(L"Base"));
+   CEngineEditor::GetInstance().Init_Scene(CScreen::GetInstance().getWindowHandle(L"Scene"));
+   CEngineEditor::GetInstance().Init_Game(CScreen::GetInstance().getWindowHandle(L"Game"));
 
    return TRUE;
 }
@@ -219,9 +219,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _int width = rcClient.right - rcClient.left;
         _int height = rcClient.bottom - rcClient.top;
 
-        if (hWnd == CScreen::GetInstance().getMainHandle())
+        if (hWnd == CScreen::GetInstance().getWindowHandle(L"Base"))
         {
-            HWND hMainWnd = CScreen::GetInstance().getMainHandle();
+            HWND hMainWnd = CScreen::GetInstance().getWindowHandle(L"Base");
 
             if (hMainWnd)
             {
@@ -230,26 +230,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 CEngineEditor::GetInstance().UpdateResolution(vector2Int(width, height));
             }
         }
-        else if (hWnd == CScreen::GetInstance().getSceneHandle())
+        else if (hWnd == CScreen::GetInstance().getWindowHandle(L"Scene"))
         {
             CMainProcess::GetInstance().OnSceneScreenChange(width, height);
         }
-        else if (hWnd == CScreen::GetInstance().getGameHandle())
+        else if (hWnd == CScreen::GetInstance().getWindowHandle(L"Game"))
         {
             CMainProcess::GetInstance().OnGameScreenChange(width, height);
         }
     }
     break;
-    case WM_KEYDOWN:
-        switch (wParam)
-        {
-        default:
-            break;
-        }
-        break;
 
     case WM_DESTROY:
-        if (hWnd == CScreen::GetInstance().getMainHandle())
+        if (hWnd == CScreen::GetInstance().getWindowHandle(L"Base"))
             PostQuitMessage(0);
         break;
     default:
