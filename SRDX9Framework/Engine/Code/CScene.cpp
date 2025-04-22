@@ -157,6 +157,8 @@ void CScene::Render_Game()
 
 void CScene::Destroy()
 {
+	Release();
+
 	Safe_Release(m_pEditorCamera);
 
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
@@ -169,6 +171,10 @@ void CScene::Destroy()
 
 		m_lObjectList[i].clear();
 	}
+
+	Safe_Release(m_pGraphicDev);
+
+	Release();
 }
 
 CGameObject* CScene::AddObject(wstring _objName, Layer _layer)

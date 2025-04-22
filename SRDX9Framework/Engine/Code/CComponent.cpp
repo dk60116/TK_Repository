@@ -23,6 +23,7 @@ CComponent::CComponent(const CComponent& _rhs)
 CComponent::~CComponent()
 {
 	OnDestroy();
+	Safe_Release(m_pGraphicDev);
 }
 
 void CComponent::Awake()
@@ -73,6 +74,7 @@ void CComponent::OnDestroy()
 void CComponent::SetDevice()
 {
 	m_pGraphicDev = CGraphicDev::GetInstance().Get_GraphicDev();
+	m_pGraphicDev->AddRef();
 }
 
 CTransform& CComponent::getTransform()

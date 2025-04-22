@@ -13,7 +13,7 @@ class ENGINE_DLL CManagement
 public:
 	void CreateScene(CScene* _newScene, wstring _name);
 	CScene* getCrtScene() { return m_pCrtScene; }
-	HRESULT ChangeScene(wstring _scene);
+	HRESULT LoadScene(wstring _scene);
 
 	void Destroy();
 

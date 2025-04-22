@@ -13,12 +13,12 @@ CMainScene::CMainScene()
 
 CMainScene::~CMainScene()
 {
-	CScene::Destroy();
+	Destroy();
 }
 
 void CMainScene::Awake()
 {
-	CScene::Awake();
+	__super::Awake();
 
 	m_sOptions.lighting = true;
 
@@ -86,4 +86,5 @@ void CMainScene::Render_Game()
 
 void CMainScene::Destroy()
 {
+	__super::Destroy();
 }

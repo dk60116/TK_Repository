@@ -35,7 +35,7 @@ HRESULT CMainProcess::Ready_MainApp()
 
 	CMainScene* mainScene = new CMainScene();
 	CManagement::GetInstance().CreateScene(mainScene, L"MainScene");
-	CManagement::GetInstance().ChangeScene(L"MainScene");
+	CManagement::GetInstance().LoadScene(L"MainScene");
 
 	CMainProcess::GetInstance().OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
 	CMainProcess::GetInstance().OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);

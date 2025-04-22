@@ -17,10 +17,13 @@ void CManagement::CreateScene(CScene* _newScene, wstring _name)
 	_newScene->SetName(_name);
 	_newScene->SetGraphicDev(m_pGraphicDev);
 
+	m_pGraphicDev->AddRef();
+
 	m_mSceneList.insert({ _name, _newScene });
+	_newScene->AddRef();
 }
 
-HRESULT CManagement::ChangeScene(wstring _scene)
+HRESULT CManagement::LoadScene(wstring _scene)
 {
 	auto iter = m_mSceneList.find(_scene);
 	
@@ -40,7 +43,7 @@ void CManagement::Destroy()
 {
 	for (TRAVERSAL_ITER(m_mSceneList, it))
 	{
-		Safe_Delete((*it).second);
+		Safe_Release((*it).second);
 	}
 
 	m_mSceneList.clear();

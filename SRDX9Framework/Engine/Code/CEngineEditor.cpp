@@ -1,5 +1,6 @@
 ﻿#include "CEngineEditor.h"
 #include "CScreen.h"
+#include "CManagement.h"
 
 CEngineEditor::CEngineEditor()
 	: m_hInst(nullptr)
@@ -89,7 +90,7 @@ void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
 	SendMessageW(m_hBtnNextFrame, WM_SETFONT, (WPARAM)hFont14, TRUE);
 	
 	EnableWindow(m_hBtnPlay, TRUE);
-	EnableWindow(m_hBtnPause, TRUE);
+	EnableWindow(m_hBtnPause, m_bPlaying);
 	EnableWindow(m_hBtnNextFrame, m_bPaused);
 }
 
@@ -160,7 +161,11 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 				EnableWindow(m_hBtnPause, m_bPlaying);
 
 				if (!m_bPlaying)
+				{
 					m_bPaused = false;
+
+					CManagement::GetInstance().LoadScene(CManagement::GetInstance().getCrtScene()->getName());
+				}
 
 				InvalidateRect(m_hBtnPlay, nullptr, TRUE);
 				UpdateWindow(m_hBtnPlay);
@@ -315,7 +320,7 @@ void CEngineEditor::UpdateResolution(const vector2Int _resolution)
 		true);
 }
 
-HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, _float _size, _bool _bold)
+HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, _int _size, _bool _bold)
 {
 	HFONT result = CreateFontW
 	(
