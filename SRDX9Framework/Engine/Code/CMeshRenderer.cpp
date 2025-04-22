@@ -37,7 +37,7 @@ void CMeshRenderer::Update()
 void CMeshRenderer::RenderEditor()
 {
     CComponent::RenderEditor();
-    Render_Final(CManagement::GetInstance().getCrtScene()->getEditorCamera());
+    Render_Final(&CManagement::GetInstance().getEditorCamera());
 }
 
 void CMeshRenderer::Render()

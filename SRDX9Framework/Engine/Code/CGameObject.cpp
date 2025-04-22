@@ -2,7 +2,7 @@
 
 CGameObject::CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 	: m_pScene(nullptr)
-	, m_strName(_name)
+	, m_strGameObjectName(_name)
 	, m_bIsActive(true)
 	, m_bIsEnable(true)
 	, m_bKill(false)
@@ -10,12 +10,12 @@ CGameObject::CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 	, m_pGraphicDev(_pGraphicDev)
 	, m_pTransform(nullptr)
 {
-	m_strName = L"GameObject";
+	m_strName = L"Game Object";
 }
 
 CGameObject::CGameObject(const CGameObject& _rhs)
 	: m_pScene(_rhs.m_pScene)
-	, m_strName(_rhs.m_strName + L"_Clone")
+	, m_strGameObjectName(_rhs.m_strGameObjectName + L"_Clone")
 	, m_bIsActive(_rhs.m_bIsActive)
 	, m_bIsEnable(_rhs.m_bIsEnable)
 	, m_bKill(false)

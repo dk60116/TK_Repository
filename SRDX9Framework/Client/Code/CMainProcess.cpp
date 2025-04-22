@@ -40,9 +40,6 @@ HRESULT CMainProcess::Ready_MainApp()
 	CMainProcess::GetInstance().OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
 	CMainProcess::GetInstance().OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
 
-	CManagement::GetInstance().getCrtScene()->UpdateEditor();
-	CManagement::GetInstance().getCrtScene()->Update();
-
 	return S_OK;
 }
 
@@ -56,7 +53,7 @@ _int CMainProcess::Update_MainApp()
 	CInput::GetInstance().Update();
 
 	if (GetForegroundWindow() == CScreen::GetInstance().getSceneHandle())
-		CManagement::GetInstance().getCrtScene()->UpdateEditor();
+		CManagement::GetInstance().EditorUpdate();
 
 	if (CEngineEditor::GetInstance().isPlaying())
 	{

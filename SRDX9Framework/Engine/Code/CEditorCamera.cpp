@@ -10,10 +10,20 @@ CEditorCamera::CEditorCamera()
 	, m_fPitch(0.f)
 	, m_fYaw(0.f)
 {
+	m_strName = L"Editor Camera";
 }
 
 CEditorCamera::~CEditorCamera()
 {
+	OnDestroy();
+}
+
+void CEditorCamera::AwakeEditor()
+{
+	vector3& angles = getTransform().getLocalEulerAngles();
+
+	m_fPitch = angles.x;
+	m_fYaw = angles.y;
 }
 
 void CEditorCamera::UpdateEditor()
@@ -56,8 +66,6 @@ void CEditorCamera::UpdateEditor()
 		{
 			m_fYaw += m_v2MouseDragDelta.x * delta * m_fRotateSpeed;
 			m_fPitch += m_v2MouseDragDelta.y * delta * m_fRotateSpeed;
-
-			m_fPitch = clamp(m_fPitch, -89.f, 89.f);
 
 			camTransform.SetLocalEulerAngles(m_fPitch, m_fYaw, 0.f);
 		}

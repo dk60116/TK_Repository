@@ -3,11 +3,11 @@
 #include "CInput.h"
 #include "CManagement.h"
 #include "CGameObject.h"
+#include "CEditorCamera.h"
 
 CScene::CScene()
 	: m_pGraphicDev(nullptr)
 	, m_lObjectList()
-	, m_pEditorCamera(nullptr)
 	, m_vCameraList({})
 	, m_vLightList({})
 	, m_sOptions({})
@@ -21,13 +21,6 @@ CScene::~CScene()
 
 void CScene::Awake()
 {
-	if (!m_pEditorCamera)
-	{
-		CGameObject* editorCamObj = AddObject(L"Editor Camera", Layer::DEFAULT);
-		m_pEditorCamera = editorCamObj->AddComponent<CEditorCamera>();
-		m_pEditorCamera->AddRef();
-		m_pEditorCamera->getTransform().SetPositionZ(-10.f);
-	}
 }
 
 void CScene::Start()
@@ -85,12 +78,9 @@ void CScene::LateUpdate()
 
 void CScene::Render_CScene()
 {
-	if (!m_pEditorCamera)
-		return;
-
 	Render_Grid();
 
-	CCamera* editorCam = m_pEditorCamera; // 에디터 카메라 기준
+	CCamera* editorCam = &CManagement::GetInstance().getEditorCamera(); // 에디터 카메라 기준
 	vector3 cam_pos = editorCam->getTransform().getPosition();
 	vector3 cam_forward = editorCam->getTransform().getDirections().forward;
 
@@ -155,11 +145,32 @@ void CScene::Render_Game()
 	}
 }
 
+void CScene::SceneRelease()
+{
+	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	{
+		for (TRAVERSAL_ITER(m_lObjectList[i], it))
+		{
+			if ((*it)->GetComponent<CEditorCamera>())
+				continue;
+
+			(*it)->OnDestroy();
+			Safe_Release(*it);
+		}
+
+		m_lObjectList[i].clear();
+	}
+
+	Safe_Release(m_pGraphicDev);
+
+	m_lObjectList->clear();
+	m_vCameraList.clear();
+	m_vLightList.clear();
+}
+
 void CScene::Destroy()
 {
 	Release();
-
-	Safe_Release(m_pEditorCamera);
 
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
@@ -171,6 +182,10 @@ void CScene::Destroy()
 
 		m_lObjectList[i].clear();
 	}
+
+	m_lObjectList->clear();
+	m_vCameraList.clear();
+	m_vLightList.clear();
 
 	Safe_Release(m_pGraphicDev);
 
@@ -205,7 +220,7 @@ void CScene::AddLight(CLight* _light)
 
 void CScene::UpdateSceneCameraResolution(const vector2Int& _resolution)
 {
-	m_pEditorCamera->ResetAspectFromResolution(_resolution);
+	CManagement::GetInstance().getEditorCamera().ResetAspectFromResolution(_resolution);
 }
 
 void CScene::UpdateAllCameraResolution(const vector2Int& _resolution)
@@ -247,8 +262,8 @@ void CScene::Render_Grid()
 	D3DXMatrixIdentity(&matWorld);
 
 	pDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	pDevice->SetTransform(D3DTS_VIEW, &m_pEditorCamera->getViewMatrix());
-	pDevice->SetTransform(D3DTS_PROJECTION, &m_pEditorCamera->getProjMatrix());
+	pDevice->SetTransform(D3DTS_VIEW, &CManagement::GetInstance().getEditorCamera().getViewMatrix());
+	pDevice->SetTransform(D3DTS_PROJECTION, &CManagement::GetInstance().getEditorCamera().getProjMatrix());
 
 	// ===== 그리기 =====
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);

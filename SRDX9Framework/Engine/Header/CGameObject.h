@@ -6,13 +6,14 @@
 #include "CTransform.h"
 #include "CEditorCamera.h"
 #include "CLight.h"
-#include "CScene.h"
+#include "CManagement.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject final
 	: public UObject
 {
+	friend class CManagement;
 	friend class CScene;
 
 private:
@@ -34,7 +35,7 @@ public:
 	virtual void OnDestroy();
 
 public:
-	const wstring& getName() { return m_strName; }
+	const wstring& getName() { return m_strGameObjectName; }
 	const _bool& isActive() { return m_bIsActive; }
 	const _bool& isEnable() { return m_bIsEnable; }
 	CScene* getScene() { return m_pScene; }
@@ -50,7 +51,7 @@ public:
 
 protected:
 	CScene* m_pScene;
-	wstring m_strName;
+	wstring m_strGameObjectName;
 	_bool m_isClone;
 	_bool m_bKill;
 	_bool m_bIsActive, m_bIsEnable;

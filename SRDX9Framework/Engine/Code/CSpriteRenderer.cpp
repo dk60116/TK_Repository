@@ -44,7 +44,7 @@ void CSpriteRenderer::Update()
 void CSpriteRenderer::RenderEditor()
 {
     CComponent::RenderEditor();
-    Render_Final(CManagement::GetInstance().getCrtScene()->getEditorCamera());
+    Render_Final(&CManagement::GetInstance().getEditorCamera());
 }
 
 void CSpriteRenderer::Render()

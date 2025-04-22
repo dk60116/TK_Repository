@@ -2,8 +2,8 @@
 
 #include "UObject.h"
 #include "Engine_Define.h"
-#include "CEditorCamera.h"
 #include "CLight.h"
+#include "CCamera.h"
 
 BEGIN(Engine)
 
@@ -32,6 +32,7 @@ public:
     virtual void LateUpdate();
     virtual void Render_CScene();
     virtual void Render_Game();
+    virtual void SceneRelease();
     virtual void Destroy();
 
 public:
@@ -44,7 +45,6 @@ public:
     void AddLight(CLight* _light);
     vector<CCamera*>& getCamList() { return m_vCameraList; }
     vector<CLight*>& getLightList() { return m_vLightList; }
-    CCamera* getEditorCamera() { return m_pEditorCamera; }
     CCamera* getCamera(const int _index) const { return m_vCameraList[_index]; }
     CCamera* getCamera() const { return m_vCameraList.back(); }
     void UpdateAllLight();
@@ -61,7 +61,6 @@ protected:
     wstring m_strSceneName;
 
     list<CGameObject*> m_lObjectList[Layer::LAYER_END];
-    CEditorCamera* m_pEditorCamera;
     vector<CCamera*> m_vCameraList;
     vector<CLight*> m_vLightList;
 

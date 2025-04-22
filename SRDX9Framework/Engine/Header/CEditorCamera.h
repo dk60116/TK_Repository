@@ -12,6 +12,7 @@ public:
     ~CEditorCamera();
 
 public:
+    void AwakeEditor();
     void UpdateEditor() override;
 
 private:
