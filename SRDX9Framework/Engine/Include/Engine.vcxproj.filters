@@ -168,6 +168,9 @@
     <ClInclude Include="..\Header\CEditorCamera.h">
       <Filter>Component\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Client\Include\Resource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">

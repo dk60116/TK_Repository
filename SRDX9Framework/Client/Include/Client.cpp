@@ -18,7 +18,6 @@ WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
@@ -43,7 +42,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+    CEngineEditor::GetInstance().MyRegisterClass(hInstance, WndProc);
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance (hInstance, nCmdShow))
@@ -81,48 +80,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int) msg.wParam;
 }
 
-
-
-//
-//  함수: MyRegisterClass()
-//
-//  용도: 창 클래스를 등록합니다.
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-    WNDCLASSEXW wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
-    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    // Main Window
-    wcex.lpszClassName = L"MaindowClass";
-    wcex.lpszMenuName = MAKEINTRESOURCE(IDC_CLIENT);
-    if (!RegisterClassExW(&wcex))
-        return 0;
-
-    // Scene Window
-    wcex.lpszClassName = L"SceneWindowClass";
-    wcex.lpszMenuName = NULL;
-    if (!RegisterClassExW(&wcex))
-        return 0;
-
-    // Game Window
-    wcex.lpszClassName = L"GameWindowClass";
-    wcex.lpszMenuName = nullptr;
-    if (!RegisterClassExW(&wcex))
-        return 0;
-
-    return 1;
-}
-
 //
 //   함수: InitInstance(HINSTANCE, int)
 //
@@ -156,8 +113,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (CEngineEditor::GetInstance().WndProcHandle(hWnd, message, wParam, lParam))
-        return TRUE;
+    CEngineEditor::GetInstance().WndProcHandle(hWnd, message, wParam, lParam);
 
     switch (message)
     {
@@ -182,15 +138,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
+        if (hWnd == CScreen::GetInstance().getWindowHandle(L"Base"))
+        {
+            HDC hdc = BeginPaint(hWnd, &ps);
 
-        HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
-        FillRect(hdc, &ps.rcPaint, blackBrush);
-        DeleteObject(blackBrush);
+            HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+            FillRect(hdc, &ps.rcPaint, blackBrush);
+            DeleteObject(blackBrush);
+        }
+        else
+        {
+            HDC hdc = BeginPaint(hWnd, &ps);
+
+            HBRUSH blackBrush = CreateSolidBrush(RGB(56, 56, 56));
+            FillRect(hdc, &ps.rcPaint, blackBrush);
+            DeleteObject(blackBrush);
+        }
 
         EndPaint(hWnd, &ps);
     }
-        break;
+    break;
 
     case WM_CTLCOLORSTATIC:
     {
@@ -207,8 +174,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
             return (INT_PTR)hBlackBrush;
         }
-
-        break;
     }
     break;
 
@@ -248,8 +213,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
-    
-    return 0;
+
+    return TRUE;
 }
 
 // 정보 대화 상자의 메시지 처리기입니다.

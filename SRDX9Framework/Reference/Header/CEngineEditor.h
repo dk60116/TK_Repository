@@ -14,6 +14,7 @@ public:
 	void Init_Game(HWND _gameWnd);
 
 public:
+	ATOM MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc);
 	LRESULT CALLBACK WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 public:

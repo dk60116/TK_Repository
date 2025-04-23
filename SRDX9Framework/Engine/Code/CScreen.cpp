@@ -68,15 +68,15 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int clientWidth = rcClient.right - rcClient.left;
 	_int clientHeight = rcClient.bottom - rcClient.top;
 
-	_int width = (clientWidth / 2) - clientPoint.x * 2;
-	_int height = (clientHeight / 2) - menuHeight;
+	_int sceneWidth = (clientWidth * 0.45f) - clientPoint.x * 2;
+	_int windowHeight = (clientHeight / 2) - menuHeight;
 
 	HWND sceneWnd = CreateWindowW(L"SceneWindowClass", L"Scene",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		clientPoint.x,
 		clientPoint.y,
-		width,
-		height,
+		sceneWidth,
+		windowHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
 	m_mWHandleList.insert({ L"Scene", sceneWnd });
@@ -84,26 +84,23 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	RECT sceneRect = {};
 	GetClientRect(sceneWnd, &sceneRect);
 
-	_int childMenuHeight = captionHeight + frameHeight;
-
-	_int sceneWidth = sceneRect.right - sceneRect.left;
-	_int sceneHeight = sceneRect.bottom - sceneRect.top;
-
 	RemoveBtnsAndRoundedCorners(sceneWnd);
-	UpdateSceneResolution(sceneWidth, sceneHeight - CHILDTOPBARHEIGHT);
+	UpdateSceneResolution(sceneWidth, windowHeight - childOffset - 2);
 
 	POINT scenePT = { 0, sceneRect.bottom };
-
 	ClientToScreen(sceneWnd, &scenePT);
 
 	_int sceneBottomY = scenePT.y + 1;
+
+	_int gameWidth = sceneWidth;
+	_int gameHeight = rcClient.bottom - scenePT.y + captionHeight;
 
 	HWND gameWnd = CreateWindowW(L"GameWindowClass", L"Game",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		clientPoint.x,
 		sceneBottomY,
-		width,
-		height,
+		gameWidth,
+		gameHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
 	m_mWHandleList.insert({ L"Game", gameWnd });
@@ -112,11 +109,26 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 
 	GetClientRect(gameWnd, &gameRect);
 
-	_int gameWidth = gameRect.right - gameRect.left;
-	_int gameHeight = gameRect.bottom - gameRect.top;
+	POINT gamePT = { 0, gameRect.bottom };
+	ClientToScreen(gameWnd, &gamePT);
 
 	RemoveBtnsAndRoundedCorners(gameWnd);
-	UpdateGameResolution(gameWidth, gameHeight - CHILDTOPBARHEIGHT);
+	UpdateGameResolution(gameWidth, gameHeight - childOffset);
+
+	_int hierachyWidth = (clientWidth * 0.2f) - clientPoint.x * 2;
+	_int hierachyHeight = gamePT.y - clientPoint.y - offsetY * 2;
+
+	HWND hierachyWnd = CreateWindowW(L"HierachyWindowClass", L"Hierachy",
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		sceneRect.right + offsetX + 2,
+		clientPoint.y,
+		hierachyWidth,
+		hierachyHeight,
+		mainWnd, nullptr, _hInst, nullptr);
+
+	m_mWHandleList.insert({ L"Hierachy", hierachyWnd });
+
+	RemoveBtnsAndRoundedCorners(hierachyWnd);
 }
 
 HWND CScreen::getWindowHandle(wstring _window)
@@ -141,6 +153,12 @@ void CScreen::UpdateGameResolution(const _int& _width, const _int& _height)
 
 void CScreen::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 {
+	//BOOL value = TRUE;
+	//DwmSetWindowAttribute(_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+
+	COLORREF titleColor = RGB(56, 56, 56);
+	DwmSetWindowAttribute(_hWnd, DWMWA_CAPTION_COLOR, &titleColor, sizeof(titleColor));
+
 	LONG style = GetWindowLong(_hWnd, GWL_STYLE);
 
 	style &= ~WS_MINIMIZEBOX;
@@ -148,6 +166,9 @@ void CScreen::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 	style &= ~WS_SYSMENU;
 
 	SetWindowLong(_hWnd, GWL_STYLE, style);
+
+	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
+		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
 	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
 		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);

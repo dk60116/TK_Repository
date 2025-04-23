@@ -153,6 +153,7 @@ call Copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Client\Include\Resource.h" />
     <ClInclude Include="..\Header\CCamera.h" />
     <ClInclude Include="..\Header\CComponent.h" />
     <ClInclude Include="..\Header\CDebug.h" />

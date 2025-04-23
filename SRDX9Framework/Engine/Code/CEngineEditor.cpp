@@ -1,6 +1,7 @@
 ﻿#include "CEngineEditor.h"
 #include "CScreen.h"
 #include "CManagement.h"
+#include <winuser.h>
 
 CEngineEditor::CEngineEditor()
 	: m_hInst(nullptr)
@@ -146,152 +147,223 @@ void CEngineEditor::Init_Game(HWND _sceneWnd)
 		_sceneWnd, nullptr, m_hInst, nullptr);
 }
 
+ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
+{
+	// Main Window
+	WNDCLASSEXW basewcex = {};
+	basewcex.lpszClassName = L"MaindowClass";
+	basewcex.lpszMenuName = MAKEINTRESOURCE(IDC_CLIENT);
+	basewcex.cbSize = sizeof(WNDCLASSEX);
+	basewcex.style = CS_HREDRAW | CS_VREDRAW;
+	basewcex.lpfnWndProc = _wndPrc;
+	basewcex.cbClsExtra = 0;
+	basewcex.cbWndExtra = 0;
+	basewcex.hInstance = hInstance;
+	basewcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+	basewcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	basewcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	basewcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	if (!RegisterClassExW(&basewcex))
+		return 0;
+
+	// Scene Window
+	WNDCLASSEXW scenewcex = {};
+	scenewcex.lpszClassName = L"SceneWindowClass";
+	scenewcex.lpszMenuName = NULL;
+	scenewcex.cbSize = sizeof(WNDCLASSEX);
+	scenewcex.style = CS_HREDRAW | CS_VREDRAW;
+	scenewcex.lpfnWndProc = _wndPrc;
+	scenewcex.cbClsExtra = 0;
+	scenewcex.cbWndExtra = 0;
+	scenewcex.hInstance = hInstance;
+	scenewcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+	scenewcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	scenewcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	scenewcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	if (!RegisterClassExW(&scenewcex))
+		return 0;
+
+	// Game Window
+	WNDCLASSEXW gamewcex = {};
+	gamewcex.lpszClassName = L"GameWindowClass";
+	gamewcex.lpszMenuName = nullptr;
+	gamewcex.cbSize = sizeof(WNDCLASSEX);
+	gamewcex.style = CS_HREDRAW | CS_VREDRAW;
+	gamewcex.lpfnWndProc = _wndPrc;
+	gamewcex.cbClsExtra = 0;
+	gamewcex.cbWndExtra = 0;
+	gamewcex.hInstance = hInstance;
+	gamewcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+	gamewcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	gamewcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	gamewcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	if (!RegisterClassExW(&gamewcex))
+		return 0;
+
+	// Hierachy Window
+	WNDCLASSEXW hierachywcex = {};
+	hierachywcex.lpszClassName = L"HierachyWindowClass";
+	hierachywcex.lpszMenuName = nullptr;
+	hierachywcex.cbSize = sizeof(WNDCLASSEX);
+	hierachywcex.lpfnWndProc = _wndPrc;
+	hierachywcex.cbClsExtra = 0;
+	hierachywcex.cbWndExtra = 0;
+	hierachywcex.hInstance = hInstance;
+	hierachywcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+	hierachywcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	hierachywcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	hierachywcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	if (!RegisterClassExW(&hierachywcex))
+		return 0;
+
+	return 1;
+}
+
 LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-		case WM_COMMAND:
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+
+		switch (wmId)
 		{
-			int wmId = LOWORD(wParam);
+		case ID_BTN_PLAY:
+			m_bPlaying = !m_bPlaying;
+			EnableWindow(m_hBtnPause, m_bPlaying);
 
-			switch (wmId)
+			if (!m_bPlaying)
 			{
-			case ID_BTN_PLAY:
-				m_bPlaying = !m_bPlaying;
-				EnableWindow(m_hBtnPause, m_bPlaying);
+				m_bPaused = false;
 
-				if (!m_bPlaying)
-				{
-					m_bPaused = false;
-
-					CManagement::GetInstance().LoadScene(CManagement::GetInstance().getCrtScene()->getName());
-				}
-
-				InvalidateRect(m_hBtnPlay, nullptr, TRUE);
-				UpdateWindow(m_hBtnPlay);
-				InvalidateRect(m_hBtnPause, nullptr, TRUE);
-				UpdateWindow(m_hBtnPause);
-				break;
-			case ID_BTN_PAUSE:
-				m_bPaused = !m_bPaused;
-				EnableWindow(m_hBtnNextFrame, m_bPaused);
-
-				InvalidateRect(m_hBtnPause, nullptr, TRUE);
-				UpdateWindow(m_hBtnPause);
-				break;
-			case ID_BTN_NEXTFRAME:
-				m_bNextFrame = true;
-				break;
-			default:
-				return DefWindowProc(hWnd, message, wParam, lParam);
+				CManagement::GetInstance().LoadScene(CManagement::GetInstance().getCrtScene()->getName());
 			}
+
+			InvalidateRect(m_hBtnPlay, nullptr, TRUE);
+			UpdateWindow(m_hBtnPlay);
+			InvalidateRect(m_hBtnPause, nullptr, TRUE);
+			UpdateWindow(m_hBtnPause);
 			break;
-		}
-		break;
+		case ID_BTN_PAUSE:
+			m_bPaused = !m_bPaused;
+			EnableWindow(m_hBtnNextFrame, m_bPaused);
 
-		case WM_DRAWITEM:
-		{
-			LPDRAWITEMSTRUCT lpDraw = (LPDRAWITEMSTRUCT)lParam;
-
-			if (lpDraw->CtlID == ID_BTN_PLAY || lpDraw->CtlID == ID_BTN_PAUSE || lpDraw->CtlID == ID_BTN_NEXTFRAME)
-			{
-				HDC hdc = lpDraw->hDC;
-				RECT rc = lpDraw->rcItem;
-
-				COLORREF bgColor = RGB(0, 0, 0);
-				COLORREF btnColor = (lpDraw->itemState & ODS_SELECTED) ? RGB(60, 60, 60) : RGB(80, 80, 80);
-				COLORREF btnColor_Selected = RGB(63, 98, 120);
-				HBRUSH hBGBrush = CreateSolidBrush(bgColor);
-				HBRUSH hBrush = CreateSolidBrush(btnColor);
-				
-				if (lpDraw->CtlID == ID_BTN_PLAY)
-				{
-					if (m_bPlaying)
-						hBrush = CreateSolidBrush(btnColor_Selected);
-				}
-				else if (lpDraw->CtlID == ID_BTN_PAUSE)
-				{
-					if (m_bPaused)
-						hBrush = CreateSolidBrush(btnColor_Selected);
-				}
-
-				// 둥근 사각형
-				int cornerRadius = 8;
-				HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-				HGDIOBJ oldPen = SelectObject(hdc, hPen);
-				HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-
-				FillRect(hdc, &rc, hBGBrush);
-				RoundRect(hdc, rc.left, rc.top, rc.right, rc.bottom, cornerRadius, cornerRadius);
-
-				// 텍스트
-				SetBkMode(hdc, TRANSPARENT);
-				SetTextColor(hdc, RGB(255, 255, 255));
-
-				LPCWSTR text = L"";
-				if (lpDraw->CtlID == ID_BTN_PLAY)
-					text = m_bPlaying ? L"■" : L"▶";
-				else if (lpDraw->CtlID == ID_BTN_PAUSE)
-					text = L"❚❚";
-				else if (lpDraw->CtlID == ID_BTN_NEXTFRAME)
-					text = L"▶❚";
-
-				if (lpDraw->CtlID == ID_BTN_PLAY)
-				{
-					RECT textRect = rc;
-					OffsetRect(&textRect, 0, 0);
-
-					HFONT hFont = CreateDefaultFont(L"Segoe UI Variable", 12);
-
-					HGDIOBJ oldFont = SelectObject(hdc, hFont);
-
-					DrawText(hdc, text, -1, &textRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
-					SelectObject(hdc, oldFont);
-					DeleteObject(hFont);
-				}
-				else if (lpDraw->CtlID == ID_BTN_PAUSE)
-				{
-					RECT textRect = rc;
-					OffsetRect(&textRect, 0, -1);
-
-					HFONT hFont = CreateDefaultFont(L"Segoe UI Variable", 20);
-
-					HGDIOBJ oldFont = SelectObject(hdc, hFont);
-
-					DrawText(hdc, text, -1, &textRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
-					SelectObject(hdc, oldFont);
-					DeleteObject(hFont);
-				}
-				else if (lpDraw->CtlID == ID_BTN_NEXTFRAME)
-				{
-					RECT textRect = rc;
-					OffsetRect(&textRect, 0, 0);
-
-					HFONT hFont = CreateDefaultFont(L"Arial", 16);
-
-					HGDIOBJ oldFont = SelectObject(hdc, hFont);
-
-					DrawText(hdc, text, -1, &textRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
-					SelectObject(hdc, oldFont);
-					DeleteObject(hFont);
-				}
-
-				// 정리
-				SelectObject(hdc, oldPen);
-				SelectObject(hdc, oldBrush);
-				DeleteObject(hBGBrush);
-				DeleteObject(hBrush);
-				DeleteObject(hPen);
-
-				return TRUE;
-			}
+			InvalidateRect(m_hBtnPause, nullptr, TRUE);
+			UpdateWindow(m_hBtnPause);
+			break;
+		case ID_BTN_NEXTFRAME:
+			m_bNextFrame = true;
+			break;
+		default:
+			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 	}
+	break;
 
-	return 0;
+	case WM_DRAWITEM:
+	{
+		LPDRAWITEMSTRUCT lpDraw = (LPDRAWITEMSTRUCT)lParam;
+
+		if (lpDraw->CtlID == ID_BTN_PLAY || lpDraw->CtlID == ID_BTN_PAUSE || lpDraw->CtlID == ID_BTN_NEXTFRAME)
+		{
+			HDC hdc = lpDraw->hDC;
+			RECT rc = lpDraw->rcItem;
+
+			COLORREF bgColor = RGB(0, 0, 0);
+			COLORREF btnColor = (lpDraw->itemState & ODS_SELECTED) ? RGB(60, 60, 60) : RGB(80, 80, 80);
+			COLORREF btnColor_Selected = RGB(63, 98, 120);
+			HBRUSH hBGBrush = CreateSolidBrush(bgColor);
+			HBRUSH hBrush = CreateSolidBrush(btnColor);
+
+			if (lpDraw->CtlID == ID_BTN_PLAY)
+			{
+				if (m_bPlaying)
+					hBrush = CreateSolidBrush(btnColor_Selected);
+			}
+			else if (lpDraw->CtlID == ID_BTN_PAUSE)
+			{
+				if (m_bPaused)
+					hBrush = CreateSolidBrush(btnColor_Selected);
+			}
+
+			// 둥근 사각형
+			int cornerRadius = 8;
+			HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+			HGDIOBJ oldPen = SelectObject(hdc, hPen);
+			HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
+
+			FillRect(hdc, &rc, hBGBrush);
+			RoundRect(hdc, rc.left, rc.top, rc.right, rc.bottom, cornerRadius, cornerRadius);
+
+			// 텍스트
+			SetBkMode(hdc, TRANSPARENT);
+			SetTextColor(hdc, RGB(255, 255, 255));
+
+			LPCWSTR text = L"";
+			if (lpDraw->CtlID == ID_BTN_PLAY)
+				text = m_bPlaying ? L"■" : L"▶";
+			else if (lpDraw->CtlID == ID_BTN_PAUSE)
+				text = L"❚❚";
+			else if (lpDraw->CtlID == ID_BTN_NEXTFRAME)
+				text = L"▶❚";
+
+			if (lpDraw->CtlID == ID_BTN_PLAY)
+			{
+				RECT textRect = rc;
+				OffsetRect(&textRect, 0, 0);
+
+				HFONT hFont = CreateDefaultFont(L"Segoe UI Variable", 12);
+
+				HGDIOBJ oldFont = SelectObject(hdc, hFont);
+
+				DrawText(hdc, text, -1, &textRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+				SelectObject(hdc, oldFont);
+				DeleteObject(hFont);
+			}
+			else if (lpDraw->CtlID == ID_BTN_PAUSE)
+			{
+				RECT textRect = rc;
+				OffsetRect(&textRect, 0, -1);
+
+				HFONT hFont = CreateDefaultFont(L"Segoe UI Variable", 20);
+
+				HGDIOBJ oldFont = SelectObject(hdc, hFont);
+
+				DrawText(hdc, text, -1, &textRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+				SelectObject(hdc, oldFont);
+				DeleteObject(hFont);
+			}
+			else if (lpDraw->CtlID == ID_BTN_NEXTFRAME)
+			{
+				RECT textRect = rc;
+				OffsetRect(&textRect, 0, 0);
+
+				HFONT hFont = CreateDefaultFont(L"Arial", 16);
+
+				HGDIOBJ oldFont = SelectObject(hdc, hFont);
+
+				DrawText(hdc, text, -1, &textRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+				SelectObject(hdc, oldFont);
+				DeleteObject(hFont);
+			}
+
+			// 정리
+			SelectObject(hdc, oldPen);
+			SelectObject(hdc, oldBrush);
+			DeleteObject(hBGBrush);
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			return TRUE;
+		}
+	}
+	}
+
+	return TRUE;
 }
 
 void CEngineEditor::UpdateResolution(const vector2Int _resolution)
