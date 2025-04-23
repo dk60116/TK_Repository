@@ -1,5 +1,6 @@
-#include "CScreen.h"
+﻿#include "CScreen.h"
 #include "CManagement.h"
+#include "CHierachyWindow.h"
 
 CScreen::CScreen()
 	: m_hInstance(nullptr)
@@ -68,15 +69,15 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int clientWidth = rcClient.right - rcClient.left;
 	_int clientHeight = rcClient.bottom - rcClient.top;
 
-	_int sceneWidth = (clientWidth * 0.45f) - clientPoint.x * 2;
-	_int windowHeight = (clientHeight / 2) - menuHeight;
+	_int sceneWidth = _int((clientWidth * 0.45f) - clientPoint.x * 2);
+	_int sceneHeight = _int((clientHeight / 2) - menuHeight - 1) + 2;
 
-	HWND sceneWnd = CreateWindowW(L"SceneWindowClass", L"Scene",
+	HWND sceneWnd = CreateWindowW(L"SceneWindowClass", L"𐄹 Scene",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		clientPoint.x,
 		clientPoint.y,
 		sceneWidth,
-		windowHeight,
+		sceneHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
 	m_mWHandleList.insert({ L"Scene", sceneWnd });
@@ -85,17 +86,17 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	GetClientRect(sceneWnd, &sceneRect);
 
 	RemoveBtnsAndRoundedCorners(sceneWnd);
-	UpdateSceneResolution(sceneWidth, windowHeight - childOffset - 2);
+	UpdateSceneResolution(sceneWidth, sceneHeight);
 
 	POINT scenePT = { 0, sceneRect.bottom };
 	ClientToScreen(sceneWnd, &scenePT);
 
-	_int sceneBottomY = scenePT.y + 1;
+	_int sceneBottomY = scenePT.y;
 
 	_int gameWidth = sceneWidth;
 	_int gameHeight = rcClient.bottom - scenePT.y + captionHeight;
 
-	HWND gameWnd = CreateWindowW(L"GameWindowClass", L"Game",
+	HWND gameWnd = CreateWindowW(L"GameWindowClass", L"🎮 Game",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		clientPoint.x,
 		sceneBottomY,
@@ -113,12 +114,12 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	ClientToScreen(gameWnd, &gamePT);
 
 	RemoveBtnsAndRoundedCorners(gameWnd);
-	UpdateGameResolution(gameWidth, gameHeight - childOffset);
+	UpdateGameResolution(gameWidth, gameHeight);
 
-	_int hierachyWidth = (clientWidth * 0.2f) - clientPoint.x * 2;
-	_int hierachyHeight = gamePT.y - clientPoint.y - offsetY * 2;
+	_int hierachyWidth = _int((clientWidth * 0.2f) - clientPoint.x * 2);
+	_int hierachyHeight = _int(gamePT.y - clientPoint.y - offsetY * 2);
 
-	HWND hierachyWnd = CreateWindowW(L"HierachyWindowClass", L"Hierachy",
+	HWND hierachyWnd = CreateWindowW(L"HierachyWindowClass", L"☰ Hierachy",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 		sceneRect.right + offsetX + 2,
 		clientPoint.y,
@@ -127,6 +128,8 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		mainWnd, nullptr, _hInst, nullptr);
 
 	m_mWHandleList.insert({ L"Hierachy", hierachyWnd });
+	
+	CHierachyWindow::GetInstance().Init(hierachyWnd, vector2Int(hierachyWidth, hierachyHeight));
 
 	RemoveBtnsAndRoundedCorners(hierachyWnd);
 }
@@ -141,14 +144,14 @@ HWND CScreen::getWindowHandle(wstring _window)
 	return nullptr;
 }
 
-void CScreen::UpdateSceneResolution(const _int& _width, const _int& _height)
+void CScreen::UpdateSceneResolution(const _int _width, const _int _height)
 {
-	m_v2SceneResolution = vector2Int(_width, _height);
+	m_v2SceneResolution = vector2Int(_width, _height - CHILDTOPBARHEIGHT);
 }
 
-void CScreen::UpdateGameResolution(const _int& _width, const _int& _height)
+void CScreen::UpdateGameResolution(const _int _width, const _int _height)
 {
-	m_v2GameResolution = vector2Int(_width, _height);
+	m_v2GameResolution = vector2Int(_width, _height - CHILDTOPBARHEIGHT);
 }
 
 void CScreen::RemoveBtnsAndRoundedCorners(HWND _hWnd)

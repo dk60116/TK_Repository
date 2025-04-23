@@ -23,7 +23,7 @@ public:
 
 public:
 	HRESULT Ready_Mesh(LPDIRECT3DDEVICE9 _device);
-	const MeshType& getMeshType() { return m_eMeshType; }
+	MeshType const getMeshType() { return m_eMeshType; }
 	void SetMeshType(const MeshType _type) { m_eMeshType = _type; }
 
 	HRESULT Create_Mesh(const void* _pVertices, UINT vertexSize, UINT vertexCount,

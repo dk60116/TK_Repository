@@ -35,7 +35,7 @@ public:
 	virtual void OnDestroy();
 
 public:
-	const wstring& getName() { return m_strGameObjectName; }
+	const wstring& getName() const { return m_strGameObjectName; }
 	const _bool& isActive() { return m_bIsActive; }
 	const _bool& isEnable() { return m_bIsEnable; }
 	CScene* getScene() { return m_pScene; }

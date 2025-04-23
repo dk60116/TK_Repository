@@ -22,7 +22,7 @@ public:
 	_bool operator!=(const UObject& _other) const { return !(*this == _other); }
 
 public:
-	const UINT& getRefCnt() const { return m_iRefCount; }
+	const UINT getRefCnt() const { return m_iRefCount; }
 
 protected:
 	wstring m_strName;

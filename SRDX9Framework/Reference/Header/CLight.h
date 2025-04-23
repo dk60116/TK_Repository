@@ -36,7 +36,7 @@ public:
 	D3DLIGHT9& getInfo() { return m_sLightInfo; };
 
 public:
-	const _int& getIndex() { return m_iIndex; }
+	_int getIndex() const { return m_iIndex; }
 	void SetIndex(const DWORD _index) { m_iIndex = (DWORD)_index; }
 	LightType& getType() { return m_eType; }
 	void SetType(const LightType _type) { m_eType = _type; }

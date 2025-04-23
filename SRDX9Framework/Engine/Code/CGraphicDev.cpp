@@ -1,5 +1,6 @@
 #include "CGraphicDev.h"
 #include "CScreen.h"
+#include "CManagement.h"
 
 CGraphicDev::CGraphicDev() 
 	: m_pSDK(NULL)
@@ -89,12 +90,12 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND _hWnd, WINMODE _eMode,
 // 후면 버퍼
 void CGraphicDev::Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color)
 {
+	m_pGraphicDev->SetViewport(&_viewPort);
+
 	// 화면 Clear
 	m_pGraphicDev->Clear(1, nullptr,
 		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
 		_color, 1.f, 0);
-
-	m_pGraphicDev->SetViewport(&_viewPort);
 
 	m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -147,11 +148,14 @@ HRESULT CGraphicDev::ReSize(_uint _newWidth, _uint _newHeight)
 	vp.Height = _newHeight;
 	vp.MinZ = 0.0f;
 	vp.MaxZ = 1.0f;
+
 	m_pGraphicDev->SetViewport(&vp);
 
 	_matrix matProj;
 	D3DXMatrixOrthoLH(&matProj, (float)_newWidth, (float)_newHeight, 0.0f, 1.0f);
 	m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &matProj);
+
+	CManagement::GetInstance().getCrtScene()->UpdateAllLight();
 
 	return S_OK;
 }

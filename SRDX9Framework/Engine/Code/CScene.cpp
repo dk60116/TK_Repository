@@ -76,7 +76,7 @@ void CScene::LateUpdate()
 	}
 }
 
-void CScene::Render_CScene()
+void CScene::Render_Editor()
 {
 	Render_Grid();
 
@@ -218,12 +218,12 @@ void CScene::AddLight(CLight* _light)
 	}
 }
 
-void CScene::UpdateSceneCameraResolution(const vector2Int& _resolution)
+void CScene::UpdateSceneCameraResolution(const vector2Int _resolution)
 {
 	CManagement::GetInstance().getEditorCamera().ResetAspectFromResolution(_resolution);
 }
 
-void CScene::UpdateAllCameraResolution(const vector2Int& _resolution)
+void CScene::UpdateAllCameraResolution(const vector2Int _resolution)
 {
 	for (TRAVERSAL_ITER(m_vCameraList, it))
 		(*it)->ResetAspectFromResolution(_resolution);

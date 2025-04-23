@@ -358,6 +358,11 @@ void CTransform::SetLocalScale(const _float _x, const _float _y, const _float _z
 	m_v3Scale = vector3(_x, _y, _z);
 }
 
+void CTransform::SetLocalScale(const _float _value)
+{
+	m_v3Scale = vector3::one() * _value;
+}
+
 void CTransform::AddLocalScale(const vector3& _scale)
 {
 	m_v3Scale += _scale;

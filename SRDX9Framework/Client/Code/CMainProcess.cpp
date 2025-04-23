@@ -17,8 +17,8 @@ HRESULT CMainProcess::Ready_MainApp()
 {
 	if (FAILED(CGraphicDev::GetInstance().Ready_GraphicDev
 	(
-		CScreen::GetInstance().getWindowHandle(L"Scene"), MODE_WIN,
-		CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y,
+		CScreen::GetInstance().getWindowHandle(L"Game"), MODE_WIN,
+		CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y,
 		&m_pDevClass
 	)))
 		return E_FAIL;
@@ -37,8 +37,8 @@ HRESULT CMainProcess::Ready_MainApp()
 	CManagement::GetInstance().CreateScene(mainScene, L"MainScene");
 	CManagement::GetInstance().LoadScene(L"MainScene");
 
-	CMainProcess::GetInstance().OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
-	CMainProcess::GetInstance().OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
+	OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y );
+	OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
 
 	return S_OK;
 }
@@ -79,6 +79,8 @@ void CMainProcess::Render_MainApp()
 {
 	m_pDevClass->Get_GraphicDev()->SetRenderState(D3DRS_LIGHTING, CManagement::GetInstance().getCrtScene()->getOptions().lighting);
 
+	CGraphicDev::GetInstance().ReSize(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
+
 	D3DVIEWPORT9 sceneViewport = {};
 	sceneViewport.X = 0;
 	sceneViewport.Y = CHILDTOPBARHEIGHT;
@@ -89,11 +91,13 @@ void CMainProcess::Render_MainApp()
 
 	m_pDevClass->Render_Begin(sceneViewport, D3DCOLOR_XRGB(50, 50, 50));
 
-	CManagement::GetInstance().getCrtScene()->Render_CScene();
+	CManagement::GetInstance().getCrtScene()->Render_Editor();
 
 	auto b = CScreen::GetInstance().getWindowHandle(L"Base");
 
 	m_pDevClass->Render_End(CScreen::GetInstance().getWindowHandle(L"Scene"));
+
+	CGraphicDev::GetInstance().ReSize(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
 
 	D3DVIEWPORT9 gameViewport = {};
 	gameViewport.X = 0;
@@ -114,22 +118,22 @@ void CMainProcess::Release()
 {
 }
 
-void CMainProcess::OnSceneScreenChange(const _uint& _width, const _uint& _height)
+void CMainProcess::OnSceneScreenChange(const _uint _width, const _uint _height)
 {
 	if (!m_pDevClass || !m_pDevClass->Get_GraphicDev())
 		return;
 
-	//CScreen::GetInstance().UpdateSceneResolution(_width, _height);
+	CScreen::GetInstance().UpdateSceneResolution(_width, _height);
 
-	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height));
+	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
 }
 
-void CMainProcess::OnGameScreenChange(const _uint& _width, const _uint& _height)
+void CMainProcess::OnGameScreenChange(const _uint _width, const _uint _height)
 {
 	if (!m_pDevClass || !m_pDevClass->Get_GraphicDev())
 		return;
 
-	//CScreen::GetInstance().UpdateGameResolution(_width, _height); 
+	CScreen::GetInstance().UpdateGameResolution(_width, _height);
 
-	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution(vector2Int(_width, _height));
+	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
 }

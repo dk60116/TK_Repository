@@ -46,7 +46,7 @@ public:
 	_matrix& getProjMatrix() { return m_matProjMatrix; }
 	_matrix& getViewMatrix() { return m_matViewMatrix; }
 	CameraViewParameters& getParameters() { return m_sParameters; };
-	void ResetAspectFromResolution(const vector2Int& _resolution);
+	void ResetAspectFromResolution(const vector2Int _resolution);
 
 private:
 	CameraViewMode m_eCamViewMode;

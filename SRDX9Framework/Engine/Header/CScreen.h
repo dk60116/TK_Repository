@@ -16,14 +16,14 @@ public:
 
 	HWND getWindowHandle(wstring _window);
 
-	const vector2Int& getSceneResolution() { return m_v2SceneResolution; }
-	const vector2Int& getGameResolution() { return m_v2GameResolution; }
+	const vector2Int getSceneResolution() { return m_v2SceneResolution; }
+	const vector2Int getGameResolution() { return m_v2GameResolution; }
 
-	const _int& getDPI() { return m_iDPI; }
+	const _int getDPI() { return m_iDPI; }
 
 public:
-	void UpdateSceneResolution(const _int& _width, const _int& _height);
-	void UpdateGameResolution(const _int& _width, const _int& _height);
+	void UpdateSceneResolution(const _int _width, const _int _height);
+	void UpdateGameResolution(const _int _width, const _int _height);
 
 	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
 

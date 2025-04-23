@@ -87,6 +87,7 @@ public:
 	
 	void SetLocalScale(const vector3& _scale);
 	void SetLocalScale(const _float _x, const _float _y, const _float _z);
+	void SetLocalScale(const _float _value);
 	void AddLocalScale(const vector3& _scale);
 	void AddLocalScale(const _float _x, const _float _y, const _float _z);
 	void SetLocalScaleX(const _float _x);

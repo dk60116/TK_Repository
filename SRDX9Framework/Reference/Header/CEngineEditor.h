@@ -21,10 +21,10 @@ public:
 	HINSTANCE getHInst() { return m_hInst; }
 	HWND getMainHandle() { return m_hMainWnd; }
 
-	const _bool& isPlaying() const { return m_bPlaying; }
-	const _bool& isPaused() const { return m_bPaused; }
+	const _bool isPlaying() const { return m_bPlaying; }
+	const _bool isPaused() const { return m_bPaused; }
 	void SetPaused(const _bool _value) { m_bPaused = _value; };
-	const _bool& isNextFrame() const { return m_bNextFrame; }
+	const _bool isNextFrame() const { return m_bNextFrame; }
 	void SetNextFrame(const _bool _value) { m_bNextFrame = _value; }
 
 	HWND getMainTopBar() { return m_hTopBar; }

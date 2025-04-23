@@ -32,7 +32,7 @@ public:
 public:
 	CGameObject* getObject() { return m_pGameObject; }
 	void SetDevice();
-	const _bool& IsEnable() { return m_bEnable; };
+	const _bool IsEnable() { return m_bEnable; };
 	void SetObject(CGameObject* _obj) { m_pGameObject = _obj; }
 	CTransform& getTransform();
 

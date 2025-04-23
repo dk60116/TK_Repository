@@ -18,7 +18,7 @@ void CPlayer::Awake()
 {
 	CComponent::Awake();
 
-	getTransform().SetLocalScale(2.f, 2.f, 2.f);
+	getTransform().SetLocalScale(1.5f);
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
 	m_pMeshRenderer->SetMeshFilterType(CMesh::CUBE);

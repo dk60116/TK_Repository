@@ -171,6 +171,9 @@
     <ClInclude Include="..\..\Client\Include\Resource.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CHierachyWindow.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -253,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CEditorCamera.cpp">
       <Filter>Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHierachyWindow.cpp">
+      <Filter>Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

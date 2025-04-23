@@ -14,8 +14,8 @@ public:
 	void Render_MainApp();
 	void Release();
 
-	void OnSceneScreenChange(const _uint& _width, const _uint& _height);
-	void OnGameScreenChange(const _uint& _width, const _uint& _height);
+	void OnSceneScreenChange(const _uint _width, const _uint _height);
+	void OnGameScreenChange(const _uint _width, const _uint _height);
 
 private:
 	CGraphicDev* m_pDevClass;
