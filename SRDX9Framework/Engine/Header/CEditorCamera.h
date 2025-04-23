@@ -17,6 +17,7 @@ public:
 
 private:
     float m_fMoveSpeed, m_fRotateSpeed;
+    float m_fCrtMoveSpd;
     _bool m_bRMouseDowned;
     vector2 m_v2MouseDragDelta;
     vector2Int m_v2PrevMosuePos;
