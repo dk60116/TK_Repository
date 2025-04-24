@@ -154,10 +154,12 @@ call Copy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Client\Include\Resource.h" />
+    <ClInclude Include="..\Header\CBaseWindow.h" />
     <ClInclude Include="..\Header\CCamera.h" />
     <ClInclude Include="..\Header\CComponent.h" />
     <ClInclude Include="..\Header\CDebug.h" />
     <ClInclude Include="..\Header\CEditorCamera.h" />
+    <ClInclude Include="..\Header\CEditorWindow.h" />
     <ClInclude Include="..\Header\CEngineEditor.h" />
     <ClInclude Include="..\Header\CGameObject.h" />
     <ClInclude Include="..\Header\CGraphicDev.h" />
@@ -190,10 +192,12 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\UObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBaseWindow.cpp" />
     <ClCompile Include="..\Code\CCamera.cpp" />
     <ClCompile Include="..\Code\CComponent.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
     <ClCompile Include="..\Code\CEditorCamera.cpp" />
+    <ClCompile Include="..\Code\CEditorWindow.cpp" />
     <ClCompile Include="..\Code\CEngineEditor.cpp" />
     <ClCompile Include="..\Code\CGameObject.cpp" />
     <ClCompile Include="..\Code\CGraphicDev.cpp" />

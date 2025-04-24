@@ -366,7 +366,7 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return TRUE;
 }
 
-void CEngineEditor::UpdateResolution(const vector2Int _resolution)
+void CEngineEditor::UpdateBaseResolution(const vector2Int _resolution)
 {
 	int screenX = _resolution.x;
 	int screenXCenter = screenX / 2;
@@ -392,7 +392,25 @@ void CEngineEditor::UpdateResolution(const vector2Int _resolution)
 		true);
 }
 
-HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, _int _size, _bool _bold)
+void CEngineEditor::UpdateSceneResolution(const vector2Int _resolution)
+{
+	MoveWindow(m_hTop_Scene,
+		0, 0,
+		_resolution.x, CHILDTOPBARHEIGHT,
+		 true);
+}
+
+CEditorWindow* CEngineEditor::getWindow(wstring _name)
+{
+	auto it = m_mWindowList.find(_name);
+
+	if (it != m_mWindowList.end())
+		return it->second;
+
+	return nullptr;
+}
+
+HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold)
 {
 	HFONT result = CreateFontW
 	(

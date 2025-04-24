@@ -165,9 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HWND hStatic = (HWND)lParam;
 
         if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
-            || hStatic == CEngineEditor::GetInstance().getMainBottomBar()
-            || hStatic == CEngineEditor::GetInstance().getSceneTopBar()
-            || hStatic == CEngineEditor::GetInstance().getGameTopBar())
+            || hStatic == CEngineEditor::GetInstance().getMainBottomBar())
         {
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, RGB(0, 0, 0));
@@ -186,17 +184,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         if (hWnd == CScreen::GetInstance().getWindowHandle(L"Base"))
         {
-            HWND hMainWnd = CScreen::GetInstance().getWindowHandle(L"Base");
-
-            if (hMainWnd)
-            {
-                int offset = 30;
-
-                CEngineEditor::GetInstance().UpdateResolution(vector2Int(width, height));
-            }
+            CEngineEditor::GetInstance().UpdateBaseResolution(vector2Int(width, height));
         }
         else if (hWnd == CScreen::GetInstance().getWindowHandle(L"Scene"))
         {
+            CEngineEditor::GetInstance().UpdateSceneResolution(vector2Int(width, height));
             CMainProcess::GetInstance().OnSceneScreenChange(width, height);
         }
         else if (hWnd == CScreen::GetInstance().getWindowHandle(L"Game"))

@@ -50,6 +50,9 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		winHeight,
 		nullptr, nullptr, _hInst, nullptr);
 
+	if (CEngineEditor::GetInstance().CreateCustomWindow(mainWnd, L"Base", vector2Int(winWidth, winHeight))
+		return;
+
 	m_mWHandleList.insert({ L"Base", mainWnd });
 
 	ShowWindow(mainWnd, SW_SHOW);
@@ -128,8 +131,6 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 
 	m_mWHandleList.insert({ L"Hierachy", hierachyWnd });
 	
-	CHierachyWindow::GetInstance().Init(hierachyWnd, vector2Int(hierachyWidth, hierachyHeight));
-
 	RemoveBtnsAndRoundedCorners(hierachyWnd);
 }
 

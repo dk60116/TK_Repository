@@ -1,21 +1,27 @@
 #pragma once
 
 #include "Engine_Define.h"
+#include "CEditorWindow.h"
+#include "CEngineEditor.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CHierachyWindow
+class ENGINE_DLL CHierachyWindow final
+	: public CEditorWindow
 {
-	SINGLETONCLASS(CHierachyWindow);
-
-public:
-	void Init(HWND _hWnd, vector2Int _size);
-	void Render();
-	void Update();
-	void HandleMessage(UINT _msg, WPARAM _wParam, LPARAM _lParam);
+	friend class EngineEditor;
 
 private:
-	HWND m_hWnd;
+	CHierachyWindow(HWND _hWnd);
+	~CHierachyWindow();
+
+public:
+	void Init(HWND _hWnd, vector2Int _size) override;
+	void Render() override;
+	void Update() override;
+	void UpdateResolution(vector2Int _resolutoin) override;
+
+private:
 	HWND m_hTreeView;
 };
 

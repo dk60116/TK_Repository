@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine_Define.h"
+#include "CEditorWindow.h"
 
 BEGIN(Engine)
 
@@ -29,13 +30,17 @@ public:
 
 	HWND getMainTopBar() { return m_hTopBar; }
 	HWND getMainBottomBar() { return m_hBottomBar; }
-	HWND getSceneTopBar() { return m_hTop_Scene; }
-	HWND getGameTopBar() { return m_hTop_Game; }
 
-	void UpdateResolution(vector2Int _resolution);
+	void UpdateBaseResolution(const vector2Int _resolution);
+	void UpdateSceneResolution(const vector2Int _resolution);
+
+	template <typename T>
+	HRESULT* CreateCustomWindow(HWND _window, wstring _name, const vector2Int _size);
+
+	CEditorWindow* getWindow(wstring _name);
 
 private:
-	HFONT CreateDefaultFont(LPCWSTR _font, _int _size, _bool _bold = false);
+	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 
 private:
 	HINSTANCE m_hInst;
@@ -50,7 +55,22 @@ private:
 	_bool m_bPlaying;
 	_bool m_bPaused;
 	_bool m_bNextFrame;
+
+	map<wstring, CEditorWindow*> m_mWindowList;
 };
 
 END
 
+template<typename T>
+inline HRESULT* CEngineEditor::CreateCustomWindow(HWND _window, wstring _name, const vector2Int _size)
+{
+	T* newWindow = new T();
+
+	if (newWindow == nullptr)
+		return E_FAIL;
+
+	m_mWindowList.insert({ _name, newWindow });
+	newWindow->Init(_window, _size);
+
+	return S_OK;
+}

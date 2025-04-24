@@ -67,6 +67,9 @@
     <Filter Include="System">
       <UniqueIdentifier>{98cf3306-a664-4dba-9273-491527de9b9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\Windows">
+      <UniqueIdentifier>{359b3c35-8fab-49c0-a26a-da43e12061c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CGraphicDev.h">
@@ -171,8 +174,14 @@
     <ClInclude Include="..\..\Client\Include\Resource.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CEditorWindow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CHierachyWindow.h">
-      <Filter>Editor</Filter>
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBaseWindow.h">
+      <Filter>Editor\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,9 +230,6 @@
     <ClCompile Include="..\Code\CScreen.cpp">
       <Filter>Screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CEngineEditor.cpp">
-      <Filter>Editor</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CSpriteRenderer.cpp">
       <Filter>Component\Render\Renderer</Filter>
     </ClCompile>
@@ -257,8 +263,17 @@
     <ClCompile Include="..\Code\CEditorCamera.cpp">
       <Filter>Component\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CHierachyWindow.cpp">
+    <ClCompile Include="..\Code\CEditorWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEngineEditor.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHierachyWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBaseWindow.cpp">
+      <Filter>Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
