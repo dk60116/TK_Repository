@@ -73,30 +73,9 @@ HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size)
 	if (!m_hPlayBtn || !m_hPauseBtn || !m_hOneFrameBtn)
 		return E_FAIL;
 
-	HFONT hFont14 = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 18);
-	HFONT hFont16 = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 16, TRUE);
-
-	SendMessageW(m_hPlayBtn, WM_SETFONT, (WPARAM)hFont14, TRUE);
-	SendMessageW(m_hPauseBtn, WM_SETFONT, (WPARAM)hFont16, TRUE);
-	SendMessageW(m_hOneFrameBtn, WM_SETFONT, (WPARAM)hFont14, TRUE);
-
 	EnableWindow(m_hPlayBtn, TRUE);
 	EnableWindow(m_hPauseBtn, CEngineEditor::GetInstance().isPaused());
 	EnableWindow(m_hOneFrameBtn, CEngineEditor::GetInstance().isPaused());
-
-	HWND ee = CreateWindowW(L"COMBOBOX", L"Handle",
-		WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL,
-		10, 3, 100, 200,
-		m_hWnd, NULL, hInstance, nullptr);
-
-	SendMessageW(ee, WM_SETFONT, (WPARAM)hFont16, TRUE);
-
-	SendMessageW(ee, CB_ADDSTRING, 0, (LPARAM)L"Center");
-	SendMessageW(ee, CB_ADDSTRING, 1, (LPARAM)L"Pivot");
-
-	SendMessageW(ee, CB_SETCURSEL, 0, 0);
-
-	return S_OK;
 }
 
 void CBaseWindow::Render()

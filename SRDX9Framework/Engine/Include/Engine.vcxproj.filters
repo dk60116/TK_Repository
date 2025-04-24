@@ -186,7 +186,7 @@
     <ClInclude Include="..\Header\CSceneWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CGameWIndow.h">
+    <ClInclude Include="..\Header\CGameWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
   </ItemGroup>
@@ -284,7 +284,7 @@
     <ClCompile Include="..\Code\CSceneWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CGameWIndow.cpp">
+    <ClCompile Include="..\Code\CGameWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>

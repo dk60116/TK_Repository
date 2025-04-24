@@ -1,15 +1,15 @@
-#include "CGameWIndow.h"
+#include "CGameWindow.h"
 
-CGameWIndow::CGameWIndow()
+CGameWindow::CGameWindow()
 {
 	m_strName = L"Scene Window";
 }
 
-CGameWIndow::~CGameWIndow()
+CGameWindow::~CGameWindow()
 {
 }
 
-HRESULT CGameWIndow::Init(HWND _hWnd, vector2Int _size)
+HRESULT CGameWindow::Init(HWND _hWnd, vector2Int _size)
 {
 	if (FAILED(__super::Init(_hWnd, _size)))
 		return E_FAIL;
@@ -17,15 +17,15 @@ HRESULT CGameWIndow::Init(HWND _hWnd, vector2Int _size)
 	return S_OK;
 }
 
-void CGameWIndow::Render()
+void CGameWindow::Render()
 {
 }
 
-void CGameWIndow::Update()
+void CGameWindow::Update()
 {
 }
 
-void CGameWIndow::UpdateResolution(HWND _target, vector2Int _resolution)
+void CGameWindow::UpdateResolution(HWND _target, vector2Int _resolution)
 {
 	if (m_hWnd != _target)
 		return;

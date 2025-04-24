@@ -2,6 +2,7 @@
 #include "CManagement.h"
 #include "CBaseWindow.h"
 #include "CSceneWindow.h"
+#include "CGameWindow.h"
 #include "CHierachyWindow.h"
 
 CScreen::CScreen()
@@ -111,7 +112,7 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		gameHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
-	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CSceneWindow>(gameWnd, L"Game", vector2Int(gameWidth, gameHeight))))
+	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CGameWindow>(gameWnd, L"Game", vector2Int(gameWidth, gameHeight))))
 		return E_FAIL;
 
 	m_mWHandleList.insert({ L"Game", gameWnd });

@@ -1,4 +1,5 @@
 #include "CSceneWindow.h"
+#include "CEngineEditor.h"
 
 CSceneWindow::CSceneWindow()
 {
@@ -13,6 +14,23 @@ HRESULT CSceneWindow::Init(HWND _hWnd, vector2Int _size)
 {
 	if (FAILED(__super::Init(_hWnd, _size)))
 		return E_FAIL;
+
+	HINSTANCE hInstance = CEngineEditor::GetInstance().getHInstance();
+
+	HFONT hFont14 = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 18);
+	HFONT hFont16 = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 16, TRUE);
+
+	HWND ee = CreateWindowW(L"COMBOBOX", L"Handle",
+		WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL,
+		10, 3, 100, 200,
+		m_hWnd, NULL, hInstance, nullptr);
+
+	SendMessageW(ee, WM_SETFONT, (WPARAM)hFont16, TRUE);
+
+	SendMessageW(ee, CB_ADDSTRING, 0, (LPARAM)L"Center");
+	SendMessageW(ee, CB_ADDSTRING, 1, (LPARAM)L"Pivot");
+
+	SendMessageW(ee, CB_SETCURSEL, 0, 0);
 
 	return S_OK;
 }

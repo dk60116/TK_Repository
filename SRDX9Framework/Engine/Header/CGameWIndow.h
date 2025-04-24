@@ -4,14 +4,14 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CGameWIndow :
+class ENGINE_DLL CGameWindow :
     public CEditorWindow
 {
 	friend class CEngineEditor;
 
 private:
-	CGameWIndow();
-	~CGameWIndow();
+	CGameWindow();
+	~CGameWindow();
 
 public:
 	HRESULT Init(HWND _hWnd, vector2Int _size) override;
