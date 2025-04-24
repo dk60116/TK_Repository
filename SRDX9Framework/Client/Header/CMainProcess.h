@@ -17,7 +17,10 @@ public:
 	void OnSceneScreenChange(const _uint _width, const _uint _height);
 	void OnGameScreenChange(const _uint _width, const _uint _height);
 
+	void CalcDPI();
+
 private:
 	CGraphicDev* m_pDevClass;
+	UINT m_iDPI;
 };
 

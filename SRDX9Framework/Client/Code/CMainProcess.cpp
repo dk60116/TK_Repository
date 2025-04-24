@@ -5,6 +5,7 @@
 
 CMainProcess::CMainProcess()
 	: m_pDevClass(nullptr)
+	 , m_iDPI(1)
 {
 }
 
@@ -15,10 +16,12 @@ CMainProcess::~CMainProcess()
 
 HRESULT CMainProcess::Ready_MainApp()
 {
+	CalcDPI();
+
 	if (FAILED(CGraphicDev::GetInstance().Ready_GraphicDev
 	(
 		CScreen::GetInstance().getWindowHandle(L"Game"), MODE_WIN,
-		CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y,
+		m_iDPI, m_iDPI,
 		&m_pDevClass
 	)))
 		return E_FAIL;
@@ -79,35 +82,21 @@ void CMainProcess::Render_MainApp()
 {
 	m_pDevClass->Get_GraphicDev()->SetRenderState(D3DRS_LIGHTING, CManagement::GetInstance().getCrtScene()->getOptions().lighting);
 
-	CGraphicDev::GetInstance().ReSize(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
+	D3DVIEWPORT9 viewport = {};
+	viewport.X = 0;
+	viewport.Y = CHILDTOPBARHEIGHT;
+	viewport.Width = m_iDPI;
+	viewport.Height = m_iDPI - CHILDTOPBARHEIGHT;
+	viewport.MinZ = 0.0f;
+	viewport.MaxZ = 1.0f;
 
-	D3DVIEWPORT9 sceneViewport = {};
-	sceneViewport.X = 0;
-	sceneViewport.Y = CHILDTOPBARHEIGHT;
-	sceneViewport.Width = CScreen::GetInstance().getSceneResolution().x;
-	sceneViewport.Height = CScreen::GetInstance().getSceneResolution().y - CHILDTOPBARHEIGHT;
-	sceneViewport.MinZ = 0.0f;
-	sceneViewport.MaxZ = 1.0f;
-
-	m_pDevClass->Render_Begin(sceneViewport, D3DCOLOR_XRGB(50, 50, 50));
+	m_pDevClass->Render_Begin(viewport, D3DCOLOR_XRGB(50, 50, 50));
 
 	CManagement::GetInstance().getCrtScene()->Render_Editor();
 
-	auto b = CScreen::GetInstance().getWindowHandle(L"Base");
-
 	m_pDevClass->Render_End(CScreen::GetInstance().getWindowHandle(L"Scene"));
 
-	CGraphicDev::GetInstance().ReSize(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
-
-	D3DVIEWPORT9 gameViewport = {};
-	gameViewport.X = 0;
-	gameViewport.Y = CHILDTOPBARHEIGHT;
-	gameViewport.Width = CScreen::GetInstance().getGameResolution().x;
-	gameViewport.Height = CScreen::GetInstance().getGameResolution().y - CHILDTOPBARHEIGHT;
-	gameViewport.MinZ = 0.0f;
-	gameViewport.MaxZ = 1.0f;
-
-	m_pDevClass->Render_Begin(gameViewport, D3DCOLOR_XRGB(49, 77, 121));
+	m_pDevClass->Render_Begin(viewport, D3DCOLOR_XRGB(49, 77, 121));
 
 	CManagement::GetInstance().getCrtScene()->Render_Game();
 
@@ -133,7 +122,21 @@ void CMainProcess::OnGameScreenChange(const _uint _width, const _uint _height)
 	if (!m_pDevClass || !m_pDevClass->Get_GraphicDev())
 		return;
 
+	CGraphicDev::GetInstance().ReSize(m_iDPI, m_iDPI - CHILDTOPBARHEIGHT);
+
 	CScreen::GetInstance().UpdateGameResolution(_width, _height);
+	
+	CalcDPI();
 
 	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
+}
+
+void CMainProcess::CalcDPI()
+{
+	vector2Int resolution = CScreen::GetInstance().getGameResolution();
+
+	if (resolution.x >= resolution.y)
+		m_iDPI = resolution.x;
+	else
+		m_iDPI = resolution.y;
 }

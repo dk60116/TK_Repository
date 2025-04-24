@@ -43,6 +43,7 @@ public:
 private:
 	LPDIRECT3D9 m_pSDK;
 	LPDIRECT3DDEVICE9 m_pGraphicDev;
+
 public:
 	virtual void Free();
 };

@@ -19,11 +19,9 @@ public:
 	const vector2Int getSceneResolution() { return m_v2SceneResolution; }
 	const vector2Int getGameResolution() { return m_v2GameResolution; }
 
-	const _int getDPI() { return m_iDPI; }
-
 public:
-	void UpdateSceneResolution(const _int _width, const _int _height);
-	void UpdateGameResolution(const _int _width, const _int _height);
+	void UpdateSceneResolution(const UINT _width, const UINT _height);
+	void UpdateGameResolution(const UINT _width, const UINT _height);
 
 	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
 
@@ -32,7 +30,6 @@ private:
 	map<wstring, HWND> m_mWHandleList;
 	vector2Int m_v2SceneResolution, m_v2GameResolution;
 	bool m_bFullScreen;
-	_int m_iDPI;
 };
 
 END

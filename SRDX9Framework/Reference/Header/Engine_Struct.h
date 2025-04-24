@@ -205,8 +205,13 @@ namespace Engine
         {
         }
 
-        vector2Int(int _x, int _y)
+        vector2Int(_int _x, _int _y)
             : x(_x), y(_y)
+        {
+        }
+
+        vector2Int(UINT _x, UINT _y)
+            : x((_int)_x), y((_int)_y)
         {
         }
 

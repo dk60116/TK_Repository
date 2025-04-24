@@ -7,7 +7,6 @@ CScreen::CScreen()
 	, m_mWHandleList({})
 	, m_v2GameResolution(vector2(0, 0))
 	, m_bFullScreen(false)
-	, m_iDPI(0)
 {
 }
 
@@ -144,12 +143,12 @@ HWND CScreen::getWindowHandle(wstring _window)
 	return nullptr;
 }
 
-void CScreen::UpdateSceneResolution(const _int _width, const _int _height)
+void CScreen::UpdateSceneResolution(const UINT _width, const UINT _height)
 {
 	m_v2SceneResolution = vector2Int(_width, _height - CHILDTOPBARHEIGHT);
 }
 
-void CScreen::UpdateGameResolution(const _int _width, const _int _height)
+void CScreen::UpdateGameResolution(const UINT _width, const UINT _height)
 {
 	m_v2GameResolution = vector2Int(_width, _height - CHILDTOPBARHEIGHT);
 }
