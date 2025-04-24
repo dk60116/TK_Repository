@@ -13,16 +13,21 @@ protected:
 	~CEditorWindow();
 
 public:
-	virtual void Init(HWND _hWnd, vector2Int _size);
+	virtual HRESULT Init(HWND _hWnd, const vector2Int _size);
 	virtual void Render() PURE;
 	virtual void Update() PURE;
-	virtual void UpdateResolution(vector2Int _resolutoin);
+	virtual void UpdateResolution(HWND _target, const vector2Int _resolution);
+	virtual void Destroy();
+	virtual LRESULT CALLBACK WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 protected:
 	HWND m_hWnd;
 	HWND m_hTopBar;
+	UINT m_iTopBarHeight;
 
 	vector2Int m_v2Resolution;
+
+	RECT m_sClinentRect, m_sWindowRect;
 };
 
 END

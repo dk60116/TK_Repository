@@ -1,6 +1,8 @@
 ﻿#include "CScreen.h"
 #include "CManagement.h"
 #include "CHierachyWindow.h"
+#include "CBaseWindow.h"
+#include "CHierachyWindow.h"
 
 CScreen::CScreen()
 	: m_hInstance(nullptr)
@@ -14,7 +16,7 @@ CScreen::~CScreen()
 {
 }
 
-void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
+HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 {
 	m_mWHandleList.clear();
 
@@ -50,8 +52,8 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		winHeight,
 		nullptr, nullptr, _hInst, nullptr);
 
-	if (CEngineEditor::GetInstance().CreateCustomWindow(mainWnd, L"Base", vector2Int(winWidth, winHeight))
-		return;
+	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CBaseWindow>(mainWnd, L"Base", vector2Int(winWidth, winHeight))))
+		return E_FAIL;
 
 	m_mWHandleList.insert({ L"Base", mainWnd });
 
@@ -129,9 +131,14 @@ void CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		hierachyHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
+	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CHierachyWindow>(hierachyWnd, L"Hierachy", vector2Int(hierachyWidth, hierachyHeight))))
+		return E_FAIL;
+
 	m_mWHandleList.insert({ L"Hierachy", hierachyWnd });
 	
 	RemoveBtnsAndRoundedCorners(hierachyWnd);
+
+	return S_OK;
 }
 
 HWND CScreen::getWindowHandle(wstring _window)

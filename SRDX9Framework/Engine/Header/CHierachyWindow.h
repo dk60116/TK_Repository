@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine_Define.h"
 #include "CEditorWindow.h"
 #include "CEngineEditor.h"
 
@@ -9,17 +8,17 @@ BEGIN(Engine)
 class ENGINE_DLL CHierachyWindow final
 	: public CEditorWindow
 {
-	friend class EngineEditor;
+	friend class CEngineEditor;
 
 private:
-	CHierachyWindow(HWND _hWnd);
+	CHierachyWindow();
 	~CHierachyWindow();
 
 public:
-	void Init(HWND _hWnd, vector2Int _size) override;
+	HRESULT Init(HWND _hWnd, vector2Int _size) override;
 	void Render() override;
 	void Update() override;
-	void UpdateResolution(vector2Int _resolutoin) override;
+	void UpdateResolution(HWND _target, vector2Int _resolution) override;
 
 private:
 	HWND m_hTreeView;

@@ -1,18 +1,17 @@
 #pragma once
 
+#include "UObject.h"
 #include "Engine_Define.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CScreen
+	: public UObject
 {
 	SINGLETONCLASS(CScreen);
 
 public:
-	void Start_Window(HINSTANCE _hInst, int _cmdShow);
-
-public:
-	HINSTANCE getHInstance() { return m_hInstance; }
+	HRESULT Start_Window(HINSTANCE _hInst, int _cmdShow);
 
 	HWND getWindowHandle(wstring _window);
 

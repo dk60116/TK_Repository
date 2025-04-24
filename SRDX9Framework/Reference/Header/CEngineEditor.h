@@ -14,43 +14,38 @@ public:
 	void Init_Scene(HWND _sceneWnd);
 	void Init_Game(HWND _gameWnd);
 
+	void Release();
+
 public:
 	ATOM MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc);
 	LRESULT CALLBACK WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
-	HINSTANCE getHInst() { return m_hInst; }
-	HWND getMainHandle() { return m_hMainWnd; }
+	HINSTANCE getHInstance() { return m_hInst; }
 
 	const _bool isPlaying() const { return m_bPlaying; }
+	void SetPlaying(const _bool _value) { m_bPlaying = _value; }
+	void SwitchPlaying() { m_bPlaying = !m_bPlaying; }
 	const _bool isPaused() const { return m_bPaused; }
 	void SetPaused(const _bool _value) { m_bPaused = _value; };
+	void SwitchPaused() { m_bPaused = !m_bPaused; }
 	const _bool isNextFrame() const { return m_bNextFrame; }
 	void SetNextFrame(const _bool _value) { m_bNextFrame = _value; }
 
-	HWND getMainTopBar() { return m_hTopBar; }
-	HWND getMainBottomBar() { return m_hBottomBar; }
-
-	void UpdateBaseResolution(const vector2Int _resolution);
 	void UpdateSceneResolution(const vector2Int _resolution);
 
 	template <typename T>
-	HRESULT* CreateCustomWindow(HWND _window, wstring _name, vector2Int _size);
+	HRESULT CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size);
 
 	CEditorWindow* getWindow(wstring _name);
 
-private:
+public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 
 private:
 	HINSTANCE m_hInst;
-	HWND m_hMainWnd;
 
-	HWND m_hTopBar, m_hTop_Scene, m_hTop_Game;
-	HWND m_hBottomBar;
-	HWND m_hBtnPause;
-	HWND m_hBtnPlay;
-	HWND m_hBtnNextFrame;
+	HWND m_hTop_Scene, m_hTop_Game;
 
 	_bool m_bPlaying;
 	_bool m_bPaused;
@@ -62,15 +57,22 @@ private:
 END
 
 template<typename T>
-inline HRESULT* CEngineEditor::CreateCustomWindow(HWND _window, wstring _name, vector2Int _size)
+inline HRESULT CEngineEditor::CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size)
 {
+	if (_window == nullptr)
+		return E_FAIL;
+
 	T* newWindow = new T();
 
 	if (newWindow == nullptr)
 		return E_FAIL;
 
+	newWindow->AddRef();
+
 	m_mWindowList.insert({ _name, newWindow });
-	newWindow->Init(_window, _size);
+	
+	if (FAILED(newWindow->Init(_window, _size)))
+		return E_FAIL;
 
 	return S_OK;
 }

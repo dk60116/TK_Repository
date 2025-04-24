@@ -2,19 +2,19 @@
 
 #pragma comment(lib, "comctl32.lib")
 
-CHierachyWindow::CHierachyWindow(HWND _hWnd)
+CHierachyWindow::CHierachyWindow()
 	: m_hTreeView(nullptr)
 {
-	m_hWnd = _hWnd;
 }
 
 CHierachyWindow::~CHierachyWindow()
 {
 }
 
-void CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
+HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
 {
-	__super::Init(_hWnd, _size);
+	if (FAILED(__super::Init(_hWnd, _size)))
+		return E_FAIL;
 
 	InitCommonControls();
 
@@ -22,9 +22,11 @@ void CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
 	(
 		0, WC_TREEVIEW, nullptr,
 		WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS,
-		30, 0, _size.x, _size.y,
+		40, CHILDTOPBARHEIGHT, _size.x, _size.y,
 		_hWnd, nullptr, GetModuleHandle(NULL), nullptr
 	);
+
+	return S_OK;
 }
 
 void CHierachyWindow::Render()
@@ -35,7 +37,10 @@ void CHierachyWindow::Update()
 {
 }
 
-void CHierachyWindow::UpdateResolution(vector2Int UpdateResolution)
+void CHierachyWindow::UpdateResolution(HWND _target, vector2Int _resolution)
 {
-	__super::UpdateResolution(UpdateResolution);
+	if (m_hWnd != _target)
+		return;
+
+	__super::UpdateResolution(_target, _resolution);
 }

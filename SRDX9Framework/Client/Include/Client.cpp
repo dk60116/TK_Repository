@@ -92,7 +92,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   CScreen::GetInstance().Start_Window(hInstance, nCmdShow);
+   if (FAILED(CScreen::GetInstance().Start_Window(hInstance, nCmdShow)))
+       return FALSE;
 
    CEngineEditor::GetInstance().Init_Main(hInstance, CScreen::GetInstance().getWindowHandle(L"Base"));
    CEngineEditor::GetInstance().Init_Scene(CScreen::GetInstance().getWindowHandle(L"Scene"));
@@ -124,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wmId)
         {
         case IDM_ABOUT:
-            DialogBox(CEngineEditor::GetInstance().getHInst(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            DialogBox(CEngineEditor::GetInstance().getHInstance(), MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
@@ -161,17 +162,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_CTLCOLORSTATIC:
     {
-        HDC hdcStatic = (HDC)wParam;
-        HWND hStatic = (HWND)lParam;
+        //HDC hdcStatic = (HDC)wParam;
+        //HWND hStatic = (HWND)lParam;
 
-        if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
-            || hStatic == CEngineEditor::GetInstance().getMainBottomBar())
-        {
-            SetBkMode(hdcStatic, TRANSPARENT);
-            SetBkColor(hdcStatic, RGB(0, 0, 0));
-            static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
-            return (INT_PTR)hBlackBrush;
-        }
+        //if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
+        //    || hStatic == CEngineEditor::GetInstance().getMainBottomBar())
+        //{
+        //    SetBkMode(hdcStatic, TRANSPARENT);
+        //    SetBkColor(hdcStatic, RGB(0, 0, 0));
+        //    static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+        //    return (INT_PTR)hBlackBrush;
+        //}
     }
     break;
 
@@ -182,11 +183,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _int width = rcClient.right - rcClient.left;
         _int height = rcClient.bottom - rcClient.top;
 
-        if (hWnd == CScreen::GetInstance().getWindowHandle(L"Base"))
-        {
-            CEngineEditor::GetInstance().UpdateBaseResolution(vector2Int(width, height));
-        }
-        else if (hWnd == CScreen::GetInstance().getWindowHandle(L"Scene"))
+        if (hWnd == CScreen::GetInstance().getWindowHandle(L"Scene"))
         {
             CEngineEditor::GetInstance().UpdateSceneResolution(vector2Int(width, height));
             CMainProcess::GetInstance().OnSceneScreenChange(width, height);
