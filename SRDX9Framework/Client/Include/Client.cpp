@@ -95,10 +95,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    if (FAILED(CScreen::GetInstance().Start_Window(hInstance, nCmdShow)))
        return FALSE;
 
-   CEngineEditor::GetInstance().Init_Main(hInstance, CScreen::GetInstance().getWindowHandle(L"Base"));
-   CEngineEditor::GetInstance().Init_Scene(CScreen::GetInstance().getWindowHandle(L"Scene"));
-   CEngineEditor::GetInstance().Init_Game(CScreen::GetInstance().getWindowHandle(L"Game"));
-
    return TRUE;
 }
 
@@ -185,7 +181,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         if (hWnd == CScreen::GetInstance().getWindowHandle(L"Scene"))
         {
-            CEngineEditor::GetInstance().UpdateSceneResolution(vector2Int(width, height));
             CMainProcess::GetInstance().OnSceneScreenChange(width, height);
         }
         else if (hWnd == CScreen::GetInstance().getWindowHandle(L"Game"))

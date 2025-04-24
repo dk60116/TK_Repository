@@ -183,6 +183,12 @@
     <ClInclude Include="..\Header\CBaseWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CSceneWindow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CGameWIndow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -273,6 +279,12 @@
       <Filter>Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBaseWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CSceneWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CGameWIndow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>

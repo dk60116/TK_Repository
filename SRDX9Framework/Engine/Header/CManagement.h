@@ -9,6 +9,7 @@
 BEGIN(Engine)
 
 class ENGINE_DLL CManagement
+	: public UObject
 {
 	SINGLETONCLASS(CManagement);
 
@@ -35,7 +36,7 @@ private:
 	CScene* m_pCrtScene;
 	map<wstring, CScene*> m_mSceneList;
 
-	CGameObject* m_cEditorCamObj;
+	CGameObject* m_pEditorCamObj;
 	CEditorCamera* m_pEditorCam;
 };
 

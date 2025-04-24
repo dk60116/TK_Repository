@@ -1,18 +1,15 @@
 #pragma once
 
+#include "UObject.h"
 #include "Engine_Define.h"
 #include "CEditorWindow.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CEngineEditor
+	: public UObject
 {
 	SINGLETONCLASS(CEngineEditor);
-
-public:
-	void Init_Main(HINSTANCE _hInst, HWND _mainWnd);
-	void Init_Scene(HWND _sceneWnd);
-	void Init_Game(HWND _gameWnd);
 
 	void Release();
 
@@ -22,6 +19,7 @@ public:
 
 public:
 	HINSTANCE getHInstance() { return m_hInst; }
+	CEditorWindow* getWindow(wstring _name);
 
 	const _bool isPlaying() const { return m_bPlaying; }
 	void SetPlaying(const _bool _value) { m_bPlaying = _value; }
@@ -32,26 +30,19 @@ public:
 	const _bool isNextFrame() const { return m_bNextFrame; }
 	void SetNextFrame(const _bool _value) { m_bNextFrame = _value; }
 
-	void UpdateSceneResolution(const vector2Int _resolution);
-
 	template <typename T>
 	HRESULT CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size);
-
-	CEditorWindow* getWindow(wstring _name);
 
 public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 
 private:
 	HINSTANCE m_hInst;
-
-	HWND m_hTop_Scene, m_hTop_Game;
+	map<wstring, CEditorWindow*> m_mWindowList;
 
 	_bool m_bPlaying;
 	_bool m_bPaused;
 	_bool m_bNextFrame;
-
-	map<wstring, CEditorWindow*> m_mWindowList;
 };
 
 END

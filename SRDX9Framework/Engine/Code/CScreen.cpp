@@ -1,7 +1,7 @@
 ﻿#include "CScreen.h"
 #include "CManagement.h"
-#include "CHierachyWindow.h"
 #include "CBaseWindow.h"
+#include "CSceneWindow.h"
 #include "CHierachyWindow.h"
 
 CScreen::CScreen()
@@ -84,6 +84,9 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		sceneHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
+	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CSceneWindow>(sceneWnd, L"Scene", vector2Int(sceneWidth, sceneHeight))))
+		return E_FAIL;
+
 	m_mWHandleList.insert({ L"Scene", sceneWnd });
 
 	RECT sceneRect = {};
@@ -107,6 +110,9 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		gameWidth,
 		gameHeight,
 		mainWnd, nullptr, _hInst, nullptr);
+
+	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CSceneWindow>(gameWnd, L"Game", vector2Int(gameWidth, gameHeight))))
+		return E_FAIL;
 
 	m_mWHandleList.insert({ L"Game", gameWnd });
 

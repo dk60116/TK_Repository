@@ -5,85 +5,17 @@
 
 CEngineEditor::CEngineEditor()
 	: m_hInst(nullptr)
+	, m_mWindowList({})
 	, m_bPlaying(false)
 	, m_bPaused(false)
 	, m_bNextFrame(false)
-	, m_hTop_Scene(nullptr)
-	, m_hTop_Game(nullptr)
 {
+	m_strName = L"Engine Editor";
 }
 
 CEngineEditor::~CEngineEditor()
 {
 	Release();
-}
-
-void CEngineEditor::Init_Main(HINSTANCE _hInst, HWND _mainWnd)
-{
-	m_hInst = _hInst;
-
-	HFONT hFont14 = CreateDefaultFont(L"Arial", 18);
-	HFONT hFont16 = CreateDefaultFont(L"Arial", 16, TRUE);
-
-	//SendMessageW(m_hBtnPlay, WM_SETFONT, (WPARAM)hFont14, TRUE);
-	//SendMessageW(m_hBtnPause, WM_SETFONT, (WPARAM)hFont16, TRUE);
-	//SendMessageW(m_hBtnNextFrame, WM_SETFONT, (WPARAM)hFont14, TRUE);
-	//
-	//EnableWindow(m_hBtnPlay, TRUE);
-	//EnableWindow(m_hBtnPause, m_bPlaying);
-	//EnableWindow(m_hBtnNextFrame, m_bPaused);
-}
-
-void CEngineEditor::Init_Scene(HWND _gameWnd)
-{
-	RECT windowRect;
-	GetWindowRect(_gameWnd, &windowRect);
-
-	int screenX = windowRect.right - windowRect.left;
-	int screenXCenter = screenX / 2;
-
-	// 상단바 영역
-	m_hTop_Scene = CreateWindowW(L"STATIC", nullptr,
-		WS_VISIBLE | WS_CHILD,
-		0, 0, screenX, CHILDTOPBARHEIGHT,
-		_gameWnd, nullptr, m_hInst, nullptr);
-
-	HFONT hFont12 = CreateFontW
-	(
-		14, 0, 0, 0,
-		FW_NORMAL, FALSE, FALSE, FALSE,
-		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		DEFAULT_PITCH,
-		DEFAULT_PITCH | FF_SWISS, L"Arial"
-	);
-
-	HWND ee = CreateWindowW(L"COMBOBOX", L"Handle", 
-		WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL,
-		10, 3, 100, 200,
-		_gameWnd, NULL, m_hInst, nullptr);
-
-	HFONT hFont16 = CreateDefaultFont(L"Arial", 16);
-	SendMessageW(ee, WM_SETFONT, (WPARAM)hFont16, TRUE);
-
-	SendMessageW(ee, CB_ADDSTRING, 0, (LPARAM)L"Center");
-	SendMessageW(ee, CB_ADDSTRING, 1, (LPARAM)L"Pivot");
-
-	SendMessageW(ee, CB_SETCURSEL, 0, 0);
-}
-
-void CEngineEditor::Init_Game(HWND _sceneWnd)
-{
-	RECT windowRect;
-	GetWindowRect(_sceneWnd, &windowRect);
-
-	int screenX = windowRect.right - windowRect.left;
-	int screenXCenter = screenX / 2;
-
-	// 상단바 영역
-	m_hTop_Game = CreateWindowW(L"STATIC", nullptr,
-		WS_VISIBLE | WS_CHILD,
-		0, 0, screenX, 30,
-		_sceneWnd, nullptr, m_hInst, nullptr);
 }
 
 void CEngineEditor::Release()
@@ -190,17 +122,6 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 		(*it).second->WndProcHandle(hWnd, message, wParam, lParam);
 
 	return TRUE;
-}
-
-void CEngineEditor::UpdateSceneResolution(const vector2Int _resolution)
-{
-	MoveWindow
-	(
-		m_hTop_Scene,
-		0, 0,
-		_resolution.x, CHILDTOPBARHEIGHT,
-		true
-	);
 }
 
 CEditorWindow* CEngineEditor::getWindow(wstring _name)

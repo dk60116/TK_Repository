@@ -8,6 +8,7 @@ CBaseWindow::CBaseWindow()
 	, m_hPauseBtn(nullptr)
 	, m_hOneFrameBtn(nullptr)
 {
+	m_strName = L"Base Window";
 }
 
 CBaseWindow::~CBaseWindow()
@@ -82,6 +83,18 @@ HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size)
 	EnableWindow(m_hPlayBtn, TRUE);
 	EnableWindow(m_hPauseBtn, CEngineEditor::GetInstance().isPaused());
 	EnableWindow(m_hOneFrameBtn, CEngineEditor::GetInstance().isPaused());
+
+	HWND ee = CreateWindowW(L"COMBOBOX", L"Handle",
+		WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL,
+		10, 3, 100, 200,
+		m_hWnd, NULL, hInstance, nullptr);
+
+	SendMessageW(ee, WM_SETFONT, (WPARAM)hFont16, TRUE);
+
+	SendMessageW(ee, CB_ADDSTRING, 0, (LPARAM)L"Center");
+	SendMessageW(ee, CB_ADDSTRING, 1, (LPARAM)L"Pivot");
+
+	SendMessageW(ee, CB_SETCURSEL, 0, 0);
 
 	return S_OK;
 }

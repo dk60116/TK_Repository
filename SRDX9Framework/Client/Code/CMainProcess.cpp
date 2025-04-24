@@ -82,21 +82,29 @@ void CMainProcess::Render_MainApp()
 {
 	m_pDevClass->Get_GraphicDev()->SetRenderState(D3DRS_LIGHTING, CManagement::GetInstance().getCrtScene()->getOptions().lighting);
 
-	D3DVIEWPORT9 viewport = {};
-	viewport.X = 0;
-	viewport.Y = CHILDTOPBARHEIGHT;
-	viewport.Width = m_iDPI;
-	viewport.Height = m_iDPI - CHILDTOPBARHEIGHT;
-	viewport.MinZ = 0.0f;
-	viewport.MaxZ = 1.0f;
+	D3DVIEWPORT9 sceneVP = {};
+	sceneVP.X = 0;
+	sceneVP.Y = CHILDTOPBARHEIGHT;
+	sceneVP.Width = m_iDPI;
+	sceneVP.Height = m_iDPI - CHILDTOPBARHEIGHT;
+	sceneVP.MinZ = 0.0f;
+	sceneVP.MaxZ = 1.0f;
 
-	m_pDevClass->Render_Begin(viewport, D3DCOLOR_XRGB(50, 50, 50));
+	m_pDevClass->Render_Begin(sceneVP, D3DCOLOR_XRGB(50, 50, 50));
 
 	CManagement::GetInstance().getCrtScene()->Render_Editor();
 
 	m_pDevClass->Render_End(CScreen::GetInstance().getWindowHandle(L"Scene"));
 
-	m_pDevClass->Render_Begin(viewport, D3DCOLOR_XRGB(49, 77, 121));
+	D3DVIEWPORT9 gameVP = {};
+	sceneVP.X = 0;
+	sceneVP.Y = CHILDTOPBARHEIGHT;
+	sceneVP.Width = m_iDPI;
+	sceneVP.Height = m_iDPI - CHILDTOPBARHEIGHT;
+	sceneVP.MinZ = 0.0f;
+	sceneVP.MaxZ = 1.0f;
+
+	m_pDevClass->Render_Begin(sceneVP, D3DCOLOR_XRGB(49, 77, 121));
 
 	CManagement::GetInstance().getCrtScene()->Render_Game();
 
@@ -114,7 +122,7 @@ void CMainProcess::OnSceneScreenChange(const _uint _width, const _uint _height)
 
 	CScreen::GetInstance().UpdateSceneResolution(_width, _height);
 
-	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
+	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height));
 }
 
 void CMainProcess::OnGameScreenChange(const _uint _width, const _uint _height)
@@ -128,7 +136,7 @@ void CMainProcess::OnGameScreenChange(const _uint _width, const _uint _height)
 	
 	CalcDPI();
 
-	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
+	CManagement::GetInstance().getCrtScene()->UpdateAllCameraResolution(vector2Int(_width, _height));
 }
 
 void CMainProcess::CalcDPI()

@@ -4,8 +4,10 @@ CManagement::CManagement()
 	: m_pGraphicDev(nullptr)
 	, m_pCrtScene(nullptr)
 	, m_mSceneList()
+	, m_pEditorCamObj(nullptr)
 	, m_pEditorCam(nullptr)
 {
+	m_strName = L"Management";
 }
 
 CManagement::~CManagement()
@@ -49,12 +51,12 @@ HRESULT CManagement::LoadScene(wstring _scene)
 
 void CManagement::EditorUpdate()
 {
-	m_cEditorCamObj->UpdateEditor();
+	m_pEditorCamObj->UpdateEditor();
 }
 
 void CManagement::Destroy()
 {
-	Safe_Release(m_cEditorCamObj);
+	Safe_Release(m_pEditorCamObj);
 
 	for (TRAVERSAL_ITER(m_mSceneList, it))
 	{
@@ -73,11 +75,11 @@ void CManagement::SetGraphicDevice(LPDIRECT3DDEVICE9 _gd)
 
 void CManagement::CreateEditorCamera()
 {
-	m_cEditorCamObj = new CGameObject(L"Editor Camera", m_pGraphicDev);
-	m_cEditorCamObj->Awake();
-	m_cEditorCamObj->getTransform().SetPosition(0.f, 3.5f, -5.f);
-	m_cEditorCamObj->getTransform().SetLocalEulerAnglesX(35.f);
-	m_pEditorCam = m_cEditorCamObj->AddComponent<CEditorCamera>();
+	m_pEditorCamObj = new CGameObject(L"Editor Camera", m_pGraphicDev);
+	m_pEditorCamObj->Awake();
+	m_pEditorCamObj->getTransform().SetPosition(0.f, 3.5f, -5.f);
+	m_pEditorCamObj->getTransform().SetLocalEulerAnglesX(35.f);
+	m_pEditorCam = m_pEditorCamObj->AddComponent<CEditorCamera>();
 	m_pEditorCam->AwakeEditor();
-	m_cEditorCamObj->UpdateEditor();
+	m_pEditorCamObj->UpdateEditor();
 }

@@ -22,6 +22,7 @@ public:
 
 private:
 	HWND m_hTreeView;
+	int m_iLeftSideWidth;
 };
 
 END
