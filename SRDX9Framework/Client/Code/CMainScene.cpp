@@ -72,7 +72,7 @@ void CMainScene::Update()
 		m_sOptions.lighting = !m_sOptions.lighting;
 
 	if (CInput::GetInstance().GetKeyDown(Alpha3))
-		CGameObject::Find(L"Box")->DestroyThis();
+		m_pEnemy->getObject()->DestroyThis();
 
 	if (CInput::GetInstance().GetKeyDown(Alpha4))
 		CGameObject::Find(L"Box")->getTransform().SetParent(nullptr);

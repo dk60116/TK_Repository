@@ -81,9 +81,7 @@ void CScene::LateUpdate()
 
 		for (TRAVERSAL_ITER(killObjList, it))
 		{
-			m_lObjectList[i].remove(*it);
-			(*it)->OnDestroy();
-			Safe_Release(*it);
+			SafeDestroyObject(*it, (Layer)i);
 		}
 	}
 }
@@ -299,6 +297,37 @@ void CScene::Render_Grid()
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	delete[] pVertices;
+}
+
+void CScene::SafeDestroyObject(CGameObject* _obj, Layer _layer)
+{
+	if (!_obj) return;
+
+	CTransform* tf = &_obj->getTransform();
+	if (!tf) return;
+
+	auto childrenCopy = tf->getChilds();
+
+	for (auto& childTf : childrenCopy)
+	{
+		if (childTf)
+		{
+			CGameObject* childObj = childTf->getObject();
+			if (childObj)
+			{
+				SafeDestroyObject(childObj, _layer);
+			}
+		}
+	}
+
+	tf->SetParent(nullptr);
+
+	tf->getChilds().clear();
+
+	_obj->OnDestroy();
+	Safe_Release(_obj);
+
+	m_lObjectList[_layer].remove(_obj);
 }
 
 void CScene::UpdateAllLight()

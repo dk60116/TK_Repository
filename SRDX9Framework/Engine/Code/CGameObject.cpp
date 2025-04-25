@@ -93,8 +93,6 @@ void CGameObject::OnDisable()
 
 void CGameObject::OnDestroy()
 {
-	Release();
-
 	for (TRAVERSAL_ITER(m_lComponentlist, it))
 	{
 		(*it)->OnDestroy();
@@ -102,6 +100,8 @@ void CGameObject::OnDestroy()
 	}
 
 	m_lComponentlist.clear();
+
+	Release();
 }
 
 void CGameObject::DestroyThis()

@@ -45,6 +45,7 @@ public:
 	CTransform* getParent() const { return m_pParent; }
 	void SetParent(CTransform* _parent);
 	const _bool isRoot() const { return m_bIsRootParent; }
+	list<CTransform*>& getChilds() { return m_lChildList;; }
 
 	vector3& getPosition() { return m_v3WorldPos; };
 	vector3& getEulerAngles() { return m_v3EulerAngles; };

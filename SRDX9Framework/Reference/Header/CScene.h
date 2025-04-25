@@ -58,6 +58,7 @@ public:
 
 private:
     void Render_Grid();
+    void SafeDestroyObject(CGameObject* _obj, Layer _layer);
 
 protected:
     wstring m_strSceneName;
