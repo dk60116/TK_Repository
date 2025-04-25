@@ -54,6 +54,8 @@ public:
 
     void SetGraphicDev(LPDIRECT3DDEVICE9 _device) { m_pGraphicDev = _device; }
 
+    CGameObject* FindGameObject(const wstring _name);
+
 private:
     void Render_Grid();
 

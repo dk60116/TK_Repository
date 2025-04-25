@@ -230,6 +230,20 @@ void CScene::UpdateAllCameraResolution(const vector2Int _resolution)
 		(*it)->ResetAspectFromResolution(_resolution);
 }
 
+CGameObject* CScene::FindGameObject(const wstring _name)
+{
+	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	{
+		for (TRAVERSAL_ITER(m_lObjectList[i], it))
+		{
+			if ((*it)->getName() == _name)
+				return *it;
+		}
+	}
+
+	return nullptr;
+}
+
 void CScene::Render_Grid()
 {
 	const int GRID_HALF = 50;

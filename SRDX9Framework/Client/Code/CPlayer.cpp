@@ -21,7 +21,7 @@ void CPlayer::Awake()
 	getTransform().SetLocalScale(1.5f);
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	m_pMeshRenderer->SetMeshFilterType(CMesh::CUBE);
+	m_pMeshRenderer->SetMeshFilterType(CMesh::SPHERE);
 }
 
 void CPlayer::Start()
@@ -62,7 +62,7 @@ void CPlayer::OnDestroy()
 
 void CPlayer::KeyInput()
 {
-	if (CInput::GetInstance().GetKey(ONE))
+	if (CInput::GetInstance().GetKey(Alpha1))
 		m_pRenderer->SetTintColor(ColorValue::red());
 
 	if (CInput::GetInstance().GetKey(W))

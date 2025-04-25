@@ -40,13 +40,13 @@ void CMainScene::Awake()
 	playerHead->getTransform().SetLocalScale(0.25f, 1.f, 1.f);
 	playerHead->getTransform().SetParent(&playerObj->getTransform());
 
-	CGameObject* enemyObj = AddObject(L"Enemy", Layer::DEFAULT);
-	m_pEnemy = enemyObj->AddComponent<CEnemy>();
+	CGameObject& enemyObj = *AddObject(L"Enemy", Layer::DEFAULT);
+	m_pEnemy = enemyObj.AddComponent<CEnemy>();
 	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
 
-	CGameObject* triObj = AddObject(L"Tri", Layer::DEFAULT);
-	CSpriteRenderer* tSRender = triObj->AddComponent<CSpriteRenderer>();
-	triObj->getTransform().SetPosition(-2.f, -2.f, -1.f);
+	CGameObject& triObj = *AddObject(L"Tri", Layer::DEFAULT);
+	CSpriteRenderer* tSRender = triObj.AddComponent<CSpriteRenderer>();
+	triObj.getTransform().SetPosition(-2.f, -2.f, -1.f);
 	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
 	if (tex)
 		tSRender->SetTexture(tex);
@@ -55,6 +55,7 @@ void CMainScene::Awake()
 	boxObj->getTransform().SetPosition(2.f, -2.f, 0.f);
 	CMeshRenderer* boxRender = boxObj->AddComponent<CMeshRenderer>();
 	boxRender->SetMeshFilterType(CMesh::CUBE);
+	boxRender->getTransform().SetParent(&enemyObj.getTransform());
 }
 
 void CMainScene::Start()
@@ -67,8 +68,14 @@ void CMainScene::Update()
 
 	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
-	if (CInput::GetInstance().GetKeyDown(TWO))
+	if (CInput::GetInstance().GetKeyDown(Alpha2))
 		m_sOptions.lighting = !m_sOptions.lighting;
+
+	if (CInput::GetInstance().GetKeyDown(Alpha3))
+		CGameObject::Find(L"Box")->DestroyThis();
+
+	if (CInput::GetInstance().GetKeyDown(Alpha4))
+		CGameObject::Find(L"Box")->getTransform().SetParent(nullptr);
 }
 
 void CMainScene::FixedUpdate()

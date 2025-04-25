@@ -157,11 +157,14 @@ void CTransform::SetParent(CTransform* _parent)
 	}
 	else
 	{
-		m_pParent = _parent;
-		m_bIsRootParent = false;
+		if (m_pParent != _parent)
+		{
+			m_pParent = _parent;
+			m_bIsRootParent = false;
 
-		_parent->m_lChildList.push_back(this);
-		AddRef();
+			_parent->m_lChildList.push_back(this);
+			AddRef();
+		}
 	}
 }
 

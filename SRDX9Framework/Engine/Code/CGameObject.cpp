@@ -103,3 +103,18 @@ void CGameObject::OnDestroy()
 
 	m_lComponentlist.clear();
 }
+
+void CGameObject::DestroyThis()
+{
+	m_bKill = true;
+}
+
+CGameObject* CGameObject::Find(const wstring _name)
+{
+	return CManagement::GetInstance().getCrtScene()->FindGameObject(_name);
+}
+
+void CGameObject::Destroy(CGameObject* _object)
+{
+	_object->DestroyThis();
+}

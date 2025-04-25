@@ -40,6 +40,7 @@ public:
 	const _bool& isEnable() { return m_bIsEnable; }
 	CScene* getScene() { return m_pScene; }
 	void SetScene(CScene* _scene) { m_pScene = _scene; }
+	void DestroyThis();
 
 public:
 	template<typename T>
@@ -48,6 +49,10 @@ public:
 	T* GetComponent();
 
 	CTransform& getTransform() { return *m_pTransform; }
+
+public:
+	static CGameObject* Find(const wstring _name);
+	static void Destroy(CGameObject* _object);
 
 protected:
 	CScene* m_pScene;
