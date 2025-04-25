@@ -38,7 +38,7 @@ void CMainScene::Awake()
 	phRender->getOptions().sortOrder = 1;
 	playerHead->getTransform().SetLocalPosition(0.f, 0.5f, 0.f);
 	playerHead->getTransform().SetLocalScale(0.25f, 1.f, 1.f);
-	playerHead->getTransform().SetParent(playerObj->getTransform());
+	playerHead->getTransform().SetParent(&playerObj->getTransform());
 
 	CGameObject* enemyObj = AddObject(L"Enemy", Layer::DEFAULT);
 	m_pEnemy = enemyObj->AddComponent<CEnemy>();

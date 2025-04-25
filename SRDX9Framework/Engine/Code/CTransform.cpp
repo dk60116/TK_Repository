@@ -4,7 +4,9 @@
 #include "CDebug.h"
 
 CTransform::CTransform()
-	: m_pParent(nullptr)
+	: m_bIsRootParent(false)
+	, m_pParent(nullptr)
+	, m_lChildList({})
 	, m_v3Position(vector3::zero())
 	, m_v3Scale(vector3::one())
 	, m_v3EulerAngles(vector3::zero())
@@ -69,6 +71,14 @@ void CTransform::OnDisable()
 
 void CTransform::OnDestroy()
 {
+	if (!m_lChildList.empty())
+	{
+		for (TRAVERSAL_ITER(m_lChildList, it))
+		{
+			(*it)->OnDestroy();
+		}
+	}
+
 	__super::OnDestroy();
 }
 
@@ -130,6 +140,29 @@ void CTransform::UpdateDirections()
 const wstring CTransform::getName()
 {
 	return m_pGameObject->getName();
+}
+
+void CTransform::SetParent(CTransform* _parent)
+{
+	if (!_parent)
+	{
+		if (m_pParent)
+		{
+			m_pParent->m_lChildList.remove(this);
+			Release();
+
+			m_pParent = nullptr;
+			m_bIsRootParent = true;
+		}
+	}
+	else
+	{
+		m_pParent = _parent;
+		m_bIsRootParent = false;
+
+		_parent->m_lChildList.push_back(this);
+		AddRef();
+	}
 }
 
 void CTransform::SetPosition(const vector3& _world_pos)
@@ -493,20 +526,17 @@ void CTransform::RotateLocalAxis(const vector3& local_axis, _float angle_deg)
 {
 	_float angle_rad = D3DXToRadian(angle_deg);
 
-	// 1. 로컬 축 → 월드 축 변환 (현재 회전에 기반)
 	D3DXMATRIX rotMatrix;
 	D3DXQUATERNION q = m_v4Quaternion;
 	D3DXMatrixRotationQuaternion(&rotMatrix, &q);
 
-	D3DXVECTOR3 local = local_axis; // vector3 → D3DXVECTOR3
+	D3DXVECTOR3 local = local_axis;
 	D3DXVECTOR3 axis_world;
 	D3DXVec3TransformNormal(&axis_world, &local, &rotMatrix);
 
-	// 2. 축 기반 회전 쿼터니언 생성
 	D3DXQUATERNION qRot;
 	D3DXQuaternionRotationAxis(&qRot, &axis_world, angle_rad);
 
-	// 3. 쿼터니언 누적 (로컬 기준 회전)
 	m_v4Quaternion = quaternion(qRot) * m_v4Quaternion;
 }
 

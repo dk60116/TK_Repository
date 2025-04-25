@@ -174,6 +174,7 @@ void CScene::Destroy()
 
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
+
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
 			(*it)->OnDestroy();

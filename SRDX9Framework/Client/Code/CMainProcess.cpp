@@ -16,12 +16,15 @@ CMainProcess::~CMainProcess()
 
 HRESULT CMainProcess::Ready_MainApp()
 {
+	OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y);
+	OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
+
 	CalcDPI();
 
 	if (FAILED(CGraphicDev::GetInstance().Ready_GraphicDev
 	(
 		CEngineEditor::GetInstance().getWindowHandle(L"Game"), MODE_WIN,
-		m_iDPI, m_iDPI,
+		m_iDPI, m_iDPI - CHILDTOPBARHEIGHT,
 		&m_pDevClass
 	)))
 		return E_FAIL;
@@ -39,9 +42,6 @@ HRESULT CMainProcess::Ready_MainApp()
 	CMainScene* mainScene = new CMainScene();
 	CManagement::GetInstance().CreateScene(mainScene, L"MainScene");
 	CManagement::GetInstance().LoadScene(L"MainScene");
-
-	OnSceneScreenChange(CScreen::GetInstance().getSceneResolution().x, CScreen::GetInstance().getSceneResolution().y );
-	OnGameScreenChange(CScreen::GetInstance().getGameResolution().x, CScreen::GetInstance().getGameResolution().y);
 
 	return S_OK;
 }
@@ -97,14 +97,14 @@ void CMainProcess::Render_MainApp()
 	m_pDevClass->Render_End(CEngineEditor::GetInstance().getWindowHandle(L"Scene"));
 
 	D3DVIEWPORT9 gameVP = {};
-	sceneVP.X = 0;
-	sceneVP.Y = CHILDTOPBARHEIGHT;
-	sceneVP.Width = m_iDPI;
-	sceneVP.Height = m_iDPI - CHILDTOPBARHEIGHT;
-	sceneVP.MinZ = 0.0f;
-	sceneVP.MaxZ = 1.0f;
+	gameVP.X = 0;
+	gameVP.Y = CHILDTOPBARHEIGHT;
+	gameVP.Width = m_iDPI;
+	gameVP.Height = m_iDPI - CHILDTOPBARHEIGHT;
+	gameVP.MinZ = 0.0f;
+	gameVP.MaxZ = 1.0f;
 
-	m_pDevClass->Render_Begin(sceneVP, D3DCOLOR_XRGB(49, 77, 121));
+	m_pDevClass->Render_Begin(gameVP, D3DCOLOR_XRGB(49, 77, 121));
 
 	CManagement::GetInstance().getCrtScene()->Render_Game();
 
@@ -122,7 +122,7 @@ void CMainProcess::OnSceneScreenChange(const _uint _width, const _uint _height)
 
 	CScreen::GetInstance().UpdateSceneResolution(_width, _height);
 
-	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height));
+	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
 }
 
 void CMainProcess::OnGameScreenChange(const _uint _width, const _uint _height)

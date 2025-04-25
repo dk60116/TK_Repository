@@ -43,7 +43,8 @@ private:
 public:
 	const wstring getName();
 	CTransform* getParent() const { return m_pParent; }
-	void SetParent(CTransform& _parent) { m_pParent = &_parent; }
+	void SetParent(CTransform* _parent);
+	const _bool isRoot() const { return m_bIsRootParent; }
 
 	vector3& getPosition() { return m_v3WorldPos; };
 	vector3& getEulerAngles() { return m_v3EulerAngles; };
@@ -121,7 +122,9 @@ public:
 	const Directions& getDirections() const { return m_sDirections; }
 
 private:
+	_bool m_bIsRootParent;
 	CTransform* m_pParent;
+	list<CTransform*> m_lChildList;
 	vector3 m_v3Position, m_v3Scale, m_v3EulerAngles;
 	vector3 m_v3WorldPos, m_vWorldEulerAngle;
 	quaternion m_v4Quaternion;

@@ -32,7 +32,7 @@ public:
 	void SetNextFrame(const _bool _value) { m_bNextFrame = _value; }
 
 	template <typename T>
-	HRESULT CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size);
+	HRESULT CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size);
 
 public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
@@ -50,9 +50,9 @@ private:
 END
 
 template<typename T>
-inline HRESULT CEngineEditor::CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size)
+inline HRESULT CEngineEditor::CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size)
 {
-	if (_window == nullptr)
+	if (_hWnd == nullptr)
 		return E_FAIL;
 
 	T* newWindow = new T();
@@ -63,9 +63,9 @@ inline HRESULT CEngineEditor::CreateCustomWindow(HWND _window, const wstring _na
 	newWindow->AddRef();
 
 	m_mWindowList.insert({ _name, newWindow });
-	m_mWHandleList.insert({ _name, _window });
+	m_mWHandleList.insert({ _name, _hWnd });
 	
-	if (FAILED(newWindow->Init(_window, _size)))
+	if (FAILED(newWindow->Init(_hWnd, _size)))
 		return E_FAIL;
 
 	return S_OK;
