@@ -28,6 +28,8 @@ protected:
 	vector2Int m_v2Resolution;
 
 	RECT m_sClinentRect, m_sWindowRect;
+
+	_bool m_bHaveWindowBar;
 };
 
 END

@@ -144,6 +144,36 @@ HWND CEngineEditor::getWindowHandle(wstring _window)
 	return nullptr;
 }
 
+void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)
+{
+	COLORREF titleColor = RGB(56, 56, 56);
+	DwmSetWindowAttribute(_hWnd, DWMWA_CAPTION_COLOR, &titleColor, sizeof(titleColor));
+
+	LONG style = GetWindowLong(_hWnd, GWL_STYLE);
+
+	style &= ~WS_MINIMIZEBOX;
+	style &= ~WS_MAXIMIZEBOX;
+	style &= ~WS_SYSMENU;
+
+	SetWindowLong(_hWnd, GWL_STYLE, style);
+
+	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
+		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
+		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+	DWM_WINDOW_CORNER_PREFERENCE preference = DWMWCP_DONOTROUND;
+
+	HRESULT hr = DwmSetWindowAttribute
+	(
+		_hWnd,
+		DWMWA_WINDOW_CORNER_PREFERENCE, // 33
+		&preference,
+		sizeof(preference)
+	);
+}
+
 HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold)
 {
 	HFONT result = CreateFontW

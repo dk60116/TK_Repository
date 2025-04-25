@@ -20,8 +20,6 @@ public:
 	void UpdateSceneResolution(const UINT _width, const UINT _height);
 	void UpdateGameResolution(const UINT _width, const UINT _height);
 
-	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
-
 private:
 	HINSTANCE m_hInstance;
 	vector2Int m_v2SceneResolution, m_v2GameResolution;

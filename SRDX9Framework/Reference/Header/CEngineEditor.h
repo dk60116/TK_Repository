@@ -34,6 +34,8 @@ public:
 	template <typename T>
 	HRESULT CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size);
 
+	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
+
 public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 

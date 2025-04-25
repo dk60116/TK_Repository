@@ -86,7 +86,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	RECT sceneRect = {};
 	GetClientRect(sceneWnd, &sceneRect);
 
-	RemoveBtnsAndRoundedCorners(sceneWnd);
 	UpdateSceneResolution(sceneWidth, sceneHeight);
 
 	POINT scenePT = { 0, sceneRect.bottom };
@@ -115,7 +114,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	POINT gamePT = { 0, gameRect.bottom };
 	ClientToScreen(gameWnd, &gamePT);
 
-	RemoveBtnsAndRoundedCorners(gameWnd);
 	UpdateGameResolution(gameWidth, gameHeight);
 
 	_int hierachyWidth = _int((clientWidth * 0.2f) - clientPoint.x * 2);
@@ -132,8 +130,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CHierachyWindow>(hierachyWnd, L"Hierachy", vector2Int(hierachyWidth, hierachyHeight))))
 		return E_FAIL;
 
-	RemoveBtnsAndRoundedCorners(hierachyWnd);
-
 	return S_OK;
 }
 
@@ -145,34 +141,4 @@ void CScreen::UpdateSceneResolution(const UINT _width, const UINT _height)
 void CScreen::UpdateGameResolution(const UINT _width, const UINT _height)
 {
 	m_v2GameResolution = vector2Int(_width, _height - CHILDTOPBARHEIGHT);
-}
-
-void CScreen::RemoveBtnsAndRoundedCorners(HWND _hWnd)
-{
-	COLORREF titleColor = RGB(56, 56, 56);
-	DwmSetWindowAttribute(_hWnd, DWMWA_CAPTION_COLOR, &titleColor, sizeof(titleColor));
-
-	LONG style = GetWindowLong(_hWnd, GWL_STYLE);
-
-	style &= ~WS_MINIMIZEBOX;
-	style &= ~WS_MAXIMIZEBOX;
-	style &= ~WS_SYSMENU;
-
-	SetWindowLong(_hWnd, GWL_STYLE, style);
-
-	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
-		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-
-	SetWindowPos(_hWnd, NULL, 0, 0, 0, 0,
-		SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-
-	DWM_WINDOW_CORNER_PREFERENCE preference = DWMWCP_DONOTROUND;
-
-	HRESULT hr = DwmSetWindowAttribute
-	(
-		_hWnd,
-		DWMWA_WINDOW_CORNER_PREFERENCE, // 33
-		&preference,
-		sizeof(preference)
-	);
 }

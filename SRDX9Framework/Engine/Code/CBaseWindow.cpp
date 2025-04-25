@@ -18,6 +18,7 @@ CBaseWindow::~CBaseWindow()
 HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size)
 {
 	m_iTopBarHeight = MAINTOPBARHEIGHT;
+	m_bHaveWindowBar = true;
 	
 	if (FAILED(__super::Init(_hWnd, _size)))
 		return E_FAIL;
@@ -76,6 +77,8 @@ HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size)
 	EnableWindow(m_hPlayBtn, TRUE);
 	EnableWindow(m_hPauseBtn, CEngineEditor::GetInstance().isPaused());
 	EnableWindow(m_hOneFrameBtn, CEngineEditor::GetInstance().isPaused());
+
+	return S_OK;
 }
 
 void CBaseWindow::Render()

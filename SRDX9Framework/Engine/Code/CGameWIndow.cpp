@@ -1,4 +1,5 @@
 #include "CGameWindow.h"
+#include "CEngineEditor.h"
 
 CGameWindow::CGameWindow()
 {

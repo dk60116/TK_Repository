@@ -120,7 +120,7 @@ void CMainProcess::OnSceneScreenChange(const _uint _width, const _uint _height)
 	if (!m_pDevClass || !m_pDevClass->Get_GraphicDev())
 		return;
 
-	CScreen::GetInstance().UpdateSceneResolution(_width, _height);
+	//CScreen::GetInstance().UpdateSceneResolution(_width, _height);
 
 	CManagement::GetInstance().getCrtScene()->UpdateSceneCameraResolution(vector2Int(_width, _height - CHILDTOPBARHEIGHT));
 }
@@ -132,7 +132,7 @@ void CMainProcess::OnGameScreenChange(const _uint _width, const _uint _height)
 
 	CGraphicDev::GetInstance().ReSize(m_iDPI, m_iDPI - CHILDTOPBARHEIGHT);
 
-	CScreen::GetInstance().UpdateGameResolution(_width, _height);
+	//CScreen::GetInstance().UpdateGameResolution(_width, _height);
 	
 	CalcDPI();
 
