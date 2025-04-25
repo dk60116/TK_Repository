@@ -20,6 +20,7 @@ public:
 public:
 	HINSTANCE getHInstance() { return m_hInst; }
 	CEditorWindow* getWindow(wstring _name);
+	HWND getWindowHandle(wstring _window);
 
 	const _bool isPlaying() const { return m_bPlaying; }
 	void SetPlaying(const _bool _value) { m_bPlaying = _value; }
@@ -39,6 +40,7 @@ public:
 private:
 	HINSTANCE m_hInst;
 	map<wstring, CEditorWindow*> m_mWindowList;
+	map<wstring, HWND> m_mWHandleList;
 
 	_bool m_bPlaying;
 	_bool m_bPaused;
@@ -61,6 +63,7 @@ inline HRESULT CEngineEditor::CreateCustomWindow(HWND _window, const wstring _na
 	newWindow->AddRef();
 
 	m_mWindowList.insert({ _name, newWindow });
+	m_mWHandleList.insert({ _name, _window });
 	
 	if (FAILED(newWindow->Init(_window, _size)))
 		return E_FAIL;

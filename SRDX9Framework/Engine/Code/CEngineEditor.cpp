@@ -134,6 +134,16 @@ CEditorWindow* CEngineEditor::getWindow(wstring _name)
 	return nullptr;
 }
 
+HWND CEngineEditor::getWindowHandle(wstring _window)
+{
+	auto it = m_mWHandleList.find(_window);
+
+	if (it != m_mWHandleList.end())
+		return it->second;
+
+	return nullptr;
+}
+
 HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold)
 {
 	HFONT result = CreateFontW

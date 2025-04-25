@@ -20,7 +20,7 @@ HRESULT CMainProcess::Ready_MainApp()
 
 	if (FAILED(CGraphicDev::GetInstance().Ready_GraphicDev
 	(
-		CScreen::GetInstance().getWindowHandle(L"Game"), MODE_WIN,
+		CEngineEditor::GetInstance().getWindowHandle(L"Game"), MODE_WIN,
 		m_iDPI, m_iDPI,
 		&m_pDevClass
 	)))
@@ -51,11 +51,11 @@ _int CMainProcess::Update_MainApp()
 	CTime::GetInstance().Update();
 
 	wstring fpsTxt = L"FPS: " + to_wstring(CTime::GetInstance().Get_FPS());
-	SetWindowText(CScreen::GetInstance().getWindowHandle(L"Base"), fpsTxt.c_str());
+	SetWindowText(CEngineEditor::GetInstance().getWindowHandle(L"Base"), fpsTxt.c_str());
 
 	CInput::GetInstance().Update();
 
-	if (GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene"))
+	if (GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene"))
 		CManagement::GetInstance().EditorUpdate();
 
 	if (CEngineEditor::GetInstance().isPlaying())
@@ -66,7 +66,7 @@ _int CMainProcess::Update_MainApp()
 
 	Render_MainApp();
 
-	if (GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene"))
+	if (GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene"))
 		CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
 
 	CManagement::GetInstance().getCrtScene()->LateUpdate();
@@ -94,7 +94,7 @@ void CMainProcess::Render_MainApp()
 
 	CManagement::GetInstance().getCrtScene()->Render_Editor();
 
-	m_pDevClass->Render_End(CScreen::GetInstance().getWindowHandle(L"Scene"));
+	m_pDevClass->Render_End(CEngineEditor::GetInstance().getWindowHandle(L"Scene"));
 
 	D3DVIEWPORT9 gameVP = {};
 	sceneVP.X = 0;
@@ -108,7 +108,7 @@ void CMainProcess::Render_MainApp()
 
 	CManagement::GetInstance().getCrtScene()->Render_Game();
 
-	m_pDevClass->Render_End(CScreen::GetInstance().getWindowHandle(L"Game"));
+	m_pDevClass->Render_End(CEngineEditor::GetInstance().getWindowHandle(L"Game"));
 }
 
 void CMainProcess::Release()

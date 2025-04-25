@@ -1,5 +1,5 @@
 #include "CInput.h"
-#include "CScreen.h"
+#include "CEngineEditor.h"
 
 CInput::CInput()
 {
@@ -20,22 +20,22 @@ CInput::~CInput()
 
 bool CInput::GetKey(_int _iKey)
 {
-    return m_bKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Game");
+    return m_bKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Game");
 }
 
 bool CInput::GetKey_Editor(_int _iKey)
 {
-    return m_bKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene");
+    return m_bKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene");
 }
 
 bool CInput::GetKeyDown(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Game");
+    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Game");
 }
 
 bool CInput::GetKeyDown_Editor(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene");
+    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene");
 }
 
 bool CInput::GetKeyUp(_int _iKey)
@@ -52,7 +52,7 @@ bool CInput::GetMouseButton(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Game");
+    return m_bKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Game");
 }
 
 bool CInput::GetMouseButton_Editor(_int _button)
@@ -64,7 +64,7 @@ bool CInput::GetMouseButton_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene");
+    return m_bKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene");
 }
 
 bool CInput::GetMouseButtonDown(_int _button)
@@ -76,7 +76,7 @@ bool CInput::GetMouseButtonDown(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Game");
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Game");
 }
 
 bool CInput::GetMouseButtonDown_Editor(_int _button)
@@ -88,7 +88,7 @@ bool CInput::GetMouseButtonDown_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene");
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene");
 }
 
 bool CInput::GetMouseButtonUp(_int _button)
@@ -112,7 +112,7 @@ bool CInput::GetMouseButtonUp_Editor(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && GetForegroundWindow() == CScreen::GetInstance().getWindowHandle(L"Scene");
+    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene");
 }
 
 
@@ -120,7 +120,7 @@ const vector2Int CInput::GetMousePos()
 {
     POINT ptMouse;
     GetCursorPos(&ptMouse);
-    ScreenToClient(CScreen::GetInstance().getWindowHandle(L"Game"), &ptMouse);
+    ScreenToClient(CEngineEditor::GetInstance().getWindowHandle(L"Game"), &ptMouse);
 
     return vector2Int((int)ptMouse.x, (int)ptMouse.y);
 }

@@ -20,6 +20,7 @@ public:
 public:
 	HINSTANCE getHInstance() { return m_hInst; }
 	CEditorWindow* getWindow(wstring _name);
+	HWND getWindowHandle(wstring _window);
 
 	const _bool isPlaying() const { return m_bPlaying; }
 	void SetPlaying(const _bool _value) { m_bPlaying = _value; }
@@ -31,7 +32,7 @@ public:
 	void SetNextFrame(const _bool _value) { m_bNextFrame = _value; }
 
 	template <typename T>
-	HRESULT CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size);
+	HRESULT CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size);
 
 public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
@@ -39,6 +40,7 @@ public:
 private:
 	HINSTANCE m_hInst;
 	map<wstring, CEditorWindow*> m_mWindowList;
+	map<wstring, HWND> m_mWHandleList;
 
 	_bool m_bPlaying;
 	_bool m_bPaused;
@@ -48,7 +50,7 @@ private:
 END
 
 template<typename T>
-inline HRESULT CEngineEditor::CreateCustomWindow(HWND _window, const wstring _name, const vector2Int _size)
+inline HRESULT CEngineEditor::CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size)
 {
 	if (_window == nullptr)
 		return E_FAIL;
@@ -61,6 +63,7 @@ inline HRESULT CEngineEditor::CreateCustomWindow(HWND _window, const wstring _na
 	newWindow->AddRef();
 
 	m_mWindowList.insert({ _name, newWindow });
+	m_mWHandleList.insert({ _name, _hWnd });
 	
 	if (FAILED(newWindow->Init(_window, _size)))
 		return E_FAIL;

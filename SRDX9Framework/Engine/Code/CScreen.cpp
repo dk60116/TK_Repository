@@ -7,7 +7,6 @@
 
 CScreen::CScreen()
 	: m_hInstance(nullptr)
-	, m_mWHandleList({})
 	, m_v2GameResolution(vector2(0, 0))
 	, m_bFullScreen(false)
 {
@@ -19,8 +18,6 @@ CScreen::~CScreen()
 
 HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 {
-	m_mWHandleList.clear();
-
 	m_hInstance = _hInst;
 
 	_int mainOffset = MAINTOPBARHEIGHT;
@@ -56,8 +53,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CBaseWindow>(mainWnd, L"Base", vector2Int(winWidth, winHeight))))
 		return E_FAIL;
 
-	m_mWHandleList.insert({ L"Base", mainWnd });
-
 	ShowWindow(mainWnd, SW_SHOW);
 	UpdateWindow(mainWnd);
 
@@ -88,8 +83,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CSceneWindow>(sceneWnd, L"Scene", vector2Int(sceneWidth, sceneHeight))))
 		return E_FAIL;
 
-	m_mWHandleList.insert({ L"Scene", sceneWnd });
-
 	RECT sceneRect = {};
 	GetClientRect(sceneWnd, &sceneRect);
 
@@ -115,8 +108,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CGameWindow>(gameWnd, L"Game", vector2Int(gameWidth, gameHeight))))
 		return E_FAIL;
 
-	m_mWHandleList.insert({ L"Game", gameWnd });
-
 	RECT gameRect = {};
 
 	GetClientRect(gameWnd, &gameRect);
@@ -141,21 +132,9 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CHierachyWindow>(hierachyWnd, L"Hierachy", vector2Int(hierachyWidth, hierachyHeight))))
 		return E_FAIL;
 
-	m_mWHandleList.insert({ L"Hierachy", hierachyWnd });
-	
 	RemoveBtnsAndRoundedCorners(hierachyWnd);
 
 	return S_OK;
-}
-
-HWND CScreen::getWindowHandle(wstring _window)
-{
-	auto it = m_mWHandleList.find(_window);
-
-	if (it != m_mWHandleList.end())
-		return it->second;
-	
-	return nullptr;
 }
 
 void CScreen::UpdateSceneResolution(const UINT _width, const UINT _height)
@@ -170,9 +149,6 @@ void CScreen::UpdateGameResolution(const UINT _width, const UINT _height)
 
 void CScreen::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 {
-	//BOOL value = TRUE;
-	//DwmSetWindowAttribute(_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
-
 	COLORREF titleColor = RGB(56, 56, 56);
 	DwmSetWindowAttribute(_hWnd, DWMWA_CAPTION_COLOR, &titleColor, sizeof(titleColor));
 

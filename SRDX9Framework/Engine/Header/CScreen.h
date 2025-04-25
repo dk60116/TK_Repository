@@ -13,8 +13,6 @@ class ENGINE_DLL CScreen
 public:
 	HRESULT Start_Window(HINSTANCE _hInst, int _cmdShow);
 
-	HWND getWindowHandle(wstring _window);
-
 	const vector2Int getSceneResolution() { return m_v2SceneResolution; }
 	const vector2Int getGameResolution() { return m_v2GameResolution; }
 
@@ -26,7 +24,6 @@ public:
 
 private:
 	HINSTANCE m_hInstance;
-	map<wstring, HWND> m_mWHandleList;
 	vector2Int m_v2SceneResolution, m_v2GameResolution;
 	bool m_bFullScreen;
 };
