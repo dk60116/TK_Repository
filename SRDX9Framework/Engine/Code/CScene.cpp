@@ -68,10 +68,22 @@ void CScene::LateUpdate()
 {
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
+		vector<CGameObject*> killObjList = {};
+
 		for (TRAVERSAL_ITER(m_lObjectList[i], it))
 		{
 			if ((*it)->isActive() && (*it)->isEnable())
 				(*it)->LateUpdate();
+
+			if ((*it)->m_bKill)
+				killObjList.push_back(*it);
+		}
+
+		for (TRAVERSAL_ITER(killObjList, it))
+		{
+			m_lObjectList[i].remove(*it);
+			(*it)->OnDestroy();
+			Safe_Release(*it);
 		}
 	}
 }
