@@ -84,6 +84,7 @@ void CMainScene::FixedUpdate()
 
 void CMainScene::LateUpdate()
 {
+	__super::LateUpdate();
 }
 
 void CMainScene::Render_Game()

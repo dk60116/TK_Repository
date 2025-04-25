@@ -61,15 +61,16 @@ _int CMainProcess::Update_MainApp()
 	if (CEngineEditor::GetInstance().isPlaying())
 	{
 		if (!CEngineEditor::GetInstance().isPaused() || CEngineEditor::GetInstance().isNextFrame())
+		{
 			CManagement::GetInstance().getCrtScene()->Update();
+			CManagement::GetInstance().getCrtScene()->LateUpdate();
+		}
 	}
 
 	Render_MainApp();
 
 	if (GetForegroundWindow() == CEngineEditor::GetInstance().getWindowHandle(L"Scene"))
 		CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
-
-	CManagement::GetInstance().getCrtScene()->LateUpdate();
 	
 	CInput::GetInstance().LateUpdate();
 
