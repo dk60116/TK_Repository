@@ -31,13 +31,10 @@ void CScene::UpdateEditor()
 {
 	UpdateAllLight();
 
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
-		{
-			if ((*it)->isActive() && (*it)->isEnable())
-				(*it)->UpdateEditor();
-		}
+		if ((*it)->isActive() && (*it)->isEnable())
+			(*it)->UpdateEditor();
 	}
 }
 
@@ -45,13 +42,10 @@ void CScene::Update()
 {
 	UpdateAllLight();
 
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
-		{
-			if ((*it)->isActive() && (*it)->isEnable())
-				(*it)->Update();
-		}
+		if ((*it)->isActive() && (*it)->isEnable())
+			(*it)->Update();
 	}
 }
 
@@ -66,23 +60,20 @@ void CScene::LateUpdateEditor()
 
 void CScene::LateUpdate()
 {
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	vector<CGameObject*> killObjList = {};
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		vector<CGameObject*> killObjList = {};
+		if ((*it)->isActive() && (*it)->isEnable())
+			(*it)->LateUpdate();
 
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
-		{
-			if ((*it)->isActive() && (*it)->isEnable())
-				(*it)->LateUpdate();
+		if ((*it)->m_bKill)
+			killObjList.push_back(*it);
+	}
 
-			if ((*it)->m_bKill)
-				killObjList.push_back(*it);
-		}
-
-		for (TRAVERSAL_ITER(killObjList, it))
-		{
-			SafeDestroyObject(*it, (Layer)i);
-		}
+	for (TRAVERSAL_ITER(killObjList, it))
+	{
+		SafeDestroyObject(*it);
 	}
 }
 
@@ -98,7 +89,7 @@ void CScene::Render_Editor()
 
 	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
 	{
-		for (auto& obj : m_lObjectList[i])
+		for (auto& obj : m_lObjectList)
 		{
 			if (obj->isActive() && obj->isEnable())
 				sortedRenderList.push_back(obj);
@@ -131,13 +122,10 @@ void CScene::Render_Game()
 
 	vector<CGameObject*> sortedRenderList;
 
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	for (auto& obj : m_lObjectList)
 	{
-		for (auto& obj : m_lObjectList[i])
-		{
-			if (obj->isActive() && obj->isEnable())
-				sortedRenderList.push_back(obj);
-		}
+		if (obj->isActive() && obj->isEnable())
+			sortedRenderList.push_back(obj);
 	}
 
 	// 깊이 기준 정렬
@@ -157,23 +145,18 @@ void CScene::Render_Game()
 
 void CScene::SceneRelease()
 {
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
-		{
-			if ((*it)->GetComponent<CEditorCamera>())
-				continue;
+		if ((*it)->GetComponent<CEditorCamera>())
+			continue;
 
-			(*it)->OnDestroy();
-			Safe_Release(*it);
-		}
-
-		m_lObjectList[i].clear();
+		(*it)->OnDestroy();
+		Safe_Release(*it);
 	}
 
 	Safe_Release(m_pGraphicDev);
 
-	m_lObjectList->clear();
+	m_lObjectList.clear();
 	m_vCameraList.clear();
 	m_vLightList.clear();
 }
@@ -182,19 +165,15 @@ void CScene::Destroy()
 {
 	Release();
 
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
-		{
-			(*it)->OnDestroy();
-			Safe_Release(*it);
-		}
-
-		m_lObjectList[i].clear();
+		(*it)->OnDestroy();
+		Safe_Release(*it);
 	}
 
-	m_lObjectList->clear();
+	m_lObjectList.clear();
+
+	m_lObjectList.clear();
 	m_vCameraList.clear();
 	m_vLightList.clear();
 
@@ -208,7 +187,7 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 	CGameObject* obj = new CGameObject(_objName, CManagement::GetInstance().getGraphicDevice());
 	obj->AddRef();
 	obj->SetScene(this);
-	m_lObjectList[_layer].push_back(obj);
+	m_lObjectList.push_back(obj);
 	obj->Awake();
 
 	return obj;
@@ -240,15 +219,25 @@ void CScene::UpdateAllCameraResolution(const vector2Int _resolution)
 		(*it)->ResetAspectFromResolution(_resolution);
 }
 
+vector<CGameObject*> CScene::getRootObjects()
+{
+	vector<CGameObject*> result = {};
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->getTransform().isRoot())
+			result.push_back(*it);
+	}
+
+	return result;
+}
+
 CGameObject* CScene::FindGameObject(const wstring _name)
 {
-	for (int i = Layer::DEFAULT; i < Layer::LAYER_END; ++i)
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		for (TRAVERSAL_ITER(m_lObjectList[i], it))
-		{
-			if ((*it)->getName() == _name)
-				return *it;
-		}
+		if ((*it)->getName() == _name)
+			return *it;
 	}
 
 	return nullptr;
@@ -299,7 +288,7 @@ void CScene::Render_Grid()
 	delete[] pVertices;
 }
 
-void CScene::SafeDestroyObject(CGameObject* _obj, Layer _layer)
+void CScene::SafeDestroyObject(CGameObject* _obj)
 {
 	if (!_obj) return;
 
@@ -315,7 +304,7 @@ void CScene::SafeDestroyObject(CGameObject* _obj, Layer _layer)
 			CGameObject* childObj = childTf->getObject();
 			if (childObj)
 			{
-				SafeDestroyObject(childObj, _layer);
+				SafeDestroyObject(childObj);
 			}
 		}
 	}
@@ -327,7 +316,7 @@ void CScene::SafeDestroyObject(CGameObject* _obj, Layer _layer)
 	_obj->OnDestroy();
 	Safe_Release(_obj);
 
-	m_lObjectList[_layer].remove(_obj);
+	m_lObjectList.remove(_obj);
 }
 
 void CScene::UpdateAllLight()

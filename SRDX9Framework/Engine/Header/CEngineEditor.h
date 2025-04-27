@@ -15,11 +15,12 @@ class ENGINE_DLL CEngineEditor
 
 public:
 	ATOM MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc);
-	LRESULT CALLBACK WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam);
 
 public:
 	HINSTANCE getHInstance() { return m_hInst; }
-	CEditorWindow* getWindow(wstring _name);
+	template <typename T>
+	T* getWindow();
 	HWND getWindowHandle(wstring _window);
 
 	const _bool isPlaying() const { return m_bPlaying; }
@@ -50,6 +51,19 @@ private:
 };
 
 END
+
+template<typename T>
+inline T* CEngineEditor::getWindow()
+{
+	for (TRAVERSAL_ITER(m_mWindowList, it))
+	{
+		T* result = dynamic_cast<T*>((*it).second);
+		if (result)
+			return result;
+	}
+
+	return nullptr;
+}
 
 template<typename T>
 inline HRESULT CEngineEditor::CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size)

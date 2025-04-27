@@ -28,7 +28,7 @@ HRESULT CEditorWindow::Init(HWND _hWnd, const vector2Int _size)
 	GetWindowRect(_hWnd, &m_sWindowRect);
 
 	// 상단바 영역
-	m_hTopBar = CreateWindowW(L"STATIC", nullptr,
+	m_hTopBar = CreateWindowW(L"STATIC", L"TopBar",
 		WS_VISIBLE | WS_CHILD,
 		0, 0, _size.x, m_iTopBarHeight,
 		_hWnd, nullptr, CEngineEditor::GetInstance().getHInstance(), nullptr);
@@ -51,7 +51,25 @@ void CEditorWindow::Destroy()
 	Release();
 }
 
-LRESULT CEditorWindow::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CEditorWindow::WndProcHandle(HWND hWnd, UINT _message, WPARAM wParam, LPARAM lParam)
 {
-	return LRESULT();
+	switch (_message)
+	{
+	case WM_CTLCOLORSTATIC:
+	{
+		HDC hdcStatic = (HDC)wParam;
+		HWND hStatic = (HWND)lParam;
+
+		if (hStatic == m_hTopBar)
+		{
+			SetBkMode(hdcStatic, TRANSPARENT);
+			SetBkColor(hdcStatic, RGB(0, 0, 0));
+			static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+			return (INT_PTR)hBlackBrush;
+		}
+	}
+	break;
+	}
+
+	return TRUE;
 }

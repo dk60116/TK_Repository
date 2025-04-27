@@ -1,10 +1,12 @@
 #include "CHierachyWindow.h"
+#include "CGameObject.h"
 
 #pragma comment(lib, "comctl32.lib")
 
 CHierachyWindow::CHierachyWindow()
 	: m_hTreeView(nullptr)
 	, m_iLeftSideWidth(40)
+	, m_hFont(nullptr)
 {
 	m_strName = L"Hierachy Window";
 }
@@ -22,12 +24,16 @@ HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
 
 	m_hTreeView = CreateWindowEx
 	(
-		0, WC_TREEVIEW, nullptr,
-		WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS,
-		m_iLeftSideWidth, CHILDTOPBARHEIGHT,
+		0, WC_TREEVIEW, L"Hierachy Tree",
+		WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_TRACKSELECT | TVS_FULLROWSELECT | TVS_NONEVENHEIGHT,
+		m_iLeftSideWidth, CHILDTOPBARHEIGHT + 20,
 		_size.x - m_iLeftSideWidth, _size.y - CHILDTOPBARHEIGHT,
 		_hWnd, nullptr, GetModuleHandle(NULL), nullptr
 	);
+
+	SetTreeViewFont(14);
+
+	TreeView_SetExtendedStyle(m_hTreeView, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 
 	return S_OK;
 }
@@ -47,5 +53,52 @@ void CHierachyWindow::UpdateResolution(HWND _target, vector2Int _resolution)
 
 	__super::UpdateResolution(_target, _resolution);
 
-	MoveWindow(m_hTreeView, m_iLeftSideWidth, CHILDTOPBARHEIGHT, _resolution.x - m_iLeftSideWidth, _resolution.y - CHILDTOPBARHEIGHT, TRUE);
+	MoveWindow(m_hTreeView, m_iLeftSideWidth, CHILDTOPBARHEIGHT + 20, _resolution.x - m_iLeftSideWidth, _resolution.y - CHILDTOPBARHEIGHT, TRUE);
+}
+
+LRESULT CHierachyWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
+{
+	return __super::WndProcHandle(_hWnd, _message, _wParam, _lParam);
+}
+
+void CHierachyWindow::BuildTree()
+{
+	TreeView_DeleteAllItems(m_hTreeView);
+
+	for (auto& gameObject : CManagement::GetInstance().getCrtScene()->getRootObjects())
+		AddGameObjectRecursive(nullptr, gameObject);
+}
+
+void CHierachyWindow::AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject* _gameObject)
+{
+	TVINSERTSTRUCTW tvInsert = {};
+	tvInsert.hParent = _parentItem;
+	tvInsert.hInsertAfter = TVI_LAST;
+	tvInsert.item.mask = TVIF_TEXT | TVIF_PARAM;
+	tvInsert.item.pszText = const_cast<wchar_t*>(_gameObject->getName().c_str());
+	tvInsert.item.lParam = reinterpret_cast<LPARAM>(_gameObject);
+
+	HTREEITEM hItem = TreeView_InsertItem(m_hTreeView, &tvInsert);
+
+	for (auto& child : _gameObject->getTransform().getChilds())
+	{
+		AddGameObjectRecursive(hItem, child->getObject());
+	}
+}
+
+void CHierachyWindow::SetTreeViewFont(int _fontSize)
+{
+	if (m_hFont)
+		DeleteObject(m_hFont);
+
+	m_hFont = CreateFontW
+	(
+		-_fontSize, 0, 0, 0,
+		FW_NORMAL, FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_DONTCARE,
+		L"Segoe UI"
+	);
+
+	SendMessage(m_hTreeView, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 }

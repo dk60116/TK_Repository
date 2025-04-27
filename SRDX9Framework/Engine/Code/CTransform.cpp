@@ -4,7 +4,7 @@
 #include "CDebug.h"
 
 CTransform::CTransform()
-	: m_bIsRootParent(false)
+	: m_bIsRootParent(true)
 	, m_pParent(nullptr)
 	, m_lChildList({})
 	, m_v3Position(vector3::zero())

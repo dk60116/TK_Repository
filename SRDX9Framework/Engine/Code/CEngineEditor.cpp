@@ -124,16 +124,6 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return TRUE;
 }
 
-CEditorWindow* CEngineEditor::getWindow(wstring _name)
-{
-	auto it = m_mWindowList.find(_name);
-
-	if (it != m_mWindowList.end())
-		return it->second;
-
-	return nullptr;
-}
-
 HWND CEngineEditor::getWindowHandle(wstring _window)
 {
 	auto it = m_mWHandleList.find(_window);

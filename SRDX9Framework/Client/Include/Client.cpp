@@ -158,17 +158,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_CTLCOLORSTATIC:
     {
-        //HDC hdcStatic = (HDC)wParam;
-        //HWND hStatic = (HWND)lParam;
+        HDC hdcStatic = (HDC)wParam;
+        HWND hStatic = (HWND)lParam;
 
-        //if (hStatic == CEngineEditor::GetInstance().getMainTopBar() 
-        //    || hStatic == CEngineEditor::GetInstance().getMainBottomBar())
-        //{
-        //    SetBkMode(hdcStatic, TRANSPARENT);
-        //    SetBkColor(hdcStatic, RGB(0, 0, 0));
-        //    static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
-        //    return (INT_PTR)hBlackBrush;
-        //}
+        wchar_t windowTitle[256] = { 0 };
+        GetWindowTextW(hStatic, windowTitle, sizeof(windowTitle) / sizeof(wchar_t));
+
+        if (wcscmp(windowTitle, L"TopBar") == 0)
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, RGB(0, 0, 0));
+            static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+            return (INT_PTR)hBlackBrush;
+        }
+    }
+    break;
+
+    case WM_NOTIFY:
+    {
+        LPNMHDR pNMHDR = reinterpret_cast<LPNMHDR>(lParam);
+
+        wchar_t buf[64] = {};
+        GetWindowTextW(pNMHDR->hwndFrom, buf, 64);
+
+        if (pNMHDR->code == NM_CUSTOMDRAW &&
+            wcscmp(L"Hierachy Tree", buf) == 0)
+        {
+            auto* pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
+
+            switch (pCD->nmcd.dwDrawStage)
+            {
+            case CDDS_PREPAINT:       
+                return CDRF_NOTIFYITEMDRAW;
+            case CDDS_ITEMPREPAINT:   
+                return CDRF_NOTIFYPOSTPAINT;
+            case CDDS_ITEMPOSTPAINT:  
+                return CDRF_DODEFAULT;
+            }
+        }
+
+        return 0;
     }
     break;
 
@@ -198,7 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    return TRUE;
+    return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 // 정보 대화 상자의 메시지 처리기입니다.

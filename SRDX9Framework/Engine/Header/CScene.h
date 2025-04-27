@@ -54,16 +54,17 @@ public:
 
     void SetGraphicDev(LPDIRECT3DDEVICE9 _device) { m_pGraphicDev = _device; }
 
+    vector<CGameObject*> getRootObjects();
     CGameObject* FindGameObject(const wstring _name);
 
 private:
     void Render_Grid();
-    void SafeDestroyObject(CGameObject* _obj, Layer _layer);
+    void SafeDestroyObject(CGameObject* _obj);
 
 protected:
     wstring m_strSceneName;
 
-    list<CGameObject*> m_lObjectList[Layer::LAYER_END];
+    list<CGameObject*> m_lObjectList;
     vector<CCamera*> m_vCameraList;
     vector<CLight*> m_vLightList;
 
