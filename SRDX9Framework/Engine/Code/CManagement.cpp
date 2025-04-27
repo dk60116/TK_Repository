@@ -1,4 +1,5 @@
 #include "CManagement.h"
+#include "CEngineEditor.h"
 
 CManagement::CManagement()
 	: m_pGraphicDev(nullptr)
@@ -45,6 +46,8 @@ HRESULT CManagement::LoadScene(wstring _scene)
 	iter->second->Awake();
 	iter->second->UpdateEditor();
 	iter->second->Update();
+
+	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 
 	return S_OK;
 }

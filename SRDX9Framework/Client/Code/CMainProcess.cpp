@@ -2,7 +2,6 @@
 #include "CMainProcess.h"
 #include "CResources.h"
 #include "CMainScene.h"
-#include "CHierachyWindow.h"
 
 CMainProcess::CMainProcess()
 	: m_pDevClass(nullptr)
@@ -43,8 +42,6 @@ HRESULT CMainProcess::Ready_MainApp()
 	CMainScene* mainScene = new CMainScene();
 	CManagement::GetInstance().CreateScene(mainScene, L"MainScene");
 	CManagement::GetInstance().LoadScene(L"MainScene");
-
-	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 
 	return S_OK;
 }

@@ -3,6 +3,7 @@
 #include "UObject.h"
 #include "Engine_Define.h"
 #include "CEditorWindow.h"
+#include "CHierachyWindow.h"
 #include "CGameObject.h"
 
 BEGIN(Engine)
