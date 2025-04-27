@@ -17,7 +17,9 @@ struct VIBufferOptions
 
 	ColorValue color = ColorValue::white();
 
+	ColorValue outlineColor = ColorValue(255, 100, 0);
 	_bool editorOutline = true;
+	_float outlineWidth = 1.05f;
 };
 
 class ENGINE_DLL CVIBuffer abstract
@@ -30,6 +32,7 @@ public:
 public:
 	virtual HRESULT	Ready_Buffer(LPDIRECT3DDEVICE9 _device);
 	virtual void Render_Buffer(LPDIRECT3DDEVICE9 _device);
+	virtual void Render_Outline(LPDIRECT3DDEVICE9 _device);
 	void Destroy();
 
 public:

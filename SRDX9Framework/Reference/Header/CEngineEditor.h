@@ -46,6 +46,8 @@ public:
 
 	void SelectGameObject(CGameObject* _gameObject);
 
+	CGameObject* getSelectedGameObject() { return m_pSelectedGameObject; }
+
 public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 

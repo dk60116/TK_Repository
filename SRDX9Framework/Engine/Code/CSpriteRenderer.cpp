@@ -1,4 +1,5 @@
 #include "CSpriteRenderer.h"
+#include "CEngineEditor.h"
 #include "CGameObject.h"
 #include "CManagement.h"
 #include "CDebug.h"
@@ -44,13 +45,13 @@ void CSpriteRenderer::Update()
 void CSpriteRenderer::RenderEditor()
 {
     CComponent::RenderEditor();
-    Render_Final(&CManagement::GetInstance().getEditorCamera());
+    Render_Final(&CManagement::GetInstance().getEditorCamera(), CEngineEditor::GetInstance().getSelectedGameObject() == m_pGameObject);
 }
 
 void CSpriteRenderer::Render()
 {
     CComponent::Render();
-    Render_Final(CManagement::GetInstance().getCrtScene()->getCamera());
+    Render_Final(CManagement::GetInstance().getCrtScene()->getCamera(), false);
 }
 
 void CSpriteRenderer::OnDestroy()
@@ -63,7 +64,7 @@ void CSpriteRenderer::OnDestroy()
 	m_pTexture = nullptr;
 }
 
-void CSpriteRenderer::Render_Final(CCamera* _camera)
+void CSpriteRenderer::Render_Final(CCamera* _camera, _bool _editor)
 {
     if (!m_pBuffer || !m_pGraphicDev)
         return;
@@ -92,6 +93,9 @@ void CSpriteRenderer::Render_Final(CCamera* _camera)
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
+    if (_editor)
+        m_pBuffer->Render_Outline(m_pGraphicDev);
+
     if (m_pMaterial)
         m_pMaterial->Apply(m_pGraphicDev);
 
@@ -108,6 +112,7 @@ void CSpriteRenderer::Render_Final(CCamera* _camera)
     m_pGraphicDev->SetTexture(0, nullptr);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_pGraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 }
 
 void CSpriteRenderer::SetTexture(CTexture* _texture)

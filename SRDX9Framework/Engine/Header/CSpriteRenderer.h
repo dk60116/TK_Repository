@@ -12,7 +12,7 @@ struct SpriteRendererOptions
 {
     ColorValue colorTint = ColorValue::white();
     _int sortOrder = 0;
-    _bool lighting = false;
+    _bool lighting = true;
 };
 
 class ENGINE_DLL CSpriteRenderer final
@@ -31,7 +31,7 @@ public:
     void OnDestroy() override;
 
 private:
-    void Render_Final(CCamera* _camera);
+    void Render_Final(CCamera* _camera, _bool _editor);
 
 public:
     void SetTexture(CTexture* _texture);

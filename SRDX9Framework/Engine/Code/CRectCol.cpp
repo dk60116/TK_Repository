@@ -50,15 +50,15 @@ HRESULT CRectCol::ReadyRect(LPDIRECT3DDEVICE9 _device)
     VTLTEX vertices[4] =
     {
         { { -0.5f,  0.5f, 0.f }, vector3::back().dVector(), {0.f, 0.f}},
-        { {  0.5f,  0.5f, 0.f }, vector3::back().dVector(), { 1.f, 0.f } },
-        { {  0.5f, -0.5f, 0.f }, vector3::back().dVector(), { 1.f, 1.f } },
-        { { -0.5f, -0.5f, 0.f }, vector3::back().dVector(), { 0.f, 1.f } }
+        { {  0.5f,  0.5f, 0.f }, vector3::back().dVector(), {1.f, 0.f}},
+        { {  0.5f, -0.5f, 0.f }, vector3::back().dVector(), {1.f, 1.f}},
+        { { -0.5f, -0.5f, 0.f }, vector3::back().dVector(), {0.f, 1.f}}
     };
 
     if (FAILED(FillVertexBuffer(vertices, sizeof(vertices))))
         return E_FAIL;
 
-    INDEX16 indices[2] = { {0,1,2}, {0,2,3} };
+    INDEX16 indices[2] = { {0,2,1}, {0,3,2} };
     if (FAILED(FillIndexBuffer(indices, sizeof(indices))))
         return E_FAIL;
 

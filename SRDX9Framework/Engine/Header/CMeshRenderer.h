@@ -24,7 +24,7 @@ public:
     void OnDestroy() override;
 
 private:
-    void Render_Final(CCamera* _camera);
+    void Render_Final(CCamera* _camera, _bool _editor);
 
 public:
     CMeshFilter* getMeshFilter() const { return m_pMeshFilter; }

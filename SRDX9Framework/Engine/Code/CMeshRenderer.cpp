@@ -1,4 +1,5 @@
 #include "CMeshRenderer.h"
+#include "CEngineEditor.h"
 #include "CManagement.h"
 #include "CGameObject.h"
 #include "CTransform.h"
@@ -37,13 +38,13 @@ void CMeshRenderer::Update()
 void CMeshRenderer::RenderEditor()
 {
     CComponent::RenderEditor();
-    Render_Final(&CManagement::GetInstance().getEditorCamera());
+    Render_Final(&CManagement::GetInstance().getEditorCamera(), CEngineEditor::GetInstance().getSelectedGameObject() == m_pGameObject);
 }
 
 void CMeshRenderer::Render()
 {
     CComponent::Render();
-    Render_Final(CManagement::GetInstance().getCrtScene()->getCamera());
+    Render_Final(CManagement::GetInstance().getCrtScene()->getCamera(), false);
 }
 
 void CMeshRenderer::OnDestroy()
@@ -52,7 +53,7 @@ void CMeshRenderer::OnDestroy()
     Safe_Delete(m_pMaterial);
 }
 
-void CMeshRenderer::Render_Final(CCamera* _camera)
+void CMeshRenderer::Render_Final(CCamera* _camera, _bool _editor)
 {
     if (!m_pMeshFilter)
         return;
@@ -75,6 +76,9 @@ void CMeshRenderer::Render_Final(CCamera* _camera)
 
     m_pGraphicDev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+
+    if (_editor)
+        pMesh->Render_Outline(m_pGraphicDev);
 
     if (m_pMaterial)
         m_pMaterial->Apply(m_pGraphicDev);
