@@ -3,8 +3,14 @@
 #include "UObject.h"
 #include "Engine_Define.h"
 #include "CEditorWindow.h"
+#include "CGameObject.h"
 
 BEGIN(Engine)
+
+struct Engine_WindowOptions
+{
+	ColorValue s_baseColor = ColorValue(56, 56, 56);
+};
 
 class ENGINE_DLL CEngineEditor
 	: public UObject
@@ -18,6 +24,7 @@ public:
 	LRESULT CALLBACK WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam);
 
 public:
+	Engine_WindowOptions& getOptions() { return m_sEngineOptions; }
 	HINSTANCE getHInstance() { return m_hInst; }
 	template <typename T>
 	T* getWindow();
@@ -37,10 +44,13 @@ public:
 
 	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
 
+	void SelectGameObject(CGameObject* _gameObject);
+
 public:
 	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 
 private:
+	Engine_WindowOptions m_sEngineOptions;
 	HINSTANCE m_hInst;
 	map<wstring, CEditorWindow*> m_mWindowList;
 	map<wstring, HWND> m_mWHandleList;
@@ -48,6 +58,8 @@ private:
 	_bool m_bPlaying;
 	_bool m_bPaused;
 	_bool m_bNextFrame;
+
+	CGameObject* m_pSelectedGameObject;
 };
 
 END

@@ -7,15 +7,17 @@ BEGIN(Engine)
 
 struct VIBufferOptions
 {
-	_ulong vtxSize;
-	_ulong vtxCnt;
-	_ulong triCnt;
+	_ulong vtxSize = 0;
+	_ulong vtxCnt = 0;
+	_ulong triCnt = 0;
 	_ulong fvf;
 
 	_ulong idxSize;
 	D3DFORMAT idxFmt;
 
-	ColorValue color;
+	ColorValue color = ColorValue::white();
+
+	_bool editorOutline = true;
 };
 
 class ENGINE_DLL CVIBuffer abstract

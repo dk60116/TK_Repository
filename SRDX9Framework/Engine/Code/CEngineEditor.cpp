@@ -4,11 +4,13 @@
 #include <winuser.h>
 
 CEngineEditor::CEngineEditor()
-	: m_hInst(nullptr)
+	: m_sEngineOptions({})
+	, m_hInst(nullptr)
 	, m_mWindowList({})
 	, m_bPlaying(false)
 	, m_bPaused(false)
 	, m_bNextFrame(false)
+	, m_pSelectedGameObject(nullptr)
 {
 	m_strName = L"Engine Editor";
 }
@@ -136,7 +138,7 @@ HWND CEngineEditor::getWindowHandle(wstring _window)
 
 void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 {
-	COLORREF titleColor = RGB(56, 56, 56);
+	COLORREF titleColor = CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
 	DwmSetWindowAttribute(_hWnd, DWMWA_CAPTION_COLOR, &titleColor, sizeof(titleColor));
 
 	LONG style = GetWindowLong(_hWnd, GWL_STYLE);
@@ -162,6 +164,11 @@ void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 		&preference,
 		sizeof(preference)
 	);
+}
+
+void CEngineEditor::SelectGameObject(CGameObject* _gameObject)
+{
+	m_pSelectedGameObject = _gameObject;
 }
 
 HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold)

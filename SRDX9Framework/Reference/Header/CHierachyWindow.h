@@ -6,6 +6,13 @@
 
 BEGIN(Engine)
 
+struct HierachyViewOptions
+{
+	_int fontSize = 14;
+	ColorValue textColor = ColorValue::white();
+	ColorValue leftSideColor;
+};
+
 class ENGINE_DLL CHierachyWindow final
 	: public CEditorWindow
 {
@@ -25,14 +32,16 @@ public:
 	HWND getTreeHandle() { return m_hTreeView; }
 public:
 	void BuildTree();
+	void AddSceneRecursive(CScene* _scene);
 	void AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject* _gameObject);
 
 private:
-	void SetTreeViewFont(int _fontSize);
+	void SetTreeViewOptions();
 
 private:
+	HierachyViewOptions m_sOptions;
 	HWND m_hTreeView;
-	int m_iLeftSideWidth;
+	_int m_iLeftSideWidth;
 	HFONT m_hFont;
 };
 

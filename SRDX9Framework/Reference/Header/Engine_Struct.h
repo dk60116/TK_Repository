@@ -741,6 +741,7 @@ namespace Engine
         }
 
         D3DCOLOR dColor() const { return D3DCOLOR_ARGB(a, r, g, b); }
+        COLORREF rColor() const { return RGB(r, g, b); }
         
         D3DCOLORVALUE dvColor() const
         {

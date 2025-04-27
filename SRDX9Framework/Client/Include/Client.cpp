@@ -5,6 +5,7 @@
 #include "framework.h"
 #include "Client.h"
 #include "CMainProcess.h"
+#include "CHierachyWindow.h"
 
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
@@ -147,7 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             HDC hdc = BeginPaint(hWnd, &ps);
 
-            HBRUSH blackBrush = CreateSolidBrush(RGB(56, 56, 56));
+            HBRUSH blackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
             FillRect(hdc, &ps.rcPaint, blackBrush);
             DeleteObject(blackBrush);
         }
@@ -176,27 +177,89 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_NOTIFY:
     {
-        LPNMHDR pNMHDR = reinterpret_cast<LPNMHDR>(lParam);
+        auto pNM = reinterpret_cast<LPNMHDR>(lParam);
 
+        // 트리뷰 커스텀-드로잉만 처리
         wchar_t buf[64] = {};
-        GetWindowTextW(pNMHDR->hwndFrom, buf, 64);
+        GetWindowTextW(pNM->hwndFrom, buf, 64);
 
-        if (pNMHDR->code == NM_CUSTOMDRAW &&
-            wcscmp(L"Hierachy Tree", buf) == 0)
+        if (pNM->code == NM_CUSTOMDRAW &&
+            wcscmp(buf, L"Hierachy Tree") == 0)
         {
-            auto* pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
+            auto pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
 
             switch (pCD->nmcd.dwDrawStage)
             {
-            case CDDS_PREPAINT:       
-                return CDRF_NOTIFYITEMDRAW;
-            case CDDS_ITEMPREPAINT:   
-                return CDRF_NOTIFYPOSTPAINT;
-            case CDDS_ITEMPOSTPAINT:  
-                return CDRF_DODEFAULT;
-            }
-        }
+            case CDDS_PREPAINT:
+                return CDRF_NOTIFYITEMDRAW;              // 항목별 알림
 
+            case CDDS_ITEMPREPAINT:
+                return CDRF_NOTIFYPOSTPAINT;             // 기본 그린 뒤 재호출
+
+            case CDDS_ITEMPOSTPAINT:
+            {
+                HWND tv = CEngineEditor::GetInstance()
+                    .getWindow<CHierachyWindow>()
+                    ->getTreeHandle();
+                HTREEITEM hItem = (HTREEITEM)pCD->nmcd.dwItemSpec;
+
+                TVITEMEXW info{};
+                info.hItem = hItem;
+                info.mask = TVIF_STATE | TVIF_CHILDREN;
+                info.stateMask = TVIS_EXPANDED;
+                TreeView_GetItem(tv, &info);
+
+                if (info.cChildren > 0)
+                {
+                    RECT rcText;  TreeView_GetItemRect(tv, hItem, &rcText, TRUE);
+                    RECT rcBtn = rcText;
+                    const int w = 10;
+                    rcBtn.right = rcText.left - 4;
+                    rcBtn.left = rcBtn.right - w;
+                    rcBtn.top += (rcText.bottom - rcText.top - w) / 2;
+                    rcBtn.bottom = rcBtn.top + w + 1;
+
+                    // 기존 +/– 덮기
+                    HBRUSH hBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
+                    FillRect(pCD->nmcd.hdc, &rcBtn, hBrush);
+                    DeleteObject(hBrush);
+
+                    // ▶ / ▼ 출력
+                    const wchar_t* glyph = (info.state & TVIS_EXPANDED) ? L"▼" : L"▶";
+
+                    HFONT hFontDefault = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+                    HFONT hFontBig = NULL;
+
+                    if (wcscmp(glyph, L"▼") == 0)
+                    {
+                        LOGFONT lf{};
+                        GetObject(hFontDefault, sizeof(LOGFONT), &lf);
+                        lf.lfHeight = lf.lfHeight * 1.15f;
+                        hFontBig = CreateFontIndirect(&lf);
+                    }
+                    else if (wcscmp(glyph, L"▶") == 0)
+                    {
+                        LOGFONT lf{};
+                        GetObject(hFontDefault, sizeof(LOGFONT), &lf);
+                        lf.lfHeight = lf.lfHeight * 0.99f;
+                        hFontBig = CreateFontIndirect(&lf);
+                    }
+
+                    HFONT hOldFont = (HFONT)SelectObject(pCD->nmcd.hdc,
+                        (hFontBig) ? hFontBig : hFontDefault);
+
+                    SetBkMode(pCD->nmcd.hdc, TRANSPARENT);
+                    SetTextColor(pCD->nmcd.hdc, RGB(230, 230, 230));
+                    DrawTextW(pCD->nmcd.hdc, glyph, 1, &rcBtn,
+                        DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+                    SelectObject(pCD->nmcd.hdc, hOldFont);
+                    if (hFontBig) DeleteObject(hFontBig);
+                }
+                return CDRF_DODEFAULT; 
+            }
+            } 
+        }
         return 0;
     }
     break;
@@ -209,13 +272,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _int height = rcClient.bottom - rcClient.top;
 
         if (hWnd == CEngineEditor::GetInstance().getWindowHandle(L"Scene"))
-        {
             CMainProcess::GetInstance().OnSceneScreenChange(width, height);
-        }
         else if (hWnd == CEngineEditor::GetInstance().getWindowHandle(L"Game"))
-        {
             CMainProcess::GetInstance().OnGameScreenChange(width, height);
-        }
     }
     break;
 
