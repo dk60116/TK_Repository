@@ -204,6 +204,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             auto pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
 
+            bool hot = pCD->nmcd.uItemState & CDIS_HOT;
+            bool selected = pCD->nmcd.uItemState & CDIS_SELECTED;
+            bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
+
             switch (pCD->nmcd.dwDrawStage)
             {
             case CDDS_PREPAINT:
@@ -215,10 +219,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     LPNMTVCUSTOMDRAW pCustomDraw = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
 
-                    bool hot = pCD->nmcd.uItemState & CDIS_HOT;
-                    bool selected = pCD->nmcd.uItemState & CDIS_SELECTED;
-                    bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
-
                     pCustomDraw->clrText = RGB(255, 255, 255); // 흰 글자
 
                     if (hot)  // 마우스 오버 상태
@@ -229,7 +229,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         pCustomDraw->clrTextBk = bgColor.rColor(); // 약한 회색 배경
                     }
 
-                    if (selected)
+                    if (selected && !mouseDown)
                     {
                         pCustomDraw->clrTextBk = RGB(44, 93, 135); // 푸른 배경
                     }
@@ -268,10 +268,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
 
-                    COLORREF btnBGColor = (info.state & TVIS_SELECTED) &&
-                        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy") || mouseDown
-                        ? RGB(44, 93, 135)              // 선택된 항목용 색
-                        : CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+                    COLORREF btnBGColor = 
+                        (info.state & TVIS_SELECTED) &&
+                        (GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
+                        ? RGB(44, 93, 135) : CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
 
                     // 기존 +/– 덮기
                     HBRUSH hBrush = CreateSolidBrush(btnBGColor);
