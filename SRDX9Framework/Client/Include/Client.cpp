@@ -288,14 +288,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         LOGFONT lf{};
                         GetObject(hFontDefault, sizeof(LOGFONT), &lf);
-                        lf.lfHeight = static_cast<LONG>(static_cast<_float>(lf.lfHeight) * 0.99f);
+                        lf.lfWidth = static_cast<LONG>(-6);
+                        lf.lfHeight = static_cast<LONG>(-12);
                         hFontBig = CreateFontIndirect(&lf);
                     }
                     else if (wcscmp(glyph, L"▶") == 0)
                     {
                         LOGFONT lf{};
                         GetObject(hFontDefault, sizeof(LOGFONT), &lf);
-                        lf.lfHeight = static_cast<LONG>(static_cast<_float>(lf.lfHeight) * 0.99f);
+                        lf.lfWidth = static_cast<LONG>(-7);
+                        lf.lfHeight = static_cast<LONG>(-13);
                         hFontBig = CreateFontIndirect(&lf);
                     }
 
