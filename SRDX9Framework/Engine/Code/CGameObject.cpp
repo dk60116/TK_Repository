@@ -1,6 +1,6 @@
 #include "CGameObject.h"
 
-CGameObject::CGameObject(wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
+CGameObject::CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 	: m_pScene(nullptr)
 	, m_strGameObjectName(_name)
 	, m_bIsActive(true)

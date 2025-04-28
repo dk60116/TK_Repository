@@ -14,7 +14,7 @@ class ENGINE_DLL CManagement
 	SINGLETONCLASS(CManagement);
 
 public:
-	void CreateScene(CScene* _newScene, wstring _name);
+	void CreateScene(CScene* _newScene, const wstring _name);
 	CScene* getCrtScene() { return m_pCrtScene; }
 	HRESULT LoadScene(wstring _scene);
 

@@ -16,7 +16,7 @@ CManagement::~CManagement()
 	Destroy();
 }
 
-void CManagement::CreateScene(CScene* _newScene, wstring _name)
+void CManagement::CreateScene(CScene* _newScene, const wstring _name)
 {
 	_newScene->SetName(_name);
 	_newScene->SetGraphicDev(m_pGraphicDev);
