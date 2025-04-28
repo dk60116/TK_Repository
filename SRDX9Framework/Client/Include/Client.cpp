@@ -109,6 +109,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     CEngineEditor::GetInstance().WndProcHandle(hWnd, message, wParam, lParam);
@@ -175,20 +176,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
 
+    case WM_LBUTTONDOWN:
+    {
+    }
+    break;
+    
+    case WM_LBUTTONUP:
+    {
+    }
+    break;
+
     case WM_NOTIFY:
     {
-        auto pNM = reinterpret_cast<LPNMHDR>(lParam);
+        auto pNMHDR = reinterpret_cast<LPNMHDR>(lParam);
 
         // 트리뷰 커스텀-드로잉만 처리
         wchar_t buf[64] = {};
-        GetWindowTextW(pNM->hwndFrom, buf, 64);
+        GetWindowTextW(pNMHDR->hwndFrom, buf, 64);
 
-        if (pNM->code == NM_DBLCLK)
+        if (pNMHDR->code == NM_DBLCLK)
         {
             return TRUE;
         }
 
-        if (pNM->code == NM_CUSTOMDRAW &&
+        if (pNMHDR->code == NM_CUSTOMDRAW &&
             wcscmp(buf, L"Hierachy Tree") == 0)
         {
             auto pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
@@ -196,10 +207,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (pCD->nmcd.dwDrawStage)
             {
             case CDDS_PREPAINT:
-                return CDRF_NOTIFYITEMDRAW;              // 항목별 알림
+                return CDRF_NOTIFYITEMDRAW;
 
             case CDDS_ITEMPREPAINT:
-                return CDRF_NOTIFYPOSTPAINT;             // 기본 그린 뒤 재호출
+            {
+                if (pNMHDR->code == NM_CUSTOMDRAW)
+                {
+                    LPNMTVCUSTOMDRAW pCustomDraw = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
+
+                    bool hot = pCD->nmcd.uItemState & CDIS_HOT;
+                    bool selected = pCD->nmcd.uItemState & CDIS_SELECTED;
+                    bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
+
+                    pCustomDraw->clrText = RGB(255, 255, 255); // 흰 글자
+
+                    if (hot)  // 마우스 오버 상태
+                    {
+                        ColorValue bgColor = mouseDown ?
+                             ColorValue(44, 93, 135) : ColorValue(68, 68, 68);
+
+                        pCustomDraw->clrTextBk = bgColor.rColor(); // 약한 회색 배경
+                    }
+
+                    if (selected)
+                    {
+                        pCustomDraw->clrTextBk = RGB(44, 93, 135); // 푸른 배경
+                    }
+
+                    HFONT hDef = (HFONT)SendMessage(pNMHDR->hwndFrom, WM_GETFONT, 0, 0);
+                    LOGFONTW lf;  GetObjectW(hDef, sizeof(lf), &lf);
+                    lf.lfUnderline = FALSE;
+                    HFONT hNoUL = CreateFontIndirectW(&lf);
+                    SelectObject(pCD->nmcd.hdc, hNoUL);
+                }
+            }
+            return CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT;
 
             case CDDS_ITEMPOSTPAINT:
             {
@@ -224,8 +266,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     rcBtn.top += (rcText.bottom - rcText.top - w) / 2;
                     rcBtn.bottom = rcBtn.top + w + 1;
 
+                    bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
+
+                    COLORREF btnBGColor = (info.state & TVIS_SELECTED) &&
+                        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy") || mouseDown
+                        ? RGB(44, 93, 135)              // 선택된 항목용 색
+                        : CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+
                     // 기존 +/– 덮기
-                    HBRUSH hBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
+                    HBRUSH hBrush = CreateSolidBrush(btnBGColor);
                     FillRect(pCD->nmcd.hdc, &rcBtn, hBrush);
                     DeleteObject(hBrush);
 
@@ -254,15 +303,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         (hFontBig) ? hFontBig : hFontDefault);
 
                     SetBkMode(pCD->nmcd.hdc, TRANSPARENT);
-                    SetTextColor(pCD->nmcd.hdc, ColorValue::white().rColor());
+                    SetTextColor(pCD->nmcd.hdc, ColorValue(104, 104, 104).rColor());
                     DrawTextW(pCD->nmcd.hdc, glyph, 1, &rcBtn,
                         DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
                     SelectObject(pCD->nmcd.hdc, hOldFont);
                     if (hFontBig) DeleteObject(hFontBig);
                 }
-                return CDRF_DODEFAULT; 
             }
+                return CDRF_DODEFAULT; 
             } 
         }
         return CDRF_DODEFAULT;

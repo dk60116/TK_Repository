@@ -38,9 +38,18 @@ public:
 private:
 	void SetTreeViewOptions();
 
+public:
+	static LRESULT CALLBACK TreeSubProc
+	(
+		HWND _hWnd, UINT _msg,
+		WPARAM _wParam, LPARAM _lParam,
+		UINT_PTR _idSubClass, DWORD_PTR _dwRefData
+	);
+
 private:
 	HierachyViewOptions m_sOptions;
 	HWND m_hTreeView;
+	HTREEITEM m_hPressedItem;
 	_int m_iLeftSideWidth;
 	HFONT m_hFont;
 };

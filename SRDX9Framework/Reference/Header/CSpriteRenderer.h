@@ -12,7 +12,7 @@ struct SpriteRendererOptions
 {
     ColorValue colorTint = ColorValue::white();
     _int sortOrder = 0;
-    _bool lighting = true;
+    _bool lighting = false;
 };
 
 class ENGINE_DLL CSpriteRenderer final

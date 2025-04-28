@@ -2,6 +2,7 @@
 #include "CGameObject.h"
 #include "CEngineEditor.h"
 #include "CDebug.h"
+#include "CHierachyWindow.h"
 
 CTransform::CTransform()
 	: m_bIsRootParent(true)
@@ -149,28 +150,63 @@ const wstring CTransform::getName()
 
 void CTransform::SetParent(CTransform* _parent)
 {
+	UpdateWorld();
+
+	_matrix world = m_matWorld;
+
 	if (!_parent)
 	{
 		if (m_pParent)
 		{
 			m_pParent->m_lChildList.remove(this);
 			Release();
-
-			m_pParent = nullptr;
-			m_bIsRootParent = true;
 		}
+
+		D3DXVECTOR3 s, t;
+		D3DXQUATERNION r;
+		D3DXMatrixDecompose(&s, &r, &t, &world);
+
+		m_v3Scale = vector3(s);
+		m_v3Position = vector3(t);
+		m_v4Quaternion = quaternion(r);
+		m_v3EulerAngles = quaternion::to_euler(r);
+
+		m_pParent = nullptr;
+		m_bIsRootParent = true;
 	}
 	else
 	{
+		_matrix invParent;
+		D3DXMatrixInverse(&invParent, nullptr, &_parent->getWorldMatrix());
+
+		_matrix local = world * invParent;
+
+		D3DXVECTOR3 s, t;
+		D3DXQUATERNION r;
+		D3DXMatrixDecompose(&s, &r, &t, &local);
+
+		m_v3Scale = vector3(s);
+		m_v3Position = vector3(t);
+		m_v4Quaternion = quaternion(r);
+		m_v3EulerAngles = quaternion::to_euler(r);
+
 		if (m_pParent != _parent)
 		{
-			m_pParent = _parent;
-			m_bIsRootParent = false;
-
-			_parent->m_lChildList.push_back(this);
-			AddRef();
+			if (m_pParent)
+			{
+				m_pParent->m_lChildList.remove(this);
+				Release();
+			}
 		}
+
+		m_pParent = _parent;
+		m_bIsRootParent = false;
+
+		_parent->m_lChildList.push_back(this);
+		AddRef();
 	}
+
+	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 }
 
 void CTransform::SetPosition(const vector3 _world_pos)

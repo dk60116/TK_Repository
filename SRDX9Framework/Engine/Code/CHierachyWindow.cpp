@@ -1,12 +1,14 @@
-#include "CHierachyWindow.h"
+﻿#include "CHierachyWindow.h"
 #include "CScene.h"
 #include "CGameObject.h"
 
 #pragma comment(lib, "comctl32.lib")
+#pragma comment(lib, "UxTheme.lib")
 
 CHierachyWindow::CHierachyWindow()
 	: m_sOptions({})
 	, m_hTreeView(nullptr)
+	, m_hPressedItem(nullptr)
 	, m_iLeftSideWidth(40)
 	, m_hFont(nullptr)
 {
@@ -32,15 +34,12 @@ HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
 		_size.x - m_iLeftSideWidth, _size.y - CHILDTOPBARHEIGHT,
 		_hWnd, nullptr, GetModuleHandle(NULL), nullptr
 	);
-	
-	TreeView_SetExtendedStyle
-	(
-		m_hTreeView,
-		TVS_EX_DOUBLEBUFFER,
-		TVS_EX_DOUBLEBUFFER | TVS_EX_FADEINOUTEXPANDOS
-	);
+
+	SetWindowTheme(m_hTreeView, L"", L"");
 
 	SetTreeViewOptions();
+
+	SetWindowSubclass(m_hTreeView, TreeSubProc, 0, (DWORD_PTR)this);
 
 	return S_OK;
 }
@@ -73,6 +72,8 @@ LRESULT CHierachyWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam
 
 		if (pNMHDR->hwndFrom == m_hTreeView)
 		{
+			auto pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(_lParam);
+
 			if (pNMHDR->code == TVN_SELCHANGED)
 			{
 				LPNMTREEVIEW pNMTV = reinterpret_cast<LPNMTREEVIEW>(_lParam);
@@ -194,4 +195,30 @@ void CHierachyWindow::SetTreeViewOptions()
 
 	TreeView_SetBkColor(m_hTreeView, CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
 	TreeView_SetTextColor(m_hTreeView, m_sOptions.textColor.rColor());
+}
+
+LRESULT CHierachyWindow::TreeSubProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam, UINT_PTR _idSubClass, DWORD_PTR _dwRefData)
+{
+	auto* self = reinterpret_cast<CHierachyWindow*>(_dwRefData);
+
+    switch (_msg)
+    {
+    case WM_LBUTTONDOWN:
+    {
+        break;
+    }
+
+    case WM_LBUTTONUP:
+    {
+        if (self->m_hPressedItem)
+        {
+        }
+        break;  // 기본 처리도 OK
+    }
+
+    case WM_CAPTURECHANGED:   // 드래그 도중 ESC 또는 외부 클릭 등
+        break;
+    }
+
+    return DefSubclassProc(_hWnd, _msg, _wParam, _lParam);
 }
