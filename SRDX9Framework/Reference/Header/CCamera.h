@@ -17,10 +17,10 @@ struct CameraViewParameters
 class ENGINE_DLL CCamera 
 	: public CComponent
 {
-private:
+public:
 	enum CameraViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
-public:
+protected:
     explicit CCamera();
     ~CCamera();
 
@@ -35,6 +35,9 @@ public:
 	void OnEnable() override;
 	void OnDisable() override;
 	void OnDestroy() override;
+
+public:
+	static CCamera* Create();
 
 private:
 	void UpdateProjectionMatrix();

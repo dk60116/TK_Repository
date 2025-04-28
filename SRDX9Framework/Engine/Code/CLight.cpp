@@ -16,6 +16,11 @@ CLight::~CLight()
 	OnDestroy();
 }
 
+CLight* CLight::Create()
+{
+	return new CLight();
+}
+
 void CLight::UpdateEditor()
 {
 	__super::UpdateEditor();

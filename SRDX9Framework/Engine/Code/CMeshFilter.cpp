@@ -12,6 +12,11 @@ CMeshFilter::~CMeshFilter()
 	OnDestroy();
 }
 
+CMeshFilter* CMeshFilter::Create()
+{
+	return new CMeshFilter();
+}
+
 void CMeshFilter::Awake()
 {
 	__super::Awake();

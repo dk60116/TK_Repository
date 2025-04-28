@@ -65,6 +65,11 @@ void CCamera::OnDestroy()
 	__super::OnDestroy();
 }
 
+CCamera* CCamera::Create()
+{
+	return new CCamera();
+}
+
 void CCamera::UpdateProjectionMatrix()
 {
 	switch (m_eCamViewMode)

@@ -12,6 +12,9 @@ public:
     ~CPlayer();
 
 public:
+	static CPlayer* Create();
+
+public:
 	void Awake() override;
 	void Start()  override;
 	void Update() override;

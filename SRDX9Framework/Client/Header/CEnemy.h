@@ -22,6 +22,9 @@ public:
 	void OnDestroy() override;
 
 public:
+	static CEnemy* Create();
+
+public:
 	void SetTarget(CTransform* _target) { m_pTarget = _target; }
 
 public:

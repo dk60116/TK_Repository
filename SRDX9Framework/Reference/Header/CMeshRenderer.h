@@ -11,9 +11,12 @@ BEGIN(Engine)
 class ENGINE_DLL CMeshRenderer final
     : public CComponent
 {
-public:
+private:
     explicit CMeshRenderer();
     ~CMeshRenderer();
+
+public:
+    static CMeshRenderer* Create();
 
 public:
     void Awake() override;

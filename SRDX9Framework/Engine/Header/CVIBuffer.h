@@ -25,7 +25,7 @@ struct VIBufferOptions
 class ENGINE_DLL CVIBuffer abstract
 	: public UObject
 {
-public:
+protected:
 	explicit CVIBuffer();
 	virtual ~CVIBuffer();
 

@@ -3,6 +3,7 @@
 #include "CGameObject.h"
 #include "CManagement.h"
 #include "CDebug.h"
+#include "CMaterial.h"
 
 CSpriteRenderer::CSpriteRenderer()
 	: m_pTexture(nullptr)
@@ -58,10 +59,17 @@ void CSpriteRenderer::OnDestroy()
 {
 	CComponent::OnDestroy();
     
+    m_pBuffer->Destroy();
     Safe_Release(m_pBuffer);
-    Safe_Delete(m_pMaterial);
+    m_pMaterial->Destroy();
+    Safe_Release(m_pMaterial);
 
 	m_pTexture = nullptr;
+}
+
+CSpriteRenderer* CSpriteRenderer::Create()
+{
+    return new CSpriteRenderer();
 }
 
 void CSpriteRenderer::Render_Final(CCamera* _camera, _bool _editor)

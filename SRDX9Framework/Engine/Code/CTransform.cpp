@@ -82,6 +82,11 @@ void CTransform::OnDestroy()
 	__super::OnDestroy();
 }
 
+CTransform* CTransform::Create()
+{
+	return new CTransform();
+} 
+
 void CTransform::UpdateWorld()
 {
 	_matrix matScale;

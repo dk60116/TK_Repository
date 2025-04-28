@@ -11,6 +11,8 @@ CEditorCamera::CEditorCamera()
 	, m_bRMouseDowned(false)
 	, m_fPitch(0.f)
 	, m_fYaw(0.f)
+	, m_pZoomObject(nullptr)
+	, m_bZoomDistToggle(false)
 {
 	m_strName = L"Editor Camera";
 }
@@ -18,6 +20,11 @@ CEditorCamera::CEditorCamera()
 CEditorCamera::~CEditorCamera()
 {
 	OnDestroy();
+}
+
+CEditorCamera* CEditorCamera::Create()
+{
+	return new CEditorCamera();
 }
 
 void CEditorCamera::AwakeEditor()
@@ -87,7 +94,27 @@ void CEditorCamera::UpdateEditor()
 void CEditorCamera::GotoViewGameObject(CGameObject* _gameObject)
 {
 	m_pGameObject->getTransform().SetPosition(_gameObject->getTransform().getPosition());
-	m_pGameObject->getTransform().AddPosition(m_pGameObject->getTransform().getDirections().back * 3.f);
 
-	UpdateEditor();
+	if (m_pZoomObject)
+	{
+		if (m_pZoomObject == _gameObject)
+		{
+			m_bZoomDistToggle = !m_bZoomDistToggle;
+		}
+		else
+			m_bZoomDistToggle = false;
+	}
+	else
+		m_bZoomDistToggle = false;
+
+	_float distance = 0.f;
+
+	if (!m_bZoomDistToggle)
+		distance = 3.f;
+	else
+		distance = 6.f;
+
+	m_pGameObject->getTransform().AddPosition(m_pGameObject->getTransform().getDirections().back * distance);
+
+	m_pZoomObject = _gameObject;
 }

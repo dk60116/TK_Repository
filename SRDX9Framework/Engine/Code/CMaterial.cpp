@@ -1,5 +1,5 @@
-
 #include "CMaterial.h"
+#include "CSpriteRenderer.h"
 
 CMaterial::CMaterial()
 	: m_sMaterial({})
@@ -24,4 +24,9 @@ void CMaterial::Apply(LPDIRECT3DDEVICE9 _pDevice)
 	m_sMaterial.Power = m_sOptions.power;
 
 	_pDevice->SetMaterial(&m_sMaterial);
+}
+
+void CMaterial::Destroy()
+{
+	Release();
 }

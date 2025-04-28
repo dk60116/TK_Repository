@@ -14,6 +14,11 @@ CPlayer::~CPlayer()
 	OnDestroy();
 }
 
+CPlayer* CPlayer::Create()
+{
+	return new CPlayer();
+}
+
 void CPlayer::Awake()
 {
 	CComponent::Awake();

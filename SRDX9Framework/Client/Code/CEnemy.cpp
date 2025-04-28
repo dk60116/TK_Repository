@@ -77,3 +77,8 @@ void CEnemy::OnDestroy()
 {
 	CComponent::OnDestroy();
 }
+
+CEnemy* CEnemy::Create()
+{
+	return new CEnemy();
+}

@@ -2,9 +2,9 @@
 
 #include "CComponent.h"
 #include "CRectCol.h"
-#include "CMaterial.h"
 #include "CTexture.h"
 #include "CCamera.h"
+#include "CMaterial.h"
 
 BEGIN(Engine)
 
@@ -18,7 +18,7 @@ struct SpriteRendererOptions
 class ENGINE_DLL CSpriteRenderer final
     : public CComponent
 {
-public:
+private:
     explicit CSpriteRenderer();
     ~CSpriteRenderer();
 
@@ -29,6 +29,9 @@ public:
     void RenderEditor() override;
     void Render() override;
     void OnDestroy() override;
+
+public:
+    static CSpriteRenderer* Create();
 
 private:
     void Render_Final(CCamera* _camera, _bool _editor);

@@ -8,9 +8,12 @@ BEGIN(Engine)
 class ENGINE_DLL CMeshFilter final
     : public CComponent
 {
-public:
+private:
     explicit CMeshFilter();
     ~CMeshFilter();
+
+public:
+    static CMeshFilter* Create();
 
 public:
     void Awake() override;

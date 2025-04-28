@@ -1,8 +1,12 @@
 #pragma once
 
+#include "UObject.h"
 #include "Engine_Define.h"
 
 BEGIN(Engine)
+
+class CMeshRenderer;
+class CSpriteRenderer;
 
 struct MaterialOptions
 {
@@ -13,14 +17,19 @@ struct MaterialOptions
 };
 
 class ENGINE_DLL CMaterial final
+	: public UObject
 {
-public:
+	friend class CMeshRenderer;
+	friend class CSpriteRenderer;
+
+private:
 	CMaterial();
 	~CMaterial();
 
 public:
 	void Apply(LPDIRECT3DDEVICE9 _pDevice);
 	MaterialOptions& getOptions() { return m_sOptions; }
+	void Destroy();
 
 private:
 	D3DMATERIAL9 m_sMaterial;

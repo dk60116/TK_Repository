@@ -20,7 +20,7 @@ struct Directions
 class ENGINE_DLL CTransform final
 	: public CComponent
 {
-public:
+private:
 	explicit CTransform();
 	~CTransform();
 
@@ -35,6 +35,9 @@ public:
 	void OnEnable() override;
 	void OnDisable() override;
 	void OnDestroy() override;
+
+public:
+	static CTransform* Create();
 
 private:
 	void UpdateWorld();

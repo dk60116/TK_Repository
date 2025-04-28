@@ -23,9 +23,12 @@ class ENGINE_DLL CLight final
 public:
 	enum LightType { DIRECTIONALLIGHT = 3, POINTLIGHT = 2, SPOTLIGHT = 1 };
 
-public:
+private:
 	CLight();
 	~CLight();
+
+public:
+	static CLight* Create();
 
 public:
 	void UpdateEditor() override;
