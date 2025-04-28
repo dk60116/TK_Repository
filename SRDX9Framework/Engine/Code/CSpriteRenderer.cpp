@@ -32,6 +32,7 @@ void CSpriteRenderer::Awake()
 		OutputDebugStringA("[SpriteRenderer] Failed to Ready_Buffer()\n");
 
     m_pMaterial = new CMaterial();
+    m_pMaterial->AddRef();
 }
 
 void CSpriteRenderer::Start()
