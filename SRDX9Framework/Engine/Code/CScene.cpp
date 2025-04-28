@@ -11,12 +11,17 @@ CScene::CScene()
 	, m_vCameraList({})
 	, m_vLightList({})
 	, m_sOptions({})
+	, m_iObjIndex(0)
 {
 }
 
 CScene::~CScene()
 {
 	Destroy();
+}
+
+void CScene::EditorInit()
+{
 }
 
 void CScene::Awake()
@@ -29,24 +34,26 @@ void CScene::Start()
 
 void CScene::UpdateEditor()
 {
-	UpdateAllLight();
-
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if ((*it)->isActive() && (*it)->isEnable())
+		{
 			(*it)->UpdateEditor();
+		}
 	}
+
+	UpdateAllLight();
 }
 
 void CScene::Update()
 {
-	UpdateAllLight();
-
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if ((*it)->isActive() && (*it)->isEnable())
 			(*it)->Update();
 	}
+
+	UpdateAllLight();
 }
 
 void CScene::FixedUpdate()

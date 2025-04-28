@@ -16,9 +16,9 @@ CMainScene::~CMainScene()
 	Destroy();
 }
 
-void CMainScene::Awake()
+void CMainScene::EditorInit()
 {
-	__super::Awake();
+	__super::EditorInit();
 
 	m_sOptions.lighting = true;
 
@@ -56,6 +56,11 @@ void CMainScene::Awake()
 	CMeshRenderer* boxRender = boxObj->AddComponent<CMeshRenderer>();
 	boxRender->SetMeshFilterType(CMesh::CUBE);
 	boxRender->getTransform().SetParent(&enemyObj.getTransform());
+}
+
+void CMainScene::Awake()
+{
+	__super::Awake();
 }
 
 void CMainScene::Start()

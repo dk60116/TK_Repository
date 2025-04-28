@@ -183,6 +183,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         wchar_t buf[64] = {};
         GetWindowTextW(pNM->hwndFrom, buf, 64);
 
+        if (pNM->code == NM_DBLCLK)
+        {
+            return TRUE;
+        }
+
         if (pNM->code == NM_CUSTOMDRAW &&
             wcscmp(buf, L"Hierachy Tree") == 0)
         {
@@ -234,14 +239,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         LOGFONT lf{};
                         GetObject(hFontDefault, sizeof(LOGFONT), &lf);
-                        lf.lfHeight = lf.lfHeight * 1.15f;
+                        lf.lfHeight = static_cast<LONG>(static_cast<_float>(lf.lfHeight) * 0.99f);
                         hFontBig = CreateFontIndirect(&lf);
                     }
                     else if (wcscmp(glyph, L"▶") == 0)
                     {
                         LOGFONT lf{};
                         GetObject(hFontDefault, sizeof(LOGFONT), &lf);
-                        lf.lfHeight = lf.lfHeight * 0.99f;
+                        lf.lfHeight = static_cast<LONG>(static_cast<_float>(lf.lfHeight) * 0.99f);
                         hFontBig = CreateFontIndirect(&lf);
                     }
 
@@ -249,7 +254,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         (hFontBig) ? hFontBig : hFontDefault);
 
                     SetBkMode(pCD->nmcd.hdc, TRANSPARENT);
-                    SetTextColor(pCD->nmcd.hdc, RGB(230, 230, 230));
+                    SetTextColor(pCD->nmcd.hdc, ColorValue::white().rColor());
                     DrawTextW(pCD->nmcd.hdc, glyph, 1, &rcBtn,
                         DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
@@ -260,7 +265,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             } 
         }
-        return 0;
+        return CDRF_DODEFAULT;
     }
     break;
 

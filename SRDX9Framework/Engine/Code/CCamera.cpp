@@ -78,7 +78,7 @@ void CCamera::UpdateProjectionMatrix()
 			m_sParameters.nearZ,
 			m_sParameters.farZ
 		);
-		break;
+	break;
 	case ORTHOGRAPHIC:
 	{
 		float width = m_sParameters.fov * m_sParameters.ascpect;

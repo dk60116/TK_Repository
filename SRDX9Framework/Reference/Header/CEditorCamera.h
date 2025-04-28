@@ -14,6 +14,7 @@ public:
 public:
     void AwakeEditor();
     void UpdateEditor() override;
+    void GotoViewGameObject(CGameObject* _gameObject);
 
 private:
     float m_fMoveSpeed, m_fRotateSpeed;

@@ -168,7 +168,7 @@ void CTransform::SetParent(CTransform* _parent)
 	}
 }
 
-void CTransform::SetPosition(const vector3& _world_pos)
+void CTransform::SetPosition(const vector3 _world_pos)
 {
 	if (m_pParent)
 	{
@@ -192,7 +192,7 @@ void CTransform::SetPosition(const _float _x, const _float _y, const _float _z)
 	SetPosition(pos);
 }
 
-void CTransform::AddPosition(const vector3& _world_delta)
+void CTransform::AddPosition(const vector3 _world_delta)
 {
 	if (m_pParent)
 	{
@@ -252,7 +252,7 @@ void CTransform::AddPositionZ(const _float _z)
 	AddPosition(vector3(0.f, 0.f, _z));
 }
 
-void CTransform::SetEulerAngles(const vector3& _world_euler_deg)
+void CTransform::SetEulerAngles(const vector3 _world_euler_deg)
 {
 	D3DXQUATERNION worldQuat = quaternion::from_euler(_world_euler_deg).dQuaternion();
 
@@ -283,7 +283,7 @@ void CTransform::SetEulerAngles(const _float _x, const _float _y, const _float _
 	SetEulerAngles(angle);
 }
 
-void CTransform::AddEulerAngles(const vector3& _delta)
+void CTransform::AddEulerAngles(const vector3 _delta)
 {
 	vector3 newEuler = m_vWorldEulerAngle + _delta;
 	SetEulerAngles(newEuler);

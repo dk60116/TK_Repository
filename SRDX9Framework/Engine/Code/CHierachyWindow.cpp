@@ -33,9 +33,12 @@ HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
 		_hWnd, nullptr, GetModuleHandle(NULL), nullptr
 	);
 	
-	TreeView_SetExtendedStyle(m_hTreeView,
+	TreeView_SetExtendedStyle
+	(
+		m_hTreeView,
 		TVS_EX_DOUBLEBUFFER,
-		TVS_EX_DOUBLEBUFFER | TVS_EX_FADEINOUTEXPANDOS);
+		TVS_EX_DOUBLEBUFFER | TVS_EX_FADEINOUTEXPANDOS
+	);
 
 	SetTreeViewOptions();
 
@@ -68,26 +71,59 @@ LRESULT CHierachyWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam
 	{
 		LPNMHDR pNMHDR = reinterpret_cast<LPNMHDR>(_lParam);
 
-		if (pNMHDR->code == TVN_SELCHANGED)
+		if (pNMHDR->hwndFrom == m_hTreeView)
 		{
-			LPNMTREEVIEW pNMTV = reinterpret_cast<LPNMTREEVIEW>(_lParam);
-
-			HTREEITEM hSelectedItem = pNMTV->itemNew.hItem;
-			HWND treeHandle = CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->getTreeHandle();
-
-			TVITEMW tvi = {};
-			tvi.hItem = hSelectedItem;
-			tvi.mask = TVIF_PARAM;
-
-			if (TreeView_GetItem(treeHandle, &tvi))
+			if (pNMHDR->code == TVN_SELCHANGED)
 			{
-				CGameObject* pSelectedObject = reinterpret_cast<CGameObject*>(tvi.lParam);
+				LPNMTREEVIEW pNMTV = reinterpret_cast<LPNMTREEVIEW>(_lParam);
 
-				if (pSelectedObject)
+				HTREEITEM hSelectedItem = pNMTV->itemNew.hItem;
+				HWND treeHandle = CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->getTreeHandle();
+
+				TVITEMW tvi = {};
+				tvi.hItem = hSelectedItem;
+				tvi.mask = TVIF_PARAM;
+
+				if (TreeView_GetItem(treeHandle, &tvi))
 				{
-					CEngineEditor::GetInstance().SelectGameObject(pSelectedObject);
+					CGameObject* pSelectedObject = reinterpret_cast<CGameObject*>(tvi.lParam);
+
+					if (pSelectedObject)
+					{
+						CEngineEditor::GetInstance().SelectGameObject(pSelectedObject);
+					}
 				}
 			}
+		}
+
+		if (pNMHDR->code == NM_DBLCLK)
+		{
+			DWORD dwPos = GetMessagePos();
+
+			POINT pt = { GET_X_LPARAM(dwPos), GET_Y_LPARAM(dwPos) };
+			ScreenToClient(m_hTreeView, &pt);
+
+			TVHITTESTINFO hitTestInfo = {};
+			hitTestInfo.pt = pt;
+
+			TreeView_HitTest(m_hTreeView, &hitTestInfo);
+
+			HTREEITEM hClickedItem = hitTestInfo.hItem;
+
+			TVITEM tvi = {};
+			tvi.hItem = hClickedItem;
+			tvi.mask = TVIF_PARAM;
+
+			if (TreeView_GetItem(m_hTreeView, &tvi))
+			{
+				CGameObject* pClickedObj = reinterpret_cast<CGameObject*>(tvi.lParam);
+				if (pClickedObj)
+				{
+					CManagement::GetInstance().getEditorCamera().GotoViewGameObject(pClickedObj);
+				}
+			}
+
+			return TRUE;
 		}
 
 		return 0;
@@ -105,6 +141,9 @@ void CHierachyWindow::BuildTree()
 	TreeView_DeleteAllItems(m_hTreeView);
 
 	AddSceneRecursive(CManagement::GetInstance().getCrtScene());
+
+	HTREEITEM hRootItem = TreeView_GetRoot(m_hTreeView);
+	TreeView_Expand(m_hTreeView, hRootItem, TVE_EXPAND);
 }
 
 void CHierachyWindow::AddSceneRecursive(CScene* _scene)

@@ -43,9 +43,8 @@ HRESULT CManagement::LoadScene(wstring _scene)
 
 	m_pCrtScene = iter->second;
 
-	iter->second->Awake();
+	iter->second->EditorInit();
 	iter->second->UpdateEditor();
-	iter->second->Update();
 
 	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 

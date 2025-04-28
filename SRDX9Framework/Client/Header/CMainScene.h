@@ -13,6 +13,7 @@ public:
     ~CMainScene();
 
 public:
+    void EditorInit() override;
     void Awake() override;
     void Start() override;
     void Update() override;

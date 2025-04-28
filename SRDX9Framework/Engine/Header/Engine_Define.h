@@ -16,6 +16,7 @@
 #include <memory>
 #include <atomic>
 #include <dwmapi.h>
+#include <windowsx.h>
 #pragma comment(lib, "dwmapi.lib")
 
 #include "Resource.h"

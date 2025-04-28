@@ -1,6 +1,7 @@
 #include "CEditorCamera.h"
 #include "CTime.h"
 #include "CInput.h"
+#include "CGameObject.h"
 #include "CTransform.h"
 
 CEditorCamera::CEditorCamera()
@@ -81,4 +82,11 @@ void CEditorCamera::UpdateEditor()
 		m_bRMouseDowned = false;
 		m_v2MouseDragDelta = vector2::zero();
 	}
+}
+
+void CEditorCamera::GotoViewGameObject(CGameObject* _gameObject)
+{
+	m_pGameObject->getTransform().SetPosition(_gameObject->getTransform().getPosition());
+
+	Update();
 }

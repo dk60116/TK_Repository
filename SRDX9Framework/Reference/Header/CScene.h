@@ -23,6 +23,7 @@ protected:
     ~CScene();
 
 public:
+    virtual void EditorInit();
     virtual void Awake();
     virtual void Start();
     void UpdateEditor();
@@ -71,6 +72,8 @@ protected:
     SceneOptions m_sOptions;
 
     LPDIRECT3DDEVICE9 m_pGraphicDev;
+
+    UINT m_iObjIndex;
 };
 
 END
