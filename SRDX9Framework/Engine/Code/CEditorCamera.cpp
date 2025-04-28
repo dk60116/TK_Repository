@@ -87,6 +87,7 @@ void CEditorCamera::UpdateEditor()
 void CEditorCamera::GotoViewGameObject(CGameObject* _gameObject)
 {
 	m_pGameObject->getTransform().SetPosition(_gameObject->getTransform().getPosition());
+	m_pGameObject->getTransform().AddPosition(m_pGameObject->getTransform().getDirections().back * 3.f);
 
-	Update();
+	UpdateEditor();
 }

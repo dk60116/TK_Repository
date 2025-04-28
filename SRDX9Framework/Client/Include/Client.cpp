@@ -136,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
-        if (hWnd == CEngineEditor::GetInstance().getWindowHandle(L"Base"))
+        if (hWnd == CEngineEditor::GetInstance().FindWindowHandle(L"Base"))
         {
             HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -276,15 +276,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _int width = rcClient.right - rcClient.left;
         _int height = rcClient.bottom - rcClient.top;
 
-        if (hWnd == CEngineEditor::GetInstance().getWindowHandle(L"Scene"))
+        if (hWnd == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"))
             CMainProcess::GetInstance().OnSceneScreenChange(width, height);
-        else if (hWnd == CEngineEditor::GetInstance().getWindowHandle(L"Game"))
+        else if (hWnd == CEngineEditor::GetInstance().FindWindowHandle(L"Game"))
             CMainProcess::GetInstance().OnGameScreenChange(width, height);
     }
     break;
 
     case WM_DESTROY:
-        if (hWnd == CEngineEditor::GetInstance().getWindowHandle(L"Base"))
+        if (hWnd == CEngineEditor::GetInstance().FindWindowHandle(L"Base"))
             PostQuitMessage(0);
         break;
     default:

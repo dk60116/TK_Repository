@@ -11,7 +11,7 @@ class CTransform;
 class ENGINE_DLL CComponent abstract
 	: public UObject
 {
-public:
+protected:
 	explicit CComponent();
 	explicit CComponent(const CComponent& _rhs);
 	~CComponent();

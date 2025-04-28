@@ -126,14 +126,14 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return TRUE;
 }
 
-HWND CEngineEditor::getWindowHandle(wstring _window)
+HWND CEngineEditor::FindWindowHandle(const wstring _window)
 {
 	auto it = m_mWHandleList.find(_window);
 
-	if (it != m_mWHandleList.end())
-		return it->second;
+	if (it == m_mWHandleList.end())
+		return nullptr;
 
-	return nullptr;
+	return it->second;
 }
 
 void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)

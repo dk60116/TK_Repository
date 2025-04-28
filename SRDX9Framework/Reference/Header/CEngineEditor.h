@@ -29,7 +29,7 @@ public:
 	HINSTANCE getHInstance() { return m_hInst; }
 	template <typename T>
 	T* getWindow();
-	HWND getWindowHandle(wstring _window);
+	HWND FindWindowHandle(const wstring _window);
 
 	const _bool isPlaying() const { return m_bPlaying; }
 	void SetPlaying(const _bool _value) { m_bPlaying = _value; }
