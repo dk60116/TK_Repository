@@ -166,11 +166,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         wchar_t windowTitle[256] = { 0 };
         GetWindowTextW(hStatic, windowTitle, sizeof(windowTitle) / sizeof(wchar_t));
 
-        if (wcscmp(windowTitle, L"TopBar") == 0)
+        if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == 2)
         {
             SetBkMode(hdcStatic, TRANSPARENT);
-            SetBkColor(hdcStatic, RGB(0, 0, 0));
-            static HBRUSH hBlackBrush = CreateSolidBrush(RGB(0, 0, 0));
+            SetBkColor(hdcStatic, ColorValue::black().rColor());
+            static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
+            return (INT_PTR)hBlackBrush;
+        }
+        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == 1 || GetWindowLongPtr(hStatic, GWLP_USERDATA) == 3)
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, ColorValue::black().rColor());
+            static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue::white().black());
             return (INT_PTR)hBlackBrush;
         }
     }

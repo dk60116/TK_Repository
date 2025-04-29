@@ -19,9 +19,9 @@ CHierachyWindow::~CHierachyWindow()
 {
 }
 
-HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size)
+HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 {
-	if (FAILED(__super::Init(_hWnd, _size)))
+	if (FAILED(__super::Init(_hWnd, _size, _isBase)))
 		return E_FAIL;
 
 	InitCommonControls();

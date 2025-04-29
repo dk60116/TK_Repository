@@ -10,9 +10,9 @@ CSceneWindow::~CSceneWindow()
 {
 }
 
-HRESULT CSceneWindow::Init(HWND _hWnd, vector2Int _size)
+HRESULT CSceneWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 {
-	if (FAILED(__super::Init(_hWnd, _size)))
+	if (FAILED(__super::Init(_hWnd, _size, _isBase)))
 		return E_FAIL;
 
 	HINSTANCE hInstance = CEngineEditor::GetInstance().getHInstance();

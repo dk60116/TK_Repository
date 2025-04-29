@@ -15,19 +15,19 @@ CBaseWindow::~CBaseWindow()
 {
 }
 
-HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size)
+HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 {
 	m_iTopBarHeight = MAINTOPBARHEIGHT;
 	m_bHaveWindowBar = true;
 	
-	if (FAILED(__super::Init(_hWnd, _size)))
+	if (FAILED(__super::Init(_hWnd, _size, true)))
 		return E_FAIL;
 
 	HINSTANCE hInstance = CEngineEditor::GetInstance().getHInstance();
 
 	_int bottomY = m_sClinentRect.bottom;
 
-	// 하단바 영역
+	// 하단바
 	m_hBottomBar = CreateWindowW
 	(
 		L"STATIC", nullptr,
@@ -37,6 +37,8 @@ HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size)
 		bottomY,
 		_hWnd, nullptr, hInstance, nullptr
 	);
+
+	SetWindowLongPtr(m_hBottomBar, GWLP_USERDATA, static_cast<LONG_PTR>(3));
 
 	if (!m_hBottomBar)
 		return E_FAIL;

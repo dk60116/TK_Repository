@@ -16,7 +16,7 @@ CEditorWindow::~CEditorWindow()
 {
 }
 
-HRESULT CEditorWindow::Init(HWND _hWnd, const vector2Int _size)
+HRESULT CEditorWindow::Init(HWND _hWnd, const vector2Int _size, _bool _isBase)
 {
 	m_hWnd = _hWnd;
 	m_v2Resolution = _size;
@@ -27,11 +27,16 @@ HRESULT CEditorWindow::Init(HWND _hWnd, const vector2Int _size)
 	GetClientRect(_hWnd, &m_sClinentRect);
 	GetWindowRect(_hWnd, &m_sWindowRect);
 
-	// 상단바 영역
-	m_hTopBar = CreateWindowW(L"STATIC", L"TopBar",
+	// 상단바
+	m_hTopBar = CreateWindowW
+	(
+		L"STATIC", nullptr,
 		WS_VISIBLE | WS_CHILD,
 		0, 0, _size.x, m_iTopBarHeight,
-		_hWnd, nullptr, CEngineEditor::GetInstance().getHInstance(), nullptr);
+		_hWnd, nullptr, CEngineEditor::GetInstance().getHInstance(), nullptr
+	);
+
+	SetWindowLongPtr(m_hTopBar, GWLP_USERDATA, static_cast<LONG_PTR>(_isBase ? 1 : 2));
 
 	if (!m_hTopBar)
 		return E_FAIL;

@@ -13,7 +13,7 @@ protected:
 	~CEditorWindow();
 
 public:
-	virtual HRESULT Init(HWND _hWnd, const vector2Int _size);
+	virtual HRESULT Init(HWND _hWnd, const vector2Int _size, _bool _isBase = false);
 	virtual void Render() PURE;
 	virtual void Update() PURE;
 	virtual void UpdateResolution(HWND _target, const vector2Int _resolution);
