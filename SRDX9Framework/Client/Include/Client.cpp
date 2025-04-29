@@ -306,8 +306,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     rcBtn.bottom = rcBtn.top + w + 1;
 
                     COLORREF btnBGColor = 
-                        (info.state & TVIS_SELECTED) &&
-                        (GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
+                        (info.state & TVIS_SELECTED)
                         ? RGB(44, 93, 135) : CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
 
                     if (hot)

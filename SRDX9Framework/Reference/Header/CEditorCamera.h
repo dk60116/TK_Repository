@@ -24,7 +24,6 @@ private:
     vector2 m_v2MouseDragDelta;
     vector2Int m_v2PrevMosuePos;
     float m_fPitch, m_fYaw;
-    CGameObject* m_pZoomObject;
     _bool m_bMoving;
     float m_fMoveTimeTotal, m_fMoveTimeCur;
     vector3 m_v3MoveFrom, m_v3MoveTo;

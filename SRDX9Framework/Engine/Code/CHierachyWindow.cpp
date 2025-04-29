@@ -30,7 +30,8 @@ HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 	m_hTreeView = CreateWindowEx
 	(
 		0, WC_TREEVIEW, L"Hierachy Tree",
-		WS_VISIBLE | WS_CHILD | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_TRACKSELECT | TVS_FULLROWSELECT | TVS_NONEVENHEIGHT,
+		WS_VISIBLE | WS_CHILD |
+		TVS_SHOWSELALWAYS | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_TRACKSELECT | TVS_FULLROWSELECT | TVS_NONEVENHEIGHT,
 		m_iLeftSideWidth, CHILDTOPBARHEIGHT,
 		_size.x - m_iLeftSideWidth, _size.y - CHILDTOPBARHEIGHT,
 		_hWnd, nullptr, GetModuleHandle(NULL), nullptr

@@ -3,6 +3,7 @@
 #include "CInput.h"
 #include "CGameObject.h"
 #include "CTransform.h"
+#include "CEngineEditor.h"
 
 CEditorCamera::CEditorCamera()
 	: m_fMoveSpeed(4.f)
@@ -11,7 +12,6 @@ CEditorCamera::CEditorCamera()
 	, m_bRMouseDowned(false)
 	, m_fPitch(0.f)
 	, m_fYaw(0.f)
-	, m_pZoomObject(nullptr)
 	, m_bMoving(false)
 	, m_fMoveTimeTotal(0.25f)
 	, m_fMoveTimeCur(0.f)
@@ -120,7 +120,7 @@ void CEditorCamera::UpdateEditor()
 
 void CEditorCamera::GotoViewGameObject(CGameObject* _gameObject)
 {
-	float dist = (m_bZoomDistToggle && m_pZoomObject == _gameObject) ? 8.f : 3.f;
+	float dist = (m_bZoomDistToggle && CEngineEditor::GetInstance().getSelectedGameObject() == _gameObject) ? 8.f : 3.f;
 	vector3 targetPos = _gameObject->getTransform().getPosition() + getTransform().getDirections().back * dist;
 
 	m_v3MoveFrom = getTransform().getPosition();
@@ -128,6 +128,5 @@ void CEditorCamera::GotoViewGameObject(CGameObject* _gameObject)
 	m_fMoveTimeCur = 0.f;
 	m_bMoving = true;
 
-	m_bZoomDistToggle = (m_pZoomObject == _gameObject) ? !m_bZoomDistToggle : true;
-	m_pZoomObject = _gameObject;
+	m_bZoomDistToggle = (CEngineEditor::GetInstance().getSelectedGameObject() == _gameObject) ? !m_bZoomDistToggle : true;
 }

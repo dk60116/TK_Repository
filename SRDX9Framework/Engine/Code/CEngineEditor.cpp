@@ -22,6 +22,8 @@ CEngineEditor::~CEngineEditor()
 
 void CEngineEditor::Release()
 {
+	Safe_Release(m_pSelectedGameObject);
+
 	for (TRAVERSAL_ITER(m_mWindowList, it))
 	{
 		(*it).second->Destroy();
@@ -168,7 +170,16 @@ void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 
 void CEngineEditor::SelectGameObject(CGameObject* _gameObject)
 {
-	m_pSelectedGameObject = _gameObject;
+	if (m_pSelectedGameObject)
+		Safe_Release(m_pSelectedGameObject);
+
+	m_pSelectedGameObject = nullptr;
+
+	if (_gameObject)
+	{
+		m_pSelectedGameObject = _gameObject;
+		_gameObject->AddRef();
+	}
 }
 
 HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold)
