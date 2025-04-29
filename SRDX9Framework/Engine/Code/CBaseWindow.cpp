@@ -38,7 +38,7 @@ HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 		_hWnd, nullptr, hInstance, nullptr
 	);
 
-	SetWindowLongPtr(m_hBottomBar, GWLP_USERDATA, static_cast<LONG_PTR>(3));
+	SetWindowLongPtr(m_hBottomBar, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_BASEBOTTOMBAR));
 
 	if (!m_hBottomBar)
 		return E_FAIL;

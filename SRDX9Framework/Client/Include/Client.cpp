@@ -154,6 +154,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DeleteObject(blackBrush);
         }
 
+        if (hWnd == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy Side"))
+        {
+            HDC hdc = BeginPaint(hWnd, &ps);
+
+            HBRUSH blackBrush = CreateSolidBrush(ColorValue(25, 25, 25).rColor());
+            FillRect(hdc, &ps.rcPaint, blackBrush);
+            DeleteObject(blackBrush);
+        }
+
         EndPaint(hWnd, &ps);
     }
     break;
@@ -166,18 +175,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         wchar_t windowTitle[256] = { 0 };
         GetWindowTextW(hStatic, windowTitle, sizeof(windowTitle) / sizeof(wchar_t));
 
-        if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == 2)
+        if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_CHILDTOPBAR)
         {
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, ColorValue::black().rColor());
             static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
             return (INT_PTR)hBlackBrush;
         }
-        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == 1 || GetWindowLongPtr(hStatic, GWLP_USERDATA) == 3)
+        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_BASETOPBAR || GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_BASEBOTTOMBAR)
         {
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, ColorValue::black().rColor());
             static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue::white().black());
+            return (INT_PTR)hBlackBrush;
+        }
+        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_HIERACHYSIDE)
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, ColorValue::white().black());
+            static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue(49, 49, 49).rColor());
             return (INT_PTR)hBlackBrush;
         }
     }
@@ -211,9 +227,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             auto pCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(lParam);
 
-            bool hot = pCD->nmcd.uItemState & CDIS_HOT;
-            bool selected = pCD->nmcd.uItemState & CDIS_SELECTED;
-            bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
+            _bool hot = pCD->nmcd.uItemState & CDIS_HOT;
+            HWND hwndTree = pNMHDR->hwndFrom;
+            _bool selected = pCD->nmcd.uItemState & CDIS_SELECTED;
+            _bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
+            HTREEITEM hItem = (HTREEITEM)pCD->nmcd.dwItemSpec;
+            RECT rcItem;
+
+            TreeView_GetItemRect(hwndTree, hItem, &rcItem, TRUE);
+
+            HTREEITEM hSelected = (HTREEITEM)SendMessage(hwndTree, TVM_GETNEXTITEM, TVGN_CARET, 0);
+
+            HTREEITEM hParent = TreeView_GetParent(hwndTree, hItem);
+
+            _bool isRoot = (hParent == NULL);
 
             switch (pCD->nmcd.dwDrawStage)
             {
@@ -239,6 +266,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     if (selected && !mouseDown)
                     {
                         pCustomDraw->clrTextBk = RGB(44, 93, 135); // 푸른 배경
+                    }
+
+                    if (isRoot && !selected)
+                    {
+                        pCustomDraw->clrTextBk = RGB(35, 35, 35); // 짙은 배경
                     }
 
                     HFONT hDef = (HFONT)SendMessage(pNMHDR->hwndFrom, WM_GETFONT, 0, 0);
@@ -283,7 +315,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         btnBGColor = RGB(68, 68, 68);
 
                         if (selected)
+                        {
                             btnBGColor = RGB(44, 93, 135);
+                        }
                         else if (mouseDown)
                             btnBGColor = RGB(44, 93, 135);
                     }
@@ -292,6 +326,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         btnBGColor = CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
                     }
+
+                    if (isRoot && !selected)
+                        btnBGColor = RGB(35, 35, 35);
 
                     // 기존 +/– 덮기
                     HBRUSH hBrush = CreateSolidBrush(btnBGColor);
@@ -333,7 +370,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     if (hFontBig) DeleteObject(hFontBig);
                 }
             }
-                return CDRF_DODEFAULT; 
+                return CDRF_SKIPDEFAULT;
             } 
         }
         return CDRF_DODEFAULT;

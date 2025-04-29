@@ -48,7 +48,7 @@ public:
 
 private:
 	HierachyViewOptions m_sOptions;
-	HWND m_hTreeView;
+	HWND m_hTreeView, m_hLeftSideArea;
 	HTREEITEM m_hPressedItem;
 	_int m_iLeftSideWidth;
 	HFONT m_hFont;

@@ -8,6 +8,7 @@
 CHierachyWindow::CHierachyWindow()
 	: m_sOptions({})
 	, m_hTreeView(nullptr)
+	, m_hLeftSideArea(nullptr)
 	, m_hPressedItem(nullptr)
 	, m_iLeftSideWidth(40)
 	, m_hFont(nullptr)
@@ -29,7 +30,7 @@ HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 	m_hTreeView = CreateWindowEx
 	(
 		0, WC_TREEVIEW, L"Hierachy Tree",
-		WS_VISIBLE | WS_CHILD | WS_BORDER | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_TRACKSELECT | TVS_FULLROWSELECT | TVS_NONEVENHEIGHT,
+		WS_VISIBLE | WS_CHILD | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_TRACKSELECT | TVS_FULLROWSELECT | TVS_NONEVENHEIGHT,
 		m_iLeftSideWidth, CHILDTOPBARHEIGHT,
 		_size.x - m_iLeftSideWidth, _size.y - CHILDTOPBARHEIGHT,
 		_hWnd, nullptr, GetModuleHandle(NULL), nullptr
@@ -40,6 +41,17 @@ HRESULT CHierachyWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 	SetTreeViewOptions();
 
 	SetWindowSubclass(m_hTreeView, TreeSubProc, 0, (DWORD_PTR)this);
+
+	m_hLeftSideArea = CreateWindowEx
+	(
+		0, L"STATIC", nullptr,
+		WS_VISIBLE | WS_CHILD,
+		0, CHILDTOPBARHEIGHT,
+		m_iLeftSideWidth, _size.y - CHILDTOPBARHEIGHT,
+		_hWnd, nullptr, GetModuleHandle(NULL), nullptr
+	);
+
+	SetWindowLongPtr(m_hLeftSideArea, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_HIERACHYSIDE));
 
 	return S_OK;
 }
@@ -89,7 +101,7 @@ LRESULT CHierachyWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam
 				{
 					CGameObject* pSelectedObject = reinterpret_cast<CGameObject*>(tvi.lParam);
 
-					if (pSelectedObject)
+					if (dynamic_cast<CGameObject*>(pSelectedObject))
 					{
 						CEngineEditor::GetInstance().SelectGameObject(pSelectedObject);
 					}
@@ -154,7 +166,6 @@ void CHierachyWindow::AddSceneRecursive(CScene* _scene)
 	tvInsert.hInsertAfter = TVI_LAST;
 	tvInsert.item.mask = TVIF_TEXT | TVIF_PARAM;
 	tvInsert.item.pszText = const_cast<wchar_t*>(_scene->getName().c_str());
-	tvInsert.item.lParam = reinterpret_cast<LPARAM>(_scene);
 
 	HTREEITEM hItem = TreeView_InsertItem(m_hTreeView, &tvInsert);
 

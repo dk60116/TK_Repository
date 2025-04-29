@@ -93,9 +93,12 @@ void CGraphicDev::Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color)
 	m_pGraphicDev->SetViewport(&_viewPort);
 
 	// È­¸é Clear
-	m_pGraphicDev->Clear(1, nullptr,
+	m_pGraphicDev->Clear
+	(
+		1, nullptr,
 		D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER,
-		_color, 1.f, 0);
+		_color, 1.f, 0
+	);
 
 	m_pGraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);

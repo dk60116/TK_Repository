@@ -34,6 +34,11 @@
 #define MAINTOPBARHEIGHT 40
 #define CHILDTOPBARHEIGHT 28
 
+#define HWND_BASETOPBAR 100
+#define HWND_CHILDTOPBAR 101
+#define HWND_BASEBOTTOMBAR 102
+#define HWND_HIERACHYSIDE 103
+
 #pragma warning(disable : 4251)
 
 #ifdef _DEBUG

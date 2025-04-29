@@ -128,6 +128,6 @@ void CEditorCamera::GotoViewGameObject(CGameObject* _gameObject)
 	m_fMoveTimeCur = 0.f;
 	m_bMoving = true;
 
-	m_bZoomDistToggle = (m_pZoomObject == _gameObject) ? !m_bZoomDistToggle : false;
+	m_bZoomDistToggle = (m_pZoomObject == _gameObject) ? !m_bZoomDistToggle : true;
 	m_pZoomObject = _gameObject;
 }

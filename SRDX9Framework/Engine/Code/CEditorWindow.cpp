@@ -36,7 +36,7 @@ HRESULT CEditorWindow::Init(HWND _hWnd, const vector2Int _size, _bool _isBase)
 		_hWnd, nullptr, CEngineEditor::GetInstance().getHInstance(), nullptr
 	);
 
-	SetWindowLongPtr(m_hTopBar, GWLP_USERDATA, static_cast<LONG_PTR>(_isBase ? 1 : 2));
+	SetWindowLongPtr(m_hTopBar, GWLP_USERDATA, static_cast<LONG_PTR>(_isBase ? HWND_BASETOPBAR : HWND_CHILDTOPBAR));
 
 	if (!m_hTopBar)
 		return E_FAIL;
