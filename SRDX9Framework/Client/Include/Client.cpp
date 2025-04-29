@@ -266,12 +266,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     rcBtn.top += (rcText.bottom - rcText.top - w) / 2;
                     rcBtn.bottom = rcBtn.top + w + 1;
 
-                    bool mouseDown = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
-
                     COLORREF btnBGColor = 
                         (info.state & TVIS_SELECTED) &&
                         (GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
                         ? RGB(44, 93, 135) : CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+
+                    if (hot)
+                    {
+                        btnBGColor = RGB(68, 68, 68);
+
+                        if (selected)
+                            btnBGColor = RGB(44, 93, 135);
+                        else if (mouseDown)
+                            btnBGColor = RGB(44, 93, 135);
+                    }
+
+                    if (mouseDown && !hot)
+                    {
+                        btnBGColor = CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+                    }
 
                     // 기존 +/– 덮기
                     HBRUSH hBrush = CreateSolidBrush(btnBGColor);
