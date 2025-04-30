@@ -1,9 +1,6 @@
 ﻿#include "CScreen.h"
 #include "CManagement.h"
-#include "CBaseWindow.h"
-#include "CSceneWindow.h"
-#include "CGameWindow.h"
-#include "CHierachyWindow.h"
+#include "CEngineEditor.h"
 
 CScreen::CScreen()
 	: m_hInstance(nullptr)
@@ -108,7 +105,6 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 		return E_FAIL;
 
 	RECT gameRect = {};
-
 	GetClientRect(gameWnd, &gameRect);
 
 	POINT gamePT = { 0, gameRect.bottom };
@@ -129,6 +125,25 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CHierachyWindow>(hierachyWnd, L"Hierachy", vector2Int(hierachyWidth, hierachyHeight))))
 		return E_FAIL;
+
+	RECT hierachyRect = {};
+	GetClientRect(hierachyWnd, &hierachyRect);
+
+	POINT hierachyPT = { 0, hierachyRect.bottom };
+	ClientToScreen(hierachyWnd, &hierachyPT);
+
+	_int projectWidth = _int(hierachyWidth * 0.8f);
+	_int projectHeight = _int(gamePT.y - clientPoint.y - offsetY * 2);
+
+	HWND projectWnd = CreateWindowW(L"ProjectWindowClass", L"☰ Project",
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		hierachyPT.x + hierachyRect.right + offsetX + 2,
+		clientPoint.y,
+		projectWidth,
+		projectHeight,
+		mainWnd, nullptr, _hInst, nullptr);
+
+	CEngineEditor::GetInstance().RemoveBtnsAndRoundedCorners(projectWnd);
 
 	return S_OK;
 }

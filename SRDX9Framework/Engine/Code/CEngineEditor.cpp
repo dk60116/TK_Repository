@@ -67,7 +67,7 @@ ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
 	scenewcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
 	scenewcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	scenewcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	scenewcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	scenewcex.hIconSm = NULL;
 	if (!RegisterClassExW(&scenewcex))
 		return 0;
 
@@ -84,7 +84,7 @@ ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
 	gamewcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
 	gamewcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	gamewcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	gamewcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	gamewcex.hIconSm = NULL;
 	if (!RegisterClassExW(&gamewcex))
 		return 0;
 
@@ -100,8 +100,24 @@ ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
 	hierachywcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
 	hierachywcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	hierachywcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	hierachywcex.hIconSm = LoadIcon(basewcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	hierachywcex.hIconSm = NULL;
 	if (!RegisterClassExW(&hierachywcex))
+		return 0;
+
+	// Project Window
+	WNDCLASSEXW projectwcex = {};
+	projectwcex.lpszClassName = L"ProjectWindowClass";
+	projectwcex.lpszMenuName = nullptr;
+	projectwcex.cbSize = sizeof(WNDCLASSEX);
+	projectwcex.lpfnWndProc = _wndPrc;
+	projectwcex.cbClsExtra = 0;
+	projectwcex.cbWndExtra = 0;
+	projectwcex.hInstance = hInstance;
+	projectwcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+	projectwcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	projectwcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	projectwcex.hIconSm = NULL;
+	if (!RegisterClassExW(&projectwcex))
 		return 0;
 
 	return 1;

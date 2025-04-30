@@ -4,6 +4,9 @@
 #include "Engine_Define.h"
 #include "CTime.h"
 #include "CEditorWindow.h"
+#include "CBaseWindow.h"
+#include "CSceneWindow.h"
+#include "CGameWindow.h"
 #include "CHierachyWindow.h"
 #include "CGameObject.h"
 
