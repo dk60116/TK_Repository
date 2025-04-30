@@ -4,6 +4,16 @@
 
 BEGIN(Engine)
 
+struct EditorCameraOption
+{
+    _float moveSpeed = 4.f;
+    _float crtMoveSpeed = 0.f;
+    _float rotateSpeed = 25.f;
+    _float dragSpeed = 2.f;
+    _float crtDragSpeed = 0.f;
+    _float zoomSpeed = 3.f;
+};
+
 class ENGINE_DLL CEditorCamera final
     : public CCamera 
 {
@@ -18,8 +28,7 @@ public:
     void GotoViewGameObject(CGameObject* _gameObject);
 
 private:
-    float m_fMoveSpeed, m_fRotateSpeed;
-    float m_fCrtMoveSpd;
+    EditorCameraOption m_sOptions;
     _bool m_bRMouseDowned;
     vector2 m_v2MouseDragDelta;
     vector2Int m_v2PrevMosuePos;

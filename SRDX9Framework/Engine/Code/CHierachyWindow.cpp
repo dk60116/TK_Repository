@@ -215,18 +215,24 @@ LRESULT CHierachyWindow::TreeSubProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPAR
 
     switch (_msg)
     {
-    case WM_LBUTTONDOWN:
-    {
-        break;
-    }
+	case WM_LBUTTONDOWN:
+	{
+		POINT pt;
+		pt.x = GET_X_LPARAM(_lParam);
+		pt.y = GET_Y_LPARAM(_lParam);
 
-    case WM_LBUTTONUP:
-    {
-        if (self->m_hPressedItem)
-        {
-        }
-        break;  // 기본 처리도 OK
-    }
+		TVHITTESTINFO hitTestInfo{};
+		hitTestInfo.pt = pt;
+
+		if (hitTestInfo.hItem == nullptr)
+			TreeView_SelectItem(self->m_hTreeView, nullptr);
+	}
+	break;
+
+	case WM_LBUTTONUP:
+	{
+	}
+	break;
 
     case WM_CAPTURECHANGED:   // 드래그 도중 ESC 또는 외부 클릭 등
         break;

@@ -4,11 +4,10 @@
 #include "CGameObject.h"
 #include "CTransform.h"
 #include "CEngineEditor.h"
+#include "CDebug.h"
 
 CEditorCamera::CEditorCamera()
-	: m_fMoveSpeed(4.f)
-	, m_fRotateSpeed(25.f)
-	, m_fCrtMoveSpd(0.f)
+	: m_sOptions({})
 	, m_bRMouseDowned(false)
 	, m_fPitch(0.f)
 	, m_fYaw(0.f)
@@ -42,9 +41,12 @@ void CEditorCamera::AwakeEditor()
 
 void CEditorCamera::UpdateEditor()
 {
-	float dt = CTime::GetInstance().Get_TimeDelta();
+	float dt = CTime::GetInstance().Get_DeltaTime();
 
 	__super::UpdateEditor();
+
+	_bool isShift = CInput::GetInstance().GetKey_Editor(SHIFT);
+	_bool isCtrl = CInput::GetInstance().GetKey_Editor(CONTROL);
 
 	if (m_bMoving)
 	{
@@ -66,16 +68,17 @@ void CEditorCamera::UpdateEditor()
 	}
 	else
 	{
-		if (CInput::GetInstance().GetKey_Editor(SHIFT))
-			m_fCrtMoveSpd = m_fMoveSpeed * 2.5f;
+		if (isShift)
+			m_sOptions.crtMoveSpeed = m_sOptions.moveSpeed * 2.5f;
 		else
-			m_fCrtMoveSpd = m_fMoveSpeed;
+			m_sOptions.crtMoveSpeed = m_sOptions.moveSpeed;
 
 		CTransform& camTransform = getTransform();
 
 		bool isRightMouseDown = CInput::GetInstance().GetMouseButton_Editor(1);
+		bool isMiddleMouseDown = CInput::GetInstance().GetMouseButton_Editor(2);
 
-		if (isRightMouseDown)
+		if (isRightMouseDown || isMiddleMouseDown)
 		{
 			vector2Int currentMouse = CInput::GetInstance().GetMousePos();
 
@@ -86,34 +89,61 @@ void CEditorCamera::UpdateEditor()
 				return;
 			}
 
-			if (CInput::GetInstance().GetKey_Editor(W))
-				camTransform.AddLocalPosition(camTransform.getDirections().forward * dt * m_fCrtMoveSpd);
-			if (CInput::GetInstance().GetKey_Editor(S))
-				camTransform.AddLocalPosition(camTransform.getDirections().back * dt * m_fCrtMoveSpd);
-			if (CInput::GetInstance().GetKey_Editor(A))
-				camTransform.AddLocalPosition(camTransform.getDirections().left * dt * m_fCrtMoveSpd);
-			if (CInput::GetInstance().GetKey_Editor(D))
-				camTransform.AddLocalPosition(camTransform.getDirections().right * dt * m_fCrtMoveSpd);
-			if (CInput::GetInstance().GetKey_Editor(Q))
-				camTransform.AddLocalPosition(camTransform.getDirections().down * dt * m_fCrtMoveSpd);
-			if (CInput::GetInstance().GetKey_Editor(E))
-				camTransform.AddLocalPosition(camTransform.getDirections().up * dt * m_fCrtMoveSpd);
-
-			m_v2MouseDragDelta = (currentMouse - m_v2PrevMosuePos).to_vector2();
-			m_v2PrevMosuePos = currentMouse;
-
-			if (m_v2MouseDragDelta != vector2::zero())
+			if (!isCtrl)
 			{
-				m_fYaw += m_v2MouseDragDelta.x * dt * m_fRotateSpeed;
-				m_fPitch += m_v2MouseDragDelta.y * dt * m_fRotateSpeed;
+				if (CInput::GetInstance().GetKey_Editor(W))
+					camTransform.AddLocalPosition(camTransform.getDirections().forward * dt * m_sOptions.crtMoveSpeed);
+				if (CInput::GetInstance().GetKey_Editor(S))
+					camTransform.AddLocalPosition(camTransform.getDirections().back * dt * m_sOptions.crtMoveSpeed);
+				if (CInput::GetInstance().GetKey_Editor(A))
+					camTransform.AddLocalPosition(camTransform.getDirections().left * dt * m_sOptions.crtMoveSpeed);
+				if (CInput::GetInstance().GetKey_Editor(D))
+					camTransform.AddLocalPosition(camTransform.getDirections().right * dt * m_sOptions.crtMoveSpeed);
+				if (CInput::GetInstance().GetKey_Editor(Q))
+					camTransform.AddLocalPosition(camTransform.getDirections().down * dt * m_sOptions.crtMoveSpeed);
+				if (CInput::GetInstance().GetKey_Editor(E))
+					camTransform.AddLocalPosition(camTransform.getDirections().up * dt * m_sOptions.crtMoveSpeed);
 
-				camTransform.SetLocalEulerAngles(m_fPitch, m_fYaw, 0.f);
+				m_v2MouseDragDelta = (currentMouse - m_v2PrevMosuePos).to_vector2();
+				m_v2PrevMosuePos = currentMouse;
+
+				if (isRightMouseDown)
+				{
+					if (m_v2MouseDragDelta != vector2::zero())
+					{
+						m_fYaw += m_v2MouseDragDelta.x * dt * m_sOptions.rotateSpeed;
+						m_fPitch += m_v2MouseDragDelta.y * dt * m_sOptions.rotateSpeed;
+
+						camTransform.SetLocalEulerAngles(m_fPitch, m_fYaw, 0.f);
+					}
+				}
+			}
+
+			if (isShift)
+				m_sOptions.crtDragSpeed = m_sOptions.dragSpeed * 2.f;
+			else
+				m_sOptions.crtDragSpeed = m_sOptions.dragSpeed;
+
+			if (isMiddleMouseDown)
+			{
+				getTransform().AddPosition(getTransform().getDirections().left * m_v2MouseDragDelta.x * dt * m_sOptions.crtDragSpeed);
+				getTransform().AddPosition(getTransform().getDirections().up * m_v2MouseDragDelta.y * dt * m_sOptions.crtDragSpeed);
 			}
 		}
 		else
 		{
 			m_bRMouseDowned = false;
 			m_v2MouseDragDelta = vector2::zero();
+		}
+
+		float _wheel = CInput::GetInstance().getAxis_Editor(L"Mouse ScrollWheel");
+
+		CDebug::Log(_wheel);
+
+		if (_wheel != 0)
+		{
+			if (!isShift)
+				getTransform().AddPosition(getTransform().getDirections().forward * _wheel * dt * m_sOptions.zoomSpeed);
 		}
 	}
 }

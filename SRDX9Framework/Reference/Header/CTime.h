@@ -10,7 +10,7 @@ class ENGINE_DLL CTime
 
 public:
 	_int Get_FPS();
-	_float Get_TimeDelta();
+	_float Get_DeltaTime();
 	void SetTimeScale(const float _value) { m_fTimeScale = _value; }
 
 public:

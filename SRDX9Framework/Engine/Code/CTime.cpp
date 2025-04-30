@@ -18,7 +18,7 @@ _int CTime::Get_FPS()
 	return result;
 }
 
-_float CTime::Get_TimeDelta()
+_float CTime::Get_DeltaTime()
 {
 	float result = m_pTimer->Get_TimeDelta() * m_fTimeScale;
 

@@ -1,7 +1,10 @@
 #include "CInput.h"
 #include "CEngineEditor.h"
+#include "CDebug.h"
 
 CInput::CInput()
+    : m_fWheelAxis(0.f)
+    , m_fWheelRaw(0.f)
 {
     for (int i = 0; i < KEY_END; ++i)
     {
@@ -49,6 +52,8 @@ bool CInput::GetMouseButton(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
+    else if (_button == 2)
+        _button = MOUSE_WHILL;
     else
         return false;
 
@@ -61,6 +66,8 @@ bool CInput::GetMouseButton_Editor(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
+    else if (_button == 2)
+        _button = MOUSE_WHILL;
     else
         return false;
 
@@ -73,6 +80,8 @@ bool CInput::GetMouseButtonDown(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
+    else if (_button == 2)
+        _button = MOUSE_WHILL;
     else
         return false;
 
@@ -85,6 +94,8 @@ bool CInput::GetMouseButtonDown_Editor(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
+    else if (_button == 2)
+        _button = MOUSE_WHILL;
     else
         return false;
 
@@ -97,6 +108,8 @@ bool CInput::GetMouseButtonUp(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
+    else if (_button == 3)
+        _button = MOUSE_WHILL;
     else
         return false;
 
@@ -109,6 +122,8 @@ bool CInput::GetMouseButtonUp_Editor(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
+    else if (_button == 2)
+        _button = MOUSE_WHILL;
     else
         return false;
 
@@ -125,15 +140,53 @@ const vector2Int CInput::GetMousePos()
     return vector2Int((int)ptMouse.x, (int)ptMouse.y);
 }
 
-//const int CInput::GetMouseWheelValue()
-//{
-//    return g_mouseWheelDelta;
-//}
+const _float CInput::getAxis(const wstring _axisName)
+{
+    float result = 0.f;
+
+    if (_axisName == L"Horizontal")
+    {
+    }
+    else if (_axisName == L"Vertical")
+    {
+
+    }
+    else if (_axisName == L"Mouse ScrollWheel")
+    {
+        result = m_fWheelAxis;
+    }
+    else
+        return 0.f;
+}
+
+const _float CInput::getAxis_Editor(const wstring _axisName)
+{
+    float result = 0.f;
+
+    if (_axisName == L"Horizontal")
+    {
+    }
+    else if (_axisName == L"Vertical")
+    {
+
+    }
+    else if (_axisName == L"Mouse ScrollWheel")
+    {
+        result = m_fWheelAxis;
+    }
+    else
+        return 0.f;
+
+    return result;
+}
+
+void CInput::OnMouseWheel(WPARAM _wParam)
+{
+    m_fWheelRaw += static_cast<float>(GET_WHEEL_DELTA_WPARAM(_wParam)) / WHEEL_DELTA;
+}
 
 void CInput::Reset()
 {
-    //g_mouseWheelDelta = 0;
-
     for (auto& key : m_bKeyState)
     {
         key.second = false;
@@ -143,6 +196,24 @@ void CInput::Reset()
 
 void CInput::Update()
 {
+    float dt = CTime::GetInstance().Get_DeltaTime();
+
+    if (abs(m_fWheelRaw) > 0.f)
+    {
+        m_fWheelAxis += m_fWheelRaw * m_sWheelOption.sensitivity;
+        m_fWheelRaw = 0.f;
+    }
+    
+    if (m_fWheelAxis > 0.f)
+        m_fWheelAxis = max(0.f, m_fWheelAxis - m_sWheelOption.gravity * dt);
+    else if (m_fWheelAxis < 0.f)
+        m_fWheelAxis = min(0.f, m_fWheelAxis + m_sWheelOption.gravity * dt);
+
+    if (abs(m_fWheelAxis) < m_sWheelOption.dead)
+        m_fWheelAxis = 0.f;
+
+    m_fWheelAxis = clamp(m_fWheelAxis, -1.f, 1.f);
+
     for (auto& key : m_bKeyState)
     {
         bool newState = (GetAsyncKeyState(key.first) & 0x8000) != 0;
@@ -156,12 +227,7 @@ void CInput::Update()
 
 void CInput::LateUpdate()
 {
-    //g_mouseWheelDelta = 0;
-
-    for (auto& key : m_bKeyState)
-    {
-        m_bPrevKeyState[key.first] = key.second;
-    }
+    Reset();
 }
 
 void CInput::Release()

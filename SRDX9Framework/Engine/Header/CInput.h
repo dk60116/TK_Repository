@@ -4,6 +4,13 @@
 
 BEGIN(Engine)
 
+struct WheelAxisOption
+{
+    float sensitivity = 1.f;
+    float gravity = 5.f;
+    float dead = 0.001f;
+};
+
 class ENGINE_DLL CInput
 {
 	SINGLETONCLASS(CInput);
@@ -22,7 +29,12 @@ public:
     bool GetMouseButtonUp_Editor(_int button);
 
     const vector2Int GetMousePos();
-    //const int GetMouseWheelValue();
+    const _float getAxis(const wstring _axisName);
+    const _float getAxis_Editor(const wstring _axisName);
+    const _float getAxisRaw(const wstring _axisName);
+    const _float getAxisRaw_Editor(const wstring _axisName);
+
+    void OnMouseWheel(WPARAM _wParam);
 
 public:
     void Reset();
@@ -34,6 +46,9 @@ private:
     static CInput* m_pInstance;
     map<int, bool> m_bKeyState;
     map<int, bool> m_bPrevKeyState;
+    WheelAxisOption m_sWheelOption;
+    _float m_fWheelAxis;
+    _float m_fWheelRaw;
 };
 
 END

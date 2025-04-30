@@ -260,12 +260,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         ColorValue bgColor = mouseDown ?
                              ColorValue(44, 93, 135) : ColorValue(68, 68, 68);
 
-                        pCustomDraw->clrTextBk = bgColor.rColor(); // 약한 회색 배경
+                        pCustomDraw->clrTextBk = bgColor.rColor(); // 배경
                     }
 
                     if (selected && !mouseDown)
                     {
-                        pCustomDraw->clrTextBk = RGB(44, 93, 135); // 푸른 배경
+                        if (GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
+                            pCustomDraw->clrTextBk = RGB(44, 93, 135); // 푸른 배경
+                        else
+                            pCustomDraw->clrTextBk = RGB(77, 77, 77); // 밝은 회색 배경
                     }
 
                     if (isRoot && !selected)
@@ -314,9 +317,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         btnBGColor = RGB(68, 68, 68);
 
                         if (selected)
-                        {
                             btnBGColor = RGB(44, 93, 135);
-                        }
                         else if (mouseDown)
                             btnBGColor = RGB(44, 93, 135);
                     }
@@ -328,6 +329,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     if (isRoot && !selected)
                         btnBGColor = RGB(35, 35, 35);
+
+                    if (selected && GetForegroundWindow() != CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
+                        btnBGColor = RGB(77, 77, 77); // 밝은 회색 배경
 
                     // 기존 +/– 덮기
                     HBRUSH hBrush = CreateSolidBrush(btnBGColor);

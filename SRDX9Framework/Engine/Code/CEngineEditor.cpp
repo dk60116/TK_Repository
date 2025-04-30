@@ -1,5 +1,7 @@
 ﻿#include "CEngineEditor.h"
 #include "CScreen.h"
+#include "CInput.h"
+#include "CDebug.h"
 #include "CManagement.h"
 #include <winuser.h>
 
@@ -109,6 +111,12 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 {
 	switch (message)
 	{
+	case WM_MOUSEWHEEL:
+	{
+		CInput::GetInstance().OnMouseWheel(wParam);
+	}
+	break;
+
 	case WM_SIZE:
 	{
 		RECT rcClient;
