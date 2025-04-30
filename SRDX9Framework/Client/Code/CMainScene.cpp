@@ -71,7 +71,7 @@ void CMainScene::Update()
 {
 	CScene::Update();
 
-	m_vCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
+	m_lCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(Alpha2))
 		m_sOptions.lighting = !m_sOptions.lighting;

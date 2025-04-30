@@ -1,5 +1,6 @@
 #include "CScene.h"
 #include "CTime.h"
+#include "CEngineEditor.h"
 #include "CInput.h"
 #include "CManagement.h"
 #include "CGameObject.h"
@@ -8,8 +9,8 @@
 CScene::CScene()
 	: m_pGraphicDev(nullptr)
 	, m_lObjectList()
-	, m_vCameraList({})
-	, m_vLightList({})
+	, m_lCameraList({})
+	, m_lLightList({})
 	, m_sOptions({})
 	, m_iObjIndex(0)
 {
@@ -62,7 +63,21 @@ void CScene::FixedUpdate()
 
 void CScene::LateUpdateEditor()
 {
-	
+	vector<CGameObject*> killObjList = {};
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->isActive() && (*it)->isEnable())
+			(*it)->LateUpdate();
+
+		if ((*it)->m_bKill)
+			killObjList.push_back(*it);
+	}
+
+	for (TRAVERSAL_ITER(killObjList, it))
+	{
+		SafeDestroyObject(*it);
+	}
 }
 
 void CScene::LateUpdate()
@@ -120,10 +135,10 @@ void CScene::Render_Editor()
 
 void CScene::Render_Game()
 {
-	if (m_vCameraList.empty())
+	if (m_lCameraList.empty())
 		return;
 
-	CCamera* mainCam = m_vCameraList.back(); // 마지막 카메라 기준
+	CCamera* mainCam = m_lCameraList.back(); // 마지막 카메라 기준
 	vector3 cam_pos = mainCam->getTransform().getPosition();
 	vector3 cam_forward = mainCam->getTransform().getDirections().forward;
 
@@ -158,14 +173,14 @@ void CScene::SceneRelease()
 			continue;
 
 		(*it)->OnDestroy();
-		Safe_Release(*it);
+		Safe_Release(*it); 
 	}
 
 	Safe_Release(m_pGraphicDev);
 
 	m_lObjectList.clear();
-	m_vCameraList.clear();
-	m_vLightList.clear();
+	m_lCameraList.clear();
+	m_lLightList.clear();
 }
 
 void CScene::Destroy()
@@ -181,8 +196,8 @@ void CScene::Destroy()
 	m_lObjectList.clear();
 
 	m_lObjectList.clear();
-	m_vCameraList.clear();
-	m_vLightList.clear();
+	m_lCameraList.clear();
+	m_lLightList.clear();
 
 	Safe_Release(m_pGraphicDev);
 
@@ -203,15 +218,15 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 void CScene::AddCamera(CCamera* _cam)
 {
 	if (_cam)
-		m_vCameraList.push_back(_cam);
+		m_lCameraList.push_back(_cam);
 }
 
 void CScene::AddLight(CLight* _light)
 {
 	if (_light)
 	{
-		_light->SetIndex((DWORD)m_vLightList.size());
-		m_vLightList.push_back(_light);
+		_light->SetIndex((DWORD)m_lLightList.size());
+		m_lLightList.push_back(_light);
 	}
 }
 
@@ -222,7 +237,7 @@ void CScene::UpdateSceneCameraResolution(const vector2Int _resolution)
 
 void CScene::UpdateAllCameraResolution(const vector2Int _resolution)
 {
-	for (TRAVERSAL_ITER(m_vCameraList, it))
+	for (TRAVERSAL_ITER(m_lCameraList, it))
 		(*it)->ResetAspectFromResolution(_resolution);
 }
 
@@ -320,14 +335,19 @@ void CScene::SafeDestroyObject(CGameObject* _obj)
 
 	tf->getChilds().clear();
 
+	if (_obj->GetComponent<CCamera>())
+		m_lCameraList.remove(_obj->GetComponent<CCamera>());
+
 	_obj->OnDestroy();
 	Safe_Release(_obj);
 
 	m_lObjectList.remove(_obj);
+
+	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 }
 
 void CScene::UpdateAllLight()
 {
-	for (TRAVERSAL_ITER(m_vLightList, it))
+	for (TRAVERSAL_ITER(m_lLightList, it))
 		(*it)->Apply();
 }

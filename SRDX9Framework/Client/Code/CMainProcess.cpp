@@ -55,6 +55,7 @@ _int CMainProcess::Update_MainApp()
 
 	CInput::GetInstance().Update();
 	
+	CEngineEditor::GetInstance().Update();
 	CManagement::GetInstance().EditorUpdate();
 
 	if (CEngineEditor::GetInstance().isPlaying())
@@ -67,9 +68,8 @@ _int CMainProcess::Update_MainApp()
 	}
 
 	Render_MainApp();
-
-	if (GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"))
-		CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
+	
+	CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
 	
 	CInput::GetInstance().LateUpdate();
 

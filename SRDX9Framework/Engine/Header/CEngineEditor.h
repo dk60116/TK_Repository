@@ -26,6 +26,10 @@ public:
 	LRESULT CALLBACK WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam);
 
 public:
+	void Update();
+	void LateUpdate();
+
+public:
 	Engine_WindowOptions& getOptions() { return m_sEngineOptions; }
 	HINSTANCE getHInstance() { return m_hInst; }
 	template <typename T>

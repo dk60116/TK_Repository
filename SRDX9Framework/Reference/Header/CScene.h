@@ -44,10 +44,9 @@ public:
 
     void AddCamera(CCamera* _cam);
     void AddLight(CLight* _light);
-    vector<CCamera*>& getCamList() { return m_vCameraList; }
-    vector<CLight*>& getLightList() { return m_vLightList; }
-    CCamera* getCamera(const int _index) const { return m_vCameraList[_index]; }
-    CCamera* getCamera() const { return m_vCameraList.back(); }
+    list<CCamera*>& getCamList() { return m_lCameraList; }
+    list<CLight*>& getLightList() { return m_lLightList; }
+    CCamera* getCamera() const { return m_lCameraList.back(); }
     void UpdateAllLight();
     void UpdateSceneCameraResolution(const vector2Int _resolution);
     void UpdateAllCameraResolution(const vector2Int _resolution);
@@ -59,15 +58,15 @@ public:
     CGameObject* FindGameObject(const wstring _name);
 
 private:
-    void Render_Grid();
     void SafeDestroyObject(CGameObject* _obj);
+    void Render_Grid();
 
 protected:
     wstring m_strSceneName;
 
     list<CGameObject*> m_lObjectList;
-    vector<CCamera*> m_vCameraList;
-    vector<CLight*> m_vLightList;
+    list<CCamera*> m_lCameraList;
+    list<CLight*> m_lLightList;
 
     SceneOptions m_sOptions;
 

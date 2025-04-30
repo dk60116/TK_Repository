@@ -38,7 +38,8 @@ bool CInput::GetKeyDown(_int _iKey)
 
 bool CInput::GetKeyDown_Editor(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene");
+    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && 
+        GetForegroundWindow() != CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
 bool CInput::GetKeyUp(_int _iKey)
@@ -140,7 +141,7 @@ const vector2Int CInput::GetMousePos()
     return vector2Int((int)ptMouse.x, (int)ptMouse.y);
 }
 
-const _float CInput::getAxis(const wstring _axisName)
+const _float CInput::GetAxis(const wstring _axisName)
 {
     float result = 0.f;
 
@@ -159,7 +160,7 @@ const _float CInput::getAxis(const wstring _axisName)
         return 0.f;
 }
 
-const _float CInput::getAxis_Editor(const wstring _axisName)
+const _float CInput::GetAxis_Editor(const wstring _axisName)
 {
     float result = 0.f;
 

@@ -29,10 +29,10 @@ public:
     bool GetMouseButtonUp_Editor(_int button);
 
     const vector2Int GetMousePos();
-    const _float getAxis(const wstring _axisName);
-    const _float getAxis_Editor(const wstring _axisName);
-    const _float getAxisRaw(const wstring _axisName);
-    const _float getAxisRaw_Editor(const wstring _axisName);
+    const _float GetAxis(const wstring _axisName);
+    const _float GetAxis_Editor(const wstring _axisName);
+    const _float GetAxisRaw(const wstring _axisName);
+    const _float GetAxisRaw_Editor(const wstring _axisName);
 
     void OnMouseWheel(WPARAM _wParam);
 

@@ -11,11 +11,11 @@ struct EditorCameraOption
     _float rotateSpeed = 25.f;
     _float dragSpeed = 2.f;
     _float crtDragSpeed = 0.f;
-    _float zoomSpeed = 3.f;
+    _float zoomSpeed = 5.f;
 };
 
 class ENGINE_DLL CEditorCamera final
-    : public CCamera 
+    : public CCamera
 {
 private:
     CEditorCamera();

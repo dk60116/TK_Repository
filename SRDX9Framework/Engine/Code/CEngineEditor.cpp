@@ -136,6 +136,27 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return TRUE;
 }
 
+void CEngineEditor::Update()
+{
+	_bool isScene = ((GetForegroundWindow() == FindWindowHandle(L"Scene")) || 
+		(GetForegroundWindow() == FindWindowHandle(L"Hierachy")));
+
+	if (isScene)
+	{
+		int a = 0;
+
+		if (CInput::GetInstance().GetKeyDown_Editor(KEY_DELETE))
+		{
+			if (m_pSelectedGameObject)
+				CGameObject::Destroy(m_pSelectedGameObject);
+		}
+	}
+}
+
+void CEngineEditor::LateUpdate()
+{
+}
+
 HWND CEngineEditor::FindWindowHandle(const wstring _window)
 {
 	auto it = m_mWHandleList.find(_window);
