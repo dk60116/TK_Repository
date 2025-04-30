@@ -3,7 +3,7 @@
 
 CGameWindow::CGameWindow()
 {
-	m_strName = L"Scene Window";
+	m_strName = L"Editor:Scene Window";
 }
 
 CGameWindow::~CGameWindow()

@@ -5,7 +5,6 @@
 #include "framework.h"
 #include "Client.h"
 #include "CMainProcess.h"
-#include "CHierachyWindow.h"
 
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
@@ -211,7 +210,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_NOTIFY:
     {
-        auto pNMHDR = reinterpret_cast<LPNMHDR>(lParam);
+        HWND treeViewHnd = CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->getTreeHandle();
+
+        LPNMHDR pNMHDR = reinterpret_cast<LPNMHDR>(lParam);
+
+        if (pNMHDR->code == TVN_SELCHANGED)
+        {
+            LPNMTREEVIEW pNMTV = reinterpret_cast<LPNMTREEVIEW>(lParam);
+
+            HTREEITEM hSelectedItem = pNMTV->itemNew.hItem;
+            TVITEMW tvi = {};
+            tvi.hItem = hSelectedItem;
+            tvi.mask = TVIF_PARAM;
+        }
+
+        LPNMHDR phdr = (LPNMHDR)lParam;
 
         // 트리뷰 커스텀-드로잉만 처리
         wchar_t buf[64] = {};
@@ -371,6 +384,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     SelectObject(pCD->nmcd.hdc, hOldFont);
                     if (hFontBig) DeleteObject(hFontBig);
+
+                    CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->AdjustTreeHeight();
                 }
             }
                 return CDRF_SKIPDEFAULT;

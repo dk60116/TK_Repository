@@ -11,7 +11,7 @@ class ENGINE_DLL CBaseWindow final
 	friend class CEngineEditor;
 
 private:
-	CBaseWindow();
+	explicit CBaseWindow();
 	~CBaseWindow();
 
 public:

@@ -56,14 +56,14 @@ void CEditorWindow::Destroy()
 	Release();
 }
 
-LRESULT CEditorWindow::WndProcHandle(HWND hWnd, UINT _message, WPARAM wParam, LPARAM lParam)
+LRESULT CEditorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 {
 	switch (_message)
 	{
 	case WM_CTLCOLORSTATIC:
 	{
-		HDC hdcStatic = (HDC)wParam;
-		HWND hStatic = (HWND)lParam;
+		HDC hdcStatic = (HDC)_wParam;
+		HWND hStatic = (HWND)_lParam;
 
 		if (hStatic == m_hTopBar)
 		{

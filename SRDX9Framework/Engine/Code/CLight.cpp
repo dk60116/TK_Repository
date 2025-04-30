@@ -21,9 +21,23 @@ CLight* CLight::Create()
 	return new CLight();
 }
 
+void CLight::Update()
+{
+	__super::Update();
+}
+
 void CLight::UpdateEditor()
 {
 	__super::UpdateEditor();
+}
+
+void CLight::OnDestroy()
+{
+	__super::OnDestroy();
+
+	m_pGraphicDev->LightEnable(m_iIndex, FALSE);
+	ZeroMemory(&m_sLightInfo, sizeof(D3DLIGHT9));
+	m_pGraphicDev->SetLight(m_iIndex, &m_sLightInfo);
 }
 
 void CLight::Init()

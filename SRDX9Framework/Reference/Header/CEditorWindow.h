@@ -18,7 +18,7 @@ public:
 	virtual void Update() PURE;
 	virtual void UpdateResolution(HWND _target, const vector2Int _resolution);
 	virtual void Destroy();
-	virtual LRESULT CALLBACK WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT CALLBACK WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam);
 
 protected:
 	HWND m_hWnd;

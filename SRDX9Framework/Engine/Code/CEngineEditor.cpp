@@ -138,13 +138,14 @@ LRESULT CEngineEditor::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPA
 
 void CEngineEditor::Update()
 {
+	for (TRAVERSAL_ITER(m_mWindowList, it))
+		(*it).second->Update();
+
 	_bool isScene = ((GetForegroundWindow() == FindWindowHandle(L"Scene")) || 
 		(GetForegroundWindow() == FindWindowHandle(L"Hierachy")));
 
 	if (isScene)
 	{
-		int a = 0;
-
 		if (CInput::GetInstance().GetKeyDown_Editor(KEY_DELETE))
 		{
 			if (m_pSelectedGameObject)

@@ -13,7 +13,7 @@ CHierachyWindow::CHierachyWindow()
 	, m_iLeftSideWidth(40)
 	, m_hFont(nullptr)
 {
-	m_strName = L"Hierachy Window";
+	m_strName = L"Editor:Hierachy Window";
 }
 
 CHierachyWindow::~CHierachyWindow()
@@ -158,6 +158,8 @@ void CHierachyWindow::BuildTree()
 
 	HTREEITEM hRootItem = TreeView_GetRoot(m_hTreeView);
 	TreeView_Expand(m_hTreeView, hRootItem, TVE_EXPAND);
+
+	AdjustTreeHeight();
 }
 
 void CHierachyWindow::AddSceneRecursive(CScene* _scene)
@@ -209,6 +211,22 @@ void CHierachyWindow::SetTreeViewOptions()
 	TreeView_SetTextColor(m_hTreeView, m_sOptions.textColor.rColor());
 }
 
+_bool CHierachyWindow::IsTreeViewHighlightEmpty()
+{
+	auto a = TreeView_GetSelection(m_hTreeView);
+	if (TreeView_GetSelection(m_hTreeView) == NULL) 
+		return false;
+	if (TreeView_GetHotItem(m_hTreeView) == NULL)
+		return false;
+	if ((HTREEITEM)SendMessage
+	(
+		m_hTreeView, TVM_GETNEXTITEM, TVGN_DROPHILITE, 0) != NULL
+	)
+		return false;  
+
+	return true;
+}
+
 LRESULT CHierachyWindow::TreeSubProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam, UINT_PTR _idSubClass, DWORD_PTR _dwRefData)
 {
 	auto* self = reinterpret_cast<CHierachyWindow*>(_dwRefData);
@@ -225,7 +243,9 @@ LRESULT CHierachyWindow::TreeSubProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPAR
 		hitTestInfo.pt = pt;
 
 		if (hitTestInfo.hItem == nullptr)
+		{
 			TreeView_SelectItem(self->m_hTreeView, nullptr);
+		}
 	}
 	break;
 
@@ -239,4 +259,37 @@ LRESULT CHierachyWindow::TreeSubProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPAR
     }
 
     return DefSubclassProc(_hWnd, _msg, _wParam, _lParam);
+}
+
+bool CHierachyWindow::GetLastVisibleItemRect(RECT& _rcOut)
+{
+	HTREEITEM hLast = (HTREEITEM)SendMessage(
+		m_hTreeView, TVM_GETNEXTITEM, TVGN_LASTVISIBLE, 0);
+
+	if (!hLast) return false;
+
+	if (!TreeView_GetItemRect(m_hTreeView, hLast, &_rcOut, TRUE))
+		return false;
+
+	return true;
+}
+
+void CHierachyWindow::AdjustTreeHeight()
+{
+	RECT rc{};  
+
+	if (!GetLastVisibleItemRect(rc))
+		return;
+	
+	RECT rcTree;  GetWindowRect(m_hTreeView, &rcTree);
+	int newH = rc.bottom;                       // 컨텐츠 끝 + 패딩
+	int newW = rcTree.right - rcTree.left;
+
+	// 클라이언트 좌표로 변환
+	POINT pt = { 0,0 }; ClientToScreen(m_hWnd, &pt);
+	newH = max(newH, 4);                        // 최소 높이 safeguard
+
+	MoveWindow(m_hTreeView,
+		m_iLeftSideWidth, CHILDTOPBARHEIGHT,
+		newW, newH, TRUE);
 }

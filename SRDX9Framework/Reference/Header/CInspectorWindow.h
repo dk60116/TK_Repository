@@ -4,14 +4,12 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CSceneWindow 
+class ENGINE_DLL CInspectorWindow final
     : public CEditorWindow
 {
-	friend class CEngineEditor;
-
 private:
-	explicit CSceneWindow();
-	~CSceneWindow();
+    explicit CInspectorWindow();
+    ~CInspectorWindow();
 
 public:
 	HRESULT Init(HWND _hWnd, vector2Int _size, _bool _isBase = false) override;
@@ -20,5 +18,5 @@ public:
 	void UpdateResolution(HWND _target, vector2Int _resolution) override;
 };
 
-END
+END;
 

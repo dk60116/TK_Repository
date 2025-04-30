@@ -39,6 +39,15 @@
 #define HWND_BASEBOTTOMBAR 102
 #define HWND_HIERACHYSIDE 103
 
+#ifndef TVM_GETHOTITEM               
+#   define TVM_GETHOTITEM (TV_FIRST + 58)
+#endif
+
+#ifndef TreeView_GetHotItem
+#   define TreeView_GetHotItem(hwnd) \
+        (HTREEITEM)SendMessage((hwnd), TVM_GETHOTITEM, 0, 0)
+#endif
+
 #pragma warning(disable : 4251)
 
 #ifdef _DEBUG

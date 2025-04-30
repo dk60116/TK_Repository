@@ -147,10 +147,25 @@ const _float CInput::GetAxis(const wstring _axisName)
 
     if (_axisName == L"Horizontal")
     {
+        if (GetKeyDown(LEFT))
+            result -= 1.f;
+        if (GetKeyDown(RIGHT))
+            result += 1.f;
+        if (GetKeyDown(A))
+            result -= 1.f;
+        if (GetKeyDown(D))
+            result += 1.f;
     }
     else if (_axisName == L"Vertical")
     {
-
+        if (GetKeyDown(DOWN))
+            result -= 1.f;
+        if (GetKeyDown(UP))
+            result += 1.f;
+        if (GetKeyDown(S))
+            result -= 1.f;
+        if (GetKeyDown(W))
+            result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
     {
@@ -158,6 +173,10 @@ const _float CInput::GetAxis(const wstring _axisName)
     }
     else
         return 0.f;
+
+    result = clamp(result, -1.f, 1.f);
+
+    return result;
 }
 
 const _float CInput::GetAxis_Editor(const wstring _axisName)
@@ -166,10 +185,25 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
 
     if (_axisName == L"Horizontal")
     {
+        if (GetKeyDown_Editor(LEFT))
+            result -= 1.f;
+        if (GetKeyDown_Editor(RIGHT))
+            result += 1.f;
+        if (GetKeyDown_Editor(A))
+            result -= 1.f;
+        if (GetKeyDown_Editor(D))
+            result += 1.f;
     }
     else if (_axisName == L"Vertical")
     {
-
+        if (GetKeyDown_Editor(DOWN))
+            result -= 1.f;
+        if (GetKeyDown_Editor(UP))
+            result += 1.f;
+        if (GetKeyDown_Editor(S))
+            result -= 1.f;
+        if (GetKeyDown_Editor(W))
+            result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
     {
@@ -177,6 +211,8 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
     }
     else
         return 0.f;
+
+    result = clamp(result, -1.f, 1.f);
 
     return result;
 }

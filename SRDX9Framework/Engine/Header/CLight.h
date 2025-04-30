@@ -31,7 +31,9 @@ public:
 	static CLight* Create();
 
 public:
+	void Update() override;
 	void UpdateEditor() override;
+	void OnDestroy() override;
 
 public:
 	void Init();

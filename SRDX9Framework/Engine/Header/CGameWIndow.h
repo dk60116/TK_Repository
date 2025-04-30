@@ -10,7 +10,7 @@ class ENGINE_DLL CGameWindow :
 	friend class CEngineEditor;
 
 private:
-	CGameWindow();
+	explicit CGameWindow();
 	~CGameWindow();
 
 public:

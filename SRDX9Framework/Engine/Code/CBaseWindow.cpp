@@ -8,7 +8,7 @@ CBaseWindow::CBaseWindow()
 	, m_hPauseBtn(nullptr)
 	, m_hOneFrameBtn(nullptr)
 {
-	m_strName = L"Base Window";
+	m_strName = L"Editor:Base Window";
 }
 
 CBaseWindow::~CBaseWindow()

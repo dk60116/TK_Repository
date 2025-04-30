@@ -189,6 +189,9 @@
     <ClInclude Include="..\Header\CGameWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CInspectorWindow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -285,6 +288,9 @@
       <Filter>Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CGameWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CInspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>

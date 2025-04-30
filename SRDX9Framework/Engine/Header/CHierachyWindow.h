@@ -19,7 +19,7 @@ class ENGINE_DLL CHierachyWindow final
 	friend class CEngineEditor;
 
 private:
-	CHierachyWindow();
+	explicit CHierachyWindow();
 	~CHierachyWindow();
 
 public:
@@ -39,12 +39,19 @@ private:
 	void SetTreeViewOptions();
 
 public:
+	_bool IsTreeViewHighlightEmpty();
 	static LRESULT CALLBACK TreeSubProc
 	(
 		HWND _hWnd, UINT _msg,
 		WPARAM _wParam, LPARAM _lParam,
 		UINT_PTR _idSubClass, DWORD_PTR _dwRefData
 	);
+
+public:
+	void AdjustTreeHeight();
+
+private:
+	bool GetLastVisibleItemRect(RECT& _rcOut);
 
 private:
 	HierachyViewOptions m_sOptions;

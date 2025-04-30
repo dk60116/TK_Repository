@@ -10,7 +10,7 @@ class ENGINE_DLL CSceneWindow
 	friend class CEngineEditor;
 
 private:
-	CSceneWindow();
+	explicit CSceneWindow();
 	~CSceneWindow();
 
 public:

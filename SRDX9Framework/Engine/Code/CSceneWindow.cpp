@@ -3,7 +3,7 @@
 
 CSceneWindow::CSceneWindow()
 {
-	m_strName = L"CScene Window";
+	m_strName = L"Editor:CScene Window";
 }
 
 CSceneWindow::~CSceneWindow()

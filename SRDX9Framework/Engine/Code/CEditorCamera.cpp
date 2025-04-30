@@ -89,16 +89,14 @@ void CEditorCamera::UpdateEditor()
 				return;
 			}
 
+			_float horizontal = CInput::GetInstance().GetAxis_Editor(L"Horizontal");
+			_float vertical = CInput::GetInstance().GetAxis_Editor(L"Vertical");
+
 			if (!isCtrl)
 			{
-				if (CInput::GetInstance().GetKey_Editor(W))
-					camTransform.AddLocalPosition(camTransform.getDirections().forward * dt * m_sOptions.crtMoveSpeed);
-				if (CInput::GetInstance().GetKey_Editor(S))
-					camTransform.AddLocalPosition(camTransform.getDirections().back * dt * m_sOptions.crtMoveSpeed);
-				if (CInput::GetInstance().GetKey_Editor(A))
-					camTransform.AddLocalPosition(camTransform.getDirections().left * dt * m_sOptions.crtMoveSpeed);
-				if (CInput::GetInstance().GetKey_Editor(D))
-					camTransform.AddLocalPosition(camTransform.getDirections().right * dt * m_sOptions.crtMoveSpeed);
+				camTransform.AddLocalPosition(camTransform.getDirections().right * horizontal * dt * m_sOptions.crtMoveSpeed);
+				camTransform.AddLocalPosition(camTransform.getDirections().forward * vertical * dt * m_sOptions.crtMoveSpeed);
+				
 				if (CInput::GetInstance().GetKey_Editor(Q))
 					camTransform.AddLocalPosition(camTransform.getDirections().down * dt * m_sOptions.crtMoveSpeed);
 				if (CInput::GetInstance().GetKey_Editor(E))
