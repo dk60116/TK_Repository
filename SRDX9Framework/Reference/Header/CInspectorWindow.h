@@ -7,6 +7,8 @@ BEGIN(Engine)
 class ENGINE_DLL CInspectorWindow final
     : public CEditorWindow
 {
+	friend class CEngineEditor;
+
 private:
     explicit CInspectorWindow();
     ~CInspectorWindow();

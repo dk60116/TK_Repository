@@ -22,7 +22,7 @@ HRESULT CEditorWindow::Init(HWND _hWnd, const vector2Int _size, _bool _isBase)
 	m_v2Resolution = _size;
 
 	if (!m_bHaveWindowBar)
-		CEngineEditor::GetInstance().RemoveBtnsAndRoundedCorners(_hWnd);
+		CEngineEditor::RemoveBtnsAndRoundedCorners(_hWnd);
 
 	GetClientRect(_hWnd, &m_sClinentRect);
 	GetWindowRect(_hWnd, &m_sWindowRect);

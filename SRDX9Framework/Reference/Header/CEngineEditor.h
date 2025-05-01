@@ -8,6 +8,7 @@
 #include "CSceneWindow.h"
 #include "CGameWindow.h"
 #include "CHierachyWindow.h"
+#include "CInspectorWindow.h"
 #include "CGameObject.h"
 
 BEGIN(Engine)
@@ -51,14 +52,13 @@ public:
 	template <typename T>
 	HRESULT CreateCustomWindow(HWND _hWnd, const wstring _name, const vector2Int _size);
 
-	void RemoveBtnsAndRoundedCorners(HWND _hWnd);
-
 	void SelectGameObject(CGameObject* _gameObject);
 
 	CGameObject* getSelectedGameObject() const { return m_pSelectedGameObject; }
 
 public:
-	HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
+	static void RemoveBtnsAndRoundedCorners(HWND _hWnd);
+	static HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
 
 private:
 	Engine_WindowOptions m_sEngineOptions;

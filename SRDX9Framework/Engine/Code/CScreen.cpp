@@ -129,21 +129,41 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	RECT hierachyRect = {};
 	GetClientRect(hierachyWnd, &hierachyRect);
 
-	POINT hierachyPT = { 0, hierachyRect.bottom };
+	POINT hierachyPT = { hierachyRect.right, hierachyRect.bottom };
 	ClientToScreen(hierachyWnd, &hierachyPT);
 
 	_int projectWidth = _int(hierachyWidth * 0.8f);
 	_int projectHeight = _int(gamePT.y - clientPoint.y - offsetY * 2);
 
-	HWND projectWnd = CreateWindowW(L"ProjectWindowClass", L"☰ Project",
+	HWND projectWnd = CreateWindowW(L"ProjectWindowClass", L"🗀 Project",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-		hierachyPT.x + hierachyRect.right + offsetX + 2,
+		hierachyPT.x + offsetX + 2,
 		clientPoint.y,
 		projectWidth,
 		projectHeight,
 		mainWnd, nullptr, _hInst, nullptr);
 
-	CEngineEditor::GetInstance().RemoveBtnsAndRoundedCorners(projectWnd);
+	CEngineEditor::RemoveBtnsAndRoundedCorners(projectWnd);
+
+	RECT projectRect = {};
+	GetClientRect(projectWnd, &projectRect);
+
+	POINT projectPT = { projectRect.right, projectRect.bottom };
+	ClientToScreen(projectWnd, &projectPT);
+
+	_int inspectorWidth = _int(winWidth - (sceneWidth + hierachyWidth + projectWidth) - offsetX * 5 + 2);
+	_int inspectorHeight = _int(projectPT.y - clientPoint.y - offsetY * 2);
+
+	HWND inspectorWnd = CreateWindowW(L"InspectorWindowClass", L"ⓘ Inspector",
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		projectPT.x + offsetX + 2,
+		clientPoint.y,
+		inspectorWidth,
+		inspectorHeight,
+		mainWnd, nullptr, _hInst, nullptr);
+
+	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CInspectorWindow>(inspectorWnd, L"Inspector", vector2Int(inspectorWidth, inspectorHeight))))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -17,8 +17,8 @@ HRESULT CSceneWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 
 	HINSTANCE hInstance = CEngineEditor::GetInstance().getHInstance();
 
-	HFONT hFont14 = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 18);
-	HFONT hFont16 = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 16, TRUE);
+	HFONT hFont14 = CEngineEditor::CreateDefaultFont(L"Arial", 18);
+	HFONT hFont16 = CEngineEditor::CreateDefaultFont(L"Arial", 16, TRUE);
 
 	HWND ee = CreateWindowW(L"COMBOBOX", L"Handle",
 		WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL,

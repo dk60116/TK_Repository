@@ -220,7 +220,7 @@ LRESULT CBaseWindow::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARA
 				RECT textRect = rc;
 				OffsetRect(&textRect, 0, 0);
 
-				HFONT hFont = CEngineEditor::GetInstance().CreateDefaultFont(L"Segoe UI Variable", 12);
+				HFONT hFont = CEngineEditor::CreateDefaultFont(L"Segoe UI Variable", 12);
 
 				HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
@@ -234,7 +234,7 @@ LRESULT CBaseWindow::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARA
 				RECT textRect = rc;
 				OffsetRect(&textRect, 0, -1);
 
-				HFONT hFont = CEngineEditor::GetInstance().CreateDefaultFont(L"Segoe UI Variable", 20);
+				HFONT hFont = CEngineEditor::CreateDefaultFont(L"Segoe UI Variable", 20);
 
 				HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
@@ -248,7 +248,7 @@ LRESULT CBaseWindow::WndProcHandle(HWND hWnd, UINT message, WPARAM wParam, LPARA
 				RECT textRect = rc;
 				OffsetRect(&textRect, 0, 0);
 
-				HFONT hFont = CEngineEditor::GetInstance().CreateDefaultFont(L"Arial", 16);
+				HFONT hFont = CEngineEditor::CreateDefaultFont(L"Arial", 16);
 
 				HGDIOBJ oldFont = SelectObject(hdc, hFont);
 

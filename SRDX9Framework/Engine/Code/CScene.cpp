@@ -176,6 +176,12 @@ void CScene::SceneRelease()
 		Safe_Release(*it); 
 	}
 
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		Safe_Release(*it);
+
+	for (TRAVERSAL_ITER(m_lLightList, it))
+		Safe_Release(*it);
+
 	Safe_Release(m_pGraphicDev);
 
 	m_lObjectList.clear();
@@ -185,8 +191,6 @@ void CScene::SceneRelease()
 
 void CScene::Destroy()
 {
-	Release();
-
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		(*it)->OnDestroy();
@@ -194,6 +198,12 @@ void CScene::Destroy()
 	}
 
 	m_lObjectList.clear();
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		Safe_Release(*it);
+
+	for (TRAVERSAL_ITER(m_lLightList, it))
+		Safe_Release(*it);
 
 	m_lObjectList.clear();
 	m_lCameraList.clear();
@@ -218,7 +228,10 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 void CScene::AddCamera(CCamera* _cam)
 {
 	if (_cam)
+	{
 		m_lCameraList.push_back(_cam);
+		_cam->AddRef();
+	}
 }
 
 void CScene::AddLight(CLight* _light)
@@ -227,6 +240,7 @@ void CScene::AddLight(CLight* _light)
 	{
 		_light->SetIndex((DWORD)m_lLightList.size());
 		m_lLightList.push_back(_light);
+		_light->AddRef();
 	}
 }
 
@@ -335,8 +349,19 @@ void CScene::SafeDestroyObject(CGameObject* _obj)
 
 	tf->getChilds().clear();
 
-	if (_obj->GetComponent<CCamera>())
-		m_lCameraList.remove(_obj->GetComponent<CCamera>());
+	CCamera* camera = _obj->GetComponent<CCamera>();
+	if (camera)
+	{
+		Safe_Release(camera);
+		m_lCameraList.remove(camera);
+	}
+	
+	CLight* light = _obj->GetComponent<CLight>();
+	if (light)
+	{
+		Safe_Release(light);
+		m_lLightList.remove(light);
+	}
 
 	_obj->OnDestroy();
 	Safe_Release(_obj);

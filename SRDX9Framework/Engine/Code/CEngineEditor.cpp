@@ -120,6 +120,22 @@ ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
 	if (!RegisterClassExW(&projectwcex))
 		return 0;
 
+	// Inspector Window
+	WNDCLASSEXW inspectorwcex = {};
+	inspectorwcex.lpszClassName = L"InspectorWindowClass";
+	inspectorwcex.lpszMenuName = nullptr;
+	inspectorwcex.cbSize = sizeof(WNDCLASSEX);
+	inspectorwcex.lpfnWndProc = _wndPrc;
+	inspectorwcex.cbClsExtra = 0;
+	inspectorwcex.cbWndExtra = 0;
+	inspectorwcex.hInstance = hInstance;
+	inspectorwcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
+	inspectorwcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	inspectorwcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	inspectorwcex.hIconSm = NULL;
+	if (!RegisterClassExW(&inspectorwcex))
+		return 0;
+
 	return 1;
 }
 
