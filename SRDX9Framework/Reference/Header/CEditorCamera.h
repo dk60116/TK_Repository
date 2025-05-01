@@ -37,6 +37,9 @@ private:
     float m_fMoveTimeTotal, m_fMoveTimeCur;
     vector3 m_v3MoveFrom, m_v3MoveTo;
     _bool m_bZoomDistToggle;
+
+    BEGIN_SERIALIZEFIELD
+    END_SERIALIZEFIELD
 };
 
 END

@@ -48,6 +48,17 @@
         (HTREEITEM)SendMessage((hwnd), TVM_GETHOTITEM, 0, 0)
 #endif
 
+#define BEGIN_SERIALIZEFIELD \
+public: \
+std::vector<FieldInfo> GetInspectorFields() override { \
+std::vector<FieldInfo> _fields;
+
+#define SERIALIZEFILED(var) \
+_fields.push_back({L#var, DetectFieldType(var), &var});
+
+#define END_SERIALIZEFIELD \
+return _fields; } \
+
 #pragma warning(disable : 4251)
 
 #ifdef _DEBUG

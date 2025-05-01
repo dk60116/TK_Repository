@@ -37,6 +37,9 @@ public:
 private:
     CMeshFilter* m_pMeshFilter;
     CMaterial* m_pMaterial;
+
+    BEGIN_SERIALIZEFIELD
+    END_SERIALIZEFIELD
 };
 
 END

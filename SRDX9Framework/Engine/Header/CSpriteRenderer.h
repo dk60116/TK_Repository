@@ -49,6 +49,9 @@ private:
     CMaterial* m_pMaterial;
 
     SpriteRendererOptions m_sOptions;
+
+    BEGIN_SERIALIZEFIELD
+    END_SERIALIZEFIELD
 };
 
 END

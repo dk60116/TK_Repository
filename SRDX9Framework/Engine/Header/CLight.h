@@ -52,4 +52,7 @@ private:
 	D3DLIGHT9 m_sLightInfo;
 	LightType m_eType;
 	LightOptions m_sOptions;
+
+	BEGIN_SERIALIZEFIELD
+	END_SERIALIZEFIELD
 };

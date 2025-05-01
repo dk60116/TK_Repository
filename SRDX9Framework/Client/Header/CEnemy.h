@@ -33,5 +33,8 @@ public:
 
 	CTransform* m_pTarget;
 	_bool m_bInit;
+
+	BEGIN_SERIALIZEFIELD
+	END_SERIALIZEFIELD
 };
 

@@ -28,6 +28,9 @@ public:
 
 private:
     CMesh* m_pMesh;
+
+    BEGIN_SERIALIZEFIELD
+    END_SERIALIZEFIELD
 };
 
 END

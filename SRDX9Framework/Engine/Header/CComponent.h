@@ -8,6 +8,19 @@ BEGIN(Engine)
 class CGameObject;
 class CTransform;
 
+enum class FieldType
+{
+	BOOL, INT, FLOAT, VECTOR3, VECTOR3INT, VECTOR2, VECTOR2INT, COLOR
+};
+
+struct FieldInfo
+{
+	wstring name;
+	FieldType type;
+	void* ptr;
+	wstring filePath;
+};
+
 class ENGINE_DLL CComponent abstract
 	: public UObject
 {
@@ -41,6 +54,19 @@ protected:
 	_bool m_bEnable;
 	LPDIRECT3DDEVICE9 m_pGraphicDev;
 	_bool m_bClone;
+
+public:
+	virtual vector<FieldInfo> GetInspectorFields() PURE;
+
+protected:
+	inline FieldType DetectFieldType(bool&) { return FieldType::BOOL; }
+	inline FieldType DetectFieldType(int&) { return FieldType::INT; }
+	inline FieldType DetectFieldType(float&) { return FieldType::FLOAT; }
+	inline FieldType DetectFieldType(vector2&) { return FieldType::VECTOR2; }
+	inline FieldType DetectFieldType(vector2Int&) { return FieldType::VECTOR2INT; }
+	inline FieldType DetectFieldType(vector3&) { return FieldType::VECTOR3; }
+	//inline FieldType DetectFieldType(vector3Int&) { return FieldType::VECTOR3INT; }
+	inline FieldType DetectFieldType(ColorValue&) { return FieldType::COLOR; }
 };
 
 END

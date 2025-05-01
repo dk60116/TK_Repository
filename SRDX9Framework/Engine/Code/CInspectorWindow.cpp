@@ -123,7 +123,7 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 
 	SCROLLINFO si{ sizeof(si), SIF_RANGE | SIF_PAGE };
 	GetScrollInfo(m_hWnd, SB_VERT, &si);
-	const _bool hasScroll = (si.nMax - si.nMin + 1) > si.nPage;
+	const _bool hasScroll = UINT(si.nMax - si.nMin + 1) > si.nPage;
 
 	const _int margin = 4;                
 	const _int sbWidth = hasScroll ? GetSystemMetrics(SM_CXVSCROLL) : 0;
@@ -133,7 +133,7 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 
 	HWND top = CreateWindowEx(
 		0, L"STATIC", nullptr,
-		WS_CHILD | WS_VISIBLE,
+		WS_CHILD | WS_VISIBLE | WS_BORDER,
 		margin / 2, m_sOptinos.contstsBarHeight * i,
 		itemW, m_sOptinos.topHeight,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr);
@@ -143,10 +143,14 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 
 	for (CComponent* c : _target->getComponentList())
 	{
+		_int contentsHeight = 0;
+
+		auto contents = c->GetInspectorFields();
+
 		HWND h = CreateWindowEx
 		(
 			0, L"STATIC", nullptr,
-			WS_CHILD | WS_VISIBLE,
+			WS_CHILD | WS_VISIBLE | WS_BORDER,
 			margin / 2, 
 			(m_sOptinos.contstsBarHeight * i) + m_sOptinos.topHeight,
 			itemW, m_sOptinos.contstsBarHeight,

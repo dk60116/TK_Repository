@@ -134,6 +134,12 @@ private:
 	quaternion m_v4Quaternion;
 	_matrix m_matWorld;
 	Directions m_sDirections;
+
+	BEGIN_SERIALIZEFIELD
+		SERIALIZEFILED(m_v3Position)
+		SERIALIZEFILED(m_v3Scale)
+		SERIALIZEFILED(m_v3EulerAngles)
+	END_SERIALIZEFIELD
 };
 
 END
