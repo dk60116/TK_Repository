@@ -214,7 +214,7 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
 
     result = clamp(result, -1.f, 1.f);
 
-    return result;
+    return GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene") ? result : 0;
 }
 
 void CInput::OnMouseWheel(WPARAM _wParam)

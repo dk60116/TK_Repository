@@ -8,6 +8,7 @@ CEnemy::CEnemy()
 	, m_pTarget(nullptr)
 	, m_bInit(false)
 {
+	m_strName = L"Enemy";
 }
 
 CEnemy::~CEnemy()

@@ -79,6 +79,22 @@ LRESULT CHierachyWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam
 {
 	switch (_message)
 	{
+	case WM_LBUTTONDOWN:
+	{
+		POINT pt;
+		pt.x = GET_X_LPARAM(_lParam);
+		pt.y = GET_Y_LPARAM(_lParam);
+
+		TVHITTESTINFO hitTestInfo{};
+		hitTestInfo.pt = pt;
+
+		if (hitTestInfo.hItem == nullptr)
+		{
+			TreeView_SelectItem(m_hTreeView, nullptr);
+		}
+	}
+	break;
+
 	case WM_NOTIFY:
 	{
 		LPNMHDR pNMHDR = reinterpret_cast<LPNMHDR>(_lParam);

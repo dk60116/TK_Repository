@@ -48,6 +48,8 @@ public:
 	template<typename T>
 	T* GetComponent();
 
+	list<CComponent*>& getComponentList() { return m_lComponentlist; }
+
 	CTransform& getTransform() { return *m_pTransform; }
 
 public:

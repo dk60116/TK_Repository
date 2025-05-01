@@ -7,6 +7,7 @@ CPlayer::CPlayer()
 	, m_fMoveSpeed(1.f)
 	, m_fRotaionSpeed(90.f)
 {
+	m_strName = L"Player";
 }
 
 CPlayer::~CPlayer()

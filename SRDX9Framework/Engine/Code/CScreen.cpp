@@ -155,7 +155,7 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int inspectorHeight = _int(projectPT.y - clientPoint.y - offsetY * 2);
 
 	HWND inspectorWnd = CreateWindowW(L"InspectorWindowClass", L"ⓘ Inspector",
-		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VSCROLL,
 		projectPT.x + offsetX + 2,
 		clientPoint.y,
 		inspectorWidth,

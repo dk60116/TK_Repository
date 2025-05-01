@@ -242,6 +242,8 @@ void CEngineEditor::SelectGameObject(CGameObject* _gameObject)
 		m_pSelectedGameObject = _gameObject;
 		_gameObject->AddRef();
 	}
+
+	getWindow<CInspectorWindow>()->ViewTargetInfor_GameObject(_gameObject);
 }
 
 HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold)
