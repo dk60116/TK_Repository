@@ -71,6 +71,9 @@ void CMainScene::Update()
 {
 	CScene::Update();
 
+	if (m_lCameraList.empty())
+		return;
+
 	m_lCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(Alpha2))
@@ -94,6 +97,8 @@ void CMainScene::LateUpdate()
 
 void CMainScene::Render_Game()
 {
+	__super::Render_Game();
+
 	CScene::Render_Game();
 }
 

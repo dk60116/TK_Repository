@@ -39,7 +39,7 @@ private:
 	void SetTreeViewOptions();
 
 public:
-	_bool IsTreeViewHighlightEmpty();
+	const _bool IsTreeViewHighlightEmpty();
 	static LRESULT CALLBACK TreeSubProc
 	(
 		HWND _hWnd, UINT _msg,

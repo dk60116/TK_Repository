@@ -211,7 +211,7 @@ void CHierachyWindow::SetTreeViewOptions()
 	TreeView_SetTextColor(m_hTreeView, m_sOptions.textColor.rColor());
 }
 
-_bool CHierachyWindow::IsTreeViewHighlightEmpty()
+const _bool CHierachyWindow::IsTreeViewHighlightEmpty()
 {
 	auto a = TreeView_GetSelection(m_hTreeView);
 	if (TreeView_GetSelection(m_hTreeView) == NULL) 
@@ -289,7 +289,10 @@ void CHierachyWindow::AdjustTreeHeight()
 	POINT pt = { 0,0 }; ClientToScreen(m_hWnd, &pt);
 	newH = max(newH, 4);                        // 최소 높이 safeguard
 
-	MoveWindow(m_hTreeView,
+	MoveWindow
+	(
+		m_hTreeView,
 		m_iLeftSideWidth, CHILDTOPBARHEIGHT,
-		newW, newH, TRUE);
+		newW, newH, TRUE
+	);
 }
