@@ -88,9 +88,10 @@ LRESULT CHierachyWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam
 		TVHITTESTINFO hitTestInfo{};
 		hitTestInfo.pt = pt;
 
-		if (hitTestInfo.hItem == nullptr)
+		if (GetForegroundWindow() == m_hWnd && hitTestInfo.hItem == nullptr)
 		{
 			TreeView_SelectItem(m_hTreeView, nullptr);
+			CEngineEditor::GetInstance().getWindow<CInspectorWindow>()->ViewTargetInfor_GameObject(nullptr);
 		}
 	}
 	break;

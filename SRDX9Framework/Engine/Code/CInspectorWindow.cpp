@@ -1,4 +1,5 @@
 #include "CInspectorWindow.h"
+#include "CEngineEditor.h"
 
 CInspectorWindow::CInspectorWindow()
 	: m_sOptinos({})
@@ -39,7 +40,8 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 	switch (_message)
 	{
 	case WM_SIZE:
-		UpdateScrollInfo();
+		if (!m_vContentsWindows.empty())
+			UpdateScrollInfo();
 		break;
 
 	case WM_MOUSEWHEEL:
@@ -111,62 +113,89 @@ void CInspectorWindow::ClearComponents()
 
 	m_iTotalHeight = 0;
 	m_iScrollPos = 0;
+
+	UpdateScrollInfo();
 }
 
 void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 {
 	ClearComponents();
 
-	UpdateScrollInfo();              
+	if (!_target)
+		return;
 
-	const _int clientW = m_sClinentRect.right;      
+	const _int margin = 4;
+	const _int fieldH = 25;
 
-	SCROLLINFO si{ sizeof(si), SIF_RANGE | SIF_PAGE };
-	GetScrollInfo(m_hWnd, SB_VERT, &si);
-	const _bool hasScroll = UINT(si.nMax - si.nMin + 1) > si.nPage;
+	RECT rc; GetClientRect(m_hWnd, &rc);
+	const _int clientW = rc.right;
+	_int itemW = clientW - margin;
+	_int y = 0;
 
-	const _int margin = 4;                
-	const _int sbWidth = hasScroll ? GetSystemMetrics(SM_CXVSCROLL) : 0;
-	const _int itemW = clientW - sbWidth - margin;     
-
-	int i = 0;
-
-	HWND top = CreateWindowEx(
-		0, L"STATIC", nullptr,
+	HWND top = CreateWindowEx(0, L"STATIC", nullptr,
 		WS_CHILD | WS_VISIBLE | WS_BORDER,
-		margin / 2, m_sOptinos.contstsBarHeight * i,
+		margin / 2, y, 
 		itemW, m_sOptinos.topHeight,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr);
 
 	m_vContentsWindows.push_back(top);
 	m_iTotalHeight += m_sOptinos.topHeight;
+	y += m_sOptinos.topHeight;
+
+	const _int lblW = 50;
+	const _int edtH = 20;
+	const _int edtW = itemW - lblW - 80;
+
+	HWND hEditName = CreateWindowEx
+	(
+		WS_EX_CLIENTEDGE, L"EDIT",
+		_target->getName().c_str(),        
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+		4 + lblW, 8,
+		edtW, edtH,
+		top, reinterpret_cast<HMENU>(1001),
+		GetModuleHandle(nullptr), nullptr
+	);
+
+	SetWindowLongPtr(hEditName, GWLP_USERDATA, (LONG_PTR)_target);
 
 	for (CComponent* c : _target->getComponentList())
 	{
-		_int contentsHeight = 0;
+		int num = (int)c->GetInspectorFields().size();
+		int h = m_sOptinos.contstsBarHeight + num * fieldH;
 
-		auto contents = c->GetInspectorFields();
-
-		HWND h = CreateWindowEx
-		(
-			0, L"STATIC", nullptr,
+		HWND box = CreateWindowEx(0, L"STATIC", nullptr,
 			WS_CHILD | WS_VISIBLE | WS_BORDER,
-			margin / 2, 
-			(m_sOptinos.contstsBarHeight * i) + m_sOptinos.topHeight,
-			itemW, m_sOptinos.contstsBarHeight,
-			m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
-		);
+			margin / 2, y, itemW, h,
+			m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr);
 
-		m_vContentsWindows.push_back(h);
-		m_iTotalHeight += m_sOptinos.contstsBarHeight;
-		++i;
+		m_vContentsWindows.push_back(box);
+		m_iTotalHeight += h;
+		y += h;
 	}
 
-	UpdateScrollInfo();            
+	UpdateScrollInfo();
+
+	SCROLLINFO si{ sizeof(si), SIF_RANGE | SIF_PAGE };
+	GetScrollInfo(m_hWnd, SB_VERT, &si);
+	const bool hasScroll = UINT(si.nMax - si.nMin + 1) > si.nPage;
+
+	const int sbW = hasScroll ? GetSystemMetrics(SM_CXVSCROLL) : 0;
+	const int finalW = clientW - sbW - margin;
+
+	for (HWND child : m_vContentsWindows)
+	{
+		RECT r; GetWindowRect(child, &r);
+		MapWindowPoints(HWND_DESKTOP, m_hWnd, (POINT*)&r, 2);
+		MoveWindow(child, r.left, r.top, finalW, r.bottom - r.top, TRUE);
+	}
 }
 
 void CInspectorWindow::UpdateScrollInfo()
 {
+	if (m_iTotalHeight <= 0)
+		return;
+
 	RECT rc;  GetClientRect(m_hWnd, &rc);
 
 	const int viewH = rc.bottom;           
@@ -180,4 +209,7 @@ void CInspectorWindow::UpdateScrollInfo()
 	si.nPage = viewH;
 	si.nPos = clamp(m_iScrollPos, 0, maxPos);
 	SetScrollInfo(m_hWnd, SB_VERT, &si, TRUE);
+
+	const BOOL needScroll = (m_iTotalHeight > viewH);
+	ShowScrollBar(m_hWnd, SB_VERT, needScroll);
 }

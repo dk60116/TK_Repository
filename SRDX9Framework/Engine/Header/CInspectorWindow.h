@@ -8,7 +8,7 @@ BEGIN(Engine)
 struct InspectorViewOptions
 {
 	_int topHeight = 60;
-	_int contstsBarHeight = 28;
+	_int contstsBarHeight = 24;
 };
 
 class ENGINE_DLL CInspectorWindow final
