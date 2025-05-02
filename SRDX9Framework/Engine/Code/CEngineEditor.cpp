@@ -136,6 +136,8 @@ ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
 	if (!RegisterClassExW(&inspectorwcex))
 		return 0;
 
+	RegisterRoundedPanelClass();
+
 	return 1;
 }
 
@@ -258,4 +260,46 @@ HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _b
 	);
 
 	return result;
+}
+
+void CEngineEditor::RegisterRoundedPanelClass()
+{
+	WNDCLASS wc{};
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = [](HWND h, UINT m, WPARAM w, LPARAM l)->LRESULT
+		{
+			switch (m)
+			{
+			case WM_NCCREATE:
+				// 어두운 배경 브러시 저장
+				SetWindowLongPtr(h, GWLP_USERDATA,
+					(LONG_PTR)CreateSolidBrush(RGB(40, 40, 42)));
+				return TRUE;
+
+			case WM_PAINT:
+			{
+				PAINTSTRUCT ps;
+				HDC dc = BeginPaint(h, &ps);
+
+				HBRUSH bg = (HBRUSH)GetWindowLongPtr(h, GWLP_USERDATA);
+				HBRUSH old = (HBRUSH)SelectObject(dc, bg);
+
+				RECT rc; GetClientRect(h, &rc);
+				const int rad = 6;              
+				RoundRect(dc, rc.left, rc.top, rc.right, rc.bottom, rad, rad);
+
+				SelectObject(dc, old);
+				EndPaint(h, &ps);
+				return 0;
+			}
+			case WM_NCDESTROY:
+				DeleteObject((HBRUSH)GetWindowLongPtr(h, GWLP_USERDATA));
+				break;
+			}
+			return DefWindowProc(h, m, w, l);
+		};
+	wc.hInstance = GetModuleHandle(nullptr);
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wc.lpszClassName = L"RoundedPanel";
+	RegisterClass(&wc);
 }

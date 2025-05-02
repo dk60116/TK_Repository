@@ -7,6 +7,7 @@ CInspectorWindow::CInspectorWindow()
 	, m_pViewGameObject(nullptr)
 	, m_iTotalHeight(0)
 	, m_iScrollPos(0)
+	, m_hDarkBrush(CreateSolidBrush(RGB(55,55, 58)))
 {
 	m_strName = L"Editor:Inspector Window";
 }
@@ -42,6 +43,16 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 	case WM_SIZE:
 		if (!m_vContentsWindows.empty())
 			UpdateScrollInfo();
+		break;
+
+	case WM_CTLCOLOREDIT:
+	{
+		HDC hdc = (HDC)_wParam;
+		SetTextColor(hdc, RGB(220, 220, 220));    // 밝은 글자
+		SetBkColor(hdc, RGB(55, 55, 58));
+
+		return (INT_PTR)m_hDarkBrush;              // 배경 브러시
+	}
 		break;
 
 	case WM_MOUSEWHEEL:
@@ -148,12 +159,12 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 
 	HWND hEditName = CreateWindowEx
 	(
-		WS_EX_CLIENTEDGE, L"EDIT",
+		0, L"EDIT",
 		_target->getName().c_str(),        
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
 		4 + lblW, 8,
 		edtW, edtH,
-		top, reinterpret_cast<HMENU>(1001),
+		m_hWnd, reinterpret_cast<HMENU>(1001),
 		GetModuleHandle(nullptr), nullptr
 	);
 

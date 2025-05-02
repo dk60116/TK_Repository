@@ -59,6 +59,7 @@ public:
 public:
 	static void RemoveBtnsAndRoundedCorners(HWND _hWnd);
 	static HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
+	static void RegisterRoundedPanelClass();
 
 private:
 	Engine_WindowOptions m_sEngineOptions;

@@ -114,7 +114,7 @@ void CVIBuffer::Destroy()
 	Safe_Release(m_pVB);
 }
 
-HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, UINT size)
+HRESULT CVIBuffer::FillVertexBuffer(const void* _pVertices, const UINT size)
 {
 	if (!m_pVB) 
 		return E_FAIL;
@@ -123,21 +123,22 @@ HRESULT CVIBuffer::FillVertexBuffer(const void* pVertices, UINT size)
 	if (FAILED(m_pVB->Lock(0, size, &pData, 0)))
 		return E_FAIL;
 
-	memcpy(pData, pVertices, size);
+	memcpy(pData, _pVertices, size);
 	m_pVB->Unlock();
 
 	return S_OK;
 }
 
-HRESULT CVIBuffer::FillIndexBuffer(const void* pIndices, UINT size)
+HRESULT CVIBuffer::FillIndexBuffer(const void* _pIndices, const UINT _size)
 {
-	if (!m_pIB) return E_FAIL;
-
-	void* pData = nullptr;
-	if (FAILED(m_pIB->Lock(0, size, &pData, 0)))
+	if (!m_pIB) 
 		return E_FAIL;
 
-	memcpy(pData, pIndices, size);
+	void* pData = nullptr;
+	if (FAILED(m_pIB->Lock(0, _size, &pData, 0)))
+		return E_FAIL;
+
+	memcpy(pData, _pIndices, _size);
 	m_pIB->Unlock();
 
 	return S_OK;

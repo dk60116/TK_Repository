@@ -42,6 +42,9 @@ private:
 	CGameObject* m_pViewGameObject;
 	_int m_iTotalHeight;
 	_int m_iScrollPos;
+
+private:
+	HBRUSH m_hDarkBrush;
 };
 
 END;

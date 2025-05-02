@@ -36,8 +36,8 @@ public:
 	void Destroy();
 
 public:
-	HRESULT FillVertexBuffer(const void* pVertices, UINT size);
-	HRESULT FillIndexBuffer(const void* pIndices, UINT size);
+	HRESULT FillVertexBuffer(const void* _pVertices, const UINT _size);
+	HRESULT FillIndexBuffer(const void* _pIndices, const UINT size);
 	virtual void UpdateColor() PURE;
 
 	VIBufferOptions& getOptions() { return m_sOptions; }

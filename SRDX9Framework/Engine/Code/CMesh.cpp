@@ -34,6 +34,8 @@ HRESULT CMesh::Ready_Mesh(LPDIRECT3DDEVICE9 _device)
         return Create_Plane(_device);
     case CMesh::QUAD:
         return Create_Quad(_device);
+    case CMesh::MODEL:
+        break;
     default:
         break;
     }
@@ -41,7 +43,7 @@ HRESULT CMesh::Ready_Mesh(LPDIRECT3DDEVICE9 _device)
     return E_FAIL;
 }
 
-HRESULT CMesh::Create_Mesh(const void* _pVertices, UINT vertexSize, UINT vertexCount, const void* _pIndices, UINT indexSize, UINT _indexCount, DWORD _fvf, D3DFORMAT _idxFormat)
+HRESULT CMesh::Create_Mesh(const void* _pVertices, UINT _vertexSize, UINT _vertexCount, const void* _pIndices, UINT _indexSize, UINT _indexCount, DWORD _fvf, D3DFORMAT _idxFormat)
 {
 	return E_NOTIMPL;
 }

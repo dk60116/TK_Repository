@@ -9,7 +9,7 @@ class ENGINE_DLL CMesh final
 	: public CVIBuffer
 {
 public:
-	enum MeshType { CUBE, SPHERE, CAPSULE, CYLINDER, PLANE, QUAD, CUSTOM };
+	enum MeshType { CUBE, SPHERE, CAPSULE, CYLINDER, PLANE, QUAD, MODEL };
 
 	friend class CMeshFilter;
 
@@ -26,8 +26,8 @@ public:
 	MeshType const getMeshType() { return m_eMeshType; }
 	void SetMeshType(const MeshType _type) { m_eMeshType = _type; }
 
-	HRESULT Create_Mesh(const void* _pVertices, UINT vertexSize, UINT vertexCount,
-		const void* _pIndices, UINT indexSize, UINT _indexCount, DWORD _fvf, D3DFORMAT _idxFormat);
+	HRESULT Create_Mesh(const void* _pVertices, UINT _vertexSize, UINT _vertexCount,
+		const void* _pIndices, UINT _indexSize, UINT _indexCount, DWORD _fvf, D3DFORMAT _idxFormat);
 
 private:
 	HRESULT Create_Cube(LPDIRECT3DDEVICE9 _device);
