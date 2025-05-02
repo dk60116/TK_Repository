@@ -15,7 +15,9 @@ BEGIN(Engine)
 
 struct Engine_WindowOptions
 {
-	ColorValue s_baseColor = ColorValue(56, 56, 56);
+	ColorValue baseColor = ColorValue(56, 56, 56);
+	ColorValue baseTextColor = ColorValue(167, 167, 167);
+	ColorValue textBoxColor = ColorValue(42, 42, 42);
 };
 
 class ENGINE_DLL CEngineEditor
@@ -58,8 +60,14 @@ public:
 
 public:
 	static void RemoveBtnsAndRoundedCorners(HWND _hWnd);
+	static void BeautifyEdit(HWND _hEdit);
+	static LRESULT CALLBACK EditSubclassProc(HWND hWnd, UINT msg,
+		WPARAM wParam, LPARAM lParam,
+		UINT_PTR, DWORD_PTR);
 	static HFONT CreateDefaultFont(LPCWSTR _font, const _int _size, const _bool _bold = false);
-	static void RegisterRoundedPanelClass();
+
+private:
+	void RegisterBaseColorPanelClass();
 
 private:
 	Engine_WindowOptions m_sEngineOptions;

@@ -38,7 +38,8 @@ private:
 
 private:
 	InspectorViewOptions m_sOptinos;
-	vector<HWND> m_vContentsWindows;
+	HWND m_hEditName;
+	vector<HWND> m_vContentsWindows, m_vChildWindows;
 	CGameObject* m_pViewGameObject;
 	_int m_iTotalHeight;
 	_int m_iScrollPos;

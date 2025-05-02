@@ -224,7 +224,7 @@ void CHierachyWindow::SetTreeViewOptions()
 
 	SendMessage(m_hTreeView, WM_SETFONT, (WPARAM)m_hFont, TRUE);
 
-	TreeView_SetBkColor(m_hTreeView, CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
+	TreeView_SetBkColor(m_hTreeView, CEngineEditor::GetInstance().getOptions().baseColor.rColor());
 	TreeView_SetTextColor(m_hTreeView, m_sOptions.textColor.rColor());
 }
 
@@ -283,7 +283,8 @@ bool CHierachyWindow::GetLastVisibleItemRect(RECT& _rcOut)
 	HTREEITEM hLast = (HTREEITEM)SendMessage(
 		m_hTreeView, TVM_GETNEXTITEM, TVGN_LASTVISIBLE, 0);
 
-	if (!hLast) return false;
+	if (!hLast) 
+		return false;
 
 	if (!TreeView_GetItemRect(m_hTreeView, hLast, &_rcOut, TRUE))
 		return false;

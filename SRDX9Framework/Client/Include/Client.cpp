@@ -115,6 +115,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_CTLCOLOREDIT:
+    {
+        HWND hEdit = (HWND)lParam;
+            HDC hdc = (HDC)wParam;
+            SetBkMode(hdc, TRANSPARENT);
+            SetTextColor(hdc, RGB(255, 255, 255));
+            SetBkColor(hdc, RGB(30, 30, 30));
+
+            static HBRUSH hBrush = CreateSolidBrush(RGB(30, 30, 30));
+            return (LRESULT)hBrush;
+        break;
+    }
+    break;
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -148,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             HDC hdc = BeginPaint(hWnd, &ps);
 
-            HBRUSH blackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
+            HBRUSH blackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().baseColor.rColor());
             FillRect(hdc, &ps.rcPaint, blackBrush);
             DeleteObject(blackBrush);
         }
@@ -178,7 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, ColorValue::black().rColor());
-            static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().s_baseColor.rColor());
+            static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().baseColor.rColor());
             return (INT_PTR)hBlackBrush;
         }
         else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_BASETOPBAR || GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_BASEBOTTOMBAR)
@@ -193,6 +206,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, ColorValue::white().black());
             static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue(49, 49, 49).rColor());
+            return (INT_PTR)hBlackBrush;
+        }
+        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_INPUTBOX)
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, ColorValue::white().black());
+            static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().baseColor.rColor());
+            return (INT_PTR)hBlackBrush;
+        }
+        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_INSPECTORCOMPONENTTOP)
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, ColorValue::white().black());
+            SetTextColor(hdcStatic, CEngineEditor::GetInstance().getOptions().baseTextColor.rColor());  
+            static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue(62, 62, 62).rColor());
             return (INT_PTR)hBlackBrush;
         }
     }
@@ -323,7 +351,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     COLORREF btnBGColor = 
                         (info.state & TVIS_SELECTED)
-                        ? RGB(44, 93, 135) : CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+                        ? RGB(44, 93, 135) : CEngineEditor::GetInstance().getOptions().baseColor.rColor();
 
                     if (hot)
                     {
@@ -337,7 +365,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     if (mouseDown && !hot)
                     {
-                        btnBGColor = CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+                        btnBGColor = CEngineEditor::GetInstance().getOptions().baseColor.rColor();
                     }
 
                     if (isRoot && !selected)

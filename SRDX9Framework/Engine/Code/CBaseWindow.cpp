@@ -48,7 +48,7 @@ HRESULT CBaseWindow::Init(HWND _hWnd, vector2Int _size, _bool _isBase)
 	int screenXCenter = screenX / 2;
 
 	int buttonsWidth = 36;
-	int buttonsHeight = 24;
+	int buttonsHeight = 22;
 	int buttonsYPos = 8;
 	int spacing = 18;
 
@@ -105,10 +105,10 @@ void CBaseWindow::UpdateResolution(HWND _target, vector2Int _resolution)
 	
 	int screenX = _resolution.x;
 	int screenXCenter = screenX / 2;
-	int screenY = 6;
+	int screenY = 8;
 
 	int btnWidth = 40;
-	int btnHeight = 28;
+	int btnHeight = 26;
 
 	MoveWindow(m_hPlayBtn,
 	screenXCenter - btnWidth - btnWidth / 2, screenY,

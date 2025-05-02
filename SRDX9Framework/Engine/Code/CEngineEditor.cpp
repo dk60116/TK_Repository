@@ -136,7 +136,7 @@ ATOM CEngineEditor::MyRegisterClass(HINSTANCE hInstance, WNDPROC _wndPrc)
 	if (!RegisterClassExW(&inspectorwcex))
 		return 0;
 
-	RegisterRoundedPanelClass();
+	RegisterBaseColorPanelClass();
 
 	return 1;
 }
@@ -204,7 +204,7 @@ HWND CEngineEditor::FindWindowHandle(const wstring _window)
 
 void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 {
-	COLORREF titleColor = CEngineEditor::GetInstance().getOptions().s_baseColor.rColor();
+	COLORREF titleColor = CEngineEditor::GetInstance().getOptions().baseColor.rColor();
 	DwmSetWindowAttribute(_hWnd, DWMWA_CAPTION_COLOR, &titleColor, sizeof(titleColor));
 
 	LONG style = GetWindowLong(_hWnd, GWL_STYLE);
@@ -230,6 +230,65 @@ void CEngineEditor::RemoveBtnsAndRoundedCorners(HWND _hWnd)
 		&preference,
 		sizeof(preference)
 	);
+}
+
+void CEngineEditor::BeautifyEdit(HWND _hEdit)
+{
+	/* 1) 기본 테마·테두리 끄기 */
+	SetWindowTheme(_hEdit, L"", L"");
+
+	LONG style = GetWindowLong(_hEdit, GWL_STYLE);
+	style &= ~(WS_BORDER);                   // ← 빠졌던 기본 테두리 제거
+	SetWindowLong(_hEdit, GWL_STYLE, style);
+
+	LONG_PTR ex = GetWindowLongPtr(_hEdit, GWL_EXSTYLE);
+	ex &= ~(WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+	SetWindowLongPtr(_hEdit, GWL_EXSTYLE, ex);
+
+	SetWindowPos(_hEdit, nullptr, 0, 0, 0, 0,
+		SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+		SWP_FRAMECHANGED | SWP_NOACTIVATE);
+
+	/* 2) 둥근 Region 지정 */
+	RECT rc; GetClientRect(_hEdit, &rc);
+	constexpr int R = 8;                       // 반경을 조금 키워 눈에 띄게
+	HRGN rgn = CreateRoundRectRgn(0, 0,
+		rc.right + 1, rc.bottom + 1, R, R);
+	SetWindowRgn(_hEdit, rgn, TRUE);
+
+	/* 3) 서브클래싱 – NC 페인트 차단 */
+	SetWindowSubclass(_hEdit, EditSubclassProc, 0, 0);
+}
+
+LRESULT CEngineEditor::EditSubclassProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR)
+{
+	switch (msg)
+	{
+	case WM_NCPAINT:         // ⬅ 비‑클라이언트(테두리) 칠하기 차단
+		return 0;            //   → 사각형 테두리가 더 이상 그려지지 않음
+
+	case WM_SIZE:            // 크기 변화 시 Region 재설정
+	{
+		RECT rc; GetClientRect(hWnd, &rc);
+		constexpr int R = 8;
+		HRGN r = CreateRoundRectRgn(0, 0, rc.right + 1, rc.bottom + 1, R, R);
+		SetWindowRgn(hWnd, r, TRUE);
+		break;
+	}
+
+	case WM_ERASEBKGND:      // 다크 배경 직접 칠하기
+	{
+		HDC hdc = (HDC)wParam;
+		RECT rc; GetClientRect(hWnd, &rc);
+		FillRect(hdc, &rc, GetStockBrush(DKGRAY_BRUSH));
+		return 1;
+	}
+
+	case WM_NCDESTROY:
+		RemoveWindowSubclass(hWnd, EditSubclassProc, 0);
+		break;
+	}
+	return DefSubclassProc(hWnd, msg, wParam, lParam);
 }
 
 void CEngineEditor::SelectGameObject(CGameObject* _gameObject)
@@ -262,7 +321,7 @@ HFONT CEngineEditor::CreateDefaultFont(LPCWSTR _font, const _int _size, const _b
 	return result;
 }
 
-void CEngineEditor::RegisterRoundedPanelClass()
+void CEngineEditor::RegisterBaseColorPanelClass()
 {
 	WNDCLASS wc{};
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -271,9 +330,8 @@ void CEngineEditor::RegisterRoundedPanelClass()
 			switch (m)
 			{
 			case WM_NCCREATE:
-				// 어두운 배경 브러시 저장
 				SetWindowLongPtr(h, GWLP_USERDATA,
-					(LONG_PTR)CreateSolidBrush(RGB(40, 40, 42)));
+					(LONG_PTR)CreateSolidBrush(CEngineEditor::GetInstance().getOptions().baseColor.rColor()));
 				return TRUE;
 
 			case WM_PAINT:
@@ -284,9 +342,9 @@ void CEngineEditor::RegisterRoundedPanelClass()
 				HBRUSH bg = (HBRUSH)GetWindowLongPtr(h, GWLP_USERDATA);
 				HBRUSH old = (HBRUSH)SelectObject(dc, bg);
 
-				RECT rc; GetClientRect(h, &rc);
-				const int rad = 6;              
-				RoundRect(dc, rc.left, rc.top, rc.right, rc.bottom, rad, rad);
+				//RECT rc; GetClientRect(h, &rc);
+				//const int rad = 6;              
+				//RoundRect(dc, rc.left, rc.top, rc.right, rc.bottom, rad, rad);
 
 				SelectObject(dc, old);
 				EndPaint(h, &ps);
@@ -298,8 +356,9 @@ void CEngineEditor::RegisterRoundedPanelClass()
 			}
 			return DefWindowProc(h, m, w, l);
 		};
+
 	wc.hInstance = GetModuleHandle(nullptr);
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wc.lpszClassName = L"RoundedPanel";
+	wc.lpszClassName = L"BASECOLORCLASS";
 	RegisterClass(&wc);
 }
