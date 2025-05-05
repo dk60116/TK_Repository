@@ -44,6 +44,8 @@ private:
 	_int m_iTotalHeight;
 	_int m_iScrollPos;
 
+	void CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3 _value);
+
 private:
 	HBRUSH m_hDarkBrush;
 };

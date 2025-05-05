@@ -120,6 +120,12 @@ void CCamera::UpdateViewMatrix()
 	D3DXMatrixLookAtLH(&m_matViewMatrix, &eyePos, &atPos, &upVec);
 }
 
+void CCamera::ViewProjextion()
+{
+	m_pGraphicDev->SetTransform(D3DTS_VIEW, &m_matViewMatrix);
+	m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &m_matProjMatrix);
+}
+
 void CCamera::ResetAspectFromResolution(const vector2Int _resolution)
 {
 	m_sParameters.ascpect = (float)_resolution.x / _resolution.y;

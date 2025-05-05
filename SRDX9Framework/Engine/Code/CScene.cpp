@@ -312,8 +312,8 @@ void CScene::Render_Grid()
 	D3DXMatrixIdentity(&matWorld);
 
 	pDevice->SetTransform(D3DTS_WORLD, &matWorld);
-	pDevice->SetTransform(D3DTS_VIEW, &CManagement::GetInstance().getEditorCamera().getViewMatrix());
-	pDevice->SetTransform(D3DTS_PROJECTION, &CManagement::GetInstance().getEditorCamera().getProjMatrix());
+
+	CManagement::GetInstance().getEditorCamera().ViewProjextion();
 
 	// ===== ±×¸®±â =====
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);

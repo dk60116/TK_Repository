@@ -40,6 +40,7 @@
 #define HWND_HIERACHYSIDE 103
 #define HWND_INPUTBOX 104
 #define HWND_INSPECTORCOMPONENTTOP 105
+#define HWND_INSPECTORCOMPONENTBODY 106
 
 #ifndef TVM_GETHOTITEM               
 #   define TVM_GETHOTITEM (TV_FIRST + 58)
@@ -56,7 +57,7 @@ std::vector<FieldInfo> GetInspectorFields() override { \
 std::vector<FieldInfo> _fields;
 
 #define SERIALIZEFILED(var) \
-_fields.push_back({L#var, DetectFieldType(var), &var});
+_fields.push_back({std::wstring(L#var).substr(3), DetectFieldType(var), &var});
 
 #define END_SERIALIZEFIELD \
 return _fields; } \

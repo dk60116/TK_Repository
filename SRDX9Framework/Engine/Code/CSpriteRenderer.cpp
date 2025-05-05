@@ -90,15 +90,16 @@ void CSpriteRenderer::Render_Final(CCamera* _camera, _bool _editor)
     m_pGraphicDev->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
 
     _matrix world = getTransform().getWorldMatrix();
-    world._31 = 0.f; world._32 = 0.f; world._33 = 1.f;
+    world._31 = 0.f; 
+    world._32 = 0.f;
+    world._33 = 1.f;
     world._43 += static_cast<_float>(-m_sOptions.sortOrder) * 0.001f;
     m_pGraphicDev->SetTransform(D3DTS_WORLD, &world);
 
-    if (CManagement::GetInstance().getCrtScene()->getCamList().empty())
+    if (!_camera)
         return;
 
-    m_pGraphicDev->SetTransform(D3DTS_VIEW, &_camera->getViewMatrix());
-    m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &_camera->getProjMatrix());
+    _camera->ViewProjextion();
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 

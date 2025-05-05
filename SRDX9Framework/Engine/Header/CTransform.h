@@ -50,12 +50,12 @@ public:
 	const _bool isRoot() const { return m_bIsRootParent; }
 	list<CTransform*>& getChilds() { return m_lChildList;; }
 
-	vector3& getPosition() { return m_v3WorldPos; };
-	vector3& getEulerAngles() { return m_v3EulerAngles; };
+	vector3& getPosition() { return m_vWorldPos; };
+	vector3& getEulerAngles() { return m_vEulerAngles; };
 
-	vector3& getLocalPosition() { return m_v3Position; }
-	vector3& getLocalScale() { return m_v3Scale; }
-	vector3& getLocalEulerAngles() { return m_v3EulerAngles; }
+	vector3& getLocalPosition() { return m_vPosition; }
+	vector3& getLocalScale() { return m_vScale; }
+	vector3& getLocalEulerAngles() { return m_vEulerAngles; }
 
 	void SetPosition(const vector3 world_pos);
 	void SetPosition(const _float _x, const _float _y, const _float _z);
@@ -129,16 +129,16 @@ private:
 	_bool m_bIsRootParent;
 	CTransform* m_pParent;
 	list<CTransform*> m_lChildList;
-	vector3 m_v3Position, m_v3Scale, m_v3EulerAngles;
-	vector3 m_v3WorldPos, m_vWorldEulerAngle;
-	quaternion m_v4Quaternion;
+	vector3 m_vPosition, m_vScale, m_vEulerAngles;
+	vector3 m_vWorldPos, m_vWorldEulerAngles;
+	quaternion m_vQuaternion;
 	_matrix m_matWorld;
 	Directions m_sDirections;
 
 	BEGIN_SERIALIZEFIELD
-		SERIALIZEFILED(m_v3Position)
-		SERIALIZEFILED(m_v3Scale)
-		SERIALIZEFILED(m_v3EulerAngles)
+		SERIALIZEFILED(m_vPosition)
+		SERIALIZEFILED(m_vScale)
+		SERIALIZEFILED(m_vWorldEulerAngles)
 	END_SERIALIZEFIELD
 };
 

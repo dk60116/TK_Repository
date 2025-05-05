@@ -153,11 +153,14 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 	_int x = margin / 2;
 	_int y = 0;
 
-	HWND top = CreateWindowEx(0, L"STATIC", nullptr,
+	HWND top = CreateWindowEx
+	(
+		0, L"STATIC", nullptr,
 		WS_CHILD | WS_VISIBLE,
 		x, y, 
 		itemW, m_sOptinos.topHeight,
-		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr);
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
 
 	SetWindowLongPtr(top, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 
@@ -215,15 +218,41 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 
 		SetWindowLongPtr(componentTop, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTTOP));
 
+		HWND componentTitle = CreateWindowEx
+		(
+			0, L"STATIC", nullptr,
+			WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_LEFT,
+			x + 30, y,
+			itemW - 30, m_sOptinos.contstsBarHeight,
+			m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+		);
+
+		m_vChildWindows.push_back(componentTitle);
+
+		SetWindowLongPtr(componentTitle, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTTOP));
+
 		LOGFONT lf{};
 		SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(lf), &lf, 0);
 		lf.lfHeight = -13;      
 		lf.lfWeight = FW_BOLD;      
 
 		HFONT hFont = CreateFontIndirect(&lf);
-		SendMessage(componentTop, WM_SETFONT, (WPARAM)hFont, TRUE);
+	
+		wstring name = c->getName();
 
-		SetWindowText(componentTop, c->getName().c_str());
+		SetWindowText(componentTitle, name.c_str());
+
+		for (int i = 0; i < c->GetInspectorFields().size(); ++i)
+		{
+			switch (c->GetInspectorFields()[i].type)
+			{
+			case FieldType::VECTOR3:
+				CreateVector3Box(vector2Int(x, m_sOptinos.contstsBarHeight + y + (25 * i) - 2), vector2Int(itemW, 30), c->GetInspectorFields()[i].name, *static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
+				break;
+			default:
+				break;
+			}
+		}
 
 		m_vContentsWindows.push_back(box);
 		m_iTotalHeight += h;
@@ -245,20 +274,10 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 		MapWindowPoints(HWND_DESKTOP, m_hWnd, (POINT*)&r, 2);
 		MoveWindow(child, r.left, r.top, finalW, r.bottom - r.top, TRUE);
 	}
-
-	for (HWND child : m_vChildWindows)
-	{
-		RECT r; GetWindowRect(child, &r);
-		MapWindowPoints(HWND_DESKTOP, m_hWnd, (POINT*)&r, 2);
-		MoveWindow(child, r.left, r.top, finalW, r.bottom - r.top, TRUE);
-	}
 }
 
 void CInspectorWindow::UpdateScrollInfo()
 {
-	if (m_iTotalHeight <= 0)
-		return;
-
 	RECT rc;  GetClientRect(m_hWnd, &rc);
 
 	const int viewH = rc.bottom;           
@@ -271,9 +290,71 @@ void CInspectorWindow::UpdateScrollInfo()
 	si.nMax = nRange - 1;
 	si.nPage = viewH;
 	si.nPos = clamp(m_iScrollPos, 0, maxPos);
-	return;
+
 	SetScrollInfo(m_hWnd, SB_VERT, &si, TRUE);
 
 	const BOOL needScroll = (m_iTotalHeight > viewH);
 	ShowScrollBar(m_hWnd, SB_VERT, needScroll);
+}
+
+void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3 _value)
+{
+	HWND vector3Veiw = CreateWindowEx
+	(
+		0, L"STATIC", nullptr,
+		WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_LEFT,
+		_start.x, _start.y,
+		_size.x, _size.y,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	m_vChildWindows.push_back(vector3Veiw);
+
+	SetWindowLongPtr(vector3Veiw, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
+
+	SetWindowText(vector3Veiw, (L"     " + _name).c_str());
+
+	if (_name == L"WorldEulerAngles")
+		SetWindowText(vector3Veiw, L"     Rotation");
+
+	HWND xView = CreateWindowEx
+	(
+		0, L"Edit", nullptr,
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		_start.x + (_int)((_size.x * 0.2f) + 40), _start.y + 4,
+		_int(_size.x * 0.18f), _size.y - 10, 
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	SetWindowTextW(xView, to_wstring(_value.x).c_str());
+
+	HWND yView = CreateWindowEx
+	(
+		0, L"Edit", nullptr,
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		_start.x + (_int)((_size.x * 0.45f) + 40), _start.y + 4,
+		_int(_size.x * 0.18f), _size.y - 10,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	SetWindowTextW(yView, to_wstring(_value.y).c_str());
+
+	HWND zView = CreateWindowEx
+	(
+		0, L"Edit", nullptr,
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		_start.x + (_int)((_size.x * 0.7f) + 40), _start.y + 4,
+		int(_size.x * 0.18f), _size.y - 10,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+	
+	SetWindowTextW(zView, to_wstring(_value.z).c_str());
+
+	m_vChildWindows.push_back(xView);
+	m_vChildWindows.push_back(yView);
+	m_vChildWindows.push_back(zView);
+
+	SetWindowLongPtr(xView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
+	SetWindowLongPtr(yView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
+	SetWindowLongPtr(zView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 }

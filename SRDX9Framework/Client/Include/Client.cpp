@@ -223,6 +223,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue(62, 62, 62).rColor());
             return (INT_PTR)hBlackBrush;
         }
+        else if (GetWindowLongPtr(hStatic, GWLP_USERDATA) == HWND_INSPECTORCOMPONENTBODY)
+        {
+            SetBkMode(hdcStatic, TRANSPARENT);
+            SetBkColor(hdcStatic, ColorValue::white().black());
+            SetTextColor(hdcStatic, CEngineEditor::GetInstance().getOptions().baseTextColor.rColor());
+            static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue(0, 0, 62).rColor());
+            return (INT_PTR)hBlackBrush;
+        }
     }
     break;
 

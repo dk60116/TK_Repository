@@ -48,6 +48,7 @@ public:
 	void SetMode(const CameraViewMode _mode) { m_eCamViewMode = _mode; }
 	_matrix& getProjMatrix() { return m_matProjMatrix; }
 	_matrix& getViewMatrix() { return m_matViewMatrix; }
+	void ViewProjextion();
 	CameraViewParameters& getParameters() { return m_sParameters; };
 	void ResetAspectFromResolution(const vector2Int _resolution);
 

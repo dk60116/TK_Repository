@@ -74,11 +74,10 @@ void CMeshRenderer::Render_Final(CCamera* _camera, _bool _editor)
     _matrix world = getTransform().getWorldMatrix();
     m_pGraphicDev->SetTransform(D3DTS_WORLD, &world);
 
-    if (CManagement::GetInstance().getCrtScene()->getCamList().empty())
+    if (!_camera)
         return;
 
-    m_pGraphicDev->SetTransform(D3DTS_VIEW, &_camera->getViewMatrix());
-    m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &_camera->getProjMatrix());
+    _camera->ViewProjextion();
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
