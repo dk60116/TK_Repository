@@ -10,6 +10,7 @@ CInspectorWindow::CInspectorWindow()
 	, m_iTotalHeight(0)
 	, m_iScrollPos(0)
 	, m_hDarkBrush(CreateSolidBrush(RGB(55,55, 58)))
+	, m_vPairViewList({})
 {
 	m_strName = L"Editor:Inspector Window";
 }
@@ -32,6 +33,24 @@ void CInspectorWindow::Render()
 
 void CInspectorWindow::Update()
 {
+	for (TRAVERSAL_ITER(m_vPairViewList, it))
+	{
+		switch ((*it).type)
+		{
+		case FieldType::FLOAT:
+		{
+			_float value = *(reinterpret_cast<_float*>((*it).value));
+			_float prevValue = *(reinterpret_cast<_float*>((*it).prevValue));
+
+			if (prevValue != value)
+				SetWindowTextW((*it).handle, to_wstring(value).c_str());
+
+			*reinterpret_cast<float*>((*it).prevValue) = value;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 void CInspectorWindow::UpdateResolution(HWND _target, vector2Int _resolution)
@@ -109,6 +128,13 @@ void CInspectorWindow::Destroy()
 
 	if (m_pViewGameObject)
 		Safe_Release(m_pViewGameObject);
+
+	for (TRAVERSAL_ITER(m_vPairViewList, it))
+	{
+		Safe_Delete((*it).prevValue);
+	}
+
+	m_vPairViewList.clear();
 }
 
 void CInspectorWindow::ClearComponents()
@@ -128,8 +154,14 @@ void CInspectorWindow::ClearComponents()
 			DestroyWindow(*it);
 	}
 
+	for (TRAVERSAL_ITER(m_vPairViewList, it))
+	{
+		Safe_Delete((*it).prevValue);
+	}
+
 	m_vContentsWindows.clear();
 	m_vChildWindows.clear();
+	m_vPairViewList.clear();
 
 	m_iTotalHeight = 0;
 	m_iScrollPos = 0;
@@ -247,7 +279,7 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 			switch (c->GetInspectorFields()[i].type)
 			{
 			case FieldType::VECTOR3:
-				CreateVector3Box(vector2Int(x, m_sOptinos.contstsBarHeight + y + (25 * i) - 2), vector2Int(itemW, 30), c->GetInspectorFields()[i].name, *static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
+				CreateVector3Box(vector2Int(x, m_sOptinos.contstsBarHeight + y + (25 * i) - 2), vector2Int(itemW, 30), c->GetInspectorFields()[i].name, static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
 				break;
 			default:
 				break;
@@ -297,7 +329,7 @@ void CInspectorWindow::UpdateScrollInfo()
 	ShowScrollBar(m_hWnd, SB_VERT, needScroll);
 }
 
-void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3 _value)
+void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value)
 {
 	HWND vector3Veiw = CreateWindowEx
 	(
@@ -317,38 +349,52 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 	if (_name == L"WorldEulerAngles")
 		SetWindowText(vector3Veiw, L"     Rotation");
 
+	_int leftOffset = 110;
+	_int rightOffset = 5;
+	_int rightArea = _size.x - leftOffset;
+	_int x = _start.x + leftOffset;
+	_int y = _start.y + 4;
+	_int width = _int((_size.x - leftOffset) * 0.25f);
+	_int height = _size.y - 10;
+
 	HWND xView = CreateWindowEx
 	(
 		0, L"Edit", nullptr,
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
-		_start.x + (_int)((_size.x * 0.2f) + 40), _start.y + 4,
-		_int(_size.x * 0.18f), _size.y - 10, 
+		x, y,
+		width, height,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
 	);
 
-	SetWindowTextW(xView, to_wstring(_value.x).c_str());
+	SetWindowTextW(xView, to_wstring((*_value).x).c_str());
+
+	m_vPairViewList.push_back({ xView, &(_value->x), new _float(), FieldType::FLOAT });
 
 	HWND yView = CreateWindowEx
 	(
 		0, L"Edit", nullptr,
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
-		_start.x + (_int)((_size.x * 0.45f) + 40), _start.y + 4,
-		_int(_size.x * 0.18f), _size.y - 10,
+		_int(_size.x - (rightArea * 0.5f) - (width * 0.5f)), y,
+		width, height,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
 	);
 
-	SetWindowTextW(yView, to_wstring(_value.y).c_str());
+	SetWindowTextW(yView, to_wstring((*_value).y).c_str());
+
+	m_vPairViewList.push_back({ yView, &(_value->y), new _float(), FieldType::FLOAT });
 
 	HWND zView = CreateWindowEx
 	(
 		0, L"Edit", nullptr,
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
-		_start.x + (_int)((_size.x * 0.7f) + 40), _start.y + 4,
-		int(_size.x * 0.18f), _size.y - 10,
+		_size.x - width - rightOffset, y,
+		width, height,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
 	);
 	
-	SetWindowTextW(zView, to_wstring(_value.z).c_str());
+	SetWindowTextW(zView, to_wstring((*_value).z).c_str());
+
+	m_vPairViewList.push_back({ zView, &(_value->z), new _float(), FieldType::FLOAT});
 
 	m_vChildWindows.push_back(xView);
 	m_vChildWindows.push_back(yView);

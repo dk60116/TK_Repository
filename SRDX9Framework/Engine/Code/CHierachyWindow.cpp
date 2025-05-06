@@ -63,6 +63,7 @@ void CHierachyWindow::Render()
 
 void CHierachyWindow::Update()
 {
+	
 }
 
 void CHierachyWindow::UpdateResolution(HWND _target, vector2Int _resolution)

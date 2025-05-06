@@ -11,6 +11,14 @@ struct InspectorViewOptions
 	_int contstsBarHeight = 24;
 };
 
+struct InspectorPairView 
+{
+	HWND handle;
+	void* value;
+	void* prevValue;
+	FieldType type = FieldType::FLOAT;
+};
+
 class ENGINE_DLL CInspectorWindow final
     : public CEditorWindow
 {
@@ -44,7 +52,9 @@ private:
 	_int m_iTotalHeight;
 	_int m_iScrollPos;
 
-	void CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3 _value);
+	void CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value);
+
+	vector<InspectorPairView> m_vPairViewList;
 
 private:
 	HBRUSH m_hDarkBrush;
