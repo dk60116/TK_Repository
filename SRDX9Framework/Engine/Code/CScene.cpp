@@ -357,6 +357,7 @@ void CScene::SafeDestroyObject(CGameObject* _obj)
 	}
 	
 	CLight* light = _obj->GetComponent<CLight>();
+	
 	if (light)
 	{
 		Safe_Release(light);

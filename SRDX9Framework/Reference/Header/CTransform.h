@@ -129,7 +129,9 @@ private:
 	_bool m_bIsRootParent;
 	CTransform* m_pParent;
 	list<CTransform*> m_lChildList;
-	vector3 m_vPosition, m_vScale, m_vEulerAngles;
+	vector3 m_vPosition, m_vScale, m_vRotation;
+	vector3 m_vPrevRotation;
+	vector3 m_vEulerAngles;
 	vector3 m_vWorldPos, m_vWorldEulerAngles;
 	quaternion m_vQuaternion;
 	_matrix m_matWorld;
@@ -138,7 +140,7 @@ private:
 	BEGIN_SERIALIZEFIELD
 		SERIALIZEFILED(m_vPosition)
 		SERIALIZEFILED(m_vScale)
-		SERIALIZEFILED(m_vWorldEulerAngles)
+		SERIALIZEFILED(m_vRotation)
 	END_SERIALIZEFIELD
 };
 

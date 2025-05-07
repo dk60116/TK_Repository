@@ -10,8 +10,10 @@ CTransform::CTransform()
 	, m_lChildList({})
 	, m_vPosition(vector3::zero())
 	, m_vScale(vector3::one())
-	, m_vEulerAngles(vector3::zero())
+	, m_vRotation(vector3::zero())
+	, m_vPrevRotation(vector3::zero())
 	, m_vQuaternion(quaternion::identity())
+	, m_vEulerAngles(vector3::zero())
 	, m_matWorld()
 	, m_sDirections({})
 {
@@ -117,6 +119,7 @@ void CTransform::UpdateWorld()
 	D3DXQuaternionToAxisAngle(&worldQuat, nullptr, &worldEuler.x);
 
 	m_vWorldEulerAngles = quaternion::to_euler(worldQuat);
+	m_vRotation = m_vWorldEulerAngles;
 }
 
 void CTransform::UpdateDirections()
