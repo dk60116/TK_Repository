@@ -7,11 +7,11 @@ BEGIN(Engine)
 
 struct CameraViewParameters
 {
-	float fov = D3DXToRadian(60.f);
-	float size = 1.f;
-	float ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
-	float nearZ = 0.1f;
-	float farZ = 600.f;
+	_float fov = D3DXToRadian(60.f);
+	_float size = 1.f;
+	_float ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
+	_float nearZ = 0.1f;
+	_float farZ = 600.f;
 };
 
 class ENGINE_DLL CCamera 

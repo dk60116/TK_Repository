@@ -11,7 +11,6 @@ CTransform::CTransform()
 	, m_vPosition(vector3::zero())
 	, m_vScale(vector3::one())
 	, m_vRotation(vector3::zero())
-	, m_vPrevRotation(vector3::zero())
 	, m_vQuaternion(quaternion::identity())
 	, m_vEulerAngles(vector3::zero())
 	, m_matWorld()
@@ -119,7 +118,9 @@ void CTransform::UpdateWorld()
 	D3DXQuaternionToAxisAngle(&worldQuat, nullptr, &worldEuler.x);
 
 	m_vWorldEulerAngles = quaternion::to_euler(worldQuat);
-	m_vRotation = m_vWorldEulerAngles;
+
+	if (m_vRotation != m_vWorldEulerAngles)
+		m_vRotation = m_vWorldEulerAngles;
 }
 
 void CTransform::UpdateDirections()
@@ -294,6 +295,15 @@ void CTransform::AddPositionY(const _float _y)
 void CTransform::AddPositionZ(const _float _z)
 {
 	AddPosition(vector3(0.f, 0.f, _z));
+}
+
+void CTransform::EditRotation(const vector3 _delta)
+{
+	if (m_vRotation != m_vWorldEulerAngles)
+	{
+		m_vRotation = _delta;
+		SetEulerAngles(m_vRotation);
+	}
 }
 
 void CTransform::SetEulerAngles(const vector3 _world_euler_deg)

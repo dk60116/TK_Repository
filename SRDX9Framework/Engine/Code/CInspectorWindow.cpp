@@ -103,6 +103,16 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 							*target = newValue;
 					}
 					break;
+					case FieldType::FLOAT_ROTATION:
+					{
+						_float newValue = static_cast<float>(_wtof(buf));
+
+						_float* target = reinterpret_cast<float*>(pair.value);
+
+						if (*target != newValue)
+							*target = newValue;
+					}
+					break;
 					default:
 						break;
 					}
@@ -126,7 +136,7 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 			switch (LOWORD(_wParam))
 			{
 			case SB_LINEUP: si.nPos -= 40;            
-				break;   // «— ¡Ÿ(«»ºø)
+				break;
 			case SB_LINEDOWN: si.nPos += 40;            
 				break;
 			case SB_PAGEUP: si.nPos -= si.nPage;      
@@ -383,9 +393,6 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 	SetWindowLongPtr(vector3Veiw, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
 
 	SetWindowText(vector3Veiw, (L"     " + _name).c_str());
-
-	if (_name == L"WorldEulerAngles")
-		SetWindowText(vector3Veiw, L"     Rotation");
 
 	_int leftOffset = 110;
 	_int rightOffset = 5;

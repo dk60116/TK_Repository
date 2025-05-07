@@ -68,6 +68,8 @@ public:
 	void AddPositionY(const _float _y);
 	void AddPositionZ(const _float _z);
 
+	void EditRotation(const vector3 _delta);
+
 	void SetEulerAngles(const vector3 _world_euler_deg);
 	void SetEulerAngles(const _float _x, const _float _y, const _float _z);
 	void AddEulerAngles(const vector3 _delta);
@@ -130,7 +132,6 @@ private:
 	CTransform* m_pParent;
 	list<CTransform*> m_lChildList;
 	vector3 m_vPosition, m_vScale, m_vRotation;
-	vector3 m_vPrevRotation;
 	vector3 m_vEulerAngles;
 	vector3 m_vWorldPos, m_vWorldEulerAngles;
 	quaternion m_vQuaternion;

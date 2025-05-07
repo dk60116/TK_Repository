@@ -59,6 +59,9 @@ std::vector<FieldInfo> _fields;
 #define SERIALIZEFILED(var) \
 _fields.push_back({std::wstring(L#var).substr(3), DetectFieldType(var), &var});
 
+//#define SERIALIZEFILED_R(var) \
+//_fields.push_back({std::wstring(L#var).substr(3), 3, &var});
+
 #define END_SERIALIZEFIELD \
 return _fields; } \
 
