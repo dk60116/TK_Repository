@@ -679,7 +679,8 @@ namespace Engine
         {
             D3DXQUATERNION q;
 
-            D3DXQuaternionRotationYawPitchRoll(
+            D3DXQuaternionRotationYawPitchRoll
+            (
                 &q,
                 D3DXToRadian(_yaw),
                 D3DXToRadian(_pitch),

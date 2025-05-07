@@ -75,7 +75,45 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 				MAKEWPARAM(steps > 0 ? SB_LINEUP : SB_LINEDOWN, 0), 0);
 		return 0;
 	}
-		break;
+	break;
+
+	case WM_COMMAND:
+	{
+		HWND hCtrl = (HWND)_lParam;
+		_int code = HIWORD(_wParam);
+
+		if (code == EN_KILLFOCUS)
+		{
+			for (auto& pair : m_vPairViewList)
+			{
+				if (pair.handle == hCtrl)
+				{
+					wchar_t buf[64];
+					GetWindowTextW(hCtrl, buf, 64);
+
+					switch (pair.type)
+					{
+					case FieldType::FLOAT:
+					{
+						_float newValue = static_cast<float>(_wtof(buf));
+
+						_float* target = reinterpret_cast<float*>(pair.value);
+
+						if (*target != newValue)
+							*target = newValue;
+					}
+					break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+
+		if (CEngineEditor::GetInstance().getSelectedGameObject())
+			CEngineEditor::GetInstance().getSelectedGameObject()->UpdateEditor();
+	}
+	break;
 
 	case WM_VSCROLL:
 	{

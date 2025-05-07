@@ -281,13 +281,13 @@ CGameObject* CScene::FindGameObject(const wstring _name)
 
 void CScene::Render_Grid()
 {
-	const int GRID_HALF = 50;
-	const float GRID_SPACING = 1.f;
+	const _int GRID_HALF = 1000;
+	const _float GRID_SPACING = 1.f;
 	const D3DCOLOR gridColor = D3DCOLOR_XRGB(100, 100, 100);
-	const int lineCount = (GRID_HALF * 2 + 1) * 2;
+	const _int lineCount = (GRID_HALF * 2 + 1) * 2;
 
 	VTXLINE* pVertices = new VTXLINE[lineCount * 2];
-	int idx = 0;
+	_int idx = 0;
 
 	// Z 방향 그리드 (X 고정)
 	for (int i = -GRID_HALF; i <= GRID_HALF; ++i)
