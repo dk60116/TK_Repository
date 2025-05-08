@@ -68,7 +68,7 @@ public:
 	void AddPositionY(const _float _y);
 	void AddPositionZ(const _float _z);
 
-	void EditRotation(const vector3 _delta);
+	void EditRotation(const FieldType _xyz, const _float _delta);
 
 	void SetEulerAngles(const vector3 _world_euler_deg);
 	void SetEulerAngles(const _float _x, const _float _y, const _float _z);

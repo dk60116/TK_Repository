@@ -38,6 +38,9 @@ void CInspectorWindow::Update()
 		switch ((*it).type)
 		{
 		case FieldType::FLOAT:
+		case FieldType::FLOAT_RX:
+		case FieldType::FLOAT_RY:
+		case FieldType::FLOAT_RZ:
 		{
 			_float value = *(reinterpret_cast<_float*>((*it).value));
 			_float prevValue = *(reinterpret_cast<_float*>((*it).prevValue));
@@ -47,6 +50,7 @@ void CInspectorWindow::Update()
 
 			*reinterpret_cast<float*>((*it).prevValue) = value;
 		}
+		break;
 		default:
 			break;
 		}
@@ -94,6 +98,9 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 					switch (pair.type)
 					{
 					case FieldType::FLOAT:
+					case FieldType::FLOAT_RX:
+					case FieldType::FLOAT_RY:
+					case FieldType::FLOAT_RZ:
 					{
 						_float newValue = static_cast<float>(_wtof(buf));
 
@@ -101,16 +108,8 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 
 						if (*target != newValue)
 							*target = newValue;
-					}
-					break;
-					case FieldType::FLOAT_ROTATION:
-					{
-						_float newValue = static_cast<float>(_wtof(buf));
 
-						_float* target = reinterpret_cast<float*>(pair.value);
-
-						if (*target != newValue)
-							*target = newValue;
+						CEngineEditor::GetInstance().getSelectedGameObject()->getTransform().EditRotation(pair.type, newValue);
 					}
 					break;
 					default:
@@ -413,8 +412,6 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 
 	SetWindowTextW(xView, to_wstring((*_value).x).c_str());
 
-	m_vPairViewList.push_back({ xView, &(_value->x), new _float(), FieldType::FLOAT });
-
 	HWND yView = CreateWindowEx
 	(
 		0, L"Edit", nullptr,
@@ -425,8 +422,6 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 	);
 
 	SetWindowTextW(yView, to_wstring((*_value).y).c_str());
-
-	m_vPairViewList.push_back({ yView, &(_value->y), new _float(), FieldType::FLOAT });
 
 	HWND zView = CreateWindowEx
 	(
@@ -439,7 +434,18 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 	
 	SetWindowTextW(zView, to_wstring((*_value).z).c_str());
 
-	m_vPairViewList.push_back({ zView, &(_value->z), new _float(), FieldType::FLOAT});
+	if (_name == L"Rotation")
+	{
+		m_vPairViewList.push_back({ xView, &(_value->x), new _float(), FieldType::FLOAT_RX });
+		m_vPairViewList.push_back({ yView, &(_value->y), new _float(), FieldType::FLOAT_RY });
+		m_vPairViewList.push_back({ zView, &(_value->z), new _float(), FieldType::FLOAT_RZ });
+	}
+	else
+	{
+		m_vPairViewList.push_back({ xView, &(_value->x), new _float(), FieldType::FLOAT });
+		m_vPairViewList.push_back({ yView, &(_value->y), new _float(), FieldType::FLOAT });
+		m_vPairViewList.push_back({ zView, &(_value->z), new _float(), FieldType::FLOAT });
+	}
 
 	m_vChildWindows.push_back(xView);
 	m_vChildWindows.push_back(yView);

@@ -297,14 +297,25 @@ void CTransform::AddPositionZ(const _float _z)
 	AddPosition(vector3(0.f, 0.f, _z));
 }
 
-void CTransform::EditRotation(const vector3 _delta)
+void CTransform::EditRotation(const FieldType _xyz, const _float _delta)
 {
-	if (m_vRotation != m_vWorldEulerAngles)
+	if (_xyz == FieldType::FLOAT_RX)
 	{
-		m_vRotation = _delta;
+		m_vRotation.x = _delta;
+		SetEulerAngles(m_vRotation);
+	}
+	else if (_xyz == FieldType::FLOAT_RY)
+	{
+		m_vRotation.y = _delta;
+		SetEulerAngles(m_vRotation);
+	}
+	else if (_xyz == FieldType::FLOAT_RZ)
+	{
+		m_vRotation.z = _delta;
 		SetEulerAngles(m_vRotation);
 	}
 }
+
 
 void CTransform::SetEulerAngles(const vector3 _world_euler_deg)
 {
