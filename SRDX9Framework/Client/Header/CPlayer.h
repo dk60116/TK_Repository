@@ -34,7 +34,8 @@ public:
 	_float m_fMoveSpeed, m_fRotaionSpeed;
 
 	BEGIN_SERIALIZEFIELD
-	SERIALIZEFILED(m_fMoveSpeed)
+	SERIALIZEFIELD(m_fMoveSpeed)
+	SERIALIZEFIELD(m_fRotaionSpeed)
 	END_SERIALIZEFIELD
 };
 

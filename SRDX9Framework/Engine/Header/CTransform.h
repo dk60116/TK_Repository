@@ -139,9 +139,9 @@ private:
 	Directions m_sDirections;
 
 	BEGIN_SERIALIZEFIELD
-		SERIALIZEFILED(m_vPosition)
-		SERIALIZEFILED(m_vScale)
-		SERIALIZEFILED(m_vRotation)
+		SERIALIZEFIELD(m_vPosition)
+		SERIALIZEFIELD(m_vScale)
+		SERIALIZEFIELD(m_vRotation)
 	END_SERIALIZEFIELD
 };
 

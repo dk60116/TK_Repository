@@ -48,7 +48,7 @@ void CInspectorWindow::Update()
 			if (prevValue != value)
 				SetWindowTextW((*it).handle, to_wstring(value).c_str());
 
-			*reinterpret_cast<float*>((*it).prevValue) = value;
+			*reinterpret_cast<_float*>((*it).prevValue) = value;
 		}
 		break;
 		default:
@@ -101,9 +101,9 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 					case FieldType::FLOAT_RY:
 					case FieldType::FLOAT_RZ:
 					{
-						_float newValue = static_cast<float>(_wtof(buf));
+						_float newValue = static_cast<_float>(_wtof(buf));
 
-						_float* target = reinterpret_cast<float*>(pair.value);
+						_float* target = reinterpret_cast<_float*>(pair.value);
 
 						if (*target != newValue)
 							*target = newValue;
@@ -321,10 +321,21 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 
 		for (int i = 0; i < c->GetInspectorFields().size(); ++i)
 		{
+			vector2Int defaultPos = vector2Int(x, m_sOptinos.contstsBarHeight + y + (25 * i) - 2);
+			vector2Int defaultSize = vector2Int(itemW, 30);
+			wstring defaultName = c->GetInspectorFields()[i].name;
+
 			switch (c->GetInspectorFields()[i].type)
 			{
+			case FieldType::FLOAT:
+			{
+				CreateFloatBox(defaultPos, defaultSize, defaultName, static_cast<_float*>(c->GetInspectorFields()[i].ptr));
+				_float a = *static_cast<_float*>(c->GetInspectorFields()[i].ptr);
+				int b = 0;
+			}
+				break;
 			case FieldType::VECTOR3:
-				CreateVector3Box(vector2Int(x, m_sOptinos.contstsBarHeight + y + (25 * i) - 2), vector2Int(itemW, 30), c->GetInspectorFields()[i].name, static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
+				CreateVector3Box(defaultPos, defaultSize, defaultName, static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
 				break;
 			default:
 				break;
@@ -386,6 +397,35 @@ void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstri
 	);
 
 	m_vChildWindows.push_back(floatView);
+
+	SetWindowLongPtr(floatView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
+
+	SetWindowText(floatView, (L"     " + _name).c_str());
+
+	_int leftOffset = 110;
+	_int rightOffset = 5;
+	_int rightArea = _size.x - leftOffset;
+	_int x = _start.x + leftOffset;
+	_int y = _start.y + 4;
+	_int width = _int((_size.x - leftOffset) * 0.25f);
+	_int height = _size.y - 10;
+
+	HWND inputBox = CreateWindowEx
+	(
+		0, L"Edit", nullptr,
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		x, y,
+		width, height,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	SetWindowTextW(inputBox, to_wstring(*_value).c_str());
+
+	m_vChildWindows.push_back(inputBox);
+
+	m_vPairViewList.push_back({ inputBox, &_value, new _float(), FieldType::FLOAT });
+
+	SetWindowLongPtr(inputBox, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 }
 
 void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value)
