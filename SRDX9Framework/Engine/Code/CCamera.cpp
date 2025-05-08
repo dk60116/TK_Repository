@@ -6,6 +6,9 @@ CCamera::CCamera()
 	: m_eCamViewMode(PERSPECTIVE)
 	, m_sParameters({})
 	, m_matProjMatrix()
+	, m_fNear(0.1f)
+	, m_fFar(600.f)
+	, m_fFieldOfView(60.f)
 {
 	m_strName = L"Camera";
 }
@@ -78,24 +81,24 @@ void CCamera::UpdateProjectionMatrix()
 		D3DXMatrixPerspectiveFovLH
 		(
 			&m_matProjMatrix,
-			m_sParameters.fov,
+			D3DXToRadian(m_fFieldOfView),
 			m_sParameters.ascpect,
-			m_sParameters.nearZ,
-			m_sParameters.farZ
+			m_fNear,
+			m_fFar
 		);
 	break;
 	case ORTHOGRAPHIC:
 	{
-		float width = m_sParameters.fov * m_sParameters.ascpect;
-		float height = m_sParameters.fov;
+		float width = D3DXToRadian(m_fFieldOfView) * m_sParameters.ascpect;
+		float height = D3DXToRadian(m_fFieldOfView);
 
 		D3DXMatrixOrthoLH
 		(
 			&m_matProjMatrix,
 			width,
 			height,
-			m_sParameters.nearZ,
-			m_sParameters.farZ
+			m_fNear,
+			m_fFar
 		);
 	}
 		break;

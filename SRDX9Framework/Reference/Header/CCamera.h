@@ -7,11 +7,8 @@ BEGIN(Engine)
 
 struct CameraViewParameters
 {
-	_float fov = D3DXToRadian(60.f);
 	_float size = 1.f;
 	_float ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
-	_float nearZ = 0.1f;
-	_float farZ = 600.f;
 };
 
 class ENGINE_DLL CCamera 
@@ -57,7 +54,13 @@ private:
 	CameraViewParameters m_sParameters;
 	_matrix m_matProjMatrix, m_matViewMatrix;
 
+	_float m_fNear, m_fFar;
+	_float m_fFieldOfView;
+
 	BEGIN_SERIALIZEFIELD
+	SERIALIZEFIELD(m_fNear)
+	SERIALIZEFIELD(m_fFar)
+	SERIALIZEFIELD(m_fFieldOfView)
 	END_SERIALIZEFIELD
 };
 

@@ -328,11 +328,7 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 			switch (c->GetInspectorFields()[i].type)
 			{
 			case FieldType::FLOAT:
-			{
 				CreateFloatBox(defaultPos, defaultSize, defaultName, static_cast<_float*>(c->GetInspectorFields()[i].ptr));
-				_float a = *static_cast<_float*>(c->GetInspectorFields()[i].ptr);
-				int b = 0;
-			}
 				break;
 			case FieldType::VECTOR3:
 				CreateVector3Box(defaultPos, defaultSize, defaultName, static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
@@ -423,7 +419,7 @@ void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstri
 
 	m_vChildWindows.push_back(inputBox);
 
-	m_vPairViewList.push_back({ inputBox, &_value, new _float(), FieldType::FLOAT });
+	m_vPairViewList.push_back({ inputBox, _value, new _float(), FieldType::FLOAT });
 
 	SetWindowLongPtr(inputBox, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 }
