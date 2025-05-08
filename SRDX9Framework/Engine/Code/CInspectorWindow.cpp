@@ -75,8 +75,7 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 		short z = GET_WHEEL_DELTA_WPARAM(_wParam);   // ¡¾120, ¡¾240 ¡¦
 		int steps = z / WHEEL_DELTA;                 // ¡¾1, ¡¾2 ¡¦
 		for (int n = 0; n < std::abs(steps); ++n)
-			SendMessage(_hWnd, WM_VSCROLL,
-				MAKEWPARAM(steps > 0 ? SB_LINEUP : SB_LINEDOWN, 0), 0);
+			SendMessage(_hWnd, WM_VSCROLL, MAKEWPARAM(steps > 0 ? SB_LINEUP : SB_LINEDOWN, 0), 0);
 		return 0;
 	}
 	break;
@@ -110,6 +109,8 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 							*target = newValue;
 
 						CEngineEditor::GetInstance().getSelectedGameObject()->getTransform().EditRotation(pair.type, newValue);
+
+						CManagement::GetInstance().getCrtScene()->UpdateEditor();
 					}
 					break;
 					default:
@@ -118,9 +119,6 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 				}
 			}
 		}
-
-		if (CEngineEditor::GetInstance().getSelectedGameObject())
-			CEngineEditor::GetInstance().getSelectedGameObject()->UpdateEditor();
 	}
 	break;
 
@@ -376,9 +374,9 @@ void CInspectorWindow::UpdateScrollInfo()
 	ShowScrollBar(m_hWnd, SB_VERT, needScroll);
 }
 
-void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value)
+void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstring _name, _float* _value)
 {
-	HWND vector3Veiw = CreateWindowEx
+	HWND floatView = CreateWindowEx
 	(
 		0, L"STATIC", nullptr,
 		WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_LEFT,
@@ -387,11 +385,25 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
 	);
 
-	m_vChildWindows.push_back(vector3Veiw);
+	m_vChildWindows.push_back(floatView);
+}
 
-	SetWindowLongPtr(vector3Veiw, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
+void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value)
+{
+	HWND vector3View = CreateWindowEx
+	(
+		0, L"STATIC", nullptr,
+		WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_LEFT,
+		_start.x, _start.y,
+		_size.x, _size.y,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
 
-	SetWindowText(vector3Veiw, (L"     " + _name).c_str());
+	m_vChildWindows.push_back(vector3View);
+
+	SetWindowLongPtr(vector3View, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
+
+	SetWindowText(vector3View, (L"     " + _name).c_str());
 
 	_int leftOffset = 110;
 	_int rightOffset = 5;

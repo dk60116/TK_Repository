@@ -31,9 +31,10 @@ private:
 public:
     CSpriteRenderer* m_pRenderer;
 	CMeshRenderer* m_pMeshRenderer;
-	float m_fMoveSpeed, m_fRotaionSpeed;
+	_float m_fMoveSpeed, m_fRotaionSpeed;
 
 	BEGIN_SERIALIZEFIELD
+	SERIALIZEFILED(m_fMoveSpeed)
 	END_SERIALIZEFIELD
 };
 

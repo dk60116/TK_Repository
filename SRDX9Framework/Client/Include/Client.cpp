@@ -228,7 +228,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetBkMode(hdcStatic, TRANSPARENT);
             SetBkColor(hdcStatic, ColorValue::white().black());
             SetTextColor(hdcStatic, CEngineEditor::GetInstance().getOptions().baseTextColor.rColor());
-            static HBRUSH hBlackBrush = CreateSolidBrush(ColorValue(0, 0, 62).rColor());
+            static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().baseColor.rColor());
             return (INT_PTR)hBlackBrush;
         }
     }

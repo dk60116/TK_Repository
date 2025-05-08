@@ -52,6 +52,7 @@ private:
 	_int m_iTotalHeight;
 	_int m_iScrollPos;
 
+	void CreateFloatBox(vector2Int _start, vector2Int _size, wstring _name, _float* _value);
 	void CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value);
 
 	vector<InspectorPairView> m_vPairViewList;
