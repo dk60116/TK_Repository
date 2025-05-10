@@ -219,6 +219,9 @@
     <ClInclude Include="..\Header\fmod_output.h">
       <Filter>System\FMod</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\ProjectResource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Time.cpp">
