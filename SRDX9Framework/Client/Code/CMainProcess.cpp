@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CMainProcess.h"
-#include "CResources.h"
+#include "Resources.h"
 #include "CMainScene.h"
 
 CMainProcess::CMainProcess()

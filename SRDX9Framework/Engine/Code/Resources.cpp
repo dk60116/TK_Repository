@@ -1,4 +1,4 @@
-#include "CResources.h"
+#include "Resources.h"
 #include "CTexture.h"
 #include "CDebug.h"
 

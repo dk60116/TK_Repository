@@ -14,5 +14,5 @@
 #include "ETime.h"
 #include "CInput.h"
 #include "Management.h"
-#include "CResources.h"
+#include "Resources.h"
 #include "GameObject.h"
