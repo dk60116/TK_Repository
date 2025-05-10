@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Component.h"
-#include "CRectCol.h"
+#include "RectCol.h"
 #include "CTexture.h"
 #include "Camera.h"
-#include "CMaterial.h"
+#include "Material.h"
 
 BEGIN(Engine)
 

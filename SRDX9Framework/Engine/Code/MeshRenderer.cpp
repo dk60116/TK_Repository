@@ -1,9 +1,9 @@
-#include "CMeshRenderer.h"
+#include "MeshRenderer.h"
 #include "EngineEditor.h"
 #include "Management.h"
 #include "GameObject.h"
 #include "CTransform.h"
-#include "CMaterial.h"
+#include "Material.h"
 
 CMeshRenderer::CMeshRenderer()
 	: m_pMeshFilter(nullptr)

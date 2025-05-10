@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Component.h"
-#include "CSpriteRenderer.h"
-#include "CMeshRenderer.h"
+#include "SpriteRenderer.h"
+#include "MeshRenderer.h"
 
 class CPlayer :
     public CComponent

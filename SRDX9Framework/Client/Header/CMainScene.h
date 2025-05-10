@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Scene.h"
-#include "CLight.h"
+#include "Light.h"
 #include "CPlayer.h"
 #include "CEnemy.h"
 

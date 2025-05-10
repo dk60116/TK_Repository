@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "CSpriteRenderer.h"
+#include "SpriteRenderer.h"
 
 class CEnemy :
     public CComponent

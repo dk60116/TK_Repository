@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "CMesh.h"
+#include "Mesh.h"
 
 BEGIN(Engine)
 

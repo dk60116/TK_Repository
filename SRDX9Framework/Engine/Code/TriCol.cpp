@@ -1,4 +1,4 @@
-#include "CTriCol.h"
+#include "TriCol.h"
 
 CTriCol::CTriCol()
 {

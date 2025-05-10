@@ -1,4 +1,4 @@
-#include "CRectCol.h"
+#include "RectCol.h"
 #include "CDebug.h"
 #include "GameObject.h"
 

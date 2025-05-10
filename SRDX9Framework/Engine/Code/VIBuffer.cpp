@@ -1,4 +1,4 @@
-#include "CVIBuffer.h"
+#include "VIBuffer.h"
 #include "Management.h"
 
 CVIBuffer::CVIBuffer()

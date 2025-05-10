@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "CTransform.h"
 #include "EditorCamera.h"
-#include "CLight.h"
+#include "Light.h"
 #include "Management.h"
 
 BEGIN(Engine)

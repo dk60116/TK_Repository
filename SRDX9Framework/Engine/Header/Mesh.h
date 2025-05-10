@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine_Define.h"
-#include "CVIBuffer.h"
+#include "VIBuffer.h"
 
 BEGIN(Engine)
 

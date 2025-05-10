@@ -1,4 +1,4 @@
-#include "CLight.h"
+#include "Light.h"
 #include "CTransform.h"
 
 CLight::CLight()

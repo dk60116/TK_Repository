@@ -144,31 +144,31 @@
     <ClInclude Include="..\Header\EngineEditor.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CSpriteRenderer.h">
+    <ClInclude Include="..\Header\SpriteRenderer.h">
       <Filter>Component\Render\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CRectCol.h">
+    <ClInclude Include="..\Header\RectCol.h">
       <Filter>Component\Render\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTriCol.h">
+    <ClInclude Include="..\Header\TriCol.h">
       <Filter>Component\Render\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CVIBuffer.h">
+    <ClInclude Include="..\Header\VIBuffer.h">
       <Filter>Component\Render\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMeshFilter.h">
+    <ClInclude Include="..\Header\MeshFilter.h">
       <Filter>Component\Render\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMeshRenderer.h">
+    <ClInclude Include="..\Header\MeshRenderer.h">
       <Filter>Component\Render\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMaterial.h">
+    <ClInclude Include="..\Header\Material.h">
       <Filter>Component\Render\Material</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMesh.h">
+    <ClInclude Include="..\Header\Mesh.h">
       <Filter>Component\Render\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CLight.h">
+    <ClInclude Include="..\Header\Light.h">
       <Filter>Component\Light</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Object.h">
@@ -266,31 +266,31 @@
     <ClCompile Include="..\Code\Screen.cpp">
       <Filter>Screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CSpriteRenderer.cpp">
+    <ClCompile Include="..\Code\SpriteRenderer.cpp">
       <Filter>Component\Render\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CRectCol.cpp">
+    <ClCompile Include="..\Code\RectCol.cpp">
       <Filter>Component\Render\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTriCol.cpp">
+    <ClCompile Include="..\Code\TriCol.cpp">
       <Filter>Component\Render\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CVIBuffer.cpp">
+    <ClCompile Include="..\Code\VIBuffer.cpp">
       <Filter>Component\Render\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMeshFilter.cpp">
+    <ClCompile Include="..\Code\MeshFilter.cpp">
       <Filter>Component\Render\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMeshRenderer.cpp">
+    <ClCompile Include="..\Code\MeshRenderer.cpp">
       <Filter>Component\Render\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMaterial.cpp">
+    <ClCompile Include="..\Code\Material.cpp">
       <Filter>Component\Render\Material</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMesh.cpp">
+    <ClCompile Include="..\Code\Mesh.cpp">
       <Filter>Component\Render\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CLight.cpp">
+    <ClCompile Include="..\Code\Light.cpp">
       <Filter>Component\Light</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Object.cpp">

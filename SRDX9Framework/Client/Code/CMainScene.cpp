@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "CMainScene.h"
-#include "CTriCol.h"
-#include "CSpriteRenderer.h"
-#include "CMeshRenderer.h"
-#include "CMeshRenderer.h"
+#include "TriCol.h"
+#include "SpriteRenderer.h"
+#include "MeshRenderer.h"
+#include "MeshRenderer.h"
 
 CMainScene::CMainScene()
 	: m_pPlayer(nullptr)

@@ -1,4 +1,4 @@
-#include "CMeshFilter.h"
+#include "MeshFilter.h"
 #include "GameObject.h"
 
 CMeshFilter::CMeshFilter()

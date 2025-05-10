@@ -1,5 +1,5 @@
-#include "CMaterial.h"
-#include "CSpriteRenderer.h"
+#include "Material.h"
+#include "SpriteRenderer.h"
 
 CMaterial::CMaterial()
 	: m_sMaterial({})

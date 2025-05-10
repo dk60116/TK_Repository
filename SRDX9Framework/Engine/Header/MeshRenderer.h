@@ -2,8 +2,8 @@
 
 #include "Component.h"
 #include "Engine_Define.h"
-#include "CMeshFilter.h"
-#include "CMaterial.h"
+#include "MeshFilter.h"
+#include "Material.h"
 #include "Camera.h"
 
 BEGIN(Engine)

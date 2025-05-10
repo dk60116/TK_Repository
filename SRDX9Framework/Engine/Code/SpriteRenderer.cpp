@@ -1,9 +1,9 @@
-#include "CSpriteRenderer.h"
+#include "SpriteRenderer.h"
 #include "EngineEditor.h"
 #include "GameObject.h"
 #include "Management.h"
 #include "CDebug.h"
-#include "CMaterial.h"
+#include "Material.h"
 
 CSpriteRenderer::CSpriteRenderer()
 	: m_pSprite(nullptr)

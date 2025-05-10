@@ -1,4 +1,4 @@
-#include "CMesh.h"
+#include "Mesh.h"
 
 CMesh::CMesh()
     : m_eMeshType(CUBE)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CVIBuffer.h"
+#include "VIBuffer.h"
 
 BEGIN(Engine)
 
