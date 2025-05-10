@@ -4,7 +4,7 @@
 #include "Engine_Define.h"
 #include "Component.h"
 #include "CTransform.h"
-#include "CEditorCamera.h"
+#include "EditorCamera.h"
 #include "CLight.h"
 #include "Management.h"
 

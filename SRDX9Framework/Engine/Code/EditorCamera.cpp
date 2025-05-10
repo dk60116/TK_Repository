@@ -1,4 +1,4 @@
-#include "CEditorCamera.h"
+#include "EditorCamera.h"
 #include "ETime.h"
 #include "Input.h"
 #include "GameObject.h"

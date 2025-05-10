@@ -4,7 +4,7 @@
 #include "Input.h"
 #include "Management.h"
 #include "GameObject.h"
-#include "CEditorCamera.h"
+#include "EditorCamera.h"
 
 CScene::CScene()
 	: m_pGraphicDev(nullptr)

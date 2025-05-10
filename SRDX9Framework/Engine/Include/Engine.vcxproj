@@ -154,10 +154,10 @@ call Copy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\BaseWindow.h" />
-    <ClInclude Include="..\Header\CCamera.h" />
+    <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\CDebug.h" />
-    <ClInclude Include="..\Header\CEditorCamera.h" />
+    <ClInclude Include="..\Header\EditorCamera.h" />
     <ClInclude Include="..\Header\EditorWindow.h" />
     <ClInclude Include="..\Header\EngineEditor.h" />
     <ClInclude Include="..\Header\GameObject.h" />
@@ -203,10 +203,10 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\BaseWindow.cpp" />
-    <ClCompile Include="..\Code\CCamera.cpp" />
+    <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
-    <ClCompile Include="..\Code\CEditorCamera.cpp" />
+    <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EditorWindow.cpp" />
     <ClCompile Include="..\Code\EngineEditor.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />

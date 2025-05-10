@@ -3,7 +3,7 @@
 #include "Component.h"
 #include "CRectCol.h"
 #include "CTexture.h"
-#include "CCamera.h"
+#include "Camera.h"
 #include "CMaterial.h"
 
 BEGIN(Engine)

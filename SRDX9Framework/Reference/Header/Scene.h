@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Engine_Define.h"
 #include "CLight.h"
-#include "CCamera.h"
+#include "Camera.h"
 #include "CDebug.h"
 
 BEGIN(Engine)

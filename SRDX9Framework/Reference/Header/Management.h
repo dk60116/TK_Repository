@@ -4,7 +4,7 @@
 #include "Engine_Define.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include "CEditorCamera.h"
+#include "EditorCamera.h"
 
 BEGIN(Engine)
 

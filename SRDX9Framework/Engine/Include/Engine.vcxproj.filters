@@ -123,7 +123,7 @@
     <ClInclude Include="..\Header\Scene.h">
       <Filter>Management\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CCamera.h">
+    <ClInclude Include="..\Header\Camera.h">
       <Filter>Component\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CDebug.h">
@@ -174,7 +174,7 @@
     <ClInclude Include="..\Header\Object.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CEditorCamera.h">
+    <ClInclude Include="..\Header\EditorCamera.h">
       <Filter>Component\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\EditorWindow.h">
@@ -248,7 +248,7 @@
     <ClCompile Include="..\Code\Scene.cpp">
       <Filter>Management\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CCamera.cpp">
+    <ClCompile Include="..\Code\Camera.cpp">
       <Filter>Component\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CDebug.cpp">
@@ -296,7 +296,7 @@
     <ClCompile Include="..\Code\Object.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CEditorCamera.cpp">
+    <ClCompile Include="..\Code\EditorCamera.cpp">
       <Filter>Component\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\EditorWindow.cpp">

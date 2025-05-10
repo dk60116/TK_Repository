@@ -4,7 +4,7 @@
 #include "Engine_Define.h"
 #include "CMeshFilter.h"
 #include "CMaterial.h"
-#include "CCamera.h"
+#include "Camera.h"
 
 BEGIN(Engine)
 

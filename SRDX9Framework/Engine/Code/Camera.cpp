@@ -1,4 +1,4 @@
-#include "CCamera.h"
+#include "Camera.h"
 #include "Screen.h"
 #include "GameObject.h"
 

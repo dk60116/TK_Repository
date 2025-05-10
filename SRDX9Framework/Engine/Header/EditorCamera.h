@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CCamera.h"
+#include "Camera.h"
 
 BEGIN(Engine)
 
