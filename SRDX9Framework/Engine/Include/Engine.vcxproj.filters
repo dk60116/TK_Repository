@@ -108,7 +108,7 @@
     <ClInclude Include="..\Header\CInput.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CGameObject.h">
+    <ClInclude Include="..\Header\GameObject.h">
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Component.h">
@@ -233,7 +233,7 @@
     <ClCompile Include="..\Code\CInput.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CGameObject.cpp">
+    <ClCompile Include="..\Code\GameObject.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Component.cpp">

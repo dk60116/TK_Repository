@@ -9,7 +9,7 @@
 #include "CGameWindow.h"
 #include "CHierachyWindow.h"
 #include "CInspectorWindow.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 BEGIN(Engine)
 

@@ -3,7 +3,7 @@
 #include "CEngineEditor.h"
 #include "CInput.h"
 #include "CManagement.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 #include "CEditorCamera.h"
 
 CScene::CScene()

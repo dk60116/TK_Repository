@@ -1,6 +1,6 @@
 #include "CRectCol.h"
 #include "CDebug.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 CRectCol::CRectCol()
     : CVIBuffer()

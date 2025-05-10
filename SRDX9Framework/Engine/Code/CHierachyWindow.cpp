@@ -1,6 +1,6 @@
 ﻿#include "CHierachyWindow.h"
 #include "CScene.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "UxTheme.lib")

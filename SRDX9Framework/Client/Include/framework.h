@@ -15,4 +15,4 @@
 #include "CInput.h"
 #include "CManagement.h"
 #include "CResources.h"
-#include "CGameObject.h"
+#include "GameObject.h"

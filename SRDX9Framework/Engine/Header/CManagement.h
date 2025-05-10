@@ -3,7 +3,7 @@
 #include "UObject.h"
 #include "Engine_Define.h"
 #include "CScene.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 #include "CEditorCamera.h"
 
 BEGIN(Engine)

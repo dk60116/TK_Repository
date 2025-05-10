@@ -2,7 +2,7 @@
 
 #include "CEditorWindow.h"
 #include "CEngineEditor.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 BEGIN(Engine)
 

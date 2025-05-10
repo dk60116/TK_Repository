@@ -1,5 +1,5 @@
 #include "CMeshFilter.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 CMeshFilter::CMeshFilter()
 	: m_pMesh(nullptr)

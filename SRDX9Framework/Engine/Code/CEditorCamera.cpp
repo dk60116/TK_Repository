@@ -1,7 +1,7 @@
 #include "CEditorCamera.h"
 #include "CTime.h"
 #include "CInput.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 #include "CTransform.h"
 #include "CEngineEditor.h"
 #include "CDebug.h"

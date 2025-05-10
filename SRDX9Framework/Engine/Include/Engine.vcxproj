@@ -161,7 +161,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CEditorCamera.h" />
     <ClInclude Include="..\Header\CEditorWindow.h" />
     <ClInclude Include="..\Header\CEngineEditor.h" />
-    <ClInclude Include="..\Header\CGameObject.h" />
+    <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\CGameWindow.h" />
     <ClInclude Include="..\Header\CGraphicDev.h" />
     <ClInclude Include="..\Header\CHierachyWindow.h" />
@@ -209,7 +209,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CEditorCamera.cpp" />
     <ClCompile Include="..\Code\CEditorWindow.cpp" />
     <ClCompile Include="..\Code\CEngineEditor.cpp" />
-    <ClCompile Include="..\Code\CGameObject.cpp" />
+    <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\CGameWindow.cpp" />
     <ClCompile Include="..\Code\CGraphicDev.cpp" />
     <ClCompile Include="..\Code\CHierachyWindow.cpp" />

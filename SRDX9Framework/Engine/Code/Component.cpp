@@ -1,6 +1,6 @@
 #include "Component.h"
 #include "CGraphicDev.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 CComponent::CComponent()
 	: m_pGameObject(nullptr)

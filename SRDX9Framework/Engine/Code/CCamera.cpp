@@ -1,6 +1,6 @@
 #include "CCamera.h"
 #include "CScreen.h"
-#include "CGameObject.h"
+#include "GameObject.h"
 
 CCamera::CCamera()
 	: m_eCamViewMode(PERSPECTIVE)

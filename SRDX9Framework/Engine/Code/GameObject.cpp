@@ -1,4 +1,4 @@
-#include "CGameObject.h"
+#include "GameObject.h"
 
 CGameObject::CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 	: m_pScene(nullptr)
