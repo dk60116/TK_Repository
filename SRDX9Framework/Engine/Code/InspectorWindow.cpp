@@ -1,4 +1,4 @@
-#include "CInspectorWindow.h"
+#include "InspectorWindow.h"
 #include "EngineEditor.h"
 #include "Resource.h"
 

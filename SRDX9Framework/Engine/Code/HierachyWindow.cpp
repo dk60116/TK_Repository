@@ -1,4 +1,4 @@
-﻿#include "CHierachyWindow.h"
+﻿#include "HierachyWindow.h"
 #include "Scene.h"
 #include "GameObject.h"
 

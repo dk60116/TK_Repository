@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CEditorWindow.h"
+#include "EditorWindow.h"
 #include "EngineEditor.h"
 
 BEGIN(Engine)

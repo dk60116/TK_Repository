@@ -1,17 +1,17 @@
 #pragma once
 
-#include "CEditorWindow.h"
+#include "EditorWindow.h"
 
 BEGIN(Engine)
 
-class ENGINE_DLL CGameWindow :
-    public CEditorWindow
+class ENGINE_DLL CSceneWindow 
+    : public CEditorWindow
 {
 	friend class CEngineEditor;
 
 private:
-	explicit CGameWindow();
-	~CGameWindow();
+	explicit CSceneWindow();
+	~CSceneWindow();
 
 public:
 	HRESULT Init(HWND _hWnd, vector2Int _size, _bool _isBase = false) override;

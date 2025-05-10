@@ -177,22 +177,22 @@
     <ClInclude Include="..\Header\CEditorCamera.h">
       <Filter>Component\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CEditorWindow.h">
+    <ClInclude Include="..\Header\EditorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CHierachyWindow.h">
+    <ClInclude Include="..\Header\HierachyWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBaseWindow.h">
+    <ClInclude Include="..\Header\BaseWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CSceneWindow.h">
+    <ClInclude Include="..\Header\SceneWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CGameWindow.h">
+    <ClInclude Include="..\Header\GameWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CInspectorWindow.h">
+    <ClInclude Include="..\Header\InspectorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\GraphicDevice.h">
@@ -299,25 +299,25 @@
     <ClCompile Include="..\Code\CEditorCamera.cpp">
       <Filter>Component\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CEditorWindow.cpp">
+    <ClCompile Include="..\Code\EditorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\EngineEditor.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CHierachyWindow.cpp">
+    <ClCompile Include="..\Code\HierachyWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBaseWindow.cpp">
+    <ClCompile Include="..\Code\BaseWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CSceneWindow.cpp">
+    <ClCompile Include="..\Code\SceneWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CGameWindow.cpp">
+    <ClCompile Include="..\Code\GameWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CInspectorWindow.cpp">
+    <ClCompile Include="..\Code\InspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\GraphicDevice.cpp">

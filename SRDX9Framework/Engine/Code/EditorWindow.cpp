@@ -1,4 +1,4 @@
-#include "CEditorWindow.h"
+#include "EditorWindow.h"
 #include "EngineEditor.h"
 
 CEditorWindow::CEditorWindow()

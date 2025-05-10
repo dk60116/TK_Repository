@@ -1,4 +1,4 @@
-﻿#include "CBaseWindow.h"
+﻿#include "BaseWindow.h"
 #include "Screen.h"
 #include "Management.h"
 

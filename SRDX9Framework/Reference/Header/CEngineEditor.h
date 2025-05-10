@@ -5,7 +5,7 @@
 #include "ETime.h"
 #include "CEditorWindow.h"
 #include "CBaseWindow.h"
-#include "CSceneWindow.h"
+#include "SceneWindow.h"
 #include "CGameWindow.h"
 #include "CHierachyWindow.h"
 #include "CInspectorWindow.h"

@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "EngineEditor.h"
 #include "CDebug.h"
-#include "CHierachyWindow.h"
+#include "HierachyWindow.h"
 
 CTransform::CTransform()
 	: m_bIsRootParent(true)

@@ -1,4 +1,4 @@
-#include "CSceneWindow.h"
+#include "SceneWindow.h"
 #include "EngineEditor.h"
 
 CSceneWindow::CSceneWindow()

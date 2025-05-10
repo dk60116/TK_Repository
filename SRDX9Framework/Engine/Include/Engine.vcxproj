@@ -153,19 +153,19 @@ call Copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Header\CBaseWindow.h" />
+    <ClInclude Include="..\Header\BaseWindow.h" />
     <ClInclude Include="..\Header\CCamera.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\CDebug.h" />
     <ClInclude Include="..\Header\CEditorCamera.h" />
-    <ClInclude Include="..\Header\CEditorWindow.h" />
+    <ClInclude Include="..\Header\EditorWindow.h" />
     <ClInclude Include="..\Header\EngineEditor.h" />
     <ClInclude Include="..\Header\GameObject.h" />
-    <ClInclude Include="..\Header\CGameWindow.h" />
+    <ClInclude Include="..\Header\GameWindow.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
-    <ClInclude Include="..\Header\CHierachyWindow.h" />
+    <ClInclude Include="..\Header\HierachyWindow.h" />
     <ClInclude Include="..\Header\Input.h" />
-    <ClInclude Include="..\Header\CInspectorWindow.h" />
+    <ClInclude Include="..\Header\InspectorWindow.h" />
     <ClInclude Include="..\Header\CLight.h" />
     <ClInclude Include="..\Header\Management.h" />
     <ClInclude Include="..\Header\CMaterial.h" />
@@ -177,7 +177,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\ProjectResource.h" />
     <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\Scene.h" />
-    <ClInclude Include="..\Header\CSceneWindow.h" />
+    <ClInclude Include="..\Header\SceneWindow.h" />
     <ClInclude Include="..\Header\Screen.h" />
     <ClInclude Include="..\Header\CTexture.h" />
     <ClInclude Include="..\Header\Timer.h" />
@@ -202,19 +202,19 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Object.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Code\CBaseWindow.cpp" />
+    <ClCompile Include="..\Code\BaseWindow.cpp" />
     <ClCompile Include="..\Code\CCamera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
     <ClCompile Include="..\Code\CEditorCamera.cpp" />
-    <ClCompile Include="..\Code\CEditorWindow.cpp" />
+    <ClCompile Include="..\Code\EditorWindow.cpp" />
     <ClCompile Include="..\Code\EngineEditor.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
-    <ClCompile Include="..\Code\CGameWindow.cpp" />
+    <ClCompile Include="..\Code\GameWindow.cpp" />
     <ClCompile Include="..\Code\GraphicDevice.cpp" />
-    <ClCompile Include="..\Code\CHierachyWindow.cpp" />
+    <ClCompile Include="..\Code\HierachyWindow.cpp" />
     <ClCompile Include="..\Code\Input.cpp" />
-    <ClCompile Include="..\Code\CInspectorWindow.cpp" />
+    <ClCompile Include="..\Code\InspectorWindow.cpp" />
     <ClCompile Include="..\Code\CLight.cpp" />
     <ClCompile Include="..\Code\Management.cpp" />
     <ClCompile Include="..\Code\CMaterial.cpp" />
@@ -225,7 +225,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\Resource.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
-    <ClCompile Include="..\Code\CSceneWindow.cpp" />
+    <ClCompile Include="..\Code\SceneWindow.cpp" />
     <ClCompile Include="..\Code\Screen.cpp" />
     <ClCompile Include="..\Code\CTexture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />

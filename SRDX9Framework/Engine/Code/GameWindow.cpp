@@ -1,4 +1,4 @@
-#include "CGameWindow.h"
+#include "GameWindow.h"
 #include "EngineEditor.h"
 
 CGameWindow::CGameWindow()
