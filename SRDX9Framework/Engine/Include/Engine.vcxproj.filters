@@ -171,7 +171,7 @@
     <ClInclude Include="..\Header\CLight.h">
       <Filter>Component\Light</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\UObject.h">
+    <ClInclude Include="..\Header\Object.h">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEditorCamera.h">
@@ -293,7 +293,7 @@
     <ClCompile Include="..\Code\CLight.cpp">
       <Filter>Component\Light</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\UObject.cpp">
+    <ClCompile Include="..\Code\Object.cpp">
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEditorCamera.cpp">

@@ -199,7 +199,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\fmod_dsp_effects.h" />
     <ClInclude Include="..\Header\fmod_errors.h" />
     <ClInclude Include="..\Header\fmod_output.h" />
-    <ClInclude Include="..\Header\UObject.h" />
+    <ClInclude Include="..\Header\Object.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBaseWindow.cpp" />
@@ -234,7 +234,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CTriCol.cpp" />
     <ClCompile Include="..\Code\CVIBuffer.cpp" />
     <ClCompile Include="..\Code\CSpriteRenderer.cpp" />
-    <ClCompile Include="..\Code\UObject.cpp" />
+    <ClCompile Include="..\Code\Object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
