@@ -162,7 +162,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CEngineEditor.h" />
     <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\CGameWindow.h" />
-    <ClInclude Include="..\Header\CGraphicDev.h" />
+    <ClInclude Include="..\Header\GraphicDevice.h" />
     <ClInclude Include="..\Header\CHierachyWindow.h" />
     <ClInclude Include="..\Header\CInput.h" />
     <ClInclude Include="..\Header\CInspectorWindow.h" />
@@ -177,9 +177,9 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CResources.h" />
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\CSceneWindow.h" />
-    <ClInclude Include="..\Header\CScreen.h" />
+    <ClInclude Include="..\Header\Screen.h" />
     <ClInclude Include="..\Header\CTexture.h" />
-    <ClInclude Include="..\Header\CTimer.h" />
+    <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\ETime.h" />
     <ClInclude Include="..\Header\CTransform.h" />
     <ClInclude Include="..\Header\CTriCol.h" />
@@ -210,7 +210,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CEngineEditor.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\CGameWindow.cpp" />
-    <ClCompile Include="..\Code\CGraphicDev.cpp" />
+    <ClCompile Include="..\Code\GraphicDevice.cpp" />
     <ClCompile Include="..\Code\CHierachyWindow.cpp" />
     <ClCompile Include="..\Code\CInput.cpp" />
     <ClCompile Include="..\Code\CInspectorWindow.cpp" />
@@ -225,9 +225,9 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CResources.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\CSceneWindow.cpp" />
-    <ClCompile Include="..\Code\CScreen.cpp" />
+    <ClCompile Include="..\Code\Screen.cpp" />
     <ClCompile Include="..\Code\CTexture.cpp" />
-    <ClCompile Include="..\Code\CTimer.cpp" />
+    <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Time.cpp" />
     <ClCompile Include="..\Code\CTransform.cpp" />
     <ClCompile Include="..\Code\CTriCol.cpp" />

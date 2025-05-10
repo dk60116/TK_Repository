@@ -1,4 +1,4 @@
-#include "CGraphicDev.h"
+#include "GraphicDevice.h"
 #include "CEngineEditor.h"
 #include "Management.h"
 

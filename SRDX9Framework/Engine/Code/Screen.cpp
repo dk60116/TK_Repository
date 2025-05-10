@@ -1,4 +1,4 @@
-﻿#include "CScreen.h"
+﻿#include "Screen.h"
 #include "Management.h"
 #include "CEngineEditor.h"
 

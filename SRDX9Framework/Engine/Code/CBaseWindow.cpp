@@ -1,5 +1,5 @@
 ﻿#include "CBaseWindow.h"
-#include "CScreen.h"
+#include "Screen.h"
 #include "Management.h"
 
 CBaseWindow::CBaseWindow()

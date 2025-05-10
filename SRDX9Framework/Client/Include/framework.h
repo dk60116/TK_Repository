@@ -10,7 +10,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include "CEngineEditor.h"
-#include "CScreen.h"
+#include "Screen.h"
 #include "ETime.h"
 #include "CInput.h"
 #include "Management.h"

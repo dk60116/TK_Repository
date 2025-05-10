@@ -2,7 +2,7 @@
 
 #include "Engine_Define.h"
 
-#include "CGraphicDev.h"
+#include "GraphicDevice.h"
 
 class CMainProcess
 {

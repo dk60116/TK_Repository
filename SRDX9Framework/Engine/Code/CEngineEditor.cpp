@@ -1,5 +1,5 @@
 ﻿#include "CEngineEditor.h"
-#include "CScreen.h"
+#include "Screen.h"
 #include "CInput.h"
 #include "CDebug.h"
 #include "Management.h"

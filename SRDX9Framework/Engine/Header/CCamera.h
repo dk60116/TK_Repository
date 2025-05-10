@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "CScreen.h"
+#include "Screen.h"
 
 BEGIN(Engine)
 

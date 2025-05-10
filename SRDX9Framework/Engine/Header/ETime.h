@@ -1,6 +1,6 @@
 #pragma once
 #include "Object.h"
-#include "CTimer.h"
+#include "Timer.h"
 
 BEGIN(Engine)
 

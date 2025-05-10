@@ -102,7 +102,7 @@
     <ClInclude Include="..\Header\ETime.h">
       <Filter>Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTimer.h">
+    <ClInclude Include="..\Header\Timer.h">
       <Filter>Time\Timer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CInput.h">
@@ -138,7 +138,7 @@
     <ClInclude Include="..\Header\CTexture.h">
       <Filter>Resources\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CScreen.h">
+    <ClInclude Include="..\Header\Screen.h">
       <Filter>Screen</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEngineEditor.h">
@@ -195,7 +195,7 @@
     <ClInclude Include="..\Header\CInspectorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CGraphicDev.h">
+    <ClInclude Include="..\Header\GraphicDevice.h">
       <Filter>System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\fmod.h">
@@ -224,7 +224,7 @@
     <ClCompile Include="..\Code\Time.cpp">
       <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTimer.cpp">
+    <ClCompile Include="..\Code\Timer.cpp">
       <Filter>Time\Timer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CInput.cpp">
@@ -260,7 +260,7 @@
     <ClCompile Include="..\Code\CTexture.cpp">
       <Filter>Resources\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CScreen.cpp">
+    <ClCompile Include="..\Code\Screen.cpp">
       <Filter>Screen</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CSpriteRenderer.cpp">
@@ -317,7 +317,7 @@
     <ClCompile Include="..\Code\CInspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CGraphicDev.cpp">
+    <ClCompile Include="..\Code\GraphicDevice.cpp">
       <Filter>System\DirectX</Filter>
     </ClCompile>
   </ItemGroup>

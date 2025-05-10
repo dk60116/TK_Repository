@@ -1,5 +1,5 @@
 #include "CCamera.h"
-#include "CScreen.h"
+#include "Screen.h"
 #include "GameObject.h"
 
 CCamera::CCamera()

@@ -1,5 +1,5 @@
 #include "Component.h"
-#include "CGraphicDev.h"
+#include "GraphicDevice.h"
 #include "GameObject.h"
 
 CComponent::CComponent()
