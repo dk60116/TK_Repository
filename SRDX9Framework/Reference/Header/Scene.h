@@ -4,7 +4,7 @@
 #include "Engine_Define.h"
 #include "Light.h"
 #include "Camera.h"
-#include "CDebug.h"
+#include "EDebug.h"
 
 BEGIN(Engine)
 

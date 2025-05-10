@@ -1,7 +1,7 @@
-#include "CTransform.h"
+#include "Transform.h"
 #include "GameObject.h"
 #include "EngineEditor.h"
-#include "CDebug.h"
+#include "EDebug.h"
 #include "HierachyWindow.h"
 
 CTransform::CTransform()

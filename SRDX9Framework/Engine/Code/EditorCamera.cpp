@@ -2,9 +2,9 @@
 #include "ETime.h"
 #include "Input.h"
 #include "GameObject.h"
-#include "CTransform.h"
+#include "Transform.h"
 #include "EngineEditor.h"
-#include "CDebug.h"
+#include "EDebug.h"
 
 CEditorCamera::CEditorCamera()
 	: m_sOptions({})

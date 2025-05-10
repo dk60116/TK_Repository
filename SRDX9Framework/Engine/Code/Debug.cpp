@@ -1,4 +1,4 @@
-#include "CDebug.h"
+#include "EDebug.h"
 #include <windows.h>
 #include <cstdio>
 #include <cstdarg>

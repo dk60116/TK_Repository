@@ -1,5 +1,5 @@
 #include "Light.h"
-#include "CTransform.h"
+#include "Transform.h"
 
 CLight::CLight()
 	: m_iIndex(0)

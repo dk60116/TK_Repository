@@ -1,6 +1,6 @@
 #include "Input.h"
 #include "EngineEditor.h"
-#include "CDebug.h"
+#include "EDebug.h"
 
 CInput::CInput()
     : m_fWheelAxis(0.f)

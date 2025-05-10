@@ -1,5 +1,5 @@
 #include "RectCol.h"
-#include "CDebug.h"
+#include "EDebug.h"
 #include "GameObject.h"
 
 CRectCol::CRectCol()

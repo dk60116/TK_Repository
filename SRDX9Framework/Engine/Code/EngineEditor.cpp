@@ -1,7 +1,7 @@
 ﻿#include "EngineEditor.h"
 #include "Screen.h"
 #include "Input.h"
-#include "CDebug.h"
+#include "EDebug.h"
 #include "Management.h"
 #include <winuser.h>
 

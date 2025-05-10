@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Engine_Define.h"
 #include "CResource.h"
-#include "CDebug.h"
+#include "EDebug.h"
 
 #include <shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")

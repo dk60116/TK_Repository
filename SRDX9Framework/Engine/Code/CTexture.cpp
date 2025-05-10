@@ -1,5 +1,5 @@
 #include "CTexture.h"
-#include "CDebug.h"
+#include "EDebug.h"
 
 CTexture::CTexture()
 	: m_pTexture(nullptr)

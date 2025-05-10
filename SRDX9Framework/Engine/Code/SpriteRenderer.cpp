@@ -2,7 +2,7 @@
 #include "EngineEditor.h"
 #include "GameObject.h"
 #include "Management.h"
-#include "CDebug.h"
+#include "EDebug.h"
 #include "Material.h"
 
 CSpriteRenderer::CSpriteRenderer()

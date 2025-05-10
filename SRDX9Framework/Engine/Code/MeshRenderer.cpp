@@ -2,7 +2,7 @@
 #include "EngineEditor.h"
 #include "Management.h"
 #include "GameObject.h"
-#include "CTransform.h"
+#include "Transform.h"
 #include "Material.h"
 
 CMeshRenderer::CMeshRenderer()

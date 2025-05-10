@@ -1,6 +1,6 @@
 #include "Resources.h"
 #include "CTexture.h"
-#include "CDebug.h"
+#include "EDebug.h"
 
 CResources::CResources()
 	: m_strBasePath(L"Assets")

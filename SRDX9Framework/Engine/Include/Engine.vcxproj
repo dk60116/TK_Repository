@@ -156,7 +156,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\BaseWindow.h" />
     <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Component.h" />
-    <ClInclude Include="..\Header\CDebug.h" />
+    <ClInclude Include="..\Header\EDebug.h" />
     <ClInclude Include="..\Header\EditorCamera.h" />
     <ClInclude Include="..\Header\EditorWindow.h" />
     <ClInclude Include="..\Header\EngineEditor.h" />
@@ -182,7 +182,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CTexture.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\ETime.h" />
-    <ClInclude Include="..\Header\CTransform.h" />
+    <ClInclude Include="..\Header\Transform.h" />
     <ClInclude Include="..\Header\TriCol.h" />
     <ClInclude Include="..\Header\VIBuffer.h" />
     <ClInclude Include="..\Header\Engine_Define.h" />
@@ -205,7 +205,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\BaseWindow.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
-    <ClCompile Include="..\Code\CDebug.cpp" />
+    <ClCompile Include="..\Code\Debug.cpp" />
     <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EditorWindow.cpp" />
     <ClCompile Include="..\Code\EngineEditor.cpp" />
@@ -230,7 +230,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CTexture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Time.cpp" />
-    <ClCompile Include="..\Code\CTransform.cpp" />
+    <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\TriCol.cpp" />
     <ClCompile Include="..\Code\VIBuffer.cpp" />
     <ClCompile Include="..\Code\SpriteRenderer.cpp" />

@@ -114,7 +114,7 @@
     <ClInclude Include="..\Header\Component.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTransform.h">
+    <ClInclude Include="..\Header\Transform.h">
       <Filter>Component\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Management.h">
@@ -126,7 +126,7 @@
     <ClInclude Include="..\Header\Camera.h">
       <Filter>Component\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CDebug.h">
+    <ClInclude Include="..\Header\EDebug.h">
       <Filter>Debug</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Resources.h">
@@ -239,7 +239,7 @@
     <ClCompile Include="..\Code\Component.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTransform.cpp">
+    <ClCompile Include="..\Code\Transform.cpp">
       <Filter>Component\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Management.cpp">
@@ -251,7 +251,7 @@
     <ClCompile Include="..\Code\Camera.cpp">
       <Filter>Component\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CDebug.cpp">
+    <ClCompile Include="..\Code\Debug.cpp">
       <Filter>Debug</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Resources.cpp">
