@@ -153,7 +153,6 @@ call Copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Client\Include\Resource.h" />
     <ClInclude Include="..\Header\CBaseWindow.h" />
     <ClInclude Include="..\Header\CCamera.h" />
     <ClInclude Include="..\Header\Component.h" />
@@ -181,7 +180,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CScreen.h" />
     <ClInclude Include="..\Header\CTexture.h" />
     <ClInclude Include="..\Header\CTimer.h" />
-    <ClInclude Include="..\Header\CTime.h" />
+    <ClInclude Include="..\Header\ETime.h" />
     <ClInclude Include="..\Header\CTransform.h" />
     <ClInclude Include="..\Header\CTriCol.h" />
     <ClInclude Include="..\Header\CVIBuffer.h" />
@@ -229,7 +228,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CScreen.cpp" />
     <ClCompile Include="..\Code\CTexture.cpp" />
     <ClCompile Include="..\Code\CTimer.cpp" />
-    <ClCompile Include="..\Code\CTime.cpp" />
+    <ClCompile Include="..\Code\Time.cpp" />
     <ClCompile Include="..\Code\CTransform.cpp" />
     <ClCompile Include="..\Code\CTriCol.cpp" />
     <ClCompile Include="..\Code\CVIBuffer.cpp" />

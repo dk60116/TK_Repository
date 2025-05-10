@@ -11,7 +11,7 @@
 #include <tchar.h>
 #include "CEngineEditor.h"
 #include "CScreen.h"
-#include "CTime.h"
+#include "ETime.h"
 #include "CInput.h"
 #include "Management.h"
 #include "CResources.h"

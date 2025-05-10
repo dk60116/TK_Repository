@@ -1,4 +1,4 @@
-#include "CTime.h"
+#include "ETime.h"
 
 CTime::CTime()
 	:m_pTimer(nullptr)

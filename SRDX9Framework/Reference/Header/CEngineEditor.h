@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Engine_Define.h"
-#include "CTime.h"
+#include "ETime.h"
 #include "CEditorWindow.h"
 #include "CBaseWindow.h"
 #include "CSceneWindow.h"

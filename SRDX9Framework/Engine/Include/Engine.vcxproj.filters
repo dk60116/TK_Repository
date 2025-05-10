@@ -99,7 +99,7 @@
     <ClInclude Include="..\Header\Engine_Typedef.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTime.h">
+    <ClInclude Include="..\Header\ETime.h">
       <Filter>Time</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTimer.h">
@@ -177,9 +177,6 @@
     <ClInclude Include="..\Header\CEditorCamera.h">
       <Filter>Component\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Client\Include\Resource.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CEditorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
@@ -224,7 +221,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Code\CTime.cpp">
+    <ClCompile Include="..\Code\Time.cpp">
       <Filter>Time</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTimer.cpp">

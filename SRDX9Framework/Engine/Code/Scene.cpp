@@ -1,5 +1,5 @@
 #include "Scene.h"
-#include "CTime.h"
+#include "ETime.h"
 #include "CEngineEditor.h"
 #include "CInput.h"
 #include "Management.h"
