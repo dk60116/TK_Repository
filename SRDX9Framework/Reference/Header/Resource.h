@@ -1,39 +1,31 @@
-﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// 다음에서 사용 Client.rc
+#pragma once
 
-#define IDS_APP_TITLE			103
+#include "Object.h"
+#include "Engine_Define.h"
 
-#define IDR_MAINFRAME			128
-#define IDD_CLIENT_DIALOG	102
-#define IDD_ABOUTBOX			103
-#define IDM_ABOUT				104
-#define IDM_EXIT				105
-#define IDI_CLIENT			107
-#define IDI_SMALL				108
-#define IDC_CLIENT			109
-#define IDC_SCENE			110
-#define IDC_GAME			111
-#define IDC_MYICON				2
-#ifndef IDC_STATIC
-#define IDC_STATIC				-1
+BEGIN(Engine)
 
-#endif
-// 다음은 새 개체에 사용할 기본값입니다.
-//
+class ENGINE_DLL CResource abstract
+	: public UObject
+{
+public:
+	explicit CResource();
+	~CResource();
 
-#define ID_BTN_PLAY   30001
-#define ID_BTN_PAUSE  30002
-#define ID_BTN_STOP   30003
-#define ID_BTN_NEXTFRAME 30004
+public:
+	virtual HRESULT Load(LPDIRECT3DDEVICE9 _device) PURE;
+	virtual void Release() PURE;
 
-#ifdef APSTUDIO_INVOKED
-#ifndef APSTUDIO_READONLY_SYMBOLS
+public:
+	const wstring& getPath() { return m_strFilePath; };
+	void SetPath(const wstring _path) { m_strFilePath = _path; }
+	const wstring& getName() { return m_strName; };
+	void SetName(const wstring _name) { m_strName = _name; }
 
-#define _APS_NO_MFC					130
-#define _APS_NEXT_RESOURCE_VALUE	129
-#define _APS_NEXT_COMMAND_VALUE		32771
-#define _APS_NEXT_CONTROL_VALUE		1000
-#define _APS_NEXT_SYMED_VALUE		110
-#endif
-#endif
+protected:
+	wstring m_strFilePath;
+	wstring m_strName;
+	_bool m_bLoaded;
+};
+
+END

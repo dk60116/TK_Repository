@@ -173,7 +173,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CMeshFilter.h" />
     <ClInclude Include="..\Header\CMeshRenderer.h" />
     <ClInclude Include="..\Header\CRectCol.h" />
-    <ClInclude Include="..\Header\CResource.h" />
+    <ClInclude Include="..\Header\Resource.h" />
     <ClInclude Include="..\Header\ProjectResource.h" />
     <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\Scene.h" />
@@ -222,7 +222,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CMeshFilter.cpp" />
     <ClCompile Include="..\Code\CMeshRenderer.cpp" />
     <ClCompile Include="..\Code\CRectCol.cpp" />
-    <ClCompile Include="..\Code\CResource.cpp" />
+    <ClCompile Include="..\Code\Resource.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\CSceneWindow.cpp" />

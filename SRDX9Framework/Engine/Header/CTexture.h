@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CResource.h"
+#include "Resource.h"
 
 BEGIN(Engine)
 

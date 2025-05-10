@@ -1,4 +1,4 @@
-#include "CResource.h"
+#include "Resource.h"
 
 CResource::CResource()
 	: m_bLoaded(false)

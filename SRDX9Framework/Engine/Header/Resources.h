@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Engine_Define.h"
-#include "CResource.h"
+#include "Resource.h"
 #include "CDebug.h"
 
 #include <shlwapi.h>

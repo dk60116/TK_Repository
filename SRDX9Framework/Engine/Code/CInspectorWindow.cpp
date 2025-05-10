@@ -1,6 +1,6 @@
 #include "CInspectorWindow.h"
 #include "CEngineEditor.h"
-#include "CResource.h"
+#include "Resource.h"
 
 CInspectorWindow::CInspectorWindow()
 	: m_sOptinos({})

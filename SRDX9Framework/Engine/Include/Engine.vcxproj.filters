@@ -132,7 +132,7 @@
     <ClInclude Include="..\Header\Resources.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CResource.h">
+    <ClInclude Include="..\Header\Resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTexture.h">
@@ -257,7 +257,7 @@
     <ClCompile Include="..\Code\Resources.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CResource.cpp">
+    <ClCompile Include="..\Code\Resource.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTexture.cpp">
