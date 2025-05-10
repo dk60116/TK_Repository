@@ -141,7 +141,7 @@
     <ClInclude Include="..\Header\Screen.h">
       <Filter>Screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CEngineEditor.h">
+    <ClInclude Include="..\Header\EngineEditor.h">
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CSpriteRenderer.h">
@@ -302,7 +302,7 @@
     <ClCompile Include="..\Code\CEditorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CEngineEditor.cpp">
+    <ClCompile Include="..\Code\EngineEditor.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CHierachyWindow.cpp">

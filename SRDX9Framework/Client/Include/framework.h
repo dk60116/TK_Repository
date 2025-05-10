@@ -9,7 +9,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "Screen.h"
 #include "ETime.h"
 #include "Input.h"

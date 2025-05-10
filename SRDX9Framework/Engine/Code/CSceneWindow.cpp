@@ -1,5 +1,5 @@
 #include "CSceneWindow.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 
 CSceneWindow::CSceneWindow()
 {

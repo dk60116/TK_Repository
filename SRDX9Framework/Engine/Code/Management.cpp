@@ -1,5 +1,5 @@
 #include "Management.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 
 CManagement::CManagement()
 	: m_pGraphicDev(nullptr)

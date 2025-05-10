@@ -1,5 +1,5 @@
 #include "CEditorWindow.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 
 CEditorWindow::CEditorWindow()
 	: m_hWnd(nullptr)

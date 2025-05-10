@@ -1,5 +1,5 @@
 #include "CInspectorWindow.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "Resource.h"
 
 CInspectorWindow::CInspectorWindow()

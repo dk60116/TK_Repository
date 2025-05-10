@@ -1,5 +1,5 @@
 #include "GraphicDevice.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "Management.h"
 
 CGraphicDev::CGraphicDev() 

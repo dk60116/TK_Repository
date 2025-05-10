@@ -1,5 +1,5 @@
 #include "CSpriteRenderer.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "GameObject.h"
 #include "Management.h"
 #include "CDebug.h"

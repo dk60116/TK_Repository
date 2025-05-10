@@ -1,5 +1,5 @@
 #include "Input.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "CDebug.h"
 
 CInput::CInput()

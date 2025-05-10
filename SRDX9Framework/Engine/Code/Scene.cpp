@@ -1,6 +1,6 @@
 #include "Scene.h"
 #include "ETime.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "Input.h"
 #include "Management.h"
 #include "GameObject.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CEditorWindow.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "GameObject.h"
 
 BEGIN(Engine)

@@ -1,6 +1,6 @@
 #include "CTransform.h"
 #include "GameObject.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 #include "CDebug.h"
 #include "CHierachyWindow.h"
 

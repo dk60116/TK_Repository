@@ -1,6 +1,6 @@
 ﻿#include "Screen.h"
 #include "Management.h"
-#include "CEngineEditor.h"
+#include "EngineEditor.h"
 
 CScreen::CScreen()
 	: m_hInstance(nullptr)
