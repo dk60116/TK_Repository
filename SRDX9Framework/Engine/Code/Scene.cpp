@@ -1,7 +1,7 @@
 #include "Scene.h"
 #include "ETime.h"
 #include "CEngineEditor.h"
-#include "CInput.h"
+#include "Input.h"
 #include "Management.h"
 #include "GameObject.h"
 #include "CEditorCamera.h"

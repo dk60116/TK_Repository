@@ -1,4 +1,4 @@
-#include "CInput.h"
+#include "Input.h"
 #include "CEngineEditor.h"
 #include "CDebug.h"
 

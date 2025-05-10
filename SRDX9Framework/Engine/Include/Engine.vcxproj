@@ -164,7 +164,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CGameWindow.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
     <ClInclude Include="..\Header\CHierachyWindow.h" />
-    <ClInclude Include="..\Header\CInput.h" />
+    <ClInclude Include="..\Header\Input.h" />
     <ClInclude Include="..\Header\CInspectorWindow.h" />
     <ClInclude Include="..\Header\CLight.h" />
     <ClInclude Include="..\Header\Management.h" />
@@ -213,7 +213,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CGameWindow.cpp" />
     <ClCompile Include="..\Code\GraphicDevice.cpp" />
     <ClCompile Include="..\Code\CHierachyWindow.cpp" />
-    <ClCompile Include="..\Code\CInput.cpp" />
+    <ClCompile Include="..\Code\Input.cpp" />
     <ClCompile Include="..\Code\CInspectorWindow.cpp" />
     <ClCompile Include="..\Code\CLight.cpp" />
     <ClCompile Include="..\Code\Management.cpp" />

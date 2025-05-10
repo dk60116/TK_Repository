@@ -1,6 +1,6 @@
 ﻿#include "CEngineEditor.h"
 #include "Screen.h"
-#include "CInput.h"
+#include "Input.h"
 #include "CDebug.h"
 #include "Management.h"
 #include <winuser.h>
