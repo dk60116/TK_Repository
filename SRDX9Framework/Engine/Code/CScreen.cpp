@@ -1,5 +1,5 @@
 ﻿#include "CScreen.h"
-#include "CManagement.h"
+#include "Management.h"
 #include "CEngineEditor.h"
 
 CScreen::CScreen()

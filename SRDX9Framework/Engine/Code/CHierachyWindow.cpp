@@ -1,5 +1,5 @@
 ﻿#include "CHierachyWindow.h"
-#include "CScene.h"
+#include "Scene.h"
 #include "GameObject.h"
 
 #pragma comment(lib, "comctl32.lib")

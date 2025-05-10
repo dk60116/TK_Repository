@@ -13,6 +13,6 @@
 #include "CScreen.h"
 #include "CTime.h"
 #include "CInput.h"
-#include "CManagement.h"
+#include "Management.h"
 #include "CResources.h"
 #include "GameObject.h"

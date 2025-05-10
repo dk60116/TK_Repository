@@ -1,7 +1,7 @@
 #include "CSpriteRenderer.h"
 #include "CEngineEditor.h"
 #include "GameObject.h"
-#include "CManagement.h"
+#include "Management.h"
 #include "CDebug.h"
 #include "CMaterial.h"
 

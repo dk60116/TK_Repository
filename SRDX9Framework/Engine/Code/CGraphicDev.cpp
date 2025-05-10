@@ -1,6 +1,6 @@
 #include "CGraphicDev.h"
 #include "CEngineEditor.h"
-#include "CManagement.h"
+#include "Management.h"
 
 CGraphicDev::CGraphicDev() 
 	: m_pSDK(NULL)

@@ -6,7 +6,7 @@
 #include "CTransform.h"
 #include "CEditorCamera.h"
 #include "CLight.h"
-#include "CManagement.h"
+#include "Management.h"
 
 BEGIN(Engine)
 

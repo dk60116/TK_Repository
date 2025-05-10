@@ -1,4 +1,4 @@
-#include "CManagement.h"
+#include "Management.h"
 #include "CEngineEditor.h"
 
 CManagement::CManagement()

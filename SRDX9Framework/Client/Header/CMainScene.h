@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CScene.h"
+#include "Scene.h"
 #include "CLight.h"
 #include "CPlayer.h"
 #include "CEnemy.h"

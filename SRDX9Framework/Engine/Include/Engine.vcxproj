@@ -168,7 +168,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CInput.h" />
     <ClInclude Include="..\Header\CInspectorWindow.h" />
     <ClInclude Include="..\Header\CLight.h" />
-    <ClInclude Include="..\Header\CManagement.h" />
+    <ClInclude Include="..\Header\Management.h" />
     <ClInclude Include="..\Header\CMaterial.h" />
     <ClInclude Include="..\Header\CMesh.h" />
     <ClInclude Include="..\Header\CMeshFilter.h" />
@@ -176,7 +176,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\CRectCol.h" />
     <ClInclude Include="..\Header\CResource.h" />
     <ClInclude Include="..\Header\CResources.h" />
-    <ClInclude Include="..\Header\CScene.h" />
+    <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\CSceneWindow.h" />
     <ClInclude Include="..\Header\CScreen.h" />
     <ClInclude Include="..\Header\CTexture.h" />
@@ -216,7 +216,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CInput.cpp" />
     <ClCompile Include="..\Code\CInspectorWindow.cpp" />
     <ClCompile Include="..\Code\CLight.cpp" />
-    <ClCompile Include="..\Code\CManagement.cpp" />
+    <ClCompile Include="..\Code\Management.cpp" />
     <ClCompile Include="..\Code\CMaterial.cpp" />
     <ClCompile Include="..\Code\CMesh.cpp" />
     <ClCompile Include="..\Code\CMeshFilter.cpp" />
@@ -224,7 +224,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\CRectCol.cpp" />
     <ClCompile Include="..\Code\CResource.cpp" />
     <ClCompile Include="..\Code\CResources.cpp" />
-    <ClCompile Include="..\Code\CScene.cpp" />
+    <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\CSceneWindow.cpp" />
     <ClCompile Include="..\Code\CScreen.cpp" />
     <ClCompile Include="..\Code\CTexture.cpp" />

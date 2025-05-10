@@ -2,7 +2,7 @@
 #include "CScreen.h"
 #include "CInput.h"
 #include "CDebug.h"
-#include "CManagement.h"
+#include "Management.h"
 #include <winuser.h>
 
 CEngineEditor::CEngineEditor()

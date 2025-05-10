@@ -1,5 +1,5 @@
 #include "CVIBuffer.h"
-#include "CManagement.h"
+#include "Management.h"
 
 CVIBuffer::CVIBuffer()
 	: m_pIB(nullptr)

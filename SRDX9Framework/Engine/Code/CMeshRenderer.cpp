@@ -1,6 +1,6 @@
 #include "CMeshRenderer.h"
 #include "CEngineEditor.h"
-#include "CManagement.h"
+#include "Management.h"
 #include "GameObject.h"
 #include "CTransform.h"
 #include "CMaterial.h"

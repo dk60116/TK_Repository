@@ -1,6 +1,6 @@
 ﻿#include "CBaseWindow.h"
 #include "CScreen.h"
-#include "CManagement.h"
+#include "Management.h"
 
 CBaseWindow::CBaseWindow()
 	: m_hBottomBar(nullptr)

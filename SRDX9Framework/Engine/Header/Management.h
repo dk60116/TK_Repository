@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Engine_Define.h"
-#include "CScene.h"
+#include "Scene.h"
 #include "GameObject.h"
 #include "CEditorCamera.h"
 

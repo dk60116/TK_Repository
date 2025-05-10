@@ -1,8 +1,8 @@
-#include "CScene.h"
+#include "Scene.h"
 #include "CTime.h"
 #include "CEngineEditor.h"
 #include "CInput.h"
-#include "CManagement.h"
+#include "Management.h"
 #include "GameObject.h"
 #include "CEditorCamera.h"
 

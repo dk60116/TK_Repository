@@ -117,10 +117,10 @@
     <ClInclude Include="..\Header\CTransform.h">
       <Filter>Component\Transform</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CManagement.h">
+    <ClInclude Include="..\Header\Management.h">
       <Filter>Management</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CScene.h">
+    <ClInclude Include="..\Header\Scene.h">
       <Filter>Management\Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CCamera.h">
@@ -242,10 +242,10 @@
     <ClCompile Include="..\Code\CTransform.cpp">
       <Filter>Component\Transform</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CManagement.cpp">
+    <ClCompile Include="..\Code\Management.cpp">
       <Filter>Management</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CScene.cpp">
+    <ClCompile Include="..\Code\Scene.cpp">
       <Filter>Management\Scene</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CCamera.cpp">
