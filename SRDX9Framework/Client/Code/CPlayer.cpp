@@ -2,8 +2,7 @@
 #include "CPlayer.h"
 
 CPlayer::CPlayer()
-	: m_pRenderer(nullptr)
-	, m_pMeshRenderer(nullptr)
+	: m_pMeshRenderer(nullptr)
 	, m_fMoveSpeed(1.f)
 	, m_fRotaionSpeed(90.f)
 {
@@ -68,9 +67,6 @@ void CPlayer::OnDestroy()
 
 void CPlayer::KeyInput()
 {
-	if (CInput::GetInstance().GetKey(Alpha1))
-		m_pRenderer->SetTintColor(ColorValue::red());
-
 	if (CInput::GetInstance().GetKey(W))
 	{
 		getTransform().AddPosition(getTransform().getDirections().up * DELTA_TIME * m_fMoveSpeed);

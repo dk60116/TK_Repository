@@ -2,7 +2,7 @@
 
 #include "UObject.h"
 #include "Engine_Define.h"
-#include "CComponent.h"
+#include "Component.h"
 #include "CTransform.h"
 #include "CEditorCamera.h"
 #include "CLight.h"

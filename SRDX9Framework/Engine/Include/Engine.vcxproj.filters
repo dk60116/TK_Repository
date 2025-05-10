@@ -70,11 +70,17 @@
     <Filter Include="Editor\Windows">
       <UniqueIdentifier>{359b3c35-8fab-49c0-a26a-da43e12061c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\FMod">
+      <UniqueIdentifier>{a41bfcaa-bc9c-4fa6-af63-b89bbb2d4b9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\DirectX">
+      <UniqueIdentifier>{44397c6c-5aa0-4453-9f2f-da51343d34b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Sound">
+      <UniqueIdentifier>{4eaebbe4-9906-44fb-9987-f6694ef7461e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Header\CGraphicDev.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\Engine_Define.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -105,7 +111,7 @@
     <ClInclude Include="..\Header\CGameObject.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CComponent.h">
+    <ClInclude Include="..\Header\Component.h">
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTransform.h">
@@ -192,11 +198,32 @@
     <ClInclude Include="..\Header\CInspectorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CGraphicDev.h">
+      <Filter>System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_codec.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_common.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_dsp.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_dsp_effects.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_errors.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_output.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Code\CGraphicDev.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CTime.cpp">
       <Filter>Time</Filter>
     </ClCompile>
@@ -209,7 +236,7 @@
     <ClCompile Include="..\Code\CGameObject.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CComponent.cpp">
+    <ClCompile Include="..\Code\Component.cpp">
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTransform.cpp">
@@ -293,8 +320,16 @@
     <ClCompile Include="..\Code\CInspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CGraphicDev.cpp">
+      <Filter>System\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Header\fmod_dsp.cs">
+      <Filter>System\FMod</Filter>
+    </None>
   </ItemGroup>
 </Project>

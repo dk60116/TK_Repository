@@ -29,11 +29,14 @@ public:
 	LPDIRECT3DDEVICE9 Get_GraphicDev();
 
 public:
-	HRESULT Ready_GraphicDev(HWND _hWnd, 
-								WINMODE _eMode, 
-								const _uint& _iSizeX, 
-								const _uint& _iSizeY, 
-								CGraphicDev * *_ppGraphicDev);
+	HRESULT Ready_GraphicDev
+	(
+		HWND _hWnd, 
+		WINMODE _eMode, 
+		const _uint& _iSizeX, 
+		const _uint& _iSizeY, 
+		CGraphicDev * *_ppGraphicDev
+	);
 
 	void Render_Begin(D3DVIEWPORT9 _viewPort, D3DXCOLOR _color);
 	void Render_End(HWND _window);

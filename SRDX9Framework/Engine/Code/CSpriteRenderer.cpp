@@ -6,7 +6,7 @@
 #include "CMaterial.h"
 
 CSpriteRenderer::CSpriteRenderer()
-	: m_pTexture(nullptr)
+	: m_pSprite(nullptr)
 	, m_pBuffer(nullptr)
 	, m_rcUV({})
     , m_pMaterial(nullptr)
@@ -64,8 +64,7 @@ void CSpriteRenderer::OnDestroy()
     Safe_Release(m_pBuffer);
     m_pMaterial->Destroy();
     Safe_Release(m_pMaterial);
-
-	m_pTexture = nullptr;
+    m_pMaterial->Release();
 }
 
 CSpriteRenderer* CSpriteRenderer::Create()
@@ -109,7 +108,7 @@ void CSpriteRenderer::Render_Final(CCamera* _camera, _bool _editor)
     if (m_pMaterial)
         m_pMaterial->Apply(m_pGraphicDev);
 
-    m_pGraphicDev->SetTexture(0, m_pTexture ? m_pTexture->getTexture() : nullptr);
+    m_pGraphicDev->SetTexture(0, m_pSprite ? m_pSprite->getTexture() : nullptr);
 
     if (!m_sOptions.lighting)
         m_pGraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -127,7 +126,11 @@ void CSpriteRenderer::Render_Final(CCamera* _camera, _bool _editor)
 
 void CSpriteRenderer::SetTexture(CTexture* _texture)
 {
-    m_pTexture = _texture;
+    if (m_pSprite)
+        m_pSprite->Release();
+
+    m_pSprite = _texture;
+    m_pSprite->AddRef();
 
     m_pBuffer->Ready_Buffer(m_pGraphicDev);
 }

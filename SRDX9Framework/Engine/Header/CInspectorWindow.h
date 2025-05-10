@@ -54,6 +54,7 @@ private:
 
 	void CreateFloatBox(vector2Int _start, vector2Int _size, wstring _name, _float* _value);
 	void CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value);
+	void CreatePointerBox(vector2Int _start, vector2Int _size, wstring _name, UObject** _value);
 
 	vector<InspectorPairView> m_vPairViewList;
 

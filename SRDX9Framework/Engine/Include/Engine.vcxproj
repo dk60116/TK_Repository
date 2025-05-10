@@ -156,7 +156,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\..\Client\Include\Resource.h" />
     <ClInclude Include="..\Header\CBaseWindow.h" />
     <ClInclude Include="..\Header\CCamera.h" />
-    <ClInclude Include="..\Header\CComponent.h" />
+    <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\CDebug.h" />
     <ClInclude Include="..\Header\CEditorCamera.h" />
     <ClInclude Include="..\Header\CEditorWindow.h" />
@@ -192,12 +192,19 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Engine_Struct.h" />
     <ClInclude Include="..\Header\Engine_Typedef.h" />
     <ClInclude Include="..\Header\CSpriteRenderer.h" />
+    <ClInclude Include="..\Header\fmod.h" />
+    <ClInclude Include="..\Header\fmod_codec.h" />
+    <ClInclude Include="..\Header\fmod_common.h" />
+    <ClInclude Include="..\Header\fmod_dsp.h" />
+    <ClInclude Include="..\Header\fmod_dsp_effects.h" />
+    <ClInclude Include="..\Header\fmod_errors.h" />
+    <ClInclude Include="..\Header\fmod_output.h" />
     <ClInclude Include="..\Header\UObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBaseWindow.cpp" />
     <ClCompile Include="..\Code\CCamera.cpp" />
-    <ClCompile Include="..\Code\CComponent.cpp" />
+    <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\CDebug.cpp" />
     <ClCompile Include="..\Code\CEditorCamera.cpp" />
     <ClCompile Include="..\Code\CEditorWindow.cpp" />
@@ -231,6 +238,9 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Header\fmod_dsp.cs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

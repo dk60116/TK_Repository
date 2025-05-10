@@ -1,5 +1,6 @@
 #include "CInspectorWindow.h"
 #include "CEngineEditor.h"
+#include "CResource.h"
 
 CInspectorWindow::CInspectorWindow()
 	: m_sOptinos({})
@@ -113,6 +114,8 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 						CManagement::GetInstance().getCrtScene()->UpdateEditor();
 					}
 					break;
+					case FieldType::STRING:
+						break;
 					default:
 						break;
 					}
@@ -333,6 +336,11 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 			case FieldType::VECTOR3:
 				CreateVector3Box(defaultPos, defaultSize, defaultName, static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
 				break;
+			case FieldType::POINTER:
+				CreatePointerBox(defaultPos, defaultSize, defaultName, static_cast<UObject**>(c->GetInspectorFields()[i].ptr));
+				break;
+			case FieldType::STRING:
+				break;
 			default:
 				break;
 			}
@@ -381,6 +389,7 @@ void CInspectorWindow::UpdateScrollInfo()
 	ShowScrollBar(m_hWnd, SB_VERT, needScroll);
 }
 
+#pragma region floatBox
 void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstring _name, _float* _value)
 {
 	HWND floatView = CreateWindowEx
@@ -423,7 +432,10 @@ void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstri
 
 	SetWindowLongPtr(inputBox, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 }
+#pragma endregion
 
+
+#pragma region vector3Box
 void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value)
 {
 	HWND vector3View = CreateWindowEx
@@ -479,7 +491,7 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 		width, height,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
 	);
-	
+
 	SetWindowTextW(zView, to_wstring((*_value).z).c_str());
 
 	if (_name == L"Rotation")
@@ -502,4 +514,58 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 	SetWindowLongPtr(xView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 	SetWindowLongPtr(yView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
 	SetWindowLongPtr(zView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
+}
+#pragma endregion
+
+void CInspectorWindow::CreatePointerBox(vector2Int _start, vector2Int _size, wstring _name, UObject** _value)
+{
+	HWND pointerView = CreateWindowEx
+	(
+		0, L"STATIC", nullptr,
+		WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_LEFT,
+		_start.x, _start.y,
+		_size.x, _size.y,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	m_vChildWindows.push_back(pointerView);
+
+	SetWindowText(pointerView, (L"     " + _name).c_str());
+
+	_int leftOffset = 110;
+	_int rightOffset = 5;
+	_int rightArea = _size.x - leftOffset;
+	_int x = _start.x + leftOffset;
+	_int y = _start.y + 4;
+	_int width = rightArea - rightOffset;
+	_int height = _size.y - 10;
+
+	HWND nameView = CreateWindowEx
+	(
+		0, L"Edit", nullptr,
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		x, y,
+		width, height,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	m_vChildWindows.push_back(nameView);
+
+	SetWindowLongPtr(nameView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
+
+	if (CComponent* cp = dynamic_cast<CComponent*>(*_value))
+	{
+		wstring rout = cp->getObject()->getName() + wstring(L" ") + wstring(L"(") + cp->getName() + wstring(L")");
+		SetWindowTextW(nameView, rout.c_str());
+	}
+	else if (CResource* rs = dynamic_cast<CResource*>(*_value))
+	{
+		SetWindowTextW(nameView, rs->getName().c_str());
+	}
+	else
+		SetWindowTextW(nameView, L"nullptr");
+
+	m_vPairViewList.push_back({ nameView, _value, nullptr, FieldType::STRING});
+
+	SetWindowLongPtr(pointerView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
 }

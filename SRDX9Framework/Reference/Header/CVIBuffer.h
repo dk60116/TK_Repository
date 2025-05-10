@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UObject.h"
-#include "CComponent.h"
+#include "Component.h"
 
 BEGIN(Engine)
 

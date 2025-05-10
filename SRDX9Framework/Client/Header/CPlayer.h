@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CComponent.h"
+#include "Component.h"
 #include "CSpriteRenderer.h"
 #include "CMeshRenderer.h"
 
@@ -29,7 +29,6 @@ private:
 	void KeyInput();
 
 public:
-    CSpriteRenderer* m_pRenderer;
 	CMeshRenderer* m_pMeshRenderer;
 	_float m_fMoveSpeed, m_fRotaionSpeed;
 

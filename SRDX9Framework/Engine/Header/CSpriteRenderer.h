@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CComponent.h"
+#include "Component.h"
 #include "CRectCol.h"
 #include "CTexture.h"
 #include "CCamera.h"
@@ -43,7 +43,7 @@ public:
     SpriteRendererOptions& getOptions() { return m_sOptions; }
 
 private:
-    CTexture* m_pTexture;
+    CTexture* m_pSprite;
     CRectCol* m_pBuffer;
     RECT m_rcUV;
     CMaterial* m_pMaterial;
@@ -51,6 +51,7 @@ private:
     SpriteRendererOptions m_sOptions;
 
     BEGIN_SERIALIZEFIELD
+    SERIALIZEFIELD(m_pSprite)
     END_SERIALIZEFIELD
 };
 

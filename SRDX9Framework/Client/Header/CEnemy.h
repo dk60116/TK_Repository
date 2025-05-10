@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CComponent.h"
+#include "Component.h"
 #include "CSpriteRenderer.h"
 
 class CEnemy :
@@ -35,6 +35,8 @@ public:
 	_bool m_bInit;
 
 	BEGIN_SERIALIZEFIELD
+	SERIALIZEFIELD(m_pRenderer)
+	SERIALIZEFIELD(m_pTarget)
 	END_SERIALIZEFIELD
 };
 

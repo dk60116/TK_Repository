@@ -10,7 +10,7 @@ class CTransform;
 
 enum class FieldType
 {
-	BOOL, INT, FLOAT, FLOAT_RX, FLOAT_RY, FLOAT_RZ, VECTOR3, VECTOR3INT, VECTOR2, VECTOR2INT, COLOR
+	BOOL, INT, FLOAT, FLOAT_RX, FLOAT_RY, FLOAT_RZ, VECTOR3, VECTOR3INT, VECTOR2, VECTOR2INT, STRING, POINTER, COLOR
 };
 
 struct FieldInfo
@@ -65,7 +65,9 @@ protected:
 	inline FieldType DetectFieldType(vector2&) { return FieldType::VECTOR2; }
 	inline FieldType DetectFieldType(vector2Int&) { return FieldType::VECTOR2INT; }
 	inline FieldType DetectFieldType(vector3&) { return FieldType::VECTOR3; }
-	//inline FieldType DetectFieldType(vector3Int&) { return FieldType::VECTOR3INT; }
+	inline FieldType DetectFieldType(vector3Int&) { return FieldType::VECTOR3INT; }
+	inline FieldType DetectFieldType(wstring&) { return FieldType::STRING; }
+	inline FieldType DetectFieldType(UObject*) { return FieldType::POINTER; }
 	inline FieldType DetectFieldType(ColorValue&) { return FieldType::COLOR; }
 };
 

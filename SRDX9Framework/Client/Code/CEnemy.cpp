@@ -25,7 +25,6 @@ void CEnemy::Awake()
 	auto tex = CResources::GetInstance().getResource<CTexture>(L"Enemy").get();
 	if (tex)
 		m_pRenderer->SetTexture(tex);
-	m_pRenderer->SetTexture(tex);
 	//m_pRenderer->SetTintColor(ColorValue::red());
 
 	m_bInit = true;

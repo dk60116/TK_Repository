@@ -584,6 +584,184 @@ namespace Engine
     }
 #pragma endregion
 
+#pragma region vector3Int
+    struct vector3Int
+    {
+        int x;
+        int y;
+        int z;
+
+        vector3Int()
+            : x(0), y(0), z(0)
+        {
+        }
+
+        vector3Int(_int _x, _int _y, _int _z)
+            : x(_x), y(_y), z(_z)
+        {
+        }
+
+        vector3Int(UINT _x, UINT _y, UINT _z)
+            : x((_int)_x), y((_int)_y), z((_int)_z)
+        {
+        }
+
+        vector3Int(const vector3& v)
+            : x(static_cast<int>(v.x)), y(static_cast<int>(v.y)), z(static_cast<int>(v.z))
+        {
+        }
+
+        vector3Int& operator=(const vector3Int& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            z = rhs.z;
+            return *this;
+        }
+
+        vector3Int& operator+=(const vector3Int& rhs)
+        {
+            x += rhs.x;
+            y += rhs.y;
+            z += rhs.z;
+            return *this;
+        }
+
+        vector3Int& operator-=(const vector3Int& rhs)
+        {
+            x -= rhs.x;
+            y -= rhs.y;
+            z -= rhs.z;
+            return *this;
+        }
+
+        vector3Int& operator*=(int scalar)
+        {
+            x *= scalar;
+            y *= scalar;
+            z *= scalar;
+            return *this;
+        }
+
+        vector3Int& operator/=(int scalar)
+        {
+            x /= scalar;
+            y /= scalar;
+            z /= scalar;
+            return *this;
+        }
+
+        bool operator==(const vector3Int& rhs) const
+        {
+            return x == rhs.x && y == rhs.y && z == rhs.z;
+        }
+
+        bool operator!=(const vector3Int& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        float length() const
+        {
+            return sqrtf(static_cast<float>(x * x + y * y + z * z));
+        }
+
+        int lengthSq() const
+        {
+            return x * x + y * y + z * z;
+        }
+
+        vector3 to_vector3() const
+        {
+            return vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+        }
+
+        static vector3Int zero()
+        {
+            return vector3Int(0, 0, 0);
+        }
+
+        static vector3Int one()
+        {
+            return vector3Int(1, 1, 1);
+        }
+
+        static vector3Int up()
+        {
+            return vector3Int(0, 1, 0);
+        }
+
+        static vector3Int down()
+        {
+            return vector3Int(0, -1, 0);
+        }
+
+        static vector3Int left()
+        {
+            return vector3Int(-1, 0, 0);
+        }
+
+        static vector3Int right()
+        {
+            return vector3Int(1, 0, 0);
+        }
+
+        static vector3Int forward()
+        {
+            return vector3Int(0, 0, 1);
+        }
+
+        static vector3Int back()
+        {
+            return vector3Int(0, 0, -1);
+        }
+
+        static int Distance(const vector3Int& a, const vector3Int& b)
+        {
+            int dx = b.x - a.x;
+            int dy = b.y - a.y;
+            int dz = b.z - a.z;
+            return static_cast<int>(sqrtf(static_cast<float>(dx * dx + dy * dy + dz * dz)));
+        }
+
+        static int ManhattanDistance(const vector3Int& a, const vector3Int& b)
+        {
+            return abs(b.x - a.x) + abs(b.y - a.y) + abs(b.z - a.z);
+        }
+    };
+
+    // 연산자 오버로딩
+    inline vector3Int operator+(const vector3Int& lhs, const vector3Int& rhs)
+    {
+        return vector3Int(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+    }
+
+    inline vector3Int operator-(const vector3Int& lhs, const vector3Int& rhs)
+    {
+        return vector3Int(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+    }
+
+    inline vector3Int operator*(const vector3Int& vec, int scalar)
+    {
+        return vector3Int(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+    }
+
+    inline vector3Int operator*(int scalar, const vector3Int& vec)
+    {
+        return vector3Int(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+    }
+
+    inline vector3Int operator/(const vector3Int& vec, int scalar)
+    {
+        return vector3Int(vec.x / scalar, vec.y / scalar, vec.z / scalar);
+    }
+
+    inline vector3Int operator-(const vector3Int& v)
+    {
+        return vector3Int(-v.x, -v.y, -v.z);
+    }
+#pragma endregion
+
 #pragma region quaternion
     struct quaternion
     {
