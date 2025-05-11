@@ -122,7 +122,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Reference\Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>cd $(ProjectDir)..\..\
@@ -145,7 +146,8 @@ call Copy.bat</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Reference\Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>cd $(ProjectDir)..\..\
@@ -153,6 +155,7 @@ call Copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\AudioSource.h" />
     <ClInclude Include="..\Header\BaseWindow.h" />
     <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Component.h" />
@@ -160,6 +163,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\EditorCamera.h" />
     <ClInclude Include="..\Header\EditorWindow.h" />
     <ClInclude Include="..\Header\EngineEditor.h" />
+    <ClInclude Include="..\Header\FMODSystem.h" />
     <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\GameWindow.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
@@ -179,7 +183,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneWindow.h" />
     <ClInclude Include="..\Header\Screen.h" />
-    <ClInclude Include="..\Header\CTexture.h" />
+    <ClInclude Include="..\Header\Texture.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\ETime.h" />
     <ClInclude Include="..\Header\Transform.h" />
@@ -202,6 +206,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Object.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\AudioSource.cpp" />
     <ClCompile Include="..\Code\BaseWindow.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
@@ -209,6 +214,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EditorWindow.cpp" />
     <ClCompile Include="..\Code\EngineEditor.cpp" />
+    <ClCompile Include="..\Code\FMODSystem.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\GameWindow.cpp" />
     <ClCompile Include="..\Code\GraphicDevice.cpp" />
@@ -227,7 +233,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\SceneWindow.cpp" />
     <ClCompile Include="..\Code\Screen.cpp" />
-    <ClCompile Include="..\Code\CTexture.cpp" />
+    <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Time.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
@@ -238,9 +244,6 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Header\fmod_dsp.cs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

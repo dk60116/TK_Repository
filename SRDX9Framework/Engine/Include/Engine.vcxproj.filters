@@ -79,6 +79,9 @@
     <Filter Include="Component\Sound">
       <UniqueIdentifier>{4eaebbe4-9906-44fb-9987-f6694ef7461e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\FMod\Headers">
+      <UniqueIdentifier>{d3684460-7f04-4407-84c3-b365ddcffd91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -135,7 +138,7 @@
     <ClInclude Include="..\Header\Resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTexture.h">
+    <ClInclude Include="..\Header\Texture.h">
       <Filter>Resources\Resource</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Screen.h">
@@ -198,29 +201,35 @@
     <ClInclude Include="..\Header\GraphicDevice.h">
       <Filter>System\DirectX</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\fmod.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_codec.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_common.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_dsp.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_dsp_effects.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_errors.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_output.h">
-      <Filter>System\FMod</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\ProjectResource.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\AudioSource.h">
+      <Filter>Component\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\FMODSystem.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod.h">
+      <Filter>System\FMod\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_codec.h">
+      <Filter>System\FMod\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_common.h">
+      <Filter>System\FMod\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_dsp.h">
+      <Filter>System\FMod\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_dsp_effects.h">
+      <Filter>System\FMod\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_errors.h">
+      <Filter>System\FMod\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_output.h">
+      <Filter>System\FMod\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,7 +269,7 @@
     <ClCompile Include="..\Code\Resource.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTexture.cpp">
+    <ClCompile Include="..\Code\Texture.cpp">
       <Filter>Resources\Resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Screen.cpp">
@@ -323,13 +332,14 @@
     <ClCompile Include="..\Code\GraphicDevice.cpp">
       <Filter>System\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\AudioSource.cpp">
+      <Filter>Component\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FMODSystem.cpp">
+      <Filter>System\FMod</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Header\fmod_dsp.cs">
-      <Filter>System\FMod</Filter>
-    </None>
   </ItemGroup>
 </Project>

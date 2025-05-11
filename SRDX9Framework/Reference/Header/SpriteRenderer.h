@@ -2,7 +2,7 @@
 
 #include "Component.h"
 #include "RectCol.h"
-#include "CTexture.h"
+#include "Texture.h"
 #include "Camera.h"
 #include "Material.h"
 

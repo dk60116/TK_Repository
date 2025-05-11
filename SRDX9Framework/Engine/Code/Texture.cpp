@@ -1,4 +1,4 @@
-#include "CTexture.h"
+#include "Texture.h"
 #include "EDebug.h"
 
 CTexture::CTexture()

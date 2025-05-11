@@ -7,6 +7,7 @@
 #include <fmod.h>
 #include <fmod_common.h>
 #include <fmod_errors.h>
+#include <fmod.hpp>
 
 #include <vector>
 #include <list>
