@@ -231,6 +231,9 @@
     <ClInclude Include="..\Header\fmod_output.h">
       <Filter>System\FMod\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\AudioClip.h">
+      <Filter>Resources\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Time.cpp">
@@ -337,6 +340,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\FMODSystem.cpp">
       <Filter>System\FMod</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\AudioClip.cpp">
+      <Filter>Resources\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

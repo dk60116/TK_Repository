@@ -155,6 +155,7 @@ call Copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\AudioClip.h" />
     <ClInclude Include="..\Header\AudioSource.h" />
     <ClInclude Include="..\Header\BaseWindow.h" />
     <ClInclude Include="..\Header\Camera.h" />
@@ -206,6 +207,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Object.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\AudioClip.cpp" />
     <ClCompile Include="..\Code\AudioSource.cpp" />
     <ClCompile Include="..\Code\BaseWindow.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />

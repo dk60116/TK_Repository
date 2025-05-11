@@ -5,7 +5,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CFMODSystem 
+class ENGINE_DLL CFMODSystem final
     : public UObject
 {
     SINGLETONCLASS(CFMODSystem);
