@@ -1,5 +1,6 @@
 #include "Resources.h"
 #include "Texture.h"
+#include "AudioClip.h"
 #include "EDebug.h"
 
 CResources::CResources()
@@ -56,6 +57,14 @@ HRESULT CResources::LoadAllFiles(LPDIRECT3DDEVICE9 _device)
 
             CDebug::Log(L"Loading texture: " + relativePath);
             CreateResource<CTexture>(_device, nameOnly, relativePath);
+        }
+        else if (ext == L".mp3" || ext == L".wav" || ext == L".ogg")
+        {
+            wstring nameOnly = fileName.substr(0, fileName.find_last_of(L'.'));
+            wstring relativePath = L"Audios\\" + fileName;
+
+            CDebug::Log(L"Loading audio: " + relativePath);
+            CreateResource<CAudioClip>(_device, nameOnly, relativePath);
         }
 
     } while (FindNextFile(hFind, &findData));
