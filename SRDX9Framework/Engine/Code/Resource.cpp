@@ -12,4 +12,5 @@ CResource::~CResource()
 
 void CResource::Release()
 {
+	m_bLoaded = false;
 }

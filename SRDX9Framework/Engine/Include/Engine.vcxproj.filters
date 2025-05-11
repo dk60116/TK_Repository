@@ -79,9 +79,6 @@
     <Filter Include="Component\Sound">
       <UniqueIdentifier>{4eaebbe4-9906-44fb-9987-f6694ef7461e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="System\FMod\Headers">
-      <UniqueIdentifier>{d3684460-7f04-4407-84c3-b365ddcffd91}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -133,9 +130,6 @@
       <Filter>Debug</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Resources.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\Resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Texture.h">
@@ -210,28 +204,10 @@
     <ClInclude Include="..\Header\FMODSystem.h">
       <Filter>System\FMod</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\fmod.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_codec.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_common.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_dsp.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_dsp_effects.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_errors.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\fmod_output.h">
-      <Filter>System\FMod\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\AudioClip.h">
+      <Filter>Resources\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Resource.h">
       <Filter>Resources\Resource</Filter>
     </ClInclude>
   </ItemGroup>
@@ -267,9 +243,6 @@
       <Filter>Debug</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Resources.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\Resource.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Texture.cpp">
@@ -342,6 +315,9 @@
       <Filter>System\FMod</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\AudioClip.cpp">
+      <Filter>Resources\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Resource.cpp">
       <Filter>Resources\Resource</Filter>
     </ClCompile>
   </ItemGroup>

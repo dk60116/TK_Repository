@@ -197,13 +197,6 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Engine_Struct.h" />
     <ClInclude Include="..\Header\Engine_Typedef.h" />
     <ClInclude Include="..\Header\SpriteRenderer.h" />
-    <ClInclude Include="..\Header\fmod.h" />
-    <ClInclude Include="..\Header\fmod_codec.h" />
-    <ClInclude Include="..\Header\fmod_common.h" />
-    <ClInclude Include="..\Header\fmod_dsp.h" />
-    <ClInclude Include="..\Header\fmod_dsp_effects.h" />
-    <ClInclude Include="..\Header\fmod_errors.h" />
-    <ClInclude Include="..\Header\fmod_output.h" />
     <ClInclude Include="..\Header\Object.h" />
   </ItemGroup>
   <ItemGroup>

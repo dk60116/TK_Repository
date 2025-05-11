@@ -19,9 +19,12 @@ public:
 	HRESULT LoadAllFiles(LPDIRECT3DDEVICE9 _device);
 	void Release();
 
+private:
+	void SearchFiles(LPDIRECT3DDEVICE9 _device, const wstring _folder);
+
 public:
 	template<typename T>
-	void CreateResource(LPDIRECT3DDEVICE9 _device, wstring _name, wstring _path);
+	void CreateResource(LPDIRECT3DDEVICE9 _device, const wstring _name, const wstring _path);
 
 	template<typename T>
 	shared_ptr<T> getResource(wstring _name);
@@ -46,7 +49,7 @@ private:
 END
 
 template<typename T>
-inline void CResources::CreateResource(LPDIRECT3DDEVICE9 _device, wstring _name, wstring _path)
+inline void CResources::CreateResource(LPDIRECT3DDEVICE9 _device, const wstring _name, const wstring _path)
 {
 	auto& container = GetContainer<T>();
 

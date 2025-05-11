@@ -1,6 +1,7 @@
 #include "FMODSystem.h"
 
 CFMODSystem::CFMODSystem()
+	: m_pSystem(nullptr)
 {
 }
 
@@ -40,6 +41,4 @@ void CFMODSystem::Release()
 	m_pSystem->close();
 	m_pSystem->release();
 	m_pSystem = nullptr;
-
-	Release();
 }

@@ -1,5 +1,4 @@
 #include "Texture.h"
-#include "EDebug.h"
 
 CTexture::CTexture()
 	: m_pTexture(nullptr)
@@ -20,7 +19,7 @@ HRESULT CTexture::Load(LPDIRECT3DDEVICE9 _device)
     if (m_strFilePath.empty())
         return E_FAIL;
 
-    CDebug::Log(L"[CTexture::Load] File = " + m_strFilePath);
+    CDebug::Log(L"[Texture::Load] File = " + m_strFilePath);
 
     if (FAILED(D3DXCreateTextureFromFileEx
     (
@@ -45,11 +44,11 @@ HRESULT CTexture::Load(LPDIRECT3DDEVICE9 _device)
 
 void CTexture::Release()
 {
+    __super::Release();
+
 	if (m_pTexture)
 	{
-		m_pTexture->Release();
-		m_pTexture = nullptr;
+        Safe_Release(m_pTexture);
 		m_v2Size = vector2Int::zero();
-		m_bLoaded = false;
 	}
 }

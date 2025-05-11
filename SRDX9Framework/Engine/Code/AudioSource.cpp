@@ -3,6 +3,9 @@
 
 CAudioSource::CAudioSource()
 	: m_pSystem(nullptr)
+	, m_bLoop(false)
+	, m_bPlayOnAwake(true)
+	, m_fVolume(1.f)
 {
 }
 

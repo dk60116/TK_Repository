@@ -4,72 +4,70 @@
 #include "EDebug.h"
 
 CResources::CResources()
-	: m_strBasePath(L"Assets")
+    : m_strBasePath(L"Assets")
 {
     m_strName = L"Resourecs";
 }
 
 CResources::~CResources()
 {
-	Release();
+    Release();
 }
 
-HRESULT CResources::LoadAllFiles(LPDIRECT3DDEVICE9 _device)
+void CResources::SearchFiles(LPDIRECT3DDEVICE9 _device, const wstring _folder)
 {
-    // 현재 작업 디렉토리 출력
-    wchar_t cwd[MAX_PATH];
-    GetCurrentDirectory(MAX_PATH, cwd);
-    CDebug::Log(L"[Working Directory] " + wstring(cwd));
-    CDebug::Log(L"[Base Path] " + m_strBasePath);
-
-    // 텍스처 폴더 경로
-    wstring textureFolder = m_strBasePath + L"\\Textures";
-    wstring textureSearch = textureFolder + L"\\*.*";
-
-    // 존재 확인
-    if (GetFileAttributes(textureFolder.c_str()) == INVALID_FILE_ATTRIBUTES)
-    {
-        CDebug::Log(L"[Error] Texture folder not found: " + textureFolder);
-        return E_FAIL;
-    }
-    else
-    {
-        CDebug::Log(L"[Success] Texture folder found: " + textureFolder);
-    }
-
+    wstring searchPath = _folder + L"\\*";
     WIN32_FIND_DATA findData;
-    HANDLE hFind = FindFirstFile(textureSearch.c_str(), &findData);
+    HANDLE hFind = FindFirstFile(searchPath.c_str(), &findData);
+
     if (hFind == INVALID_HANDLE_VALUE)
-        return E_FAIL;
+        return;
 
     do
     {
-        if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        if (wcscmp(findData.cFileName, L".") == 0 || wcscmp(findData.cFileName, L"..") == 0)
             continue;
 
-        wstring fileName = findData.cFileName;
-        wstring ext = PathFindExtension(fileName.c_str());
+        wstring fullPath = _folder + L"\\" + findData.cFileName;
 
-        if (ext == L".png" || ext == L".jpg" || ext == L".bmp" || ext == L".dds")
+        if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
-            wstring nameOnly = fileName.substr(0, fileName.find_last_of(L'.'));
-            wstring relativePath = L"Textures\\" + fileName;
-
-            CDebug::Log(L"Loading texture: " + relativePath);
-            CreateResource<CTexture>(_device, nameOnly, relativePath);
+            SearchFiles(_device, fullPath);
         }
-        else if (ext == L".mp3" || ext == L".wav" || ext == L".ogg")
+        else
         {
-            wstring nameOnly = fileName.substr(0, fileName.find_last_of(L'.'));
-            wstring relativePath = L"Audios\\" + fileName;
+            wstring ext = PathFindExtension(findData.cFileName);
+            wstring nameOnly = findData.cFileName;
+            nameOnly = nameOnly.substr(0, nameOnly.find_last_of(L'.'));
 
-            CDebug::Log(L"Loading audio: " + relativePath);
-            CreateResource<CAudioClip>(_device, nameOnly, relativePath);
+            wstring relativePath = fullPath.substr(m_strBasePath.length() + 1);
+
+            if (ext == L".png" || ext == L".jpb" || ext == L".bmp" || ext == L".dds")
+            {
+                CDebug::Log(L"[Texture]" + relativePath);
+                CreateResource<CTexture>(_device, nameOnly, relativePath);
+            }
+            else if (ext == L".mp3" || ext == L".wav" || ext == L".ogg")
+            {
+                CDebug::Log(L"[Audio]" + relativePath);
+                CreateResource<CAudioClip>(_device, nameOnly, relativePath);
+            }
         }
 
     } while (FindNextFile(hFind, &findData));
 
     FindClose(hFind);
+}
+
+HRESULT CResources::LoadAllFiles(LPDIRECT3DDEVICE9 _device)
+{
+    wchar_t cwd[MAX_PATH];
+    GetCurrentDirectory(MAX_PATH, cwd);
+    CDebug::Log(L"[Working Directory] " + wstring(cwd));
+    CDebug::Log(L"[Base Path] " + m_strBasePath);
+
+    SearchFiles(_device, m_strBasePath);
+
     return S_OK;
 }
 
