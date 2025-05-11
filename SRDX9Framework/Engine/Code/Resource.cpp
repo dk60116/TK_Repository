@@ -10,7 +10,7 @@ CResource::~CResource()
 {
 }
 
-void CResource::Release()
+void CResource::Destroy()
 {
 	m_bLoaded = false;
 }

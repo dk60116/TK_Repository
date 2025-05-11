@@ -80,7 +80,7 @@ void CResources::Release()
         for (auto& resPair : resourceContainer)
         {
             if (resPair.second)
-                resPair.second->Release();
+                resPair.second->Destroy();
         }
 
         resourceContainer.clear();

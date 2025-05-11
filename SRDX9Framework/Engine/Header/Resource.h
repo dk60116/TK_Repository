@@ -15,7 +15,7 @@ public:
 
 public:
 	virtual HRESULT Load(LPDIRECT3DDEVICE9 _device) PURE;
-	virtual void Release() PURE;
+	virtual void Destroy();
 
 public:
 	const wstring& getPath() { return m_strFilePath; };

@@ -23,7 +23,7 @@ CSpriteRenderer::~CSpriteRenderer()
 
 void CSpriteRenderer::Awake()
 {
-    CComponent::Awake();
+    __super::Awake();
 
     m_pBuffer = new CRectCol();
     m_pBuffer->AddRef();
@@ -41,24 +41,24 @@ void CSpriteRenderer::Start()
 
 void CSpriteRenderer::Update()
 {
-    CComponent::Update();
+    __super::Update();
 }
 
 void CSpriteRenderer::RenderEditor()
 {
-    CComponent::RenderEditor();
+    __super::RenderEditor();
     Render_Final(&CManagement::GetInstance().getEditorCamera(), CEngineEditor::GetInstance().getSelectedGameObject() == m_pGameObject);
 }
 
 void CSpriteRenderer::Render()
 {
-    CComponent::Render();
+    __super::Render();
     Render_Final(CManagement::GetInstance().getCrtScene()->getCamera(), false);
 }
 
 void CSpriteRenderer::OnDestroy()
 {
-	CComponent::OnDestroy();
+    __super::OnDestroy();
     
     m_pBuffer->Destroy();
     Safe_Release(m_pBuffer);

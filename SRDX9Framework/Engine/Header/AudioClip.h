@@ -13,7 +13,7 @@ public:
 
 public:
 	HRESULT Load(LPDIRECT3DDEVICE9 _device) override;
-	void Release() override;
+	void Destroy() override;
 
 public:
 	FMOD::Sound* getSound() const { return m_pSound; }

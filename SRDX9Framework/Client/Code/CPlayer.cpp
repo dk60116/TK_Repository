@@ -3,6 +3,7 @@
 
 CPlayer::CPlayer()
 	: m_pMeshRenderer(nullptr)
+	, m_pAudioSource(nullptr)
 	, m_fMoveSpeed(1.f)
 	, m_fRotaionSpeed(90.f)
 {
@@ -27,6 +28,14 @@ void CPlayer::Awake()
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
 	m_pMeshRenderer->SetMeshFilterType(CMesh::SPHERE);
+
+	m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
+
+	auto bgm = CResources::GetInstance().getResource<CAudioClip>(L"beyond-factory-outskirts").get();
+	if (bgm)
+		m_pAudioSource->SetClip(bgm);
+
+	m_pAudioSource->Play();
 }
 
 void CPlayer::Start()

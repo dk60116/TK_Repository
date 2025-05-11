@@ -12,7 +12,7 @@ class ENGINE_DLL CFMODSystem final
 public:
     HRESULT Init();
     void Update();
-    void Release();
+    virtual void Free();
 
     FMOD::System* getSystem() { return m_pSystem; }
 

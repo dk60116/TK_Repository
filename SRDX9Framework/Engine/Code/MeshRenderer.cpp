@@ -24,7 +24,7 @@ CMeshRenderer* CMeshRenderer::Create()
 
 void CMeshRenderer::Awake()
 {
-    CComponent::Awake();
+    __super::Awake();
 
     m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
     m_pMeshFilter->AddRef();
@@ -50,13 +50,13 @@ void CMeshRenderer::RenderEditor()
 
 void CMeshRenderer::Render()
 {
-    CComponent::Render();
+    __super::Render();
     Render_Final(CManagement::GetInstance().getCrtScene()->getCamera(), false);
 }
 
 void CMeshRenderer::OnDestroy()
 {
-    CComponent::OnDestroy();
+    __super::OnDestroy();
     m_pMaterial->Destroy();
     Safe_Release(m_pMaterial);
 }

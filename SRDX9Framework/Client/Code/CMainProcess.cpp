@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CMainProcess.h"
 #include "Resources.h"
+#include "FMODSystem.h"
 #include "CMainScene.h"
 
 CMainProcess::CMainProcess()
@@ -35,6 +36,8 @@ HRESULT CMainProcess::Ready_MainApp()
 
 	CTime::GetInstance().Ready_Timer();
 
+	CFMODSystem::GetInstance().Init();
+
 	CResources::GetInstance().LoadAllFiles(m_pDevClass->Get_GraphicDev());
 
 	CManagement::GetInstance().SetGraphicDevice(m_pDevClass->Get_GraphicDev());
@@ -63,6 +66,7 @@ _int CMainProcess::Update_MainApp()
 		if (!CEngineEditor::GetInstance().isPaused() || CEngineEditor::GetInstance().isNextFrame())
 		{
 			CManagement::GetInstance().getCrtScene()->Update();
+			CFMODSystem::GetInstance().Update();
 			CManagement::GetInstance().getCrtScene()->LateUpdate();
 		}
 	}
@@ -113,6 +117,7 @@ void CMainProcess::Render_MainApp()
 
 void CMainProcess::Release()
 {
+	CFMODSystem::GetInstance().Free();
 }
 
 void CMainProcess::OnSceneScreenChange(const _uint _width, const _uint _height)

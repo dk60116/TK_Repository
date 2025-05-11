@@ -1,4 +1,5 @@
 #include "AudioClip.h"
+#include "FMODSystem.h"
 
 CAudioClip::CAudioClip()
 	: m_pSound(nullptr)
@@ -7,14 +8,26 @@ CAudioClip::CAudioClip()
 
 CAudioClip::~CAudioClip()
 {
-	Release();
+	Destroy();
 }
 
 HRESULT CAudioClip::Load(LPDIRECT3DDEVICE9 _device)
 {
-	Release();
+	UNREFERENCED_PARAMETER(_device);
+
+	Destroy();
 
 	if (m_strFilePath.empty())
+		return E_FAIL;
+
+	string pathA(m_strFilePath.begin(), m_strFilePath.end());
+
+	if (!CFMODSystem::GetInstance().getSystem())
+		return E_FAIL;
+
+	FMOD_RESULT result = CFMODSystem::GetInstance().getSystem()->createSound(pathA.c_str(), FMOD_DEFAULT, nullptr, &m_pSound);
+	
+	if (result != FMOD_OK)
 		return E_FAIL;
 
 	CDebug::Log(L"[AudioClip::Load] File = " + m_strFilePath);
@@ -22,7 +35,7 @@ HRESULT CAudioClip::Load(LPDIRECT3DDEVICE9 _device)
 	return S_OK;
 }
 
-void CAudioClip::Release()
+void CAudioClip::Destroy()
 {
-	__super::Release();
+	__super::Destroy();
 }

@@ -9,17 +9,15 @@ CTexture::CTexture()
 
 CTexture::~CTexture()
 {
-	Release();
+	Destroy();
 }
 
 HRESULT CTexture::Load(LPDIRECT3DDEVICE9 _device)
 {
-    Release();
+    Destroy();
 
     if (m_strFilePath.empty())
         return E_FAIL;
-
-    CDebug::Log(L"[Texture::Load] File = " + m_strFilePath);
 
     if (FAILED(D3DXCreateTextureFromFileEx
     (
@@ -39,12 +37,15 @@ HRESULT CTexture::Load(LPDIRECT3DDEVICE9 _device)
     m_v2Size = vector2Int(static_cast<int>(m_tDesc.Width), static_cast<int>(m_tDesc.Height));
 
     m_bLoaded = true;
+
+    CDebug::Log(L"[Texture::Load] File = " + m_strFilePath);
+
     return S_OK;
 }
 
-void CTexture::Release()
+void CTexture::Destroy()
 {
-    __super::Release();
+    __super::Destroy();
 
 	if (m_pTexture)
 	{

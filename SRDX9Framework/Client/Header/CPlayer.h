@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "SpriteRenderer.h"
 #include "MeshRenderer.h"
+#include "AudioSource.h"
 
 class CPlayer :
     public CComponent
@@ -30,9 +31,11 @@ private:
 
 public:
 	CMeshRenderer* m_pMeshRenderer;
+	CAudioSource* m_pAudioSource;
 	_float m_fMoveSpeed, m_fRotaionSpeed;
 
 	BEGIN_SERIALIZEFIELD
+	SERIALIZEFIELD(m_pAudioSource)
 	SERIALIZEFIELD(m_fMoveSpeed)
 	SERIALIZEFIELD(m_fRotaionSpeed)
 	END_SERIALIZEFIELD

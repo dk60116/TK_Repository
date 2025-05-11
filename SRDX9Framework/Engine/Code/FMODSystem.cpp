@@ -7,7 +7,6 @@ CFMODSystem::CFMODSystem()
 
 CFMODSystem::~CFMODSystem()
 {
-	Release();
 }
 
 HRESULT CFMODSystem::Init()
@@ -33,12 +32,12 @@ void CFMODSystem::Update()
 		m_pSystem->update();
 }
 
-void CFMODSystem::Release()
+void CFMODSystem::Free()
 {
-	if (!m_pSystem)
-		return;
-
-	m_pSystem->close();
-	m_pSystem->release();
-	m_pSystem = nullptr;
+	if (m_pSystem)
+	{
+		m_pSystem->close();
+		m_pSystem->release();
+		m_pSystem = nullptr;
+	}
 }
