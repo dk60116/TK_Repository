@@ -78,10 +78,10 @@ void CManagement::SetGraphicDevice(LPDIRECT3DDEVICE9 _gd)
 void CManagement::CreateEditorCamera()
 {
 	m_pEditorCamObj = new CGameObject(L"Editor Camera", m_pGraphicDev);
-	m_pEditorCamObj->Awake();
+	m_pEditorCamObj->Init();
 	m_pEditorCamObj->getTransform().SetPosition(0.f, 3.5f, -5.f);
 	m_pEditorCamObj->getTransform().SetLocalEulerAnglesX(35.f);
 	m_pEditorCam = m_pEditorCamObj->AddComponent<CEditorCamera>();
-	m_pEditorCam->AwakeEditor();
+	m_pEditorCam->Init();
 	m_pEditorCamObj->UpdateEditor();
 }

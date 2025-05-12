@@ -15,9 +15,9 @@ CEnemy::~CEnemy()
 {
 }
 
-void CEnemy::Awake()
+void CEnemy::Init()
 {
-	CComponent::Awake();
+	__super::Init();
 
 	getTransform().SetPosition(2.f, 2.f, 0.f);
 	getTransform().SetLocalScale(1.5f, 1.5f, 1.f);
@@ -30,14 +30,19 @@ void CEnemy::Awake()
 	m_bInit = true;
 }
 
+void CEnemy::Awake()
+{
+	__super::Awake();
+}
+
 void CEnemy::Start()
 {
-	CComponent::Start();
+	__super::Start();
 }
 
 void CEnemy::Update()
 {
-	CComponent::Update();
+	__super::Update();
 
 	CTransform& t = getTransform();
 

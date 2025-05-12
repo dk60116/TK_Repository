@@ -17,11 +17,19 @@ CAudioSource::~CAudioSource()
 	OnDestroy();
 }
 
+void CAudioSource::Init()
+{
+	__super::Init();
+
+	m_pSystem = CFMODSystem::GetInstance().getSystem();
+
+	if (m_bPlayOnAwake)
+		Play();
+}
+
 void CAudioSource::Awake()
 {
 	__super::Awake();
-
-	m_pSystem = CFMODSystem::GetInstance().getSystem();
 }
 
 void CAudioSource::Start()

@@ -1,6 +1,11 @@
 #ifndef Engine_Define_h__
 #define Engine_Define_h__
 
+#define REGISTER_CLASS(T) \
+    namespace { struct AutoRegister_##T { AutoRegister_##T() { \
+        Engine::FactoryManager::GetInstance().Register(#T, []() -> Engine::UObject* { return new T(); }); \
+    }} _autoReg_##T; }
+
 #include <d3d9.h>
 #include <d3dx9.h>
 
@@ -8,6 +13,7 @@
 #include <fmod_common.h>
 #include <fmod_errors.h>
 #include <fmod.hpp>
+#include <json.hpp>
 
 #include <vector>
 #include <list>

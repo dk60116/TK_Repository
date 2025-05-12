@@ -19,9 +19,14 @@ CCamera::~CCamera()
 	OnDestroy();
 }
 
+void CCamera::Init()
+{
+	__super::Init();
+}
+
 void CCamera::Awake()
 {
-	CComponent::Awake();
+	__super::Awake();
 }
 
 void CCamera::Start()

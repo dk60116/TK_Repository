@@ -27,3 +27,7 @@ UINT UObject::Release()
 
     return prevRefCount;
 }
+
+void UObject::Serialize(CSerialzer& _s)
+{
+}

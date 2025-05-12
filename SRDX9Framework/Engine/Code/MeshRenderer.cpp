@@ -22,9 +22,9 @@ CMeshRenderer* CMeshRenderer::Create()
     return new CMeshRenderer();
 }
 
-void CMeshRenderer::Awake()
+void CMeshRenderer::Init()
 {
-    __super::Awake();
+    __super::Init();
 
     m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
     m_pMeshFilter->AddRef();
@@ -32,6 +32,11 @@ void CMeshRenderer::Awake()
 
     m_pMaterial = new CMaterial();
     m_pMaterial->AddRef();
+}
+
+void CMeshRenderer::Awake()
+{
+    __super::Awake();
 }
 
 void CMeshRenderer::Start()

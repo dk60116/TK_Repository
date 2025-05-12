@@ -22,6 +22,7 @@ private:
 	virtual ~CGameObject();
 
 public:
+	virtual void Init();
 	virtual void Awake();
 	virtual void Start();
 	virtual void UpdateEditor();
@@ -56,6 +57,9 @@ public:
 	static CGameObject* Find(const wstring _name);
 	static void Destroy(CGameObject* _object);
 
+public:
+	void Serialize(CSerialzer& _s) override;
+
 protected:
 	CScene* m_pScene;
 	wstring m_strGameObjectName;
@@ -74,7 +78,7 @@ inline T* CGameObject::AddComponent()
 	dynamic_cast<CComponent*>(newComponent)->SetObject(this);
 	newComponent->AddRef();
 	m_lComponentlist.push_back(newComponent);
-	newComponent->Awake();
+	newComponent->Init();
 
 	if (dynamic_cast<CCamera*>(newComponent))
 	{

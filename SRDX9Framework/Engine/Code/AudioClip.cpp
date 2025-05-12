@@ -20,7 +20,7 @@ HRESULT CAudioClip::Load(LPDIRECT3DDEVICE9 _device)
 	if (m_strFilePath.empty())
 		return E_FAIL;
 
-	string pathA(m_strFilePath.begin(), m_strFilePath.end());
+	string pathA = CDebug::WStringToString(m_strFilePath);
 
 	if (!CFMODSystem::GetInstance().getSystem())
 		return E_FAIL;

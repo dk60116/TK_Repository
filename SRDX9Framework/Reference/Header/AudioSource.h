@@ -13,6 +13,7 @@ private:
     ~CAudioSource();
 
 public:
+	void Init() override;
 	void Awake() override;
 	void Start() override;
 	void UpdateEditor() override;

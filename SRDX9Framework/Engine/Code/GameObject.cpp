@@ -1,3 +1,4 @@
+#include "Object.h"
 #include "GameObject.h"
 
 CGameObject::CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
@@ -30,9 +31,13 @@ CGameObject::~CGameObject()
 	OnDestroy();
 }
 
-void CGameObject::Awake()
+void CGameObject::Init()
 {
 	m_pTransform = AddComponent<CTransform>();
+}
+
+void CGameObject::Awake()
+{
 }
 
 void CGameObject::Start()
@@ -117,4 +122,21 @@ CGameObject* CGameObject::Find(const wstring _name)
 void CGameObject::Destroy(CGameObject* _object)
 {
 	_object->DestroyThis();
+}
+
+void CGameObject::Serialize(CSerialzer& _s)
+{
+	string className = "GameObject";
+	_s.Value("class", className);
+	_s.Value("name", m_strGameObjectName);
+	_s.Object("transform", *m_pTransform);
+	vector<CComponent*> filtered;
+	for (auto* comp : m_lComponentlist) 
+	{
+		if (comp != m_pTransform)
+		{
+			filtered.push_back(comp);
+		}
+	}
+	_s.Array("components", filtered);
 }

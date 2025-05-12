@@ -25,6 +25,7 @@ private:
 	~CTransform();
 
 public:
+	void Init() override;
 	void Awake() override;
 	void Start() override;
 	void UpdateEditor() override;
@@ -126,6 +127,9 @@ public:
 	void LookAt(const vector3 _target, const vector3 _front);
 	const _matrix& getWorldMatrix() const { return m_matWorld; }
 	const Directions& getDirections() const { return m_sDirections; }
+
+public:
+	void Serialize(CSerialzer& _s) override;
 
 private:
 	_bool m_bIsRootParent;

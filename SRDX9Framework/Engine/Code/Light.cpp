@@ -8,7 +8,6 @@ CLight::CLight()
 	, m_sOptions({})
 {
 	m_strName = L"Light";
-	Init();
 }
 
 CLight::~CLight()
@@ -19,6 +18,15 @@ CLight::~CLight()
 CLight* CLight::Create()
 {
 	return new CLight();
+}
+
+void CLight::Init()
+{
+	ZeroMemory(&m_sLightInfo, sizeof(D3DLIGHT9));
+	m_sLightInfo.Type = (D3DLIGHTTYPE)m_eType;
+	m_sLightInfo.Diffuse = m_sOptions.emissionColor.dvColor();
+	m_sLightInfo.Ambient = m_sOptions.ambientColor.dvColor();
+	m_sLightInfo.Specular = m_sOptions.specularColor.dvColor();
 }
 
 void CLight::Update()
@@ -38,15 +46,6 @@ void CLight::OnDestroy()
 	m_pGraphicDev->LightEnable(m_iIndex, FALSE);
 	ZeroMemory(&m_sLightInfo, sizeof(D3DLIGHT9));
 	m_pGraphicDev->SetLight(m_iIndex, &m_sLightInfo);
-}
-
-void CLight::Init()
-{
-	ZeroMemory(&m_sLightInfo, sizeof(D3DLIGHT9));
-	m_sLightInfo.Type = (D3DLIGHTTYPE)m_eType;
-	m_sLightInfo.Diffuse = m_sOptions.emissionColor.dvColor();
-	m_sLightInfo.Ambient = m_sOptions.ambientColor.dvColor();
-	m_sLightInfo.Specular = m_sOptions.specularColor.dvColor();
 }
 
 void CLight::Apply()

@@ -30,6 +30,7 @@ protected:
 	~CComponent();
 
 public:
+	virtual void Init();
 	virtual void Awake();
 	virtual void Start();
 	virtual void UpdateEditor();

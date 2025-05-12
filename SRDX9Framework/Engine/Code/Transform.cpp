@@ -24,11 +24,16 @@ CTransform::~CTransform()
 	OnDestroy();
 }
 
+void CTransform::Init()
+{
+	__super::Init();
+
+	D3DXMatrixIdentity(&m_matWorld);
+}
+
 void CTransform::Awake()
 {
 	__super::Awake();
-
-	D3DXMatrixIdentity(&m_matWorld);
 }
 
 void CTransform::Start()
@@ -675,4 +680,12 @@ void CTransform::LookAt(const vector3 _target, const vector3 _front)
 	}
 
 	m_vQuaternion = quaternion(qRot);
+}
+
+void CTransform::Serialize(CSerialzer& _s)
+{
+	_s.Value("position", m_vPosition);
+	_s.Value("rotation", m_vEulerAngles);
+	_s.Value("scale", m_vScale);
+	//_s.Value("parentID", m_pParent ? m_pParent->getObject()->getID() : -1);
 }

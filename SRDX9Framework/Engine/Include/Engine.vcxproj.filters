@@ -79,6 +79,9 @@
     <Filter Include="Component\Sound">
       <UniqueIdentifier>{4eaebbe4-9906-44fb-9987-f6694ef7461e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Serialize">
+      <UniqueIdentifier>{9a0aec82-c0a8-460a-80b6-46f1a19a0d97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -210,6 +213,12 @@
     <ClInclude Include="..\Header\Resource.h">
       <Filter>Resources\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Serialzer.h">
+      <Filter>Serialize</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\FactoryManager.h">
+      <Filter>Serialize</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Time.cpp">
@@ -319,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Resource.cpp">
       <Filter>Resources\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Serialzer.cpp">
+      <Filter>Serialize</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FactoryManager.cpp">
+      <Filter>Serialize</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine_Define.h"
+#include "Serialzer.h"
 
 BEGIN(Engine)
 
@@ -23,6 +24,9 @@ public:
 
 public:
 	const UINT getRefCnt() const { return m_iRefCount; }
+
+public:
+	virtual void Serialize(CSerialzer& _s);
 
 protected:
 	wstring m_strName;

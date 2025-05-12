@@ -17,12 +17,17 @@ CMeshFilter* CMeshFilter::Create()
 	return new CMeshFilter();
 }
 
-void CMeshFilter::Awake()
+void CMeshFilter::Init()
 {
-	__super::Awake();
+	__super::Init();
 
 	m_pMesh = new CMesh();
 	m_pMesh->AddRef();
+}
+
+void CMeshFilter::Awake()
+{
+	__super::Awake();
 }
 
 void CMeshFilter::Start()

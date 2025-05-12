@@ -31,12 +31,12 @@ public:
 	static CLight* Create();
 
 public:
+	void Init() override;
 	void Update() override;
 	void UpdateEditor() override;
 	void OnDestroy() override;
 
 public:
-	void Init();
 	void Apply();
 	D3DLIGHT9& getInfo() { return m_sLightInfo; };
 

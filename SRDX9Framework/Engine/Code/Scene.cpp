@@ -220,7 +220,7 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 	obj->AddRef();
 	obj->SetScene(this);
 	m_lObjectList.push_back(obj);
-	obj->Awake();
+	obj->Init();
 
 	return obj;
 }

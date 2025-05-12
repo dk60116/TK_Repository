@@ -19,6 +19,7 @@ public:
     static CMeshRenderer* Create();
 
 public:
+    void Init() override;
     void Awake() override;
     void Start() override;
     void Update() override;

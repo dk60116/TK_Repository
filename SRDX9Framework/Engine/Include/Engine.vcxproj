@@ -159,6 +159,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\AudioSource.h" />
     <ClInclude Include="..\Header\BaseWindow.h" />
     <ClInclude Include="..\Header\Camera.h" />
+    <ClInclude Include="..\Header\FactoryManager.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\EDebug.h" />
     <ClInclude Include="..\Header\EditorCamera.h" />
@@ -184,6 +185,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneWindow.h" />
     <ClInclude Include="..\Header\Screen.h" />
+    <ClInclude Include="..\Header\Serialzer.h" />
     <ClInclude Include="..\Header\Texture.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\ETime.h" />
@@ -209,6 +211,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EditorWindow.cpp" />
     <ClCompile Include="..\Code\EngineEditor.cpp" />
+    <ClCompile Include="..\Code\FactoryManager.cpp" />
     <ClCompile Include="..\Code\FMODSystem.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\GameWindow.cpp" />
@@ -228,6 +231,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\SceneWindow.cpp" />
     <ClCompile Include="..\Code\Screen.cpp" />
+    <ClCompile Include="..\Code\Serialzer.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Time.cpp" />

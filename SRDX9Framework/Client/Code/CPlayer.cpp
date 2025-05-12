@@ -20,9 +20,9 @@ CPlayer* CPlayer::Create()
 	return new CPlayer();
 }
 
-void CPlayer::Awake()
+void CPlayer::Init()
 {
-	CComponent::Awake();
+	__super::Init();
 
 	getTransform().SetLocalScale(1.5f);
 
@@ -31,11 +31,14 @@ void CPlayer::Awake()
 
 	m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
 
-	auto bgm = CResources::GetInstance().getResource<CAudioClip>(L"beyond-factory-outskirts").get();
+	auto bgm = CResources::GetInstance().getResource<CAudioClip>(L"axe-mining-ore-1").get();
 	if (bgm)
 		m_pAudioSource->SetClip(bgm);
+}
 
-	m_pAudioSource->Play();
+void CPlayer::Awake()
+{
+	CComponent::Awake();
 }
 
 void CPlayer::Start()

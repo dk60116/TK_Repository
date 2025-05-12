@@ -26,6 +26,10 @@ CComponent::~CComponent()
 	Safe_Release(m_pGraphicDev);
 }
 
+void CComponent::Init()
+{
+}
+
 void CComponent::Awake()
 {
 }

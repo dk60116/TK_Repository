@@ -23,6 +23,7 @@ private:
     ~CSpriteRenderer();
 
 public:
+    void Init() override;
     void Awake() override;
     void Start() override;
     void Update() override;

@@ -16,6 +16,7 @@ public:
     static CMeshFilter* Create();
 
 public:
+    void Init() override;
     void Awake() override;
     void Start() override;
     void Update() override;

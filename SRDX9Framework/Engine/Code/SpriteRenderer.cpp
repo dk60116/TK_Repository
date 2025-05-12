@@ -21,18 +21,23 @@ CSpriteRenderer::~CSpriteRenderer()
 	OnDestroy();
 }
 
-void CSpriteRenderer::Awake()
+void CSpriteRenderer::Init()
 {
-    __super::Awake();
+    __super::Init();
 
     m_pBuffer = new CRectCol();
     m_pBuffer->AddRef();
 
-	if (FAILED(m_pBuffer->Ready_Buffer(m_pGraphicDev)))
-		OutputDebugStringA("[SpriteRenderer] Failed to Ready_Buffer()\n");
+    if (FAILED(m_pBuffer->Ready_Buffer(m_pGraphicDev)))
+        OutputDebugStringA("[SpriteRenderer] Failed to Ready_Buffer()\n");
 
     m_pMaterial = new CMaterial();
     m_pMaterial->AddRef();
+}
+
+void CSpriteRenderer::Awake()
+{
+    __super::Awake();
 }
 
 void CSpriteRenderer::Start()

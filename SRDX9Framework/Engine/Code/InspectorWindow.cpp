@@ -139,7 +139,7 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 			{
 				if (pair.handle == hWnd && pair.type == FieldType::BOOL)
 				{
-					*reinterpret_cast<_bool*>(pair.value) = (_bool)checked;
+					*reinterpret_cast<_bool*>(pair.value) = !checked;
 					CManagement::GetInstance().getCrtScene()->UpdateEditor();
 					break;
 				}
@@ -196,9 +196,6 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 
 			SelectObject(hdc, oldPen);
 			DeleteObject(checkPen);
-		}
-		else
-		{
 		}
 
 		SelectObject(hdc, oldPen);
@@ -506,7 +503,7 @@ void CInspectorWindow::CreateBoolBox(vector2Int _start, vector2Int _size, wstrin
 	HWND checkBox = CreateWindowEx
 	(
 		0, L"BUTTON", nullptr,
-		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_AUTOCHECKBOX,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
 		x + static_cast<_int>(width * 0.5f), y,
 		width, height,
 		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr	
@@ -520,8 +517,6 @@ void CInspectorWindow::CreateBoolBox(vector2Int _start, vector2Int _size, wstrin
 
 	SetProp(checkBox, L"CHECKBOX", (HANDLE)TRUE);
 	SetWindowLongPtr(checkBox, GWLP_USERDATA, (LONG_PTR)(*_value));
-
-	//SendMessage(checkBox, BM_SETCHECK, (*_value) ? BST_CHECKED : BST_UNCHECKED, 0);
 }
 #pragma endregion
 

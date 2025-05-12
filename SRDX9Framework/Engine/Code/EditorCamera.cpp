@@ -31,7 +31,7 @@ CEditorCamera* CEditorCamera::Create()
 	return new CEditorCamera();
 }
 
-void CEditorCamera::AwakeEditor()
+void CEditorCamera::Init()
 {
 	vector3& angles = getTransform().getLocalEulerAngles();
 

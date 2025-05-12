@@ -23,7 +23,9 @@ private:
 
 public:
     static CEditorCamera* Create();
-    void AwakeEditor();
+
+public:
+    void Init() override;
     void UpdateEditor() override;
     void GotoViewGameObject(CGameObject* _gameObject);
 
