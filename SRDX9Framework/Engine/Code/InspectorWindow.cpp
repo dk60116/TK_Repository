@@ -333,6 +333,9 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 			case FieldType::FLOAT:
 				CreateFloatBox(defaultPos, defaultSize, defaultName, static_cast<_float*>(c->GetInspectorFields()[i].ptr));
 				break;
+			case FieldType::BOOL:
+				CreateBoolBox(defaultPos, defaultSize, defaultName, static_cast<_bool*>(c->GetInspectorFields()[i].ptr));
+				break;
 			case FieldType::VECTOR3:
 				CreateVector3Box(defaultPos, defaultSize, defaultName, static_cast<vector3*>(c->GetInspectorFields()[i].ptr));
 				break;
@@ -389,6 +392,52 @@ void CInspectorWindow::UpdateScrollInfo()
 	ShowScrollBar(m_hWnd, SB_VERT, needScroll);
 }
 
+#pragma region boolBox
+void CInspectorWindow::CreateBoolBox(vector2Int _start, vector2Int _size, wstring _name, _bool* _value)
+{
+	HWND boolView = CreateWindowEx
+	(
+		0, L"STATIC", nullptr,
+		WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_LEFT,
+		_start.x, _start.y,
+		_size.x, _size.y,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	m_vChildWindows.push_back(boolView);
+
+	SetWindowLongPtr(boolView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
+
+	SetWindowText(boolView, (L"     " + _name).c_str());
+
+	_int leftOffset = 100 + static_cast<_int>(_size.x * 0.025f);
+	_int rightOffset = 5;
+	_int rightArea = _size.x - leftOffset;
+	_int x = _start.x + leftOffset;
+	_int y = _start.y + 4;
+	_int width = _size.y - 10;
+	_int height = _size.y - 10;
+
+	HWND checkBox = CreateWindowEx
+	(
+		0, L"Edit", nullptr,
+		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		x + static_cast<_int>(width * 0.5f), y,
+		width, height,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	SetWindowTextW(checkBox, to_wstring(*_value).c_str());
+
+	m_vChildWindows.push_back(checkBox);
+
+	m_vPairViewList.push_back({ checkBox, _value, new _float(), FieldType::FLOAT });
+
+	SetWindowLongPtr(checkBox, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
+}
+#pragma endregion
+
+
 #pragma region floatBox
 void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstring _name, _float* _value)
 {
@@ -407,7 +456,7 @@ void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstri
 
 	SetWindowText(floatView, (L"     " + _name).c_str());
 
-	_int leftOffset = 110;
+	_int leftOffset = 110 + static_cast<_int>(_size.x * 0.025f);
 	_int rightOffset = 5;
 	_int rightArea = _size.x - leftOffset;
 	_int x = _start.x + leftOffset;
@@ -434,7 +483,6 @@ void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstri
 }
 #pragma endregion
 
-
 #pragma region vector3Box
 void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wstring _name, vector3* _value)
 {
@@ -453,7 +501,7 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 
 	SetWindowText(vector3View, (L"     " + _name).c_str());
 
-	_int leftOffset = 110;
+	_int leftOffset = 110 + static_cast<_int>(_size.x * 0.025f);
 	_int rightOffset = 5;
 	_int rightArea = _size.x - leftOffset;
 	_int x = _start.x + leftOffset;
@@ -517,6 +565,7 @@ void CInspectorWindow::CreateVector3Box(vector2Int _start, vector2Int _size, wst
 }
 #pragma endregion
 
+#pragma region pointerBox
 void CInspectorWindow::CreatePointerBox(vector2Int _start, vector2Int _size, wstring _name, UObject** _value)
 {
 	HWND pointerView = CreateWindowEx
@@ -532,7 +581,7 @@ void CInspectorWindow::CreatePointerBox(vector2Int _start, vector2Int _size, wst
 
 	SetWindowText(pointerView, (L"     " + _name).c_str());
 
-	_int leftOffset = 110;
+	_int leftOffset = 110 + static_cast<_int>(_size.x * 0.025f);
 	_int rightOffset = 5;
 	_int rightArea = _size.x - leftOffset;
 	_int x = _start.x + leftOffset;
@@ -565,7 +614,8 @@ void CInspectorWindow::CreatePointerBox(vector2Int _start, vector2Int _size, wst
 	else
 		SetWindowTextW(nameView, L"nullptr");
 
-	m_vPairViewList.push_back({ nameView, _value, nullptr, FieldType::STRING});
+	m_vPairViewList.push_back({ nameView, _value, nullptr, FieldType::STRING });
 
 	SetWindowLongPtr(pointerView, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INSPECTORCOMPONENTBODY));
 }
+#pragma endregion
