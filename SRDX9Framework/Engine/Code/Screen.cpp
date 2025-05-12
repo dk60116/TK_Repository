@@ -39,13 +39,16 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	_int winWidth = winRect.right - winRect.left;
 	_int winHeight = winRect.bottom - winRect.top - mainOffset;
 
-	HWND mainWnd = CreateWindowW(L"MaindowClass", L"Main",
+	HWND mainWnd = CreateWindowW
+	(
+		L"MaindowClass", L"Main",
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
 		winRect.left,
 		winRect.top,
 		winWidth,
 		winHeight,
-		nullptr, nullptr, _hInst, nullptr);
+		nullptr, nullptr, _hInst, nullptr
+	);
 
 	if (FAILED(CEngineEditor::GetInstance().CreateCustomWindow<CBaseWindow>(mainWnd, L"Base", vector2Int(winWidth, winHeight))))
 		return E_FAIL;
@@ -132,7 +135,7 @@ HRESULT CScreen::Start_Window(HINSTANCE _hInst, int _cmdShow)
 	POINT hierachyPT = { hierachyRect.right, hierachyRect.bottom };
 	ClientToScreen(hierachyWnd, &hierachyPT);
 
-	_int projectWidth = _int(hierachyWidth * 0.8f);
+	_int projectWidth = _int(hierachyWidth * 0.75f);
 	_int projectHeight = _int(gamePT.y - clientPoint.y - offsetY * 2);
 
 	HWND projectWnd = CreateWindowW(L"ProjectWindowClass", L"🗀 Project",

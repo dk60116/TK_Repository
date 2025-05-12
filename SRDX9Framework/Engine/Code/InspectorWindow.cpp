@@ -1,4 +1,4 @@
-#include "InspectorWindow.h"
+Ôªø#include "InspectorWindow.h"
 #include "EngineEditor.h"
 #include "Resource.h"
 
@@ -73,8 +73,8 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 
 	case WM_MOUSEWHEEL:
 	{
-		short z = GET_WHEEL_DELTA_WPARAM(_wParam);   // °æ120, °æ240 °¶
-		int steps = z / WHEEL_DELTA;                 // °æ1, °æ2 °¶
+		short z = GET_WHEEL_DELTA_WPARAM(_wParam);   // ¬±120, ¬±240 ‚Ä¶
+		int steps = z / WHEEL_DELTA;                 // ¬±1, ¬±2 ‚Ä¶
 		for (int n = 0; n < std::abs(steps); ++n)
 			SendMessage(_hWnd, WM_VSCROLL, MAKEWPARAM(steps > 0 ? SB_LINEUP : SB_LINEDOWN, 0), 0);
 		return 0;
@@ -122,6 +122,91 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 				}
 			}
 		}
+		else if (code == BN_CLICKED)
+		{
+			HWND hWnd = (HWND)_lParam;
+
+			if (!GetProp(hWnd, L"CHECKBOX"))
+				break;
+
+			_bool checked = (_bool)static_cast<LONG>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
+			SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)(!checked));
+
+			InvalidateRect(hWnd, nullptr, TRUE);
+
+			for (auto& pair : m_vPairViewList)
+			{
+				if (pair.handle == hWnd && pair.type == FieldType::BOOL)
+				{
+					*reinterpret_cast<_bool*>(pair.value) = (_bool)checked;
+					CManagement::GetInstance().getCrtScene()->UpdateEditor();
+					break;
+				}
+			}
+		}
+	}
+	break;
+
+	case WM_DRAWITEM:
+	{
+		LPDRAWITEMSTRUCT dis = (LPDRAWITEMSTRUCT)_lParam;
+
+		HWND hWnd = dis->hwndItem;
+
+		if (!GetProp(hWnd, L"CHECKBOX"))
+			break;
+
+		LONG_PTR tag = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+
+		_bool checked = (_bool)static_cast<LONG>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
+		HDC hdc = dis->hDC;
+		RECT rc = dis->rcItem;
+
+		FillRect(hdc, &rc, m_hDarkBrush);
+
+		const int radius = 6;
+		HBRUSH frame = CreateSolidBrush(RGB(0, 0, 0));
+		HPEN   pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+		HGDIOBJ oldPen = SelectObject(hdc, pen);
+		HGDIOBJ oldBrush = SelectObject(hdc, frame);
+		RoundRect(hdc, rc.left, rc.top, rc.right, rc.bottom, radius, radius);
+
+		RECT inner = rc;
+		InflateRect(&inner, -1, -1);   
+
+		HBRUSH fill = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().inspectorBoxColor.rColor());
+		FillRect(hdc, &inner, fill);
+		DeleteObject(fill);
+
+		if (checked)
+		{
+			HPEN checkPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
+			HGDIOBJ oldPen = SelectObject(hdc, checkPen);
+
+			int cx = (rc.left + rc.right) / 2;
+			int cy = (rc.top + rc.bottom) / 2;
+			int size = min(rc.right - rc.left, rc.bottom - rc.top) / 3;
+
+			// Ï≤¥ÌÅ¨ Î™®Ïñë: ÏôºÏ™Ω ÏïÑÎûò ‚Üí Í∞ÄÏö¥Îç∞ ‚Üí Ïò§Î•∏Ï™Ω ÏúÑ
+			MoveToEx(hdc, cx - size, cy, NULL);
+			LineTo(hdc, cx, cy + size / 2);
+			LineTo(hdc, cx + size, cy - size);
+
+			SelectObject(hdc, oldPen);
+			DeleteObject(checkPen);
+		}
+		else
+		{
+		}
+
+		SelectObject(hdc, oldPen);
+		SelectObject(hdc, oldBrush);
+		DeleteObject(pen);
+		DeleteObject(frame);
+
+		return TRUE;
 	}
 	break;
 
@@ -154,7 +239,7 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 			GetScrollInfo(m_hWnd, SB_VERT, &si);
 			m_iScrollPos = si.nPos;
 
-			int dy = oldPos - si.nPos;                     // (+) ¿ß∑Œ Ω∫≈©∑—
+			int dy = oldPos - si.nPos;                     // (+) ÏúÑÎ°ú Ïä§ÌÅ¨Î°§
 			ScrollWindowEx
 			(
 				m_hWnd, 0, dy,
@@ -420,23 +505,25 @@ void CInspectorWindow::CreateBoolBox(vector2Int _start, vector2Int _size, wstrin
 
 	HWND checkBox = CreateWindowEx
 	(
-		0, L"Edit", nullptr,
-		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER,
+		0, L"BUTTON", nullptr,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | BS_AUTOCHECKBOX,
 		x + static_cast<_int>(width * 0.5f), y,
 		width, height,
-		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr	
 	);
 
-	SetWindowTextW(checkBox, to_wstring(*_value).c_str());
+	SetWindowTheme(checkBox, L"", L"");
 
 	m_vChildWindows.push_back(checkBox);
 
-	m_vPairViewList.push_back({ checkBox, _value, new _float(), FieldType::FLOAT });
+	m_vPairViewList.push_back({ checkBox, _value, new _bool(), FieldType::BOOL });
 
-	SetWindowLongPtr(checkBox, GWLP_USERDATA, static_cast<LONG_PTR>(HWND_INPUTBOX));
+	SetProp(checkBox, L"CHECKBOX", (HANDLE)TRUE);
+	SetWindowLongPtr(checkBox, GWLP_USERDATA, (LONG_PTR)(*_value));
+
+	//SendMessage(checkBox, BM_SETCHECK, (*_value) ? BST_CHECKED : BST_UNCHECKED, 0);
 }
 #pragma endregion
-
 
 #pragma region floatBox
 void CInspectorWindow::CreateFloatBox(vector2Int _start, vector2Int _size, wstring _name, _float* _value)

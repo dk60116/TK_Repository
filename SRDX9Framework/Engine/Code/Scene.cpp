@@ -313,7 +313,7 @@ void CScene::Render_Grid()
 
 	pDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
-	CManagement::GetInstance().getEditorCamera().ViewProjextion();
+	CManagement::GetInstance().getEditorCamera().ViewProjection();
 
 	// ===== ±×¸®±â =====
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);

@@ -77,7 +77,7 @@ void CMeshRenderer::Render_Final(CCamera* _camera, _bool _editor)
     if (!_camera)
         return;
 
-    _camera->ViewProjextion();
+    _camera->ViewProjection();
 
     m_pGraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 

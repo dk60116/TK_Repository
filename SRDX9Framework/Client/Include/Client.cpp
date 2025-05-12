@@ -121,9 +121,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = (HDC)wParam;
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 255, 255));
-            SetBkColor(hdc, RGB(30, 30, 30));
+            SetBkColor(hdc, CEngineEditor::GetInstance().getOptions().inspectorBoxColor.rColor());
 
-            static HBRUSH hBrush = CreateSolidBrush(RGB(30, 30, 30));
+            static HBRUSH hBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().inspectorBoxColor.rColor());
             return (LRESULT)hBrush;
         break;
     }

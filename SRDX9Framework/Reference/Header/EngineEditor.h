@@ -16,8 +16,8 @@ BEGIN(Engine)
 struct Engine_WindowOptions
 {
 	ColorValue baseColor = ColorValue(56, 56, 56);
+	ColorValue inspectorBoxColor = ColorValue(42, 42, 42);
 	ColorValue baseTextColor = ColorValue(167, 167, 167);
-	ColorValue textBoxColor = ColorValue(42, 42, 42);
 };
 
 class ENGINE_DLL CEngineEditor

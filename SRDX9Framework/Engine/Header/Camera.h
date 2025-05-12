@@ -7,7 +7,6 @@ BEGIN(Engine)
 
 struct CameraViewParameters
 {
-	_float size = 1.f;
 	_float ascpect = (float)CScreen::GetInstance().getGameResolution().x / (float)CScreen::GetInstance().getGameResolution().y;
 };
 
@@ -45,7 +44,7 @@ public:
 	void SetMode(const CameraViewMode _mode) { m_eCamViewMode = _mode; }
 	_matrix& getProjMatrix() { return m_matProjMatrix; }
 	_matrix& getViewMatrix() { return m_matViewMatrix; }
-	void ViewProjextion();
+	void ViewProjection();
 	CameraViewParameters& getParameters() { return m_sParameters; };
 	void ResetAspectFromResolution(const vector2Int _resolution);
 
@@ -56,11 +55,13 @@ private:
 
 	_float m_fNear, m_fFar;
 	_float m_fFieldOfView;
+	_float m_fSize;
 
 	BEGIN_SERIALIZEFIELD
 	SERIALIZEFIELD(m_fNear)
 	SERIALIZEFIELD(m_fFar)
 	SERIALIZEFIELD(m_fFieldOfView)
+	SERIALIZEFIELD(m_fSize)
 	END_SERIALIZEFIELD
 };
 

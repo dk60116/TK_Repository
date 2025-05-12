@@ -9,6 +9,7 @@ CCamera::CCamera()
 	, m_fNear(0.1f)
 	, m_fFar(600.f)
 	, m_fFieldOfView(60.f)
+	, m_fSize(6.f)
 {
 	m_strName = L"Camera";
 }
@@ -89,8 +90,8 @@ void CCamera::UpdateProjectionMatrix()
 	break;
 	case ORTHOGRAPHIC:
 	{
-		float width = D3DXToRadian(m_fFieldOfView) * m_sParameters.ascpect;
-		float height = D3DXToRadian(m_fFieldOfView);
+		float width = D3DXToRadian(m_fFieldOfView) * m_sParameters.ascpect * m_fSize;
+		float height = D3DXToRadian(m_fFieldOfView) * m_fSize;
 
 		D3DXMatrixOrthoLH
 		(
@@ -101,7 +102,7 @@ void CCamera::UpdateProjectionMatrix()
 			m_fFar
 		);
 	}
-		break;
+	break;
 	default:
 		break;
 	}
@@ -123,7 +124,7 @@ void CCamera::UpdateViewMatrix()
 	D3DXMatrixLookAtLH(&m_matViewMatrix, &eyePos, &atPos, &upVec);
 }
 
-void CCamera::ViewProjextion()
+void CCamera::ViewProjection()
 {
 	m_pGraphicDev->SetTransform(D3DTS_VIEW, &m_matViewMatrix);
 	m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &m_matProjMatrix);
