@@ -5,6 +5,9 @@
 #include "Management.h"
 #include "GameObject.h"
 #include "EditorCamera.h"
+#include "sstream"
+
+using json = nlohmann::json;
 
 CScene::CScene()
 	: m_pGraphicDev(nullptr)
@@ -13,7 +16,9 @@ CScene::CScene()
 	, m_lLightList({})
 	, m_sOptions({})
 	, m_iObjIndex(0)
+	, m_strExportFilePath(L"Assets\\Scenes")
 {
+	m_strName = L"Scene";
 }
 
 CScene::~CScene()
@@ -219,6 +224,7 @@ CGameObject* CScene::AddObject(wstring _objName, Layer _layer)
 	CGameObject* obj = new CGameObject(_objName, CManagement::GetInstance().getGraphicDevice());
 	obj->AddRef();
 	obj->SetScene(this);
+	obj->m_iUniqueID = m_iObjIndex++;
 	m_lObjectList.push_back(obj);
 	obj->Init();
 
@@ -322,6 +328,31 @@ void CScene::Render_Grid()
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	delete[] pVertices;
+}
+
+HRESULT CScene::ExportSceneToFile()
+{
+	json root;
+	CSerialzer serializer(CSerialzer::Mode::Save, root);
+
+	CDebug::Log(m_strExportFilePath + L"\\" + m_strSceneName);
+
+	string name = CDebug::WStringToString(m_strName);
+	serializer.Value("sceneName", name);
+	serializer.Value("lighting", m_sOptions.lighting);
+
+	vector<CGameObject*> objects(m_lObjectList.begin(), m_lObjectList.end());
+	serializer.Array("objects", objects);
+
+	ofstream file(CDebug::WStringToString(m_strExportFilePath + L"\\" + m_strSceneName + L".enginescene"));
+
+	if (!file.is_open())
+		return E_FAIL;
+
+	file << root.dump(4);
+	file.close();
+
+	return S_OK;
 }
 
 void CScene::SafeDestroyObject(CGameObject* _obj)

@@ -6,6 +6,9 @@
         Engine::FactoryManager::GetInstance().Register(#T, []() -> Engine::UObject* { return new T(); }); \
     }} _autoReg_##T; }
 
+#include <fstream>
+#include <json.hpp>
+
 #include <d3d9.h>
 #include <d3dx9.h>
 
@@ -13,7 +16,6 @@
 #include <fmod_common.h>
 #include <fmod_errors.h>
 #include <fmod.hpp>
-#include <json.hpp>
 
 #include <vector>
 #include <list>
@@ -53,6 +55,10 @@
 #define HWND_INSPECTORCOMPONENTTOP 105
 #define HWND_INSPECTORCOMPONENTBODY 106
 #define HWND_CHECKBOX 107
+
+#define IDR_HIERARCHY_CONTEXTMENU 5000
+#define ID_MENU_CREATE_EMPTY 5001
+#define ID_MENU_DELETE_OBJECT 5002
 
 #ifndef TVM_GETHOTITEM               
 #   define TVM_GETHOTITEM (TV_FIRST + 58)

@@ -54,6 +54,20 @@ HRESULT CManagement::LoadScene(wstring _scene)
 void CManagement::EditorUpdate()
 {
 	m_pEditorCamObj->UpdateEditor();
+
+	if (!CEngineEditor::GetInstance().isPlaying())
+	{
+		if (CInput::GetInstance().GetKey(CONTROL) && CInput::GetInstance().GetKeyDown_Editor(Z))
+		{
+			if (FAILED(m_pCrtScene->ExportSceneToFile()))
+			{
+				MessageBox(nullptr, L"Scene save failed!", L"Error", MB_ICONERROR);
+				return;
+			}
+
+			CDebug::Log("Saved scene");
+		}
+	}
 }
 
 void CManagement::Destroy()

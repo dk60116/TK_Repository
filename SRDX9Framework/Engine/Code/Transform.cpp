@@ -687,5 +687,6 @@ void CTransform::Serialize(CSerialzer& _s)
 	_s.Value("position", m_vPosition);
 	_s.Value("rotation", m_vEulerAngles);
 	_s.Value("scale", m_vScale);
-	//_s.Value("parentID", m_pParent ? m_pParent->getObject()->getID() : -1);
+	UINT id = m_pParent ? m_pParent->getObject()->getID() : 0;
+	_s.Value("parentID", id);
 }

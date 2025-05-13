@@ -2,7 +2,8 @@
 #include "GameObject.h"
 
 CGameObject::CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
-	: m_pScene(nullptr)
+	: m_iUniqueID(0)
+	, m_pScene(nullptr)
 	, m_strGameObjectName(_name)
 	, m_bIsActive(true)
 	, m_bIsEnable(true)
@@ -15,7 +16,8 @@ CGameObject::CGameObject(const wstring _name, LPDIRECT3DDEVICE9 _pGraphicDev)
 }
 
 CGameObject::CGameObject(const CGameObject& _rhs)
-	: m_pScene(_rhs.m_pScene)
+	: m_iUniqueID(_rhs.m_iUniqueID)
+	, m_pScene(_rhs.m_pScene)
 	, m_strGameObjectName(_rhs.m_strGameObjectName + L"_Clone")
 	, m_bIsActive(_rhs.m_bIsActive)
 	, m_bIsEnable(_rhs.m_bIsEnable)
@@ -128,7 +130,8 @@ void CGameObject::Serialize(CSerialzer& _s)
 {
 	string className = "GameObject";
 	_s.Value("class", className);
-	_s.Value("name", m_strGameObjectName);
+	string objObject = CDebug::WStringToString(m_strGameObjectName);
+	_s.Value("name", objObject);
 	_s.Object("transform", *m_pTransform);
 	vector<CComponent*> filtered;
 	for (auto* comp : m_lComponentlist) 
@@ -138,5 +141,5 @@ void CGameObject::Serialize(CSerialzer& _s)
 			filtered.push_back(comp);
 		}
 	}
-	_s.Array("components", filtered);
+	//_s.Array("components", filtered);
 }

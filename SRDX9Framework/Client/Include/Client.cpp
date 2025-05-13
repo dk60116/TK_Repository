@@ -141,6 +141,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
+        case ID_MENU_CREATE_EMPTY:
+        {
+            CManagement::GetInstance().getCrtScene()->AddObject(L"GameObject", Layer::DEFAULT);
+            CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
+        }
+        break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
@@ -241,7 +247,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         
         if (hWndFrom == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
         {
-            int a = 0;
+            POINT pt;
+            pt.x = GET_X_LPARAM(lParam);
+            pt.y = GET_Y_LPARAM(lParam);
+
+            HMENU hMenu = LoadMenu(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDR_HIERARCHY_CONTEXTMENU));
+
+            if (hMenu)
+            {
+                HMENU hSubMenu = GetSubMenu(hMenu, 0);
+                if (hSubMenu)
+                {
+                    SetForegroundWindow(hWndFrom);  // 포커스를 맞춰야 메뉴가 닫힘
+
+                    TrackPopupMenu
+                    (
+                        hSubMenu,
+                        TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RIGHTBUTTON,
+                        pt.x, pt.y,
+                        0,
+                        hWndFrom,
+                        NULL
+                    );
+                }
+                DestroyMenu(hMenu);
+            }
+            return 0;
         }
     }
     break;
@@ -478,12 +509,14 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         return (INT_PTR)TRUE;
 
     case WM_COMMAND:
+    {
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }
         break;
+    }
     }
     return (INT_PTR)FALSE;
 }

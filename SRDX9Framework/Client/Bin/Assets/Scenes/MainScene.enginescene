@@ -1,0 +1,160 @@
+{
+    "lighting": true,
+    "objects": [
+        {
+            "class": "GameObject",
+            "name": "Main Camera",
+            "transform": {
+                "parentID": 0,
+                "position": [
+                    0.0,
+                    0.0,
+                    -10.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "class": "GameObject",
+            "name": "MainLight",
+            "transform": {
+                "parentID": 0,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    20.0,
+                    30.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "class": "GameObject",
+            "name": "Player",
+            "transform": {
+                "parentID": 0,
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            }
+        },
+        {
+            "class": "GameObject",
+            "name": "PlayerHead",
+            "transform": {
+                "parentID": 2,
+                "position": [
+                    0.0,
+                    0.5,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    0.25,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "class": "GameObject",
+            "name": "Enemy",
+            "transform": {
+                "parentID": 0,
+                "position": [
+                    2.0,
+                    2.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.5,
+                    1.5,
+                    1.0
+                ]
+            }
+        },
+        {
+            "class": "GameObject",
+            "name": "Tri",
+            "transform": {
+                "parentID": 0,
+                "position": [
+                    -2.0,
+                    -2.0,
+                    -1.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "class": "GameObject",
+            "name": "Box",
+            "transform": {
+                "parentID": 4,
+                "position": [
+                    2.0,
+                    -2.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ],
+    "sceneName": "Scene"
+}

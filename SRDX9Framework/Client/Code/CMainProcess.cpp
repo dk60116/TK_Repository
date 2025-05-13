@@ -75,8 +75,6 @@ _int CMainProcess::Update_MainApp()
 	
 	CManagement::GetInstance().getCrtScene()->LateUpdateEditor();
 	
-	CInput::GetInstance().LateUpdate();
-
 	CEngineEditor::GetInstance().SetNextFrame(false);
 
 	return 0;

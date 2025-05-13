@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Engine_Define.h"
 #include "ETime.h"
+#include "Input.h"
 #include "EditorWindow.h"
 #include "BaseWindow.h"
 #include "SceneWindow.h"

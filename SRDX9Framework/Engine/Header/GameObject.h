@@ -36,6 +36,7 @@ public:
 	virtual void OnDestroy();
 
 public:
+	const UINT getID() const { return m_iUniqueID; }
 	const wstring& getName() const { return m_strGameObjectName; }
 	const _bool& isActive() { return m_bIsActive; }
 	const _bool& isEnable() { return m_bIsEnable; }
@@ -61,6 +62,7 @@ public:
 	void Serialize(CSerialzer& _s) override;
 
 protected:
+	UINT m_iUniqueID;
 	CScene* m_pScene;
 	wstring m_strGameObjectName;
 	_bool m_isClone;

@@ -23,23 +23,26 @@ CInput::~CInput()
 
 bool CInput::GetKey(_int _iKey)
 {
-    return m_bKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
+    return m_bKeyState[_iKey] &&
+        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
-bool CInput::GetKey_Editor(_int _iKey)
+bool CInput::GetKey_Editor(_int _iKey, _bool _onlyScene)
 {
-    return m_bKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene");
+    return m_bKeyState[_iKey] && 
+        (!_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"));
 }
 
 bool CInput::GetKeyDown(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
+    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] &&
+        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
-bool CInput::GetKeyDown_Editor(_int _iKey)
+bool CInput::GetKeyDown_Editor(_int _iKey, _bool _onlyScene )
 {
     return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && 
-        GetForegroundWindow() != CEngineEditor::GetInstance().FindWindowHandle(L"Game");
+        (!_onlyScene || GetForegroundWindow() != CEngineEditor::GetInstance().FindWindowHandle(L"Game"));
 }
 
 bool CInput::GetKeyUp(_int _iKey)
@@ -61,7 +64,7 @@ bool CInput::GetMouseButton(_int _button)
     return m_bKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
-bool CInput::GetMouseButton_Editor(_int _button)
+bool CInput::GetMouseButton_Editor(_int _button, _bool _onlyScene)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -72,7 +75,8 @@ bool CInput::GetMouseButton_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene");
+    return m_bKeyState[_button] &&
+        (_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"));
 }
 
 bool CInput::GetMouseButtonDown(_int _button)
@@ -86,10 +90,11 @@ bool CInput::GetMouseButtonDown(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] &&
+        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
-bool CInput::GetMouseButtonDown_Editor(_int _button)
+bool CInput::GetMouseButtonDown_Editor(_int _button, _bool _onlyScene)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -100,7 +105,8 @@ bool CInput::GetMouseButtonDown_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene");
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] &&
+        (!_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"));
 }
 
 bool CInput::GetMouseButtonUp(_int _button)
@@ -117,7 +123,7 @@ bool CInput::GetMouseButtonUp(_int _button)
     return !m_bKeyState[_button] && m_bPrevKeyState[_button];
 }
 
-bool CInput::GetMouseButtonUp_Editor(_int _button)
+bool CInput::GetMouseButtonUp_Editor(_int _button, _bool _onlyScene)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -128,7 +134,8 @@ bool CInput::GetMouseButtonUp_Editor(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene");
+    return !m_bKeyState[_button] && m_bPrevKeyState[_button] &&
+        (!_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"));
 }
 
 
@@ -147,24 +154,24 @@ const _float CInput::GetAxis(const wstring _axisName)
 
     if (_axisName == L"Horizontal")
     {
-        if (GetKeyDown(LEFT))
+        if (GetKey(LEFT))
             result -= 1.f;
-        if (GetKeyDown(RIGHT))
+        if (GetKey(RIGHT))
             result += 1.f;
-        if (GetKeyDown(A))
+        if (GetKey(A))
             result -= 1.f;
-        if (GetKeyDown(D))
+        if (GetKey(D))
             result += 1.f;
     }
     else if (_axisName == L"Vertical")
     {
-        if (GetKeyDown(DOWN))
+        if (GetKey(DOWN))
             result -= 1.f;
-        if (GetKeyDown(UP))
+        if (GetKey(UP))
             result += 1.f;
-        if (GetKeyDown(S))
+        if (GetKey(S))
             result -= 1.f;
-        if (GetKeyDown(W))
+        if (GetKey(W))
             result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
@@ -179,30 +186,30 @@ const _float CInput::GetAxis(const wstring _axisName)
     return result;
 }
 
-const _float CInput::GetAxis_Editor(const wstring _axisName)
+const _float CInput::GetAxis_Editor(const wstring _axisName, _bool _onlyScene)
 {
     float result = 0.f;
 
     if (_axisName == L"Horizontal")
     {
-        if (GetKeyDown_Editor(LEFT))
+        if (GetKey_Editor(LEFT, true))
             result -= 1.f;
-        if (GetKeyDown_Editor(RIGHT))
+        if (GetKey_Editor(RIGHT, true))
             result += 1.f;
-        if (GetKeyDown_Editor(A))
+        if (GetKey_Editor(A, true))
             result -= 1.f;
-        if (GetKeyDown_Editor(D))
+        if (GetKey_Editor(D, true))
             result += 1.f;
     }
     else if (_axisName == L"Vertical")
     {
-        if (GetKeyDown_Editor(DOWN))
+        if (GetKey_Editor(DOWN, true))
             result -= 1.f;
-        if (GetKeyDown_Editor(UP))
+        if (GetKey_Editor(UP, true))
             result += 1.f;
-        if (GetKeyDown_Editor(S))
+        if (GetKey_Editor(S, true))
             result -= 1.f;
-        if (GetKeyDown_Editor(W))
+        if (GetKey_Editor(W, true))
             result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
@@ -214,7 +221,7 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
 
     result = clamp(result, -1.f, 1.f);
 
-    return GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene") ? result : 0;
+    return (!_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene")) ? result : 0;
 }
 
 void CInput::OnMouseWheel(WPARAM _wParam)
@@ -235,12 +242,21 @@ void CInput::Update()
 {
     float dt = CTime::GetInstance().Get_DeltaTime();
 
+    for (auto& key : m_bKeyState)
+        m_bPrevKeyState[key.first] = key.second;
+
+    for (auto& key : m_bKeyState)
+    {
+        bool newState = (GetAsyncKeyState(key.first) & 0x8000) != 0;
+        key.second = newState;
+    }
+
     if (abs(m_fWheelRaw) > 0.f)
     {
         m_fWheelAxis += m_fWheelRaw * m_sWheelOption.sensitivity;
         m_fWheelRaw = 0.f;
     }
-    
+
     if (m_fWheelAxis > 0.f)
         m_fWheelAxis = max(0.f, m_fWheelAxis - m_sWheelOption.gravity * dt);
     else if (m_fWheelAxis < 0.f)
@@ -250,21 +266,6 @@ void CInput::Update()
         m_fWheelAxis = 0.f;
 
     m_fWheelAxis = clamp(m_fWheelAxis, -1.f, 1.f);
-
-    for (auto& key : m_bKeyState)
-    {
-        bool newState = (GetAsyncKeyState(key.first) & 0x8000) != 0;
-
-        if (newState != key.second)
-        {
-            key.second = newState;
-        }
-    }
-}
-
-void CInput::LateUpdate()
-{
-    Reset();
 }
 
 void CInput::Release()

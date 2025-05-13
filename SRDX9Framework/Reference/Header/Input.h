@@ -16,30 +16,29 @@ class ENGINE_DLL CInput
 	SINGLETONCLASS(CInput);
 
 public:
-    bool GetKey(_int _iKey);
-    bool GetKey_Editor(_int _iKey);
-    bool GetKeyDown(_int _iKey);
-    bool GetKeyDown_Editor(_int _iKey);
-    bool GetKeyUp(_int _iKey);
-    bool GetMouseButton(_int _button);
-    bool GetMouseButton_Editor(_int _button);
-    bool GetMouseButtonDown(_int _button);
-    bool GetMouseButtonDown_Editor(_int _button);
-    bool GetMouseButtonUp(_int _button);
-    bool GetMouseButtonUp_Editor(_int button);
+    _bool GetKey(_int _iKey);
+    _bool GetKey_Editor(_int _iKey, _bool _onlyScene = false);
+    _bool GetKeyDown(_int _iKey);
+    _bool GetKeyDown_Editor(_int _iKey, _bool _onlyScene = false);
+    _bool GetKeyUp(_int _iKey);
+    _bool GetMouseButton(_int _button);
+    _bool GetMouseButton_Editor(_int _button, _bool _onlyScene = false);
+    _bool GetMouseButtonDown(_int _button);
+    _bool GetMouseButtonDown_Editor(_int _button, _bool _onlyScene = false);
+    _bool GetMouseButtonUp(_int _button);
+    _bool GetMouseButtonUp_Editor(_int button, _bool _onlyScene = false);
 
     const vector2Int GetMousePos();
     const _float GetAxis(const wstring _axisName);
-    const _float GetAxis_Editor(const wstring _axisName);
+    const _float GetAxis_Editor(const wstring _axisName, _bool _onlyScene = true);
     const _float GetAxisRaw(const wstring _axisName);
-    const _float GetAxisRaw_Editor(const wstring _axisName);
+    const _float GetAxisRaw_Editor(const wstring _axisName, _bool _onlyScene = true);
 
     void OnMouseWheel(WPARAM _wParam);
 
 public:
     void Reset();
     void Update();
-    void LateUpdate();
     void Release();
 
 private:

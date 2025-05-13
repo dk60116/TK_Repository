@@ -180,7 +180,7 @@ void CEngineEditor::Update()
 
 	if (isScene)
 	{
-		if (CInput::GetInstance().GetKeyDown_Editor(KEY_DELETE))
+		if (CInput::GetInstance().GetKeyDown_Editor(KEY_DELETE, true))
 		{
 			if (m_pSelectedGameObject)
 				CGameObject::Destroy(m_pSelectedGameObject);

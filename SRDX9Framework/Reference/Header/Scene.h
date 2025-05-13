@@ -27,10 +27,10 @@ public:
     virtual void EditorInit();
     virtual void Awake();
     virtual void Start();
-    void UpdateEditor();
+    virtual void UpdateEditor();
     virtual void Update();
     virtual void FixedUpdate();
-    void LateUpdateEditor();
+    virtual void LateUpdateEditor();
     virtual void LateUpdate();
     virtual void Render_Editor();
     virtual void Render_Game();
@@ -62,6 +62,9 @@ private:
     void SafeDestroyObject(CGameObject* _obj);
     void Render_Grid();
 
+public:
+    HRESULT ExportSceneToFile();
+
 protected:
     wstring m_strSceneName;
 
@@ -74,6 +77,8 @@ protected:
     LPDIRECT3DDEVICE9 m_pGraphicDev;
 
     UINT m_iObjIndex;
+
+    wstring m_strExportFilePath;
 };
 
 END
