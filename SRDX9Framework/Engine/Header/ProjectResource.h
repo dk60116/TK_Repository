@@ -20,6 +20,9 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 
+#define ID_MENU_CREATE_EMPTY   10001
+#define ID_MENU_DELETE_OBJECT  10002
+
 #endif
 // 다음은 새 개체에 사용할 기본값입니다.
 //

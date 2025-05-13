@@ -128,6 +128,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     break;
+
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -230,6 +231,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetTextColor(hdcStatic, CEngineEditor::GetInstance().getOptions().baseTextColor.rColor());
             static HBRUSH hBlackBrush = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().baseColor.rColor());
             return (INT_PTR)hBlackBrush;
+        }
+    }
+    break;
+
+    case WM_CONTEXTMENU:
+    {
+        HWND hWndFrom = (HWND)wParam;
+        
+        if (hWndFrom == CEngineEditor::GetInstance().FindWindowHandle(L"Hierachy"))
+        {
+            int a = 0;
         }
     }
     break;

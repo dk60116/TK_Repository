@@ -38,7 +38,7 @@ void CTimer::Update()
 		m_FixTime = m_FrameTime;
 	}
 
-	m_fTimeDelta = (m_FrameTime.QuadPart - m_LastTime.QuadPart) / (_float)m_CpuTick.QuadPart;
+	m_fTimeDelta = (m_FrameTime.QuadPart - m_LastTime.QuadPart) / static_cast<_float>(m_CpuTick.QuadPart);
 
 	if (m_bFirstUpdate)
 	{
