@@ -135,6 +135,21 @@ void CCamera::ViewProjection()
 	m_pGraphicDev->SetTransform(D3DTS_PROJECTION, &m_matProjMatrix);
 }
 
+void CCamera::SetNear(_float _value)
+{
+	m_fNear = _value;
+}
+
+void CCamera::SetFar(_float _value)
+{
+	m_fFar = _value;
+}
+
+void CCamera::SetFieldObView(_float _value)
+{
+	m_fFieldOfView = _value;
+}
+
 void CCamera::ResetAspectFromResolution(const vector2Int _resolution)
 {
 	m_sParameters.ascpect = (float)_resolution.x / _resolution.y;

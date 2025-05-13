@@ -47,6 +47,9 @@ public:
 	_matrix& getViewMatrix() { return m_matViewMatrix; }
 	void ViewProjection();
 	CameraViewParameters& getParameters() { return m_sParameters; };
+	void SetNear(_float _value);
+	void SetFar(_float _value);
+	void SetFieldObView(_float _value);
 	void ResetAspectFromResolution(const vector2Int _resolution);
 
 private:
