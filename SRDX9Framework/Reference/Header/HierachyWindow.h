@@ -30,6 +30,7 @@ public:
 	LRESULT CALLBACK WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam) override;
 
 	HWND getTreeHandle() { return m_hTreeView; }
+
 public:
 	void BuildTree();
 	void AddSceneRecursive(CScene* _scene);

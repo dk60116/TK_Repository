@@ -40,13 +40,14 @@ public:
 	void ClearComponents();
 	void ViewTargetInfor_GameObject(CGameObject* _target);
 	void ViewTargetInfor_File();
+	void ShowAddComponentMenu();
 
 private:
 	void UpdateScrollInfo();
 
 private:
 	InspectorViewOptions m_sOptinos;
-	HWND m_hEditName;
+	HWND m_hEditName, m_hAddComponentBtn;
 	vector<HWND> m_vContentsWindows, m_vChildWindows;
 	CGameObject* m_pViewGameObject;
 	_int m_iTotalHeight;

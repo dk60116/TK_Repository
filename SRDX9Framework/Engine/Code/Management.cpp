@@ -57,7 +57,7 @@ void CManagement::EditorUpdate()
 
 	if (!CEngineEditor::GetInstance().isPlaying())
 	{
-		if (CInput::GetInstance().GetKey(CONTROL) && CInput::GetInstance().GetKeyDown_Editor(Z))
+		if (CInput::GetInstance().GetKey_Editor(CONTROL) && CInput::GetInstance().GetKeyDown_Editor(Z))
 		{
 			if (FAILED(m_pCrtScene->ExportSceneToFile()))
 			{

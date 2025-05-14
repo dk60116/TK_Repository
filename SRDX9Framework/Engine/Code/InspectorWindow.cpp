@@ -5,6 +5,7 @@
 CInspectorWindow::CInspectorWindow()
 	: m_sOptinos({})
 	, m_hEditName(nullptr)
+	, m_hAddComponentBtn(nullptr)
 	, m_vContentsWindows({})
 	, m_vChildWindows({})
 	, m_pViewGameObject(nullptr)
@@ -126,23 +127,27 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 		{
 			HWND hWnd = (HWND)_lParam;
 
-			if (!GetProp(hWnd, L"CHECKBOX"))
-				break;
-
-			_bool checked = (_bool)static_cast<LONG>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
-			SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)(!checked));
-
-			InvalidateRect(hWnd, nullptr, TRUE);
-
-			for (auto& pair : m_vPairViewList)
+			if (GetProp(hWnd, L"CHECKBOX"))
 			{
-				if (pair.handle == hWnd && pair.type == FieldType::BOOL)
+				_bool checked = (_bool)static_cast<LONG>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
+				SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)(!checked));
+
+				InvalidateRect(hWnd, nullptr, TRUE);
+
+				for (auto& pair : m_vPairViewList)
 				{
-					*reinterpret_cast<_bool*>(pair.value) = !checked;
-					CManagement::GetInstance().getCrtScene()->UpdateEditor();
-					break;
+					if (pair.handle == hWnd && pair.type == FieldType::BOOL)
+					{
+						*reinterpret_cast<_bool*>(pair.value) = !checked;
+						CManagement::GetInstance().getCrtScene()->UpdateEditor();
+						break;
+					}
 				}
+			}
+			else if (GetProp(hWnd, L"ADDCOMPONENTBUTTON"))
+			{
+				ShowAddComponentMenu();
 			}
 		}
 	}
@@ -154,54 +159,83 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 
 		HWND hWnd = dis->hwndItem;
 
-		if (!GetProp(hWnd, L"CHECKBOX"))
-			break;
-
-		LONG_PTR tag = GetWindowLongPtr(hWnd, GWLP_USERDATA);
-
-		_bool checked = (_bool)static_cast<LONG>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
-		HDC hdc = dis->hDC;
-		RECT rc = dis->rcItem;
-
-		FillRect(hdc, &rc, m_hDarkBrush);
-
-		const int radius = 6;
-		HBRUSH frame = CreateSolidBrush(RGB(0, 0, 0));
-		HPEN   pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-		HGDIOBJ oldPen = SelectObject(hdc, pen);
-		HGDIOBJ oldBrush = SelectObject(hdc, frame);
-		RoundRect(hdc, rc.left, rc.top, rc.right, rc.bottom, radius, radius);
-
-		RECT inner = rc;
-		InflateRect(&inner, -1, -1);   
-
-		HBRUSH fill = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().inspectorBoxColor.rColor());
-		FillRect(hdc, &inner, fill);
-		DeleteObject(fill);
-
-		if (checked)
+		if (GetProp(hWnd, L"CHECKBOX"))
 		{
-			HPEN checkPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
-			HGDIOBJ oldPen = SelectObject(hdc, checkPen);
+			LONG_PTR tag = GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
-			int cx = (rc.left + rc.right) / 2;
-			int cy = (rc.top + rc.bottom) / 2;
-			int size = min(rc.right - rc.left, rc.bottom - rc.top) / 3;
+			_bool checked = (_bool)static_cast<LONG>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
-			// 체크 모양: 왼쪽 아래 → 가운데 → 오른쪽 위
-			MoveToEx(hdc, cx - size, cy, NULL);
-			LineTo(hdc, cx, cy + size / 2);
-			LineTo(hdc, cx + size, cy - size);
+			HDC hdc = dis->hDC;
+			RECT rc = dis->rcItem;
+
+			FillRect(hdc, &rc, m_hDarkBrush);
+
+			const int radius = 6;
+			HBRUSH frame = CreateSolidBrush(RGB(0, 0, 0));
+			HPEN   pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+			HGDIOBJ oldPen = SelectObject(hdc, pen);
+			HGDIOBJ oldBrush = SelectObject(hdc, frame);
+			RoundRect(hdc, rc.left, rc.top, rc.right, rc.bottom, radius, radius);
+
+			RECT inner = rc;
+			InflateRect(&inner, -1, -1);
+
+			HBRUSH fill = CreateSolidBrush(CEngineEditor::GetInstance().getOptions().inspectorBoxColor.rColor());
+			FillRect(hdc, &inner, fill);
+			DeleteObject(fill);
+
+			if (checked)
+			{
+				HPEN checkPen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
+				HGDIOBJ oldPen = SelectObject(hdc, checkPen);
+
+				int cx = (rc.left + rc.right) / 2;
+				int cy = (rc.top + rc.bottom) / 2;
+				int size = min(rc.right - rc.left, rc.bottom - rc.top) / 3;
+
+				// 체크 모양: 왼쪽 아래 → 가운데 → 오른쪽 위
+				MoveToEx(hdc, cx - size, cy, NULL);
+				LineTo(hdc, cx, cy + size / 2);
+				LineTo(hdc, cx + size, cy - size);
+
+				SelectObject(hdc, oldPen);
+				DeleteObject(checkPen);
+			}
 
 			SelectObject(hdc, oldPen);
-			DeleteObject(checkPen);
+			SelectObject(hdc, oldBrush);
+			DeleteObject(pen);
+			DeleteObject(frame);
 		}
+		else if (GetProp(hWnd, L"ADDCOMPONENTBUTTON"))
+		{
+			HDC hdc = dis->hDC;
+			RECT rc = dis->rcItem;
 
-		SelectObject(hdc, oldPen);
-		SelectObject(hdc, oldBrush);
-		DeleteObject(pen);
-		DeleteObject(frame);
+			// 배경색
+			COLORREF bgColor = RGB(88, 88, 88);
+			HBRUSH bg = CreateSolidBrush(bgColor);
+			FillRect(hdc, &rc, bg);
+			DeleteObject(bg);
+
+			// 라운드 테두리
+			HPEN pen = CreatePen(PS_SOLID, 1, RGB(30, 30, 30));
+			HGDIOBJ oldPen = SelectObject(hdc, pen);
+			HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(NULL_BRUSH));
+			RoundRect(hdc, rc.left, rc.top, rc.right, rc.bottom, 10, 10);
+			SelectObject(hdc, oldBrush);
+			SelectObject(hdc, oldPen);
+			DeleteObject(pen);
+
+			// 텍스트
+			SetBkMode(hdc, TRANSPARENT);
+			SetTextColor(hdc, RGB(255, 255, 255));
+
+			wstring text = L"Add Component";
+			DrawTextW(hdc, text.c_str(), -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			return TRUE;
+		}
 
 		return TRUE;
 	}
@@ -271,6 +305,12 @@ void CInspectorWindow::ClearComponents()
 {
 	if (IsWindow(m_hEditName))
 		DestroyWindow(m_hEditName);
+
+	if (IsWindow(m_hAddComponentBtn))
+		DestroyWindow(m_hAddComponentBtn);
+
+	m_hEditName = nullptr;
+	m_hAddComponentBtn = nullptr;
 
 	for (TRAVERSAL_ITER(m_vContentsWindows, it))
 	{
@@ -436,6 +476,19 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 		y += h;
 	}
 
+	m_hAddComponentBtn = CreateWindowEx
+	(
+		0, L"BUTTON", nullptr,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		static_cast<_int>(x + itemW * 0.15f), m_iTotalHeight + 10,
+		static_cast<_int>(itemW * 0.7f), 25,
+		m_hWnd, nullptr, GetModuleHandle(nullptr), nullptr
+	);
+
+	m_iTotalHeight += 45;
+
+	SetProp(m_hAddComponentBtn, L"ADDCOMPONENTBUTTON", (HANDLE)TRUE);
+
 	UpdateScrollInfo();
 
 	SCROLLINFO si{ sizeof(si), SIF_RANGE | SIF_PAGE };
@@ -451,6 +504,23 @@ void CInspectorWindow::ViewTargetInfor_GameObject(CGameObject* _target)
 		MapWindowPoints(HWND_DESKTOP, m_hWnd, (POINT*)&r, 2);
 		MoveWindow(child, r.left, r.top, finalW, r.bottom - r.top, TRUE);
 	}
+}
+
+void CInspectorWindow::ShowAddComponentMenu()
+{
+	HMENU hPopupMenu = CreatePopupMenu();
+
+	AppendMenu(hPopupMenu, MF_STRING, 1001, L"Camera");
+	AppendMenu(hPopupMenu, MF_STRING, 1002, L"SpriteRenderer");
+
+	POINT pt;
+	GetCursorPos(&pt);
+	TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD, pt.x, pt.y, 0, m_hWnd, NULL);
+
+	int selected = GetMenuDefaultItem(hPopupMenu, FALSE, 0);
+	
+	//if (selected != -1)
+		//HandleComponentAdd(selected);
 }
 
 void CInspectorWindow::UpdateScrollInfo()

@@ -81,6 +81,8 @@ private:
 	_bool m_bNextFrame;
 
 	CGameObject* m_pSelectedGameObject;
+
+	vector<string> m_vEngineComponentNameList;
 };
 
 END

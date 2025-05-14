@@ -13,6 +13,7 @@ CEngineEditor::CEngineEditor()
 	, m_bPaused(false)
 	, m_bNextFrame(false)
 	, m_pSelectedGameObject(nullptr)
+	, m_vEngineComponentNameList({})
 {
 	m_strName = L"Engine Editor";
 }
