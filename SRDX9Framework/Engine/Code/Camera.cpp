@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Screen.h"
 #include "GameObject.h"
+#include "Input.h"
 
 CCamera::CCamera()
 	: m_eCamViewMode(PERSPECTIVE)
@@ -119,6 +120,8 @@ void CCamera::UpdateViewMatrix()
 
 	vector3 eye = tf.getPosition();
 	vector3 fwd = tf.getDirections().forward;
+	if (CInput::GetInstance().GetKeyDown(SPACE))
+		CDebug::Log(fwd);
 	vector3 at = eye + fwd;
 	vector3 up = tf.getDirections().up;
 
@@ -148,6 +151,11 @@ void CCamera::SetFar(_float _value)
 void CCamera::SetFieldObView(_float _value)
 {
 	m_fFieldOfView = _value;
+}
+
+void CCamera::SetSize(_float _value)
+{
+	m_fSize = _value;
 }
 
 void CCamera::ResetAspectFromResolution(const vector2Int _resolution)

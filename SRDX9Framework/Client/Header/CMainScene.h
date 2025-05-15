@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "Light.h"
+#include "MainCamera.h"
 #include "CPlayer.h"
 #include "CEnemy.h"
 
@@ -23,7 +24,9 @@ public:
     void Destroy() override;
 
 private:
+    CMainCamera* m_pMainCam;
     CPlayer* m_pPlayer;
     CEnemy* m_pEnemy;
+    CGameObject* m_pCameraParent;
 };
 

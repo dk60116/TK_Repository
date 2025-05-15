@@ -285,6 +285,26 @@ CGameObject* CScene::FindGameObject(const wstring _name)
 	return nullptr;
 }
 
+void CScene::MoveObjectBehindParent(CGameObject* _childObj, CGameObject* _parentObj)
+{
+	if (!_childObj || !_parentObj)
+		return;
+
+	if (_childObj == _parentObj)
+		return;
+
+	auto childIt = find(m_lObjectList.begin(), m_lObjectList.end(), _childObj);
+	auto parentIt = find(m_lObjectList.begin(), m_lObjectList.end(), _parentObj);
+
+	if (childIt == m_lObjectList.end() || parentIt == m_lObjectList.end())
+		return;
+
+	m_lObjectList.erase(childIt);
+
+	++parentIt;
+	m_lObjectList.insert(parentIt, _childObj);
+}
+
 void CScene::Render_Grid()
 {
 	const _int GRID_HALF = 1000;

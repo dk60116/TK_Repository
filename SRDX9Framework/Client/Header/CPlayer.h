@@ -8,7 +8,7 @@
 class CPlayer :
     public CComponent
 {
-public:
+private:
     CPlayer();
     ~CPlayer();
 

@@ -50,6 +50,7 @@ public:
 	void SetNear(_float _value);
 	void SetFar(_float _value);
 	void SetFieldObView(_float _value);
+	void SetSize(_float _value);
 	void ResetAspectFromResolution(const vector2Int _resolution);
 
 private:

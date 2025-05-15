@@ -47,6 +47,9 @@
     <ClInclude Include="..\Header\CMainProcess.h">
       <Filter>MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\MainCamera.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CMainScene.cpp">
@@ -66,6 +69,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMainProcess.cpp">
       <Filter>MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MainCamera.cpp">
+      <Filter>Scripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

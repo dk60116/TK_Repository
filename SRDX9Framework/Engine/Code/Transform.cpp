@@ -12,6 +12,7 @@ CTransform::CTransform()
 	, m_vScale(vector3::one())
 	, m_vRotation(vector3::zero())
 	, m_vQuaternion(quaternion::identity())
+	, m_vWorldQuaternion(quaternion::identity())
 	, m_vEulerAngles(vector3::zero())
 	, m_matWorld()
 	, m_sDirections({})
@@ -119,8 +120,7 @@ void CTransform::UpdateWorld()
 	D3DXQUATERNION worldQuat;
 	D3DXMatrixDecompose(&dummyScale, &worldQuat, &dummyTranslation, &m_matWorld);
 
-	D3DXVECTOR3 worldEuler;
-	D3DXQuaternionToAxisAngle(&worldQuat, nullptr, &worldEuler.x);
+	m_vWorldQuaternion = quaternion(worldQuat);
 
 	m_vWorldEulerAngles = quaternion::to_euler(worldQuat);
 
@@ -131,7 +131,7 @@ void CTransform::UpdateWorld()
 void CTransform::UpdateDirections()
 {
 	_matrix rotMatrix;
-	D3DXQUATERNION quat = m_vQuaternion;
+	D3DXQUATERNION quat = m_vWorldQuaternion.dQuaternion();
 	D3DXMatrixRotationQuaternion(&rotMatrix, &quat);
 
 	const D3DXVECTOR3 forward(0, 0, 1);
@@ -159,62 +159,56 @@ const wstring CTransform::getName()
 
 void CTransform::SetParent(CTransform* _parent)
 {
+	// 1. 현재 월드 행렬 저장
+	_parent->UpdateWorld();
 	UpdateWorld();
-
 	_matrix world = m_matWorld;
 
-	if (!_parent)
+	// 2. 이전 부모에서 분리
+	if (m_pParent)
 	{
-		if (m_pParent)
-		{
-			m_pParent->m_lChildList.remove(this);
-			Release();
-		}
-
-		D3DXVECTOR3 s, t;
-		D3DXQUATERNION r;
-		D3DXMatrixDecompose(&s, &r, &t, &world);
-
-		m_vScale = vector3(s);
-		m_vPosition = vector3(t);
-		m_vQuaternion = quaternion(r);
-		m_vEulerAngles = quaternion::to_euler(r);
-
-		m_pParent = nullptr;
-		m_bIsRootParent = true;
+		m_pParent->m_lChildList.remove(this);
+		Release();
 	}
-	else
+
+	// 3. 새 부모 설정
+	m_pParent = _parent;
+	m_bIsRootParent = (_parent == nullptr);
+
+	if (_parent)
 	{
-		_matrix invParent;
-		D3DXMatrixInverse(&invParent, nullptr, &_parent->getWorldMatrix());
-
-		_matrix local = world * invParent;
-
-		D3DXVECTOR3 s, t;
-		D3DXQUATERNION r;
-		D3DXMatrixDecompose(&s, &r, &t, &local);
-
-		m_vScale = vector3(s);
-		m_vPosition = vector3(t);
-		m_vQuaternion = quaternion(r);
-		m_vEulerAngles = quaternion::to_euler(r);
-
-		if (m_pParent != _parent)
-		{
-			if (m_pParent)
-			{
-				m_pParent->m_lChildList.remove(this);
-				Release();
-			}
-		}
-
-		m_pParent = _parent;
-		m_bIsRootParent = false;
-
 		_parent->m_lChildList.push_back(this);
 		AddRef();
 	}
 
+	// 4. 월드 위치 유지하기 위해 로컬 행렬 계산
+	_matrix local = world;
+	if (_parent)
+	{
+		_matrix invParent;
+		D3DXMatrixInverse(&invParent, nullptr, &_parent->getWorldMatrix());
+		local = world * invParent;
+	}
+
+	// 5. 로컬 행렬 분해
+	D3DXVECTOR3 s, t;
+	D3DXQUATERNION r;
+	D3DXMatrixDecompose(&s, &r, &t, &local);
+
+	m_vScale = vector3(s);
+	m_vPosition = vector3(t);
+	m_vQuaternion = quaternion(r);
+	m_vEulerAngles = quaternion::to_euler(r);
+
+	// 6. 오브젝트 재정렬 (부모 뒤로)
+	if (m_pGameObject && _parent && _parent->getObject())
+	{
+		CScene* scene = m_pGameObject->getScene();
+		if (scene)
+			scene->MoveObjectBehindParent(m_pGameObject, _parent->getObject());
+	}
+
+	// 7. 계층 창 업데이트
 	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 }
 

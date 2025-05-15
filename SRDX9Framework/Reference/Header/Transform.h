@@ -138,14 +138,14 @@ private:
 	vector3 m_vPosition, m_vScale, m_vRotation;
 	vector3 m_vEulerAngles;
 	vector3 m_vWorldPos, m_vWorldEulerAngles;
-	quaternion m_vQuaternion;
+	quaternion m_vQuaternion, m_vWorldQuaternion;
 	_matrix m_matWorld;
 	Directions m_sDirections;
 
 	BEGIN_SERIALIZEFIELD
 		SERIALIZEFIELD(m_vPosition)
-		SERIALIZEFIELD(m_vScale)
 		SERIALIZEFIELD(m_vRotation)
+		SERIALIZEFIELD(m_vScale)
 	END_SERIALIZEFIELD
 };
 

@@ -6,8 +6,10 @@
 #include "MeshRenderer.h"
 
 CMainScene::CMainScene()
-	: m_pPlayer(nullptr)
+	: m_pMainCam(nullptr)
+	, m_pPlayer(nullptr)
 	, m_pEnemy(nullptr)
+	, m_pCameraParent(nullptr)
 {
 }
 
@@ -22,9 +24,13 @@ void CMainScene::EditorInit()
 
 	m_sOptions.lighting = true;
 
+	m_pCameraParent = AddObject(L"CamParent", Layer::DEFAULT);
+
 	CGameObject* cameraObj = AddObject(L"Main Camera", Layer::DEFAULT);
-	cameraObj->AddComponent<CCamera>();
+	m_pMainCam = cameraObj->AddComponent<CMainCamera>();
 	cameraObj->getTransform().SetPosition(0.f, 0.f, -10.f);
+
+	m_pMainCam->getTransform().SetParent(&m_pCameraParent->getTransform());
 
 	CGameObject* lightObj = AddObject(L"MainLight", Layer::DEFAULT);
 	lightObj->AddComponent<CLight>();
@@ -42,17 +48,20 @@ void CMainScene::EditorInit()
 
 	CGameObject& enemyObj = *AddObject(L"Enemy", Layer::DEFAULT);
 	m_pEnemy = enemyObj.AddComponent<CEnemy>();
-	m_pEnemy->SetTarget(&m_pPlayer->getTransform());
+	//m_pEnemy->SetTarget(&m_pPlayer->getTransform());
 
 	CGameObject& triObj = *AddObject(L"Tri", Layer::DEFAULT);
 	CSpriteRenderer* tSRender = triObj.AddComponent<CSpriteRenderer>();
-	triObj.getTransform().SetPosition(-2.f, -2.f, -1.f);
+	triObj.getTransform().SetPosition(-2.f, -1.f, 0.f);
 	auto tex = CResources::GetInstance().getResource<CTexture>(L"Player").get();
 	if (tex)
 		tSRender->SetTexture(tex);
 
+	//m_pPlayer->getTransform().SetParent(&m_pMainCam->getCamera().getTransform());
+
 	CGameObject* boxObj = AddObject(L"Box", Layer::DEFAULT);
-	boxObj->getTransform().SetPosition(2.f, -2.f, 0.f);
+	boxObj->getTransform().SetPosition(0.f, -2.f, 0.f);
+	boxObj->getTransform().SetLocalScaleX(5.f);
 	CMeshRenderer* boxRender = boxObj->AddComponent<CMeshRenderer>();
 	boxRender->SetMeshFilterType(CMesh::CUBE);
 	boxRender->getTransform().SetParent(&enemyObj.getTransform());
@@ -74,7 +83,7 @@ void CMainScene::Update()
 	if (m_lCameraList.empty())
 		return;
 
-	m_lCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
+	//m_lCameraList.back()->getTransform().SetPosition(m_pPlayer->getTransform().getPosition() + vector3::back() * 10.f);
 
 	if (CInput::GetInstance().GetKeyDown(Alpha2))
 		m_sOptions.lighting = !m_sOptions.lighting;
@@ -84,6 +93,19 @@ void CMainScene::Update()
 
 	if (CInput::GetInstance().GetKeyDown(Alpha4))
 		CGameObject::Find(L"Box")->getTransform().SetParent(nullptr);
+	if (CInput::GetInstance().GetKey(F))
+		m_pMainCam->getCamera().SetMode(CCamera::PERSPECTIVE);
+	if (CInput::GetInstance().GetKey(F))
+	{
+		m_pCameraParent->getTransform().AddEulerAnglesY(90.f * DELTA_TIME);
+	}
+	if (CInput::GetInstance().GetKey(G))
+	{
+		m_pCameraParent->getTransform().AddEulerAnglesY(-90.f * DELTA_TIME);
+
+		if (m_pCameraParent->getTransform().getLocalEulerAngles().y <= 45.f)
+			m_pMainCam->getCamera().SetMode(CCamera::ORTHOGRAPHIC);
+	}
 }
 
 void CMainScene::FixedUpdate()

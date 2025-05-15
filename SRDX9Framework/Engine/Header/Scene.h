@@ -58,6 +58,8 @@ public:
     vector<CGameObject*> getRootObjects();
     CGameObject* FindGameObject(const wstring _name);
 
+    void MoveObjectBehindParent(CGameObject* childObj, CGameObject* parentObj);
+
 private:
     void SafeDestroyObject(CGameObject* _obj);
     void Render_Grid();

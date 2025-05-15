@@ -22,8 +22,6 @@ CPlayer* CPlayer::Create()
 
 void CPlayer::Init()
 {
-	__super::Init();
-
 	getTransform().SetLocalScale(1.5f);
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
@@ -38,7 +36,6 @@ void CPlayer::Init()
 
 void CPlayer::Awake()
 {
-	CComponent::Awake();
 }
 
 void CPlayer::Start()
@@ -47,8 +44,6 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
-	CComponent::Update();
-
 	KeyInput();
 }
 

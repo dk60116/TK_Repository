@@ -1,14 +1,17 @@
 #pragma once
 
 #include "Component.h"
-#include "SpriteRenderer.h"
+#include "Camera.h"
 
-class CEnemy :
-    public CComponent
+class CMainCamera final 
+    : public CComponent
 {
-private:
-	CEnemy();
-	~CEnemy();
+public:
+	CMainCamera();
+	~CMainCamera();
+
+public:
+	static CMainCamera* Create();
 
 public:
 	void Init() override;
@@ -23,21 +26,13 @@ public:
 	void OnDestroy() override;
 
 public:
-	static CEnemy* Create();
+	CCamera& getCamera() { return *m_pCamera; }
 
-public:
-	void SetTarget(CTransform* _target) { m_pTarget = _target; }
-
-public:
-	CSpriteRenderer* m_pRenderer;
-	float m_fMoveSpeed, m_fRotaionSpeed;
-
-	CTransform* m_pTarget;
-	_bool m_bInit;
+private:
+	CCamera* m_pCamera;
 
 	BEGIN_SERIALIZEFIELD
-	SERIALIZEFIELD(m_pRenderer)
-	SERIALIZEFIELD(m_pTarget)
+	SERIALIZEFIELD(m_pCamera)
 	END_SERIALIZEFIELD
 };
 
