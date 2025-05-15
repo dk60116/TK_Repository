@@ -3,7 +3,6 @@
 #include "TriCol.h"
 #include "SpriteRenderer.h"
 #include "MeshRenderer.h"
-#include "MeshRenderer.h"
 
 CMainScene::CMainScene()
 	: m_pMainCam(nullptr)
