@@ -97,9 +97,9 @@ void CEditorCamera::UpdateEditor()
 				camTransform.AddLocalPosition(camTransform.getDirections().right * horizontal * dt * m_sOptions.crtMoveSpeed);
 				camTransform.AddLocalPosition(camTransform.getDirections().forward * vertical * dt * m_sOptions.crtMoveSpeed);
 				
-				if (CInput::GetInstance().GetKey_Editor(Q), true)
+				if (CInput::GetInstance().GetKey_Editor(Q, true))
 					camTransform.AddLocalPosition(camTransform.getDirections().down * dt * m_sOptions.crtMoveSpeed);
-				if (CInput::GetInstance().GetKey_Editor(E), true)
+				if (CInput::GetInstance().GetKey_Editor(E, true))
 					camTransform.AddLocalPosition(camTransform.getDirections().up * dt * m_sOptions.crtMoveSpeed);
 
 				m_v2MouseDragDelta = (currentMouse - m_v2PrevMosuePos).to_vector2();
