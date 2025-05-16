@@ -80,6 +80,24 @@ CCamera* CCamera::Create()
 	return new CCamera();
 }
 
+void CCamera::UpdateViewMatrix()
+{
+	CTransform& tf = getTransform();
+
+	vector3 eye = tf.getPosition();
+	vector3 fwd = tf.getDirections().forward;
+	if (CInput::GetInstance().GetKeyDown(SPACE))
+		CDebug::Log(fwd);
+	vector3 at = eye + fwd;
+	vector3 up = tf.getDirections().up;
+
+	D3DXVECTOR3 eyePos = eye.dVector();
+	D3DXVECTOR3 atPos = at.dVector();
+	D3DXVECTOR3 upVec = up.dVector();
+
+	D3DXMatrixLookAtLH(&m_matViewMatrix, &eyePos, &atPos, &upVec);
+}
+
 void CCamera::UpdateProjectionMatrix()
 {
 	switch (m_eCamViewMode)
@@ -112,24 +130,6 @@ void CCamera::UpdateProjectionMatrix()
 	default:
 		break;
 	}
-}
-
-void CCamera::UpdateViewMatrix()
-{
-	CTransform& tf = getTransform();
-
-	vector3 eye = tf.getPosition();
-	vector3 fwd = tf.getDirections().forward;
-	if (CInput::GetInstance().GetKeyDown(SPACE))
-		CDebug::Log(fwd);
-	vector3 at = eye + fwd;
-	vector3 up = tf.getDirections().up;
-
-	D3DXVECTOR3 eyePos = eye.dVector();
-	D3DXVECTOR3 atPos = at.dVector();
-	D3DXVECTOR3 upVec = up.dVector();
-
-	D3DXMatrixLookAtLH(&m_matViewMatrix, &eyePos, &atPos, &upVec);
 }
 
 void CCamera::ViewProjection()

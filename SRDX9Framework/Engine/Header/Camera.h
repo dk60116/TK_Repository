@@ -37,8 +37,8 @@ public:
 	static CCamera* Create();
 
 private:
-	void UpdateProjectionMatrix();
 	void UpdateViewMatrix();
+	void UpdateProjectionMatrix();
 
 public:
 	const CameraViewMode getMode() { return m_eCamViewMode; }
