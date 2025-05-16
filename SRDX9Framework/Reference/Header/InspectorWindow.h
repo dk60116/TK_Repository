@@ -44,6 +44,7 @@ public:
 
 private:
 	void UpdateScrollInfo();
+	HRESULT HandleComponentAdd(_int _id);
 
 private:
 	InspectorViewOptions m_sOptinos;

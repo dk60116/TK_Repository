@@ -1,6 +1,9 @@
 ﻿#include "InspectorWindow.h"
 #include "EngineEditor.h"
 #include "Resource.h"
+#include "MeshRenderer.h"
+#include "SpriteRenderer.h"
+#include "AudioSource.h"
 
 CInspectorWindow::CInspectorWindow()
 	: m_sOptinos({})
@@ -147,6 +150,10 @@ LRESULT CInspectorWindow::WndProcHandle(HWND _hWnd, UINT _message, WPARAM _wPara
 			}
 			else if (GetProp(hWnd, L"ADDCOMPONENTBUTTON"))
 			{
+				SendMessage(hWnd, BM_SETSTATE, FALSE, 0); 
+				SetFocus(NULL);                            
+				ReleaseCapture();                          
+
 				ShowAddComponentMenu();
 			}
 		}
@@ -511,16 +518,67 @@ void CInspectorWindow::ShowAddComponentMenu()
 	HMENU hPopupMenu = CreatePopupMenu();
 
 	AppendMenu(hPopupMenu, MF_STRING, 1001, L"Camera");
-	AppendMenu(hPopupMenu, MF_STRING, 1002, L"SpriteRenderer");
+	AppendMenu(hPopupMenu, MF_STRING, 1002, L"Light");
+	AppendMenu(hPopupMenu, MF_STRING, 1101, L"Mesh Filter");
+	AppendMenu(hPopupMenu, MF_STRING, 1102, L"Mesh Renderer");
+	AppendMenu(hPopupMenu, MF_STRING, 1103, L"Sprite Renderer");
+	AppendMenu(hPopupMenu, MF_STRING, 1201, L"Audio Source");
 
 	POINT pt;
 	GetCursorPos(&pt);
-	TrackPopupMenu(hPopupMenu, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD, pt.x, pt.y, 0, m_hWnd, NULL);
 
-	int selected = GetMenuDefaultItem(hPopupMenu, FALSE, 0);
+	int selected = TrackPopupMenu
+	(
+		hPopupMenu,
+		TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD,
+		pt.x, pt.y, 0,
+		m_hWnd, NULL
+	);
+
+	DestroyMenu(hPopupMenu);
+
+	if (selected != 0)
+	{
+		if (FAILED(HandleComponentAdd(selected)))
+			return;
+	}
+}
+
+HRESULT CInspectorWindow::HandleComponentAdd(_int _id)
+{
+	CGameObject* target = CEngineEditor::GetInstance().getSelectedGameObject();
 	
-	//if (selected != -1)
-		//HandleComponentAdd(selected);
+	if (!target)
+		return E_FAIL;
+
+	switch (_id)
+	{
+	case 1001:
+		target->AddComponent<CCamera>();
+		break;
+	case 1002:
+		target->AddComponent<CLight>();
+		break;
+	case 1101:
+		target->AddComponent<CMeshFilter>();
+		break;
+	case 1102:
+		target->AddComponent<CMeshRenderer>();
+		break;
+	case 1103:
+		target->AddComponent<CSpriteRenderer>();
+		break;
+	case 1201:
+		target->AddComponent<CAudioSource>();
+		break;
+	default:
+		break;
+	}
+
+	CManagement::GetInstance().getCrtScene()->UpdateEditor();
+	ViewTargetInfor_GameObject(target);
+
+	return S_OK;
 }
 
 void CInspectorWindow::UpdateScrollInfo()
