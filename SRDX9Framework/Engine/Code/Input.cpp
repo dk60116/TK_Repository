@@ -76,7 +76,7 @@ bool CInput::GetMouseButton_Editor(_int _button, _bool _onlyScene)
         return false;
 
     return m_bKeyState[_button] &&
-        (_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"));
+        (!_onlyScene || GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Scene"));
 }
 
 bool CInput::GetMouseButtonDown(_int _button)

@@ -14,7 +14,7 @@ public:
 	virtual ~IDeviceResetListener() = default;
 
 public:
-	void RegisterResetListener(IDeviceResetListener* pListener);
+	void RegisterResetListener(IDeviceResetListener* _listener);
 
 private:
 	vector<IDeviceResetListener*> m_vecResetListeners;

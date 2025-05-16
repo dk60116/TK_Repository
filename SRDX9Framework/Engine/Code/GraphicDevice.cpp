@@ -168,7 +168,7 @@ void CGraphicDev::Free()
 	Safe_Release(m_pGraphicDev);
 }
 
-void IDeviceResetListener::RegisterResetListener(IDeviceResetListener* pListener)
+void IDeviceResetListener::RegisterResetListener(IDeviceResetListener* _listener)
 {
-	m_vecResetListeners.push_back(pListener);
+	m_vecResetListeners.push_back(_listener);
 }
