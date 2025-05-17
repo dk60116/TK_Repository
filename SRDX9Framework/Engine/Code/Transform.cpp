@@ -159,6 +159,9 @@ const wstring CTransform::getName()
 
 void CTransform::SetParent(CTransform* _parent)
 {
+	if (!_parent)
+		return;
+
 	// 1. 현재 월드 행렬 저장
 	_parent->UpdateWorld();
 	UpdateWorld();

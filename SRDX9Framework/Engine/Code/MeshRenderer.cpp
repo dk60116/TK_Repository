@@ -26,7 +26,11 @@ void CMeshRenderer::Init()
 {
     __super::Init();
 
-    m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
+    if (CMeshFilter* mf = m_pGameObject->GetComponent<CMeshFilter>())
+        m_pMeshFilter = mf;
+    else
+        m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
+    
     m_pMeshFilter->AddRef();
     m_pMeshFilter->SetMesh(CMesh::CUBE);
 

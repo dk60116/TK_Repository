@@ -34,7 +34,7 @@ public:
 public:
 	void BuildTree();
 	void AddSceneRecursive(CScene* _scene);
-	void AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject* _gameObject);
+	HRESULT AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject* _gameObject);
 
 private:
 	void SetTreeViewOptions();

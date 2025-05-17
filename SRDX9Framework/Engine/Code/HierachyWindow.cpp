@@ -191,11 +191,17 @@ void CHierachyWindow::AddSceneRecursive(CScene* _scene)
 	HTREEITEM hItem = TreeView_InsertItem(m_hTreeView, &tvInsert);
 
 	for (auto& gameObject : CManagement::GetInstance().getCrtScene()->getRootObjects())
-		AddGameObjectRecursive(hItem, gameObject);
+	{
+		if (FAILED(AddGameObjectRecursive(hItem, gameObject)))
+			continue;
+	}
 }
 
-void CHierachyWindow::AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject* _gameObject)
+HRESULT CHierachyWindow::AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject* _gameObject)
 {
+	if (!_parentItem || !_gameObject)
+		return E_FAIL;
+
 	TVINSERTSTRUCTW tvInsert = {};
 	tvInsert.hParent = _parentItem;
 	tvInsert.hInsertAfter = TVI_LAST;
@@ -206,7 +212,14 @@ void CHierachyWindow::AddGameObjectRecursive(HTREEITEM _parentItem, CGameObject*
 	HTREEITEM hItem = TreeView_InsertItem(m_hTreeView, &tvInsert);
 
 	for (auto& child : _gameObject->getTransform().getChilds())
+	{
+		if (!child)
+			continue;
+
 		AddGameObjectRecursive(hItem, child->getObject());
+	}
+
+	return S_OK;
 }
 
 void CHierachyWindow::SetTreeViewOptions()
