@@ -162,19 +162,16 @@ void CTransform::SetParent(CTransform* _parent)
 	if (!_parent)
 		return;
 
-	// 1. 현재 월드 행렬 저장
 	_parent->UpdateWorld();
 	UpdateWorld();
 	_matrix world = m_matWorld;
 
-	// 2. 이전 부모에서 분리
 	if (m_pParent)
 	{
 		m_pParent->m_lChildList.remove(this);
 		Release();
 	}
 
-	// 3. 새 부모 설정
 	m_pParent = _parent;
 	m_bIsRootParent = (_parent == nullptr);
 
@@ -184,7 +181,6 @@ void CTransform::SetParent(CTransform* _parent)
 		AddRef();
 	}
 
-	// 4. 월드 위치 유지하기 위해 로컬 행렬 계산
 	_matrix local = world;
 	if (_parent)
 	{
@@ -193,7 +189,6 @@ void CTransform::SetParent(CTransform* _parent)
 		local = world * invParent;
 	}
 
-	// 5. 로컬 행렬 분해
 	D3DXVECTOR3 s, t;
 	D3DXQUATERNION r;
 	D3DXMatrixDecompose(&s, &r, &t, &local);
@@ -203,7 +198,6 @@ void CTransform::SetParent(CTransform* _parent)
 	m_vQuaternion = quaternion(r);
 	m_vEulerAngles = quaternion::to_euler(r);
 
-	// 6. 오브젝트 재정렬 (부모 뒤로)
 	if (m_pGameObject && _parent && _parent->getObject())
 	{
 		CScene* scene = m_pGameObject->getScene();
@@ -211,7 +205,6 @@ void CTransform::SetParent(CTransform* _parent)
 			scene->MoveObjectBehindParent(m_pGameObject, _parent->getObject());
 	}
 
-	// 7. 계층 창 업데이트
 	CEngineEditor::GetInstance().getWindow<CHierachyWindow>()->BuildTree();
 }
 

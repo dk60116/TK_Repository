@@ -47,7 +47,8 @@ bool CInput::GetKeyDown_Editor(_int _iKey, _bool _onlyScene )
 
 bool CInput::GetKeyUp(_int _iKey)
 {
-    return !m_bKeyState[_iKey] && m_bPrevKeyState[_iKey];
+    return !m_bKeyState[_iKey] && m_bPrevKeyState[_iKey] &&
+        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
 bool CInput::GetMouseButton(_int _button)
@@ -120,7 +121,8 @@ bool CInput::GetMouseButtonUp(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && m_bPrevKeyState[_button];
+    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && 
+        GetForegroundWindow() == CEngineEditor::GetInstance().FindWindowHandle(L"Game");
 }
 
 bool CInput::GetMouseButtonUp_Editor(_int _button, _bool _onlyScene)

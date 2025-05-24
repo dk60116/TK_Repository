@@ -42,7 +42,6 @@ public:
     void Release();
 
 private:
-    static CInput* m_pInstance;
     map<int, bool> m_bKeyState;
     map<int, bool> m_bPrevKeyState;
     WheelAxisOption m_sWheelOption;
