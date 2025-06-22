@@ -31,7 +31,7 @@ namespace Engine
 
 #define SINGLETONCLASS(c) \
 private: \
-    c(); \
+    explicit c(); \
     c(const c& rhs) = delete; \
     c& operator=(const c& rhs) = delete; \
     virtual ~c(); \

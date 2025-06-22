@@ -8,6 +8,7 @@
 #include "EngineTypedef.h"
 #include "EngineFunction.h"
 #include "EngineEnum.h"
+#include "Display.h"
 #include "EngineDebug.h"
 #include "GraphicDevice.h"
 #include "EngineTime.h"
@@ -15,4 +16,5 @@
 #include "MainProcess.h"
 #include "GameObject.h"
 #include "Component.h"
+#include "Transform.h"
 #include "SceneManager.h"

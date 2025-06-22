@@ -10,6 +10,7 @@ UObject::UObject()
 
 UObject::~UObject()
 {
+    int a = 0;
 }
 
 void UObject::AddRef()
@@ -26,11 +27,6 @@ UINT UObject::Release()
         delete this;
 
     return prevRefCount;
-}
-
-HRESULT UObject::Initialize()
-{
-    return S_OK;
 }
 
 const UINT UObject::Get_RefCnt()

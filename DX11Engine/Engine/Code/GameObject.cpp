@@ -7,6 +7,7 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 	, m_strName(L"")
 	, m_bActive(true)
 	, m_lComponentList({})
+	, m_pTransform(nullptr)
 {
 	m_pDevice->AddRef();
 	m_pContext->AddRef();
@@ -18,12 +19,20 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_strName(_rhs.m_strName)
 	, m_bActive(_rhs.m_bActive)
 	, m_lComponentList(_rhs.m_lComponentList)
+	, m_pTransform(_rhs.m_pTransform)
 {
 }
 
 CGameObject::~CGameObject()
 {
 	OnDestroy();
+}
+
+HRESULT CGameObject::Initialize()
+{
+	m_pTransform = AddComponent<CTransform>();
+
+	return S_OK;
 }
 
 void CGameObject::Awake()
@@ -183,15 +192,11 @@ void CGameObject::OnDestroy()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
-			(*it)->OnDestroy();
+		(*it)->OnDestroy();
+		Safe_Release(*it);
 	}
 
-	auto my = this;
-	Safe_Release(my);
-
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pContext);
+	m_lComponentList.clear();
 }
 
 void CGameObject::OnApplicationQuit()

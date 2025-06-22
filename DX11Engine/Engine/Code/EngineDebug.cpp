@@ -171,7 +171,9 @@ void CDebug::LogError(const vector3 format, ...)
 }
 
 #else
-void CDebug::Init() {}
+CDebug::CDebug() {}
+CDebug::~CDebug() {}
+HRESULT CDebug::Initialize() { return S_OK; }
 void CDebug::Release() {}
 void CDebug::Log(const char*, ...) {}
 void CDebug::Log(const std::string format, ...) {}

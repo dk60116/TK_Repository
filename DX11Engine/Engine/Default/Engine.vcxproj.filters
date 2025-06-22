@@ -49,15 +49,22 @@
     <ClInclude Include="..\Header\Timer.h">
       <Filter>System\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\MainProcess.h">
-      <Filter>Management</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\EngineDebug.h">
       <Filter>System\Debug</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Input.h">
       <Filter>System\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Display.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MainProcess.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Transform.h">
+      <Filter>Component\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\TestClass.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -74,9 +81,6 @@
     </Filter>
     <Filter Include="Component">
       <UniqueIdentifier>{b26f12a9-4ef8-4c23-91d7-ed3c07bfae0d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Display">
-      <UniqueIdentifier>{1c6d9619-5592-42af-9755-fd84bb861c52}</UniqueIdentifier>
     </Filter>
     <Filter Include="Management">
       <UniqueIdentifier>{99f28925-828e-4a8c-839d-05a156844934}</UniqueIdentifier>
@@ -98,6 +102,12 @@
     </Filter>
     <Filter Include="System\Input">
       <UniqueIdentifier>{16f8070f-cb75-4847-a40c-c847b1fecdca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{1c6d9619-5592-42af-9755-fd84bb861c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Transform">
+      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -128,14 +138,21 @@
     <ClCompile Include="..\Code\Timer.cpp">
       <Filter>System\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\MainProcess.cpp">
-      <Filter>Management</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\EngineDebug.cpp">
       <Filter>System\Debug</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Input.cpp">
       <Filter>System\Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\Display.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MainProcess.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Transform.cpp">
+      <Filter>Component\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\TestClass.cpp" />
   </ItemGroup>
 </Project>

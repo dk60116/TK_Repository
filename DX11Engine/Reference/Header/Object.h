@@ -15,9 +15,6 @@ public:
 	UINT Release();
 
 public:
-	virtual HRESULT Initialize();
-
-public:
 	const UINT Get_RefCnt();
 
 protected:

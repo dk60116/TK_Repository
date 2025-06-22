@@ -11,6 +11,8 @@ protected:
 	~CComponent();
 
 public:
+	virtual void Initialize();
+
 	virtual void Awake();
 	virtual void Start();
 	virtual void Update_Editor();
@@ -59,8 +61,11 @@ public:
 	const _bool Get_Enable() const;
 	void Set_Enable(const _bool _enable);
 
+	void Set_Object(class CGameObject* _gameObject);
+
 protected:
 	_bool m_bEnable;
+	class CGameObject* m_pGameObject;
 };
 
 NS_END

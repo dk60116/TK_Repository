@@ -15,6 +15,9 @@ private:
 	virtual ~CGameObject();
 
 public:
+	HRESULT Initialize();
+
+public:
 	virtual void Awake();
 	virtual void Start();
 	virtual void Update_Editor();
@@ -59,6 +62,14 @@ public:
 
 	virtual void OnApplicationQuit();
 
+public:
+	template<typename T>
+	T* AddComponent();
+	template<typename T>
+	T* GetComponent();
+
+	list<CComponent*>& getComponentList() { return m_lComponentList; }
+
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
@@ -68,6 +79,41 @@ private:
 	_bool m_bActive;
 
 	list<CComponent*> m_lComponentList;
+
+	class CTransform* m_pTransform;
 };
 
 NS_END
+
+template<typename T>
+inline T* CGameObject::AddComponent()
+{
+	T* newComponent = T::Create();
+	dynamic_cast<CComponent*>(newComponent)->Set_Object(this);
+	newComponent->AddRef();
+	m_lComponentList.push_back(newComponent);
+	newComponent->Initialize();
+
+	//if (dynamic_cast<CCamera*>(newComponent))
+	//{
+	//	if (!dynamic_cast<CEditorCamera*>(newComponent))
+	//		m_pScene->AddCamera(dynamic_cast<CCamera*>(newComponent));
+	//}
+
+	//if (dynamic_cast<CLight*>(newComponent))
+	//	m_pScene->AddLight(dynamic_cast<CLight*>(newComponent));
+
+	return newComponent;
+}
+
+template<typename T>
+inline T* CGameObject::GetComponent()
+{
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if (T* component = dynamic_cast<T*>(*it))
+			return component;
+	}
+
+	return nullptr;
+}

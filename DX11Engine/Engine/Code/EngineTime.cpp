@@ -9,7 +9,7 @@ CTime::CTime()
 
 CTime::~CTime()
 {
-	Destroy();
+	Release();
 }
 
 HRESULT CTime::Initialize()
@@ -36,6 +36,9 @@ HRESULT CTime::Ready_Time()
 
 void CTime::Update()
 {
+	if (!m_pTimer)
+		return;
+
 	m_pTimer->Update();
 }
 
@@ -54,7 +57,8 @@ void CTime::SetTimeScale(const float _value)
 	m_fTimeScale = _value;
 }
 
-void CTime::Destroy()
+void CTime::Release()
 {
+	m_pTimer->Destroy();
 	Safe_Release(m_pTimer);
 }

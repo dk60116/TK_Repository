@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Object.h"
+#include "epch.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CInput final : public UObject
+class ENGINE_DLL CInput final
 {
 public:
     struct WheelAxisOption

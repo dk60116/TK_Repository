@@ -153,6 +153,7 @@ call copy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Component.h" />
+    <ClInclude Include="..\Header\Display.h" />
     <ClInclude Include="..\Header\EngineDebug.h" />
     <ClInclude Include="..\Header\EngineFunction.h" />
     <ClInclude Include="..\Header\GameObject.h" />
@@ -169,11 +170,14 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneManager.h" />
     <ClInclude Include="..\Header\EngineTime.h" />
+    <ClInclude Include="..\Header\TestClass.h" />
     <ClInclude Include="..\Header\Timer.h" />
+    <ClInclude Include="..\Header\Transform.h" />
     <ClInclude Include="epch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Component.cpp" />
+    <ClCompile Include="..\Code\Display.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\Input.cpp" />
@@ -182,7 +186,9 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Object.cpp" />
     <ClCompile Include="..\Code\SceneManager.cpp" />
     <ClCompile Include="..\Code\EngineTime.cpp" />
+    <ClCompile Include="..\Code\TestClass.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
+    <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Header\GraphicDevice.cpp" />
     <ClCompile Include="epch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

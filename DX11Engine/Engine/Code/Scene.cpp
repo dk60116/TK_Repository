@@ -1,13 +1,16 @@
 #include "epch.h"
 #include "Scene.h"
 
-CScene::CScene(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
+CScene::CScene()
 	: m_iSceneIndex(0)
-	, m_pDevice(_pDevice)
-	, m_pContext(_pContext)
+	, m_pDevice(nullptr)
+	, m_pContext(nullptr)
 	, m_strSceneName(L"")
 	, m_lObjectList({})
 {
+	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
+	m_pContext = CGraphicDevice::GetInstance().Get_Context();
+
 	m_pDevice->AddRef();
 	m_pContext->AddRef();
 }
@@ -70,12 +73,18 @@ void CScene::Render_Editor()
 
 void CScene::Render_Game()
 {
+	auto black = ColorValue::black();
+	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&black);
+	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
+
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		(*it)->OnPreRender();
 		(*it)->Render();
 		(*it)->OnPostRender();
 	}
+
+	CGraphicDevice::GetInstance().Present();
 }
 
 void CScene::SceneRelease()
@@ -90,12 +99,12 @@ void CScene::SceneRelease()
 	Safe_Release(m_pContext);
 }
 
-void CScene::SetName(const wstring _name)
+void CScene::Set_Name(const wstring _name)
 {
-	m_strName = _name;
+	m_strSceneName = _name;
 }
 
-const wstring& CScene::getName() const
+const wstring& CScene::Get_Name() const
 {
 	return m_strName;
 }
@@ -106,7 +115,6 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	newObj->AddRef();
 
 	m_lObjectList.push_back(newObj);
-
 	return newObj;
 }
 

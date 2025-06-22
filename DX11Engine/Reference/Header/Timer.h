@@ -7,7 +7,9 @@ NS_BEGIN(Engine)
 
 class CTimer : public UObject
 {
-public:
+	friend class CTime;
+
+private:
 	explicit CTimer();
 	virtual ~CTimer();
 

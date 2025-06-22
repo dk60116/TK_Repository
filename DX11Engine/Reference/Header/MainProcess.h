@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Object.h"
+#include "epch.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CMainProcess final : public UObject
+class ENGINE_DLL CMainProcess final
 {
 	SINGLETONCLASS(CMainProcess);
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize();
 	void Update_MainApp();
 };
 

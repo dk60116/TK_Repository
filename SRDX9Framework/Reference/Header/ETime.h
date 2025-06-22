@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CTime
+class ENGINE_DLL CTime final
 {
 	SINGLETONCLASS(CTime);
 

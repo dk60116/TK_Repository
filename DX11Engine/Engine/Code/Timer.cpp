@@ -16,7 +16,6 @@ CTimer::CTimer()
 
 CTimer::~CTimer()
 {
-    Destroy();
 }
 
 HRESULT CTimer::Ready_Timer()
@@ -79,6 +78,4 @@ const _float CTimer::Get_TimeDelta() const
 
 void CTimer::Destroy()
 {
-	auto my = this;
-	Safe_Release(my);
 }

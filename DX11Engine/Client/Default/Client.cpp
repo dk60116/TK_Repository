@@ -3,6 +3,7 @@
 
 #include "cpch.h"
 #include "Client.h"
+#include "MainScene.h"
 
 #define MAX_LOADSTRING 100
 
@@ -22,6 +23,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+#ifdef _DEBUG
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetBreakAlloc(223);
+#define _CRTDBG_MAP_ALLOC
+#endif
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -45,6 +52,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+    //CMainScene* mainScene = new CMainScene();
+    //CSceneManager::GetInstance().CreateScene(mainScene, L"Main Scene");
+    //CSceneManager::GetInstance().LoadScene(L"Main Scene");
+
     // 기본 메시지 루프입니다:
     while (true)
     {
@@ -62,6 +73,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
             CMainProcess::GetInstance().Update_MainApp();
     }
+
+#ifdef _DEBUG
+    _CrtDumpMemoryLeaks();
+#endif
 
     return (int) msg.wParam;
 }
@@ -112,9 +127,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
-   {
       return FALSE;
-   }
+
+   if (FAILED(CDisplay::GetInstance().Initialize(hInst, hWnd, nullptr)))
+       return FALSE;
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);

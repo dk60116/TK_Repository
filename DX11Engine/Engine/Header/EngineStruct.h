@@ -584,415 +584,456 @@ namespace Engine
         return vector3(-v.x, -v.y, -v.z);
     }
 #pragma endregion
-//
-//#pragma region vector3Int
-//    struct vector3Int
-//    {
-//        int x;
-//        int y;
-//        int z;
-//
-//        vector3Int()
-//            : x(0), y(0), z(0)
-//        {
-//        }
-//
-//        vector3Int(_int _x, _int _y, _int _z)
-//            : x(_x), y(_y), z(_z)
-//        {
-//        }
-//
-//        vector3Int(UINT _x, UINT _y, UINT _z)
-//            : x((_int)_x), y((_int)_y), z((_int)_z)
-//        {
-//        }
-//
-//        vector3Int(const vector3& v)
-//            : x(static_cast<int>(v.x)), y(static_cast<int>(v.y)), z(static_cast<int>(v.z))
-//        {
-//        }
-//
-//        vector3Int& operator=(const vector3Int& rhs)
-//        {
-//            x = rhs.x;
-//            y = rhs.y;
-//            z = rhs.z;
-//            return *this;
-//        }
-//
-//        vector3Int& operator+=(const vector3Int& rhs)
-//        {
-//            x += rhs.x;
-//            y += rhs.y;
-//            z += rhs.z;
-//            return *this;
-//        }
-//
-//        vector3Int& operator-=(const vector3Int& rhs)
-//        {
-//            x -= rhs.x;
-//            y -= rhs.y;
-//            z -= rhs.z;
-//            return *this;
-//        }
-//
-//        vector3Int& operator*=(int scalar)
-//        {
-//            x *= scalar;
-//            y *= scalar;
-//            z *= scalar;
-//            return *this;
-//        }
-//
-//        vector3Int& operator/=(int scalar)
-//        {
-//            x /= scalar;
-//            y /= scalar;
-//            z /= scalar;
-//            return *this;
-//        }
-//
-//        bool operator==(const vector3Int& rhs) const
-//        {
-//            return x == rhs.x && y == rhs.y && z == rhs.z;
-//        }
-//
-//        bool operator!=(const vector3Int& rhs) const
-//        {
-//            return !(*this == rhs);
-//        }
-//
-//        float length() const
-//        {
-//            return sqrtf(static_cast<float>(x * x + y * y + z * z));
-//        }
-//
-//        int lengthSq() const
-//        {
-//            return x * x + y * y + z * z;
-//        }
-//
-//        vector3 to_vector3() const
-//        {
-//            return vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
-//        }
-//
-//        static vector3Int zero()
-//        {
-//            return vector3Int(0, 0, 0);
-//        }
-//
-//        static vector3Int one()
-//        {
-//            return vector3Int(1, 1, 1);
-//        }
-//
-//        static vector3Int up()
-//        {
-//            return vector3Int(0, 1, 0);
-//        }
-//
-//        static vector3Int down()
-//        {
-//            return vector3Int(0, -1, 0);
-//        }
-//
-//        static vector3Int left()
-//        {
-//            return vector3Int(-1, 0, 0);
-//        }
-//
-//        static vector3Int right()
-//        {
-//            return vector3Int(1, 0, 0);
-//        }
-//
-//        static vector3Int forward()
-//        {
-//            return vector3Int(0, 0, 1);
-//        }
-//
-//        static vector3Int back()
-//        {
-//            return vector3Int(0, 0, -1);
-//        }
-//
-//        static int Distance(const vector3Int& a, const vector3Int& b)
-//        {
-//            int dx = b.x - a.x;
-//            int dy = b.y - a.y;
-//            int dz = b.z - a.z;
-//            return static_cast<int>(sqrtf(static_cast<float>(dx * dx + dy * dy + dz * dz)));
-//        }
-//
-//        static int ManhattanDistance(const vector3Int& a, const vector3Int& b)
-//        {
-//            return abs(b.x - a.x) + abs(b.y - a.y) + abs(b.z - a.z);
-//        }
-//    };
-//
-//    // 연산자 오버로딩
-//    inline vector3Int operator+(const vector3Int& lhs, const vector3Int& rhs)
-//    {
-//        return vector3Int(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
-//    }
-//
-//    inline vector3Int operator-(const vector3Int& lhs, const vector3Int& rhs)
-//    {
-//        return vector3Int(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
-//    }
-//
-//    inline vector3Int operator*(const vector3Int& vec, int scalar)
-//    {
-//        return vector3Int(vec.x * scalar, vec.y * scalar, vec.z * scalar);
-//    }
-//
-//    inline vector3Int operator*(int scalar, const vector3Int& vec)
-//    {
-//        return vector3Int(vec.x * scalar, vec.y * scalar, vec.z * scalar);
-//    }
-//
-//    inline vector3Int operator/(const vector3Int& vec, int scalar)
-//    {
-//        return vector3Int(vec.x / scalar, vec.y / scalar, vec.z / scalar);
-//    }
-//
-//    inline vector3Int operator-(const vector3Int& v)
-//    {
-//        return vector3Int(-v.x, -v.y, -v.z);
-//    }
-//#pragma endregion
-//
-//#pragma region quaternion
-//    struct quaternion
-//    {
-//        float x, y, z, w;
-//
-//        quaternion()
-//            : x(0.f), y(0.f), z(0.f), w(1.f)
-//        {
-//        }
-//
-//        quaternion(float _x, float _y, float _z, float _w)
-//            : x(_x), y(_y), z(_z), w(_w)
-//        {
-//        }
-//
-//        quaternion(const D3DXQUATERNION& q)
-//            : x(q.x), y(q.y), z(q.z), w(q.w)
-//        {
-//        }
-//
-//        D3DXQUATERNION dQuaternion() const
-//        {
-//            return D3DXQUATERNION(x, y, z, w);
-//        }
-//
-//        quaternion& operator=(const quaternion& rhs)
-//        {
-//            x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
-//            return *this;
-//        }
-//
-//        quaternion& operator=(const D3DXQUATERNION& rhs)
-//        {
-//            x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
-//            return *this;
-//        }
-//
-//        bool operator==(const quaternion& rhs) const
-//        {
-//            return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
-//        }
-//
-//        bool operator!=(const quaternion& rhs) const
-//        {
-//            return !(*this == rhs);
-//        }
-//
-//        quaternion operator*(const quaternion& rhs) const
-//        {
-//            D3DXQUATERNION a(x, y, z, w);
-//            D3DXQUATERNION b(rhs.x, rhs.y, rhs.z, rhs.w);
-//            D3DXQUATERNION result;
-//            D3DXQuaternionMultiply(&result, &a, &b);
-//            return quaternion(result);
-//        }
-//
-//        quaternion& operator*=(const quaternion& rhs)
-//        {
-//            *this = *this * rhs;
-//            return *this;
-//        }
-//
-//        quaternion normalized() const
-//        {
-//            D3DXQUATERNION q(x, y, z, w);
-//            D3DXQuaternionNormalize(&q, &q);
-//            return quaternion(q);
-//        }
-//
-//        quaternion conjugated() const
-//        {
-//            return quaternion(-x, -y, -z, w);
-//        }
-//
-//        float dot(const quaternion& rhs) const
-//        {
-//            D3DXQUATERNION a(x, y, z, w);
-//            D3DXQUATERNION b(rhs.x, rhs.y, rhs.z, rhs.w);
-//            return D3DXQuaternionDot(&a, &b);
-//        }
-//
-//        static quaternion identity()
-//        {
-//            return quaternion(0.f, 0.f, 0.f, 1.f);
-//        }
-//
-//        static quaternion from_euler(const vector3& euler_deg)
-//        {
-//            return from_euler(euler_deg.x, euler_deg.y, euler_deg.z);
-//        }
-//
-//        static quaternion from_euler(float _pitch, float _yaw, float _roll)
-//        {
-//            D3DXQUATERNION q;
-//
-//            D3DXQuaternionRotationYawPitchRoll
-//            (
-//                &q,
-//                D3DXToRadian(_yaw),
-//                D3DXToRadian(_pitch),
-//                D3DXToRadian(_roll)
-//            );
-//
-//            return quaternion(q);
-//        }
-//
-//        static vector3 to_euler(const D3DXQUATERNION& _q)
-//        {
-//            vector3 euler;
-//
-//            euler.y = atan2f(2.f * (_q.w * _q.y + _q.x * _q.z), 1.f - 2.f * (_q.y * _q.y + _q.z * _q.z));
-//
-//            float sinp = 2.f * (_q.w * _q.x - _q.z * _q.y);
-//            if (fabs(sinp) >= 1)
-//                euler.x = D3DX_PI / 2 * (sinp > 0 ? 1 : -1);
-//            else
-//                euler.x = asinf(sinp);
-//
-//            euler.z = atan2f(2.f * (_q.w * _q.z + _q.x * _q.y), 1.f - 2.f * (_q.x * _q.x + _q.z * _q.z));
-//
-//            return vector3(D3DXToDegree(euler.x), D3DXToDegree(euler.y), D3DXToDegree(euler.z));
-//        }
-//
-//        D3DXMATRIX to_matrix() const
-//        {
-//            D3DXMATRIX mat;
-//            D3DXQUATERNION q(x, y, z, w);
-//            D3DXMatrixRotationQuaternion(&mat, &q);
-//            return mat;
-//        }
-//
-//        operator D3DXQUATERNION() const
-//        {
-//            return D3DXQUATERNION(x, y, z, w);
-//        }
-//    };
-//
-//#pragma endregion
-//
-//#pragma region ColorValue
-//    struct ColorValue
-//    {
-//        BYTE r;
-//        BYTE g;
-//        BYTE b;
-//        BYTE a;
-//
-//        ColorValue()
-//            : r(255), g(255), b(255), a(255)
-//        {
-//        }
-//
-//        ColorValue(BYTE _r, BYTE _g, BYTE _b, BYTE _a = 255)
-//            : r(_r), g(_g), b(_b), a(_a)
-//        {
-//        }
-//
-//        D3DCOLOR dColor() const { return D3DCOLOR_ARGB(a, r, g, b); }
-//        COLORREF rColor() const { return RGB(r, g, b); }
-//
-//        D3DCOLORVALUE dvColor() const
-//        {
-//            D3DCOLORVALUE color;
-//            color.r = float(r / 255.f);
-//            color.g = float(g / 255.f);
-//            color.b = float(b / 255.f);
-//            color.a = float(a / 255.f);
-//            return color;
-//        }
-//
-//        ColorValue(D3DCOLOR d3dColor)
-//        {
-//            a = (d3dColor >> 24) & 0xFF;
-//            r = (d3dColor >> 16) & 0xFF;
-//            g = (d3dColor >> 8) & 0xFF;
-//            b = (d3dColor >> 0) & 0xFF;
-//        }
-//
-//        ColorValue& operator=(const D3DCOLOR& d3dColor)
-//        {
-//            a = (d3dColor >> 24) & 0xFF;
-//            r = (d3dColor >> 16) & 0xFF;
-//            g = (d3dColor >> 8) & 0xFF;
-//            b = (d3dColor >> 0) & 0xFF;
-//            return *this;
-//        }
-//
-//        operator D3DCOLOR() const
-//        {
-//            return D3DCOLOR_ARGB(a, r, g, b);
-//        }
-//
-//        D3DCOLOR value() const
-//        {
-//            return D3DCOLOR_ARGB(a, r, g, b);
-//        }
-//
-//        static ColorValue red() { return ColorValue(255, 0, 0, 255); }
-//        static ColorValue green() { return ColorValue(0, 255, 0, 255); }
-//        static ColorValue blue() { return ColorValue(0, 0, 255, 255); }
-//        static ColorValue white() { return ColorValue(255, 255, 255, 255); }
-//        static ColorValue black() { return ColorValue(0, 0, 0, 255); }
-//        static ColorValue yellow() { return ColorValue(255, 255, 0, 255); }
-//        static ColorValue cyan() { return ColorValue(0, 255, 255, 255); }
-//        static ColorValue gray() { return ColorValue(128, 128, 128, 255); }
-//        static ColorValue gray(float _value)
-//        {
-//            BYTE v = BYTE(255 * _value);
-//            return ColorValue(v, v, v, 255);
-//        }
-//        static ColorValue magenta() { return ColorValue(255, 0, 255, 255); }
-//        static ColorValue transparent() { return ColorValue(0, 0, 0, 0); }
-//    };
-//#pragma endregion
-//
-//
-//    typedef struct tagIndex16
-//    {
-//        _ushort  _0;
-//        _ushort  _1;
-//        _ushort  _2;
-//
-//    }INDEX16;
-//
-//    typedef struct tagIndex32
-//    {
-//        _ulong	_0;
-//        _ulong	_1;
-//        _ulong	_2;
-//
-//    }INDEX32;
-//
+
+#pragma region vector3Int
+    struct vector3Int
+    {
+        int x;
+        int y;
+        int z;
+
+        vector3Int()
+            : x(0), y(0), z(0)
+        {
+        }
+
+        vector3Int(_int _x, _int _y, _int _z)
+            : x(_x), y(_y), z(_z)
+        {
+        }
+
+        vector3Int(UINT _x, UINT _y, UINT _z)
+            : x((_int)_x), y((_int)_y), z((_int)_z)
+        {
+        }
+
+        vector3Int(const vector3& v)
+            : x(static_cast<int>(v.x)), y(static_cast<int>(v.y)), z(static_cast<int>(v.z))
+        {
+        }
+
+        vector3Int& operator=(const vector3Int& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            z = rhs.z;
+            return *this;
+        }
+
+        vector3Int& operator+=(const vector3Int& rhs)
+        {
+            x += rhs.x;
+            y += rhs.y;
+            z += rhs.z;
+            return *this;
+        }
+
+        vector3Int& operator-=(const vector3Int& rhs)
+        {
+            x -= rhs.x;
+            y -= rhs.y;
+            z -= rhs.z;
+            return *this;
+        }
+
+        vector3Int& operator*=(int scalar)
+        {
+            x *= scalar;
+            y *= scalar;
+            z *= scalar;
+            return *this;
+        }
+
+        vector3Int& operator/=(int scalar)
+        {
+            x /= scalar;
+            y /= scalar;
+            z /= scalar;
+            return *this;
+        }
+
+        bool operator==(const vector3Int& rhs) const
+        {
+            return x == rhs.x && y == rhs.y && z == rhs.z;
+        }
+
+        bool operator!=(const vector3Int& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        float length() const
+        {
+            return sqrtf(static_cast<float>(x * x + y * y + z * z));
+        }
+
+        int lengthSq() const
+        {
+            return x * x + y * y + z * z;
+        }
+
+        vector3 to_vector3() const
+        {
+            return vector3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+        }
+
+        static vector3Int zero()
+        {
+            return vector3Int(0, 0, 0);
+        }
+
+        static vector3Int one()
+        {
+            return vector3Int(1, 1, 1);
+        }
+
+        static vector3Int up()
+        {
+            return vector3Int(0, 1, 0);
+        }
+
+        static vector3Int down()
+        {
+            return vector3Int(0, -1, 0);
+        }
+
+        static vector3Int left()
+        {
+            return vector3Int(-1, 0, 0);
+        }
+
+        static vector3Int right()
+        {
+            return vector3Int(1, 0, 0);
+        }
+
+        static vector3Int forward()
+        {
+            return vector3Int(0, 0, 1);
+        }
+
+        static vector3Int back()
+        {
+            return vector3Int(0, 0, -1);
+        }
+
+        static int Distance(const vector3Int& a, const vector3Int& b)
+        {
+            int dx = b.x - a.x;
+            int dy = b.y - a.y;
+            int dz = b.z - a.z;
+            return static_cast<int>(sqrtf(static_cast<float>(dx * dx + dy * dy + dz * dz)));
+        }
+
+        static int ManhattanDistance(const vector3Int& a, const vector3Int& b)
+        {
+            return abs(b.x - a.x) + abs(b.y - a.y) + abs(b.z - a.z);
+        }
+    };
+
+    // 연산자 오버로딩
+    inline vector3Int operator+(const vector3Int& lhs, const vector3Int& rhs)
+    {
+        return vector3Int(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+    }
+
+    inline vector3Int operator-(const vector3Int& lhs, const vector3Int& rhs)
+    {
+        return vector3Int(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+    }
+
+    inline vector3Int operator*(const vector3Int& vec, int scalar)
+    {
+        return vector3Int(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+    }
+
+    inline vector3Int operator*(int scalar, const vector3Int& vec)
+    {
+        return vector3Int(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+    }
+
+    inline vector3Int operator/(const vector3Int& vec, int scalar)
+    {
+        return vector3Int(vec.x / scalar, vec.y / scalar, vec.z / scalar);
+    }
+
+    inline vector3Int operator-(const vector3Int& v)
+    {
+        return vector3Int(-v.x, -v.y, -v.z);
+    }
+#pragma endregion
+
+#pragma region quaternion
+    struct quaternion
+    {
+        float x, y, z, w;
+
+        quaternion()
+            : x(0.f), y(0.f), z(0.f), w(1.f)
+        {
+        }
+
+        quaternion(float _x, float _y, float _z, float _w)
+            : x(_x), y(_y), z(_z), w(_w)
+        {
+        }
+
+        quaternion(const XMFLOAT4& q)
+            : x(q.x), y(q.y), z(q.z), w(q.w)
+        {
+        }
+
+        quaternion(FXMVECTOR vec)
+        {
+            XMFLOAT4 temp;
+            XMStoreFloat4(&temp, vec);
+            x = temp.x; y = temp.y; z = temp.z; w = temp.w;
+        }
+
+        XMFLOAT4 dQuaternion() const
+        {
+            return XMFLOAT4(x, y, z, w);
+        }
+
+        quaternion& operator=(const quaternion& rhs)
+        {
+            x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
+            return *this;
+        }
+
+        quaternion& operator=(const XMFLOAT4& rhs)
+        {
+            x = rhs.x; y = rhs.y; z = rhs.z; w = rhs.w;
+            return *this;
+        }
+
+        bool operator==(const quaternion& rhs) const
+        {
+            return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
+        }
+
+        bool operator!=(const quaternion& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        quaternion operator*(const quaternion& rhs) const
+        {
+            XMVECTOR q1 = XMVectorSet(x, y, z, w);
+            XMVECTOR q2 = XMVectorSet(rhs.x, rhs.y, rhs.z, rhs.w);
+
+            XMVECTOR qResult = XMQuaternionMultiply(q1, q2);
+
+            return quaternion(qResult);
+        }
+
+        quaternion& operator*=(const quaternion& rhs)
+        {
+            *this = *this * rhs;
+            return *this;
+        }
+
+        quaternion normalized() const
+        {
+            XMVECTOR q = XMVectorSet(x, y, z, w);
+
+            XMVECTOR qNormalized = XMQuaternionNormalize(q);
+
+            return quaternion(qNormalized);
+        }
+
+        quaternion conjugated() const
+        {
+            return quaternion(-x, -y, -z, w);
+        }
+
+        float dot(const quaternion& rhs) const
+        {
+            XMVECTOR q1 = XMVectorSet(x, y, z, w);
+            XMVECTOR q2 = XMVectorSet(rhs.x, rhs.y, rhs.z, rhs.w);
+
+            XMVECTOR result = XMQuaternionDot(q1, q2);
+
+            return XMVectorGetX(result);
+        }
+
+        static quaternion identity()
+        {
+            return quaternion(0.f, 0.f, 0.f, 1.f);
+        }
+
+        static quaternion from_euler(const vector3& euler_deg)
+        {
+            return from_euler(euler_deg.x, euler_deg.y, euler_deg.z);
+        }
+
+        static quaternion from_euler(float _pitch, float _yaw, float _roll)
+        {
+            XMVECTOR q = XMQuaternionRotationRollPitchYaw
+            (
+                XMConvertToRadians(_pitch),
+                XMConvertToRadians(_yaw),
+                XMConvertToRadians(_roll)
+            );
+
+            return quaternion(q);
+        }
+
+        static vector3 to_euler(const XMVECTOR& _q)
+        {
+            vector3 euler;
+
+            XMFLOAT4 quat;
+            XMStoreFloat4(&quat, _q);
+
+            float sinp = 2.f * (quat.w * quat.x - quat.z * quat.y);
+
+            euler.y = atan2f
+            (
+                2.f * (quat.w * quat.y + quat.x * quat.z),
+                1.f - 2.f * (quat.y * quat.y + quat.z * quat.z)
+            );
+
+            if (fabs(sinp) >= 1.f)
+                euler.x = XM_PIDIV2 * (sinp > 0 ? 1.f : -1.f);
+            else
+                euler.x = asinf(sinp);
+
+            euler.z = atan2f
+            (
+                2.f * (quat.w * quat.z + quat.x * quat.y),
+                1.f - 2.f * (quat.x * quat.x + quat.z * quat.z)
+            );
+
+            return vector3
+            (
+                XMConvertToDegrees(euler.x),
+                XMConvertToDegrees(euler.y),
+                XMConvertToDegrees(euler.z)
+            );
+        }
+
+        XMMATRIX to_matrix() const
+        {
+            XMVECTOR q = XMVectorSet(x, y, z, w);
+
+            return XMMatrixRotationQuaternion(q);
+        }
+
+        operator XMVECTOR() const
+        {
+            return XMVectorSet(x, y, z, w);
+        }
+    };
+
+#pragma endregion
+
+#pragma region ColorValue
+    struct ColorValue
+    {
+        BYTE r;
+        BYTE g;
+        BYTE b;
+        BYTE a;
+
+        ColorValue()
+            : r(255), g(255), b(255), a(255)
+        {
+        }
+
+        ColorValue(BYTE _r, BYTE _g, BYTE _b, BYTE _a = 255)
+            : r(_r), g(_g), b(_b), a(_a)
+        {
+        }
+
+        constexpr UINT32 ARGB(BYTE a, BYTE r, BYTE g, BYTE b)
+        {
+            return (static_cast<UINT32>(a) << 24) |
+                (static_cast<UINT32>(r) << 16) |
+                (static_cast<UINT32>(g) << 8) |
+                static_cast<UINT32>(b);
+        }
+
+        XMFLOAT4 dColor() const
+        {
+            return XMFLOAT4(r, g, b, a);
+        }
+
+        //COLORREF rColor() const
+        //{
+        //    return RGB(r, g, b); 
+        //}
+
+        D3DCOLORVALUE dvColor() const
+        {
+            D3DCOLORVALUE color;
+            color.r = float(r / 255.f);
+            color.g = float(g / 255.f);
+            color.b = float(b / 255.f);
+            color.a = float(a / 255.f);
+            return color;
+        }
+
+        ColorValue(D3DCOLOR d3dColor)
+        {
+            a = (d3dColor >> 24) & 0xFF;
+            r = (d3dColor >> 16) & 0xFF;
+            g = (d3dColor >> 8) & 0xFF;
+            b = (d3dColor >> 0) & 0xFF;
+        }
+
+        ColorValue& operator=(const D3DCOLOR& d3dColor)
+        {
+            a = (d3dColor >> 24) & 0xFF;
+            r = (d3dColor >> 16) & 0xFF;
+            g = (d3dColor >> 8) & 0xFF;
+            b = (d3dColor >> 0) & 0xFF;
+            return *this;
+        }
+
+        //operator D3DCOLOR() const
+        //{
+        //    return D3DCOLOR_ARGB(a, r, g, b);
+        //}
+
+        //D3DCOLOR value() const
+        //{
+        //    return D3DCOLOR_ARGB(a, r, g, b);
+        //}
+
+        static ColorValue red() { return ColorValue(255, 0, 0, 255); }
+        static ColorValue green() { return ColorValue(0, 255, 0, 255); }
+        static ColorValue blue() { return ColorValue(0, 0, 255, 255); }
+        static ColorValue white() { return ColorValue(255, 255, 255, 255); }
+        static ColorValue black() { return ColorValue(0, 0, 0, 255); }
+        static ColorValue yellow() { return ColorValue(255, 255, 0, 255); }
+        static ColorValue cyan() { return ColorValue(0, 255, 255, 255); }
+        static ColorValue gray() { return ColorValue(128, 128, 128, 255); }
+        static ColorValue gray(float _value)
+        {
+            BYTE v = BYTE(255 * _value);
+            return ColorValue(v, v, v, 255);
+        }
+        static ColorValue magenta() { return ColorValue(255, 0, 255, 255); }
+        static ColorValue transparent() { return ColorValue(0, 0, 0, 0); }
+    };
+#pragma endregion
+
+
+    typedef struct tagIndex16
+    {
+        _ushort  _0;
+        _ushort  _1;
+        _ushort  _2;
+
+    }INDEX16;
+
+    typedef struct tagIndex32
+    {
+        _ulong	_0;
+        _ulong	_1;
+        _ulong	_2;
+
+    }INDEX32;
+
 #endif // Engine_Struct_h__

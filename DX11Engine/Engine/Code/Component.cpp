@@ -3,12 +3,18 @@
 
 CComponent::CComponent()
 	: m_bEnable(true)
+	//, m_pGameObject(nullptr)
 {
 }
 
 CComponent::~CComponent()
 {
 	OnDestroy();
+}
+
+void CComponent::Initialize()
+{
+
 }
 
 void CComponent::Awake()
@@ -115,5 +121,11 @@ const _bool CComponent::Get_Enable() const
 void CComponent::Set_Enable(const _bool _enable)
 {
 	m_bEnable = _enable;
+}
+
+
+void CComponent::Set_Object(CGameObject* _gameObject)
+{
+	m_pGameObject = _gameObject;
 }
 

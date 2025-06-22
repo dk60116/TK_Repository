@@ -1,22 +1,21 @@
 #pragma once
 
 #include "epch.h"
-#include "Object.h"
 #include "Timer.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CTime final : public UObject
+class ENGINE_DLL CTime final
 {
 	SINGLETONCLASS(CTime);
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize();
 
 public:
 	HRESULT Ready_Time();
 	void Update();
-	void Destroy();
+	void Release();
 
 public:
 	_int Get_FPS();

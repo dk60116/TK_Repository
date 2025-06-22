@@ -5,16 +5,16 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CScene final : public UObject
+class ENGINE_DLL CScene abstract : public UObject
 {
+    friend class CSceneManager;
+
 protected:
-    CScene(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
+    CScene();
     ~CScene();
 
 public:
-    HRESULT Initialize() override;
-
-public:
+    virtual HRESULT Initialize();
     virtual void Awake();
     virtual void Start();
     virtual void UpdateEditor();
@@ -27,8 +27,8 @@ public:
     virtual void SceneRelease();
 
 public:
-    void SetName(const wstring _name);
-    const wstring& getName() const;
+    void Set_Name(const wstring _name);
+    const wstring& Get_Name() const;
 
 public:
     CGameObject* Add_GameObject(wstring _name);
