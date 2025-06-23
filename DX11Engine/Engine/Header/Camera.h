@@ -26,6 +26,7 @@ public:
 	void SetNear(const _float _value);
 	void SetFar(const _float _value);
 	const ColorValue& Get_BackgroundColor() const;
+	void Set_BackgroundColor(const ColorValue& _color);
 
 private:
 	void Bind_ViewMatrix();

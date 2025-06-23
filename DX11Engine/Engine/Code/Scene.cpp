@@ -7,6 +7,7 @@ CScene::CScene()
 	, m_pContext(nullptr)
 	, m_strSceneName(L"")
 	, m_lObjectList({})
+	, m_lCameraList({})
 {
 	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
 	m_pContext = CGraphicDevice::GetInstance().Get_Context();
@@ -77,8 +78,12 @@ void CScene::Render_Editor()
 
 void CScene::Render_Game()
 {
-	auto black = ColorValue::black();
-	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&black);
+	ColorValue backgroudColor = ColorValue::black();
+
+	if (Get_Camera())
+		backgroudColor = Get_Camera()->Get_BackgroundColor();
+
+	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
@@ -117,13 +122,23 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	newObj->AddRef();
 
 	m_lObjectList.push_back(newObj);
-	m_lObjectList.back()->Initialize();
+
+	if (FAILED(m_lObjectList.back()->Initialize()))
+	{
+		Safe_Release(newObj);
+		return nullptr;
+	}
+
+	newObj->Set_Scene(this);
 
 	return newObj;
 }
 
 CCamera* CScene::Get_Camera() const
 {
+	if (m_lCameraList.size() <= 0)
+		return nullptr;
+
 	return m_lCameraList.back();
 }
 

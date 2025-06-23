@@ -74,6 +74,9 @@ public:
 	class CTransform* Get_Transfrom() const;
 
 private:
+	void Set_Scene(CScene* _scene);
+
+private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
 

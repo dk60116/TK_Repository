@@ -86,7 +86,9 @@ HRESULT CGraphicDevice::Clear_BackBuffer_View(const ColorValue* _clearColor)
 	if (!m_pContext)
 		return E_FAIL;
 
-	m_pContext->ClearRenderTargetView(m_pBackBufferRTV, reinterpret_cast<const _float*>(_clearColor));
+	auto dvColor = _clearColor->dvColor();
+
+	m_pContext->ClearRenderTargetView(m_pBackBufferRTV, reinterpret_cast<const _float*>(&dvColor));
 
 	return S_OK;
 }

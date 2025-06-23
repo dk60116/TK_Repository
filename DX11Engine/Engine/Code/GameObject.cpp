@@ -270,3 +270,8 @@ CTransform* CGameObject::Get_Transfrom() const
 	return m_pTransform;
 }
 
+void CGameObject::Set_Scene(CScene* _scene)
+{
+	m_pScene = _scene;
+}
+

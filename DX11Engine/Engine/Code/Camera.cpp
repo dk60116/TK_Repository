@@ -61,6 +61,11 @@ const ColorValue& CCamera::Get_BackgroundColor() const
 	return m_vBackgroundColor;
 }
 
+void CCamera::Set_BackgroundColor(const ColorValue& _color)
+{
+	m_vBackgroundColor = _color;
+}
+
 void CCamera::Bind_ViewMatrix()
 {
 	m_vViewMatrix = m_pGameObject->Get_Transfrom()->Get_InverseWorldMatrix();

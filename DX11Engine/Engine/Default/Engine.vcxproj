@@ -159,10 +159,12 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Display.h" />
     <ClInclude Include="..\Header\EngineDebug.h" />
     <ClInclude Include="..\Header\EngineFunction.h" />
+    <ClInclude Include="..\Header\EngineResource.h" />
     <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
     <ClInclude Include="..\Header\MainProcess.h" />
     <ClInclude Include="..\Header\Input.h" />
+    <ClInclude Include="..\Header\Material.h" />
     <ClInclude Include="..\Header\MeshFilter.h" />
     <ClInclude Include="..\Header\MeshRenderer.h" />
     <ClInclude Include="..\Header\Object.h" />
@@ -179,14 +181,17 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Transform.h" />
     <ClInclude Include="..\Header\MeshBuffer.h" />
     <ClInclude Include="epch.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\Display.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
+    <ClCompile Include="..\Code\EngineResource.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\Input.cpp" />
+    <ClCompile Include="..\Code\Material.cpp" />
     <ClCompile Include="..\Code\MeshFilter.cpp" />
     <ClCompile Include="..\Code\MeshRenderer.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
@@ -202,6 +207,9 @@ call copy.bat</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
