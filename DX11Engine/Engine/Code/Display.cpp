@@ -6,8 +6,8 @@ CDisplay::CDisplay()
 	, m_hGameWindow(nullptr)
 	, m_hEditorWindow(nullptr)
 	, m_bIsFullScreen(false)
-	, m_iWidth(800)
-	, m_iHeight(600)
+	, m_iWidth(1280)
+	, m_iHeight(720)
 {
 }
 
@@ -53,4 +53,9 @@ HWND CDisplay::Get_EditorWindow() const
 const vector2Int CDisplay::Get_ScreenResolution() const
 {
 	return vector2Int(m_iWidth, m_iHeight);
+}
+
+const _float CDisplay::Get_Aspect() const
+{
+	return static_cast<_float>(m_iWidth) / static_cast<_float>(m_iHeight);
 }

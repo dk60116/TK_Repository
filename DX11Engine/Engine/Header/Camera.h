@@ -17,12 +17,28 @@ public:
 	static CCamera* Create();
 
 public:
-	void Initialize() override;
+	HRESULT Initialize() override;
 	void Update() override;
 
+public:
+	const ViewMode Get_ViewMode() const;
+	void Set_ViewMode(const ViewMode _mode);
+	void SetNear(const _float _value);
+	void SetFar(const _float _value);
+	const ColorValue& Get_BackgroundColor() const;
+
 private:
-	void UpdateViewMatrix();
-	void UpdateProjectionMatrix();
+	void Bind_ViewMatrix();
+	void Bind_ProjectionMatrix();
+
+private:
+	ViewMode m_eCamViewMode;
+	_matrix m_vViewMatrix, m_vProjMatrix;
+
+	ColorValue m_vBackgroundColor;
+	_float m_fNear, m_fFar;
+	_float m_fFieldOfView;
+	_float m_fSize;
 };
 
 NS_END

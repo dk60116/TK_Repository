@@ -15,7 +15,7 @@ public:
 	static CMeshFilter* Create();
 
 public:
-	void Initialize() override;
+	HRESULT Initialize() override;
 
 public:
 	void Bind_Mesh_Buffer(CMeshBuffer* _buffer);

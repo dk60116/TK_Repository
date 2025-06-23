@@ -28,9 +28,12 @@ CTransform* CTransform::Create()
 	return new CTransform();
 }
 
-void CTransform::Initialize()
+HRESULT CTransform::Initialize()
 {
-    __super::Initialize();
+    if (FAILED(__super::Initialize()))
+        return E_FAIL;
+
+    return S_OK;
 }
 
 void CTransform::Update()
@@ -44,7 +47,7 @@ const CTransform::DIRECTIONS& CTransform::Get_Direction()
     return m_sDirections;
 }
 
-const _matrix CTransform::Get_InverseMatrix() const
+const _matrix CTransform::Get_InverseWorldMatrix()
 {
     return XMMatrixInverse(nullptr, m_vMatWorld);
 }

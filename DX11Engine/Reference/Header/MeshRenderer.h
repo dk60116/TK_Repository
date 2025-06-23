@@ -14,7 +14,7 @@ public:
 	static MeshRenderer* Create();
 
 public:
-	void Initialize() override;
+	HRESULT Initialize() override;
 	void OnPreCull() override;
 	void OnPreRender() override;
 	void Render() override;

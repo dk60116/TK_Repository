@@ -16,6 +16,7 @@ public:
 	HWND Get_GameWindow() const;
 	HWND Get_EditorWindow() const;
 	const vector2Int Get_ScreenResolution() const;
+	const _float Get_Aspect() const;
 
 private:
 	HINSTANCE m_hInst;

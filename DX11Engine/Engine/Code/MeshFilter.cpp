@@ -15,9 +15,12 @@ CMeshFilter* CMeshFilter::Create()
 	return new CMeshFilter();
 }
 
-void CMeshFilter::Initialize()
+HRESULT CMeshFilter::Initialize()
 {
-	__super::Initialize();
+	if (FAILED(__super::Initialize()))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 void CMeshFilter::Bind_Mesh_Buffer(CMeshBuffer* _buffer)

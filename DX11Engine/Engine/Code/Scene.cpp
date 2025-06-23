@@ -57,10 +57,14 @@ void CScene::Update()
 
 void CScene::FixedUpdate()
 {
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+		(*it)->FixedUpdate();
 }
 
 void CScene::LateUpdateEditor()
 {
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+		(*it)->LateUpdate_Editor();
 }
 
 void CScene::LateUpdate()
@@ -116,6 +120,41 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	m_lObjectList.back()->Initialize();
 
 	return newObj;
+}
+
+CCamera* CScene::Get_Camera() const
+{
+	return m_lCameraList.back();
+}
+
+CCamera* CScene::Get_Camera(const _int _index) const
+{
+	_int i = 0;
+
+	if (m_lCameraList.size() <= 0)
+		return nullptr;
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+	{
+		++i;
+
+		if (_index == i)
+			return (*it);
+	}
+
+	return m_lCameraList.back();
+}
+
+list<class CCamera*>& CScene::Get_CameraList()
+{
+	return m_lCameraList;
+}
+
+CCamera* CScene::Add_Camera(CCamera* _camera)
+{
+	m_lCameraList.push_back(_camera);
+
+	return _camera;
 }
 
 CGameObject* CScene::Instantiate(CGameObject* _gameObject)

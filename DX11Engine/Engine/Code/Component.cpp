@@ -15,13 +15,15 @@ CComponent::~CComponent()
 	Release();
 }
 
-void CComponent::Initialize()
+HRESULT CComponent::Initialize()
 {
 	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
 	m_pContext = CGraphicDevice::GetInstance().Get_Context();
 
 	m_pDevice->AddRef();
 	m_pContext->AddRef();
+
+	return S_OK;
 }
 
 void CComponent::ComponentRelease()
@@ -47,6 +49,10 @@ void CComponent::Update()
 }
 
 void CComponent::FixedUpdate()
+{
+}
+
+void CComponent::LateUpdate_Editor()
 {
 }
 

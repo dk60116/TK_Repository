@@ -24,12 +24,12 @@ public:
 	static CTransform* Create();
 
 public:
-	void Initialize() override;
+	HRESULT Initialize() override;
 	void Update() override;
 
 public:
 	const DIRECTIONS& Get_Direction();
-	const _matrix Get_InverseMatrix() const;
+	const _matrix Get_InverseWorldMatrix();
 
 private:
 	void Bind_Matrix();

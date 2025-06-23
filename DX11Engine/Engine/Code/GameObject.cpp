@@ -7,6 +7,7 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 	, m_strName(L"")
 	, m_bActive(true)
 	, m_lComponentList({})
+	, m_pScene(nullptr)
 	, m_pTransform(nullptr)
 {
 	m_pDevice->AddRef();
@@ -89,6 +90,15 @@ void CGameObject::LateUpdate()
 	}
 }
 
+void CGameObject::LateUpdate_Editor()
+{
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->LateUpdate_Editor();
+	}
+}
+
 void CGameObject::OnMouseEnter()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
@@ -100,38 +110,83 @@ void CGameObject::OnMouseEnter()
 
 void CGameObject::OnMouseOver()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnMouseOver();
+	}
 }
 
 void CGameObject::OnMouseExit()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnMouseExit();
+	}
 }
 
 void CGameObject::OnMouseDown()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnMouseDown();
+	}
 }
 
 void CGameObject::OnMouseDrag()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnMouseDrag();
+	}
 }
 
 void CGameObject::OnMouseUp()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnMouseUp();
+	}
 }
 
 void CGameObject::OnPreCull_Editor()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnPreCull_Editor();
+	}
 }
 
 void CGameObject::OnPreRender_Editor()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnPreRender_Editor();
+	}
 }
 
 void CGameObject::Render_Editor()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->Render_Editor();
+	}
 }
 
 void CGameObject::OnPostRender_Editor()
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enable())
+			(*it)->OnPostRender_Editor();
+	}
 }
 
 void CGameObject::OnPreCull()
@@ -203,5 +258,15 @@ void CGameObject::OnApplicationQuit()
 		if ((*it)->Get_Enable())
 			(*it)->OnApplicationQuit();
 	}
+}
+
+list<CComponent*>& CGameObject::Get_ComponentList()
+{
+	return m_lComponentList;
+}
+
+CTransform* CGameObject::Get_Transfrom() const
+{
+	return m_pTransform;
 }
 

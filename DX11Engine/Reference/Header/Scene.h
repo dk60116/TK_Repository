@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object.h"
-#include "GameObject.h"
 
 NS_BEGIN(Engine)
 
@@ -31,8 +30,12 @@ public:
     const wstring& Get_Name() const;
 
 public:
-    CGameObject* Add_GameObject(wstring _name);
-    CGameObject* Instantiate(CGameObject* _gameObject);
+    class CGameObject* Add_GameObject(wstring _name);
+    class CCamera* Get_Camera() const;
+    class CCamera* Get_Camera(const _int _index) const;
+    list <class CCamera*>& Get_CameraList();
+    class CCamera* Add_Camera(class CCamera* _camera);
+    class CGameObject* Instantiate(class CGameObject* _gameObject);
 
 private:
     ID3D11Device* m_pDevice;
@@ -41,7 +44,8 @@ private:
 private:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
-    list<CGameObject*> m_lObjectList;
+    list <class CGameObject*> m_lObjectList;
+    list <class CCamera*> m_lCameraList;
 };
 
 NS_END

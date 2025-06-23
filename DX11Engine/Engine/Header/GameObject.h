@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Component.h"
+#include "Scene.h"
 
 NS_BEGIN(Engine)
 
@@ -23,6 +24,7 @@ public:
 	virtual void Update_Editor();
 	virtual void Update();
 	virtual void FixedUpdate();
+	virtual void LateUpdate_Editor();
 	virtual void LateUpdate();
 
 	virtual void OnMouseEnter();
@@ -68,7 +70,8 @@ public:
 	template<typename T>
 	T* GetComponent();
 
-	list<CComponent*>& getComponentList() { return m_lComponentList; }
+	list<CComponent*>& Get_ComponentList();
+	class CTransform* Get_Transfrom() const;
 
 private:
 	ID3D11Device* m_pDevice;
@@ -80,7 +83,8 @@ private:
 
 	list<CComponent*> m_lComponentList;
 
-	class CTransform* m_pTransform;
+	class CScene* m_pScene;
+	CTransform* m_pTransform;
 };
 
 NS_END
@@ -92,13 +96,18 @@ inline T* CGameObject::AddComponent()
 	dynamic_cast<CComponent*>(newComponent)->Set_Object(this);
 	newComponent->AddRef();
 	m_lComponentList.push_back(newComponent);
-	newComponent->Initialize();
+	
+	if (FAILED(newComponent->Initialize()))
+	{
+		Safe_Release(newComponent);
+		return nullptr;
+	}
 
-	//if (dynamic_cast<CCamera*>(newComponent))
-	//{
-	//	if (!dynamic_cast<CEditorCamera*>(newComponent))
-	//		m_pScene->AddCamera(dynamic_cast<CCamera*>(newComponent));
-	//}
+	if (dynamic_cast<class CCamera*>(newComponent))
+	{
+		//if (!dynamic_cast<CEditorCamera*>(newComponent))
+		m_pScene->Add_Camera(dynamic_cast<class CCamera*>(newComponent));
+	}
 
 	//if (dynamic_cast<CLight*>(newComponent))
 	//	m_pScene->AddLight(dynamic_cast<CLight*>(newComponent));

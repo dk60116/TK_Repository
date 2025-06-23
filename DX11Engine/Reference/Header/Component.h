@@ -11,7 +11,7 @@ protected:
 	~CComponent();
 
 public:
-	virtual void Initialize();
+	virtual HRESULT Initialize();
 	void ComponentRelease();
 
 	virtual void Awake();
@@ -19,6 +19,7 @@ public:
 	virtual void Update_Editor();
 	virtual void Update();
 	virtual void FixedUpdate();
+	virtual void LateUpdate_Editor();
 	virtual void LateUpdate();
 
 	virtual void OnMouseEnter();
