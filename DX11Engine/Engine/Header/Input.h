@@ -17,6 +17,10 @@ public:
 	SINGLETONCLASS(CInput);
 
 public:
+    HRESULT Initialize();
+    void Release();
+
+public:
     _bool GetKey(_int _iKey);
     _bool GetKey_Editor(_int _iKey, _bool _onlyScene = false);
     _bool GetKeyDown(_int _iKey);
@@ -41,7 +45,6 @@ public:
 public:
     void Reset();
     void Update();
-    void Release();
 
 private:
     map<int, bool> m_bKeyState;

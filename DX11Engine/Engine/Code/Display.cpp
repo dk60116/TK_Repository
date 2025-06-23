@@ -15,6 +15,12 @@ CDisplay::~CDisplay()
 {
 }
 
+CDisplay& CDisplay::GetInstance()
+{
+	static CDisplay inst;
+	return inst;
+}
+
 HRESULT CDisplay::Initialize(HINSTANCE _hInst, HWND _hGameWnd, HWND _hEditorWnd)
 {
 	if (!_hInst)

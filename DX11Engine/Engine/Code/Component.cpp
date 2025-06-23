@@ -2,19 +2,32 @@
 #include "Component.h"
 
 CComponent::CComponent()
-	: m_bEnable(true)
-	//, m_pGameObject(nullptr)
+	: m_pDevice(nullptr)
+	, m_pContext(nullptr)
+	, m_bEnable(true)
+	, m_pGameObject(nullptr)
 {
 }
 
 CComponent::~CComponent()
 {
 	OnDestroy();
+	Release();
 }
 
 void CComponent::Initialize()
 {
+	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
+	m_pContext = CGraphicDevice::GetInstance().Get_Context();
 
+	m_pDevice->AddRef();
+	m_pContext->AddRef();
+}
+
+void CComponent::ComponentRelease()
+{
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
 }
 
 void CComponent::Awake()

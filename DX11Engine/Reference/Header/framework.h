@@ -9,7 +9,9 @@
 #include <d3dcompiler.h>
 #include <dxgi.h>
 #include <DirectXMath.h>
+#include <wrl/client.h>
 using namespace DirectX;
+using Microsoft::WRL::ComPtr;
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>

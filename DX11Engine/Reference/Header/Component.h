@@ -12,6 +12,7 @@ protected:
 
 public:
 	virtual void Initialize();
+	void ComponentRelease();
 
 	virtual void Awake();
 	virtual void Start();
@@ -62,6 +63,10 @@ public:
 	void Set_Enable(const _bool _enable);
 
 	void Set_Object(class CGameObject* _gameObject);
+
+protected:
+	ID3D11Device* m_pDevice;
+	ID3D11DeviceContext* m_pContext;
 
 protected:
 	_bool m_bEnable;

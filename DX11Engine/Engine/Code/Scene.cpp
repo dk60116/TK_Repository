@@ -79,6 +79,7 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
+		(*it)->OnPreCull();
 		(*it)->OnPreRender();
 		(*it)->Render();
 		(*it)->OnPostRender();
@@ -90,10 +91,7 @@ void CScene::Render_Game()
 void CScene::SceneRelease()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-	{
-		(*it)->OnDestroy();
 		Safe_Release(*it);
-	}
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
@@ -115,6 +113,8 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	newObj->AddRef();
 
 	m_lObjectList.push_back(newObj);
+	m_lObjectList.back()->Initialize();
+
 	return newObj;
 }
 

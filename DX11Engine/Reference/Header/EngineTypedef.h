@@ -21,6 +21,8 @@ namespace Engine
 
 	typedef		float						_float;
 	typedef		double						_double;
+
+	typedef		XMMATRIX					_matrix;
 }
 
 #endif // Engine_Typedef_h__

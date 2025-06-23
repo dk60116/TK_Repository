@@ -4,13 +4,12 @@
 
 UObject::UObject()
 	: m_iInstanceId(0)
-	, m_iRefCount(1)
+	, m_iRefCount(0)
 {
 }
 
 UObject::~UObject()
 {
-    int a = 0;
 }
 
 void UObject::AddRef()

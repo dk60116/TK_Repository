@@ -6,7 +6,7 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CDebug final 
 {
-	SINGLETONCLASS(CDebug);
+    SINGLETONCLASS(CDebug);
 
 public:
     static HRESULT Initialize();

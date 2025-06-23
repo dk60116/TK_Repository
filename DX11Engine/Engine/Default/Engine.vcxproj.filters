@@ -23,7 +23,7 @@
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\GraphicDevice.h">
-      <Filter>DirectX</Filter>
+      <Filter>System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\EngineFunction.h">
       <Filter>Engine\Headers</Filter>
@@ -64,7 +64,18 @@
     <ClInclude Include="..\Header\Transform.h">
       <Filter>Component\Transform</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\TestClass.h" />
+    <ClInclude Include="..\Header\MeshRenderer.h">
+      <Filter>Component\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MeshFilter.h">
+      <Filter>Component\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MeshBuffer.h">
+      <Filter>Component\Render\MeshBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Camera.h">
+      <Filter>Component\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -72,9 +83,6 @@
     </Filter>
     <Filter Include="Default">
       <UniqueIdentifier>{ea236076-8edf-431e-8fc7-a10b34749ffd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DirectX">
-      <UniqueIdentifier>{fe65441d-7fe3-4aa3-a77a-1f1db4aed0a0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Headers">
       <UniqueIdentifier>{240ae53d-6561-4cfe-b6df-857f49379c42}</UniqueIdentifier>
@@ -109,13 +117,25 @@
     <Filter Include="Component\Transform">
       <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Component\Render">
+      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\DirectX">
+      <UniqueIdentifier>{fe65441d-7fe3-4aa3-a77a-1f1db4aed0a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Render\MeshBuffer">
+      <UniqueIdentifier>{d66f54ef-9586-4b17-93bc-2206c9e3b325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Camera">
+      <UniqueIdentifier>{13c5e534-fed3-47c8-87a7-f04e0066d5f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\GraphicDevice.cpp">
-      <Filter>DirectX</Filter>
+      <Filter>System\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Component.cpp">
       <Filter>Component</Filter>
@@ -153,6 +173,17 @@
     <ClCompile Include="..\Code\Transform.cpp">
       <Filter>Component\Transform</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\TestClass.cpp" />
+    <ClCompile Include="..\Code\MeshRenderer.cpp">
+      <Filter>Component\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MeshFilter.cpp">
+      <Filter>Component\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MeshBuffer.cpp">
+      <Filter>Component\Render\MeshBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Camera.cpp">
+      <Filter>Component\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

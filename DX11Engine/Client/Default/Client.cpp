@@ -41,20 +41,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance (hInstance, nCmdShow))
-    {
         return FALSE;
-    }
 
-    if (FAILED(CMainProcess::GetInstance().Initialize()))
-        return FALSE;
+    auto s = CSceneManager::GetInstance().Get_CrtScene();
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENTC));
 
     MSG msg;
-
-    //CMainScene* mainScene = new CMainScene();
-    //CSceneManager::GetInstance().CreateScene(mainScene, L"Main Scene");
-    //CSceneManager::GetInstance().LoadScene(L"Main Scene");
 
     // 기본 메시지 루프입니다:
     while (true)
@@ -74,14 +67,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             CMainProcess::GetInstance().Update_MainApp();
     }
 
-#ifdef _DEBUG
-    _CrtDumpMemoryLeaks();
-#endif
-
     return (int) msg.wParam;
 }
-
-
 
 //
 //  함수: MyRegisterClass()
@@ -129,11 +116,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    if (!hWnd)
       return FALSE;
 
-   if (FAILED(CDisplay::GetInstance().Initialize(hInst, hWnd, nullptr)))
-       return FALSE;
-
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
+
+   if (FAILED(CDisplay::GetInstance().Initialize(hInstance, hWnd, nullptr)))
+       return FALSE;
+
+   if (FAILED(CMainProcess::GetInstance().Initialize()))
+       return FALSE;
+
+   CMainScene* mainScene = new CMainScene();
+   CSceneManager::GetInstance().CreateScene(mainScene, L"Main Scene");
+   CSceneManager::GetInstance().LoadScene(L"Main Scene");
 
    return TRUE;
 }

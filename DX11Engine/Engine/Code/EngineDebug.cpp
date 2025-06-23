@@ -14,6 +14,12 @@ CDebug::~CDebug()
 {
 }
 
+CDebug& CDebug::GetInstance()
+{
+    static CDebug inst;
+    return inst;
+}
+
 HRESULT CDebug::Initialize()
 {
     AllocConsole();
@@ -173,6 +179,7 @@ void CDebug::LogError(const vector3 format, ...)
 #else
 CDebug::CDebug() {}
 CDebug::~CDebug() {}
+CDebug& CDebug::GetInstance() { static CDebug inst; return inst; }
 HRESULT CDebug::Initialize() { return S_OK; }
 void CDebug::Release() {}
 void CDebug::Log(const char*, ...) {}

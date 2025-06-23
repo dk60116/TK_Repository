@@ -12,6 +12,23 @@ CInput::~CInput()
     Release();
 }
 
+CInput& CInput::GetInstance()
+{
+    static CInput inst;
+    return inst;
+}
+
+HRESULT CInput::Initialize()
+{
+    return S_OK;
+}
+
+void CInput::Release()
+{
+    m_bKeyState.clear();
+    m_bPrevKeyState.clear();
+}
+
 bool CInput::GetKey(_int _iKey)
 {
     return m_bKeyState[_iKey];
@@ -251,10 +268,4 @@ void CInput::Update()
         m_fWheelAxis = 0.f;
 
     m_fWheelAxis = clamp(m_fWheelAxis, -1.f, 1.f);
-}
-
-void CInput::Release()
-{
-    m_bKeyState.clear();
-    m_bPrevKeyState.clear();
 }

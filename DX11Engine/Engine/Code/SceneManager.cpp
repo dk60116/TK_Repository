@@ -12,6 +12,12 @@ CSceneManager::~CSceneManager()
 	Release();
 }
 
+CSceneManager& CSceneManager::GetInstance()
+{
+	static CSceneManager inst;
+	return inst;
+}
+
 void CSceneManager::Release()
 {
 	m_pCrtScene = nullptr;

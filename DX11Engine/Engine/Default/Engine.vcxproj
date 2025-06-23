@@ -116,6 +116,7 @@
       <PrecompiledHeaderFile>epch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,6 +139,7 @@ call copy.bat</Command>
       <PrecompiledHeaderFile>epch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>ENGINE_EXPORTS</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +154,7 @@ call copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\Display.h" />
     <ClInclude Include="..\Header\EngineDebug.h" />
@@ -160,6 +163,8 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\GraphicDevice.h" />
     <ClInclude Include="..\Header\MainProcess.h" />
     <ClInclude Include="..\Header\Input.h" />
+    <ClInclude Include="..\Header\MeshFilter.h" />
+    <ClInclude Include="..\Header\MeshRenderer.h" />
     <ClInclude Include="..\Header\Object.h" />
     <ClInclude Include="..\Header\EngineDefine.h" />
     <ClInclude Include="..\Header\EngineEnum.h" />
@@ -170,25 +175,28 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneManager.h" />
     <ClInclude Include="..\Header\EngineTime.h" />
-    <ClInclude Include="..\Header\TestClass.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\Transform.h" />
+    <ClInclude Include="..\Header\MeshBuffer.h" />
     <ClInclude Include="epch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\Display.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\Input.cpp" />
+    <ClCompile Include="..\Code\MeshFilter.cpp" />
+    <ClCompile Include="..\Code\MeshRenderer.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\MainProcess.cpp" />
     <ClCompile Include="..\Code\Object.cpp" />
     <ClCompile Include="..\Code\SceneManager.cpp" />
     <ClCompile Include="..\Code\EngineTime.cpp" />
-    <ClCompile Include="..\Code\TestClass.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
+    <ClCompile Include="..\Code\MeshBuffer.cpp" />
     <ClCompile Include="..\Header\GraphicDevice.cpp" />
     <ClCompile Include="epch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

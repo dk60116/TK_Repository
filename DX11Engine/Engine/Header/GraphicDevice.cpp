@@ -15,6 +15,12 @@ CGraphicDevice::~CGraphicDevice()
 	Destroy();
 }
 
+CGraphicDevice& CGraphicDevice::GetInstance()
+{
+	static CGraphicDevice inst;
+	return inst;
+}
+
 HRESULT CGraphicDevice::Initialize()
 {
 	if (FAILED(Ready_GraphicDevice(CDisplay::GetInstance().Get_GameWindow(), CDisplay::GetInstance().Get_ScreenResolution())))

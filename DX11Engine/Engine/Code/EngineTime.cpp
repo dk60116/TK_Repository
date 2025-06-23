@@ -12,6 +12,12 @@ CTime::~CTime()
 	Release();
 }
 
+CTime& CTime::GetInstance()
+{
+	static CTime inst;
+	return inst;
+}
+
 HRESULT CTime::Initialize()
 {
 	if (FAILED(Ready_Time()))
@@ -59,6 +65,5 @@ void CTime::SetTimeScale(const float _value)
 
 void CTime::Release()
 {
-	m_pTimer->Destroy();
 	Safe_Release(m_pTimer);
 }

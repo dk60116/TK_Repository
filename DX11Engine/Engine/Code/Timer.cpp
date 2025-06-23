@@ -68,14 +68,10 @@ void CTimer::Update()
 
 const int CTimer::Get_FPS() const
 {
-    return 0;
+    return m_iFPS;
 }
 
 const _float CTimer::Get_TimeDelta() const
 {
-    return _float();
-}
-
-void CTimer::Destroy()
-{
+	return m_fTimeDelta;
 }

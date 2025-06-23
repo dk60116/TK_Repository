@@ -18,10 +18,10 @@ namespace Engine
 
 #define			USING(NAMESPACE)	using namespace NAMESPACE;
 
-#ifdef	ENGINE_EXPORTS
-#define ENGINE_DLL		_declspec(dllexport)
+#ifdef ENGINE_EXPORTS
+#define ENGINE_DLL __declspec(dllexport)
 #else
-#define ENGINE_DLL		_declspec(dllimport)
+#define ENGINE_DLL
 #endif
 
 #define NO_COPY(CLASSNAME)								\
@@ -36,11 +36,7 @@ private: \
     c& operator=(const c& rhs) = delete; \
     virtual ~c(); \
 public: \
-    static c& GetInstance() \
-    { \
-        static c instance; \
-        return instance; \
-    } \
+    static c& GetInstance(); \
 private: \
     enum { __singleton_dummy = 0 }
 
