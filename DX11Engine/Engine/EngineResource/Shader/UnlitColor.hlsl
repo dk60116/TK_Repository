@@ -1,17 +1,13 @@
 cbuffer PerObject : register(b0)
 {
-    float4x4 gWorld;
+    float4x4 gWorldViewProj;
+    float4 gBaseColor;
 }
 
 cbuffer PerCamera : register(b1)
 {
     float4x4 gView;
     float4x4 gProj;
-}
-
-cbuffer PerMaterial : register(b2)
-{
-    float4 gBaseColor;
 }
 
 // ───── 버텍스 구조
@@ -26,15 +22,11 @@ struct VSOut
 };
 
 // ───── Vertex Shader
-VSOut VSMain(VSIn input)
+VSOut VSMain(VSIn v)
 {
-    VSOut output;
-
-    float4 worldPos = mul(float4(input.posL, 1.0f), gWorld);
-    float4 viewPos = mul(worldPos, gView);
-    output.posH = mul(viewPos, gProj);
-
-    return output;
+    VSOut o;
+    o.posH = mul(float4(v.posL, 1), gWorldViewProj);
+    return o;
 }
 
 // ───── Pixel Shader

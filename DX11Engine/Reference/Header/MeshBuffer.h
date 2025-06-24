@@ -37,8 +37,8 @@ public:
 	void Render();
 
 public:
-	ID3D11Buffer* Get_VertexBuffer();
-	ID3D11Buffer* Get_IndexBuffer();
+	ID3D11Buffer* Get_VertexBuffer() const;
+	ID3D11Buffer* Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
 
 private:

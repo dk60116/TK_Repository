@@ -195,12 +195,12 @@ const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 	return m_sInfo;
 }
 
-ID3D11Buffer* CMeshBuffer::Get_VertexBuffer()
+ID3D11Buffer* CMeshBuffer::Get_VertexBuffer() const
 {
 	return m_pVertexBuffer.Get();
 }
 
-ID3D11Buffer* CMeshBuffer::Get_IndexBuffer()
+ID3D11Buffer* CMeshBuffer::Get_IndexBuffer() const
 {
 	return m_pIndexBuffer.Get();
 }

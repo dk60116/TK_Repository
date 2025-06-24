@@ -79,6 +79,8 @@ CMeshFilter* CMeshRenderer::Get_MeshFilter()
 
 void CMeshRenderer::Set_Material(CMaterial* pMaterial)
 {
+	Safe_Release(m_pMaterial);
+
 	m_pMaterial = pMaterial;
 
 	if (m_pMaterial)
