@@ -1,54 +1,86 @@
 #include "epch.h"
 #include "MeshRenderer.h"
-#include "MeshFilter.h"
 
-MeshRenderer::MeshRenderer()
+CMeshRenderer::CMeshRenderer()
+	: m_pMeshFilter(nullptr)
+	, m_pMaterial(nullptr)
 {
 }
 
-MeshRenderer::~MeshRenderer()
+CMeshRenderer::~CMeshRenderer()
 {
 }
 
-HRESULT MeshRenderer::Initialize()
+CMeshRenderer* CMeshRenderer::Create()
 {
+	return new CMeshRenderer();
+}
+
+HRESULT CMeshRenderer::Initialize()
+{
+	if (FAILED(__super::Initialize()))
+		return E_FAIL;
+
+	if (!m_pMeshFilter)
+	{
+		m_pMeshFilter = m_pGameObject->AddComponent<CMeshFilter>();
+
+		if (m_pMeshFilter)
+			m_pMeshFilter->AddRef();
+	}
+
 	return S_OK;
 }
 
-void MeshRenderer::OnPreCull()
+void CMeshRenderer::OnPreCull()
 {
 }
 
-void MeshRenderer::OnPreRender()
+void CMeshRenderer::OnPreRender()
 {
 }
 
-void MeshRenderer::Render()
+void CMeshRenderer::Render()
 {
-	//if (!m_pMeshFilter)
-	//	return;
+	if (!m_pMeshFilter || !m_pMaterial)
+		return;
 
- //   // 디바이스에 셰이더 세팅
- //   m_pDevice->VSSetShader(m_pDefaultVS, nullptr, 0);
- //   m_pContext->PSSetShader(m_pDefaultPS, nullptr, 0);
+	// MeshBuffer 가져오기
+	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
+	if (!pBuffer)
+		return;
 
- //   // 상수 버퍼(world/view/proj) 세팅
- //   m_pContext->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &matrices, 0, 0);
- //   m_pContext->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
+	// World / View / Projection 행렬 계산
+	_matrix matWorld = m_pGameObject->Get_Transfrom()->Get_WorldMatrix();
+	_matrix matView = CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Get_ViewMatrix();
+	_matrix matProj = CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Get_ProjectionMatrix();
 
- //   // 메시 렌더링
- //   m_pMeshFilter->Render();
+	// 셰이더 + 텍스처 + 상수 버퍼 바인딩
+	m_pMaterial->Bind(matWorld, matView, matProj);
+
+	//실제 메쉬 렌더링 (버퍼 바인딩 및 Draw)
+	pBuffer->Render();
 }
 
-void MeshRenderer::OnPostRender()
+void CMeshRenderer::OnPostRender()
 {
 }
 
-void MeshRenderer::Set_MeshFilter(CMeshFilter* pFilter)
+void CMeshRenderer::OnDestroy()
 {
-	m_pMeshFilter = pFilter;
+	Safe_Release(m_pMeshFilter);
+	Safe_Release(m_pMaterial);
 }
 
-void MeshRenderer::Set_Material(CMaterial* pMaterial)
+CMeshFilter* CMeshRenderer::Get_MeshFilter()
 {
+	return m_pMeshFilter;
+}
+
+void CMeshRenderer::Set_Material(CMaterial* pMaterial)
+{
+	m_pMaterial = pMaterial;
+
+	if (m_pMaterial)
+		m_pMaterial->AddRef();
 }

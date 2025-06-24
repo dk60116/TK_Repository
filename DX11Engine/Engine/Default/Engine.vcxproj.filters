@@ -64,9 +64,6 @@
     <ClInclude Include="..\Header\MeshRenderer.h">
       <Filter>Component\Render</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\MeshFilter.h">
-      <Filter>Component\Render</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\MeshBuffer.h">
       <Filter>Component\Render\MeshBuffer</Filter>
     </ClInclude>
@@ -87,6 +84,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\RectTransform.h">
       <Filter>Component\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MeshFilter.h">
+      <Filter>Component\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,9 +191,6 @@
     <ClCompile Include="..\Code\MeshRenderer.cpp">
       <Filter>Component\Render</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\MeshFilter.cpp">
-      <Filter>Component\Render</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\MeshBuffer.cpp">
       <Filter>Component\Render\MeshBuffer</Filter>
     </ClCompile>
@@ -211,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\RectTransform.cpp">
       <Filter>Component\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MeshFilter.cpp">
+      <Filter>Component\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

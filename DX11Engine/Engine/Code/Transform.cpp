@@ -47,17 +47,59 @@ const CTransform::DIRECTIONS& CTransform::Get_Direction()
     return m_sDirections;
 }
 
-const _matrix CTransform::Get_InverseWorldMatrix()
+const _matrix& CTransform::Get_WorldMatrix() const
+{
+    return m_vMatWorld;
+}
+
+const _matrix CTransform::Get_InverseWorldMatrix() const
 {
     return XMMatrixInverse(nullptr, m_vMatWorld);
 }
 
+
+
+vector3 CTransform::Get_Position() const
+{
+    return m_vPosition;
+}
+
+vector3 CTransform::Get_LocalPosition() const
+{
+    return m_vLocalPosition;
+}
+
+void CTransform::Set_Position(const vector3& _pos)
+{
+    m_vPosition = _pos;
+}
+
+void CTransform::Set_Position(const _float _x, const _float _y, const _float _z)
+{
+    m_vPosition = vector3(_x, _y, _z);
+}
+
+void CTransform::Set_PositionX(const _float _x)
+{
+    m_vPosition.x = _x;
+}
+
+void CTransform::Set_PositionY(const _float _y)
+{
+    m_vPosition.y = _y;
+}
+
+void CTransform::Set_PositionZ(const _float _z)
+{
+    m_vPosition.z = _z;
+}
+
 void CTransform::Bind_Matrix()
 {
-    _fmatrix matScale = XMMatrixScaling(m_vScale.x, m_vScale.y, m_vScale.z);
+    _matrix matScale = XMMatrixScaling(m_vScale.x, m_vScale.y, m_vScale.z);
     m_vMatLocalRotation = XMMatrixRotationQuaternion(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vQuaternion)));
-    _fmatrix matTranslation = XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z);
-    _fmatrix matLocal = matScale * m_vMatLocalRotation * matTranslation;
+    _matrix matTranslation = XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z);
+    _matrix matLocal = matScale * m_vMatLocalRotation * matTranslation;
 
     if (m_pParent)
         m_vMatWorld = matLocal * m_pParent->m_vMatWorld;

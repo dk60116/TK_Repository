@@ -19,3 +19,6 @@
 #include "Component.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "Material.h"
+#include "MeshFilter.h"
+#include "MeshRenderer.h"

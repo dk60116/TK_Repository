@@ -36,6 +36,16 @@ void CCamera::Update()
 	Bind_ProjectionMatrix();
 }
 
+_matrix CCamera::Get_ViewMatrix() const
+{
+	return m_vViewMatrix;
+}
+
+_matrix CCamera::Get_ProjectionMatrix() const
+{
+	return m_vProjMatrix;
+}
+
 const CCamera::ViewMode CCamera::Get_ViewMode() const
 {
 	return m_eCamViewMode;
@@ -68,7 +78,7 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 
 void CCamera::Bind_ViewMatrix()
 {
-	m_vViewMatrix = m_pGameObject->Get_Transfrom()->Get_InverseWorldMatrix();
+	m_vViewMatrix = Get_Transform()->Get_InverseWorldMatrix();
 }
 
 void CCamera::Bind_ProjectionMatrix()
@@ -77,7 +87,7 @@ void CCamera::Bind_ProjectionMatrix()
 
 	switch (m_eCamViewMode)
 	{
-	case Engine::CCamera::PERSPECTIVE:
+	case CCamera::PERSPECTIVE:
 	{
 		m_vProjMatrix = XMMatrixPerspectiveFovLH
 		(
@@ -88,7 +98,7 @@ void CCamera::Bind_ProjectionMatrix()
 		);
 	}
 	break;
-	case Engine::CCamera::ORTHOGRAPHIC:
+	case CCamera::ORTHOGRAPHIC:
 	{
 		const _float fHalfHeight = m_fSize * 0.5f;
 		const _float fHalfWidth = fHalfHeight * aspect;

@@ -10,6 +10,11 @@ CMeshFilter::~CMeshFilter()
 {
 }
 
+void CMeshFilter::OnDestroy()
+{
+	Safe_Release(m_pMeshBuffer);
+}
+
 CMeshFilter* CMeshFilter::Create()
 {
 	return new CMeshFilter();
@@ -23,8 +28,26 @@ HRESULT CMeshFilter::Initialize()
 	return S_OK;
 }
 
-void CMeshFilter::Bind_Mesh_Buffer(CMeshBuffer* _buffer)
+void CMeshFilter::CreateMeshBuffer(const wstring _shape)
 {
+	if (_shape == L"Cube")
+		m_pMeshBuffer = CMeshBuffer::CreateCube(this);
+	if (_shape == L"Sphere")
+		m_pMeshBuffer = CMeshBuffer::CreateSphere(this);
+	
+	if (m_pMeshBuffer)
+		m_pMeshBuffer->AddRef();
+}
+
+void CMeshFilter::Set_MeshBuffer(CMeshBuffer* _buffer)
+{
+	if (m_pMeshBuffer)
+		Safe_Release(m_pMeshBuffer);
+
+	m_pMeshBuffer = _buffer;
+
+	if (m_pMeshBuffer)
+		m_pMeshBuffer->AddRef();
 }
 
 CMeshBuffer* CMeshFilter::Get_MeshBuffer() const

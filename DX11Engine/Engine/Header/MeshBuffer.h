@@ -34,6 +34,9 @@ public:
 	static CMeshBuffer* CreateObjectMesh(CMeshFilter* _filter);
 
 public:
+	void Render();
+
+public:
 	ID3D11Buffer* Get_VertexBuffer();
 	ID3D11Buffer* Get_IndexBuffer();
 	const MESHBUFFERDESC& Get_Info();

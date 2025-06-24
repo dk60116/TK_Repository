@@ -31,9 +31,9 @@ namespace Engine
             return XMFLOAT2(x, y);;
         }
 
-        FXMVECTOR& toXMVector()
+        _vector& toXMVector()
         {
-            FXMVECTOR result = XMVectorSet(x, y, 0.f, 0.f);
+            _vector result = XMVectorSet(x, y, 0.f, 0.f);
             return result;
         }
 
@@ -571,11 +571,6 @@ namespace Engine
         {
             return XMFLOAT3(x, y, z);
         }
-
-        XMFLOAT3 dVector() const
-        {
-            return XMFLOAT3(x, y, z);
-        }
     };
 
     inline vector3 operator+(const vector3& lhs, const vector3& rhs)
@@ -817,16 +812,23 @@ namespace Engine
         {
         }
 
-        quaternion(FXMVECTOR vec)
+        quaternion(_vector vec)
         {
-            XMFLOAT4 temp;
+            _float4 temp;
             XMStoreFloat4(&temp, vec);
             x = temp.x; y = temp.y; z = temp.z; w = temp.w;
         }
 
-        XMFLOAT4 dQuaternion() const
+        const _float4 toFloat4()
         {
-            return XMFLOAT4(x, y, z, w);
+            return _float4(x, y, z, w);
+        }
+
+        _vector toXMVector()
+        {
+            _vector result = XMVectorSet(x, y, z, w);
+
+            return result;
         }
 
         quaternion& operator=(const quaternion& rhs)
@@ -1056,11 +1058,35 @@ namespace Engine
 #pragma region VertexBuffer
     struct VertexTexNormalBuffer
     {
-        vector3 position;
-        vector3 normal;
-        vector2 uv;
+        _float3  position;
+        _float3  normal;
+        _float2 uv;
+    };
+
+    struct VertexTexNormalTangentBuffer
+    {
+        _float3 position;
+        _float3 normal;
+        _float2 uv;
+        _float3 tangent;
     };
 #pragma endregion;
+
+#pragma region ShaderBuffer
+    struct MatrixCB
+    {
+        _matrix world = XMMatrixIdentity();
+        _matrix view = XMMatrixIdentity();
+        _matrix proj = XMMatrixIdentity();
+    };
+
+    struct MaterialCB
+    {
+        _float4 diffuseColor;
+        _bool useTexture;
+        _float3 padding;
+    };
+#pragma endregion
 
     typedef struct tagIndex16
     {

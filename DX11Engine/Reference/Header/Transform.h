@@ -29,7 +29,19 @@ public:
 
 public:
 	const DIRECTIONS& Get_Direction();
-	const _matrix Get_InverseWorldMatrix();
+	const _matrix& Get_WorldMatrix() const;
+	const _matrix Get_InverseWorldMatrix() const;
+
+public:
+	vector3 Get_Position() const;
+	vector3 Get_LocalPosition() const;
+
+public:
+	void Set_Position(const vector3& _pos);
+	void Set_Position(const _float _x, const _float _y, const _float _z);
+	void Set_PositionX(const _float _x);
+	void Set_PositionY(const _float _y);
+	void Set_PositionZ(const _float _z);
 
 private:
 	void Bind_Matrix();

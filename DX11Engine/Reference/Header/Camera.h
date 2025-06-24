@@ -21,6 +21,8 @@ public:
 	void Update() override;
 
 public:
+	_matrix Get_ViewMatrix() const;
+	_matrix Get_ProjectionMatrix() const;
 	const ViewMode Get_ViewMode() const;
 	void Set_ViewMode(const ViewMode _mode);
 	void SetNear(const _float _value);

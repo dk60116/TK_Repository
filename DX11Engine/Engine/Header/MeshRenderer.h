@@ -4,14 +4,14 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL MeshRenderer final : public CComponent
+class ENGINE_DLL CMeshRenderer final : public CComponent
 {
 protected:
-	explicit MeshRenderer();
-	~MeshRenderer();
+	explicit CMeshRenderer();
+	~CMeshRenderer();
 
 public:
-	static MeshRenderer* Create();
+	static CMeshRenderer* Create();
 
 public:
 	HRESULT Initialize() override;
@@ -20,12 +20,15 @@ public:
 	void Render() override;
 	void OnPostRender() override;
 
+	void OnDestroy() override;
+
 public:
-	void Set_MeshFilter(class CMeshFilter* pFilter);
-	void Set_Material(class CMaterial* pMaterial);
+	CMeshFilter* Get_MeshFilter();
+	void Set_Material(CMaterial* pMaterial);
 
 private:
-	class CMeshFilter* m_pMeshFilter;
+	CMeshFilter* m_pMeshFilter;
+	CMaterial* m_pMaterial;
 };
 
 NS_END

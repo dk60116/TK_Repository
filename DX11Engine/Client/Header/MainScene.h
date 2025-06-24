@@ -10,5 +10,10 @@ public:
 
 public:
 	HRESULT Initialize() override;
+	void Update() override;
+
+private:
+	CCamera* m_pMainCamera;
+	class CPlayer* m_pPlayer;
 };
 

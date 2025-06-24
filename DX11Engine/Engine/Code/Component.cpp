@@ -143,8 +143,18 @@ void CComponent::Set_Enable(const _bool _enable)
 }
 
 
+CGameObject* CComponent::Get_GameObject()
+{
+	return m_pGameObject;
+}
+
 void CComponent::Set_Object(CGameObject* _gameObject)
 {
 	m_pGameObject = _gameObject;
+}
+
+CTransform* CComponent::Get_Transform()
+{
+	return m_pGameObject->Get_Transfrom();
 }
 

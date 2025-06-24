@@ -4,23 +4,26 @@
 
 class ENGINE_DLL CMaterial final : public UObject
 {
-public:
-	explicit CMaterial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+private:
+	explicit CMaterial();
 	virtual ~CMaterial();
 
 public:
-	HRESULT Initialize(const std::wstring& vsPath, const std::wstring& psPath);
+	static CMaterial* Create(const wstring _path = L"");
+
+private:
+	HRESULT Initialize(const wstring _path = L"");
 	void OnDestroy();
 
 public:
-	void Render();
+	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _pojectoin);
 
 public:
+	HRESULT Load_Shader(const wstring& _path);
 	void Set_DiffuseColor(const ColorValue& color);
 	void Set_DiffuseTexture(ID3D11ShaderResourceView* pSRV);
 
 private:
-	HRESULT Load_Shader(const std::wstring& vsPath, const std::wstring& psPath);
 	HRESULT Create_ConstantBuffer();
 
 	void Bind_Shader();
@@ -35,7 +38,8 @@ private:
 
 	ID3D11InputLayout* m_pInputLayout;
 
-	ID3D11Buffer* m_pConstantBuffer;
+	ID3D11Buffer* m_pMatrixBuffer;
+	ID3D11Buffer* m_pMaterialBuffer;
 
 	ID3D11ShaderResourceView* m_pDiffuseSRV;
 	ColorValue m_vDiffuseColor;

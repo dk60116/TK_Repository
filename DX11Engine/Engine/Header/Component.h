@@ -6,6 +6,8 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CComponent abstract : public UObject
 {
+	friend class CGameObject;
+
 protected:
 	CComponent();
 	~CComponent();
@@ -63,6 +65,10 @@ public:
 	const _bool Get_Enable() const;
 	void Set_Enable(const _bool _enable);
 
+	CGameObject* Get_GameObject();
+	class CTransform* Get_Transform();
+
+private:
 	void Set_Object(class CGameObject* _gameObject);
 
 protected:

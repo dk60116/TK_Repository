@@ -5,7 +5,7 @@
 
 NS_BEGIN(Engine)
 
-class CMeshFilter : public CComponent
+class ENGINE_DLL CMeshFilter : public CComponent
 {
 protected:
 	explicit CMeshFilter();
@@ -16,12 +16,16 @@ public:
 
 public:
 	HRESULT Initialize() override;
+	void OnDestroy();
 
 public:
-	void Bind_Mesh_Buffer(CMeshBuffer* _buffer);
+	void CreateMeshBuffer(const wstring _shape);
 
 public:
 	CMeshBuffer* Get_MeshBuffer() const;
+
+private:
+	void Set_MeshBuffer(CMeshBuffer* _buffer);
 
 private:
 	CMeshBuffer* m_pMeshBuffer;
