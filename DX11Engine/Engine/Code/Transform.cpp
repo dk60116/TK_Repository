@@ -54,10 +54,10 @@ const _matrix CTransform::Get_InverseWorldMatrix()
 
 void CTransform::Bind_Matrix()
 {
-    XMMATRIX matScale = XMMatrixScaling(m_vScale.x, m_vScale.y, m_vScale.z);
-    m_vMatLocalRotation = XMMatrixRotationQuaternion(XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&m_vQuaternion)));
-    XMMATRIX matTranslation = XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z);
-    XMMATRIX matLocal = matScale * m_vMatLocalRotation * matTranslation;
+    _fmatrix matScale = XMMatrixScaling(m_vScale.x, m_vScale.y, m_vScale.z);
+    m_vMatLocalRotation = XMMatrixRotationQuaternion(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vQuaternion)));
+    _fmatrix matTranslation = XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z);
+    _fmatrix matLocal = matScale * m_vMatLocalRotation * matTranslation;
 
     if (m_pParent)
         m_vMatWorld = matLocal * m_pParent->m_vMatWorld;

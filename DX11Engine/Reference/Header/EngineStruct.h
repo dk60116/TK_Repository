@@ -31,9 +31,9 @@ namespace Engine
             return XMFLOAT2(x, y);;
         }
 
-        _vector& toXMVector()
+        FXMVECTOR& toXMVector()
         {
-            _vector result = XMVectorSet(x, y, 0.f, 0.f);
+            FXMVECTOR result = XMVectorSet(x, y, 0.f, 0.f);
             return result;
         }
 

@@ -37,6 +37,12 @@ namespace Engine
             return result;
         }
 
+        _vector& toXMVector()
+        {
+            _vector result = XMVectorSet(x, y, 0.f, 0.f);
+            return result;
+        }
+
         vector2& operator=(const XMFLOAT2& rhs)
         {
             x = rhs.x;
@@ -817,16 +823,23 @@ namespace Engine
         {
         }
 
-        quaternion(FXMVECTOR vec)
+        quaternion(_vector vec)
         {
-            XMFLOAT4 temp;
+            _float4 temp;
             XMStoreFloat4(&temp, vec);
             x = temp.x; y = temp.y; z = temp.z; w = temp.w;
         }
 
-        XMFLOAT4 dQuaternion() const
+        const _float4 toFloat4()
         {
-            return XMFLOAT4(x, y, z, w);
+            return _float4(x, y, z, w);
+        }
+
+        _vector toXMVector()
+        {
+            _vector result = XMVectorSet(x, y, z, w);
+
+            return result;
         }
 
         quaternion& operator=(const quaternion& rhs)
