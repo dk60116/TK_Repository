@@ -4,6 +4,7 @@
 CMaterial::CMaterial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(nullptr)
 	, m_pContext(nullptr)
+	, m_pVertexShader(nullptr)
 	, m_pPixelShader(nullptr)
 	, m_pInputLayout(nullptr)
 	, m_pConstantBuffer(nullptr)
@@ -77,7 +78,7 @@ HRESULT CMaterial::Load_Shader(const std::wstring& vsPath, const std::wstring& p
 
 HRESULT CMaterial::Create_ConstantBuffer()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void CMaterial::Bind_Shader()

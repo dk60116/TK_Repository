@@ -14,7 +14,7 @@ public:
 		D3D11_PRIMITIVE_TOPOLOGY topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		UINT vertexSize = 0;
 		UINT vertextCount = 0;
-		UINT* Indices = nullptr;
+		UINT* indices = nullptr;
 		UINT indexCount = 0;
 	}MESHBUFFERDESC;
 

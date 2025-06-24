@@ -85,6 +85,9 @@
     <ClInclude Include="..\Header\EngineResource.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\RectTransform.h">
+      <Filter>Component\Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -205,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\EngineResource.cpp">
       <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\RectTransform.cpp">
+      <Filter>Component\Transform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

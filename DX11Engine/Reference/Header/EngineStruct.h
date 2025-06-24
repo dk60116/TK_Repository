@@ -8,8 +8,8 @@ namespace Engine
 #pragma region vector2
     struct vector2
     {
-        float x;
-        float y;
+        _float x;
+        _float y;
 
         vector2()
             : x(0.f), y(0.f)
@@ -24,6 +24,17 @@ namespace Engine
         vector2(const XMFLOAT2& v)
             : x(v.x), y(v.y)
         {
+        }
+
+        const _float2& toFloat2()
+        {
+            return XMFLOAT2(x, y);;
+        }
+
+        _vector& toXMVector()
+        {
+            _vector result = XMVectorSet(x, y, 0.f, 0.f);
+            return result;
         }
 
         vector2& operator=(const XMFLOAT2& rhs)
@@ -219,6 +230,17 @@ namespace Engine
         {
         }
 
+        const _float2& toFloat2()
+        {
+            return _float2(static_cast<_float>(x), static_cast<_float>(y));
+        }
+
+        _vector& toXMVector()
+        {
+            _vector result = XMVectorSet(static_cast<_float>(x), static_cast<_float>(y), 0.f, 0.f);
+            return result;
+        }
+
         vector2Int& operator=(const vector2Int& rhs)
         {
             x = rhs.x;
@@ -375,6 +397,18 @@ namespace Engine
         vector3(const XMFLOAT3& v)
             : x(v.x), y(v.y), z(v.z)
         {
+        }
+
+        const _float3 toFloat3()
+        {
+            return _float3(x, y, z);
+        }
+
+        _vector toXMVector()
+        {
+            _vector result = XMVectorSet(x, y, z, 0.f);
+
+            return result;
         }
 
         vector3& operator=(const vector3& rhs)
@@ -1019,6 +1053,14 @@ namespace Engine
     };
 #pragma endregion
 
+#pragma region VertexBuffer
+    struct VertexTexNormalBuffer
+    {
+        vector3 position;
+        vector3 normal;
+        vector2 uv;
+    };
+#pragma endregion;
 
     typedef struct tagIndex16
     {

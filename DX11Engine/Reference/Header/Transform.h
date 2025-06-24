@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CTransform final : public CComponent
+class ENGINE_DLL CTransform : public CComponent
 {
 	typedef struct TransformDirections
 	{

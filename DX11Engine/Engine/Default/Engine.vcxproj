@@ -174,6 +174,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\EngineStruct.h" />
     <ClInclude Include="..\Header\EngineTypedef.h" />
     <ClInclude Include="..\Header\framework.h" />
+    <ClInclude Include="..\Header\RectTransform.h" />
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneManager.h" />
     <ClInclude Include="..\Header\EngineTime.h" />
@@ -194,6 +195,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Material.cpp" />
     <ClCompile Include="..\Code\MeshFilter.cpp" />
     <ClCompile Include="..\Code\MeshRenderer.cpp" />
+    <ClCompile Include="..\Code\RectTransform.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\MainProcess.cpp" />
     <ClCompile Include="..\Code\Object.cpp" />

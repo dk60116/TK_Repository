@@ -29,11 +29,11 @@ HRESULT CMeshBuffer::Initialize(const void* _vertices, MESHBUFFERDESC _descripti
 	m_pVertexSysMem = malloc(size);
 	memcpy(m_pVertexSysMem, _vertices, size);
 
-	if (_description.indexCount > 0 && _description.Indices != nullptr)
+	if (_description.indexCount > 0 && _description.indices != nullptr)
 	{
 		size_t indexSize = sizeof(UINT) * _description.indexCount;
 		m_pIndexSysMem = malloc(indexSize);
-		memcpy(m_pIndexSysMem, _description.Indices, indexSize);
+		memcpy(m_pIndexSysMem, _description.indices, indexSize);
 	}
 
 	return S_OK;
@@ -56,43 +56,61 @@ void CMeshBuffer::OnDestroy()
 
 CMeshBuffer* CMeshBuffer::CreateCube(CMeshFilter* _filter)
 {
-    struct Vertex
+    static const VertexTexNormalBuffer cubeVertices[24] =
     {
-        vector3 position;
-        vector3 normal;
-        vector2 uv;
+        // 앞(-Z)
+        {{-1, -1, -1}, { 0,  0, -1}, {0,1}},
+        {{ 1, -1, -1}, { 0,  0, -1}, {1,1}},
+        {{ 1,  1, -1}, { 0,  0, -1}, {1,0}},
+        {{-1,  1, -1}, { 0,  0, -1}, {0,0}},
+
+        // 뒤(+Z)
+        {{ 1, -1,  1}, { 0,  0,  1}, {0,1}},
+        {{-1, -1,  1}, { 0,  0,  1}, {1,1}},
+        {{-1,  1,  1}, { 0,  0,  1}, {1,0}},
+        {{ 1,  1,  1}, { 0,  0,  1}, {0,0}},
+
+        // 왼(-X)
+        {{-1, -1,  1}, {-1,  0,  0}, {0,1}},
+        {{-1, -1, -1}, {-1,  0,  0}, {1,1}},
+        {{-1,  1, -1}, {-1,  0,  0}, {1,0}},
+        {{-1,  1,  1}, {-1,  0,  0}, {0,0}},
+
+        // 오(+X)
+        {{ 1, -1, -1}, { 1,  0,  0}, {0,1}},
+        {{ 1, -1,  1}, { 1,  0,  0}, {1,1}},
+        {{ 1,  1,  1}, { 1,  0,  0}, {1,0}},
+        {{ 1,  1, -1}, { 1,  0,  0}, {0,0}},
+
+        // 위(+Y)
+        {{-1,  1, -1}, { 0,  1,  0}, {0,1}},
+        {{ 1,  1, -1}, { 0,  1,  0}, {1,1}},
+        {{ 1,  1,  1}, { 0,  1,  0}, {1,0}},
+        {{-1,  1,  1}, { 0,  1,  0}, {0,0}},
+
+        // 아래(-Y)
+        {{-1, -1,  1}, { 0, -1,  0}, {0,1}},
+        {{ 1, -1,  1}, { 0, -1,  0}, {1,1}},
+        {{ 1, -1, -1}, { 0, -1,  0}, {1,0}},
+        {{-1, -1, -1}, { 0, -1,  0}, {0,0}},
     };
 
-    static Vertex cubeVertices[8] = 
+    static UINT cubeIndices[36] =
     {
-        {{-1,-1,-1}, {0,0,-1}, {0,1}}, {{1,-1,-1}, {0,0,-1}, {1,1}},
-        {{1,1,-1}, {0,0,-1}, {1,0}}, {{-1,1,-1}, {0,0,-1}, {0,0}},
-        {{-1,-1,1}, {0,0,1}, {0,1}}, {{1,-1,1}, {0,0,1}, {1,1}},
-        {{1,1,1}, {0,0,1}, {1,0}}, {{-1,1,1}, {0,0,1}, {0,0}}
-    };
-
-    static UINT cubeIndices[] = 
-    {
-        // 앞면
-        0, 1, 2, 0, 2, 3,
-        // 뒷면
-        5, 4, 7, 5, 7, 6,
-        // 왼쪽
-        4, 0, 3, 4, 3, 7,
-        // 오른쪽
-        1, 5, 6, 1, 6, 2,
-        // 위
-        3, 2, 6, 3, 6, 7,
-        // 아래
-        4, 5, 1, 4, 1, 0
+         0,  1,  2,  0,  2,  3,   // 앞
+         4,  5,  6,  4,  6,  7,   // 뒤
+         8,  9, 10,  8, 10, 11,   // 왼
+        12, 13, 14, 12, 14, 15,   // 오
+        16, 17, 18, 16, 18, 19,   // 위
+        20, 21, 22, 20, 22, 23    // 아래
     };
 
     CMeshBuffer::MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    desc.vertexSize = sizeof(Vertex);
+    desc.vertexSize = sizeof(VertexTexNormalBuffer);
     desc.vertextCount = 8;
     desc.indexCount = _countof(cubeIndices);
-    desc.Indices = cubeIndices;
+    desc.indices = cubeIndices;
 
     CMeshBuffer* newBuffer = new CMeshBuffer();
     newBuffer->m_pFilter = _filter;
