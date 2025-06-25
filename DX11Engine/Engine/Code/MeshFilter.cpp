@@ -34,6 +34,8 @@ void CMeshFilter::CreateMeshBuffer(const wstring _shape)
 		m_pMeshBuffer = CMeshBuffer::CreateCube(this);
 	if (_shape == L"Sphere")
 		m_pMeshBuffer = CMeshBuffer::CreateSphere(this);
+	if (_shape == L"Triangle")
+		m_pMeshBuffer = CMeshBuffer::CreateTriangle(this);
 	
 	if (m_pMeshBuffer)
 		m_pMeshBuffer->AddRef();

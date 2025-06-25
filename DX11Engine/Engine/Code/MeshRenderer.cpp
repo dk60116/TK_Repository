@@ -29,6 +29,12 @@ HRESULT CMeshRenderer::Initialize()
 			m_pMeshFilter->AddRef();
 	}
 
+	D3D11_RASTERIZER_DESC noCullDesc = {};
+	noCullDesc.FillMode = D3D11_FILL_SOLID;
+	noCullDesc.CullMode = D3D11_CULL_NONE;    // ← 컬링 없음
+	noCullDesc.FrontCounterClockwise = FALSE;
+	noCullDesc.DepthClipEnable = TRUE;
+
 	return S_OK;
 }
 
@@ -51,7 +57,7 @@ void CMeshRenderer::Render()
 		return;
 
 	// World / View / Projection 행렬 계산
-	_matrix matWorld = m_pGameObject->Get_Transfrom()->Get_WorldMatrix();
+	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
 	_matrix matView = CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Get_ViewMatrix();
 	_matrix matProj = CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Get_ProjectionMatrix();
 

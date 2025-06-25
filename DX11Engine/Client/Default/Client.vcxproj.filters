@@ -10,16 +10,16 @@
     <Filter Include="Scripts">
       <UniqueIdentifier>{4e9e2feb-d1d4-4d65-9a54-e50cbc00863d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Scenes">
-      <UniqueIdentifier>{f86f4b3c-77f8-417b-a472-cd7c4aae6129}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts\Object">
       <UniqueIdentifier>{c3c838b3-fad6-4c6b-a95f-3ec27fda1e3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Scene">
+      <UniqueIdentifier>{f86f4b3c-77f8-417b-a472-cd7c4aae6129}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
-      <Filter>Scripts\Scenes</Filter>
+      <Filter>Scripts\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Client.h">
       <Filter>Client</Filter>
@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
-      <Filter>Scripts\Scenes</Filter>
+      <Filter>Scripts\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
       <Filter>Client</Filter>

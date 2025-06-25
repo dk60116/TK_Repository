@@ -103,12 +103,15 @@ HRESULT CMaterial::Load_Shader(const wstring& _path)
 	}
 
 	hr = m_pDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &m_pVertexShader);
-	if (FAILED(hr)) return hr;
+	if (FAILED(hr)) 
+		return hr;
 
 	// Pixel Shader 컴파일
 	ComPtr<ID3DBlob> psBlob = nullptr;
+
 	hr = D3DCompileFromFile(_path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"PSMain", "ps_5_0", 0, 0, &psBlob, &errorBlob);
+
 	if (FAILED(hr))
 	{
 		if (errorBlob)
@@ -119,7 +122,9 @@ HRESULT CMaterial::Load_Shader(const wstring& _path)
 	}
 
 	hr = m_pDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &m_pPixelShader);
-	if (FAILED(hr)) return hr;
+	
+	if (FAILED(hr)) 
+		return hr;
 
 	// InputLayout 정의 (POSITION, NORMAL, TEXCOORD, TANGENT)
 	//D3D11_INPUT_ELEMENT_DESC layout[] =

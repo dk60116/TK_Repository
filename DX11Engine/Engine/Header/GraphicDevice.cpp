@@ -26,15 +26,22 @@ HRESULT CGraphicDevice::Initialize()
 	if (FAILED(Ready_GraphicDevice(CDisplay::GetInstance().Get_GameWindow(), CDisplay::GetInstance().Get_ScreenResolution())))
 		return E_FAIL;
 
-	vector2Int resolution = CDisplay::GetInstance().Get_ScreenResolution();
-
-	if (FAILED(Ready_BackBufferRenderTargetView()))
+	vector2Int res = CDisplay::GetInstance().Get_ScreenResolution();
+	if (FAILED(Ready_BackBufferRenderTargetView()))  
 		return E_FAIL;
-
-	if (FAILED(Ready_DepthStencilView(resolution.x, resolution.y)))
+	if (FAILED(Ready_DepthStencilView(res.x, res.y))) 
 		return E_FAIL;
 
 	m_pContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
+
+	D3D11_VIEWPORT vp;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	vp.Width = static_cast<float>(res.x);
+	vp.Height = static_cast<float>(res.y);
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	m_pContext->RSSetViewports(1, &vp);
 
 	return S_OK;
 }

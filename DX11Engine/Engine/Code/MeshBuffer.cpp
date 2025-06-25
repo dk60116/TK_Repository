@@ -190,6 +190,36 @@ CMeshBuffer* CMeshBuffer::CreateSphere(CMeshFilter* _filter)
     return nullptr;
 }
 
+CMeshBuffer* CMeshBuffer::CreateTriangle(CMeshFilter* _filter)
+{
+    // 3개의 정점 (좌표계는 LH, Z+ 앞쪽)
+    struct Vertex { XMFLOAT3 pos; };
+    Vertex triVerts[3] = 
+    {
+        { XMFLOAT3(0.0f, 1.0f, 0.0f) },
+        { XMFLOAT3(1.0f, -1.0f, 0.0f) },
+        { XMFLOAT3(-1.0f, -1.0f, 0.0f) },
+    };
+
+    // 버퍼 설명
+    CMeshBuffer::MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    desc.vertexSize = sizeof(Vertex);
+    desc.vertextCount = 3;
+    desc.indexCount = 0;
+    desc.indices = nullptr;
+
+    CMeshBuffer* buf = new CMeshBuffer();
+    buf->m_pFilter = _filter;
+    if (FAILED(buf->Initialize(triVerts, desc)))
+    {
+        Safe_Release(buf);
+        return nullptr;
+    }
+
+    return buf;
+}
+
 const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 {
 	return m_sInfo;

@@ -23,7 +23,7 @@
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\GraphicDevice.h">
-      <Filter>System\DirectX</Filter>
+      <Filter>Engine\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\EngineFunction.h">
       <Filter>Engine\Headers</Filter>
@@ -132,9 +132,6 @@
     <Filter Include="Component\Render">
       <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
     </Filter>
-    <Filter Include="System\DirectX">
-      <UniqueIdentifier>{fe65441d-7fe3-4aa3-a77a-1f1db4aed0a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Component\Render\MeshBuffer">
       <UniqueIdentifier>{d66f54ef-9586-4b17-93bc-2206c9e3b325}</UniqueIdentifier>
     </Filter>
@@ -147,13 +144,16 @@
     <Filter Include="Resource">
       <UniqueIdentifier>{32b85b70-b413-4afa-81f2-18b3ea430c0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\DirectX">
+      <UniqueIdentifier>{fe65441d-7fe3-4aa3-a77a-1f1db4aed0a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\GraphicDevice.cpp">
-      <Filter>System\DirectX</Filter>
+      <Filter>Engine\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Component.cpp">
       <Filter>Component</Filter>
