@@ -411,11 +411,13 @@ namespace Engine
             return result;
         }
 
-        vector3& operator=(const vector3& rhs)
+        struct quaternion to_quaternion() const;
+
+        vector3& operator=(const vector3& _rhs)
         {
-            x = rhs.x;
-            y = rhs.y;
-            z = rhs.z;
+            x = _rhs.x;
+            y = _rhs.y;
+            z = _rhs.z;
             return *this;
         }
 
@@ -915,12 +917,12 @@ namespace Engine
             return quaternion(q);
         }
 
-        static vector3 to_euler(const XMVECTOR& _q)
+        vector3 to_euler() const
         {
             vector3 euler;
 
             XMFLOAT4 quat;
-            XMStoreFloat4(&quat, _q);
+            XMStoreFloat4(&quat, *this);
 
             float sinp = 2.f * (quat.w * quat.x - quat.z * quat.y);
 

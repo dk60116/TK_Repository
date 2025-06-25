@@ -45,6 +45,8 @@ private: \
     {
         return (value < min) ? min : (value > max ? max : value);
     }
+
+#define DELTA_TIME CTime::GetInstance().Get_DeltaTime()
 }
 
 #endif // Engine_Macro_h__

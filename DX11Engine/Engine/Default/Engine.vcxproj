@@ -206,6 +206,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\MeshBuffer.cpp" />
+    <ClCompile Include="..\Header\EngineStruct.cpp" />
     <ClCompile Include="..\Header\GraphicDevice.cpp" />
     <ClCompile Include="epch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -212,6 +212,9 @@
     <ClCompile Include="..\Code\MeshFilter.cpp">
       <Filter>Component\Render</Filter>
     </ClCompile>
+    <ClCompile Include="..\Header\EngineStruct.cpp">
+      <Filter>Engine\Headers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">

@@ -6,7 +6,6 @@ CTransform::CTransform()
 	, m_pParent(nullptr)
 	, m_lChildList({})
 	, m_vPosition({})
-	, m_vRotation({})
 	, m_vScale(vector3::one())
 	, m_vEulerAngles({})
 	, m_vLocalPosition({})
@@ -57,8 +56,6 @@ const _matrix CTransform::Get_InverseWorldMatrix() const
     return XMMatrixInverse(nullptr, m_vMatWorld);
 }
 
-
-
 vector3 CTransform::Get_Position() const
 {
     return m_vPosition;
@@ -67,6 +64,29 @@ vector3 CTransform::Get_Position() const
 vector3 CTransform::Get_LocalPosition() const
 {
     return m_vLocalPosition;
+}
+
+const vector3& CTransform::Get_EulerAngles()
+{
+    m_vEulerAngles = m_vQuaternion.to_euler();
+
+    return m_vEulerAngles;
+}
+
+const vector3& CTransform::Get_LocalEulerAngles()
+{
+    if (m_pParent)
+    {
+        _vector parentInvRot = XMQuaternionInverse(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion)));
+        _vector localQuat = XMQuaternionMultiply(parentInvRot, XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vQuaternion)));
+        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vLocalQuaternion), localQuat);
+    }
+    else
+        m_vLocalQuaternion = m_vQuaternion;
+
+    m_vLocalEulerAngles = m_vLocalQuaternion.to_euler();
+
+    return m_vLocalEulerAngles;
 }
 
 void CTransform::Set_Position(const vector3& _pos)
@@ -92,6 +112,106 @@ void CTransform::Set_PositionY(const _float _y)
 void CTransform::Set_PositionZ(const _float _z)
 {
     m_vPosition.z = _z;
+}
+
+void CTransform::Add_Position(const vector3& _value)
+{
+    m_vPosition += _value;
+}
+
+void CTransform::Add_Position(const _float _x, const _float _y, const _float _z)
+{
+    m_vPosition += vector3(_x, _y, _z);
+}
+
+void CTransform::Add_PositionX(const _float _value)
+{
+    m_vPosition.x += _value;
+}
+
+void CTransform::Add_PositionY(const _float _value)
+{
+    m_vPosition.y += _value;
+}
+
+void CTransform::Add_PositionZ(const _float _value)
+{
+    m_vPosition.z += _value;
+}
+
+void CTransform::Set_EulerAngle(const vector3& _rot)
+{
+    m_vQuaternion = _rot.to_quaternion();
+}
+
+void CTransform::Set_EulerAngle(const _float _x, const _float _y, const _float _z)
+{
+    vector3 v = vector3(_x, _y, _z);
+    m_vQuaternion = v.to_quaternion();
+}
+
+void CTransform::Set_EulerAngleX(const _float _x)
+{
+    vector3 euler = Get_EulerAngles();
+    euler.x = _x;
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Set_EulerAngleY(const _float _y)
+{
+    vector3 euler = Get_EulerAngles();
+    euler.y = _y;
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Set_EulerAngleZ(const _float _z)
+{
+    vector3 euler = m_vQuaternion.to_euler();
+    euler.z = _z;
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Add_EulerAngle(const vector3& _rot)
+{
+    vector3 euler = Get_EulerAngles();
+    euler += _rot;
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Add_EulerAngle(const _float _x, const _float _y, const _float _z)
+{
+    vector3 euler = Get_EulerAngles();
+
+    euler += vector3(_x, _y, _z);
+
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Add_EulerAngleX(const _float _value)
+{
+    vector3 euler = Get_EulerAngles();
+
+    euler.x += _value;
+
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Add_EulerAngleY(const _float _value)
+{
+    vector3 euler = Get_EulerAngles();
+
+    euler.y += _value;
+
+    m_vQuaternion = euler.to_quaternion();
+}
+
+void CTransform::Add_EulerAngleZ(const _float _value)
+{
+    vector3 euler = Get_EulerAngles();
+
+    euler.z += _value;
+
+    m_vQuaternion = euler.to_quaternion();
 }
 
 void CTransform::Bind_Matrix()

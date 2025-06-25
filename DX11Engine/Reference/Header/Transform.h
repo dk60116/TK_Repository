@@ -36,12 +36,46 @@ public:
 	vector3 Get_Position() const;
 	vector3 Get_LocalPosition() const;
 
+	const vector3& Get_EulerAngles();
+	const vector3& Get_LocalEulerAngles();
+
 public:
 	void Set_Position(const vector3& _pos);
 	void Set_Position(const _float _x, const _float _y, const _float _z);
 	void Set_PositionX(const _float _x);
 	void Set_PositionY(const _float _y);
 	void Set_PositionZ(const _float _z);
+
+	void Add_Position(const vector3& _value);
+	void Add_Position(const _float _x, const _float _y, const _float _z);
+	void Add_PositionX(const _float _value);
+	void Add_PositionY(const _float _value);
+	void Add_PositionZ(const _float _value);
+
+public:
+	void Set_EulerAngle(const vector3& _rot);
+	void Set_EulerAngle(const _float _x, const _float _y, const _float _z);
+	void Set_EulerAngleX(const _float _x);
+	void Set_EulerAngleY(const _float _y);
+	void Set_EulerAngleZ(const _float _z);
+
+	void Add_EulerAngle(const vector3& _rot);
+	void Add_EulerAngle(const _float _x, const _float _y, const _float _z);
+	void Add_EulerAngleX(const _float _value);
+	void Add_EulerAngleY(const _float _value);
+	void Add_EulerAngleZ(const _float _value);
+
+	void Set_LocalEulerAngle(const vector3& _rot);
+	void Set_LocalEulerAngle(const _float _x, const _float _y, const _float _z);
+	void Set_LocalEulerAngleX(const _float _x);
+	void Set_LocalEulerAngleY(const _float _y);
+	void Set_LocalEulerAngleZ(const _float _z);
+
+	void Add_LocalEulerAngle(const vector3& _rot);
+	void Add_LocalEulerAngle(const _float _x, const _float _y, const _float _z);
+	void Add_LocalEulerAngleX(const _float _value);
+	void Add_LocalEulerAngleY(const _float _value);
+	void Add_LocalEulerAngleZ(const _float _value);
 
 private:
 	void Bind_Matrix();
@@ -51,8 +85,7 @@ private:
 	_bool m_bIsRootParent;
 	CTransform* m_pParent;
 	list<CTransform*> m_lChildList;
-	vector3 m_vPosition, m_vRotation, m_vScale;
-	vector3 m_vEulerAngles;
+	vector3 m_vPosition, m_vEulerAngles, m_vScale;
 	vector3 m_vLocalPosition, m_vLocalEulerAngles;
 	quaternion m_vQuaternion, m_vLocalQuaternion;
 	_matrix m_vMatWorld, m_vMatLocalRotation;

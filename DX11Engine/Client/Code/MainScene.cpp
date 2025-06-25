@@ -29,4 +29,25 @@ HRESULT CMainScene::Initialize()
 void CMainScene::Update()
 {
 	__super::Update();
+
+	if (CInput::GetInstance().GetKey(W))
+		m_pPlayer->Get_Transform()->Add_PositionY(1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(A))
+		m_pPlayer->Get_Transform()->Add_PositionX(-1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(S))
+		m_pPlayer->Get_Transform()->Add_PositionY(-1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(D))
+		m_pPlayer->Get_Transform()->Add_PositionX(1.f * DELTA_TIME);
+
+	if (CInput::GetInstance().GetKey(UP))
+		m_pMainCamera->Get_Transform()->Add_PositionY(1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(LEFT))
+		m_pMainCamera->Get_Transform()->Add_PositionX(-1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(DOWN))
+		m_pMainCamera->Get_Transform()->Add_PositionY(-1.f * DELTA_TIME);
+	if (CInput::GetInstance().GetKey(RIGHT))
+		m_pMainCamera->Get_Transform()->Add_PositionX(1.f * DELTA_TIME);
+
+	if (CInput::GetInstance().GetKey(O))
+		m_pMainCamera->Get_Transform()->Add_EulerAngle(vector3(10.f * DELTA_TIME, 0.f, 0.f));
 }
