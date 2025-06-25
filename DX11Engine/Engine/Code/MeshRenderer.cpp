@@ -31,7 +31,7 @@ HRESULT CMeshRenderer::Initialize()
 
 	D3D11_RASTERIZER_DESC noCullDesc = {};
 	noCullDesc.FillMode = D3D11_FILL_SOLID;
-	noCullDesc.CullMode = D3D11_CULL_NONE;    // ← 컬링 없음
+	noCullDesc.CullMode = D3D11_CULL_BACK;
 	noCullDesc.FrontCounterClockwise = FALSE;
 	noCullDesc.DepthClipEnable = TRUE;
 

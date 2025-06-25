@@ -19,7 +19,7 @@ public:
 	void OnDestroy();
 
 public:
-	void CreateMeshBuffer(const wstring _shape);
+	void CreateMeshBuffer(const wstring _shape, const string _path = "");
 
 public:
 	CMeshBuffer* Get_MeshBuffer() const;

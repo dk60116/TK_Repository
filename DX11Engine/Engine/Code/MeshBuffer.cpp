@@ -305,7 +305,7 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
         };
 
     /* ¾À ³ëµå Àç±Í ¼øÈ¸ */
-    std::function<void(const aiNode*)> traverse = [&](const aiNode* node)
+    function<void(const aiNode*)> traverse = [&](const aiNode* node)
         {
             for (UINT m = 0; m < node->mNumMeshes; ++m)
                 copyMesh(scene->mMeshes[node->mMeshes[m]]);
@@ -313,6 +313,7 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
             for (UINT c = 0; c < node->mNumChildren; ++c)
                 traverse(node->mChildren[c]);
         };
+
     traverse(scene->mRootNode);
 
     if (vertices.empty())

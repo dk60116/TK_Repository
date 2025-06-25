@@ -28,7 +28,7 @@ HRESULT CMeshFilter::Initialize()
 	return S_OK;
 }
 
-void CMeshFilter::CreateMeshBuffer(const wstring _shape)
+void CMeshFilter::CreateMeshBuffer(const wstring _shape, const string _path)
 {
 	if (_shape == L"Cube")
 		m_pMeshBuffer = CMeshBuffer::CreateCube(this);
@@ -36,6 +36,8 @@ void CMeshFilter::CreateMeshBuffer(const wstring _shape)
 		m_pMeshBuffer = CMeshBuffer::CreateSphere(this);
 	if (_shape == L"Triangle")
 		m_pMeshBuffer = CMeshBuffer::CreateTriangle(this);
+	if (_shape == L"Object")
+		m_pMeshBuffer = CMeshBuffer::CreateObjectMesh(this, _path);
 	
 	if (m_pMeshBuffer)
 		m_pMeshBuffer->AddRef();

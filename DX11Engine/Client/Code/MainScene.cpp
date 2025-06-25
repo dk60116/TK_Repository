@@ -21,7 +21,7 @@ HRESULT CMainScene::Initialize()
 	CGameObject* cameraObject = Add_GameObject(L"Main Camera");
 	m_pMainCamera = cameraObject->AddComponent<CCamera>();
 
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
+	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -500.f);
 
 	return S_OK;
 }
