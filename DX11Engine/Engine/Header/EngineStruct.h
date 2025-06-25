@@ -1082,7 +1082,7 @@ namespace Engine
 
     struct MaterialCB
     {
-        _float4 diffuseColor;
+        _float4 baseColor;
         _bool useTexture;
         _float3 padding;
     };

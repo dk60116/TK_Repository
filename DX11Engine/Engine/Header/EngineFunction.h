@@ -9,7 +9,7 @@ namespace Engine
 	// 기능을 인스턴스화 하기 위하여 만들어두는 틀
 
 	template<typename T>
-	void	Safe_Delete(T& Pointer)
+	void Safe_Delete(T& Pointer)
 	{
 		if (nullptr != Pointer)
 		{
@@ -19,7 +19,7 @@ namespace Engine
 	}
 
 	template<typename T>
-	void	Safe_Delete_Array(T& Pointer)
+	void Safe_Delete_Array(T& Pointer)
 	{
 		if (nullptr != Pointer)
 		{

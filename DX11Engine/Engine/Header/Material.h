@@ -16,7 +16,7 @@ private:
 	void OnDestroy();
 
 public:
-	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _pojectoin);
+	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection);
 
 public:
 	HRESULT Load_Shader(const wstring& _path);
@@ -39,6 +39,7 @@ private:
 	ID3D11InputLayout* m_pInputLayout;
 
 	ID3D11Buffer* m_pMatrixBuffer;
+	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pMaterialBuffer;
 
 	ID3D11ShaderResourceView* m_pDiffuseSRV;

@@ -32,7 +32,7 @@ public:
 	static CMeshBuffer* CreatePlane(CMeshFilter* _filter);
 	static CMeshBuffer* CreateCylinder(CMeshFilter* _filter);
 	static CMeshBuffer* CreateTriangle(CMeshFilter* _filter);
-	static CMeshBuffer* CreateObjectMesh(CMeshFilter* _filter);
+	static CMeshBuffer* CreateObjectMesh(CMeshFilter* _filter, const string& _filePath);
 
 public:
 	void Render();

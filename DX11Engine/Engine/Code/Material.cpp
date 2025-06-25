@@ -8,6 +8,7 @@ CMaterial::CMaterial()
 	, m_pPixelShader(nullptr)
 	, m_pInputLayout(nullptr)
 	, m_pMatrixBuffer(nullptr)
+	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
 	, m_pDiffuseSRV(nullptr)
 	, m_vDiffuseColor(ColorValue::white())
@@ -56,19 +57,28 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pMaterialBuffer);
 }
 
-void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _pojectoin)
+void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection)
 {
 	Bind_Shader();
 	Bind_Texture();
 
-	// ── b0 : 행렬
-	MatrixCB mtx{};
-	mtx.world = XMMatrixTranspose(_world);
-	mtx.view = XMMatrixTranspose(_view);
-	mtx.proj = XMMatrixTranspose(_pojectoin);
+	m_pContext->IASetInputLayout(m_pInputLayout);
+	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_pContext->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &mtx, 0, 0);
+	// b0: PerObject
+	struct PerObjectCB { _matrix world; };
+	PerObjectCB obj{};
+	obj.world = XMMatrixTranspose(_world);
+	m_pContext->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &obj, 0, 0);
 	m_pContext->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
+
+	// b1: PerCamera
+	struct PerCameraCB { _matrix view; _matrix proj; };
+	PerCameraCB cam{};
+	cam.view = XMMatrixTranspose(_view);
+	cam.proj = XMMatrixTranspose(_projection);
+	m_pContext->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &cam, 0, 0);
+	m_pContext->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 }
 
 void CMaterial::Set_DiffuseColor(const ColorValue& color)
@@ -157,7 +167,12 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	if (FAILED(m_pDevice->CreateBuffer(&desc, nullptr, &m_pMatrixBuffer)))
 		return E_FAIL;
 
-	// ── b1 : MaterialCB (PS)
+	// ─ b1 : View/Proj Matrix
+	desc.ByteWidth = sizeof(_matrix) * 2;
+	if (FAILED(m_pDevice->CreateBuffer(&desc, nullptr, &m_pCameraBuffer)))
+		return E_FAIL;
+
+	// ── b2 : MaterialCB (PS)
 	desc.ByteWidth = sizeof(MaterialCB);
 	if (FAILED(m_pDevice->CreateBuffer(&desc, nullptr, &m_pMaterialBuffer)))
 		return E_FAIL;
@@ -169,17 +184,19 @@ void CMaterial::Bind_Shader()
 {
 	// ── b1 : 머티리얼
 	MaterialCB mat{};
-	mat.diffuseColor =
+
+	mat.baseColor =
 	{
 		m_vDiffuseColor.r / 255.f,
 		m_vDiffuseColor.g / 255.f,
 		m_vDiffuseColor.b / 255.f,
 		m_vDiffuseColor.a / 255.f
 	};
+	
 	mat.useTexture = (m_pDiffuseSRV != nullptr);
 
 	m_pContext->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
-	m_pContext->PSSetConstantBuffers(1, 1, &m_pMaterialBuffer);
+	m_pContext->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 }
 
 void CMaterial::Bind_Texture()
