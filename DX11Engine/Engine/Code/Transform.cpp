@@ -114,6 +114,63 @@ void CTransform::Set_PositionZ(const _float _z)
     m_vPosition.z = _z;
 }
 
+void CTransform::Set_LocalPosition(const vector3& _pos)
+{
+    m_vLocalPosition = _pos;
+}
+
+void CTransform::Set_LocalPosition(const _float _x, const _float _y, const _float _z)
+{
+    m_vLocalPosition = vector3(_x, _y, _z);
+
+    if (m_pParent)
+    {
+        _vector world = XMVector3TransformCoord(m_vLocalPosition.toXMVector(), m_pParent->m_vMatWorld);
+        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), world);
+    }
+    else
+        m_vPosition = m_vLocalPosition;
+}
+
+void CTransform::Set_LocalPositionX(const _float _x)
+{
+    m_vLocalPosition.x = _x;
+
+    if (m_pParent)
+    {
+        _vector world = XMVector3TransformCoord(m_vLocalPosition.toXMVector(), m_pParent->m_vMatWorld);
+        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), world);
+    }
+    else
+        m_vPosition = m_vLocalPosition;
+}
+
+void CTransform::Set_LocalPositionY(const _float _y)
+{
+    m_vLocalPosition.x = _y;
+
+    if (m_pParent)
+    {
+        _vector world = XMVector3TransformCoord(m_vLocalPosition.toXMVector(), m_pParent->m_vMatWorld);
+        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), world);
+    }
+    else
+        m_vPosition = m_vLocalPosition;
+}
+
+void CTransform::Set_LocalPositionZ(const _float _z)
+{
+    m_vLocalPosition.x = _z;
+
+    if (m_pParent)
+    {
+        _vector world = XMVector3TransformCoord(m_vLocalPosition.toXMVector(), m_pParent->m_vMatWorld);
+        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), world);
+    }
+    else
+        m_vPosition = m_vLocalPosition;
+}
+
 void CTransform::Add_Position(const vector3& _value)
 {
     m_vPosition += _value;
@@ -214,6 +271,26 @@ void CTransform::Add_EulerAngleZ(const _float _value)
     m_vQuaternion = euler.to_quaternion();
 }
 
+void CTransform::Set_LocalEulerAngle(const vector3& _rot)
+{
+}
+
+void CTransform::Set_LocalEulerAngle(const _float _x, const _float _y, const _float _z)
+{
+}
+
+void CTransform::Set_LocalEulerAngleX(const _float _x)
+{
+}
+
+void CTransform::Set_LocalEulerAngleY(const _float _y)
+{
+}
+
+void CTransform::Set_LocalEulerAngleZ(const _float _z)
+{
+}
+
 void CTransform::Bind_Matrix()
 {
     _matrix matScale = XMMatrixScaling(m_vScale.x, m_vScale.y, m_vScale.z);
@@ -222,9 +299,18 @@ void CTransform::Bind_Matrix()
     _matrix matLocal = matScale * m_vMatLocalRotation * matTranslation;
 
     if (m_pParent)
+    {
+        _matrix invParentWorld = XMMatrixInverse(nullptr, m_pParent->m_vMatWorld);
+
         m_vMatWorld = matLocal * m_pParent->m_vMatWorld;
+        _vector v = XMVector3TransformCoord(m_vPosition.toXMVector(), invParentWorld);
+        m_vLocalPosition = vector3(XMVectorGetX(v), XMVectorGetY(v), XMVectorGetZ(v));
+    }
     else
+    {
         m_vMatWorld = matLocal;
+        m_vLocalPosition = m_vLocalPosition;
+    }
 }
 
 void CTransform::Bind_Direction()

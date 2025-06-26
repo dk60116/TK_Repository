@@ -46,6 +46,12 @@ public:
 	void Set_PositionY(const _float _y);
 	void Set_PositionZ(const _float _z);
 
+	void Set_LocalPosition(const vector3& _pos);
+	void Set_LocalPosition(const _float _x, const _float _y, const _float _z);
+	void Set_LocalPositionX(const _float _x);
+	void Set_LocalPositionY(const _float _y);
+	void Set_LocalPositionZ(const _float _z);
+
 	void Add_Position(const vector3& _value);
 	void Add_Position(const _float _x, const _float _y, const _float _z);
 	void Add_PositionX(const _float _value);
