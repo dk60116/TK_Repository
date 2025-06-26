@@ -11,6 +11,7 @@
 #include <DirectXMath.h>
 #include <wrl/client.h>
 #pragma comment(lib, "d3dcompiler.lib")
+#include <WICTextureLoader.h>
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
@@ -19,6 +20,21 @@ using Microsoft::WRL::ComPtr;
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+
+#ifdef new
+#undef new
+#define NEED_RESTORE_NEW
+#endif
+
+#include "imgui.h"
+
+#ifdef NEED_RESTORE_NEW
+#define new DEBUG_NEW
+#undef NEED_RESTORE_NEW
+#endif
+
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 // 커스텀 헤더파일
 #include "MainProcess.h"

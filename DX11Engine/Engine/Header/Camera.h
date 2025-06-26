@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CCamera final : public CComponent
+class ENGINE_DLL CCamera : public CComponent
 {
 public:
 	enum ViewMode { PERSPECTIVE, ORTHOGRAPHIC };

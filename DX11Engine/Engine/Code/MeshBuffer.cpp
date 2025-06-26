@@ -230,7 +230,7 @@ CMeshBuffer* CMeshBuffer::CreateTriangle(CMeshFilter* _filter)
     return newBuffer;
 }
 
-CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _filePath)
+CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _filePath, const _float _scaleFactor)
 {
     using VTX = VertexTexNormalTangentBuffer;
 
@@ -267,7 +267,11 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
                           mesh->mVertices[i].y,
                           mesh->mVertices[i].z };
 
-                /* 노멀 */
+                v.position.x *= _scaleFactor;
+                v.position.y *= _scaleFactor;
+                v.position.z *= _scaleFactor;
+                                
+                /* 노멀 *
                 if (mesh->HasNormals())
                     v.normal = { mesh->mNormals[i].x,
                                  mesh->mNormals[i].y,

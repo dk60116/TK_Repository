@@ -6,6 +6,16 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CGraphicDevice final : public UObject
 {
+public:
+	struct SwapChainSet
+	{
+		HWND hwnd = nullptr;
+		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> rtv;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> dsv;
+		D3D11_VIEWPORT viewport;
+	};
+
 	SINGLETONCLASS(CGraphicDevice);
 
 public:
@@ -15,6 +25,7 @@ public:
 public:
 	HRESULT Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution);
 
+	void Set_RenderTarget(HWND _hWnd);
 	HRESULT Clear_BackBuffer_View(const ColorValue* _clearColor);
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();
@@ -25,8 +36,9 @@ public:
 	ID3D11Device* Get_Device() const;
 	ID3D11DeviceContext* Get_Context() const;
 
+	HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight);
+
 private:
-	HRESULT Ready_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight);
 	HRESULT Ready_BackBufferRenderTargetView();
 	HRESULT Ready_DepthStencilView(_uint _winWidth, _uint _winHeight);
 
@@ -38,6 +50,10 @@ private:
 
 	ID3D11RenderTargetView* m_pBackBufferRTV;
 	ID3D11DepthStencilView* m_pDepthStencilView;
+
+	unordered_map<HWND, SwapChainSet> m_mSwapChains;
+
+	HWND m_hCrtWndow;
 };
 
 NS_END

@@ -57,5 +57,5 @@ const vector2Int CDisplay::Get_ScreenResolution() const
 
 const _float CDisplay::Get_Aspect() const
 {
-	return static_cast<_float>(m_iWidth) / static_cast<_float>(m_iHeight - 40);
+	return static_cast<_float>(m_iWidth) / static_cast<_float>(m_iHeight);
 }

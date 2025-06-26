@@ -159,6 +159,8 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\Display.h" />
+    <ClInclude Include="..\Header\Editor.h" />
+    <ClInclude Include="..\Header\EditorCamera.h" />
     <ClInclude Include="..\Header\EngineDebug.h" />
     <ClInclude Include="..\Header\EngineFunction.h" />
     <ClInclude Include="..\Header\EngineResource.h" />
@@ -190,9 +192,39 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\Display.cpp" />
+    <ClCompile Include="..\Code\Editor.cpp" />
+    <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\EngineResource.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
+    <ClCompile Include="..\Code\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_impl_dx11.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Code\Input.cpp" />
     <ClCompile Include="..\Code\Material.cpp" />
     <ClCompile Include="..\Code\MeshFilter.cpp" />
@@ -206,6 +238,10 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\MeshBuffer.cpp" />
+    <ClCompile Include="..\Code\WICTextureLoader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp" />
     <ClCompile Include="..\Header\GraphicDevice.cpp" />
     <ClCompile Include="epch.cpp">

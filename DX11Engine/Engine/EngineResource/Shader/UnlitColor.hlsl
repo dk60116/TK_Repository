@@ -44,7 +44,7 @@ float4 PSMain(VSOut input) : SV_TARGET
 }
 
 // 式式式式式 Technique
-technique11 UnlitColor
+technique11 UnlitTexture
 {
     pass P0
     {

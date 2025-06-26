@@ -7,6 +7,7 @@ CGraphicDevice::CGraphicDevice()
 	, m_pSwapChain(nullptr)
 	, m_pBackBufferRTV(nullptr)
 	, m_pDepthStencilView(nullptr)
+	, m_hCrtWndow(nullptr)
 {
 }
 
@@ -88,34 +89,51 @@ HRESULT CGraphicDevice::Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution)
 	return S_OK;
 }
 
+void CGraphicDevice::Set_RenderTarget(HWND _hWnd)
+{
+	auto it = m_mSwapChains.find(_hWnd);
+	if (it == m_mSwapChains.end())
+		return;
+
+	const SwapChainSet& sc = it->second;
+
+	m_pContext->OMSetRenderTargets(1, sc.rtv.GetAddressOf(), sc.dsv.Get());
+	m_pContext->RSSetViewports(1, &sc.viewport);
+
+	m_hCrtWndow = _hWnd;
+}
+
 HRESULT CGraphicDevice::Clear_BackBuffer_View(const ColorValue* _clearColor)
 {
-	if (!m_pContext)
+	auto it = m_mSwapChains.find(m_hCrtWndow);
+	if (it == m_mSwapChains.end())
 		return E_FAIL;
 
+	const SwapChainSet& sc = it->second;
 	auto dvColor = _clearColor->dvColor();
 
-	m_pContext->ClearRenderTargetView(m_pBackBufferRTV, reinterpret_cast<const _float*>(&dvColor));
-
+	m_pContext->ClearRenderTargetView(sc.rtv.Get(), reinterpret_cast<const _float*>(&dvColor));
 	return S_OK;
 }
 
 HRESULT CGraphicDevice::Clear_DepthStencil_View()
 {
-	if (!m_pContext)
+	auto it = m_mSwapChains.find(m_hCrtWndow);
+	if (it == m_mSwapChains.end())
 		return E_FAIL;
 
-	m_pContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
-
+	const SwapChainSet& sc = it->second;
+	m_pContext->ClearDepthStencilView(sc.dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	return S_OK;
 }
 
 HRESULT CGraphicDevice::Present()
 {
-	if (nullptr == m_pSwapChain)
+	auto it = m_mSwapChains.find(m_hCrtWndow);
+	if (it == m_mSwapChains.end())
 		return E_FAIL;
 
-	return m_pSwapChain->Present(0, 0);
+	return it->second.swapChain->Present(0, 0);
 }
 
 ID3D11Device* CGraphicDevice::Get_Device() const
@@ -128,46 +146,70 @@ ID3D11DeviceContext* CGraphicDevice::Get_Context() const
 	return m_pContext;
 }
 
-HRESULT CGraphicDevice::Ready_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight)
+HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight)
 {
-	IDXGIDevice* pDevice = nullptr;
-	m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDevice);
+	SwapChainSet sc{};
+	sc.hwnd = _hWnd;
 
-	IDXGIAdapter* pAdapter = nullptr;
-	pDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pAdapter);
+	// DXGI Factory 생성
+	ComPtr<IDXGIDevice> dxgiDevice;
+	m_pDevice->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
 
-	IDXGIFactory* pFactory = nullptr;
-	pAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&pFactory);
+	ComPtr<IDXGIAdapter> adapter;
+	dxgiDevice->GetParent(IID_PPV_ARGS(&adapter));
 
-	DXGI_SWAP_CHAIN_DESC		SwapChain;
-	ZeroMemory(&SwapChain, sizeof(DXGI_SWAP_CHAIN_DESC));
+	ComPtr<IDXGIFactory> factory;
+	adapter->GetParent(IID_PPV_ARGS(&factory));
 
-	SwapChain.BufferDesc.Width = _winWidth;
-	SwapChain.BufferDesc.Height = _winHeight;
+	// 스왑체인 생성
+	DXGI_SWAP_CHAIN_DESC sd = {};
+	sd.BufferCount = 1;
+	sd.BufferDesc.Width = _winWidth;
+	sd.BufferDesc.Height = _winHeight;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.OutputWindow = _hWnd;
+	sd.SampleDesc.Count = 1;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	SwapChain.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	SwapChain.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	SwapChain.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	ComPtr<IDXGISwapChain> swapChain;
 
-	SwapChain.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	SwapChain.BufferCount = 1;
-
-	SwapChain.BufferDesc.RefreshRate.Numerator = 60;
-	SwapChain.BufferDesc.RefreshRate.Denominator = 1;
-
-	SwapChain.SampleDesc.Quality = 0;
-	SwapChain.SampleDesc.Count = 1;
-
-	SwapChain.OutputWindow = _hWnd;
-	SwapChain.Windowed = static_cast<BOOL>(_isWindowed);
-	SwapChain.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-	if (FAILED(pFactory->CreateSwapChain(m_pDevice, &SwapChain, &m_pSwapChain)))
+	if (FAILED(factory->CreateSwapChain(m_pDevice, &sd, &swapChain)))
 		return E_FAIL;
 
-	Safe_Release(pFactory);
-	Safe_Release(pAdapter);
-	Safe_Release(pDevice);
+	sc.swapChain = swapChain;
+
+	// RTV 생성
+	ComPtr<ID3D11Texture2D> backBuffer;
+	swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+
+	m_pDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, &sc.rtv);
+
+	// DSV 생성
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	depthDesc.Width = _winWidth;
+	depthDesc.Height = _winHeight;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	ComPtr<ID3D11Texture2D> depthTex;
+	m_pDevice->CreateTexture2D(&depthDesc, nullptr, &depthTex);
+	m_pDevice->CreateDepthStencilView(depthTex.Get(), nullptr, &sc.dsv);
+
+	// 뷰포트 설정
+	sc.viewport.TopLeftX = 0;
+	sc.viewport.TopLeftY = 0;
+	sc.viewport.Width = static_cast<FLOAT>(_winWidth);
+	sc.viewport.Height = static_cast<FLOAT>(_winHeight);
+	sc.viewport.MinDepth = 0.0f;
+	sc.viewport.MaxDepth = 1.0f;
+
+	m_mSwapChains[_hWnd] = move(sc);
 
 	return S_OK;
 }

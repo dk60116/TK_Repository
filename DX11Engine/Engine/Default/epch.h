@@ -9,6 +9,7 @@
 #include "EngineFunction.h"
 #include "EngineEnum.h"
 #include "Display.h"
+#include "Editor.h"
 #include "EngineDebug.h"
 #include "GraphicDevice.h"
 #include "EngineTime.h"

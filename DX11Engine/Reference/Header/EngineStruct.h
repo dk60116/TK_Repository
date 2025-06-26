@@ -394,6 +394,11 @@ namespace Engine
         {
         }
 
+        vector3(const XMVECTOR& v)
+            : x(XMVectorGetX(v)), y(XMVectorGetY(v)), z(XMVectorGetZ(v))
+        {
+        }
+
         vector3(const XMFLOAT3& v)
             : x(v.x), y(v.y), z(v.z)
         {

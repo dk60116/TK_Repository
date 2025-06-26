@@ -32,6 +32,9 @@ HRESULT CTransform::Initialize()
     if (FAILED(__super::Initialize()))
         return E_FAIL;
 
+    Bind_Matrix();
+    Bind_Direction();
+
     return S_OK;
 }
 
@@ -41,7 +44,7 @@ void CTransform::Update()
     Bind_Direction();
 }
 
-const CTransform::DIRECTIONS& CTransform::Get_Direction()
+const CTransform::DIRECTIONS& CTransform::Get_Directions()
 {
     return m_sDirections;
 }

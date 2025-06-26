@@ -147,7 +147,9 @@ HRESULT CMaterial::Load_Shader(const wstring& _path)
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	hr = m_pDevice->CreateInputLayout(layout, _countof(layout),
@@ -201,6 +203,7 @@ void CMaterial::Bind_Shader()
 
 void CMaterial::Bind_Texture()
 {
+	// ─ Shader 및 InputLayout 설정
 	if (m_pVertexShader && m_pPixelShader && m_pInputLayout)
 	{
 		m_pContext->IASetInputLayout(m_pInputLayout);
@@ -208,7 +211,30 @@ void CMaterial::Bind_Texture()
 		m_pContext->PSSetShader(m_pPixelShader, nullptr, 0);
 	}
 
-	// Diffuse 텍스처가 있으면 t0 에 바인딩
+	// ─ ShaderResourceView 바인딩 (t0)
 	ID3D11ShaderResourceView* srv = m_pDiffuseSRV;
 	m_pContext->PSSetShaderResources(0, 1, &srv);
+
+	// ─ SamplerState 바인딩 (s0)
+	static ID3D11SamplerState* gSamplerState = nullptr;
+
+	if (!gSamplerState)
+	{
+		D3D11_SAMPLER_DESC sampDesc = {};
+		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		sampDesc.MinLOD = 0;
+		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		if (FAILED(m_pDevice->CreateSamplerState(&sampDesc, &gSamplerState)))
+		{
+			CDebug::LogError("SamplerState 생성 실패");
+			return;
+		}
+	}
+
+	m_pContext->PSSetSamplers(0, 1, &gSamplerState);
 }

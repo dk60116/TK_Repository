@@ -1,5 +1,6 @@
 #include "epch.h"
 #include "Scene.h"
+#include "EditorCamera.h"
 
 CScene::CScene()
 	: m_iSceneIndex(0)
@@ -8,6 +9,7 @@ CScene::CScene()
 	, m_strSceneName(L"")
 	, m_lObjectList({})
 	, m_lCameraList({})
+	, m_pEditorCamera(nullptr)
 {
 	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
 	m_pContext = CGraphicDevice::GetInstance().Get_Context();
@@ -23,6 +25,9 @@ CScene::~CScene()
 
 HRESULT CScene::Initialize()
 {
+	CGameObject* ecObj = Add_GameObject(L"Editor Camera");
+	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
+
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if (FAILED((*it)->Initialize()))
@@ -46,8 +51,12 @@ void CScene::Start()
 		(*it)->Start();
 }
 
-void CScene::UpdateEditor()
+void CScene::Update_Editor()
 {
+	if (GetForegroundWindow() == CEditor::GetInstance().Get_EditorWindow())
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+		(*it)->Update_Editor();
 }
 
 void CScene::Update()
@@ -74,6 +83,20 @@ void CScene::LateUpdate()
 
 void CScene::Render_Editor()
 {
+	ColorValue backgroudColor = ColorValue::gray(0.3f);
+
+	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
+	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		(*it)->OnPreCull();
+		(*it)->OnPreRender();
+		(*it)->Render_Editor();
+		(*it)->OnPostRender();
+	}
+
+	CGraphicDevice::GetInstance().Present();
 }
 
 void CScene::Render_Game()
@@ -158,6 +181,11 @@ CCamera* CScene::Get_Camera(const _int _index) const
 	}
 
 	return m_lCameraList.back();
+}
+
+CCamera* CScene::Get_EditorCamera() const
+{
+	return m_pEditorCamera;
 }
 
 list<class CCamera*>& CScene::Get_CameraList()

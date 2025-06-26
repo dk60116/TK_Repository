@@ -17,10 +17,13 @@ public:
 	HRESULT Initialize() override;
 	void OnPreCull() override;
 	void OnPreRender() override;
+	void Render_Editor() override;
 	void Render() override;
 	void OnPostRender() override;
 
 	void OnDestroy() override;
+
+	void Render_WithCamera(CCamera* _cam);
 
 public:
 	CMeshFilter* Get_MeshFilter();

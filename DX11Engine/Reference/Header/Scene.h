@@ -16,7 +16,7 @@ public:
     virtual HRESULT Initialize();
     virtual void Awake();
     virtual void Start();
-    virtual void UpdateEditor();
+    virtual void Update_Editor();
     virtual void Update();
     virtual void FixedUpdate();
     virtual void LateUpdateEditor();
@@ -33,6 +33,7 @@ public:
     class CGameObject* Add_GameObject(wstring _name);
     class CCamera* Get_Camera() const;
     class CCamera* Get_Camera(const _int _index) const;
+    class CCamera* Get_EditorCamera() const;
     list <class CCamera*>& Get_CameraList();
     class CCamera* Add_Camera(class CCamera* _camera);
     class CGameObject* Instantiate(class CGameObject* _gameObject);
@@ -46,6 +47,8 @@ private:
     wstring m_strSceneName;
     list <class CGameObject*> m_lObjectList;
     list <class CCamera*> m_lCameraList;
+
+    class CCamera* m_pEditorCamera;
 };
 
 NS_END

@@ -28,7 +28,7 @@ public:
 	void Update() override;
 
 public:
-	const DIRECTIONS& Get_Direction();
+	const DIRECTIONS& Get_Directions();
 	const _matrix& Get_WorldMatrix() const;
 	const _matrix Get_InverseWorldMatrix() const;
 

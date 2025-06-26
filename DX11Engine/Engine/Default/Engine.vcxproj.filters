@@ -88,6 +88,12 @@
     <ClInclude Include="..\Header\MeshFilter.h">
       <Filter>Component\Render</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Editor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\EditorCamera.h">
+      <Filter>Component\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -146,6 +152,12 @@
     </Filter>
     <Filter Include="Engine\DirectX">
       <UniqueIdentifier>{fe65441d-7fe3-4aa3-a77a-1f1db4aed0a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Imgui">
+      <UniqueIdentifier>{10c0315d-eae9-4b06-8f65-f1a60836357b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{e57ee9b9-e587-45a2-bd09-b2a4ea8966e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +226,36 @@
     </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp">
       <Filter>Engine\Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Editor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_demo.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_draw.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_impl_dx11.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_impl_win32.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_tables.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\imgui_widgets.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EditorCamera.cpp">
+      <Filter>Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\WICTextureLoader.cpp">
+      <Filter>Engine\DirectX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

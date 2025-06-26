@@ -34,24 +34,9 @@ bool CInput::GetKey(_int _iKey)
     return m_bKeyState[_iKey];
 }
 
-bool CInput::GetKey_Editor(_int _iKey, _bool _onlyScene)
-{
-    return m_bKeyState[_iKey];
-}
-
 bool CInput::GetKeyDown(_int _iKey)
 {
     return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey];
-}
-
-bool CInput::GetKeyDown_Editor(_int _iKey, _bool _onlyScene)
-{
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey];
-}
-
-_bool CInput::GetKeyUp_Editor(_int _iKey)
-{
-    return !m_bKeyState[_iKey] && m_bPrevKeyState[_iKey];
 }
 
 bool CInput::GetKeyUp(_int _iKey)
@@ -60,20 +45,6 @@ bool CInput::GetKeyUp(_int _iKey)
 }
 
 bool CInput::GetMouseButton(_int _button)
-{
-    if (_button == 0)
-        _button = MOUSE_L;
-    else if (_button == 1)
-        _button = MOUSE_R;
-    else if (_button == 2)
-        _button = MOUSE_WHILL;
-    else
-        return false;
-
-    return m_bKeyState[_button];
-}
-
-bool CInput::GetMouseButton_Editor(_int _button, _bool _onlyScene)
 {
     if (_button == 0)
         _button = MOUSE_L;
@@ -101,20 +72,6 @@ bool CInput::GetMouseButtonDown(_int _button)
     return m_bKeyState[_button];
 }
 
-bool CInput::GetMouseButtonDown_Editor(_int _button, _bool _onlyScene)
-{
-    if (_button == 0)
-        _button = MOUSE_L;
-    else if (_button == 1)
-        _button = MOUSE_R;
-    else if (_button == 2)
-        _button = MOUSE_WHILL;
-    else
-        return false;
-
-    return m_bKeyState[_button];
-}
-
 bool CInput::GetMouseButtonUp(_int _button)
 {
     if (_button == 0)
@@ -128,21 +85,6 @@ bool CInput::GetMouseButtonUp(_int _button)
 
     return !m_bKeyState[_button];
 }
-
-bool CInput::GetMouseButtonUp_Editor(_int _button, _bool _onlyScene)
-{
-    if (_button == 0)
-        _button = MOUSE_L;
-    else if (_button == 1)
-        _button = MOUSE_R;
-    else if (_button == 2)
-        _button = MOUSE_WHILL;
-    else
-        return false;
-
-    return !m_bKeyState[_button] && m_bPrevKeyState[_button];
-}
-
 
 const vector2Int CInput::GetMousePos()
 {
@@ -177,44 +119,6 @@ const _float CInput::GetAxis(const wstring _axisName)
         if (GetKey(S))
             result -= 1.f;
         if (GetKey(W))
-            result += 1.f;
-    }
-    else if (_axisName == L"Mouse ScrollWheel")
-    {
-        result = m_fWheelAxis;
-    }
-    else
-        return 0.f;
-
-    result = clamp(result, -1.f, 1.f);
-
-    return result;
-}
-
-const _float CInput::GetAxis_Editor(const wstring _axisName, _bool _onlyScene)
-{
-    float result = 0.f;
-
-    if (_axisName == L"Horizontal")
-    {
-        if (GetKey_Editor(LEFT, true))
-            result -= 1.f;
-        if (GetKey_Editor(RIGHT, true))
-            result += 1.f;
-        if (GetKey_Editor(A, true))
-            result -= 1.f;
-        if (GetKey_Editor(D, true))
-            result += 1.f;
-    }
-    else if (_axisName == L"Vertical")
-    {
-        if (GetKey_Editor(DOWN, true))
-            result -= 1.f;
-        if (GetKey_Editor(UP, true))
-            result += 1.f;
-        if (GetKey_Editor(S, true))
-            result -= 1.f;
-        if (GetKey_Editor(W, true))
             result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
