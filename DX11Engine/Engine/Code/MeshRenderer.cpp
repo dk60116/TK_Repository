@@ -2,9 +2,10 @@
 #include "MeshRenderer.h"
 
 CMeshRenderer::CMeshRenderer()
-	: m_pMeshFilter(nullptr)
-	, m_pMaterial(nullptr)
+	: CRenderer{}
+	, m_pMeshFilter(nullptr)
 {
+	m_strName = L"Mesh Renderer";
 }
 
 CMeshRenderer::~CMeshRenderer()
@@ -29,12 +30,6 @@ HRESULT CMeshRenderer::Initialize()
 			m_pMeshFilter->AddRef();
 	}
 
-	D3D11_RASTERIZER_DESC noCullDesc = {};
-	noCullDesc.FillMode = D3D11_FILL_SOLID;
-	noCullDesc.CullMode = D3D11_CULL_BACK;
-	noCullDesc.FrontCounterClockwise = FALSE;
-	noCullDesc.DepthClipEnable = TRUE;
-
 	return S_OK;
 }
 
@@ -48,7 +43,6 @@ void CMeshRenderer::OnPreRender()
 
 void CMeshRenderer::Render_Editor()
 {
-	auto c = CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera();
 	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
 }
 
@@ -63,8 +57,9 @@ void CMeshRenderer::OnPostRender()
 
 void CMeshRenderer::OnDestroy()
 {
+	__super::OnDestroy();
+
 	Safe_Release(m_pMeshFilter);
-	Safe_Release(m_pMaterial);
 }
 
 void CMeshRenderer::Render_WithCamera(CCamera* _cam)
@@ -92,14 +87,4 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 CMeshFilter* CMeshRenderer::Get_MeshFilter()
 {
 	return m_pMeshFilter;
-}
-
-void CMeshRenderer::Set_Material(CMaterial* pMaterial)
-{
-	Safe_Release(m_pMaterial);
-
-	m_pMaterial = pMaterial;
-
-	if (m_pMaterial)
-		m_pMaterial->AddRef();
 }

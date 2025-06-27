@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Component.h"
+#include "Renderer.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CMeshRenderer final : public CComponent
+class ENGINE_DLL CMeshRenderer final : public CRenderer
 {
+	friend class CGameObject;
+
 protected:
 	explicit CMeshRenderer();
 	~CMeshRenderer();
 
-public:
+private:
 	static CMeshRenderer* Create();
 
 public:
@@ -23,15 +25,14 @@ public:
 
 	void OnDestroy() override;
 
-	void Render_WithCamera(CCamera* _cam);
+protected:
+	void Render_WithCamera(CCamera* _cam) override;
 
 public:
 	CMeshFilter* Get_MeshFilter();
-	void Set_Material(CMaterial* pMaterial);
 
 private:
 	CMeshFilter* m_pMeshFilter;
-	CMaterial* m_pMaterial;
 };
 
 NS_END

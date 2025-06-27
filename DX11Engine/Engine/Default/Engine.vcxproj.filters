@@ -61,9 +61,6 @@
     <ClInclude Include="..\Header\Transform.h">
       <Filter>Component\Transform</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\MeshRenderer.h">
-      <Filter>Component\Render</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\MeshBuffer.h">
       <Filter>Component\Render\MeshBuffer</Filter>
     </ClInclude>
@@ -79,7 +76,7 @@
     <ClInclude Include="..\Header\Object.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\EngineResource.h">
+    <ClInclude Include="..\Header\Resources.h">
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\RectTransform.h">
@@ -93,6 +90,27 @@
     </ClInclude>
     <ClInclude Include="..\Header\EditorCamera.h">
       <Filter>Component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\EngineResource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Texture.h">
+      <Filter>Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Animation.h">
+      <Filter>Resource\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Renderer.h">
+      <Filter>Component\Render\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MeshRenderer.h">
+      <Filter>Component\Render\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\SkinnedMeshRenderer.h">
+      <Filter>Component\Render\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\SkinnedMeshBuffer.h">
+      <Filter>Component\Render\MeshBuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +177,15 @@
     <Filter Include="Editor">
       <UniqueIdentifier>{e57ee9b9-e587-45a2-bd09-b2a4ea8966e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource\Texture">
+      <UniqueIdentifier>{d3bfe6a9-91e9-4460-b1b2-3d6ffc312258}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Animation">
+      <UniqueIdentifier>{66c10c99-3f4d-4a84-8cf8-bae5005e5571}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Render\Renderer">
+      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epch.cpp">
@@ -200,9 +227,6 @@
     <ClCompile Include="..\Code\Transform.cpp">
       <Filter>Component\Transform</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\MeshRenderer.cpp">
-      <Filter>Component\Render</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\MeshBuffer.cpp">
       <Filter>Component\Render\MeshBuffer</Filter>
     </ClCompile>
@@ -215,7 +239,7 @@
     <ClCompile Include="..\Code\Object.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\EngineResource.cpp">
+    <ClCompile Include="..\Code\Resources.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\RectTransform.cpp">
@@ -256,6 +280,27 @@
     </ClCompile>
     <ClCompile Include="..\Code\WICTextureLoader.cpp">
       <Filter>Engine\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EngineResource.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Texture.cpp">
+      <Filter>Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Animation.cpp">
+      <Filter>Resource\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Renderer.cpp">
+      <Filter>Component\Render\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MeshRenderer.cpp">
+      <Filter>Component\Render\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp">
+      <Filter>Component\Render\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp">
+      <Filter>Component\Render\MeshBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

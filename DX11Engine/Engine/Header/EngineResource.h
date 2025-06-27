@@ -1,12 +1,30 @@
 #pragma once
 
-#include "epch.h"
+#include "Object.h"
 
 NS_BEGIN(Engine)
 
-class CResource
+class ENGINE_DLL CEngineResource abstract : public UObject
 {
-	SINGLETONCLASS(CResource);
+	friend class Resources;
+
+protected:
+		explicit CEngineResource();
+		~CEngineResource();
+
+protected:
+	virtual HRESULT Initialize(const wstring& _filePath);
+	virtual void OnDestroy();
+
+public:
+	const wstring& Get_ResourceName() const;
+
+public:
+	HRESULT Load(const wstring& path);
+
+protected:
+	wstring m_strResourceName;
+	wstring m_strFilePath;
 };
 
 NS_END

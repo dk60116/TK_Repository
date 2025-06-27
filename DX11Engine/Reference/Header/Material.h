@@ -19,9 +19,12 @@ public:
 	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection);
 
 public:
+	class CTexture* Get_Texture(_int _index) const;
+
+public:
 	HRESULT Load_Shader(const wstring& _path);
-	void Set_DiffuseColor(const ColorValue& color);
-	void Set_DiffuseTexture(ID3D11ShaderResourceView* pSRV);
+	void Set_DiffuseColor(const ColorValue& _color);
+	void Set_Texture(CTexture* _texture, _int _index);
 
 private:
 	HRESULT Create_ConstantBuffer();
@@ -42,7 +45,7 @@ private:
 	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pMaterialBuffer;
 
-	ID3D11ShaderResourceView* m_pDiffuseSRV;
+	vector<class CTexture*> m_vTextureList;
 	ColorValue m_vDiffuseColor;
 };
 

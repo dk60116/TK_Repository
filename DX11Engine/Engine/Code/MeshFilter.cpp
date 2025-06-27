@@ -4,6 +4,7 @@
 CMeshFilter::CMeshFilter()
 	: m_pMeshBuffer(nullptr)
 {
+	m_strName = L"Mesh Filter";
 }
 
 CMeshFilter::~CMeshFilter()

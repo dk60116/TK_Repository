@@ -15,6 +15,14 @@
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
+#ifdef new
+#undef new
+#endif
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>
 #include <malloc.h>

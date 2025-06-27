@@ -7,11 +7,13 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CMeshFilter : public CComponent
 {
+	friend class CGameObject;
+
 protected:
 	explicit CMeshFilter();
 	~CMeshFilter();
 
-public:
+private:
 	static CMeshFilter* Create();
 
 public:

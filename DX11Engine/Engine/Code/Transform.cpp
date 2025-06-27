@@ -16,6 +16,7 @@ CTransform::CTransform()
     , m_vMatLocalRotation(XMMatrixIdentity())
 	, m_sDirections({})
 {
+    m_strName = L"Transform";
 }
 
 CTransform::~CTransform()

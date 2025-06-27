@@ -17,11 +17,14 @@ CPlayer* CPlayer::Create()
 
 HRESULT CPlayer::Initialize()
 {
+	CTexture* tex = CResources::GetInstance().CreateResource<CTexture>(L"../Assets/texture_0.png");
 	CMaterial* playerMat = CMaterial::Create();
-
-	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	m_pMeshRenderer->Get_MeshFilter()->CreateMeshBuffer(L"Object", "../Assets/Animation_Idle_02_withSkin.fbx", 0.01f);
+	playerMat->Set_Texture(tex, 0);
+	m_pMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();
+	m_pMeshRenderer->CreateSkinnedMeshBuffer("../Assets/Link_Idle.fbx", 0.01f);
 	m_pMeshRenderer->Set_Material(playerMat);
+
+	CAnimation* an = CResources::GetInstance().CreateResource<CAnimation>(L"../Assets/Link_Idle.fbx");
 
 	return S_OK;
 }

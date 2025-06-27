@@ -10,9 +10,10 @@ CMaterial::CMaterial()
 	, m_pMatrixBuffer(nullptr)
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
-	, m_pDiffuseSRV(nullptr)
+	, m_vTextureList({})
 	, m_vDiffuseColor(ColorValue::white())
 {
+	m_strName = L"Material";
 }
 
 CMaterial::~CMaterial()
@@ -55,6 +56,9 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pMatrixBuffer);
 	Safe_Release(m_pMaterialBuffer);
+
+	for (TRAVERSAL_ITER(m_vTextureList, it))
+		Safe_Release(*it);
 }
 
 void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection)
@@ -81,24 +85,35 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 	m_pContext->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 }
 
-void CMaterial::Set_DiffuseColor(const ColorValue& color)
+CTexture* CMaterial::Get_Texture(_int _index) const
 {
-	m_vDiffuseColor = color;
+	return m_vTextureList[_index];
 }
 
-void CMaterial::Set_DiffuseTexture(ID3D11ShaderResourceView* pSRV)
+void CMaterial::Set_DiffuseColor(const ColorValue& _color)
 {
-	Safe_Release(m_pDiffuseSRV);
-	m_pDiffuseSRV = pSRV;
-	if (m_pDiffuseSRV)
-		m_pDiffuseSRV->AddRef();
+	m_vDiffuseColor = _color;
+}
+
+void CMaterial::Set_Texture(CTexture* _texture, _int _index)
+{
+	if (_index < 0)
+		return;
+
+	while (m_vTextureList.size() <= _index)
+		m_vTextureList.push_back(nullptr);
+
+	Safe_Release(m_vTextureList[_index]);
+	m_vTextureList[_index] = _texture;
+
+	if (_texture)
+		_texture->AddRef();
 }
 
 HRESULT CMaterial::Load_Shader(const wstring& _path)
 {
 	HRESULT hr = S_OK;
 
-	// Vertex Shader 컴파일
 	ComPtr<ID3DBlob> vsBlob = nullptr;
 	ComPtr<ID3DBlob> errorBlob = nullptr;
 
@@ -195,7 +210,7 @@ void CMaterial::Bind_Shader()
 		m_vDiffuseColor.a / 255.f
 	};
 	
-	mat.useTexture = (m_pDiffuseSRV != nullptr);
+	mat.useTexture = (m_vTextureList.size() <= 0 || m_vTextureList[0] != nullptr);
 
 	m_pContext->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
 	m_pContext->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
@@ -203,6 +218,11 @@ void CMaterial::Bind_Shader()
 
 void CMaterial::Bind_Texture()
 {
+	ID3D11ShaderResourceView* texture = nullptr;
+
+	if (!m_vTextureList.empty() && m_vTextureList[0])
+		texture = m_vTextureList[0]->Get_SRV();
+
 	// ─ Shader 및 InputLayout 설정
 	if (m_pVertexShader && m_pPixelShader && m_pInputLayout)
 	{
@@ -212,7 +232,7 @@ void CMaterial::Bind_Texture()
 	}
 
 	// ─ ShaderResourceView 바인딩 (t0)
-	ID3D11ShaderResourceView* srv = m_pDiffuseSRV;
+	ID3D11ShaderResourceView* srv = texture;
 	m_pContext->PSSetShaderResources(0, 1, &srv);
 
 	// ─ SamplerState 바인딩 (s0)

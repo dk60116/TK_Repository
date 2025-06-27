@@ -125,6 +125,9 @@ void CScene::SceneRelease()
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		Safe_Release(*it);
 
+	for (TRAVERSAL_ITER(m_vResourceList, it))
+		Safe_Release(*it);
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 }
@@ -134,9 +137,21 @@ void CScene::Set_Name(const wstring _name)
 	m_strSceneName = _name;
 }
 
-const wstring& CScene::Get_Name() const
+const wstring& CScene::Get_SceneName() const
 {
 	return m_strName;
+}
+
+
+CEngineResource* CScene::Add_Resource(CEngineResource* _resource)
+{
+	if (!_resource)
+		nullptr;
+
+	m_vResourceList.push_back(_resource);
+	_resource->AddRef();
+
+	return _resource;
 }
 
 CGameObject* CScene::Add_GameObject(wstring _name)

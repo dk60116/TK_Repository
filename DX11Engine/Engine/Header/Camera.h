@@ -6,6 +6,8 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CCamera : public CComponent
 {
+	friend class CGameObject;
+
 public:
 	enum ViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
@@ -13,7 +15,7 @@ protected:
 	explicit CCamera();
 	~CCamera();
 
-public:
+private:
 	static CCamera* Create();
 
 public:

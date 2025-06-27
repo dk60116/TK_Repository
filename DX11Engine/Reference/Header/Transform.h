@@ -6,6 +6,8 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CTransform : public CComponent
 {
+	friend class CGameObject;
+
 	typedef struct TransformDirections
 	{
 		vector3 forward = vector3::zero();
@@ -20,7 +22,7 @@ protected:
 	explicit CTransform();
 	~CTransform();
 
-public:
+private:
 	static CTransform* Create();
 
 public:

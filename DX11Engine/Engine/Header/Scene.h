@@ -27,14 +27,15 @@ public:
 
 public:
     void Set_Name(const wstring _name);
-    const wstring& Get_Name() const;
+    const wstring& Get_SceneName() const;
 
 public:
+    class CEngineResource* Add_Resource(class CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     class CCamera* Get_Camera() const;
     class CCamera* Get_Camera(const _int _index) const;
     class CCamera* Get_EditorCamera() const;
-    list <class CCamera*>& Get_CameraList();
+    list <CCamera*>& Get_CameraList();
     class CCamera* Add_Camera(class CCamera* _camera);
     class CGameObject* Instantiate(class CGameObject* _gameObject);
 
@@ -49,6 +50,8 @@ private:
     list <class CCamera*> m_lCameraList;
 
     class CCamera* m_pEditorCamera;
+
+    vector<class CEngineResource*> m_vResourceList;
 };
 
 NS_END

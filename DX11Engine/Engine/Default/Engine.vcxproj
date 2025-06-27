@@ -156,6 +156,7 @@ call copy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\Animation.h" />
     <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\Display.h" />
@@ -163,7 +164,8 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\EditorCamera.h" />
     <ClInclude Include="..\Header\EngineDebug.h" />
     <ClInclude Include="..\Header\EngineFunction.h" />
-    <ClInclude Include="..\Header\EngineResource.h" />
+    <ClInclude Include="..\Header\Renderer.h" />
+    <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
     <ClInclude Include="..\Header\MainProcess.h" />
@@ -179,9 +181,13 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\EngineTypedef.h" />
     <ClInclude Include="..\Header\framework.h" />
     <ClInclude Include="..\Header\RectTransform.h" />
+    <ClInclude Include="..\Header\EngineResource.h" />
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneManager.h" />
     <ClInclude Include="..\Header\EngineTime.h" />
+    <ClInclude Include="..\Header\SkinnedMeshBuffer.h" />
+    <ClInclude Include="..\Header\SkinnedMeshRenderer.h" />
+    <ClInclude Include="..\Header\Texture.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\Transform.h" />
     <ClInclude Include="..\Header\MeshBuffer.h" />
@@ -189,13 +195,15 @@ call copy.bat</Command>
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\Animation.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\Display.cpp" />
     <ClCompile Include="..\Code\Editor.cpp" />
     <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
-    <ClCompile Include="..\Code\EngineResource.cpp" />
+    <ClCompile Include="..\Code\Renderer.cpp" />
+    <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -230,11 +238,14 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\MeshFilter.cpp" />
     <ClCompile Include="..\Code\MeshRenderer.cpp" />
     <ClCompile Include="..\Code\RectTransform.cpp" />
+    <ClCompile Include="..\Code\EngineResource.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\MainProcess.cpp" />
     <ClCompile Include="..\Code\Object.cpp" />
     <ClCompile Include="..\Code\SceneManager.cpp" />
     <ClCompile Include="..\Code\EngineTime.cpp" />
+    <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\MeshBuffer.cpp" />
@@ -244,6 +255,7 @@ call copy.bat</Command>
     </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp" />
     <ClCompile Include="..\Header\GraphicDevice.cpp" />
+    <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp" />
     <ClCompile Include="epch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

@@ -14,6 +14,7 @@ CEditorCamera::CEditorCamera()
 	, m_v3MoveTo(vector3::zero())
 	, m_bZoomDistToggle(false)
 {
+	m_strName = L"Editor Camera";
 }
 
 CEditorCamera::~CEditorCamera()

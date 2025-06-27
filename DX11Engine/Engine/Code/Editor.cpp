@@ -1,5 +1,4 @@
 #include "epch.h"
-#include "Editor.h"
 
 CEditor::CEditor()
 	: m_hEditorWindow(nullptr)

@@ -1,13 +1,6 @@
 #include "epch.h"
 #include "MeshBuffer.h"
-
-#ifdef new
-#undef new
-#endif
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "SkinnedMeshBuffer.h"
 
 CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
@@ -15,6 +8,7 @@ CMeshBuffer::CMeshBuffer()
 	, m_pFilter(nullptr)
 	, m_sInfo({})
 {
+    m_strName = L"Mesh Buffer";
 }
 
 CMeshBuffer::~CMeshBuffer()

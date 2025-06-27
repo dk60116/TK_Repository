@@ -11,6 +11,7 @@ CCamera::CCamera()
 	, m_fFieldOfView(60.f)
 	, m_fSize(5.f)
 {
+	m_strName = L"Camera";
 }
 
 CCamera::~CCamera()

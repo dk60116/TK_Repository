@@ -1,16 +1,34 @@
 #include "epch.h"
 #include "EngineResource.h"
 
-CResource::CResource()
+CEngineResource::CEngineResource()
+	: m_strResourceName({})
+	, m_strFilePath({})
 {
 }
 
-CResource::~CResource()
+CEngineResource::~CEngineResource()
 {
+	OnDestroy();
 }
 
-CResource& CResource::GetInstance()
+HRESULT CEngineResource::Initialize(const wstring& _filePath)
 {
-	static CResource inst;
-	return inst;
+	m_strFilePath = _filePath;
+
+	return S_OK;
+}
+
+const wstring& CEngineResource::Get_ResourceName() const
+{
+	return m_strName;
+}
+
+HRESULT CEngineResource::Load(const wstring& path)
+{
+	return S_OK;
+}
+
+void CEngineResource::OnDestroy()
+{
 }
