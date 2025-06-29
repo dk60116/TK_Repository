@@ -922,6 +922,15 @@ namespace Engine
             return quaternion(q);
         }
 
+        static quaternion from_axis_angle(vector3& _axis, const _float _radians)
+        {
+            _vector q = XMQuaternionRotationAxis(_axis.toXMVector(), _radians);
+
+            quaternion result;
+            XMStoreFloat4(reinterpret_cast<_float4*>(&result), q);
+            return result;
+        }
+
         vector3 to_euler() const
         {
             vector3 euler;

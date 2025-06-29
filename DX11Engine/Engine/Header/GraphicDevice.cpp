@@ -92,6 +92,7 @@ HRESULT CGraphicDevice::Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution)
 void CGraphicDevice::Set_RenderTarget(HWND _hWnd)
 {
 	auto it = m_mSwapChains.find(_hWnd);
+	
 	if (it == m_mSwapChains.end())
 		return;
 

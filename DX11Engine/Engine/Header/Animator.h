@@ -37,7 +37,6 @@ private:
     _bool m_bIsPlaying, m_bLoop;
     _float m_fCurrentTime;
     _float m_fPlaybackSpeed;
-    unordered_map<wstring, CAnimation::BoneTransform> m_mBoneTransformLIst;
 };
 
 NS_END

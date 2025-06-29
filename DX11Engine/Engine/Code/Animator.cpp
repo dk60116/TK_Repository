@@ -10,7 +10,6 @@ CAnimator::CAnimator()
 	, m_bLoop(false)
 	, m_fCurrentTime(0.f)
 	, m_fPlaybackSpeed(1.f)
-	, m_mBoneTransformLIst({})
 {
 	m_strName = L"Animator";
 }
@@ -42,41 +41,6 @@ HRESULT CAnimator::Initialize()
 
 void CAnimator::Update()
 {
-	if (m_pCrtAnimation == nullptr || !m_bIsPlaying)
-		return;
-
-	m_fCurrentTime += m_fPlaybackSpeed * DELTA_TIME;
-
-	const _float duration = m_pCrtAnimation->Get_Duration();
-
-	if (m_fCurrentTime > duration)
-	{
-		if (m_bLoop)
-			m_fCurrentTime = fmod(m_fCurrentTime, duration);
-		else
-		{
-			m_fCurrentTime = duration;
-			m_bIsPlaying = false;
-		}
-	}
-
-	m_mBoneTransformLIst.clear();
-	m_pCrtAnimation->Sample(m_fCurrentTime, m_mBoneTransformLIst);
-
-	if (m_pSkinnedMesh)
-	{
-		for (auto& [boneName, transform] : m_mBoneTransformLIst)
-		{
-			auto* bone = m_pSkinnedMesh->FindBone(boneName);
-			
-			if (bone)
-			{
-				bone->Set_LocalPosition(transform.pos);
-				bone->Set_LocalQuaternion(transform.rot);
-				bone->Set_LocalScale(transform.scale);
-			}
-		}
-	}
 }
 
 void CAnimator::OnDestroy()

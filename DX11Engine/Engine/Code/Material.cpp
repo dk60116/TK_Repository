@@ -207,7 +207,7 @@ void CMaterial::Bind_Shader()
 		m_vDiffuseColor.a / 255.f
 	};
 	
-	mat.useTexture = (m_vTextureList.size() <= 0 || m_vTextureList[0] != nullptr);
+	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
 
 	m_pContext->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
 	m_pContext->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);

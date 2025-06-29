@@ -110,8 +110,17 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    const vector2Int resolution = CDisplay::GetInstance().Get_ScreenResolution();
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, CW_USEDEFAULT, resolution.x, resolution.y, nullptr, nullptr, hInstance, nullptr);
+   RECT rc = { 0, 0, resolution.x, resolution.y };
+   AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+
+   HWND hWnd = CreateWindowW
+   (
+       szWindowClass, szTitle, 
+       WS_OVERLAPPEDWINDOW,
+       CW_USEDEFAULT, CW_USEDEFAULT, 
+       rc.right - rc.left, rc.bottom - rc.top, 
+       nullptr, nullptr, hInstance, nullptr
+   );
 
    if (!hWnd)
       return FALSE;

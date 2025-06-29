@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CMeshBuffer final : public UObject
+class ENGINE_DLL CMeshBuffer : public UObject
 {
 	friend class CMeshFilter;
 
@@ -18,7 +18,7 @@ public:
 		UINT indexCount = 0;
 	}MESHBUFFERDESC;
 
-private:
+protected:
 	explicit CMeshBuffer();
 	~CMeshBuffer();
 

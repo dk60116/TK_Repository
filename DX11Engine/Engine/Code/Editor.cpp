@@ -1,9 +1,12 @@
 #include "epch.h"
+#include "HierachyBox.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 CEditor::CEditor()
 	: m_hEditorWindow(nullptr)
+	, m_pHierachyBox(nullptr)
+	, m_sOptions({})
 {
 }
 
@@ -32,6 +35,14 @@ HRESULT CEditor::Initialize()
 	ImGui_ImplWin32_Init(m_hEditorWindow);
 	ImGui_ImplDX11_Init(CGraphicDevice::GetInstance().Get_Device(), CGraphicDevice::GetInstance().Get_Context());
 
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
+
+	CEditorBox::EDITORBOXDESC hierachyDesc = {};
+
+	m_pHierachyBox = CHierachyBox::Create(hierachyDesc);
+	m_pHierachyBox->AddRef();
+
 	return S_OK;
 }
 
@@ -40,6 +51,8 @@ void CEditor::Release()
 #ifndef _DEBUG
 	return;
 #endif // DEBUG
+
+	Safe_Release(m_pHierachyBox);
 
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX11_Shutdown();
@@ -52,6 +65,18 @@ HWND CEditor::Get_EditorWindow()
 	return m_hEditorWindow;
 }
 
+void CEditor::Editor_Update()
+{
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	m_pHierachyBox->Render();
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
 HWND CEditor::CreateEditorWindow()
 {
 	WNDCLASS wc = {};
@@ -61,6 +86,9 @@ HWND CEditor::CreateEditorWindow()
 
 	RegisterClass(&wc);
 
+	RECT rc = { 0, 0, m_sOptions.windowWidth, m_sOptions.windowHeight };
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+
 	HWND hwnd = CreateWindowEx
 	(
 		0,
@@ -68,7 +96,7 @@ HWND CEditor::CreateEditorWindow()
 		"Editor",
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		CDisplay::GetInstance().Get_ScreenResolution().x, CDisplay::GetInstance().Get_ScreenResolution().y,
+		rc.right - rc.left, rc.bottom - rc.top,
 		nullptr,
 		nullptr,
 		CDisplay::GetInstance().Get_HInstance(),
@@ -102,4 +130,14 @@ LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+const CEditor::EDITORWINOPTION& CEditor::Get_Options()
+{
+	return m_sOptions;
+}
+
+const vector2Int CEditor::Get_ScreenResolution() const
+{
+	return vector2Int(m_sOptions.windowWidth, m_sOptions.windowHeight);
 }

@@ -29,15 +29,17 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
 
 #ifdef _DEBUG
-    CGraphicDevice::GetInstance().Add_SwapChain(
+    CGraphicDevice::GetInstance().Add_SwapChain
+    (
         CEditor::GetInstance().Get_EditorWindow(),
         WINMODE::MODE_WINDOW,
-        CDisplay::GetInstance().Get_ScreenResolution().x,
-        CDisplay::GetInstance().Get_ScreenResolution().y
+        CEditor::GetInstance().Get_ScreenResolution().x,
+        CEditor::GetInstance().Get_ScreenResolution().y
     );
 #endif
 
-    CGraphicDevice::GetInstance().Add_SwapChain(
+    CGraphicDevice::GetInstance().Add_SwapChain
+    (
         CDisplay::GetInstance().Get_GameWindow(),
         WINMODE::MODE_WINDOW,
         CDisplay::GetInstance().Get_ScreenResolution().x,
@@ -71,7 +73,10 @@ void CMainProcess::Update_MainApp()
 
 #ifdef _DEBUG
         graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
+
         scene->Render_Editor();
+        CEditor::GetInstance().Editor_Update();
+
         graphicDev.Present();
 #endif
 

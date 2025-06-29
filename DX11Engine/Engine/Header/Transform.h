@@ -28,10 +28,12 @@ private:
 public:
 	HRESULT Initialize() override;
 	void Update() override;
+	void OnDestroy() override;
 
 public:
 	CTransform* Get_Parent();
 	void Set_Parent(CTransform* _parent);
+	void Set_Parent(CGameObject* _parentObj);
 	const list<CTransform*>& Get_ChldLIst() const;
 	const DIRECTIONS& Get_Directions();
 	const _matrix& Get_WorldMatrix() const;
@@ -66,35 +68,39 @@ public:
 	void Set_Quaternion(const quaternion& _value);
 	void Set_LocalQuaternion(const quaternion& _value);
 
-	void Set_EulerAngle(const vector3& _rot);
-	void Set_EulerAngle(const _float _x, const _float _y, const _float _z);
-	void Set_EulerAngleX(const _float _x);
-	void Set_EulerAngleY(const _float _y);
-	void Set_EulerAngleZ(const _float _z);
+	void Add_Quaternion(const quaternion& _delta);
 
-	void Add_EulerAngle(const vector3& _rot);
-	void Add_EulerAngle(const _float _x, const _float _y, const _float _z);
-	void Add_EulerAngleX(const _float _value);
-	void Add_EulerAngleY(const _float _value);
-	void Add_EulerAngleZ(const _float _value);
+	void Set_EulerAngles(const vector3& _rot);
+	void Set_EulerAngles(const _float _x, const _float _y, const _float _z);
+	void Set_EulerAnglesX(const _float _x);
+	void Set_EulerAnglesY(const _float _y);
+	void Set_EulerAnglesZ(const _float _z);
 
-	void Set_LocalEulerAngle(const vector3& _rot);
-	void Set_LocalEulerAngle(const _float _x, const _float _y, const _float _z);
-	void Set_LocalEulerAngleX(const _float _x);
-	void Set_LocalEulerAngleY(const _float _y);
-	void Set_LocalEulerAngleZ(const _float _z);
+	void Add_EulerAngles(const vector3& _rot);
+	void Add_EulerAngles(const _float _x, const _float _y, const _float _z);
+	void Add_EulerAnglesX(const _float _value);
+	void Add_EulerAnglesY(const _float _value);
+	void Add_EulerAnglesZ(const _float _value);
 
-	void Add_LocalEulerAngle(const vector3& _rot);
-	void Add_LocalEulerAngle(const _float _x, const _float _y, const _float _z);
-	void Add_LocalEulerAngleX(const _float _value);
-	void Add_LocalEulerAngleY(const _float _value);
-	void Add_LocalEulerAngleZ(const _float _value);
+	void Set_LocalEulerAngles(const vector3& _rot);
+	void Set_LocalEulerAngles(const _float _x, const _float _y, const _float _z);
+	void Set_LocalEulerAnglesX(const _float _x);
+	void Set_LocalEulerAnglesY(const _float _y);
+	void Set_LocalEulerAnglesZ(const _float _z);
+
+	void Add_LocalEulerAngles(const vector3& _rot);
+	void Add_LocalEulerAngles(const _float _x, const _float _y, const _float _z);
+	void Add_LocalEulerAnglesX(const _float _value);
+	void Add_LocalEulerAnglesY(const _float _value);
+	void Add_LocalEulerAnglesZ(const _float _value);
 
 	void Set_LocalScale(const vector3& _scale);
 	void Set_LocalScale(const _float _x, const _float _y, const _float _z);
 	void Set_LocalScaleX(const _float _value);
 	void Set_LocalScaleY(const _float _value);
 	void Set_LocalScaleZ(const _float _value);
+
+	void LookAt(const vector3& _target);
 
 private:
 	void Bind_Matrix();

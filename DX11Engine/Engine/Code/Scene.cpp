@@ -95,8 +95,6 @@ void CScene::Render_Editor()
 		(*it)->Render_Editor();
 		(*it)->OnPostRender();
 	}
-
-	CGraphicDevice::GetInstance().Present();
 }
 
 void CScene::Render_Game()
@@ -116,8 +114,6 @@ void CScene::Render_Game()
 		(*it)->Render();
 		(*it)->OnPostRender();
 	}
-
-	CGraphicDevice::GetInstance().Present();
 }
 
 void CScene::SceneRelease()

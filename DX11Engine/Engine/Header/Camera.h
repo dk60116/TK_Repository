@@ -32,14 +32,15 @@ public:
 	const ColorValue& Get_BackgroundColor() const;
 	void Set_BackgroundColor(const ColorValue& _color);
 
-private:
+protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
-private:
+protected:
 	ViewMode m_eCamViewMode;
 	_matrix m_vViewMatrix, m_vProjMatrix;
 
+	_float m_fAspect;
 	ColorValue m_vBackgroundColor;
 	_float m_fNear, m_fFar;
 	_float m_fFieldOfView;

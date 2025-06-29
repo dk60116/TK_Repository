@@ -94,7 +94,7 @@ void CEditorCamera::Update_Editor()
 						m_fYaw += m_v2MouseDragDelta.x * DELTA_TIME * m_sOptions.rotateSpeed;
 						m_fPitch += m_v2MouseDragDelta.y * DELTA_TIME * m_sOptions.rotateSpeed;
 
-						camTransform.Set_EulerAngle(m_fPitch, m_fYaw, 0.f);
+						camTransform.Set_EulerAngles(m_fPitch, m_fYaw, 0.f);
 					}
 				}
 			}
@@ -128,5 +128,8 @@ void CEditorCamera::Update_Editor()
 
 void CEditorCamera::Update()
 {
-	__super::Update();
+	m_fAspect = static_cast<_float>(CEditor::GetInstance().Get_ScreenResolution().x) / CEditor::GetInstance().Get_ScreenResolution().y;
+
+	Bind_ViewMatrix();
+	Bind_ProjectionMatrix();
 }

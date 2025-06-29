@@ -118,6 +118,12 @@
     <ClInclude Include="..\Header\EngineString.h">
       <Filter>System\String</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\HierachyBox.h">
+      <Filter>Editor\EditorBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\EditorBox.h">
+      <Filter>Editor\EditorBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -197,6 +203,9 @@
     </Filter>
     <Filter Include="System\String">
       <UniqueIdentifier>{b05e896d-c74b-4eb9-9b77-a362801a3f2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\EditorBox">
+      <UniqueIdentifier>{f02dcc36-a2b2-44de-9d7a-69c582d63e81}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\EngineString.cpp">
       <Filter>System\String</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\HierachyBox.cpp">
+      <Filter>Editor\EditorBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EditorBox.cpp">
+      <Filter>Editor\EditorBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

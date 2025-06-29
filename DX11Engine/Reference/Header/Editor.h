@@ -6,6 +6,15 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CEditor final
 {
+public:
+	typedef struct EditopWindowOptionsDescription
+	{
+		UINT windowWidth = 1510;
+		UINT windowHeight = 720;
+		UINT hierachyWidth = 230;
+
+	}EDITORWINOPTION;
+
 	SINGLETONCLASS(CEditor);
 
 public:
@@ -14,6 +23,11 @@ public:
 
 public:
 	HWND Get_EditorWindow();
+	void Editor_Update();
+
+public:
+	const EDITORWINOPTION& Get_Options();
+	const vector2Int Get_ScreenResolution() const;
 
 private:
 	HWND CreateEditorWindow();
@@ -21,6 +35,12 @@ private:
 
 private:
 	HWND m_hEditorWindow;
+
+private:
+	class CHierachyBox* m_pHierachyBox;
+
+private:
+	EDITORWINOPTION m_sOptions;
 };
 
 NS_END

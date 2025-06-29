@@ -6,6 +6,7 @@ CCamera::CCamera()
 	, m_vViewMatrix(XMMatrixIdentity())
 	, m_vProjMatrix(XMMatrixIdentity())
 	, m_vBackgroundColor(ColorValue(49, 77, 121, 255))
+	, m_fAspect(1.f)
 	, m_fNear(0.1f)
 	, m_fFar(600.f)
 	, m_fFieldOfView(60.f)
@@ -33,6 +34,8 @@ HRESULT CCamera::Initialize()
 
 void CCamera::Update()
 {
+	m_fAspect = static_cast<_float>(CDisplay::GetInstance().Get_ScreenResolution().x) / CDisplay::GetInstance().Get_ScreenResolution().y;
+
 	Bind_ViewMatrix();
 	Bind_ProjectionMatrix();
 }
@@ -84,8 +87,6 @@ void CCamera::Bind_ViewMatrix()
 
 void CCamera::Bind_ProjectionMatrix()
 {
-	const _float aspect = CDisplay::GetInstance().Get_Aspect();
-
 	switch (m_eCamViewMode)
 	{
 	case CCamera::PERSPECTIVE:
@@ -93,7 +94,7 @@ void CCamera::Bind_ProjectionMatrix()
 		m_vProjMatrix = XMMatrixPerspectiveFovLH
 		(
 			XMConvertToRadians(m_fFieldOfView),
-			aspect,
+			m_fAspect,
 			m_fNear,
 			m_fFar
 		);
@@ -102,7 +103,7 @@ void CCamera::Bind_ProjectionMatrix()
 	case CCamera::ORTHOGRAPHIC:
 	{
 		const _float fHalfHeight = m_fSize * 0.5f;
-		const _float fHalfWidth = fHalfHeight * aspect;
+		const _float fHalfWidth = fHalfHeight * m_fAspect;
 
 		m_vProjMatrix = XMMatrixOrthographicOffCenterLH
 		(

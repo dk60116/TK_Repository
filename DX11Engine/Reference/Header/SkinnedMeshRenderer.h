@@ -25,19 +25,11 @@ public:
 	void OnPostRender() override;
 	void OnDestroy()override;
 
-	void  CreateSkinnedMeshBuffer(const string& _filePath, const _float _scaleFactor = 1.f);
-	CTransform* CreateBoneHierarchy(const aiNode* _node, CTransform* _parent);
-	void CollectBonesRecursive(CTransform* _node, const vector<string>& _boneNames);
-	void EnsureBoneCB(const UINT _boneCount);
-
 protected:
 	void Render_WithCamera(CCamera* _cam) override;
 
 public:
 	void SetMesh(CMeshBuffer* _Mesh);
-	void SetBones(const vector<CTransform*>& _bones);
-	void SetRootBone(CTransform* _root);
-	CTransform* FindBone(const wstring& _boneName);
 
 private:
 	CSkinnedMeshBuffer* m_pMeshBuffer;
