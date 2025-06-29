@@ -161,6 +161,8 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 
 	m_lObjectList.push_back(newObj);
 
+	newObj->Set_ObjectName(_name);
+
 	if (FAILED(m_lObjectList.back()->Initialize()))
 	{
 		Safe_Release(newObj);

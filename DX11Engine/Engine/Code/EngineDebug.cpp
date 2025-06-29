@@ -65,7 +65,7 @@ void CDebug::Log(const string format, ...)
 
 void CDebug::Log(const wstring format, ...)
 {
-    Log(WStringToString(format));
+    Log(CEngineString::WStringToString(format));
 }
 
 void CDebug::Log(const int format, ...)
@@ -91,16 +91,6 @@ void CDebug::Log(const vector2Int format, ...)
 void CDebug::Log(const vector3 format, ...)
 {
     Log("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
-}
-
-string CDebug::WStringToString(const std::wstring& wstr)
-{
-    if (wstr.empty()) return string();
-
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-    string str(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &str[0], size_needed, NULL, NULL);
-    return str;
 }
 
 void CDebug::LogError(const char* format, ...)
@@ -148,7 +138,7 @@ void CDebug::LogError(const string format, ...)
 
 void CDebug::LogError(const wstring format, ...)
 {
-    LogError(WStringToString(format));
+    LogError(CEngineString::WStringToString(format));
 }
 
 void CDebug::LogError(const int format, ...)

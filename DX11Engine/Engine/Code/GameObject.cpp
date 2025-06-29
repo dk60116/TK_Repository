@@ -4,7 +4,7 @@
 CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
 	: m_pDevice(_pDevice)
 	, m_pContext(_pContext)
-	, m_strName(L"")
+	, m_strGameObjectName(L"")
 	, m_bActive(true)
 	, m_lComponentList({})
 	, m_pScene(nullptr)
@@ -17,7 +17,7 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 CGameObject::CGameObject(const CGameObject& _rhs)
 	: m_pDevice(_rhs.m_pDevice)
 	, m_pContext(_rhs.m_pContext)
-	, m_strName(_rhs.m_strName)
+	, m_strGameObjectName(_rhs.m_strGameObjectName)
 	, m_bActive(_rhs.m_bActive)
 	, m_lComponentList(_rhs.m_lComponentList)
 	, m_pTransform(_rhs.m_pTransform)
@@ -273,8 +273,23 @@ CTransform* CGameObject::Get_Transfrom() const
 	return m_pTransform;
 }
 
+wstring CGameObject::Get_ObjectName() const
+{
+	return m_strGameObjectName;
+}
+
+void CGameObject::Set_ObjectName(wstring& _name)
+{
+	m_strGameObjectName = _name;
+}
+
 void CGameObject::Set_Scene(CScene* _scene)
 {
 	m_pScene = _scene;
+}
+
+CScene* CGameObject::Get_Scene()
+{
+	return m_pScene;
 }
 

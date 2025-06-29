@@ -13,6 +13,78 @@ CAnimation::~CAnimation()
 	OnDestroy();
 }
 
+void CAnimation::Sample(_float timeSec, unordered_map<std::wstring, BoneTransform>& out) const
+{
+	if (m_vBoneAnimation.empty())
+		return;
+
+	const double ticks = timeSec * m_fTicksPerSecond;
+	const double time = fmod(ticks, m_fDuration);      // 루프
+
+	out.clear();
+	out.reserve(m_vBoneAnimation.size());
+
+	for (const auto& ba : m_vBoneAnimation)
+	{
+		const auto& keys = ba.keyFrames;
+		
+		if (keys.empty())
+			continue;
+
+		// 전/후 키 찾기
+		size_t i1 = 0, i2 = 0;
+
+		for (size_t i = 0; i < keys.size(); ++i)
+		{
+			if (time < keys[i].timeStamp) 
+			{ 
+				i2 = i; 
+				break;
+			}
+
+			i1 = i;
+		}
+
+		i2 = (i1 + 1 < keys.size()) ? (i1 + 1) : i1;
+
+		const auto& k1 = keys[i1];
+		const auto& k2 = keys[i2];
+
+		const float  span = float(k2.timeStamp - k1.timeStamp);
+		const float  t = (span > 0.f) ? float((time - k1.timeStamp) / span) : 0.f;
+
+		// 보간
+		BoneTransform bt;
+
+		XMVECTOR p1 = XMLoadFloat3(&k1.position);
+		XMVECTOR p2 = XMLoadFloat3(&k2.position);
+		XMVECTOR pLerp = XMVectorLerp(p1, p2, t);
+		XMStoreFloat3(&bt.pos, pLerp);
+
+		XMVECTOR q1 = XMLoadFloat4(&k1.rotation);
+		XMVECTOR q2 = XMLoadFloat4(&k2.rotation);
+		XMVECTOR qSlerp = XMQuaternionSlerp(q1, q2, t);
+		XMStoreFloat4(&bt.rot, qSlerp);
+
+		XMVECTOR s1 = XMLoadFloat3(&k1.scaling);
+		XMVECTOR s2 = XMLoadFloat3(&k2.scaling);
+		XMVECTOR sLerp = XMVectorLerp(s1, s2, t);
+		XMStoreFloat3(&bt.scale, sLerp);
+
+		out.emplace(ba.boneName, bt);
+	}
+}
+
+const _bool CAnimation::IsLoop() const
+{
+	return m_bLoopTime;
+}
+
+_float CAnimation::Get_Duration() const
+{
+	return m_fDuration;
+}
+
 CAnimation* CAnimation::Create(const wstring& filePath)
 {
 	return new CAnimation();
@@ -56,7 +128,7 @@ HRESULT CAnimation::Initialize(const wstring& _filePath)
 
 	const aiAnimation* anim = scene->mAnimations[0];
 
-	m_fTicksPerSecond = static_cast<float>(anim->mDuration);
+	m_fDuration = static_cast<float>(anim->mDuration);
 	m_fTicksPerSecond = static_cast<float>(anim->mTicksPerSecond != 0.0f ? anim->mTicksPerSecond : 25.0f);
 
 	m_vBoneAnimation.clear();
@@ -85,7 +157,7 @@ HRESULT CAnimation::Initialize(const wstring& _filePath)
 			if (k < channel->mNumPositionKeys)
 			{
 				const aiVector3D& pos = channel->mPositionKeys[k].mValue;
-				keyframe.position = _float3(pos.x, pos.y, pos.z);
+				keyframe.position = _float3(pos.x * 0.0f, pos.y * 0.01f, pos.z * 0.01f);
 				keyframe.timeStamp = channel->mPositionKeys[k].mTime;
 			}
 

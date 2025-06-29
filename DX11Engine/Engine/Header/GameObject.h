@@ -73,21 +73,24 @@ public:
 	list<CComponent*>& Get_ComponentList();
 	class CTransform* Get_Transfrom() const;
 
-private:
+	wstring Get_ObjectName() const;
+	void Set_ObjectName(wstring& _name);
+
 	void Set_Scene(CScene* _scene);
+	CScene* Get_Scene();
 
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
 
 private:
-	wstring m_strName;
+	wstring m_strGameObjectName;
 	_bool m_bActive;
 
 	list<CComponent*> m_lComponentList;
 
-	class CScene* m_pScene;
-	CTransform* m_pTransform;
+	CScene* m_pScene;
+	class CTransform* m_pTransform;
 };
 
 NS_END

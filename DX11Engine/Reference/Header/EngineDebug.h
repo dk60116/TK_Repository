@@ -30,9 +30,6 @@ public:
     static void LogError(const vector2 format, ...);
     static void LogError(const vector2Int format, ...);
     static void LogError(const vector3 format, ...);
-
-public:
-    static string WStringToString(const wstring& wstr);
 };
 
 NS_END

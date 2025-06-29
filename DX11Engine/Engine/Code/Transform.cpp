@@ -45,6 +45,31 @@ void CTransform::Update()
     Bind_Direction();
 }
 
+void CTransform::Set_Parent(CTransform* _parent)
+{
+    if (_parent == m_pParent)
+        return;
+
+    if (m_pParent)
+    {
+        m_pParent->m_lChildList.remove(this);
+        Safe_Release(m_pParent);
+    }
+
+    m_pParent = _parent;
+
+    if (m_pParent)
+    {
+        m_pParent->m_lChildList.push_back(this);
+        m_pParent->AddRef();
+    }
+}
+
+const list<CTransform*>& CTransform::Get_ChldLIst() const
+{
+    return m_lChildList;
+}
+
 const CTransform::DIRECTIONS& CTransform::Get_Directions()
 {
     return m_sDirections;
@@ -200,6 +225,26 @@ void CTransform::Add_PositionZ(const _float _value)
     m_vPosition.z += _value;
 }
 
+void CTransform::Set_Quaternion(const quaternion& _value)
+{
+    m_vQuaternion = _value;
+}
+
+void CTransform::Set_LocalQuaternion(const quaternion& _value)
+{
+    m_vLocalQuaternion = _value;
+
+    if (m_pParent)
+    {
+        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
+        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
+        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
+        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
+    }
+    else
+        m_vQuaternion = m_vLocalQuaternion;
+}
+
 void CTransform::Set_EulerAngle(const vector3& _rot)
 {
     m_vQuaternion = _rot.to_quaternion();
@@ -336,4 +381,29 @@ void CTransform::Bind_Direction()
     m_sDirections.left = -m_sDirections.right;
     m_sDirections.up = vector3(u.x, u.y, u.z).normalized();
     m_sDirections.down = -m_sDirections.up;
+}
+
+void CTransform::Set_LocalScale(const vector3& _scale)
+{
+    m_vScale = _scale;
+}
+
+void CTransform::Set_LocalScale(const _float _x, const _float _y, const _float _z)
+{
+    m_vScale = vector3(_x, _y, _z);
+}
+
+void CTransform::Set_LocalScaleX(const _float _value)
+{
+    m_vScale.x = _value;
+}
+
+void CTransform::Set_LocalScaleY(const _float _value)
+{
+    m_vScale.y = _value;
+}
+
+void CTransform::Set_LocalScaleZ(const _float _value)
+{
+    m_vScale.z = _value;
 }

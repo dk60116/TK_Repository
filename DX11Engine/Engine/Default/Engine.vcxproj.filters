@@ -68,7 +68,7 @@
       <Filter>Component\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Material.h">
-      <Filter>Component\Render\Material</Filter>
+      <Filter>Resource\Material</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Default</Filter>
@@ -111,6 +111,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h">
       <Filter>Component\Render\MeshBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Animator.h">
+      <Filter>Component\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\EngineString.h">
+      <Filter>System\String</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,9 +168,6 @@
     <Filter Include="Component\Camera">
       <UniqueIdentifier>{13c5e534-fed3-47c8-87a7-f04e0066d5f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\Render\Material">
-      <UniqueIdentifier>{ff070008-c856-4498-a70c-0964b8f68cb0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{32b85b70-b413-4afa-81f2-18b3ea430c0c}</UniqueIdentifier>
     </Filter>
@@ -185,6 +188,15 @@
     </Filter>
     <Filter Include="Component\Render\Renderer">
       <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Animator">
+      <UniqueIdentifier>{9b13f646-b322-48f1-b39e-7cc784eb49b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Material">
+      <UniqueIdentifier>{ff070008-c856-4498-a70c-0964b8f68cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\String">
+      <UniqueIdentifier>{b05e896d-c74b-4eb9-9b77-a362801a3f2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +246,7 @@
       <Filter>Component\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Material.cpp">
-      <Filter>Component\Render\Material</Filter>
+      <Filter>Resource\Material</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Object.cpp">
       <Filter>Engine</Filter>
@@ -301,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp">
       <Filter>Component\Render\MeshBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Animator.cpp">
+      <Filter>Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EngineString.cpp">
+      <Filter>System\String</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

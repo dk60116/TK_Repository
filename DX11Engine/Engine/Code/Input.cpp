@@ -1,6 +1,8 @@
 #include "epch.h"
 #include "Input.h"
 
+HHOOK CInput::s_mouseHook = nullptr;
+
 CInput::CInput()
     : m_fWheelAxis(0.f)
     , m_fWheelRaw(0.f)
@@ -20,6 +22,11 @@ CInput& CInput::GetInstance()
 
 HRESULT CInput::Initialize()
 {
+#ifdef _DEBUG
+#else
+    InstallMouseHook();
+#endif
+
     return S_OK;
 }
 
@@ -27,6 +34,11 @@ void CInput::Release()
 {
     m_bKeyState.clear();
     m_bPrevKeyState.clear();
+
+#ifdef _DEBUG
+#else
+    UninstallMouseHook();
+#endif
 }
 
 bool CInput::GetKey(_int _iKey)
@@ -78,7 +90,7 @@ bool CInput::GetMouseButtonUp(_int _button)
         _button = MOUSE_L;
     else if (_button == 1)
         _button = MOUSE_R;
-    else if (_button == 3)
+    else if (_button == 2)
         _button = MOUSE_WHILL;
     else
         return false;
@@ -122,9 +134,7 @@ const _float CInput::GetAxis(const wstring _axisName)
             result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
-    {
         result = m_fWheelAxis;
-    }
     else
         return 0.f;
 
@@ -133,9 +143,9 @@ const _float CInput::GetAxis(const wstring _axisName)
     return result;
 }
 
-void CInput::OnMouseWheel(WPARAM _wParam)
+_float& CInput::Get_WheelAxisRaw()
 {
-    m_fWheelRaw += static_cast<float>(GET_WHEEL_DELTA_WPARAM(_wParam)) / WHEEL_DELTA;
+    return m_fWheelRaw;
 }
 
 void CInput::Reset()
@@ -149,8 +159,6 @@ void CInput::Reset()
 
 void CInput::Update()
 {
-    float dt = CTime::GetInstance().Get_DeltaTime();
-
     for (auto& key : m_bKeyState)
     {
         m_bPrevKeyState[key.first] = key.second;
@@ -164,12 +172,47 @@ void CInput::Update()
     }
 
     if (m_fWheelAxis > 0.f)
-        m_fWheelAxis = max(0.f, m_fWheelAxis - m_sWheelOption.gravity * dt);
+        m_fWheelAxis = max(0.f, m_fWheelAxis - m_sWheelOption.gravity * DELTA_TIME);
     else if (m_fWheelAxis < 0.f)
-        m_fWheelAxis = min(0.f, m_fWheelAxis + m_sWheelOption.gravity * dt);
+        m_fWheelAxis = min(0.f, m_fWheelAxis + m_sWheelOption.gravity * DELTA_TIME);
 
     if (abs(m_fWheelAxis) < m_sWheelOption.dead)
         m_fWheelAxis = 0.f;
 
     m_fWheelAxis = clamp(m_fWheelAxis, -1.f, 1.f);
+}
+
+LRESULT MouseProc(_int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode >= 0)
+    {
+        if (wParam == WM_MOUSEWHEEL)
+        {
+            MSLLHOOKSTRUCT* pMouse = reinterpret_cast<MSLLHOOKSTRUCT*>(lParam);
+            if (pMouse)
+            {
+                short delta = static_cast<short>(HIWORD(pMouse->mouseData));
+                float normalized = static_cast<float>(delta) / WHEEL_DELTA;
+
+                CInput::GetInstance().Get_WheelAxisRaw() += normalized;
+            }
+        }
+    }
+
+    return CallNextHookEx(CInput::s_mouseHook, nCode, wParam, lParam);
+}
+
+void CInput::InstallMouseHook()
+{
+    if (s_mouseHook == nullptr)
+        s_mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, nullptr, 0);
+}
+
+void CInput::UninstallMouseHook()
+{
+    if (s_mouseHook != nullptr)
+    {
+        UnhookWindowsHookEx(s_mouseHook);
+        s_mouseHook = nullptr;
+    }
 }

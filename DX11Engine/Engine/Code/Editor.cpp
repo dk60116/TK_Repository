@@ -1,5 +1,7 @@
 #include "epch.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 CEditor::CEditor()
 	: m_hEditorWindow(nullptr)
 {
@@ -53,7 +55,7 @@ HWND CEditor::Get_EditorWindow()
 HWND CEditor::CreateEditorWindow()
 {
 	WNDCLASS wc = {};
-	wc.lpfnWndProc = DefWindowProc; // ¶Ç´Â ImGui¿ë WndProc
+	wc.lpfnWndProc = EditorWndProc;
 	wc.hInstance = CDisplay::GetInstance().Get_HInstance();
 	wc.lpszClassName = "Editor";
 
@@ -76,6 +78,28 @@ HWND CEditor::CreateEditorWindow()
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
 
-
 	return hwnd;
+}
+
+LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+		return true;
+
+	switch (msg)
+	{
+	case WM_MOUSEWHEEL:
+	{
+#ifndef _DEBUG
+#else
+		short delta = GET_WHEEL_DELTA_WPARAM(wParam);
+		_float normalized = static_cast<float>(delta) / WHEEL_DELTA;
+
+		CInput::GetInstance().Get_WheelAxisRaw() += normalized;
+#endif
+	}
+	return 0;
+	}
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }

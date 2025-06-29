@@ -17,6 +17,7 @@ public:
 
 private:
 	HWND CreateEditorWindow();
+	static LRESULT CALLBACK EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
 	HWND m_hEditorWindow;

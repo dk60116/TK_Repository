@@ -17,6 +17,13 @@ public:
 		XMFLOAT3 scaling = {};
 	};
 
+	struct BoneTransform
+	{
+		_float3 pos = { 0.f , 0.f, 0.f };
+		_float4 rot = { 0.f, 0.f, 0.f, 1.f };
+		_float3 scale = { 1.f ,1.f, 1.f };
+	};
+
 	struct BoneAnimation
 	{
 		wstring boneName = {};
@@ -27,13 +34,20 @@ protected:
 	CAnimation();
 	~CAnimation();
 
+public:
+	void Sample(_float timeSec, unordered_map<std::wstring, BoneTransform>& out) const;
+	const _bool IsLoop() const;
+	_float Get_Duration() const;
+
 private:
 	static CAnimation* Create(const wstring& filePath);
 	HRESULT Initialize(const wstring& _filePath) override;
 	void OnDestroy() override;
 
+
 private:
 	vector<BoneAnimation> m_vBoneAnimation;
+	_bool m_bLoopTime;
 	_float m_fDuration;
 	_float m_fTicksPerSecond;
 };

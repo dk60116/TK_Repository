@@ -10,8 +10,8 @@
 #include <dxgi.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
-#pragma comment(lib, "d3dcompiler.lib")
 #include <WICTextureLoader.h>
+#pragma comment(lib, "d3dcompiler.lib")
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 

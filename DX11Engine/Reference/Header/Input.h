@@ -32,11 +32,16 @@ public:
     const _float GetAxis(const wstring _axisName);
     const _float GetAxisRaw(const wstring _axisName);
 
-    void OnMouseWheel(WPARAM _wParam);
+public:
+    _float& Get_WheelAxisRaw();
 
 public:
     void Reset();
     void Update();
+
+private:
+    void InstallMouseHook();
+    void UninstallMouseHook();
 
 private:
     map<int, bool> m_bKeyState;
@@ -44,6 +49,9 @@ private:
     WheelAxisOption m_sWheelOption;
     _float m_fWheelAxis;
     _float m_fWheelRaw;
+
+public:
+    static HHOOK s_mouseHook;
 };
 
 NS_END

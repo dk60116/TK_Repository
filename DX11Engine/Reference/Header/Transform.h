@@ -30,6 +30,9 @@ public:
 	void Update() override;
 
 public:
+	CTransform* Get_Parent();
+	void Set_Parent(CTransform* _parent);
+	const list<CTransform*>& Get_ChldLIst() const;
 	const DIRECTIONS& Get_Directions();
 	const _matrix& Get_WorldMatrix() const;
 	const _matrix Get_InverseWorldMatrix() const;
@@ -60,7 +63,9 @@ public:
 	void Add_PositionY(const _float _value);
 	void Add_PositionZ(const _float _value);
 
-public:
+	void Set_Quaternion(const quaternion& _value);
+	void Set_LocalQuaternion(const quaternion& _value);
+
 	void Set_EulerAngle(const vector3& _rot);
 	void Set_EulerAngle(const _float _x, const _float _y, const _float _z);
 	void Set_EulerAngleX(const _float _x);
@@ -84,6 +89,12 @@ public:
 	void Add_LocalEulerAngleX(const _float _value);
 	void Add_LocalEulerAngleY(const _float _value);
 	void Add_LocalEulerAngleZ(const _float _value);
+
+	void Set_LocalScale(const vector3& _scale);
+	void Set_LocalScale(const _float _x, const _float _y, const _float _z);
+	void Set_LocalScaleX(const _float _value);
+	void Set_LocalScaleY(const _float _value);
+	void Set_LocalScaleZ(const _float _value);
 
 private:
 	void Bind_Matrix();

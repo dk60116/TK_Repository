@@ -36,6 +36,9 @@ public:
 	const vector<string>& Get_BoneNames() const;
 
 private:
+	void EnsureBoneCB(const UINT _boneCount);
+
+private:
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;
 	ComPtr<ID3D11Buffer> m_pIndexBuffer;
 	UINT m_iIndexCount;

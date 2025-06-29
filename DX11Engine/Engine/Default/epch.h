@@ -11,6 +11,7 @@
 #include "Display.h"
 #include "Editor.h"
 #include "EngineDebug.h"
+#include "EngineString.h"
 #include "GraphicDevice.h"
 #include "EngineTime.h"
 #include "Input.h"
@@ -27,3 +28,4 @@
 #include "Renderer.h"
 #include "MeshRenderer.h"
 #include "SkinnedMeshRenderer.h"
+#include "Animator.h"

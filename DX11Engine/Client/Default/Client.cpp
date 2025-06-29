@@ -171,6 +171,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+    case WM_MOUSEWHEEL:
+    {
+#ifndef _DEBUG
+#else
+        short delta = GET_WHEEL_DELTA_WPARAM(wParam);
+        _float normalized = static_cast<float>(delta) / WHEEL_DELTA;
+
+        CInput::GetInstance().Get_WheelAxisRaw() += normalized;
+#endif
+    }
+    return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;

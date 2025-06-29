@@ -17,59 +17,66 @@ CMainProcess& CMainProcess::GetInstance()
 
 HRESULT CMainProcess::Initialize()
 {
-	if (FAILED(CDebug::GetInstance().Initialize()))
-		return E_FAIL;
-	if (FAILED(CTime::GetInstance().Initialize()))
-		return E_FAIL;
-	if (FAILED(CInput::GetInstance().Initialize()))
-		return E_FAIL;
-	if (FAILED(CGraphicDevice::GetInstance().Initialize()))
-		return E_FAIL;
-	if (FAILED(CEditor::GetInstance().Initialize()))
-		return E_FAIL;
+    if (FAILED(CDebug::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CTime::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CInput::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CGraphicDevice::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CEditor::GetInstance().Initialize()))
+        return E_FAIL;
 
-#ifdef  _DEBUG
-	CGraphicDevice::GetInstance().Add_SwapChain
-	(
-		CEditor::GetInstance().Get_EditorWindow(),
-		WINMODE::MODE_WINDOW,
-		CDisplay::GetInstance().Get_ScreenResolution().x,
-		CDisplay::GetInstance().Get_ScreenResolution().y
-	);
-#endif //  _DEBUG
+#ifdef _DEBUG
+    CGraphicDevice::GetInstance().Add_SwapChain(
+        CEditor::GetInstance().Get_EditorWindow(),
+        WINMODE::MODE_WINDOW,
+        CDisplay::GetInstance().Get_ScreenResolution().x,
+        CDisplay::GetInstance().Get_ScreenResolution().y
+    );
+#endif
 
-	CGraphicDevice::GetInstance().Add_SwapChain
-	(
-		CDisplay::GetInstance().Get_GameWindow(),
-		WINMODE::MODE_WINDOW,
-		CDisplay::GetInstance().Get_ScreenResolution().x,
-		CDisplay::GetInstance().Get_ScreenResolution().y
-	);
+    CGraphicDevice::GetInstance().Add_SwapChain(
+        CDisplay::GetInstance().Get_GameWindow(),
+        WINMODE::MODE_WINDOW,
+        CDisplay::GetInstance().Get_ScreenResolution().x,
+        CDisplay::GetInstance().Get_ScreenResolution().y
+    );
 
-	return S_OK;
+    MSG msg;
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return S_OK;
 }
 
 void CMainProcess::Update_MainApp()
 {
-	CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
+    CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
 
-	CTime::GetInstance().Update();
-	CInput::GetInstance().Update();
+    CTime::GetInstance().Update();
+    CInput::GetInstance().Update();
 
-	if (scene)
-	{
-		scene->Update_Editor();
-		scene->Update();
-		scene->LateUpdate();
+    CGraphicDevice& graphicDev = CGraphicDevice::GetInstance();
 
-#ifdef  _DEBUG
-		CGraphicDevice::GetInstance().Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
-		scene->Render_Editor();
-		CGraphicDevice::GetInstance().Present();
+    if (scene)
+    {
+        scene->Update_Editor();
+        scene->Update();
+        scene->LateUpdate();
+
+#ifdef _DEBUG
+        graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
+        scene->Render_Editor();
+        graphicDev.Present();
 #endif
 
-		CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
-		scene->Render_Game();
-		CGraphicDevice::GetInstance().Present();
-	}
+        graphicDev.Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
+        scene->Render_Game();
+        graphicDev.Present();
+    }
 }

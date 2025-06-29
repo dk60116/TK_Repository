@@ -18,6 +18,8 @@ public:
 	void OnDestroy() override;
 
 private:
-	CSkinnedMeshRenderer* m_pMeshRenderer;
+	CMeshRenderer* m_pMeshRenderer;
+	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
+	CAnimator* m_pAnimator;
 };
 

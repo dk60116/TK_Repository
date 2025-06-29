@@ -55,6 +55,7 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pMatrixBuffer);
+	Safe_Release(m_pCameraBuffer);
 	Safe_Release(m_pMaterialBuffer);
 
 	for (TRAVERSAL_ITER(m_vTextureList, it))
@@ -151,21 +152,17 @@ HRESULT CMaterial::Load_Shader(const wstring& _path)
 	if (FAILED(hr)) 
 		return hr;
 
-	// InputLayout 정의 (POSITION, NORMAL, TEXCOORD, TANGENT)
-	//D3D11_INPUT_ELEMENT_DESC layout[] =
-	//{
-	//{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,                           D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,                          D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24,                          D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	//};
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION",     0, DXGI_FORMAT_R32G32B32_FLOAT,    0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",       0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD",     0, DXGI_FORMAT_R32G32_FLOAT,       0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT,  0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
+
+	UINT stride = 64;
 
 	hr = m_pDevice->CreateInputLayout(layout, _countof(layout),
 		vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_pInputLayout);
@@ -200,7 +197,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 void CMaterial::Bind_Shader()
 {
 	// ── b1 : 머티리얼
-	MaterialCB mat{};
+	MaterialCB mat = {};
 
 	mat.baseColor =
 	{
