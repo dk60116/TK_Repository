@@ -44,4 +44,7 @@ HRESULT CMainScene::Initialize()
 void CMainScene::Update()
 {
 	__super::Update();
+
+	if (CInput::GetInstance().GetKeyDown(Alpha1))
+		CSceneManager::GetInstance().LoadScene(L"Main Scene");
 }

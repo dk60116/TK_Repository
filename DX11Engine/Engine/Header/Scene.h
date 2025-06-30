@@ -35,6 +35,7 @@ public:
 public:
     class CEngineResource* Add_Resource(const wstring& _name, class CEngineResource* _resource);
     class CEngineResource* Find_Resource(const wstring& _name);
+    class CEngineResource* Add_TempResource(const wstring& _name, class CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     class CCamera* Get_Camera() const;
     class CCamera* Get_Camera(const _int _index) const;
@@ -56,6 +57,7 @@ private:
     class CCamera* m_pEditorCamera;
 
     unordered_map<wstring, class CEngineResource*> m_mResourceList;
+    unordered_map<wstring, class CEngineResource*> m_mTempResourceList;
 };
 
 NS_END

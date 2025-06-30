@@ -7,6 +7,8 @@ CScene::CScene()
 	, m_pDevice(nullptr)
 	, m_pContext(nullptr)
 	, m_strSceneName(L"")
+	, m_mResourceList({})
+	, m_mTempResourceList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_pEditorCamera(nullptr)
@@ -65,6 +67,9 @@ HRESULT CScene::PreLoadResources()
 
 HRESULT CScene::Initialize()
 {
+	m_mResourceList = m_mTempResourceList;
+	m_mTempResourceList.clear();
+
 	CGameObject* ecObj = Add_GameObject(L"Editor Camera");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
 
@@ -201,6 +206,17 @@ CEngineResource* CScene::Find_Resource(const wstring& _name)
 		return iter->second;
 
 	return nullptr;
+}
+
+CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource* _resource)
+{
+	if (!_resource)
+		nullptr;
+
+	m_mTempResourceList.emplace(_name, _resource);
+	_resource->AddRef();
+
+	return _resource;
 }
 
 CGameObject* CScene::Add_GameObject(wstring _name)

@@ -41,7 +41,7 @@ inline T* CResources::CreateResource(const wstring& _name, const wstring& _path,
 	if (!_tempScene)
 		CSceneManager::GetInstance().Get_CrtScene()->Add_Resource(_name, newResource);
 	else
-		CSceneManager::GetInstance().Get_TempScene()->Add_Resource(_name, newResource);
+		CSceneManager::GetInstance().Get_TempScene()->Add_TempResource(_name, newResource);
 
 	return newResource;
 }

@@ -85,7 +85,7 @@ void CSceneLoader::ThreadLoadingLoop()
 			wstring wName = CEngineString::StringToWString(name);
 			wstring path = CEngineString::StringToWString(file);
 
-			for (size_t i = 0; i < 1; i++)
+			for (_int i = 0; i < 1; ++i)
 			{
 				if (path.find(L".png") != wstring::npos)
 				{
