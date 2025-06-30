@@ -4,6 +4,7 @@
 CTexture::CTexture()
 	: m_pSRV(nullptr)
 {
+	m_strName = L"Texture";
 }
 
 CTexture::~CTexture()
@@ -23,9 +24,9 @@ void CTexture::OnDestroy()
 	m_pSRV.Reset();
 }
 
-HRESULT CTexture::Initialize(const wstring& _filePath, void* _desc)
+HRESULT CTexture::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
-	if (FAILED(__super::Initialize(_filePath, _desc)))
+	if (FAILED(__super::Initialize(_name, _filePath, _desc)))
 		return E_FAIL;
 
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();

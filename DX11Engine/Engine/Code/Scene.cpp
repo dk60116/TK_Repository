@@ -23,6 +23,46 @@ CScene::~CScene()
 	SceneRelease();
 }
 
+HRESULT CScene::PreLoadResources()
+{
+	string path = "../Assets/Scenes/" + CEngineString::WStringToString(m_strSceneName) + ".scene";
+	ifstream file(path);
+	if (!file)
+	{
+		CDebug::LogError("Can not Open file");
+		return E_FAIL;
+	}
+
+	string line;
+	vector<string> nameList;
+	vector<string> fileList;
+
+	while (getline(file, line))
+	{
+		size_t pos = line.find(':');
+		if (pos != string::npos)
+		{
+			string name = line.substr(0, pos);
+			string filepath = line.substr(pos + 1);
+
+			// 앞뒤 공백 제거
+			name = CEngineString::Trim(name);
+			filepath = CEngineString::Trim(filepath);
+
+			nameList.push_back(name);
+			fileList.push_back(filepath);
+
+			CDebug::Log("Add File: " + filepath + " (Name: " + name + ")");
+		}
+		else
+			CDebug::LogError("Invalid line format: " + line);
+	}
+
+	CSceneLoader::GetInstance().StartLoading(nameList, fileList);
+
+	return S_OK;
+}
+
 HRESULT CScene::Initialize()
 {
 	CGameObject* ecObj = Add_GameObject(L"Editor Camera");
@@ -121,8 +161,11 @@ void CScene::SceneRelease()
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		Safe_Release(*it);
 
-	for (TRAVERSAL_ITER(m_vResourceList, it))
-		Safe_Release(*it);
+	for (TRAVERSAL_ITER(m_mResourceList, it))
+		Safe_Release((*it).second);
+
+	m_lObjectList.clear();
+	m_mResourceList.clear();
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
@@ -139,15 +182,25 @@ const wstring& CScene::Get_SceneName() const
 }
 
 
-CEngineResource* CScene::Add_Resource(CEngineResource* _resource)
+CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)
 {
 	if (!_resource)
 		nullptr;
 
-	m_vResourceList.push_back(_resource);
+	m_mResourceList.emplace(_name, _resource);
 	_resource->AddRef();
 
 	return _resource;
+}
+
+CEngineResource* CScene::Find_Resource(const wstring& _name)
+{
+	auto iter = m_mResourceList.find(_name);
+
+	if (iter != m_mResourceList.end())
+		return iter->second;
+
+	return nullptr;
 }
 
 CGameObject* CScene::Add_GameObject(wstring _name)

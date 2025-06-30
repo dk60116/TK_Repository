@@ -19,15 +19,17 @@ CPlayer* CPlayer::Create()
 
 HRESULT CPlayer::Initialize()
 {
-	CTexture* tex = CResources::GetInstance().CreateResource<CTexture>(L"../Assets/texture_0.png");
+	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 	CMaterial* playerMat = CMaterial::Create();
 	playerMat->Set_Texture(tex, 0);
 
-	CMeshBuffer* mb = CResources::GetInstance().CreateResource<CMeshBuffer>(L"", nullptr);
+	CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Link_Model (MeshBuffer)");
 
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	m_pMeshRenderer->Get_MeshFilter()->Set_MeshBuffer(mb, 0.01f);
+	m_pMeshRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	m_pMeshRenderer->Set_Material(playerMat);
+
+	m_pMeshRenderer->Get_Transform()->Set_LocalScale(vector3::one() * 0.01f);
 
 	//m_pSkinnedMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();
 	//m_pSkinnedMeshRenderer->CreateSkinnedMeshBuffer("../Assets/Animation_Archery_Shot_1_withSkin.fbx", 0.01f);

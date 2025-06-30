@@ -21,9 +21,6 @@ public:
 	void OnDestroy();
 
 public:
-	void Set_MeshBuffer(CMeshBuffer* _mesh, _float _scaleFactor = 1.f);
-
-public:
 	CMeshBuffer* Get_MeshBuffer() const;
 	void Set_MeshBuffer(CMeshBuffer* _buffer);
 

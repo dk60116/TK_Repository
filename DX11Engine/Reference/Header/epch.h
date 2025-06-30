@@ -17,6 +17,7 @@
 #include "Input.h"
 #include "MainProcess.h"
 #include "SceneManager.h"
+#include "SceneLoader.h"
 #include "GameObject.h"
 #include "Resources.h"
 #include "EngineResource.h"

@@ -13,11 +13,12 @@ protected:
 		~CEngineResource();
 
 protected:
-	virtual HRESULT Initialize(const wstring& _filePath, void* _desc);
+	virtual HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc);
 	virtual void OnDestroy();
 
 public:
 	const wstring& Get_ResourceName() const;
+	void Set_ResourceName(const wstring& _name);
 
 public:
 	HRESULT Load(const wstring& path);

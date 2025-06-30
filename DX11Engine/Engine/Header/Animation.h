@@ -41,7 +41,7 @@ public:
 
 private:
 	static CAnimation* Create(const wstring& _filePath);
-	HRESULT Initialize(const wstring& _filePath, void* _desc) override;
+	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 
 

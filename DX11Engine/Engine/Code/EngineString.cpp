@@ -23,3 +23,31 @@ wstring CEngineString::StringToWString(const string& _str)
 
     return wstr;
 }
+
+string CEngineString::Trim(const string& str)
+{
+    const char* whitespace = " \t\n\r";
+
+    const size_t start = str.find_first_not_of(whitespace);
+
+    if (start == string::npos)
+        return "";
+
+    const size_t end = str.find_last_not_of(whitespace);
+    
+    return str.substr(start, end - start + 1);
+}
+
+wstring CEngineString::Trim(const wstring& wstr)
+{
+    const wchar_t* whitespace = L" \t\n\r";
+
+    const size_t start = wstr.find_first_not_of(whitespace);
+
+    if (start == wstring::npos)
+        return L"";
+
+    const size_t end = wstr.find_last_not_of(whitespace);
+    
+    return wstr.substr(start, end - start + 1);
+}

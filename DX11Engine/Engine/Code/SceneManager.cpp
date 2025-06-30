@@ -3,7 +3,9 @@
 
 CSceneManager::CSceneManager()
 	: m_pCrtScene(nullptr)
+	, m_pTempScene(nullptr)
 	, m_mSceneList({})
+	, m_bLoading(false)
 {
 }
 
@@ -24,7 +26,7 @@ void CSceneManager::Release()
 
 	for (TRAVERSAL_ITER(m_mSceneList, it))
 	{
-		(*it).second->Release();
+		(*it).second->SceneRelease();
 		Safe_Release((*it).second);
 	}
 
@@ -48,16 +50,44 @@ CScene* CSceneManager::Get_CrtScene()
 	return m_pCrtScene;
 }
 
+CScene* CSceneManager::Get_TempScene()
+{
+	return m_pTempScene;
+}
+
+const _bool CSceneManager::Is_Loading() const
+{
+	return m_bLoading;
+}
+
 void CSceneManager::LoadScene(wstring _scene)
 {
 	auto iter = m_mSceneList.find(_scene);
 
+	if (iter == m_mSceneList.end())
+		return;
+
+	m_pTempScene = iter->second;
+
+	if (m_pTempScene)
+	{
+		m_pTempScene->PreLoadResources();
+		m_bLoading = true;
+	}
+}
+
+void CSceneManager::LoadComplete()
+{
 	if (m_pCrtScene)
 		m_pCrtScene->SceneRelease();
 
 	m_pCrtScene = nullptr;
+	m_pCrtScene = m_pTempScene;
+	m_pTempScene = nullptr;
 
-	m_pCrtScene = iter->second;
-
-	m_pCrtScene->Initialize();
+	if (m_pCrtScene)
+	{
+		m_pCrtScene->Initialize();
+		m_bLoading = false;
+	}
 }

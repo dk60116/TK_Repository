@@ -14,25 +14,25 @@ public:
 		D3D11_PRIMITIVE_TOPOLOGY topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		UINT vertexSize = 0;
 		UINT vertextCount = 0;
-		UINT* indices = nullptr;
 		UINT indexCount = 0;
 	}MESHBUFFERDESC;
 
 	struct MeshBufferInitiaizeInfo
 	{
-		VertexTexNormalTangentBuffer* buffer = nullptr;
+		vector<VertexTexNormalTangentBuffer> buffer;
+		vector<UINT> indices;
 		MESHBUFFERDESC desc = {};
 	};
-
-private:
-	CMeshBuffer* Create(const wstring& _filePath);
 
 protected:
 	explicit CMeshBuffer();
 	~CMeshBuffer();
 
 private:
-	HRESULT Initialize(wstring _filePath, void* _desc);
+	static CMeshBuffer* Create(const wstring& _filePath);
+
+private:
+	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
 	void OnDestroy();
 
 private:

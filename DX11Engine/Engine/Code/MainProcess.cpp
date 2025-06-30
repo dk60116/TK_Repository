@@ -21,6 +21,8 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CTime::GetInstance().Initialize()))
         return E_FAIL;
+    if (FAILED(CSceneLoader::GetInstance().Initialize()))
+        return E_FAIL;
     if (FAILED(CInput::GetInstance().Initialize()))
         return E_FAIL;
     if (FAILED(CGraphicDevice::GetInstance().Initialize()))
@@ -84,4 +86,7 @@ void CMainProcess::Update_MainApp()
         scene->Render_Game();
         graphicDev.Present();
     }
+
+    if (CSceneManager::GetInstance().Is_Loading() && !CSceneLoader::GetInstance().Is_Loading())
+        CSceneManager::GetInstance().LoadComplete();
 }

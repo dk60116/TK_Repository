@@ -124,6 +124,9 @@
     <ClInclude Include="..\Header\EditorBox.h">
       <Filter>Editor\EditorBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\SceneLoader.h">
+      <Filter>Management\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\EditorBox.cpp">
       <Filter>Editor\EditorBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SceneLoader.cpp">
+      <Filter>Management\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

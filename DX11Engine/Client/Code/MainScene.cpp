@@ -24,10 +24,9 @@ HRESULT CMainScene::Initialize()
 	CGameObject* cameraObject = Add_GameObject(L"Main Camera");
 	m_pMainCamera = cameraObject->AddComponent<CCamera>();
 
-	wstring str = L"Cube";
-	CMeshBuffer* mb = CResources::GetInstance().CreateResource<CMeshBuffer>(L"", &str);
+	CMeshBuffer* mb = CResources::GetInstance().CreateResource<CMeshBuffer>(L"Cube", L"Cube", nullptr);
 
-	CTexture* tex = CResources::GetInstance().CreateResource<CTexture>(L"../Assets/texture_0.png");
+	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
 	CMaterial* boxMat = CMaterial::Create();
 	boxMat->Set_Texture(tex, 0);
 	CGameObject* boxObj = Add_GameObject(L"Box");

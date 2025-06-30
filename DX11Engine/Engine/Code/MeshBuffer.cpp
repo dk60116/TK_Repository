@@ -21,28 +21,39 @@ CMeshBuffer* CMeshBuffer::Create(const wstring& _filePath)
     return new CMeshBuffer();
 }
 
-HRESULT CMeshBuffer::Initialize(wstring _filePath, void* _desc)
+HRESULT CMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _desc)
 {
-    MeshBufferInitiaizeInfo* info = reinterpret_cast<MeshBufferInitiaizeInfo*>(_desc);
-
-    if (!info->buffer)
+    if (FAILED(__super::Initialize(_name, _filePath, _desc)))
         return E_FAIL;
 
-    if (info->desc.vertexSize == 0 || info->desc.vertextCount == 0)
+    MeshBufferInitiaizeInfo info = {};
+
+    if (_filePath == L"../Assets/Cube")
+        info = CreateCube();
+    else
+    {
+        const _float scaleFactor = _desc ? *reinterpret_cast<_float*>(_desc) : 1.f;
+        info = CreateObjectMesh(CEngineString::WStringToString(_filePath), scaleFactor);
+    }
+
+    if (!(info.buffer.size() > 0))
         return E_FAIL;
 
-    m_sInfo = info->desc;
+    if (info.desc.vertexSize == 0 || info.desc.vertextCount == 0)
+        return E_FAIL;
 
-    size_t size = info->desc.vertexSize * info->desc.vertextCount;
+    m_sInfo = info.desc;
+
+    size_t size = info.desc.vertexSize * info.desc.vertextCount;
 
     m_pVertexSysMem = malloc(size);
-    memcpy(m_pVertexSysMem, info->buffer, size);
+    memcpy(m_pVertexSysMem, info.buffer.data(), size);
 
-    if (info->desc.indexCount > 0 && info->desc.indices != nullptr)
+    if (info.desc.indexCount > 0 && !info.indices.empty())
     {
-        size_t indexSize = sizeof(UINT) * info->desc.indexCount;
+        size_t indexSize = sizeof(UINT) * info.desc.indexCount;
         m_pIndexSysMem = malloc(indexSize);
-        memcpy(m_pIndexSysMem, info->desc.indices, indexSize);
+        memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
     }
 
     // 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
@@ -50,26 +61,26 @@ HRESULT CMeshBuffer::Initialize(wstring _filePath, void* _desc)
 
     // VertexBuffer 儅撩
     D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = static_cast<UINT>(info->desc.vertexSize * info->desc.vertextCount);
+    vbDesc.ByteWidth = static_cast<UINT>(info.desc.vertexSize * info.desc.vertextCount);
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
     vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
     D3D11_SUBRESOURCE_DATA vbData = {};
-    vbData.pSysMem = info->buffer;
+    vbData.pSysMem = info.buffer.data();
 
     if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
         return E_FAIL;
 
     // IndexBuffer 儅撩
-    if (info->desc.indexCount > 0 && info->desc.indices)
+    if (info.desc.indexCount > 0 && info.indices.size() > 0)
     {
         D3D11_BUFFER_DESC ibDesc = {};
-        ibDesc.ByteWidth = sizeof(UINT) * info->desc.indexCount;
+        ibDesc.ByteWidth = sizeof(UINT) * info.desc.indexCount;
         ibDesc.Usage = D3D11_USAGE_DEFAULT;
         ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
         D3D11_SUBRESOURCE_DATA ibData = {};
-        ibData.pSysMem = info->desc.indices;
+        ibData.pSysMem = info.indices.data();
 
         if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
             return E_FAIL;
@@ -167,8 +178,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()
             {{-length, -length, -length}, { 0, -1,  0}, {0, 0}, {1, 0, 0}},
     };
 
-    info.buffer = cubeVertices;
-
     static UINT cubeIndices[36] =
     {
         2,1,0, 3,2,0,   // 擅
@@ -184,9 +193,10 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()
     desc.vertexSize = sizeof(VertexTexNormalTangentBuffer);
     desc.vertextCount = _countof(cubeVertices);
     desc.indexCount = _countof(cubeIndices);
-    desc.indices = cubeIndices;
 
-    CMeshBuffer* newBuffer = new CMeshBuffer();
+    info.buffer.assign(begin(cubeVertices), end(cubeVertices));
+    info.indices.assign(begin(cubeIndices), end(cubeIndices));
+    info.desc = desc;
 
     return info;
 }
@@ -313,8 +323,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
             }
         };
 
-    info.buffer = vertices.data();
-
     /* 壁 喻萄 營敝 牖�� */
     function<void(const aiNode*)> traverse = [&](const aiNode* node)
         {
@@ -333,8 +341,9 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
     desc.vertexSize = sizeof(VTX);
     desc.vertextCount = static_cast<UINT>(vertices.size());
     desc.indexCount = static_cast<UINT>(indices.size());
-    desc.indices = indices.data();   // Initialize 寰縑憮 犒餌脾
 
+    info.buffer.assign(vertices.begin(), vertices.end());
+    info.indices.assign(indices.begin(), indices.end());
     info.desc = desc;
 
     return info;

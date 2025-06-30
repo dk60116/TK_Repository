@@ -2,6 +2,8 @@
 #include "Resources.h"
 
 CResources::CResources()
+	: m_strDefaultAssetPath(L"../Assets/")
+	, m_strEngineFilePath(L"../EngineResource/")
 {
 }
 

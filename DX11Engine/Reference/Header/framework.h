@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN            
 // Windows 헤더 파일
 #include <windows.h>
+#include <process.h>
 
 // DirectX 헤더 파일
 #include <d3d11.h>

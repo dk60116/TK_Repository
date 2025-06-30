@@ -100,9 +100,9 @@ void CAnimation::OnDestroy()
 	m_fTicksPerSecond = 0.f;
 }
 
-HRESULT CAnimation::Initialize(const wstring& _filePath, void* _desc)
+HRESULT CAnimation::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
-	if (FAILED(__super::Initialize(_filePath, _desc)))
+	if (FAILED(__super::Initialize(_name, _filePath, _desc)))
 		return E_FAIL;
 
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
@@ -150,7 +150,7 @@ HRESULT CAnimation::Initialize(const wstring& _filePath, void* _desc)
 			)
 		);
 
-		_float scaleFactor = *static_cast<_float*>(_desc);
+		const _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 1.f;
 
 		for (size_t k = 0; k < numKeys; ++k)
 		{

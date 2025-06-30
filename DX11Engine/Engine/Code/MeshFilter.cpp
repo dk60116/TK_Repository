@@ -37,7 +37,10 @@ void CMeshFilter::Set_MeshBuffer(CMeshBuffer* _buffer)
 	m_pMeshBuffer = _buffer;
 
 	if (m_pMeshBuffer)
+	{
+		m_pMeshBuffer->Set_Filter(this);
 		m_pMeshBuffer->AddRef();
+	}
 }
 
 CMeshBuffer* CMeshFilter::Get_MeshBuffer() const
