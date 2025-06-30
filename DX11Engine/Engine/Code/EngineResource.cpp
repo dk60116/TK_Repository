@@ -12,7 +12,7 @@ CEngineResource::~CEngineResource()
 	OnDestroy();
 }
 
-HRESULT CEngineResource::Initialize(const wstring& _filePath)
+HRESULT CEngineResource::Initialize(const wstring& _filePath, void* _desc)
 {
 	m_strFilePath = _filePath;
 

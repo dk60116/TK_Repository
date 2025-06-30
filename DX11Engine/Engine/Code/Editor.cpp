@@ -86,7 +86,7 @@ HWND CEditor::CreateEditorWindow()
 
 	RegisterClass(&wc);
 
-	RECT rc = { 0, 0, m_sOptions.windowWidth, m_sOptions.windowHeight };
+	RECT rc = { 0, 0, static_cast<LONG>(m_sOptions.windowWidth), static_cast<LONG>(m_sOptions.windowHeight) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
 	HWND hwnd = CreateWindowEx

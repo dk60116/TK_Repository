@@ -85,7 +85,7 @@ _float CAnimation::Get_Duration() const
 	return m_fDuration;
 }
 
-CAnimation* CAnimation::Create(const wstring& filePath)
+CAnimation* CAnimation::Create(const wstring& _filePath)
 {
 	return new CAnimation();
 }
@@ -100,9 +100,9 @@ void CAnimation::OnDestroy()
 	m_fTicksPerSecond = 0.f;
 }
 
-HRESULT CAnimation::Initialize(const wstring& _filePath)
+HRESULT CAnimation::Initialize(const wstring& _filePath, void* _desc)
 {
-	if (FAILED(__super::Initialize(_filePath)))
+	if (FAILED(__super::Initialize(_filePath, _desc)))
 		return E_FAIL;
 
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
@@ -150,6 +150,8 @@ HRESULT CAnimation::Initialize(const wstring& _filePath)
 			)
 		);
 
+		_float scaleFactor = *static_cast<_float*>(_desc);
+
 		for (size_t k = 0; k < numKeys; ++k)
 		{
 			KeyFrame keyframe = {};
@@ -157,7 +159,7 @@ HRESULT CAnimation::Initialize(const wstring& _filePath)
 			if (k < channel->mNumPositionKeys)
 			{
 				const aiVector3D& pos = channel->mPositionKeys[k].mValue;
-				keyframe.position = _float3(pos.x * 0.0f, pos.y * 0.01f, pos.z * 0.01f);
+				keyframe.position = _float3(pos.x * scaleFactor, pos.y * scaleFactor, pos.z * scaleFactor);
 				keyframe.timeStamp = channel->mPositionKeys[k].mTime;
 			}
 

@@ -40,8 +40,8 @@ public:
 	_float Get_Duration() const;
 
 private:
-	static CAnimation* Create(const wstring& filePath);
-	HRESULT Initialize(const wstring& _filePath) override;
+	static CAnimation* Create(const wstring& _filePath);
+	HRESULT Initialize(const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 
 

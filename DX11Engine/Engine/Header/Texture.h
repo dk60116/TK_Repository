@@ -13,8 +13,8 @@ private:
 	~CTexture();
 
 private:
-	static CTexture* Create(const wstring& filePath);
-	HRESULT Initialize(const wstring& _filePath) override;
+	static CTexture* Create(const wstring& _filePath);
+	HRESULT Initialize(const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 
 public:

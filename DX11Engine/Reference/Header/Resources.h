@@ -15,17 +15,17 @@ private:
 
 public:
 	template<typename T>
-	T* CreateResource(const wstring& _path);
+	T* CreateResource(const wstring& _path, void* _desc = nullptr);
 };
 
 NS_END
 
 template<typename T>
-inline T* CResources::CreateResource(const wstring& _path)
+inline T* CResources::CreateResource(const wstring& _path, void* _desc)
 {
 	T* newResource = T::Create(_path);
 
-	if (FAILED(newResource->Initialize(_path)))
+	if (FAILED(newResource->Initialize(_path, _desc)))
 	{
 		delete newResource;
 		return nullptr;

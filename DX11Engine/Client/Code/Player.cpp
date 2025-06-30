@@ -23,8 +23,10 @@ HRESULT CPlayer::Initialize()
 	CMaterial* playerMat = CMaterial::Create();
 	playerMat->Set_Texture(tex, 0);
 
+	CMeshBuffer* mb = CResources::GetInstance().CreateResource<CMeshBuffer>(L"", nullptr);
+
 	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	m_pMeshRenderer->Get_MeshFilter()->CreateMeshBuffer(L"Object", "../Assets/Link_Idle.fbx", 0.01f);
+	m_pMeshRenderer->Get_MeshFilter()->Set_MeshBuffer(mb, 0.01f);
 	m_pMeshRenderer->Set_Material(playerMat);
 
 	//m_pSkinnedMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();

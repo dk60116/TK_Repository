@@ -62,7 +62,7 @@
       <Filter>Component\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshBuffer.h">
-      <Filter>Component\Render\MeshBuffer</Filter>
+      <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Camera.h">
       <Filter>Component\Camera</Filter>
@@ -110,7 +110,7 @@
       <Filter>Component\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h">
-      <Filter>Component\Render\MeshBuffer</Filter>
+      <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Animator.h">
       <Filter>Component\Animator</Filter>
@@ -168,9 +168,6 @@
     <Filter Include="Component\Render">
       <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\Render\MeshBuffer">
-      <UniqueIdentifier>{d66f54ef-9586-4b17-93bc-2206c9e3b325}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Component\Camera">
       <UniqueIdentifier>{13c5e534-fed3-47c8-87a7-f04e0066d5f9}</UniqueIdentifier>
     </Filter>
@@ -206,6 +203,9 @@
     </Filter>
     <Filter Include="Editor\EditorBox">
       <UniqueIdentifier>{f02dcc36-a2b2-44de-9d7a-69c582d63e81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\MeshBuffer">
+      <UniqueIdentifier>{d66f54ef-9586-4b17-93bc-2206c9e3b325}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -249,7 +249,7 @@
       <Filter>Component\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshBuffer.cpp">
-      <Filter>Component\Render\MeshBuffer</Filter>
+      <Filter>Resource\MeshBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Camera.cpp">
       <Filter>Component\Camera</Filter>
@@ -321,7 +321,7 @@
       <Filter>Component\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp">
-      <Filter>Component\Render\MeshBuffer</Filter>
+      <Filter>Resource\MeshBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Animator.cpp">
       <Filter>Component\Animator</Filter>

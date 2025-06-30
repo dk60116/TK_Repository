@@ -21,7 +21,7 @@ public:
 	void OnDestroy();
 
 public:
-	void CreateMeshBuffer(const wstring _shape, const string _path = "", _float _scaleFactor = 1.f);
+	void Set_MeshBuffer(CMeshBuffer* _mesh, _float _scaleFactor = 1.f);
 
 public:
 	CMeshBuffer* Get_MeshBuffer() const;

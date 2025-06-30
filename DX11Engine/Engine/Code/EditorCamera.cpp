@@ -2,7 +2,7 @@
 #include "EditorCamera.h"
 
 CEditorCamera::CEditorCamera()
-	:CCamera{}
+	: CCamera{}
 	, m_sOptions({})
 	, m_bRMouseDowned(false)
 	, m_fPitch(0.f)

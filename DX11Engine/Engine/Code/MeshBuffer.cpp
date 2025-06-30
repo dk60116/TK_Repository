@@ -16,26 +16,33 @@ CMeshBuffer::~CMeshBuffer()
 	OnDestroy();
 }
 
-HRESULT CMeshBuffer::Initialize(const void* _vertices, MESHBUFFERDESC _description)
+CMeshBuffer* CMeshBuffer::Create(const wstring& _filePath)
 {
-    if (!_vertices)
+    return new CMeshBuffer();
+}
+
+HRESULT CMeshBuffer::Initialize(wstring _filePath, void* _desc)
+{
+    MeshBufferInitiaizeInfo* info = reinterpret_cast<MeshBufferInitiaizeInfo*>(_desc);
+
+    if (!info->buffer)
         return E_FAIL;
 
-    if (_description.vertexSize == 0 || _description.vertextCount == 0)
+    if (info->desc.vertexSize == 0 || info->desc.vertextCount == 0)
         return E_FAIL;
 
-    m_sInfo = _description;
+    m_sInfo = info->desc;
 
-    size_t size = _description.vertexSize * _description.vertextCount;
+    size_t size = info->desc.vertexSize * info->desc.vertextCount;
 
     m_pVertexSysMem = malloc(size);
-    memcpy(m_pVertexSysMem, _vertices, size);
+    memcpy(m_pVertexSysMem, info->buffer, size);
 
-    if (_description.indexCount > 0 && _description.indices != nullptr)
+    if (info->desc.indexCount > 0 && info->desc.indices != nullptr)
     {
-        size_t indexSize = sizeof(UINT) * _description.indexCount;
+        size_t indexSize = sizeof(UINT) * info->desc.indexCount;
         m_pIndexSysMem = malloc(indexSize);
-        memcpy(m_pIndexSysMem, _description.indices, indexSize);
+        memcpy(m_pIndexSysMem, info->desc.indices, indexSize);
     }
 
     // ───────────────────────────────
@@ -43,26 +50,26 @@ HRESULT CMeshBuffer::Initialize(const void* _vertices, MESHBUFFERDESC _descripti
 
     // VertexBuffer 생성
     D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = static_cast<UINT>(_description.vertexSize * _description.vertextCount);
+    vbDesc.ByteWidth = static_cast<UINT>(info->desc.vertexSize * info->desc.vertextCount);
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
     vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
     D3D11_SUBRESOURCE_DATA vbData = {};
-    vbData.pSysMem = _vertices;
+    vbData.pSysMem = info->buffer;
 
     if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
         return E_FAIL;
 
     // IndexBuffer 생성
-    if (_description.indexCount > 0 && _description.indices)
+    if (info->desc.indexCount > 0 && info->desc.indices)
     {
         D3D11_BUFFER_DESC ibDesc = {};
-        ibDesc.ByteWidth = sizeof(UINT) * _description.indexCount;
+        ibDesc.ByteWidth = sizeof(UINT) * info->desc.indexCount;
         ibDesc.Usage = D3D11_USAGE_DEFAULT;
         ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
         D3D11_SUBRESOURCE_DATA ibData = {};
-        ibData.pSysMem = _description.indices;
+        ibData.pSysMem = info->desc.indices;
 
         if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
             return E_FAIL;
@@ -84,6 +91,8 @@ void CMeshBuffer::OnDestroy()
 		free(m_pIndexSysMem);
 		m_pIndexSysMem = nullptr;
 	}
+
+    Safe_Release(m_pFilter);
 }
 
 void CMeshBuffer::Render()
@@ -113,11 +122,13 @@ void CMeshBuffer::Render()
         CGraphicDevice::GetInstance().Get_Context()->Draw(m_sInfo.vertextCount, 0);
 }
 
-CMeshBuffer* CMeshBuffer::CreateCube(CMeshFilter* _filter)
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()
 {
+    MeshBufferInitiaizeInfo info = {};
+
     const _float length = 0.5f;
 
-    static const VertexTexNormalTangentBuffer cubeVertices[24] =
+    VertexTexNormalTangentBuffer cubeVertices[24] =
     {
         // 앞(-Z)
             {{-length, -length, -length}, { 0,  0, -1}, {0, 1}, {1, 0, 0}},
@@ -156,6 +167,8 @@ CMeshBuffer* CMeshBuffer::CreateCube(CMeshFilter* _filter)
             {{-length, -length, -length}, { 0, -1,  0}, {0, 0}, {1, 0, 0}},
     };
 
+    info.buffer = cubeVertices;
+
     static UINT cubeIndices[36] =
     {
         2,1,0, 3,2,0,   // 앞
@@ -169,63 +182,64 @@ CMeshBuffer* CMeshBuffer::CreateCube(CMeshFilter* _filter)
     CMeshBuffer::MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     desc.vertexSize = sizeof(VertexTexNormalTangentBuffer);
-    desc.vertextCount = 24;
+    desc.vertextCount = _countof(cubeVertices);
     desc.indexCount = _countof(cubeIndices);
     desc.indices = cubeIndices;
 
     CMeshBuffer* newBuffer = new CMeshBuffer();
-    newBuffer->m_pFilter = _filter;
 
-    if (FAILED(newBuffer->Initialize(cubeVertices, desc)))
-    {
-        Safe_Release(newBuffer);
-        return nullptr;
-    }
-
-    return newBuffer;
+    return info;
 }
 
-CMeshBuffer* CMeshBuffer::CreateSphere(CMeshFilter* _filter)
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateSphere()
 {
-    return nullptr;
+    MeshBufferInitiaizeInfo result = {};
+    return result;
 }
 
-CMeshBuffer* CMeshBuffer::CreateTriangle(CMeshFilter* _filter)
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
 {
-    struct Vertex { XMFLOAT3 pos; };
+    MeshBufferInitiaizeInfo result = {};
+    return result;
 
-    const _float length = 0.5f;
+    //MeshBufferInitiaizeInfo info = {};
 
-    Vertex triVerts[3] = 
-    {
-        { XMFLOAT3(0.f, length, length) },
-        { XMFLOAT3(length, -length, 0.0f) },
-        { XMFLOAT3(-length, -length, 0.0f) }
-    };
+    //struct Vertex { XMFLOAT3 pos; };
 
-    // 버퍼 설명
-    CMeshBuffer::MESHBUFFERDESC desc{};
-    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    desc.vertexSize = sizeof(Vertex);
-    desc.vertextCount = 3;
-    desc.indexCount = 0;
-    desc.indices = nullptr;
+    //const _float length = 0.5f;
 
-    CMeshBuffer* newBuffer = new CMeshBuffer();
+    //Vertex triVerts[3] = 
+    //{
+    //    { XMFLOAT3(0.f, length, length) },
+    //    { XMFLOAT3(length, -length, 0.0f) },
+    //    { XMFLOAT3(-length, -length, 0.0f) }
+    //};
 
-    newBuffer->m_pFilter = _filter;
+    //info.buffer = triVerts;
 
-    if (FAILED(newBuffer->Initialize(triVerts, desc)))
-    {
-        Safe_Release(newBuffer);
-        return nullptr;
-    }
+    //// 버퍼 설명
+    //CMeshBuffer::MESHBUFFERDESC desc{};
+    //desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    //desc.vertexSize = sizeof(Vertex);
+    //desc.vertextCount = 3;
+    //desc.indexCount = 0;
+    //desc.indices = nullptr;
 
-    return newBuffer;
+    //info.buffer = 
+
+    //if (FAILED(newBuffer->Initialize(triVerts, desc)))
+    //{
+    //    Safe_Release(newBuffer);
+    //    return nullptr;
+    //}
+
+    //return newBuffer;
 }
 
-CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _filePath, const _float _scaleFactor)
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string& _filePath, const _float _scaleFactor)
 {
+    MeshBufferInitiaizeInfo info = {};
+
     using VTX = VertexTexNormalTangentBuffer;
 
     /* 1) ── 모델 로딩 ──────────────────────────────────────────────── */
@@ -240,9 +254,6 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
         aiProcess_ConvertToLeftHanded |   // DirectX 좌표계
         aiProcess_FlipUVs
     );                  // Blender->DX11 보통 뒤집힘
-
-    if (!scene || !scene->HasMeshes())
-        return nullptr;
 
     /* 2) ── 정점 · 인덱스 모으기 ──────────────────────────────────── */
     vector<VTX>  vertices;
@@ -302,6 +313,8 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
             }
         };
 
+    info.buffer = vertices.data();
+
     /* 씬 노드 재귀 순회 */
     function<void(const aiNode*)> traverse = [&](const aiNode* node)
         {
@@ -314,9 +327,6 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
 
     traverse(scene->mRootNode);
 
-    if (vertices.empty())
-        return nullptr;
-
     /* 3) ── CMeshBuffer 생성 ─────────────────────────────────────── */
     MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -325,21 +335,22 @@ CMeshBuffer* CMeshBuffer::CreateObjectMesh(CMeshFilter* _filter, const string& _
     desc.indexCount = static_cast<UINT>(indices.size());
     desc.indices = indices.data();   // Initialize 안에서 복사됨
 
-    auto* newBuf = new CMeshBuffer();
-    newBuf->m_pFilter = _filter;
+    info.desc = desc;
 
-    if (FAILED(newBuf->Initialize(vertices.data(), desc)))
-    {
-        Safe_Release(newBuf);
-        return nullptr;
-    }
-
-    return newBuf;
+    return info;
 }
 
 const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 {
 	return m_sInfo;
+}
+
+void CMeshBuffer::Set_Filter(CMeshFilter* _filter)
+{
+    m_pFilter = _filter;
+
+    if (m_pFilter)
+        m_pFilter->AddRef();
 }
 
 ID3D11Buffer* CMeshBuffer::Get_VertexBuffer() const

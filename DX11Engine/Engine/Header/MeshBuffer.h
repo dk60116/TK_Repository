@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Object.h"
+#include "EngineResource.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CMeshBuffer : public UObject
+class ENGINE_DLL CMeshBuffer : public CEngineResource
 {
-	friend class CMeshFilter;
+	friend class CResources;
 
 public:
 	typedef struct MeshBufferDescription
@@ -18,26 +18,36 @@ public:
 		UINT indexCount = 0;
 	}MESHBUFFERDESC;
 
+	struct MeshBufferInitiaizeInfo
+	{
+		VertexTexNormalTangentBuffer* buffer = nullptr;
+		MESHBUFFERDESC desc = {};
+	};
+
+private:
+	CMeshBuffer* Create(const wstring& _filePath);
+
 protected:
 	explicit CMeshBuffer();
 	~CMeshBuffer();
 
 private:
-	HRESULT Initialize(const void* _vertices, MESHBUFFERDESC _description);
+	HRESULT Initialize(wstring _filePath, void* _desc);
 	void OnDestroy();
 
-public:
-	static CMeshBuffer* CreateCube(CMeshFilter* _filter);
-	static CMeshBuffer* CreateSphere(CMeshFilter* _filter);
-	static CMeshBuffer* CreatePlane(CMeshFilter* _filter);
-	static CMeshBuffer* CreateCylinder(CMeshFilter* _filter);
-	static CMeshBuffer* CreateTriangle(CMeshFilter* _filter);
-	static CMeshBuffer* CreateObjectMesh(CMeshFilter* _filter, const string& _filePath, const _float _scaleFactor = 1.f);
+private:
+	MeshBufferInitiaizeInfo CreateCube();
+	MeshBufferInitiaizeInfo CreateSphere();
+	MeshBufferInitiaizeInfo CreatePlane();
+	MeshBufferInitiaizeInfo CreateCylinder();
+	MeshBufferInitiaizeInfo CreateTriangle();
+	MeshBufferInitiaizeInfo CreateObjectMesh(const string& _filePath, const _float _scaleFactor = 1.f);
 
 public:
 	void Render();
 
 public:
+	void Set_Filter(class CMeshFilter* _filter);
 	ID3D11Buffer* Get_VertexBuffer() const;
 	ID3D11Buffer* Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
