@@ -27,6 +27,9 @@ struct VSIn
     float3 posL : POSITION;
     float3 normalL : NORMAL;
     float2 uv : TEXCOORD0;
+    float3 tangentL : TANGENT;
+    uint4 boneIndices : BLENDINDICES;
+    float4 boneWeights : BLENDWEIGHT;
 };
 
 // ───────────── 버텍스 출력

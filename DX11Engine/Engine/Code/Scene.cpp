@@ -70,8 +70,10 @@ HRESULT CScene::Initialize()
 	m_mResourceList = m_mTempResourceList;
 	m_mTempResourceList.clear();
 
+#ifdef _DEBUG
 	CGameObject* ecObj = Add_GameObject(L"Editor Camera");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
+#endif
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{

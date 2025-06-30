@@ -71,7 +71,7 @@ public:
 	T* GetComponent();
 
 	list<CComponent*>& Get_ComponentList();
-	class CTransform* Get_Transfrom() const;
+	class CTransform* Get_Transform() const;
 
 	wstring Get_ObjectName() const;
 	void Set_ObjectName(wstring& _name);

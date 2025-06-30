@@ -79,10 +79,38 @@ void CTransform::Set_Parent(CTransform* _parent)
 
 void CTransform::Set_Parent(CGameObject* _parentObj)
 {
-    Set_Parent(_parentObj->Get_Transfrom());
+    Set_Parent(_parentObj->Get_Transform());
 }
 
-const list<CTransform*>& CTransform::Get_ChldLIst() const
+CTransform* CTransform::Get_Child(const _int _index)
+{
+    UINT i = 0;
+
+    for (TRAVERSAL_ITER(m_lChildList, it))
+    {
+        if (i == _index)
+            return (*it);
+        
+        ++i;
+    }
+
+    return nullptr;
+}
+
+CTransform* CTransform::Find_Child(wstring _name)
+{
+    for (TRAVERSAL_ITER(m_lChildList, it))
+    {
+        if ((*it)->m_pGameObject->Get_ObjectName() == _name)
+            return *it;
+
+        return nullptr;
+    }
+
+    return nullptr;
+}
+
+const list<CTransform*>& CTransform::Get_ChldList() const
 {
     return m_lChildList;
 }
@@ -193,7 +221,7 @@ void CTransform::Set_LocalPositionX(const _float _x)
 
 void CTransform::Set_LocalPositionY(const _float _y)
 {
-    m_vLocalPosition.z = _y;
+    m_vLocalPosition.y = _y;
 
     if (m_pParent)
     {

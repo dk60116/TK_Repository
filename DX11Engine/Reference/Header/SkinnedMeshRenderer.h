@@ -26,16 +26,16 @@ public:
 	void OnDestroy()override;
 
 protected:
+	void CreateBoneHierachy(const aiNode* _node, CTransform* _parent);
 	void Render_WithCamera(CCamera* _cam) override;
 
 public:
-	void SetMesh(CMeshBuffer* _Mesh);
+	void Set_Mesh(CMeshBuffer* _Mesh);
 
 private:
 	CSkinnedMeshBuffer* m_pMeshBuffer;
 	vector<CTransform*> m_vBones;
 	CTransform* m_pRootBone;
-	UINT m_iCBSize;
 
 	ID3D11Buffer* m_pBoneMatrixBuffer = nullptr;
 };

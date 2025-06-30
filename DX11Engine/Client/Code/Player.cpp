@@ -25,15 +25,15 @@ HRESULT CPlayer::Initialize()
 
 	CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Link_Model (MeshBuffer)");
 
-	m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	m_pMeshRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
-	m_pMeshRenderer->Set_Material(playerMat);
+	//m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
+	//mb->Set_Scalefactor(0.01f);
+	//m_pMeshRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	//m_pMeshRenderer->Set_Material(playerMat);
 
-	m_pMeshRenderer->Get_Transform()->Set_LocalScale(vector3::one() * 0.01f);
-
-	//m_pSkinnedMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();
-	//m_pSkinnedMeshRenderer->CreateSkinnedMeshBuffer("../Assets/Animation_Archery_Shot_1_withSkin.fbx", 0.01f);
-	//m_pSkinnedMeshRenderer->Set_Material(playerMat);
+	CSkinnedMeshBuffer* smb = CResources::GetInstance().LoadOnScene<CSkinnedMeshBuffer>(L"Link_Model (SkinnedMeshBuffer)");
+	m_pSkinnedMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();
+	m_pSkinnedMeshRenderer->Set_Mesh(smb);
+	m_pSkinnedMeshRenderer->Set_Material(playerMat);
 
 	//CAnimation* anim_Idle = CResources::GetInstance().CreateResource<CAnimation>(L"../Assets/Animation_Archery_Shot_1_withSkin.fbx");
 

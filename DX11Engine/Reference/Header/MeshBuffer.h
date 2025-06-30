@@ -31,7 +31,7 @@ protected:
 private:
 	static CMeshBuffer* Create(const wstring& _filePath);
 
-private:
+protected:
 	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
 	void OnDestroy();
 
@@ -48,11 +48,12 @@ public:
 
 public:
 	void Set_Filter(class CMeshFilter* _filter);
+	virtual void Set_Scalefactor(const _float _value);
 	ID3D11Buffer* Get_VertexBuffer() const;
 	ID3D11Buffer* Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
 
-private:
+protected:
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;
 	ComPtr<ID3D11Buffer> m_pIndexBuffer;
 

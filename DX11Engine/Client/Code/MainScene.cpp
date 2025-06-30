@@ -34,7 +34,7 @@ HRESULT CMainScene::Initialize()
 	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	boxRenderer->Set_Material(boxMat);
 
-	boxObj->Get_Transfrom()->Set_Parent(playerObj->Get_Transfrom());
+	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
 
 	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
 

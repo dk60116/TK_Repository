@@ -64,8 +64,23 @@ void CMeshRenderer::OnDestroy()
 
 void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 {
-	if (!_cam || !m_pMeshFilter || !m_pMaterial)
+	if (!_cam)
+	{
+		CDebug::LogError("MeshRenderer: No Camera assigned.");
 		return;
+	}
+
+	if (!m_pMeshFilter)
+	{
+		CDebug::LogError("MeshRenderer: No MeshFilter assigned.");
+		return;
+	}
+
+	if (!m_pMaterial)
+	{
+		CDebug::LogError("MeshRenderer: No material assigned.");
+		return;
+	}
 
 	// MeshBuffer 가져오기
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();

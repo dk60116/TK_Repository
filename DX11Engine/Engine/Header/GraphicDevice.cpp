@@ -24,6 +24,8 @@ CGraphicDevice& CGraphicDevice::GetInstance()
 
 HRESULT CGraphicDevice::Initialize()
 {
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
 	if (FAILED(Ready_GraphicDevice(CDisplay::GetInstance().Get_GameWindow(), CDisplay::GetInstance().Get_ScreenResolution())))
 		return E_FAIL;
 
@@ -54,6 +56,8 @@ void CGraphicDevice::Destroy()
 	Safe_Release(m_pBackBufferRTV);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+
+	CoUninitialize();
 }
 
 HRESULT CGraphicDevice::Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution)

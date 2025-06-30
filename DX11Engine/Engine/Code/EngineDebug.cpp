@@ -4,8 +4,6 @@
 #include <cstdio>
 #include <cstdarg>
 
-#ifdef _DEBUG
-
 CDebug::CDebug()
 {
 }
@@ -166,25 +164,23 @@ void CDebug::LogError(const vector3 format, ...)
     LogError("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
-#else
-CDebug::CDebug() {}
-CDebug::~CDebug() {}
-CDebug& CDebug::GetInstance() { static CDebug inst; return inst; }
-HRESULT CDebug::Initialize() { return S_OK; }
-void CDebug::Release() {}
-void CDebug::Log(const char*, ...) {}
-void CDebug::Log(const std::string format, ...) {}
-void CDebug::Log(const wstring format, ...) {}
-void CDebug::Log(const int foramt, ...) {}
-void CDebug::Log(const float format, ...) {}
-void CDebug::Log(const vector3 format, ...) {}
-void CDebug::Log(const vector2Int format, ...) {}
-void CDebug::LogError(const char* format, ...) {}
-void CDebug::LogError(const string format, ...) {}
-void CDebug::LogError(const wstring format, ...) {}
-void CDebug::LogError(const int format, ...) {}
-void CDebug::LogError(const float format, ...) {}
-void CDebug::LogError(const vector2 format, ...) {}
-void CDebug::LogError(const vector2Int format, ...) {}
-void CDebug::LogError(const vector3 format, ...) {}
-#endif
+//CDebug::CDebug() {}
+//CDebug::~CDebug() {}
+//CDebug& CDebug::GetInstance() { static CDebug inst; return inst; }
+//HRESULT CDebug::Initialize() { return S_OK; }
+//void CDebug::Release() {}
+//void CDebug::Log(const char*, ...) {}
+//void CDebug::Log(const std::string format, ...) {}
+//void CDebug::Log(const wstring format, ...) {}
+//void CDebug::Log(const int foramt, ...) {}
+//void CDebug::Log(const float format, ...) {}
+//void CDebug::Log(const vector3 format, ...) {}
+//void CDebug::Log(const vector2Int format, ...) {}
+//void CDebug::LogError(const char* format, ...) {}
+//void CDebug::LogError(const string format, ...) {}
+//void CDebug::LogError(const wstring format, ...) {}
+//void CDebug::LogError(const int format, ...) {}
+//void CDebug::LogError(const float format, ...) {}
+//void CDebug::LogError(const vector2 format, ...) {}
+//void CDebug::LogError(const vector2Int format, ...) {}
+//void CDebug::LogError(const vector3 format, ...) {}

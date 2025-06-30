@@ -268,7 +268,7 @@ list<CComponent*>& CGameObject::Get_ComponentList()
 	return m_lComponentList;
 }
 
-CTransform* CGameObject::Get_Transfrom() const
+CTransform* CGameObject::Get_Transform() const
 {
 	return m_pTransform;
 }

@@ -94,6 +94,7 @@ void CSceneLoader::ThreadLoadingLoop()
 				else if (path.find(L".fbx") != wstring::npos)
 				{
 					CResources::GetInstance().CreateResource<CMeshBuffer>(wName + L" (MeshBuffer)", path, nullptr, true);
+					CResources::GetInstance().CreateResource<CSkinnedMeshBuffer>(wName + L" (SkinnedMeshBuffer)", path, nullptr, true);
 					CResources::GetInstance().CreateResource<CAnimation>(wName + L" (Animation)", path, nullptr, true);
 				}
 			}

@@ -155,6 +155,6 @@ void CComponent::Set_Object(CGameObject* _gameObject)
 
 CTransform* CComponent::Get_Transform()
 {
-	return m_pGameObject->Get_Transfrom();
+	return m_pGameObject->Get_Transform();
 }
 

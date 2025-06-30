@@ -1086,6 +1086,16 @@ namespace Engine
         _float2 uv;
         _float3 tangent;
     };
+
+    struct VertexSkinnedBuffer
+    {
+        _float3 position;
+        _float3 normal;
+        _float2 uv;
+        _float3 tangent;
+        UINT boneIndices[4] = { 0,0,0,0 };
+        _float boneWeights[4] = { 0,0,0,0 };
+    };
 #pragma endregion;
 
 #pragma region ShaderBuffer

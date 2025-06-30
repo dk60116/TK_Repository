@@ -36,7 +36,7 @@ HRESULT CTexture::Initialize(const wstring& _name, const wstring& _filePath, voi
 
 	if (FAILED(CreateWICTextureFromFile(device, m_strFilePath.c_str(), nullptr, m_pSRV.GetAddressOf())))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 

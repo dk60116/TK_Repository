@@ -2,6 +2,11 @@
 #include "SkinnedMeshBuffer.h"
 
 CSkinnedMeshBuffer::CSkinnedMeshBuffer()
+    : CMeshBuffer{}
+    , m_pImporter(nullptr)
+    , m_pAssimpScene(nullptr)
+    , m_vBoneNames({})
+    , m_vBoneOffsetMatrices({})
 {
 	m_strName = L"Skinned Mesh Buffer";
 }
@@ -11,20 +16,247 @@ CSkinnedMeshBuffer::~CSkinnedMeshBuffer()
     OnDestroy();
 }
 
-CSkinnedMeshBuffer* CSkinnedMeshBuffer::Create()
+CSkinnedMeshBuffer* CSkinnedMeshBuffer::Create(const wstring& _filePath)
 {
 	return new CSkinnedMeshBuffer();
 }
 
-HRESULT CSkinnedMeshBuffer::Initialize(const string& _filePath, float _scaleFactor)
+HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _desc)
 {
+    if (FAILED(CEngineResource::Initialize(_name, _filePath, _desc)))
+        return E_FAIL;
+
+    ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
+    
+    if (!device)
+        return E_FAIL;
+
+    m_pImporter = new Assimp::Importer();
+
+    m_pAssimpScene = m_pImporter->ReadFile
+    (
+        CEngineString::WStringToString(_filePath),
+        aiProcess_Triangulate |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_GenSmoothNormals |
+        aiProcess_CalcTangentSpace |
+        aiProcess_ConvertToLeftHanded |
+        aiProcess_LimitBoneWeights
+    );
+
+    if (!m_pAssimpScene || !m_pAssimpScene->HasMeshes())
+        return E_FAIL;
+
+    const aiMesh* mesh = m_pAssimpScene->mMeshes[0];
+
+    using VTX = VertexSkinnedBuffer;
+
+    vector<VTX> vertices;
+    vector<UINT> indices;
+
+    _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 0.01f;
+
+    for (UINT i = 0; i < mesh->mNumVertices; ++i)
+    {
+        VTX v = {};
+        const aiVector3D& pos = mesh->mVertices[i];
+        const aiVector3D& normal = mesh->mNormals[i];
+        const aiVector3D& tangent = mesh->mTangents ? mesh->mTangents[i] : aiVector3D(0.f, 0.f, 0.f);
+
+        v.position = _float3(pos.x * scaleFactor, pos.y * scaleFactor, pos.z * scaleFactor);
+        v.normal = _float3(normal.x, normal.y, normal.z);
+
+        if (mesh->HasTextureCoords(0))
+            v.uv = _float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+
+        vertices.push_back(v);
+    }
+
+    for (UINT f = 0; f < mesh->mNumFaces; ++f)
+    {
+        const aiFace& face = mesh->mFaces[f];
+        if (face.mNumIndices != 3)
+            continue;
+        indices.push_back(face.mIndices[0]);
+        indices.push_back(face.mIndices[1]);
+        indices.push_back(face.mIndices[2]);
+    }
+
+    m_vBoneNames.clear();
+
+    for (UINT b = 0; b < mesh->mNumBones; ++b)
+    {
+        string bn = mesh->mBones[b]->mName.C_Str();
+        m_vBoneNames.emplace_back(bn.begin(), bn.end());
+    }
+
+    m_vBoneOffsetMatrices.clear();
+    m_vBoneOffsetMatrices.reserve(mesh->mNumBones);
+
+    for (UINT b = 0; b < mesh->mNumBones; ++b)
+    {
+        const aiBone* bone = mesh->mBones[b];
+
+        // Assimp 행렬 -> XMMATRIX 변환
+        const aiMatrix4x4& offset = bone->mOffsetMatrix;
+
+        XMMATRIX matOffset = XMMatrixTranspose
+        (
+            XMMATRIX(
+                offset.a1, offset.a2, offset.a3, offset.a4,
+                offset.b1, offset.b2, offset.b3, offset.b4,
+                offset.c1, offset.c2, offset.c3, offset.c4,
+                offset.d1, offset.d2, offset.d3, offset.d4
+            )
+        );
+
+        m_vBoneOffsetMatrices.push_back(matOffset);
+    }
+
+    FillBoneWeightsAndIndices(mesh, vertices);
+
+    D3D11_BUFFER_DESC vbDesc = {};
+    vbDesc.ByteWidth = UINT(vertices.size() * sizeof(VTX));
+    vbDesc.Usage = D3D11_USAGE_DEFAULT;
+    vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vbData = {};
+    vbData.pSysMem = vertices.data();
+
+    // Index Buffer
+    D3D11_BUFFER_DESC ibDesc = {};
+    ibDesc.ByteWidth = UINT(indices.size() * sizeof(UINT));
+    ibDesc.Usage = D3D11_USAGE_DEFAULT;
+    ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA ibData = {};
+    ibData.pSysMem = indices.data();
+
+    if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
+        return E_FAIL;
+
+    if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
+        return E_FAIL;
+
+    m_sInfo.vertexSize = sizeof(VTX);
+    m_sInfo.vertextCount = UINT(vertices.size());
+    m_sInfo.indexCount = UINT(indices.size());
+    m_sInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
     return S_OK;
 }
 
 void CSkinnedMeshBuffer::Render()
 {
+    if (!m_pVertexBuffer)
+        return;
+
+    ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+    UINT stride = m_sInfo.vertexSize;
+    UINT offset = 0;
+
+    context->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+
+    if (m_pIndexBuffer)
+    {
+        context->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+        context->IASetPrimitiveTopology(m_sInfo.topology);
+        context->DrawIndexed(m_sInfo.indexCount, 0, 0);
+    }
+    else
+    {
+        context->IASetPrimitiveTopology(m_sInfo.topology);
+        context->Draw(m_sInfo.vertextCount, 0);
+    }
 }
 
 void CSkinnedMeshBuffer::OnDestroy()
 {
+    __super::OnDestroy();
+
+    if (m_pImporter)
+    {
+        Safe_Delete(m_pImporter);
+        m_pAssimpScene = nullptr;
+    }
+
+    m_vBoneNames.clear();
+
+    m_pVertexBuffer->Release();
+    m_pIndexBuffer->Release();
+
+    m_pVertexBuffer = nullptr;
+    m_pIndexBuffer = nullptr;
+}
+
+void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, std::vector<VertexSkinnedBuffer>& vertices)
+{
+    // 1) 본 인덱스/가중치 할당
+    for (UINT i = 0; i < mesh->mNumBones; ++i)
+    {
+        const aiBone* bone = mesh->mBones[i];
+
+        for (UINT j = 0; j < bone->mNumWeights; ++j)
+        {
+            const aiVertexWeight& vw = bone->mWeights[j];
+
+            UINT vertexId = vw.mVertexId;
+            float weight = vw.mWeight;
+
+            auto& v = vertices[vertexId];
+
+            for (UINT k = 0; k < 4; ++k)
+            {
+                if (v.boneWeights[k] == 0.0f)
+                {
+                    v.boneIndices[k] = i;
+                    v.boneWeights[k] = weight;
+                    break;
+                }
+            }
+        }
+    }
+
+    // 2) 각 버텍스의 가중치를 큰 순서로 정렬 + 인덱스 함께 정렬
+    for (auto& v : vertices)
+    {
+        // 가중치와 인덱스를 쌍으로 모음
+        vector<std::pair<UINT, float>> bonePairs;
+        for (int k = 0; k < 4; ++k)
+        {
+            if (v.boneWeights[k] > 0.0f)
+                bonePairs.emplace_back(v.boneIndices[k], v.boneWeights[k]);
+        }
+
+        // 큰 가중치 순으로 정렬
+        sort(bonePairs.begin(), bonePairs.end(),
+            [](const std::pair<UINT, float>& a, const std::pair<UINT, float>& b)
+            {
+                return a.second > b.second;
+            });
+
+        // 다시 배열에 복사
+        for (int k = 0; k < 4; ++k)
+        {
+            if (k < bonePairs.size())
+            {
+                v.boneIndices[k] = bonePairs[k].first;
+                v.boneWeights[k] = bonePairs[k].second;
+            }
+            else
+            {
+                v.boneIndices[k] = 0;
+                v.boneWeights[k] = 0.0f;
+            }
+        }
+
+        // 3) 정규화
+        float sum = v.boneWeights[0] + v.boneWeights[1] + v.boneWeights[2] + v.boneWeights[3];
+        if (sum > 0.0f)
+        {
+            for (int k = 0; k < 4; ++k)
+                v.boneWeights[k] /= sum;
+        }
+    }
 }

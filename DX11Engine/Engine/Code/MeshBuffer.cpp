@@ -209,41 +209,56 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateSphere()
 
 CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
 {
-    MeshBufferInitiaizeInfo result = {};
-    return result;
+    MeshBufferInitiaizeInfo info = {};
 
-    //MeshBufferInitiaizeInfo info = {};
+    using VTX = VertexTexNormalTangentBuffer;
 
-    //struct Vertex { XMFLOAT3 pos; };
+    const _float length = 0.5f;
 
-    //const _float length = 0.5f;
+    VTX triVerts[3] =
+    {
+        // À§ÂÊ ²ÀÁþÁ¡
+        {
+            {0.f, length, 0.f},       // Position
+            {0.f, 0.f, -1.f},         // Normal
+            {0.5f, 0.f},              // UV
+            {1.f, 0.f, 0.f}           // Tangent
+        },
+        // ¿À¸¥ÂÊ ¾Æ·¡ ²ÀÁþÁ¡
+        {
+            {length, -length, 0.f},
+            {0.f, 0.f, -1.f},
+            {1.f, 1.f},
+            {1.f, 0.f, 0.f}
+        },
+        // ¿ÞÂÊ ¾Æ·¡ ²ÀÁþÁ¡
+        {
+            {-length, -length, 0.f},
+            {0.f, 0.f, -1.f},
+            {0.f, 1.f},
+            {1.f, 0.f, 0.f}
+        }
+    };
 
-    //Vertex triVerts[3] = 
-    //{
-    //    { XMFLOAT3(0.f, length, length) },
-    //    { XMFLOAT3(length, -length, 0.0f) },
-    //    { XMFLOAT3(-length, -length, 0.0f) }
-    //};
+    // ÀÎµ¦½º (0-1-2)
+    UINT triIndices[3] = { 0, 1, 2 };
 
-    //info.buffer = triVerts;
+    // ¹öÅØ½º º¹»ç
+    info.buffer.assign(std::begin(triVerts), std::end(triVerts));
 
-    //// ¹öÆÛ ¼³¸í
-    //CMeshBuffer::MESHBUFFERDESC desc{};
-    //desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    //desc.vertexSize = sizeof(Vertex);
-    //desc.vertextCount = 3;
-    //desc.indexCount = 0;
-    //desc.indices = nullptr;
+    // ÀÎµ¦½º º¹»ç
+    info.indices.assign(std::begin(triIndices), std::end(triIndices));
 
-    //info.buffer = 
+    // ¸Þ½¬ ¼³¸í
+    MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    desc.vertexSize = sizeof(VTX);
+    desc.vertextCount = _countof(triVerts);
+    desc.indexCount = _countof(triIndices);
 
-    //if (FAILED(newBuffer->Initialize(triVerts, desc)))
-    //{
-    //    Safe_Release(newBuffer);
-    //    return nullptr;
-    //}
+    info.desc = desc;
 
-    //return newBuffer;
+    return info;
 }
 
 CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string& _filePath, const _float _scaleFactor)
@@ -252,8 +267,9 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
 
     using VTX = VertexTexNormalTangentBuffer;
 
-    /* 1) ¦¡¦¡ ¸ðµ¨ ·Îµù ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡ */
+    // ¸ðµ¨ ·Îµù 
     Assimp::Importer importer;
+
     const aiScene* scene = importer.ReadFile
     (
         _filePath,
@@ -263,9 +279,18 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
         aiProcess_CalcTangentSpace |   // ÅØ½ºÃ³ ÁÂÇ¥ ±â¹Ý ÅºÁ¨Æ®
         aiProcess_ConvertToLeftHanded |   // DirectX ÁÂÇ¥°è
         aiProcess_FlipUVs
-    );                  // Blender->DX11 º¸Åë µÚÁýÈû
+    );
 
-    /* 2) ¦¡¦¡ Á¤Á¡ ¡¤ ÀÎµ¦½º ¸ðÀ¸±â ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡ */
+    if (!scene)
+    {
+        const char* error = importer.GetErrorString();
+        OutputDebugStringA("Assimp load failed: ");
+        OutputDebugStringA(error);
+        OutputDebugStringA("\n");
+
+        return MeshBufferInitiaizeInfo();
+    }
+
     vector<VTX>  vertices;
     vector<UINT> indices;
 
@@ -278,52 +303,65 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
             {
                 VTX v{};
                 /* À§Ä¡ */
-                v.position = { mesh->mVertices[i].x,
-                          mesh->mVertices[i].y,
-                          mesh->mVertices[i].z };
+                v.position = 
+                { 
+                    mesh->mVertices[i].x,
+                    mesh->mVertices[i].y,
+                    mesh->mVertices[i].z
+                };
 
                 v.position.x *= _scaleFactor;
                 v.position.y *= _scaleFactor;
                 v.position.z *= _scaleFactor;
                                 
-                /* ³ë¸Ö *
-                if (mesh->HasNormals())
-                    v.normal = { mesh->mNormals[i].x,
-                                 mesh->mNormals[i].y,
-                                 mesh->mNormals[i].z };
+                 // ³ë¸Ö
+                if (mesh->HasNormals()) 
+                    v.normal = 
+                { 
+                    mesh->mNormals[i].x,
+                    mesh->mNormals[i].y,
+                    mesh->mNormals[i].z 
+                };
                 else
                     v.normal = { 0,0,0 };
 
-                /* UV(0) */
+                // UV(0)
                 if (mesh->HasTextureCoords(0))
-                    v.uv = { mesh->mTextureCoords[0][i].x,
-                             mesh->mTextureCoords[0][i].y };
+                    v.uv = 
+                {
+                    mesh->mTextureCoords[0][i].x,
+                    mesh->mTextureCoords[0][i].y
+                };
                 else
                     v.uv = { 0,0 };
 
-                /* ÅºÁ¨Æ® */
+                // ÅºÁ¨Æ®
                 if (mesh->HasTangentsAndBitangents())
-                    v.tangent = { mesh->mTangents[i].x,
-                                  mesh->mTangents[i].y,
-                                  mesh->mTangents[i].z };
+                    v.tangent = 
+                { 
+                    mesh->mTangents[i].x,
+                    mesh->mTangents[i].y,
+                    mesh->mTangents[i].z 
+                };
                 else
                     v.tangent = { 0,0,0 };
 
                 vertices.emplace_back(v);
             }
 
-            /* ÀÎµ¦½º(¾ó±¼) */
+            // ÀÎµ¦½º(¾ó±¼)
             for (UINT f = 0; f < mesh->mNumFaces; ++f)
             {
                 const aiFace& face = mesh->mFaces[f];
-                if (face.mNumIndices != 3) continue;     // »ï°¢¸é¸¸
+                if (face.mNumIndices != 3) 
+                    continue;
                 indices.push_back(base + face.mIndices[0]);
                 indices.push_back(base + face.mIndices[1]);
                 indices.push_back(base + face.mIndices[2]);
             }
         };
 
-    /* ¾À ³ëµå Àç±Í ¼øÈ¸ */
+    // ¾À ³ëµå Àç±Í ¼øÈ¸
     function<void(const aiNode*)> traverse = [&](const aiNode* node)
         {
             for (UINT m = 0; m < node->mNumMeshes; ++m)
@@ -335,7 +373,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
 
     traverse(scene->mRootNode);
 
-    /* 3) ¦¡¦¡ CMeshBuffer »ý¼º ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡ */
+    // MeshBuffer »ý¼º
     MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     desc.vertexSize = sizeof(VTX);
@@ -360,6 +398,67 @@ void CMeshBuffer::Set_Filter(CMeshFilter* _filter)
 
     if (m_pFilter)
         m_pFilter->AddRef();
+}
+
+void CMeshBuffer::Set_Scalefactor(const _float _value)
+{
+    OnDestroy();
+
+    // »õ MeshBuffer Á¤º¸ »ý¼º
+    MeshBufferInitiaizeInfo info = CreateObjectMesh
+    (
+        CEngineString::WStringToString(m_strFilePath),
+        _value
+    );
+
+    if (info.buffer.empty() || info.desc.vertexSize == 0 || info.desc.vertextCount == 0)
+        return;
+
+    // Á¤º¸ ÀúÀå
+    m_sInfo = info.desc;
+
+    size_t size = info.desc.vertexSize * info.desc.vertextCount;
+
+    // CPU ¸Þ¸ð¸® º¹»ç
+    m_pVertexSysMem = malloc(size);
+    memcpy(m_pVertexSysMem, info.buffer.data(), size);
+
+    if (info.desc.indexCount > 0 && !info.indices.empty())
+    {
+        size_t indexSize = sizeof(UINT) * info.desc.indexCount;
+        m_pIndexSysMem = malloc(indexSize);
+        memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
+    }
+
+    // GPU ¹öÆÛ »ý¼º
+    ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
+
+    // Vertex Buffer
+    D3D11_BUFFER_DESC vbDesc = {};
+    vbDesc.ByteWidth = static_cast<UINT>(size);
+    vbDesc.Usage = D3D11_USAGE_DEFAULT;
+    vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vbData = {};
+    vbData.pSysMem = info.buffer.data();
+
+    if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
+        return;
+
+    // Index Buffer
+    if (info.desc.indexCount > 0 && !info.indices.empty())
+    {
+        D3D11_BUFFER_DESC ibDesc = {};
+        ibDesc.ByteWidth = sizeof(UINT) * info.desc.indexCount;
+        ibDesc.Usage = D3D11_USAGE_DEFAULT;
+        ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA ibData = {};
+        ibData.pSysMem = info.indices.data();
+
+        if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
+            return;
+    }
 }
 
 ID3D11Buffer* CMeshBuffer::Get_VertexBuffer() const

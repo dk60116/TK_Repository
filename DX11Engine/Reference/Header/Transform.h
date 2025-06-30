@@ -34,7 +34,9 @@ public:
 	CTransform* Get_Parent();
 	void Set_Parent(CTransform* _parent);
 	void Set_Parent(CGameObject* _parentObj);
-	const list<CTransform*>& Get_ChldLIst() const;
+	CTransform* Get_Child(const _int _index);
+	CTransform* Find_Child(wstring _name);
+	const list<CTransform*>& Get_ChldList() const;
 	const DIRECTIONS& Get_Directions();
 	const _matrix& Get_WorldMatrix() const;
 	const _matrix Get_InverseWorldMatrix() const;

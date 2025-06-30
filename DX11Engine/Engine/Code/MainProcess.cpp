@@ -17,6 +17,7 @@ CMainProcess& CMainProcess::GetInstance()
 
 HRESULT CMainProcess::Initialize()
 {
+
     if (FAILED(CDebug::GetInstance().Initialize()))
         return E_FAIL;
     if (FAILED(CTime::GetInstance().Initialize()))
