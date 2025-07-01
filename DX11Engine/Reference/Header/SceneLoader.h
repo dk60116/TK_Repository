@@ -23,6 +23,9 @@ public:
 	void Shutdown();
 
 private:
+	void LoadComplete(class CEngineResource* _ptr, wstring _name);
+
+private:
 	HANDLE m_hThread;
 	CRITICAL_SECTION m_pCriticalSection;
 

@@ -4,6 +4,9 @@
 #include "Texture.h"
 #include "Animation.h"
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 NS_BEGIN(Engine)
 
 class ENGINE_DLL CResources final
@@ -19,6 +22,9 @@ public:
 
 	template<typename T>
 	T* LoadOnScene(const wstring& _name);
+
+	static _bool FileExists(wstring& _path);
+	static _bool FileExists(string& _path);
 
 private:
 	wstring m_strDefaultAssetPath;

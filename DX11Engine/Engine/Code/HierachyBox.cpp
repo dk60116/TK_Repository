@@ -31,12 +31,11 @@ void CHierachyBox::Render()
 
 	ImVec2 panelSize = ImVec2(width, viewport->Size.y);
 
-	// Pos + Pivot 을 같이 지정
 	ImGui::SetNextWindowPos
 	(
 		ImVec2(viewport->Pos.x + viewport->Size.x, viewport->Pos.y),
 		0,
-		ImVec2(1.0f, 0.0f)  // Pivot: 오른쪽 상단 기준
+		ImVec2(1.0f, 0.0f) 
 	);
 
 	ImGui::SetNextWindowSize(panelSize);
@@ -47,5 +46,41 @@ void CHierachyBox::Render()
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoCollapse);
 
+	// Hierarchy Root 가져오기
+	CScene* currentScene = CSceneManager::GetInstance().Get_CrtScene();
+
+	if (currentScene)
+	{
+		for (auto& obj : currentScene->Get_RootObjects())
+		{
+			RenderObjectHierarchy(obj);
+		}
+	}
+
 	ImGui::End();
+}
+
+void CHierachyBox::RenderObjectHierarchy(CGameObject* _obj)
+{
+	if (!_obj)
+		return;
+
+	string name = CEngineString::WStringToString(_obj->Get_ObjectName());
+
+	_bool hasChildren = !_obj->Get_Transform()->Get_ChldList().empty();
+
+	ImGuiTreeNodeFlags flags = 0;
+
+	if (!hasChildren)
+		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+	_bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
+
+	if (hasChildren && nodeOpen)
+	{
+		for (auto* child : _obj->Get_Transform()->Get_ChldList())
+			RenderObjectHierarchy(child->Get_GameObject());
+
+		ImGui::TreePop();
+	}
 }

@@ -11,7 +11,7 @@ public:
 	{
 		UINT windowWidth = 1510;
 		UINT windowHeight = 720;
-		UINT hierachyWidth = 230;
+		UINT hierachyWidth = 250;
 
 	}EDITORWINOPTION;
 

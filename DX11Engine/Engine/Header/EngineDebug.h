@@ -10,7 +10,7 @@ class ENGINE_DLL CDebug final
 
 public:
     static HRESULT Initialize();
-    static void Release();
+    void Release();
 
 public:
     static void Log(const char* format, ...);
@@ -30,6 +30,17 @@ public:
     static void LogError(const vector2 format, ...);
     static void LogError(const vector2Int format, ...);
     static void LogError(const vector3 format, ...);
+
+    static void LogWarning(const char* format, ...);
+    static void LogWarning(const string format, ...);
+    static void LogWarning(const wstring format, ...);
+    static void LogWarning(const int format, ...);
+    static void LogWarning(const float format, ...);
+    static void LogWarning(const vector2 format, ...);
+    static void LogWarning(const vector2Int format, ...);
+    static void LogWarning(const vector3 format, ...);
+
+    static string MemoryUseLog();
 };
 
 NS_END

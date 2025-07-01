@@ -37,12 +37,13 @@ public:
     class CEngineResource* Find_Resource(const wstring& _name);
     class CEngineResource* Add_TempResource(const wstring& _name, class CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
+    vector<CGameObject*> Get_RootObjects();
     class CCamera* Get_Camera() const;
-    class CCamera* Get_Camera(const _int _index) const;
-    class CCamera* Get_EditorCamera() const;
+    CCamera* Get_Camera(const _int _index) const;
+    CCamera* Get_EditorCamera() const;
     list <CCamera*>& Get_CameraList();
-    class CCamera* Add_Camera(class CCamera* _camera);
-    class CGameObject* Instantiate(class CGameObject* _gameObject);
+    CCamera* Add_Camera(CCamera* _camera);
+    CGameObject* Instantiate(CGameObject* _gameObject);
 
 private:
     ID3D11Device* m_pDevice;
@@ -51,13 +52,13 @@ private:
 private:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
-    list <class CGameObject*> m_lObjectList;
-    list <class CCamera*> m_lCameraList;
+    list <CGameObject*> m_lObjectList;
+    list <CCamera*> m_lCameraList;
 
-    class CCamera* m_pEditorCamera;
+    CCamera* m_pEditorCamera;
 
-    unordered_map<wstring, class CEngineResource*> m_mResourceList;
-    unordered_map<wstring, class CEngineResource*> m_mTempResourceList;
+    unordered_map<wstring, CEngineResource*> m_mResourceList;
+    unordered_map<wstring, CEngineResource*> m_mTempResourceList;
 };
 
 NS_END

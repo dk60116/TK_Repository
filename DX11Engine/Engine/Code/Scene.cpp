@@ -47,14 +47,17 @@ HRESULT CScene::PreLoadResources()
 			string name = line.substr(0, pos);
 			string filepath = line.substr(pos + 1);
 
-			// 앞뒤 공백 제거
 			name = CEngineString::Trim(name);
 			filepath = CEngineString::Trim(filepath);
 
-			nameList.push_back(name);
-			fileList.push_back(filepath);
-
-			CDebug::Log("Add File: " + filepath + " (Name: " + name + ")");
+			if (!CResources::FileExists(filepath))
+			{
+				nameList.push_back(name);
+				fileList.push_back(filepath);
+				CDebug::Log("Add File: " + filepath + " (Name: " + name + ")");
+			}
+			else
+				CDebug::LogWarning("Failed Add File: " + filepath);
 		}
 		else
 			CDebug::LogError("Invalid line format: " + line);
@@ -67,8 +70,13 @@ HRESULT CScene::PreLoadResources()
 
 HRESULT CScene::Initialize()
 {
+	SceneRelease();
+
 	m_mResourceList = m_mTempResourceList;
+
 	m_mTempResourceList.clear();
+
+	CDebug::Log(CDebug::MemoryUseLog());
 
 #ifdef _DEBUG
 	CGameObject* ecObj = Add_GameObject(L"Editor Camera");
@@ -82,6 +90,8 @@ HRESULT CScene::Initialize()
 		else
 			(*it)->Awake();
 	}
+
+	CDebug::Log(L"Load scene Complete: " + m_strSceneName);
 
 	return S_OK;
 }
@@ -245,6 +255,19 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	newObj->Set_Scene(this);
 
 	return newObj;
+}
+
+vector<CGameObject*> CScene::Get_RootObjects()
+{
+	vector<CGameObject*> result = {};
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->Get_Transform()->Is_Root())
+			result.push_back(*it);
+	}
+
+	return result;
 }
 
 CCamera* CScene::Get_Camera() const

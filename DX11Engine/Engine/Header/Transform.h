@@ -31,14 +31,17 @@ public:
 	void OnDestroy() override;
 
 public:
-	CTransform* Get_Parent();
+	CTransform* Get_Parent() const;
 	void Set_Parent(CTransform* _parent);
 	void Set_Parent(CGameObject* _parentObj);
+	const _bool Is_Root() const;
 	CTransform* Get_Child(const _int _index);
 	CTransform* Find_Child(wstring _name);
+	CTransform* Find_ChildRecursive(wstring _name);
 	const list<CTransform*>& Get_ChldList() const;
 	const DIRECTIONS& Get_Directions();
 	const _matrix& Get_WorldMatrix() const;
+	const _matrix& Get_LocalMatrix() const;
 	const _matrix Get_InverseWorldMatrix() const;
 
 public:
@@ -115,7 +118,7 @@ private:
 	vector3 m_vPosition, m_vEulerAngles, m_vScale;
 	vector3 m_vLocalPosition, m_vLocalEulerAngles;
 	quaternion m_vQuaternion, m_vLocalQuaternion;
-	_matrix m_vMatWorld, m_vMatLocalRotation;
+	_matrix m_vMatWorld, m_vMatLocal, m_vMatLocalRotation;
 	DIRECTIONS m_sDirections;
 };
 

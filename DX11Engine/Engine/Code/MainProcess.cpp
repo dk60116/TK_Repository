@@ -17,7 +17,6 @@ CMainProcess& CMainProcess::GetInstance()
 
 HRESULT CMainProcess::Initialize()
 {
-
     if (FAILED(CDebug::GetInstance().Initialize()))
         return E_FAIL;
     if (FAILED(CTime::GetInstance().Initialize()))
@@ -50,6 +49,7 @@ HRESULT CMainProcess::Initialize()
     );
 
     MSG msg;
+
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         TranslateMessage(&msg);
@@ -90,4 +90,9 @@ void CMainProcess::Update_MainApp()
 
     if (CSceneManager::GetInstance().Is_Loading() && !CSceneLoader::GetInstance().Is_Loading())
         CSceneManager::GetInstance().LoadComplete();
+}
+
+void CMainProcess::Release_MainApp()
+{
+    CDebug::GetInstance().Release();
 }

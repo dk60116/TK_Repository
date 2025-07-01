@@ -13,13 +13,12 @@ CAnimation::~CAnimation()
 	OnDestroy();
 }
 
-void CAnimation::Sample(_float timeSec, unordered_map<std::wstring, BoneTransform>& out) const
+void CAnimation::Sample(_float timeSec, unordered_map<wstring, BoneTransform>& out) const
 {
-	if (m_vBoneAnimation.empty())
-		return;
+	if (m_vBoneAnimation.empty() || m_fDuration == 0.f) return;
 
-	const double ticks = timeSec * m_fTicksPerSecond;
-	const double time = fmod(ticks, m_fDuration);      // 루프
+	double ticks = timeSec * m_fTicksPerSecond;
+	double time = fmod(ticks, m_fDuration);
 
 	out.clear();
 	out.reserve(m_vBoneAnimation.size());
@@ -27,49 +26,26 @@ void CAnimation::Sample(_float timeSec, unordered_map<std::wstring, BoneTransfor
 	for (const auto& ba : m_vBoneAnimation)
 	{
 		const auto& keys = ba.keyFrames;
-		
-		if (keys.empty())
-			continue;
+		if (keys.empty()) continue;
 
-		// 전/후 키 찾기
 		size_t i1 = 0, i2 = 0;
+		while (i2 < keys.size() && time >= keys[i2].timeStamp) { i1 = i2++; }
 
-		for (size_t i = 0; i < keys.size(); ++i)
-		{
-			if (time < keys[i].timeStamp) 
-			{ 
-				i2 = i; 
-				break;
-			}
+		if (i2 >= keys.size()) { i2 = i1; }          // 끝 구간
+		float span = float(keys[i2].timeStamp - keys[i1].timeStamp);
+		float  t = span > 0.f ? float((time - keys[i1].timeStamp) / span) : 0.f;
 
-			i1 = i;
-		}
-
-		i2 = (i1 + 1 < keys.size()) ? (i1 + 1) : i1;
-
-		const auto& k1 = keys[i1];
-		const auto& k2 = keys[i2];
-
-		const float  span = float(k2.timeStamp - k1.timeStamp);
-		const float  t = (span > 0.f) ? float((time - k1.timeStamp) / span) : 0.f;
-
-		// 보간
+		// --- 보간 ---
 		BoneTransform bt;
+		XMStoreFloat3(&bt.pos,
+			XMVectorLerp(XMLoadFloat3(&keys[i1].position), XMLoadFloat3(&keys[i2].position), t));
 
-		XMVECTOR p1 = XMLoadFloat3(&k1.position);
-		XMVECTOR p2 = XMLoadFloat3(&k2.position);
-		XMVECTOR pLerp = XMVectorLerp(p1, p2, t);
-		XMStoreFloat3(&bt.pos, pLerp);
+		XMStoreFloat4(&bt.rot,
+			XMQuaternionNormalize(
+				XMQuaternionSlerp(XMLoadFloat4(&keys[i1].rotation), XMLoadFloat4(&keys[i2].rotation), t)));
 
-		XMVECTOR q1 = XMLoadFloat4(&k1.rotation);
-		XMVECTOR q2 = XMLoadFloat4(&k2.rotation);
-		XMVECTOR qSlerp = XMQuaternionSlerp(q1, q2, t);
-		XMStoreFloat4(&bt.rot, qSlerp);
-
-		XMVECTOR s1 = XMLoadFloat3(&k1.scaling);
-		XMVECTOR s2 = XMLoadFloat3(&k2.scaling);
-		XMVECTOR sLerp = XMVectorLerp(s1, s2, t);
-		XMStoreFloat3(&bt.scale, sLerp);
+		XMStoreFloat3(&bt.scale,
+			XMVectorLerp(XMLoadFloat3(&keys[i1].scaling), XMLoadFloat3(&keys[i2].scaling), t));
 
 		out.emplace(ba.boneName, bt);
 	}

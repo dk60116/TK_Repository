@@ -31,12 +31,13 @@ public:
     CAnimation* Get_CurrentAnimation();
 
 private:
-    class CSkinnedMeshRenderer* m_pSkinnedMesh;
+    class CSkinnedMeshRenderer* m_pSkinnedRenderer;
     unordered_map<wstring, CAnimation*> m_mAnimationList;
     CAnimation* m_pCrtAnimation;
     _bool m_bIsPlaying, m_bLoop;
     _float m_fCurrentTime;
     _float m_fPlaybackSpeed;
+    vector<_matrix> m_vFinalBoneMatrix;
 };
 
 NS_END

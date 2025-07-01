@@ -13,6 +13,7 @@ CTransform::CTransform()
 	, m_vQuaternion(quaternion::identity())
     , m_vLocalQuaternion(quaternion::identity())
 	, m_vMatWorld(XMMatrixIdentity())
+    , m_vMatLocal(XMMatrixIdentity())
     , m_vMatLocalRotation(XMMatrixIdentity())
 	, m_sDirections({})
 {
@@ -50,7 +51,7 @@ void CTransform::OnDestroy()
     Safe_Release(m_pParent);
 }
 
-CTransform* CTransform::Get_Parent()
+CTransform* CTransform::Get_Parent() const
 {
     return m_pParent;
 }
@@ -82,6 +83,11 @@ void CTransform::Set_Parent(CGameObject* _parentObj)
     Set_Parent(_parentObj->Get_Transform());
 }
 
+const _bool CTransform::Is_Root() const
+{
+    return m_bIsRootParent;
+}
+
 CTransform* CTransform::Get_Child(const _int _index)
 {
     UINT i = 0;
@@ -110,6 +116,22 @@ CTransform* CTransform::Find_Child(wstring _name)
     return nullptr;
 }
 
+CTransform* CTransform::Find_ChildRecursive(wstring _name)
+{
+    if (Get_GameObject()->Get_ObjectName() == _name)
+        return this;
+
+    for (TRAVERSAL_ITER(m_lChildList, it))
+    {
+        CTransform* found = (*it)->Find_ChildRecursive(_name);
+        
+        if (found)
+            return found;
+    }
+
+    return nullptr;
+}
+
 const list<CTransform*>& CTransform::Get_ChldList() const
 {
     return m_lChildList;
@@ -123,6 +145,11 @@ const CTransform::DIRECTIONS& CTransform::Get_Directions()
 const _matrix& CTransform::Get_WorldMatrix() const
 {
     return m_vMatWorld;
+}
+
+const _matrix& CTransform::Get_LocalMatrix() const
+{
+    return m_vMatLocal;
 }
 
 const _matrix CTransform::Get_InverseWorldMatrix() const
@@ -530,7 +557,10 @@ void CTransform::Bind_Matrix()
     _matrix matScale = XMMatrixScaling(m_vScale.x, m_vScale.y, m_vScale.z);
     m_vMatLocalRotation = XMMatrixRotationQuaternion(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vQuaternion)));
     _matrix matTranslation = XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z);
+    _matrix matLocalPosition = XMMatrixTranslation(m_vLocalPosition.x, m_vLocalPosition.y, m_vLocalPosition.z);
     _matrix matLocal = matScale * m_vMatLocalRotation * matTranslation;
+
+    m_vMatLocal = matScale * m_vMatLocalRotation * matLocalPosition;
 
     if (m_pParent)
     {

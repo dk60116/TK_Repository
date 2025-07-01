@@ -67,6 +67,26 @@ void CSkinnedMeshRenderer::OnDestroy()
 	Safe_Release(m_pMeshBuffer);
 }
 
+const _uint CSkinnedMeshRenderer::Get_BoneCount() const
+{
+	return static_cast<_uint>(m_vBones.size());
+}
+
+const wstring CSkinnedMeshRenderer::Get_BoneName(const _uint _index) const
+{
+	return m_vBones[_index]->Get_GameObject()->Get_ObjectName();
+}
+
+CTransform* CSkinnedMeshRenderer::Get_BoneTransform(const _uint _index) const
+{
+	return m_vBones[_index];
+}
+
+const _matrix& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) const
+{
+	return m_pMeshBuffer->Get_BoneOffsetMatrix(_index);
+}
+
 void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _parent)
 {
 	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(CEngineString::StringToWString(_node->mName.C_Str()));
@@ -179,7 +199,7 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 	for (const auto& boneName : m_pMeshBuffer->m_vBoneNames)
 	{
 		// 현재 오브젝트 하위에서 본 이름에 맞는 Transform 찾아서 연결
-		CTransform* pBone = m_pGameObject->Get_Transform()->Find_Child(boneName);
+		CTransform* pBone = m_pGameObject->Get_Transform()->Find_ChildRecursive(boneName);
 		m_vBones.push_back(pBone);
 	}
 }

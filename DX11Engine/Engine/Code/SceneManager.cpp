@@ -62,6 +62,14 @@ const _bool CSceneManager::Is_Loading() const
 
 void CSceneManager::LoadScene(wstring _scene)
 {
+	if (m_bLoading)
+	{
+		CDebug::LogError("Load Scene Fail: Already loading Scene.");
+		return;
+	}
+
+	CDebug::Log(L"Load scene start: " + _scene);
+
 	auto iter = m_mSceneList.find(_scene);
 
 	if (iter == m_mSceneList.end())
@@ -78,9 +86,6 @@ void CSceneManager::LoadScene(wstring _scene)
 
 void CSceneManager::LoadComplete()
 {
-	if (m_pCrtScene)
-		m_pCrtScene->SceneRelease();
-
 	m_pCrtScene = nullptr;
 	m_pCrtScene = m_pTempScene;
 	m_pTempScene = nullptr;

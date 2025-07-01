@@ -25,7 +25,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    //_CrtSetBreakAlloc(223);
+    //_CrtSetBreakAlloc(446);
 #define _CRTDBG_MAP_ALLOC
 #endif
     UNREFERENCED_PARAMETER(hPrevInstance);
@@ -63,6 +63,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
             CMainProcess::GetInstance().Update_MainApp();
     }
+
+    CMainProcess::GetInstance().Release_MainApp();
 
     return (int) msg.wParam;
 }

@@ -11,6 +11,7 @@ class ENGINE_DLL CMainProcess final
 public:
 	HRESULT Initialize();
 	void Update_MainApp();
+	void Release_MainApp();
 };
 
 NS_END

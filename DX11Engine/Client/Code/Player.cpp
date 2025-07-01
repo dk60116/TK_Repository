@@ -37,12 +37,12 @@ HRESULT CPlayer::Initialize()
 	m_pSkinnedMeshRenderer->Set_Mesh(smb);
 	m_pSkinnedMeshRenderer->Set_Material(playerMat);
 
-	//CAnimation* anim_Idle = CResources::GetInstance().CreateResource<CAnimation>(L"../Assets/Animation_Archery_Shot_1_withSkin.fbx");
+	CAnimation* anim_Idle = CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Model (Animation)");
 
-	//CAnimator* m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
-	//m_pAnimator->Add_Animation(L"Idle", anim_Idle);
+	CAnimator* m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
+	m_pAnimator->Add_Animation(L"Idle", anim_Idle);
 
-	//m_pAnimator->Play(L"Idle");
+	m_pAnimator->Play(L"Idle");
 
 	return S_OK;
 }

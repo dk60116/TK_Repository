@@ -190,7 +190,12 @@ void CSkinnedMeshBuffer::OnDestroy()
     m_pIndexBuffer = nullptr;
 }
 
-void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, std::vector<VertexSkinnedBuffer>& vertices)
+const _matrix& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)
+{
+    return m_vBoneOffsetMatrices[_index];
+}
+
+void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<VertexSkinnedBuffer>& vertices)
 {
     // 1) 본 인덱스/가중치 할당
     for (UINT i = 0; i < mesh->mNumBones; ++i)

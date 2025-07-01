@@ -16,6 +16,9 @@ public:
 	void Render() override;
 
 private:
+	void RenderObjectHierarchy(CGameObject* _obj);
+
+private:
 	static CHierachyBox* Create(EDITORBOXDESC _option);
 };
 

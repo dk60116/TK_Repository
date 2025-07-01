@@ -22,13 +22,14 @@ public:
 	void OnDestroy();
 
 private:
-	void FillBoneWeightsAndIndices(const aiMesh* mesh, std::vector<VertexSkinnedBuffer>& vertices);
+	void FillBoneWeightsAndIndices(const aiMesh* mesh, vector<VertexSkinnedBuffer>& vertices);
+	const _matrix& Get_BoneOffsetMatrix(const _uint _index);
 
 private:
 	Assimp::Importer* m_pImporter;
 	const aiScene* m_pAssimpScene;
 	vector<wstring> m_vBoneNames;
-	vector<XMMATRIX> m_vBoneOffsetMatrices;
+	vector<_matrix> m_vBoneOffsetMatrices;
 };
 
 NS_END
