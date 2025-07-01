@@ -140,22 +140,26 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	// 4) 머티리얼 바인딩
 	m_pMaterial->Bind(matWorld, matView, matProj);
 
-	// 5) 본 상수 버퍼 바인딩 (b1 슬롯)
-	context->VSSetConstantBuffers(1, 1, &m_pBoneMatrixBuffer);
+	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
+	context->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
 	// 6) 메시 렌더링
 	m_pMeshBuffer->Render();
 }
 
-void CSkinnedMeshRenderer::Set_Mesh(CMeshBuffer* _mesh)
+void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 {
-	m_pMeshBuffer = dynamic_cast<CSkinnedMeshBuffer*>(_mesh);
+	Safe_Release(m_pMeshBuffer);
+
+	m_pMeshBuffer = _mesh;
 	
 	if (!m_pMeshBuffer)
 	{
 		CDebug::LogError("Skinned MeshRenderer: No MeshBuffer");
 		return;
 	}
+
+	m_pMeshBuffer->AddRef();
 
 	if (m_pMeshBuffer->m_pAssimpScene)
 	{

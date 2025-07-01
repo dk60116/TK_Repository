@@ -7,7 +7,6 @@ CSceneLoader::CSceneLoader()
 	, m_mReadyFiles({})
 	, m_bRunning(false)
 	, m_bLoading(true)
-	
 {
 }
 

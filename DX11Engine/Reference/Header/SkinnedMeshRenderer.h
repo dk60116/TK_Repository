@@ -30,7 +30,7 @@ protected:
 	void Render_WithCamera(CCamera* _cam) override;
 
 public:
-	void Set_Mesh(CMeshBuffer* _Mesh);
+	void Set_Mesh(CSkinnedMeshBuffer* _Mesh);
 
 private:
 	CSkinnedMeshBuffer* m_pMeshBuffer;

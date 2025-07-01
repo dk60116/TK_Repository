@@ -188,16 +188,22 @@ const wstring& CScene::Get_SceneName() const
 	return m_strName;
 }
 
-
 CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)
 {
-	if (!_resource)
-		nullptr;
+	if (!_resource) return nullptr;
 
-	m_mResourceList.emplace(_name, _resource);
-	_resource->AddRef();
+	auto [it, inserted] = m_mResourceList.try_emplace(_name, _resource);
 
-	return _resource;
+	if (inserted)    
+	{
+		_resource->AddRef();
+		return _resource;
+	}
+	else                   
+	{
+		Safe_Release(_resource);
+		return it->second;
+	}
 }
 
 CEngineResource* CScene::Find_Resource(const wstring& _name)

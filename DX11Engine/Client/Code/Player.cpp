@@ -19,6 +19,8 @@ CPlayer* CPlayer::Create()
 
 HRESULT CPlayer::Initialize()
 {
+	__super::Initialize();
+
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 	CMaterial* playerMat = CMaterial::Create();
 	playerMat->Set_Texture(tex, 0);
