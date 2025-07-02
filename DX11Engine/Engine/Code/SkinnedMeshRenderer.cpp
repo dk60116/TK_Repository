@@ -90,8 +90,7 @@ const _matrix& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) co
 
 void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _parent)
 {
-	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(
-		CEngineString::StringToWString(_node->mName.C_Str()));
+	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(CEngineString::StringToWString(_node->mName.C_Str()));
 
 	CTransform* boneTransform = boneGO->Get_Transform();
 
@@ -102,8 +101,17 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	aiQuaternion rotation;
 	_node->mTransformation.Decompose(scaling, rotation, position);
 
-	boneTransform->Set_LocalPosition(position.x * 0.01f, position.y * 0.01f, position.z * 0.01f);
+	const float scaleFactor = 0.01f;
+
+	boneTransform->Set_LocalPosition
+	(
+		position.x * scaleFactor,
+		position.y * scaleFactor,
+		position.z * scaleFactor
+	);
+
 	boneTransform->Set_LocalScale(scaling.x, scaling.y, scaling.z);
+
 	boneTransform->Set_LocalQuaternion(quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 
 	for (UINT i = 0; i < _node->mNumChildren; ++i)

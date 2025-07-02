@@ -84,15 +84,20 @@ HWND CEditor::Get_EditorWindow()
 	return m_hEditorWindow;
 }
 
-void CEditor::Editor_Update()
+void CEditor::Editor_Update_Begin()
 {
+	// 1. 프레임 시작
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	// 2. Hierarchy/Inspector 박스 렌더
 	for (TRAVERSAL_ITER(m_mBoxList, it))
 		(*it).second->Render();
+}
 
+void CEditor::Editor_Update_End()
+{
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }

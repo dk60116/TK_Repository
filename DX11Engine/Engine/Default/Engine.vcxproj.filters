@@ -347,6 +347,9 @@
     <ClCompile Include="..\Code\InspectorBox.cpp">
       <Filter>Editor\EditorBox</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\ImGuizmo.cpp">
+      <Filter>System\Imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">

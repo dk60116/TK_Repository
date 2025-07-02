@@ -79,8 +79,9 @@ void CMainProcess::Update_MainApp()
 #ifdef _DEBUG
         graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
 
+        CEditor::GetInstance().Editor_Update_Begin();
         scene->Render_Editor();
-        CEditor::GetInstance().Editor_Update();
+        CEditor::GetInstance().Editor_Update_End();
 
         graphicDev.Present();
 #endif

@@ -29,15 +29,24 @@ HRESULT CMainScene::Initialize()
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
 	CMaterial* boxMat = CMaterial::Create();
 	boxMat->Set_Texture(tex, 0);
+
 	CGameObject* boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
 	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	boxRenderer->Set_Material(boxMat);
 
-	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
-	boxObj->Get_Transform()->Set_LocalPosition(-0.5f, 0.f, 0.f);
+	CGameObject* box1Obj = Add_GameObject(L"Box1");
+	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
+	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	box1Renderer->Set_Material(boxMat);
 
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -500.f);
+	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
+	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, - 1.f, 0.f));
+
+	box1Obj->Get_Transform()->Set_Parent(boxObj->Get_Transform());
+	box1Obj->Get_Transform()->Set_LocalPosition(vector3(0.f, -1.f, 0.f));
+
+	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
 
 	return S_OK;
 }

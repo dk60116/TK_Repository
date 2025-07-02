@@ -66,7 +66,7 @@ void CInspectorBox::Render()
             ImGui::Text("Transform");
 
             // Position
-            _float3 position = transform->Get_Position();
+            _float3 position = transform->Get_LocalPosition();
             if (ImGui::DragFloat3("Position", &position.x, 0.1f))
             {
                 transform->Set_LocalPosition(position);
@@ -80,7 +80,7 @@ void CInspectorBox::Render()
             }
 
             // Scale
-            XMFLOAT3 scale = transform->Get_LocalScale();
+            _float3 scale = transform->Get_LocalScale();
             if (ImGui::DragFloat3("Scale", &scale.x, 0.1f))
             {
                 transform->Set_LocalScale(scale);

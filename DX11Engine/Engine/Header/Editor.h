@@ -24,7 +24,8 @@ public:
 
 public:
 	HWND Get_EditorWindow();
-	void Editor_Update();
+	void Editor_Update_Begin();
+	void Editor_Update_End();
 
 public:
 	EDITORWINOPTION Get_Options() const;

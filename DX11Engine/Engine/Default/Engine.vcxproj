@@ -215,6 +215,10 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\EngineString.cpp" />
     <ClCompile Include="..\Code\HierachyBox.cpp" />
+    <ClCompile Include="..\Code\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Code\InspectorBox.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
