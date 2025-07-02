@@ -17,6 +17,12 @@ cbuffer PerMaterial : register(b2)
     float3 padding; // 16바이트 정렬
 };
 
+// 본 행렬 배열 (128본 가정)
+cbuffer BoneMatrices : register(b3)
+{
+    float4x4 boneMatrices[128];
+};
+
 // ───────────── 텍스처 및 샘플러
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
@@ -44,7 +50,17 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
 
-    float4 posW = mul(float4(v.posL, 1.0f), world);
+    // 스킨 가중합 포지션
+    float4 skinnedPos = float4(0, 0, 0, 0);
+    for (int i = 0; i < 4; ++i)
+    {
+        skinnedPos += mul(float4(v.posL, 1.0f), boneMatrices[v.boneIndices[i]]) * v.boneWeights[i];
+    }
+
+    // 월드행렬
+    float4 posW = mul(skinnedPos, world);
+
+    // 뷰/프로젝션
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
 

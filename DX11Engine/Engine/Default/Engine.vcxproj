@@ -168,6 +168,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\EngineFunction.h" />
     <ClInclude Include="..\Header\EngineString.h" />
     <ClInclude Include="..\Header\HierachyBox.h" />
+    <ClInclude Include="..\Header\InspectorBox.h" />
     <ClInclude Include="..\Header\Renderer.h" />
     <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\GameObject.h" />
@@ -214,6 +215,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\EngineString.cpp" />
     <ClCompile Include="..\Code\HierachyBox.cpp" />
+    <ClCompile Include="..\Code\InspectorBox.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />

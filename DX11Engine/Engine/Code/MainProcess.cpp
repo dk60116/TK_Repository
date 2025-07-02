@@ -21,13 +21,15 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CTime::GetInstance().Initialize()))
         return E_FAIL;
-    if (FAILED(CSceneLoader::GetInstance().Initialize()))
-        return E_FAIL;
-    if (FAILED(CInput::GetInstance().Initialize()))
-        return E_FAIL;
     if (FAILED(CGraphicDevice::GetInstance().Initialize()))
         return E_FAIL;
     if (FAILED(CEditor::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CSceneManager::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CSceneLoader::GetInstance().Initialize()))
+        return E_FAIL;
+    if (FAILED(CInput::GetInstance().Initialize()))
         return E_FAIL;
 
 #ifdef _DEBUG

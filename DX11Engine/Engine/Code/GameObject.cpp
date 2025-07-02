@@ -20,6 +20,7 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_strGameObjectName(_rhs.m_strGameObjectName)
 	, m_bActive(_rhs.m_bActive)
 	, m_lComponentList(_rhs.m_lComponentList)
+	, m_pScene(_rhs.m_pScene)
 	, m_pTransform(_rhs.m_pTransform)
 {
 }
@@ -271,6 +272,11 @@ list<CComponent*>& CGameObject::Get_ComponentList()
 CTransform* CGameObject::Get_Transform() const
 {
 	return m_pTransform;
+}
+
+void CGameObject::Set_Transform(CTransform* _transform)
+{
+	m_pTransform = _transform;
 }
 
 wstring CGameObject::Get_ObjectName() const

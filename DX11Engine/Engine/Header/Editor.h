@@ -12,6 +12,7 @@ public:
 		UINT windowWidth = 1510;
 		UINT windowHeight = 720;
 		UINT hierachyWidth = 250;
+		UINT inspectorWidth = 260;
 
 	}EDITORWINOPTION;
 
@@ -26,8 +27,12 @@ public:
 	void Editor_Update();
 
 public:
-	const EDITORWINOPTION& Get_Options();
+	EDITORWINOPTION Get_Options() const;
 	const vector2Int Get_ScreenResolution() const;
+
+public:
+	void Set_SelectedGameObject(class CGameObject* _target);
+	CGameObject* Get_SelectedGameObject() const;
 
 private:
 	HWND CreateEditorWindow();
@@ -37,10 +42,16 @@ private:
 	HWND m_hEditorWindow;
 
 private:
-	class CHierachyBox* m_pHierachyBox;
+	class CEditorBox* m_pHierachyBox;
+	class CEditorBox* m_pInspectorBox;
+
+	map<wstring, CEditorBox*> m_mBoxList;
 
 private:
 	EDITORWINOPTION m_sOptions;
+
+private:
+	CGameObject* m_pSelectedGameObject;
 };
 
 NS_END

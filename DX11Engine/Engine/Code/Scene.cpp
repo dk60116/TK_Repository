@@ -79,7 +79,7 @@ HRESULT CScene::Initialize()
 	CDebug::Log(CDebug::MemoryUseLog());
 
 #ifdef _DEBUG
-	CGameObject* ecObj = Add_GameObject(L"Editor Camera");
+	CGameObject* ecObj = Add_GameObject(L"Editor Camera__");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
 #endif
 
@@ -264,7 +264,10 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if ((*it)->Get_Transform()->Is_Root())
-			result.push_back(*it);
+		{
+			if ((*it)->Get_ObjectName() != L"Editor Camera__")
+				result.push_back(*it);
+		}
 	}
 
 	return result;

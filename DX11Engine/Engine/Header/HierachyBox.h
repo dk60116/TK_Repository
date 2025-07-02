@@ -14,12 +14,13 @@ protected:
 
 public:
 	void Render() override;
+	void OnDestroy() override;
+
+private:
+	static CHierachyBox* Create();
 
 private:
 	void RenderObjectHierarchy(CGameObject* _obj);
-
-private:
-	static CHierachyBox* Create(EDITORBOXDESC _option);
 };
 
 NS_END

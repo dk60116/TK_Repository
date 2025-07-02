@@ -3,11 +3,13 @@
 #include "Object.h"
 #include "Component.h"
 #include "Scene.h"
+#include "EditorCamera.h"
 
 NS_BEGIN(Engine)
 
 class ENGINE_DLL CGameObject final : public UObject
 {
+	friend class CSceneManager;
 	friend class CScene;
 
 private:
@@ -72,6 +74,7 @@ public:
 
 	list<CComponent*>& Get_ComponentList();
 	class CTransform* Get_Transform() const;
+	void Set_Transform(CTransform* _transform);
 
 	wstring Get_ObjectName() const;
 	void Set_ObjectName(wstring& _name);
@@ -111,8 +114,8 @@ inline T* CGameObject::AddComponent()
 
 	if (dynamic_cast<class CCamera*>(newComponent))
 	{
-		//if (!dynamic_cast<CEditorCamera*>(newComponent))
-		m_pScene->Add_Camera(dynamic_cast<class CCamera*>(newComponent));
+		if (!dynamic_cast<CEditorCamera*>(newComponent))
+			m_pScene->Add_Camera(dynamic_cast<class CCamera*>(newComponent));
 	}
 
 	//if (dynamic_cast<CLight*>(newComponent))

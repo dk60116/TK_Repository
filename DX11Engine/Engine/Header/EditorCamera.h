@@ -21,8 +21,9 @@ public:
 	~CEditorCamera();
 
 public:
-	void Update_Editor();
-	void Update();
+    HRESULT Initialize() override;
+	void Update_Editor() override;
+	void Update() override;
 
 	static CEditorCamera* Create();
 

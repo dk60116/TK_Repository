@@ -1,12 +1,16 @@
 #include "epch.h"
 #include "HierachyBox.h"
+#include "InspectorBox.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 CEditor::CEditor()
 	: m_hEditorWindow(nullptr)
 	, m_pHierachyBox(nullptr)
+	, m_pInspectorBox(nullptr)
+	, m_mBoxList({})
 	, m_sOptions({})
+	, m_pSelectedGameObject(nullptr)
 {
 }
 
@@ -38,10 +42,19 @@ HRESULT CEditor::Initialize()
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
 
-	CEditorBox::EDITORBOXDESC hierachyDesc = {};
+	m_pHierachyBox = CHierachyBox::Create();
+	if (m_pHierachyBox)
+	{
+		m_pHierachyBox->AddRef();
+		m_mBoxList.emplace(L"Hierachy", m_pHierachyBox);
+	}
 
-	m_pHierachyBox = CHierachyBox::Create(hierachyDesc);
-	m_pHierachyBox->AddRef();
+	m_pInspectorBox = CInspectorBox::Create();
+	if (m_pInspectorBox)
+	{
+		m_pInspectorBox->AddRef();
+		m_mBoxList.emplace(L"Inspector", m_pInspectorBox);
+	}
 
 	return S_OK;
 }
@@ -57,7 +70,13 @@ void CEditor::Release()
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
-	DestroyWindow(m_hEditorWindow);
+
+	Safe_Release(m_pSelectedGameObject);
+
+	for (TRAVERSAL_ITER(m_mBoxList, it))
+		Safe_Release((*it).second);
+
+	m_mBoxList.clear();
 }
 
 HWND CEditor::Get_EditorWindow()
@@ -71,7 +90,8 @@ void CEditor::Editor_Update()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	m_pHierachyBox->Render();
+	for (TRAVERSAL_ITER(m_mBoxList, it))
+		(*it).second->Render();
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -132,7 +152,7 @@ LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-const CEditor::EDITORWINOPTION& CEditor::Get_Options()
+CEditor::EDITORWINOPTION CEditor::Get_Options() const
 {
 	return m_sOptions;
 }
@@ -140,4 +160,22 @@ const CEditor::EDITORWINOPTION& CEditor::Get_Options()
 const vector2Int CEditor::Get_ScreenResolution() const
 {
 	return vector2Int(m_sOptions.windowWidth, m_sOptions.windowHeight);
+}
+
+void CEditor::Set_SelectedGameObject(CGameObject* _target)
+{
+	Safe_Release(m_pSelectedGameObject);
+
+	m_pSelectedGameObject = _target;
+
+	if (m_pSelectedGameObject)
+	{
+		m_pSelectedGameObject = _target;
+		m_pSelectedGameObject->AddRef();
+	}
+}
+
+CGameObject* CEditor::Get_SelectedGameObject() const
+{
+	return m_pSelectedGameObject;
 }

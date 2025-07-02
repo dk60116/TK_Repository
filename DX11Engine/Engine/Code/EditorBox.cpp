@@ -3,17 +3,10 @@
 
 CEditorBox::CEditorBox()
 {
+    m_strName = L"Editor Box";
 }
 
-CEditorBox::~CEditorBox()
-{
-}
-
-HRESULT CEditorBox::Initialize(EDITORBOXDESC _option)
+HRESULT CEditorBox::Initialize()
 {
     return S_OK;
-}
-
-void CEditorBox::Render()
-{
 }

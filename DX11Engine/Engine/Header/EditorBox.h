@@ -6,20 +6,17 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CEditorBox abstract : public UObject
 {
-public:
-	typedef struct EditorBoxOptionsDescription
-	{
-		vector2Int position;
-		vector2Int size;
-	}EDITORBOXDESC;
-
 protected:
 	explicit CEditorBox();
-	~CEditorBox();
+	virtual ~CEditorBox() = default;
 
 public:
-	virtual HRESULT Initialize(EDITORBOXDESC _option);
-	virtual void Render();
+	virtual HRESULT Initialize();
+	virtual void Render() PURE;
+	virtual void OnDestroy() PURE;
+
+protected:
+	wstring m_strBoxName;
 };
 
 NS_END

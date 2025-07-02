@@ -190,6 +190,11 @@ const vector3& CTransform::Get_LocalEulerAngles()
     return m_vLocalEulerAngles;
 }
 
+const vector3& CTransform::Get_LocalScale()
+{
+    return m_vScale;
+}
+
 void CTransform::Set_Position(const vector3& _pos)
 {
     m_vPosition = _pos;

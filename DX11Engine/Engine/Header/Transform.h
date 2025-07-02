@@ -50,6 +50,8 @@ public:
 
 	const vector3& Get_EulerAngles();
 	const vector3& Get_LocalEulerAngles();
+	
+	const vector3& Get_LocalScale();
 
 public:
 	void Set_Position(const vector3& _pos);

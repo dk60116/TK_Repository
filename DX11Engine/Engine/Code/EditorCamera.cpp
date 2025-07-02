@@ -26,6 +26,17 @@ CEditorCamera* CEditorCamera::Create()
 	return new CEditorCamera();
 }
 
+HRESULT CEditorCamera::Initialize()
+{
+	__super::Initialize();
+
+	CTransform* tf = m_pGameObject->AddComponent<CTransform>();
+
+	m_pGameObject->Set_Transform(tf);
+
+	return S_OK;
+}
+
 void CEditorCamera::Update_Editor()
 {
 	const _bool isShift = CInput::GetInstance().GetKey(SHIFT);

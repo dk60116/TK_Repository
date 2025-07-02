@@ -35,8 +35,9 @@ HRESULT CMainScene::Initialize()
 	boxRenderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
+	boxObj->Get_Transform()->Set_LocalPosition(-0.5f, 0.f, 0.f);
 
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
+	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -500.f);
 
 	return S_OK;
 }

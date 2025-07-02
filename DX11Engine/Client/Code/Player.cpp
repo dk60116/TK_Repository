@@ -42,7 +42,7 @@ HRESULT CPlayer::Initialize()
 	CAnimator* m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", anim_Idle);
 
-	m_pAnimator->Play(L"Idle");
+	//m_pAnimator->Play(L"Idle");
 
 	return S_OK;
 }
