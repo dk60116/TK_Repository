@@ -31,14 +31,14 @@ public:
     static void LogError(const vector2Int format, ...);
     static void LogError(const vector3 format, ...);
 
-    static void LogWarning(const char* format, ...);
-    static void LogWarning(const string format, ...);
-    static void LogWarning(const wstring format, ...);
-    static void LogWarning(const int format, ...);
-    static void LogWarning(const float format, ...);
-    static void LogWarning(const vector2 format, ...);
-    static void LogWarning(const vector2Int format, ...);
-    static void LogWarning(const vector3 format, ...);
+    static void LogWarnning(const char* format, ...);
+    static void LogWarnning(const string format, ...);
+    static void LogWarnning(const wstring format, ...);
+    static void LogWarnning(const int format, ...);
+    static void LogWarnning(const float format, ...);
+    static void LogWarnning(const vector2 format, ...);
+    static void LogWarnning(const vector2Int format, ...);
+    static void LogWarnning(const vector3 format, ...);
 
     static string MemoryUseLog();
 };

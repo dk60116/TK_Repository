@@ -40,14 +40,22 @@ HRESULT CMainScene::Initialize()
 	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	box1Renderer->Set_Material(boxMat);
 
+	CGameObject* box2Obj = Add_GameObject(L"Box2");
+	CMeshRenderer* box2Renderer = box2Obj->AddComponent<CMeshRenderer>();
+	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	box2Renderer->Set_Material(boxMat);
+
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
 	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, - 1.f, 0.f));
 
 	box1Obj->Get_Transform()->Set_Parent(boxObj->Get_Transform());
 	box1Obj->Get_Transform()->Set_LocalPosition(vector3(0.f, -1.f, 0.f));
 
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -500.f);
-	CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera()->Get_Transform()->Set_PositionZ(-500.f);
+	box2Obj->Get_Transform()->Set_Parent(box1Obj->Get_Transform());
+	box2Obj->Get_Transform()->Set_LocalPosition(vector3(-1.f, 0.f, 0.f));
+
+	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
+	CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera()->Get_Transform()->Set_PositionZ(-5.f);
 
 	return S_OK;
 }

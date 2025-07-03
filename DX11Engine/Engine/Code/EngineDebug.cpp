@@ -203,7 +203,7 @@ void CDebug::LogError(const vector3 format, ...)
     LogError("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
-void CDebug::LogWarning(const char* format, ...)
+void CDebug::LogWarnning(const char* format, ...)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -223,7 +223,7 @@ void CDebug::LogWarning(const char* format, ...)
     SetConsoleTextAttribute(hConsole, saved_attributes);
 }
 
-void CDebug::LogWarning(const string format, ...)
+void CDebug::LogWarnning(const string format, ...)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -246,34 +246,34 @@ void CDebug::LogWarning(const string format, ...)
     SetConsoleTextAttribute(hConsole, saved_attributes);
 }
 
-void CDebug::LogWarning(const wstring format, ...)
+void CDebug::LogWarnning(const wstring format, ...)
 {
-    LogWarning(CEngineString::WStringToString(format));
+    LogWarnning(CEngineString::WStringToString(format));
 }
 
-void CDebug::LogWarning(const int format, ...)
+void CDebug::LogWarnning(const int format, ...)
 {
-    LogWarning(to_string(format));
+    LogWarnning(to_string(format));
 }
 
-void CDebug::LogWarning(const float format, ...)
+void CDebug::LogWarnning(const float format, ...)
 {
-    LogWarning(to_string(format));
+    LogWarnning(to_string(format));
 }
 
-void CDebug::LogWarning(const vector2 format, ...)
+void CDebug::LogWarnning(const vector2 format, ...)
 {
-    LogWarning("vector2(" + to_string(format.x) + ", " + to_string(format.y) + ')');
+    LogWarnning("vector2(" + to_string(format.x) + ", " + to_string(format.y) + ')');
 }
 
-void CDebug::LogWarning(const vector2Int format, ...)
+void CDebug::LogWarnning(const vector2Int format, ...)
 {
-    LogWarning("vector2Int(" + to_string(format.x) + ", " + to_string(format.y) + ')');
+    LogWarnning("vector2Int(" + to_string(format.x) + ", " + to_string(format.y) + ')');
 }
 
-void CDebug::LogWarning(const vector3 format, ...)
+void CDebug::LogWarnning(const vector3 format, ...)
 {
-    LogWarning("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
+    LogWarnning("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
 string CDebug::MemoryUseLog()

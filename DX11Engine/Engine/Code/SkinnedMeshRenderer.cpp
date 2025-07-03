@@ -67,6 +67,10 @@ void CSkinnedMeshRenderer::OnDestroy()
 
 	Safe_Release(m_pBoneMatrixBuffer);
 	Safe_Release(m_pMeshBuffer);
+
+	for (TRAVERSAL_ITER(m_vBones, it))
+		Safe_Release(*it);
+	m_vBones.clear();
 }
 
 const _uint CSkinnedMeshRenderer::Get_BoneCount() const
@@ -102,7 +106,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	aiQuaternion rotation;
 	_node->mTransformation.Decompose(scaling, rotation, position);
 
-	const float scaleFactor = 1.f;
+	const float scaleFactor = 0.01f;
 
 	boneTransform->Set_LocalPosition
 	(
@@ -110,16 +114,25 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 		position.y * scaleFactor,
 		position.z * scaleFactor
 	);
-	boneTransform->Set_LocalScale
-	(
-		scaling.x * scaleFactor,
-		scaling.y * scaleFactor,
-		scaling.z * scaleFactor
-	);
-
+	
+	boneTransform->Set_LocalScale(scaling.x, scaling.y, scaling.z);
 	boneTransform->Set_LocalQuaternion(quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 
-	for (UINT i = 0; i < _node->mNumChildren; ++i)
+	wstring nodeName = CEngineString::StringToWString(_node->mName.C_Str());
+
+	auto it = find(m_pMeshBuffer->m_vBoneNames.begin(), m_pMeshBuffer->m_vBoneNames.end(), nodeName);
+	if (it != m_pMeshBuffer->m_vBoneNames.end())
+	{
+		// 순서 보존을 위해 인덱스를 구해서 정확한 위치에 삽입
+		size_t index = distance(m_pMeshBuffer->m_vBoneNames.begin(), it);
+		if (m_vBones.size() <= index)
+			m_vBones.resize(index + 1, nullptr);
+
+		m_vBones[index] = boneTransform;
+		boneTransform->AddRef();
+	}
+
+	for (_uint i = 0; i < _node->mNumChildren; ++i)
 		CreateBoneHierachy(_node->mChildren[i], boneTransform);
 }
 
@@ -213,18 +226,8 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 		if (rootBoneNode)
 		{
 			// MeshRenderer GameObject에 RootBone을 붙임
+			m_vBones.clear();
 			CreateBoneHierachy(rootBoneNode, m_pGameObject->Get_Transform());
 		}
-	}
-
-	// m_vBones 초기화
-	m_vBones.clear();
-
-	// 본 이름 리스트를 순회
-	for (const auto& boneName : m_pMeshBuffer->m_vBoneNames)
-	{
-		// 현재 오브젝트 하위에서 본 이름에 맞는 Transform 찾아서 연결
-		CTransform* pBone = m_pGameObject->Get_Transform()->Find_ChildRecursive(boneName);
-		m_vBones.push_back(pBone);
 	}
 }

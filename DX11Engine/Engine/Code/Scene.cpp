@@ -57,7 +57,7 @@ HRESULT CScene::PreLoadResources()
 				CDebug::Log("Add File: " + filepath + " (Name: " + name + ")");
 			}
 			else
-				CDebug::LogWarning("Failed Add File: " + filepath);
+				CDebug::LogWarnning("Failed Add File: " + filepath);
 		}
 		else
 			CDebug::LogError("Invalid line format: " + line);

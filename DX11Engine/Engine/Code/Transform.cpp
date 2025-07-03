@@ -384,7 +384,7 @@ void CTransform::Set_Quaternion(const quaternion& _value)
 
 void CTransform::Set_LocalQuaternion(const quaternion& _value)
 {
-    
+    m_vQuaternion = _value;
 }
 
 void CTransform::Add_Quaternion(const quaternion& _delta)

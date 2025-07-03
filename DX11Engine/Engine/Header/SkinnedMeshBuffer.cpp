@@ -54,7 +54,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
     vector<VTX> vertices;
     vector<UINT> indices;
 
-    _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 1.f;
+    _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 0.01f;
 
     for (UINT i = 0; i < mesh->mNumVertices; ++i)
     {
@@ -147,42 +147,6 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
     m_sInfo.vertextCount = UINT(vertices.size());
     m_sInfo.indexCount = UINT(indices.size());
     m_sInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-    for (UINT b = 0; b < mesh->mNumBones; ++b)
-    {
-        const aiBone* bone = mesh->mBones[b];
-        std::string boneName = bone->mName.C_Str();
-
-        // 역 바인드포즈 행렬
-        const aiMatrix4x4& m = bone->mOffsetMatrix;
-
-        printf("=== Bone [%u] %s ===\n", b, boneName.c_str());
-        printf("OffsetMatrix (Row-Major):\n");
-        printf("[%.4f %.4f %.4f %.4f]\n", m.a1, m.a2, m.a3, m.a4);
-        printf("[%.4f %.4f %.4f %.4f]\n", m.b1, m.b2, m.b3, m.b4);
-        printf("[%.4f %.4f %.4f %.4f]\n", m.c1, m.c2, m.c3, m.c4);
-        printf("[%.4f %.4f %.4f %.4f]\n", m.d1, m.d2, m.d3, m.d4);
-
-        // aiBone은 자체 트랜스폼 정보를 갖지 않음
-        // 대신 aiNode의 Transform이 바인드포즈에서의 본 위치
-        const aiNode* node = m_pAssimpScene->mRootNode->FindNode(bone->mName);
-        if (node)
-        {
-            aiVector3D scaling, position;
-            aiQuaternion rotation;
-            node->mTransformation.Decompose(scaling, rotation, position);
-
-            printf("BindPose LocalPosition : (%.4f, %.4f, %.4f)\n", position.x, position.y, position.z);
-            printf("BindPose LocalScale    : (%.4f, %.4f, %.4f)\n", scaling.x, scaling.y, scaling.z);
-            printf("BindPose RotationQuat  : (%.4f, %.4f, %.4f, %.4f)\n", rotation.x, rotation.y, rotation.z, rotation.w);
-        }
-        else
-        {
-            printf("WARNING: aiNode not found for bone %s\n", boneName.c_str());
-        }
-
-        printf("\n");
-    }
 
     return S_OK;
 }
@@ -277,7 +241,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
 
         // 큰 가중치 순으로 정렬
         sort(bonePairs.begin(), bonePairs.end(),
-            [](const std::pair<UINT, float>& a, const std::pair<UINT, float>& b)
+            [](const pair<UINT, float>& a, const pair<UINT, float>& b)
             {
                 return a.second > b.second;
             });

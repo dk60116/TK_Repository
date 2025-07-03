@@ -9,7 +9,7 @@ class ENGINE_DLL CEditor final
 public:
 	typedef struct EditopWindowOptionsDescription
 	{
-		UINT windowWidth = 1510;
+		UINT windowWidth = 1600;
 		UINT windowHeight = 720;
 		UINT hierachyWidth = 250;
 		UINT inspectorWidth = 260;
