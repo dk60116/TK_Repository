@@ -5,7 +5,6 @@
 CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
 	, m_pIndexBuffer(nullptr)
-	, m_pFilter(nullptr)
 	, m_sInfo({})
 {
     m_strName = L"Mesh Buffer";
@@ -102,8 +101,6 @@ void CMeshBuffer::OnDestroy()
 		free(m_pIndexSysMem);
 		m_pIndexSysMem = nullptr;
 	}
-
-    Safe_Release(m_pFilter);
 }
 
 void CMeshBuffer::Render()
@@ -390,14 +387,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
 const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 {
 	return m_sInfo;
-}
-
-void CMeshBuffer::Set_Filter(CMeshFilter* _filter)
-{
-    m_pFilter = _filter;
-
-    if (m_pFilter)
-        m_pFilter->AddRef();
 }
 
 void CMeshBuffer::Set_Scalefactor(const _float _value)

@@ -15,7 +15,8 @@ public:
 	UINT Release();
 
 public:
-	const UINT Get_RefCnt();
+	const wstring& Get_UName() const;
+	const UINT Get_RefCnt() const;
 
 protected:
 	wstring m_strName;

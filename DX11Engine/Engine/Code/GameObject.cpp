@@ -2,26 +2,26 @@
 #include "GameObject.h"
 
 CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
-	: m_pDevice(_pDevice)
-	, m_pContext(_pContext)
-	, m_strGameObjectName(L"")
+	: m_strGameObjectName(L"")
 	, m_bActive(true)
 	, m_lComponentList({})
 	, m_pScene(nullptr)
 	, m_pTransform(nullptr)
+	, m_pDevice(_pDevice)
+	, m_pContext(_pContext)
 {
 	m_pDevice->AddRef();
 	m_pContext->AddRef();
 }
 
 CGameObject::CGameObject(const CGameObject& _rhs)
-	: m_pDevice(_rhs.m_pDevice)
-	, m_pContext(_rhs.m_pContext)
-	, m_strGameObjectName(_rhs.m_strGameObjectName)
+	: m_strGameObjectName(_rhs.m_strGameObjectName)
 	, m_bActive(_rhs.m_bActive)
 	, m_lComponentList(_rhs.m_lComponentList)
 	, m_pScene(_rhs.m_pScene)
 	, m_pTransform(_rhs.m_pTransform)
+	, m_pDevice(_rhs.m_pDevice)
+	, m_pContext(_rhs.m_pContext)
 {
 }
 
@@ -32,7 +32,8 @@ CGameObject::~CGameObject()
 
 HRESULT CGameObject::Initialize()
 {
-	m_pTransform = AddComponent<CTransform>();
+	if (!GetComponent<CTransform>())
+		m_pTransform = AddComponent<CTransform>();
 
 	return S_OK;
 }

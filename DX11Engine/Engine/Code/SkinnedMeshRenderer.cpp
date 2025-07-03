@@ -3,7 +3,8 @@
 #include "EditorCamera.h"
 
 CSkinnedMeshRenderer::CSkinnedMeshRenderer()
-	: m_pMeshBuffer(nullptr)
+	: CRenderer{}
+	, m_pMeshBuffer(nullptr)
 	, m_vBones({})
 	, m_pRootBone(nullptr)
 	, m_pBoneMatrixBuffer(nullptr)
@@ -101,7 +102,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	aiQuaternion rotation;
 	_node->mTransformation.Decompose(scaling, rotation, position);
 
-	const float scaleFactor = 0.01f;
+	const float scaleFactor = 1.f;
 
 	boneTransform->Set_LocalPosition
 	(
@@ -109,8 +110,12 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 		position.y * scaleFactor,
 		position.z * scaleFactor
 	);
-
-	boneTransform->Set_LocalScale(scaling.x, scaling.y, scaling.z);
+	boneTransform->Set_LocalScale
+	(
+		scaling.x * scaleFactor,
+		scaling.y * scaleFactor,
+		scaling.z * scaleFactor
+	);
 
 	boneTransform->Set_LocalQuaternion(quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 

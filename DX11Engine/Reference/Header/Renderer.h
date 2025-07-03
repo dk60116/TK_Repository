@@ -18,7 +18,7 @@ protected:
 	virtual void Render_WithCamera(CCamera* _cam) PURE;
 
 public:
-	void Set_Material(CMaterial* pMaterial);
+	void Set_Material(CMaterial* _material);
 
 protected:
 	CMaterial* m_pMaterial;

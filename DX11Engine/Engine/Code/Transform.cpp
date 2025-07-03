@@ -9,7 +9,7 @@ CTransform::CTransform()
 	, m_vScale(vector3::one())
 	, m_vEulerAngles({})
 	, m_vQuaternion(quaternion::identity())
-    , m_vLocalQuaternion(quaternion::identity())
+    , m_vWorldQuaternion(quaternion::identity())
     , m_vMatWorld()
     , m_vMatLocal()
     , m_vMatLocalRotation()
@@ -56,18 +56,19 @@ void CTransform::Render_Editor()
 
     _matrix worldMatrix = XMLoadFloat4x4(&m_vMatWorld);
 
-    float world[16];
+    _float world[16];
     memcpy(world, &worldMatrix, sizeof(float) * 16);
 
-    float view[16];
+    _float view[16];
     memcpy(view, &viewMatrix, sizeof(float) * 16);
 
-    float projection[16];
+    _float projection[16];
     memcpy(projection, &projMatrix, sizeof(float) * 16);
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::BeginFrame();
-    ImGuizmo::SetDrawlist();
+    ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+    ImGuizmo::AllowAxisFlip(false);
 
     ImGuiIO& io = ImGui::GetIO();
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -92,13 +93,37 @@ void CTransform::Render_Editor()
 
     if (manipulated)
     {
-        memcpy(&m_vMatWorld, world, sizeof(float) * 16);
+        _matrix newWorldMatrix = XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(world));
 
-        // 여기서 Position만 추출
-        XMFLOAT4X4 mat;
-        memcpy(&mat, world, sizeof(float) * 16);
+        if (m_pParent)
+        {
+            // 부모의 월드 행렬의 역행렬
+            _matrix parentInv = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_pParent->m_vMatWorld));
+            // 로컬 행렬 구하기
+            _matrix localMatrix = newWorldMatrix * parentInv;
 
-        m_vPosition = vector3(mat._41, mat._42, mat._43);
+            // 로컬 위치/회전/스케일 추출
+            XMVECTOR S, R, T;
+            XMMatrixDecompose(&S, &R, &T, localMatrix);
+
+            // 저장
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vScale), S);
+            XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&m_vQuaternion), R);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), T);
+        }
+        else
+        {
+            // 부모 없으면 그냥 월드 == 로컬
+            XMVECTOR S, R, T;
+            XMMatrixDecompose(&S, &R, &T, newWorldMatrix);
+
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vScale), S);
+            XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&m_vQuaternion), R);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), T);
+        }
+
+        // 이걸 해야 Bind_Matrix() 때 최신 로컬로 계산됩니다.
+        Bind_Matrix();
     }
 }
 
@@ -117,10 +142,21 @@ void CTransform::Set_Parent(CTransform* _parent)
     if (_parent == m_pParent)
         return;
 
+    vector3 tempPos = m_vWorldPosition;
+    Get_EulerAngles();
+    quaternion tempQ = m_vWorldQuaternion;
+
     if (m_pParent)
     {
         m_pParent->m_lChildList.remove(this);
         Safe_Release(m_pParent);
+
+        if (_parent == nullptr)
+        {
+            m_pParent = nullptr;
+            m_vPosition = tempPos;
+            m_vQuaternion = tempQ;
+        }
     }
 
     m_pParent = _parent;
@@ -191,14 +227,14 @@ const CTransform::DIRECTIONS& CTransform::Get_Directions()
     return m_sDirections;
 }
 
-const _matrix& CTransform::Get_WorldMatrix() const
+const _matrix CTransform::Get_WorldMatrix() const
 {
     _matrix mat = XMLoadFloat4x4(&m_vMatWorld);
 
     return mat;
 }
 
-const _matrix& CTransform::Get_LocalMatrix() const
+const _matrix CTransform::Get_LocalMatrix() const
 {
     _matrix mat = XMLoadFloat4x4(&m_vMatLocal);
 
@@ -222,25 +258,31 @@ vector3 CTransform::Get_LocalPosition() const
     return m_vPosition;
 }
 
-const vector3& CTransform::Get_EulerAngles()
+const vector3 CTransform::Get_EulerAngles()
 {
-    m_vEulerAngles = m_vQuaternion.to_euler();
+    if (!m_pParent)
+        return m_vEulerAngles;
+    else
+    {
+        _matrix worldMatrix = XMLoadFloat4x4(&m_vMatWorld);
 
-    return m_vEulerAngles;
+        _vector scale;
+        _vector rotationQuat;
+        _vector translation;
+
+        XMMatrixDecompose(&scale, &rotationQuat, &translation, worldMatrix);
+
+        m_vWorldQuaternion = quaternion(rotationQuat);
+
+        return m_vWorldQuaternion.to_euler();
+    }
+    
+    return vector3::zero();
 }
 
 const vector3& CTransform::Get_LocalEulerAngles()
 {
-    if (m_pParent)
-    {
-        _vector parentInvRot = XMQuaternionInverse(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion)));
-        _vector localQuat = XMQuaternionMultiply(parentInvRot, XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vQuaternion)));
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vLocalQuaternion), localQuat);
-    }
-    else
-        m_vLocalQuaternion = m_vQuaternion;
-
-    return {};
+    return m_vEulerAngles;
 }
 
 const vector3& CTransform::Get_LocalScale()
@@ -270,19 +312,19 @@ void CTransform::Set_Position(const _float _x, const _float _y, const _float _z)
     Set_Position(vector3(_x, _y, _z));
 }
 
-void CTransform::Set_PositionX(const _float _x)
+void CTransform::Set_PositionX(const _float _value)
 {
-    Set_Position(vector3(_x, m_vPosition.y, m_vPosition.z));
+    Set_Position(vector3(_value, m_vPosition.y, m_vPosition.z));
 }
 
-void CTransform::Set_PositionY(const _float _y)
+void CTransform::Set_PositionY(const _float _value)
 {
-    Set_Position(vector3(m_vPosition.x, _y, m_vPosition.z));
+    Set_Position(vector3(m_vPosition.x, _value, m_vPosition.z));
 }
 
-void CTransform::Set_PositionZ(const _float _z)
+void CTransform::Set_PositionZ(const _float _value)
 {
-    Set_Position(vector3(m_vPosition.x, m_vPosition.y, _z));
+    Set_Position(vector3(m_vPosition.x, m_vPosition.y, _value));
 }
 
 void CTransform::Set_LocalPosition(const vector3& _pos)
@@ -295,19 +337,19 @@ void CTransform::Set_LocalPosition(const _float _x, const _float _y, const _floa
     Set_LocalPosition(vector3(_x, _y, _z));
 }
 
-void CTransform::Set_LocalPositionX(const _float _x)
+void CTransform::Set_LocalPositionX(const _float _value)
 {
-    m_vPosition.x = _x;
+    m_vPosition.x = _value;
 }
 
-void CTransform::Set_LocalPositionY(const _float _y)
+void CTransform::Set_LocalPositionY(const _float _value)
 {
-    m_vPosition.y = _y;
+    m_vPosition.y = _value;
 }
 
-void CTransform::Set_LocalPositionZ(const _float _z)
+void CTransform::Set_LocalPositionZ(const _float _value)
 {
-    m_vPosition.z = _z;
+    m_vPosition.z = _value;
 }
 
 void CTransform::Add_Position(const vector3& _value)
@@ -342,17 +384,7 @@ void CTransform::Set_Quaternion(const quaternion& _value)
 
 void CTransform::Set_LocalQuaternion(const quaternion& _value)
 {
-    m_vLocalQuaternion = _value;
-
-    if (m_pParent)
-    {
-        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
-    }
-    else
-        m_vQuaternion = m_vLocalQuaternion;
+    
 }
 
 void CTransform::Add_Quaternion(const quaternion& _delta)
@@ -366,29 +398,19 @@ void CTransform::Add_Quaternion(const quaternion& _delta)
 
 void CTransform::Set_EulerAngles(const vector3& _rot)
 {
-    vector3 rad = _rot * XMConvertToRadians(1.0f);
+    CTransform* tempParent = nullptr;
 
-    // DirectX RollPitchYaw = (pitch, yaw, roll) = (X,Y,Z)요순
-    _vector q = XMQuaternionRotationRollPitchYaw
-    (
-        rad.x,  // pitch
-        rad.y,  // yaw
-        rad.z
-    ); // roll
-
-    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion),
-        XMQuaternionNormalize(q));
-
-    // 로컬 쿼터니언 동기화
     if (m_pParent)
     {
-        _vector parentInv =
-            XMQuaternionInverse(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion)));
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vLocalQuaternion),
-            XMQuaternionNormalize(XMQuaternionMultiply(parentInv, q)));
+        tempParent = m_pParent;
+        Set_Parent(static_cast<CTransform*>(nullptr));
+        Bind_Matrix();
     }
-    else
-        m_vLocalQuaternion = m_vQuaternion;
+
+    Set_LocalEulerAngles(_rot);
+
+    if (tempParent)
+        Set_Parent(tempParent);
 }
 
 void CTransform::Set_EulerAngles(const _float _x, const _float _y, const _float _z)
@@ -398,29 +420,40 @@ void CTransform::Set_EulerAngles(const _float _x, const _float _y, const _float 
 
 void CTransform::Set_EulerAnglesX(const _float _x)
 {
-    vector3 euler = Get_EulerAngles();
-    euler.x = _x;
-    m_vQuaternion = euler.to_quaternion();
+    m_vEulerAngles.x = _x;
+
+    Set_EulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Set_EulerAnglesY(const _float _y)
 {
-    vector3 euler = Get_EulerAngles();
-    euler.y = _y;
-    m_vQuaternion = euler.to_quaternion();
+    m_vEulerAngles.y = _y;
+
+    Set_EulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Set_EulerAnglesZ(const _float _z)
 {
-    vector3 euler = m_vQuaternion.to_euler();
-    euler.z = _z;
-    m_vQuaternion = euler.to_quaternion();
+    m_vEulerAngles.z = _z;
+
+    Set_EulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Add_EulerAngles(const vector3& _rot)
 {
-    quaternion deltaQ = vector3(XMConvertToRadians(_rot.x), XMConvertToRadians(_rot.y), XMConvertToRadians(_rot.z)).to_quaternion();
-    Add_Quaternion(deltaQ);
+    CTransform* tempParent = nullptr;
+
+    if (m_pParent)
+    {
+        tempParent = m_pParent;
+        Set_Parent(static_cast<CTransform*>(nullptr));
+        Bind_Matrix();
+    }
+
+    Add_LocalEulerAngles(_rot);
+
+    if (tempParent)
+        Set_Parent(tempParent);
 }
 
 void CTransform::Add_EulerAngles(const _float _x, const _float _y, const _float _z)
@@ -430,51 +463,25 @@ void CTransform::Add_EulerAngles(const _float _x, const _float _y, const _float 
 
 void CTransform::Add_EulerAnglesX(const _float _value)
 {
-    float radians = XMConvertToRadians(_value);
-    vector3 right = vector3::right();
-    quaternion deltaQ = quaternion::from_axis_angle(right, radians);
-    Add_Quaternion(deltaQ);
+    Add_EulerAngles(vector3::right() * _value);
 }
 
 void CTransform::Add_EulerAnglesY(const _float _value)
 {
-    float radians = XMConvertToRadians(_value);
-    vector3 up = vector3::up();
-    quaternion deltaQ = quaternion::from_axis_angle(up, radians);
-    Add_Quaternion(deltaQ);
+    Add_EulerAngles(vector3::up() * _value);
 }
 
 void CTransform::Add_EulerAnglesZ(const _float _value)
 {
-    float radians = XMConvertToRadians(_value);
-    vector3 forward = vector3::forward();
-    quaternion deltaQ = quaternion::from_axis_angle(forward, radians);
-    Add_Quaternion(deltaQ);
+    Add_EulerAngles(vector3::forward() * _value);
 }
 
 void CTransform::Set_LocalEulerAngles(const vector3& _rot)
 {
-    //m_vLocalEulerAngles = _rot;
+    quaternion deltaQ = vector3(_rot.x, _rot.y, _rot.z).to_quaternion();
+    Set_Quaternion(deltaQ);
 
-    //m_vLocalQuaternion = _rot.to_quaternion();  // degree → quat
-
-    //if (m_pParent)
-    //{
-    //    _vector parentQ = XMLoadFloat4(
-    //        reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-    //    _vector localQ = XMLoadFloat4(
-    //        reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-
-    //    _vector worldQ = XMQuaternionMultiply(localQ, parentQ);
-    //    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion),
-    //        XMQuaternionNormalize(worldQ));
-    //}
-    //else
-    //{
-    //    m_vQuaternion = m_vLocalQuaternion; 
-    //}
-
-    //m_vMatLocalRotation = XMMatrixRotationQuaternion(m_vLocalQuaternion);
+    m_vEulerAngles = _rot;
 }
 
 void CTransform::Set_LocalEulerAngles(const _float _x, const _float _y, const _float _z)
@@ -484,109 +491,46 @@ void CTransform::Set_LocalEulerAngles(const _float _x, const _float _y, const _f
 
 void CTransform::Set_LocalEulerAnglesX(const _float _x)
 {
+    m_vEulerAngles.x = _x;
+    Set_LocalEulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Set_LocalEulerAnglesY(const _float _y)
 {
+    m_vEulerAngles.y = _y;
+    Set_LocalEulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Set_LocalEulerAnglesZ(const _float _z)
 {
+    m_vEulerAngles.z = _z;
+    Set_LocalEulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Add_LocalEulerAngles(const vector3& _rot)
 {
-    vector3 euler = m_vLocalQuaternion.to_euler();
-
-    euler += _rot;
-
-    m_vLocalQuaternion = euler.to_quaternion();
-
-    if (m_pParent)
-    {
-        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
-    }
-    else
-        m_vQuaternion = m_vLocalQuaternion;
+    m_vEulerAngles += _rot;
+    Set_LocalEulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Add_LocalEulerAngles(const _float _x, const _float _y, const _float _z)
 {
-    vector3 euler = m_vLocalQuaternion.to_euler();
-
-    euler += vector3(_x, _y, _z);
-    ;
-    m_vLocalQuaternion = euler.to_quaternion();
-
-    if (m_pParent)
-    {
-        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
-    }
-    else
-        m_vQuaternion = m_vLocalQuaternion;
+    Set_LocalEulerAngles(vector3(_x, _y, _z));
 }
 
 void CTransform::Add_LocalEulerAnglesX(const _float _value)
 {
-    vector3 euler = m_vLocalQuaternion.to_euler();
-
-    euler.x += _value;
-    ;
-    m_vLocalQuaternion = euler.to_quaternion();
-
-    if (m_pParent)
-    {
-        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
-    }
-    else
-        m_vQuaternion = m_vLocalQuaternion;
+    Add_LocalEulerAngles(vector3(_value, 0.f, 0.f));
 }
 
 void CTransform::Add_LocalEulerAnglesY(const _float _value)
 {
-    vector3 euler = m_vLocalQuaternion.to_euler();
-
-    euler.y += _value;
-    ;
-    m_vLocalQuaternion = euler.to_quaternion();
-
-    if (m_pParent)
-    {
-        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
-    }
-    else
-        m_vQuaternion = m_vLocalQuaternion;
+    Add_LocalEulerAngles(vector3(0.f, _value, 0.f));
 }
 
 void CTransform::Add_LocalEulerAnglesZ(const _float _value)
 {
-    vector3 euler = m_vLocalQuaternion.to_euler();
-
-    euler.z += _value;
-    ;
-    m_vLocalQuaternion = euler.to_quaternion();
-
-    if (m_pParent)
-    {
-        _vector parentQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion));
-        _vector localQuat = XMLoadFloat4(reinterpret_cast<const _float4*>(&m_vLocalQuaternion));
-        _vector worldQuat = XMQuaternionMultiply(localQuat, parentQuat);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), worldQuat);
-    }
-    else
-        m_vQuaternion = m_vLocalQuaternion;
+    Add_LocalEulerAngles(vector3(0.f, 0.f, _value));
 }
 
 void CTransform::Bind_Matrix()
@@ -693,8 +637,5 @@ void CTransform::LookAt(const vector3& _target)
     {
         _vector parentInv = XMQuaternionInverse(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion)));
         _vector localQ = XMQuaternionMultiply(parentInv, q);
-        XMStoreFloat4(reinterpret_cast<_float4*>(&m_vLocalQuaternion), XMQuaternionNormalize(localQ));
     }
-    else
-        m_vLocalQuaternion = m_vQuaternion;
 }

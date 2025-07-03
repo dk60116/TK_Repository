@@ -34,22 +34,21 @@ public:
 public:
 	CTransform* Get_Parent() const;
 	void Set_Parent(CTransform* _parent);
-	void Set_Parent(CGameObject* _parentObj);
 	const _bool Is_Root() const;
 	CTransform* Get_Child(const _int _index);
 	CTransform* Find_Child(wstring _name);
 	CTransform* Find_ChildRecursive(wstring _name);
 	const list<CTransform*>& Get_ChldList() const;
 	const DIRECTIONS& Get_Directions();
-	const _matrix& Get_WorldMatrix() const;
-	const _matrix& Get_LocalMatrix() const;
+	const _matrix Get_WorldMatrix() const;
+	const _matrix Get_LocalMatrix() const;
 	const _matrix Get_InverseWorldMatrix() const;
 
 public:
 	vector3 Get_Position() const;
 	vector3 Get_LocalPosition() const;
 
-	const vector3& Get_EulerAngles();
+	const vector3 Get_EulerAngles();
 	const vector3& Get_LocalEulerAngles();
 	
 	const vector3& Get_LocalScale();
@@ -57,15 +56,15 @@ public:
 public:
 	void Set_Position(const vector3& _pos);
 	void Set_Position(const _float _x, const _float _y, const _float _z);
-	void Set_PositionX(const _float _x);
-	void Set_PositionY(const _float _y);
-	void Set_PositionZ(const _float _z);
+	void Set_PositionX(const _float _value);
+	void Set_PositionY(const _float _value);
+	void Set_PositionZ(const _float _value);
 
 	void Set_LocalPosition(const vector3& _pos);
 	void Set_LocalPosition(const _float _x, const _float _y, const _float _z);
-	void Set_LocalPositionX(const _float _x);
-	void Set_LocalPositionY(const _float _y);
-	void Set_LocalPositionZ(const _float _z);
+	void Set_LocalPositionX(const _float _value);
+	void Set_LocalPositionY(const _float _value);
+	void Set_LocalPositionZ(const _float _value);
 
 	void Add_Position(const vector3& _value);
 	void Add_Position(const _float _x, const _float _y, const _float _z);
@@ -120,7 +119,7 @@ private:
 	list<CTransform*> m_lChildList;
 	vector3 m_vPosition, m_vEulerAngles, m_vScale;
 	vector3 m_vWorldPosition, m_vWorldEulerAngles;
-	quaternion m_vQuaternion, m_vLocalQuaternion;
+	quaternion m_vQuaternion, m_vWorldQuaternion;
 	_float4x4 m_vMatWorld, m_vMatLocal, m_vMatLocalRotation;
 	DIRECTIONS m_sDirections;
 };

@@ -47,7 +47,6 @@ public:
 	void Render();
 
 public:
-	void Set_Filter(class CMeshFilter* _filter);
 	virtual void Set_Scalefactor(const _float _value);
 	ID3D11Buffer* Get_VertexBuffer() const;
 	ID3D11Buffer* Get_IndexBuffer() const;
@@ -56,8 +55,6 @@ public:
 protected:
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;
 	ComPtr<ID3D11Buffer> m_pIndexBuffer;
-
-	class CMeshFilter* m_pFilter;
 
 	MESHBUFFERDESC m_sInfo;
 

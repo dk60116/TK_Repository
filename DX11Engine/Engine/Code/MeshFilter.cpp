@@ -31,16 +31,16 @@ HRESULT CMeshFilter::Initialize()
 
 void CMeshFilter::Set_MeshBuffer(CMeshBuffer* _buffer)
 {
+	if (m_pMeshBuffer == _buffer)
+		return;
+
 	if (m_pMeshBuffer)
 		Safe_Release(m_pMeshBuffer);
 
 	m_pMeshBuffer = _buffer;
 
 	if (m_pMeshBuffer)
-	{
-		m_pMeshBuffer->Set_Filter(this);
 		m_pMeshBuffer->AddRef();
-	}
 }
 
 CMeshBuffer* CMeshFilter::Get_MeshBuffer() const

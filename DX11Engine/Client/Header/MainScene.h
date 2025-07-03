@@ -15,5 +15,7 @@ public:
 private:
 	CCamera* m_pMainCamera;
 	class CPlayer* m_pPlayer;
+
+	CGameObject* boxObj;
 };
 

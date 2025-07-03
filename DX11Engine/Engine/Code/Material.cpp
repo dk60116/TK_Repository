@@ -59,7 +59,9 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pMaterialBuffer);
 
 	for (TRAVERSAL_ITER(m_vTextureList, it))
+	{
 		Safe_Release(*it);
+	}
 }
 
 void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection)

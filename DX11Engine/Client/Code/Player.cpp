@@ -6,6 +6,7 @@ CPlayer::CPlayer()
 	, m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
 {
+	m_strName = L"Player";
 }
 
 CPlayer::~CPlayer()
@@ -39,8 +40,8 @@ HRESULT CPlayer::Initialize()
 
 	CAnimation* anim_Idle = CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Model (Animation)");
 
-	CAnimator* m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
-	m_pAnimator->Add_Animation(L"Idle", anim_Idle);
+	//CAnimator* m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
+	//m_pAnimator->Add_Animation(L"Idle", anim_Idle);
 
 	//m_pAnimator->Play(L"Idle");
 

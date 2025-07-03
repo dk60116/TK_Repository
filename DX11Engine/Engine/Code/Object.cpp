@@ -28,7 +28,12 @@ UINT UObject::Release()
     return prevRefCount;
 }
 
-const UINT UObject::Get_RefCnt()
+const wstring& UObject::Get_UName() const
+{
+    return m_strName;
+}
+
+const UINT UObject::Get_RefCnt() const
 {
     return m_iRefCount;
 }

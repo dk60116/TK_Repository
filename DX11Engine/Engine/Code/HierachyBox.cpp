@@ -38,27 +38,23 @@ void CHierachyBox::Render()
 
 	ImVec2 panelSize = ImVec2(width, viewport->Size.y);
 
-	ImGui::SetNextWindowPos
-	(
-		ImVec2(viewport->Pos.x + viewport->Size.x - editorOption.inspectorWidth, viewport->Pos.y),
-		0,
-		ImVec2(1.0f, 0.0f)
-	);
+	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x - editorOption.inspectorWidth, viewport->Pos.y), 0, ImVec2(1.0f, 0.0f));
 
 	ImGui::SetNextWindowSize(panelSize);
 
-	ImGui::Begin(CEngineString::WStringToString(m_strBoxName).c_str(),
+	ImGui::Begin
+	(
+		CEngineString::WStringToString(m_strBoxName).c_str(),
 		nullptr,
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoCollapse);
+		ImGuiWindowFlags_NoCollapse
+	);
 
 	if (currentScene)
 	{
 		for (auto& obj : currentScene->Get_RootObjects())
-		{
 			RenderObjectHierarchy(obj);
-		}
 	}
 
 	ImGui::End();

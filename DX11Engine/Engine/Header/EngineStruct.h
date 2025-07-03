@@ -802,14 +802,14 @@ namespace Engine
 #pragma region quaternion
     struct quaternion
     {
-        float x, y, z, w;
+        _float x, y, z, w;
 
         quaternion()
             : x(0.f), y(0.f), z(0.f), w(1.f)
         {
         }
 
-        quaternion(float _x, float _y, float _z, float _w)
+        quaternion(_float _x, _float _y, _float _z, _float _w)
             : x(_x), y(_y), z(_z), w(_w)
         {
         }
@@ -912,14 +912,15 @@ namespace Engine
 
         static quaternion from_euler(float _pitch, float _yaw, float _roll)
         {
-            XMVECTOR q = XMQuaternionRotationRollPitchYaw
+            const _vector q = XMQuaternionRotationRollPitchYaw
             (
                 XMConvertToRadians(_pitch),
                 XMConvertToRadians(_yaw),
                 XMConvertToRadians(_roll)
             );
-
-            return quaternion(q);
+            quaternion out;
+            XMStoreFloat4(reinterpret_cast<_float4*>(&out), XMQuaternionNormalize(q));
+            return out;
         }
 
         static quaternion from_axis_angle(vector3& _axis, const _float _radians)

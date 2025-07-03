@@ -15,11 +15,11 @@ void CRenderer::OnDestroy()
 	Safe_Release(m_pMaterial);
 }
 
-void CRenderer::Set_Material(CMaterial* pMaterial)
+void CRenderer::Set_Material(CMaterial* _material)
 {
 	Safe_Release(m_pMaterial);
 
-	m_pMaterial = pMaterial;
+	m_pMaterial = _material;
 
 	if (m_pMaterial)
 		m_pMaterial->AddRef();

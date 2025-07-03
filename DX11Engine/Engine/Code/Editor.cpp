@@ -169,6 +169,9 @@ const vector2Int CEditor::Get_ScreenResolution() const
 
 void CEditor::Set_SelectedGameObject(CGameObject* _target)
 {
+	if (_target == m_pSelectedGameObject)
+		return;
+
 	Safe_Release(m_pSelectedGameObject);
 
 	m_pSelectedGameObject = _target;

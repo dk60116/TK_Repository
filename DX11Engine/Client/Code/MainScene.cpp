@@ -30,7 +30,7 @@ HRESULT CMainScene::Initialize()
 	CMaterial* boxMat = CMaterial::Create();
 	boxMat->Set_Texture(tex, 0);
 
-	CGameObject* boxObj = Add_GameObject(L"Box");
+	boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
 	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	boxRenderer->Set_Material(boxMat);
@@ -46,7 +46,8 @@ HRESULT CMainScene::Initialize()
 	box1Obj->Get_Transform()->Set_Parent(boxObj->Get_Transform());
 	box1Obj->Get_Transform()->Set_LocalPosition(vector3(0.f, -1.f, 0.f));
 
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
+	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -500.f);
+	CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera()->Get_Transform()->Set_PositionZ(-500.f);
 
 	return S_OK;
 }
@@ -57,4 +58,7 @@ void CMainScene::Update()
 
 	if (CInput::GetInstance().GetKeyDown(Alpha1))
 		CSceneManager::GetInstance().LoadScene(L"Main Scene");
+
+	if (CInput::GetInstance().GetKeyDown(Alpha4))
+		boxObj->Get_Transform()->Set_Parent(nullptr);
 }

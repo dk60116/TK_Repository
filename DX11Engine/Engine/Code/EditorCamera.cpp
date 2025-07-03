@@ -28,11 +28,8 @@ CEditorCamera* CEditorCamera::Create()
 
 HRESULT CEditorCamera::Initialize()
 {
-	__super::Initialize();
-
-	CTransform* tf = m_pGameObject->AddComponent<CTransform>();
-
-	m_pGameObject->Set_Transform(tf);
+	if (FAILED(__super::Initialize()))
+		return E_FAIL;
 
 	return S_OK;
 }

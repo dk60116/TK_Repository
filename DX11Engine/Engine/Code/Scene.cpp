@@ -79,7 +79,8 @@ HRESULT CScene::Initialize()
 	CDebug::Log(CDebug::MemoryUseLog());
 
 #ifdef _DEBUG
-	CGameObject* ecObj = Add_GameObject(L"Editor Camera__");
+	CEditor::GetInstance().Set_SelectedGameObject(nullptr);
+	CGameObject* ecObj = Add_GameObject(L"__Editor Camera Object__");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
 #endif
 
@@ -110,8 +111,6 @@ void CScene::Start()
 
 void CScene::Update_Editor()
 {
-	if (GetForegroundWindow() == CEditor::GetInstance().Get_EditorWindow())
-
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		(*it)->Update_Editor();
 }
@@ -265,7 +264,7 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	{
 		if ((*it)->Get_Transform()->Is_Root())
 		{
-			if ((*it)->Get_ObjectName() != L"Editor Camera__")
+			if ((*it)->Get_ObjectName() != L"__Editor Camera Object__")
 				result.push_back(*it);
 		}
 	}

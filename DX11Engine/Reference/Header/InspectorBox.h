@@ -18,6 +18,9 @@ private:
 public:
 	void Render() override;
 	void OnDestroy() override;
+
+private:
+	void ShowTransform(CGameObject* _obj);
 };
 
 NS_END
