@@ -81,6 +81,14 @@ void CPlayer::Update()
 	{
 		Get_Transform()->Add_EulerAnglesX(-45.f * DELTA_TIME);
 	}
+	if (CInput::GetInstance().GetKey(R))
+	{
+		Get_Transform()->Add_EulerAnglesZ(-45.f * DELTA_TIME);
+	}
+	if (CInput::GetInstance().GetKey(T))
+	{
+		Get_Transform()->Add_EulerAnglesZ(45.f * DELTA_TIME);
+	}
 }
 
 void CPlayer::OnDestroy()

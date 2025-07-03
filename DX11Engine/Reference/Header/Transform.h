@@ -119,9 +119,9 @@ private:
 	CTransform* m_pParent;
 	list<CTransform*> m_lChildList;
 	vector3 m_vPosition, m_vEulerAngles, m_vScale;
-	vector3 m_vWorldPosition, m_vLocalPosition, m_vWorldEulerAngles, m_vLocalEulerAngles;
+	vector3 m_vWorldPosition, m_vWorldEulerAngles;
 	quaternion m_vQuaternion, m_vLocalQuaternion;
-	_matrix m_vMatWorld, m_vMatLocal, m_vMatLocalRotation;
+	_float4x4 m_vMatWorld, m_vMatLocal, m_vMatLocalRotation;
 	DIRECTIONS m_sDirections;
 };
 
