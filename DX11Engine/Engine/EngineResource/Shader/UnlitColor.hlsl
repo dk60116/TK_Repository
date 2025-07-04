@@ -49,16 +49,16 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
     
-    float4 skinnedPos = float4(0, 0, 0, 0);
-    [unroll]
-    for (int i = 0; i < 4; ++i)
-    {
-        uint idx = v.boneIndices[i];
-        float w = v.boneWeights[i]; // ← 올바른 가중치
-        skinnedPos += mul(float4(v.posL, 1.0f), gBones[idx]) * w;
-    }
+    //float4 skinnedPos = float4(0, 0, 0, 0);
+    //[unroll]
+    //for (int i = 0; i < 4; ++i)
+    //{
+    //    uint idx = v.boneIndices[i];
+    //    float w = v.boneWeights[i]; // ← 올바른 가중치
+    //    skinnedPos += mul(float4(v.posL, 1.0f), gBones[idx]) * w;
+    //}
 
-    float4 posW = mul(skinnedPos, world);
+    float4 posW = mul(float4(v.posL, 1.0f), world);
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
 
