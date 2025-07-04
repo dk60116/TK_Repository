@@ -98,7 +98,7 @@ HRESULT CAnimation::Initialize(const wstring& _name, const wstring& _filePath, v
 
 	if (!scene || !scene->HasAnimations())
 	{
-		CDebug::LogError("Assimp Animation load failed");
+		CDebug::LogError(L"Assimp Animation load failed: " + m_strFilePath);
 		return E_FAIL;
 	}
 

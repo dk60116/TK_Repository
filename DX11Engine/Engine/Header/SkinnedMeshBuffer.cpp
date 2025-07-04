@@ -45,7 +45,10 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
     );
 
     if (!m_pAssimpScene || !m_pAssimpScene->HasMeshes())
+    {
+        CDebug::LogError(L"Assimp Skinned mesh load failed: " + m_strFilePath);
         return E_FAIL;
+    }
 
     const aiMesh* mesh = m_pAssimpScene->mMeshes[0];
 
@@ -115,7 +118,11 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
 
         matOffset = scaleMat * matOffset;
 
-        m_vBoneOffsetMatrices.push_back(matOffset);
+        _float4x4 mat4x4 = {};
+        
+        XMStoreFloat4x4(&mat4x4, matOffset);
+
+        m_vBoneOffsetMatrices.push_back(mat4x4);
     }
 
     FillBoneWeightsAndIndices(mesh, vertices);
@@ -195,7 +202,7 @@ void CSkinnedMeshBuffer::OnDestroy()
     m_pIndexBuffer = nullptr;
 }
 
-const _matrix& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)
+const _float4x4& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)
 {
     return m_vBoneOffsetMatrices[_index];
 }

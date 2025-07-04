@@ -35,7 +35,10 @@ HRESULT CTexture::Initialize(const wstring& _name, const wstring& _filePath, voi
 		return E_FAIL;
 
 	if (FAILED(CreateWICTextureFromFile(device, m_strFilePath.c_str(), nullptr, m_pSRV.GetAddressOf())))
+	{
+		CDebug::LogError(L"Texture load failed: " + m_strFilePath);
 		return E_FAIL;
+	}
 
 	return S_OK;
 }

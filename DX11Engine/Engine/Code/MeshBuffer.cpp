@@ -55,7 +55,6 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _
         memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
     }
 
-    // ΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑ
     ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
 
     // VertexBuffer 积己
@@ -67,8 +66,9 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _
     D3D11_SUBRESOURCE_DATA vbData = {};
     vbData.pSysMem = info.buffer.data();
 
-    if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
-        return E_FAIL;
+    HRESULT hr = S_OK;
+
+    hr = device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer);
 
     // IndexBuffer 积己
     if (info.desc.indexCount > 0 && info.indices.size() > 0)
@@ -81,11 +81,16 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _
         D3D11_SUBRESOURCE_DATA ibData = {};
         ibData.pSysMem = info.indices.data();
 
-        if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
-            return E_FAIL;
+        hr = FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer));
     }
 
-    return S_OK;
+    if (FAILED(hr))
+    {
+        CDebug::LogError(L"Assimp MeshBuffer load failed: " + m_strFilePath);
+        return E_FAIL;
+    }
+
+    return hr;
 }
 
 void CMeshBuffer::OnDestroy()

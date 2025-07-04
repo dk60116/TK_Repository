@@ -88,7 +88,7 @@ CTransform* CSkinnedMeshRenderer::Get_BoneTransform(const _uint _index) const
 	return m_vBones[_index];
 }
 
-const _matrix& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) const
+const _float4x4& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) const
 {
 	return m_pMeshBuffer->Get_BoneOffsetMatrix(_index);
 }
@@ -146,13 +146,13 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	if (!m_pMaterial)
 	{
-		CDebug::LogError("MeshRenderer: No material assigned.");
+		//CDebug::LogError(L"Skinned MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectName());
 		return;
 	}
 
 	if (!m_pMeshBuffer)
 	{
-		CDebug::LogError("SkinnedMeshRenderer: No MeshBuffer assigned.");
+		//CDebug::LogError(L"Skinned MeshRenderer: No MeshBuffer assigned:" + m_pGameObject->Get_ObjectName());
 		return;
 	}
 
@@ -176,7 +176,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 			_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
 
 			// 역 바인드 포즈
-			_matrix invBindPose = m_pMeshBuffer->m_vBoneOffsetMatrices[i];
+			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
 
 			// 최종 본 행렬: BoneWorld * InverseBindPose
 			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);

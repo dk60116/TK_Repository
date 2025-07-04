@@ -79,7 +79,7 @@ void CAnimator::Update()
         for (auto* p = node->Get_Parent(); p; p = p->Get_Parent())
             M *= p->Get_LocalMatrix();
 
-        M *= m_pSkinnedRenderer->Get_BoneOffsetMatrix(i);
+        M *= XMLoadFloat4x4(&m_pSkinnedRenderer->Get_BoneOffsetMatrix(i));
         m_vFinalBoneMatrix[i] = XMMatrixTranspose(M); // VS column-major
     }
 }

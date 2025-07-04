@@ -78,7 +78,7 @@ HRESULT CScene::Initialize()
 
 	CDebug::Log(CDebug::MemoryUseLog());
 
-#ifdef _DEBUG
+#ifndef _CLIENT_BUILD
 	CEditor::GetInstance().Set_SelectedGameObject(nullptr);
 	CGameObject* ecObj = Add_GameObject(L"__Editor Camera Object__");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();

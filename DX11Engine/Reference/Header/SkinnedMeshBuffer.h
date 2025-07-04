@@ -23,13 +23,13 @@ public:
 
 private:
 	void FillBoneWeightsAndIndices(const aiMesh* mesh, vector<VertexSkinnedBuffer>& vertices);
-	const _matrix& Get_BoneOffsetMatrix(const _uint _index);
+	const _float4x4& Get_BoneOffsetMatrix(const _uint _index);
 
 private:
 	Assimp::Importer* m_pImporter;
 	const aiScene* m_pAssimpScene;
 	vector<wstring> m_vBoneNames;
-	vector<_matrix> m_vBoneOffsetMatrices;
+	vector<_float4x4> m_vBoneOffsetMatrices;
 };
 
 NS_END

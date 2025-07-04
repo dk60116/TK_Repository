@@ -29,7 +29,7 @@ public:
 	const _uint Get_BoneCount() const;
 	const wstring Get_BoneName(const _uint _index) const;
 	CTransform* Get_BoneTransform(const _uint _index) const;
-	const _matrix& Get_BoneOffsetMatrix(const _uint _index) const;
+	const _float4x4& Get_BoneOffsetMatrix(const _uint _index) const;
 
 protected:
 	void CreateBoneHierachy(const aiNode* _node, CTransform* _parent);

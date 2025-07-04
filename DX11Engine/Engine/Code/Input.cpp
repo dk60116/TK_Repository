@@ -24,7 +24,7 @@ HRESULT CInput::Initialize()
 {
 #ifdef _DEBUG
 #else
-    InstallMouseHook();
+    //InstallMouseHook();
 #endif
 
     return S_OK;
@@ -37,7 +37,7 @@ void CInput::Release()
 
 #ifdef _DEBUG
 #else
-    UninstallMouseHook();
+    //UninstallMouseHook();
 #endif
 }
 

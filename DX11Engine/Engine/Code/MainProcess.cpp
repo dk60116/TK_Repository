@@ -32,7 +32,7 @@ HRESULT CMainProcess::Initialize()
     if (FAILED(CInput::GetInstance().Initialize()))
         return E_FAIL;
 
-#ifdef _DEBUG
+#ifndef _CLIENT_BUILD
     CGraphicDevice::GetInstance().Add_SwapChain
     (
         CEditor::GetInstance().Get_EditorWindow(),
@@ -76,7 +76,7 @@ void CMainProcess::Update_MainApp()
         scene->Update();
         scene->LateUpdate();
 
-#ifdef _DEBUG
+#ifndef _CLIENT_BUILD
         graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
 
         CEditor::GetInstance().Editor_Update_Begin();

@@ -27,9 +27,9 @@ CEditor& CEditor::GetInstance()
 
 HRESULT CEditor::Initialize()
 {
-#ifndef _DEBUG
-	return S_OK;
-#endif // DEBUG
+#ifndef _Engine_Build
+	//return S_OK;
+#endif
 
 	ImGuiContext* newCtx = ImGui::CreateContext();
 	ImGui::SetCurrentContext(newCtx);
