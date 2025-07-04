@@ -21,6 +21,8 @@ public:
     static void Log(const vector2 format, ...);
     static void Log(const vector2Int format, ...);
     static void Log(const vector3 format, ...);
+    static void Log(const _float4x4 format, ...);
+    static void Log(const _matrix, ...);
 
     static void LogError(const char* format, ...);
     static void LogError(const string format, ...);

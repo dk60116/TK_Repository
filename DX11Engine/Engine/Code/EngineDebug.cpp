@@ -130,6 +130,52 @@ void CDebug::Log(const vector3 format, ...)
     Log("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
+void CDebug::Log(const _float4x4 format, ...)
+{
+    char buf[512];
+    sprintf_s
+    (
+        buf,
+        "%s\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢",
+        "Matrix",
+        format._11, format._12, format._13, format._14,
+        format._21, format._22, format._23, format._24,
+        format._31, format._32, format._33, format._34,
+        format._41, format._42, format._43, format._44
+    );
+
+    Log("%s", buf);
+}
+
+void CDebug::Log(const _matrix format, ...)
+{
+    char buf[512];
+
+    _float4x4 float44 = {};
+    XMStoreFloat4x4(&float44, format);
+
+    sprintf_s
+    (
+        buf,
+        "%s\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢\n"
+        "¦¢ %8.3f %8.3f %8.3f %8.3f ¦¢",
+        "Matrix",
+        float44._11, float44._12, float44._13, float44._14,
+        float44._21, float44._22, float44._23, float44._24,
+        float44._31, float44._32, float44._33, float44._34,
+        float44._41, float44._42, float44._43, float44._44
+    );
+
+    Log("%s", buf);
+}
+
 void CDebug::LogError(const char* format, ...)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
