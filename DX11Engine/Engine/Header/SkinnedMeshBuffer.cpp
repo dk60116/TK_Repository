@@ -57,7 +57,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
     vector<VTX> vertices;
     vector<UINT> indices;
 
-    _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 0.01f;
+    const _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 1.f;
 
     for (UINT i = 0; i < mesh->mNumVertices; ++i)
     {

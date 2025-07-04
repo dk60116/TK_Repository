@@ -55,7 +55,7 @@ HRESULT CMainScene::Initialize()
 	box2Obj->Get_Transform()->Set_LocalPosition(vector3(-1.f, 0.f, 0.f));
 
 	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
-	CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera()->Get_Transform()->Set_PositionZ(-5.f);
+	CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera()->Get_Transform()->Set_PositionZ(-500.f);
 
 	return S_OK;
 }

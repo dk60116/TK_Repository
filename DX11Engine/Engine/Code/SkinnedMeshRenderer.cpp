@@ -106,7 +106,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	aiQuaternion rotation;
 	_node->mTransformation.Decompose(scaling, rotation, position);
 
-	const _float scaleFactor = 0.01f;
+	const _float scaleFactor = 1.f;
 
 	boneTransform->Set_LocalPosition
 	(
