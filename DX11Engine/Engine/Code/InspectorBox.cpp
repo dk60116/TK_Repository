@@ -140,7 +140,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::TextUnformatted("X"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::DragFloat("##X", &rotation.x, 0.1f))
-                transform->Set_LocalEulerAngles(rotation);
+                transform->Set_LocalEulerAnglesX(rotation.x);
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -149,7 +149,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::DragFloat("##Y", &rotation.y, 0.1f))
-                transform->Set_LocalEulerAngles(rotation);
+                transform->Set_LocalEulerAnglesY(rotation.y);
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -158,7 +158,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::DragFloat("##Z", &rotation.z, 0.1f))
-                transform->Set_LocalEulerAngles(rotation);
+                transform->Set_LocalEulerAnglesZ(rotation.z);
             ImGui::PopItemWidth();
 
             ImGui::EndTable();

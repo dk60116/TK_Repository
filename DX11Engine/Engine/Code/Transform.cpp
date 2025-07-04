@@ -462,23 +462,14 @@ void CTransform::Set_EulerAngles(const _float _x, const _float _y, const _float 
 
 void CTransform::Set_EulerAnglesX(const _float _x)
 {
-    m_vEulerAngles.x = _x;
-
-    Set_EulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Set_EulerAnglesY(const _float _y)
 {
-    m_vEulerAngles.y = _y;
-
-    Set_EulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Set_EulerAnglesZ(const _float _z)
 {
-    m_vEulerAngles.z = _z;
-
-    Set_EulerAngles(m_vEulerAngles);
 }
 
 void CTransform::Add_EulerAngles(const vector3& _rot)
@@ -520,9 +511,7 @@ void CTransform::Add_EulerAnglesZ(const _float _value)
 
 void CTransform::Set_LocalEulerAngles(const vector3& _rot)
 {
-    m_vQuaternion = quaternion::from_euler(_rot);
-
-    m_vEulerAngles = _rot;
+    m_vQuaternion = _rot.to_quaternion();
 }
 
 void CTransform::Set_LocalEulerAngles(const _float _x, const _float _y, const _float _z)
@@ -532,20 +521,23 @@ void CTransform::Set_LocalEulerAngles(const _float _x, const _float _y, const _f
 
 void CTransform::Set_LocalEulerAnglesX(const _float _x)
 {
-    m_vEulerAngles.x = _x;
-    Set_LocalEulerAngles(m_vEulerAngles);
+    vector3 euler = Get_LocalEulerAngles();
+    euler.x = _x;
+    Set_LocalEulerAngles(euler);
 }
 
 void CTransform::Set_LocalEulerAnglesY(const _float _y)
 {
-    m_vEulerAngles.y = _y;
-    Set_LocalEulerAngles(m_vEulerAngles);
+    vector3 euler = Get_LocalEulerAngles();
+    euler.y = _y;
+    Set_LocalEulerAngles(euler);
 }
 
 void CTransform::Set_LocalEulerAnglesZ(const _float _z)
 {
-    m_vEulerAngles.z = _z;
-    Set_LocalEulerAngles(m_vEulerAngles);
+    vector3 euler = Get_LocalEulerAngles();
+    euler.z = _z;
+    Set_LocalEulerAngles(euler);
 }
 
 void CTransform::Add_LocalEulerAngles(const vector3& _rot)
