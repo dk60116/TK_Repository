@@ -33,7 +33,7 @@ HRESULT CSkinnedMeshRenderer::Initialize()
 	desc.Usage = D3D11_USAGE_DYNAMIC;
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	if (FAILED(CGraphicDevice::GetInstance().Get_Device()->CreateBuffer(&desc, nullptr, &m_pBoneMatrixBuffer)))
+	if (FAILED(m_pDevice->CreateBuffer(&desc, nullptr, &m_pBoneMatrixBuffer)))
 		return E_FAIL;
 
 	return S_OK;
@@ -106,7 +106,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	aiQuaternion rotation;
 	_node->mTransformation.Decompose(scaling, rotation, position);
 
-	const float scaleFactor = 0.01f;
+	const _float scaleFactor = 0.01f;
 
 	boneTransform->Set_LocalPosition
 	(
@@ -156,8 +156,6 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
-
 	// 1) 월드, 뷰, 프로젝션 매트릭스
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
@@ -179,9 +177,10 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
 
 			// 최종 본 행렬
-			//boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
+			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
+			//boneMatrices[i] = XMMatrixTranspose(boneWorld * invBindPose);
 			//boneMatrices[i] = XMMatrixIdentity();
-			boneMatrices[i] = XMMatrixTranspose(boneWorld);
+			//boneMatrices[i] = XMMatrixTranspose(boneWorld);
 
 			if (CInput::GetInstance().GetKeyDown(M))
 			{
@@ -197,17 +196,17 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	// 3) 본 매트릭스 버퍼에 업로드
 	D3D11_MAPPED_SUBRESOURCE mappedRes;
-	if (SUCCEEDED(context->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
+	if (SUCCEEDED(m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
 	{
 		memcpy(mappedRes.pData, boneMatrices, sizeof(XMMATRIX) * m_vBones.size());
-		context->Unmap(m_pBoneMatrixBuffer, 0);
+		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
 	}
 
 	// 4) 머티리얼 바인딩
 	m_pMaterial->Bind(matWorld, matView, matProj);
 
 	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
-	context->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
 	// 6) 메시 렌더링
 	m_pMeshBuffer->Render();

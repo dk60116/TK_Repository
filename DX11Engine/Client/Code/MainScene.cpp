@@ -18,11 +18,11 @@ HRESULT CMainScene::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	CGameObject* playerObj = Add_GameObject(L"Player");
-	m_pPlayer = playerObj->AddComponent<CPlayer>();
-
 	CGameObject* cameraObject = Add_GameObject(L"Main Camera");
 	m_pMainCamera = cameraObject->AddComponent<CCamera>();
+
+	CGameObject* playerObj = Add_GameObject(L"Player");
+	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
 	CMeshBuffer* mb = CResources::GetInstance().CreateResource<CMeshBuffer>(L"Cube", L"Cube", nullptr);
 
@@ -35,15 +35,15 @@ HRESULT CMainScene::Initialize()
 	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	boxRenderer->Set_Material(boxMat);
 
-	CGameObject* box1Obj = Add_GameObject(L"Box1");
-	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
-	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
-	box1Renderer->Set_Material(boxMat);
-
 	CGameObject* box2Obj = Add_GameObject(L"Box2");
 	CMeshRenderer* box2Renderer = box2Obj->AddComponent<CMeshRenderer>();
 	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
 	box2Renderer->Set_Material(boxMat);
+
+	CGameObject* box1Obj = Add_GameObject(L"Box1");
+	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
+	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	box1Renderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
 	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, - 1.f, 0.f));
