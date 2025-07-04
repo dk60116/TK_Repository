@@ -151,7 +151,7 @@ ID3D11DeviceContext* CGraphicDevice::Get_Context() const
 	return m_pContext;
 }
 
-HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight)
+HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin, vector2Int _offsetMax)
 {
 	SwapChainSet sc{};
 	sc.hwnd = _hWnd;
@@ -207,16 +207,26 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	m_pDevice->CreateDepthStencilView(depthTex.Get(), nullptr, &sc.dsv);
 
 	// ºäÆ÷Æ® ¼³Á¤
-	sc.viewport.TopLeftX = 0;
-	sc.viewport.TopLeftY = 0;
-	sc.viewport.Width = static_cast<FLOAT>(_winWidth);
-	sc.viewport.Height = static_cast<FLOAT>(_winHeight);
+	sc.viewport.TopLeftX = static_cast<FLOAT>(_offsetMin.x);
+	sc.viewport.TopLeftY = static_cast<FLOAT>(_offsetMin.y);
+	sc.viewport.Width = static_cast<FLOAT>(_winWidth - _offsetMax.x);
+	sc.viewport.Height = static_cast<FLOAT>(_winHeight - _offsetMax.y);
 	sc.viewport.MinDepth = 0.0f;
 	sc.viewport.MaxDepth = 1.0f;
 
 	m_mSwapChains[_hWnd] = move(sc);
 
 	return S_OK;
+}
+
+const D3D11_VIEWPORT* CGraphicDevice::Get_CurrentViewport()
+{
+	auto it = m_mSwapChains.find(m_hCrtWndow);
+
+	if (it == m_mSwapChains.end())
+		return nullptr;
+
+	return &it->second.viewport;
 }
 
 HRESULT CGraphicDevice::Ready_BackBufferRenderTargetView()

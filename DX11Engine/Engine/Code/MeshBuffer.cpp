@@ -6,6 +6,8 @@ CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
 	, m_pIndexBuffer(nullptr)
 	, m_sInfo({})
+    , m_pVertexSysMem(nullptr)
+    , m_pIndexSysMem(nullptr)
 {
     m_strName = L"Mesh Buffer";
 }

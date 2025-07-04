@@ -30,14 +30,13 @@ public:
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();
 
-	HRESULT ReSize(_uint _newWidth, _uint _newHeight);
-
 public:
 	ID3D11Device* Get_Device() const;
 	ID3D11DeviceContext* Get_Context() const;
 
-	HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight);
+	HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin = vector2Int::zero(), vector2Int _offsetMax = vector2Int::zero());
 
+	const D3D11_VIEWPORT* Get_CurrentViewport();
 private:
 	HRESULT Ready_BackBufferRenderTargetView();
 	HRESULT Ready_DepthStencilView(_uint _winWidth, _uint _winHeight);

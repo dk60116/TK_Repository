@@ -57,8 +57,6 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
     vector<VTX> vertices;
     vector<UINT> indices;
 
-    const _float scaleFactor = _desc ? *static_cast<_float*>(_desc) : 1.f;
-
     for (UINT i = 0; i < mesh->mNumVertices; ++i)
     {
         VTX v = {};
@@ -66,7 +64,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
         const aiVector3D& normal = mesh->mNormals[i];
         const aiVector3D& tangent = mesh->mTangents ? mesh->mTangents[i] : aiVector3D(0.f, 0.f, 0.f);
 
-        v.position = _float3(pos.x * scaleFactor, pos.y * scaleFactor, pos.z * scaleFactor);
+        v.position = _float3(pos.x, pos.y, pos.z);
         v.normal = _float3(normal.x, normal.y, normal.z);
 
         if (mesh->HasTextureCoords(0))
@@ -190,12 +188,6 @@ void CSkinnedMeshBuffer::OnDestroy()
     }
 
     m_vBoneNames.clear();
-
-    m_pVertexBuffer->Release();
-    m_pIndexBuffer->Release();
-
-    m_pVertexBuffer = nullptr;
-    m_pIndexBuffer = nullptr;
 }
 
 const _float4x4& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)

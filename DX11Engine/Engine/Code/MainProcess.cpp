@@ -33,12 +33,19 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
 
 #ifndef _CLIENT_BUILD
+    CEditor::EDITORWINOPTION sOption = CEditor::GetInstance().Get_Options();
+
+    vector2Int offsetMin = vector2Int(0, (_int)sOption.topBarHeight);
+    vector2Int offsetMax = vector2Int(_int(sOption.hierachyWidth + sOption.inspectorWidth), 0);
+
     CGraphicDevice::GetInstance().Add_SwapChain
     (
         CEditor::GetInstance().Get_EditorWindow(),
         WINMODE::MODE_WINDOW,
-        CEditor::GetInstance().Get_ScreenResolution().x,
-        CEditor::GetInstance().Get_ScreenResolution().y
+        CEditor::GetInstance().Get_WindowResolution().x,
+        CEditor::GetInstance().Get_WindowResolution().y,
+        offsetMin,
+        offsetMax
     );
 #endif
 
@@ -80,6 +87,7 @@ void CMainProcess::Update_MainApp()
         graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
 
         CEditor::GetInstance().Editor_Update_Begin();
+        CEditor::GetInstance().Editor_Update_During();
         scene->Render_Editor();
         CEditor::GetInstance().Editor_Update_End();
 

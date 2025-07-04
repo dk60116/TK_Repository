@@ -16,7 +16,7 @@ private:
 	void OnDestroy();
 
 public:
-	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection);
+	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
 
 public:
 	class CTexture* Get_Texture(_int _index) const;
@@ -29,7 +29,6 @@ public:
 private:
 	HRESULT Create_ConstantBuffer();
 
-	void Bind_Shader();
 	void Bind_Texture();
 
 private:

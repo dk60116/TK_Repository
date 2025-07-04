@@ -22,10 +22,7 @@ CInput& CInput::GetInstance()
 
 HRESULT CInput::Initialize()
 {
-#ifdef _DEBUG
-#else
     //InstallMouseHook();
-#endif
 
     return S_OK;
 }
@@ -35,10 +32,7 @@ void CInput::Release()
     m_bKeyState.clear();
     m_bPrevKeyState.clear();
 
-#ifdef _DEBUG
-#else
     //UninstallMouseHook();
-#endif
 }
 
 bool CInput::GetKey(_int _iKey)

@@ -106,13 +106,11 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	aiQuaternion rotation;
 	_node->mTransformation.Decompose(scaling, rotation, position);
 
-	const _float scaleFactor = 1.f;
-
 	boneTransform->Set_LocalPosition
 	(
-		position.x * scaleFactor,
-		position.y * scaleFactor,
-		position.z * scaleFactor
+		position.x,
+		position.y,
+		position.z
 	);
 	
 	boneTransform->Set_LocalScale(scaling.x, scaling.y, scaling.z);
@@ -176,11 +174,14 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 			// 역 바인드 포즈
 			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
 
+			if (m_pGameObject) // 메시 Transform
+			{
+				_matrix meshWorldInv = XMMatrixInverse(nullptr, m_pGameObject->Get_Transform()->Get_WorldMatrix());
+				boneWorld = boneWorld * meshWorldInv;
+			}
+
 			// 최종 본 행렬
 			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
-			//boneMatrices[i] = XMMatrixTranspose(boneWorld * invBindPose);
-			//boneMatrices[i] = XMMatrixIdentity();
-			//boneMatrices[i] = XMMatrixTranspose(boneWorld);
 
 			if (CInput::GetInstance().GetKeyDown(M))
 			{
@@ -203,7 +204,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	}
 
 	// 4) 머티리얼 바인딩
-	m_pMaterial->Bind(matWorld, matView, matProj);
+	m_pMaterial->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
 	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);

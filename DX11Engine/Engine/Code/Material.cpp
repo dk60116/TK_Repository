@@ -64,9 +64,8 @@ void CMaterial::OnDestroy()
 	}
 }
 
-void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection)
+void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount)
 {
-	Bind_Shader();
 	Bind_Texture();
 
 	m_pContext->IASetInputLayout(m_pInputLayout);
@@ -86,6 +85,23 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 	cam.proj = XMMatrixTranspose(_projection);
 	m_pContext->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &cam, 0, 0);
 	m_pContext->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+
+	// b2: PerMaterial
+	MaterialCB mat = {};
+	mat.baseColor = XMFLOAT4
+	(
+		m_vDiffuseColor.r / 255.f,
+		m_vDiffuseColor.g / 255.f,
+		m_vDiffuseColor.b / 255.f,
+		m_vDiffuseColor.a / 255.f
+	);
+
+	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
+	mat.boneCount = _boneCount;
+
+	m_pContext->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
+	m_pContext->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+	m_pContext->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 }
 
 CTexture* CMaterial::Get_Texture(_int _index) const
@@ -192,25 +208,6 @@ HRESULT CMaterial::Create_ConstantBuffer()
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CMaterial::Bind_Shader()
-{
-	// ── b1 : 머티리얼
-	MaterialCB mat = {};
-
-	mat.baseColor =
-	{
-		m_vDiffuseColor.r / 255.f,
-		m_vDiffuseColor.g / 255.f,
-		m_vDiffuseColor.b / 255.f,
-		m_vDiffuseColor.a / 255.f
-	};
-	
-	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
-
-	m_pContext->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
-	m_pContext->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 }
 
 void CMaterial::Bind_Texture()

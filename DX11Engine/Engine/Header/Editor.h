@@ -7,6 +7,8 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CEditor final
 {
 public:
+	enum class TransformControleTool { VIEW, MOVE, ROTATE, SCALE, RECT, TRANSFORM };
+
 	typedef struct EditopWindowOptionsDescription
 	{
 		UINT windowWidth = 1600;
@@ -26,19 +28,25 @@ public:
 public:
 	HWND Get_EditorWindow();
 	void Editor_Update_Begin();
+	void Editor_Update_During();
 	void Editor_Update_End();
 
 public:
 	EDITORWINOPTION Get_Options() const;
+	const vector2Int Get_WindowResolution() const;
 	const vector2Int Get_ScreenResolution() const;
 
 public:
+	const TransformControleTool Get_ControleTool() const;
+	void Change_ControleTool(const TransformControleTool _tool);
 	void Set_SelectedGameObject(class CGameObject* _target);
 	CGameObject* Get_SelectedGameObject() const;
 
 private:
 	HWND CreateEditorWindow();
 	static LRESULT CALLBACK EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	void ChangeControleTool();
 
 private:
 	HWND m_hEditorWindow;
@@ -50,6 +58,7 @@ private:
 	EDITORWINOPTION m_sOptions;
 
 private:
+	TransformControleTool m_eControleTool;
 	CGameObject* m_pSelectedGameObject;
 };
 

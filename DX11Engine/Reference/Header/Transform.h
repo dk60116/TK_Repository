@@ -35,6 +35,7 @@ public:
 	CTransform* Get_Parent() const;
 	void Set_Parent(CTransform* _parent);
 	const _bool Is_Root() const;
+	CTransform* Get_Child();
 	CTransform* Get_Child(const _int _index);
 	CTransform* Find_Child(wstring _name);
 	CTransform* Find_ChildRecursive(wstring _name);
@@ -106,6 +107,7 @@ public:
 
 	void Set_LocalScale(const vector3& _scale);
 	void Set_LocalScale(const _float _x, const _float _y, const _float _z);
+	void Set_LocalScale(const _float _value);
 	void Set_LocalScaleX(const _float _value);
 	void Set_LocalScaleY(const _float _value);
 	void Set_LocalScaleZ(const _float _value);

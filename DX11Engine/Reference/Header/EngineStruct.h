@@ -220,7 +220,17 @@ namespace Engine
         {
         }
 
-        vector2Int(UINT _x, UINT _y)
+        vector2Int(_uint _x, _uint _y)
+            : x((_int)_x), y((_int)_y)
+        {
+        }
+
+        vector2Int(_float _x, _float _y)
+            : x((_int)_x), y((_int)_y)
+        {
+        }
+
+        vector2Int(size_t _x, size_t _y)
             : x((_int)_x), y((_int)_y)
         {
         }
@@ -912,12 +922,16 @@ namespace Engine
 
         static quaternion from_euler(float _pitch, float _yaw, float _roll)
         {
-            const _vector q = XMQuaternionRotationRollPitchYaw
+            const _vector qx = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), XMConvertToRadians(_pitch));
+            const _vector qy = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), XMConvertToRadians(_yaw));
+            const _vector qz = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), XMConvertToRadians(_roll));
+
+            const _vector q = XMQuaternionMultiply
             (
-                XMConvertToRadians(_pitch),
-                XMConvertToRadians(_yaw),
-                XMConvertToRadians(_roll)
+                XMQuaternionMultiply(qy, qx),
+                qz
             );
+
             quaternion out;
             XMStoreFloat4(reinterpret_cast<_float4*>(&out), XMQuaternionNormalize(q));
             return out;
@@ -1110,8 +1124,9 @@ namespace Engine
     struct MaterialCB
     {
         _float4 baseColor;
-        _bool useTexture;
-        _float3 padding;
+        UINT  useTexture;
+        UINT  boneCount;
+        _float2 padding;
     };
 #pragma endregion
 

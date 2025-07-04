@@ -59,8 +59,8 @@ protected:
 	MESHBUFFERDESC m_sInfo;
 
 private:
-	void* m_pVertexSysMem = nullptr;
-	void* m_pIndexSysMem = nullptr;
+	void* m_pVertexSysMem;
+	void* m_pIndexSysMem ;
 };
 
 NS_END

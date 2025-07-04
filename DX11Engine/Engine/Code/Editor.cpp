@@ -9,6 +9,7 @@ CEditor::CEditor()
 	: m_hEditorWindow(nullptr)
 	, m_mBoxList({})
 	, m_sOptions({})
+	, m_eControleTool(TransformControleTool::MOVE)
 	, m_pSelectedGameObject(nullptr)
 {
 }
@@ -100,6 +101,11 @@ void CEditor::Editor_Update_Begin()
 		(*it).second->Render();
 }
 
+void CEditor::Editor_Update_During()
+{
+	ChangeControleTool();
+}
+
 void CEditor::Editor_Update_End()
 {
 	ImGui::Render();
@@ -161,14 +167,51 @@ LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
+void CEditor::ChangeControleTool()
+{
+	if (!CInput::GetInstance().GetMouseButton(1))
+	{
+		if (CInput::GetInstance().GetKeyDown(Q))
+			Change_ControleTool(TransformControleTool::VIEW);
+		if (CInput::GetInstance().GetKeyDown(W))
+			Change_ControleTool(TransformControleTool::MOVE);
+		if (CInput::GetInstance().GetKeyDown(E))
+			Change_ControleTool(TransformControleTool::ROTATE);
+		if (CInput::GetInstance().GetKeyDown(R))
+			Change_ControleTool(TransformControleTool::SCALE);
+		if (CInput::GetInstance().GetKeyDown(T))
+			Change_ControleTool(TransformControleTool::RECT);
+		if (CInput::GetInstance().GetKeyDown(Y))
+			Change_ControleTool(TransformControleTool::TRANSFORM);
+	}
+}
+
 CEditor::EDITORWINOPTION CEditor::Get_Options() const
 {
 	return m_sOptions;
 }
 
-const vector2Int CEditor::Get_ScreenResolution() const
+const vector2Int CEditor::Get_WindowResolution() const
 {
 	return vector2Int(m_sOptions.windowWidth, m_sOptions.windowHeight);
+}
+
+const vector2Int CEditor::Get_ScreenResolution() const
+{
+	_int width = _int(m_sOptions.windowWidth - (m_sOptions.hierachyWidth + m_sOptions.inspectorWidth));
+	_int height = _int(m_sOptions.windowHeight - (m_sOptions.topBarHeight));
+
+	return vector2Int(width, height);
+}
+
+const CEditor::TransformControleTool CEditor::Get_ControleTool() const
+{
+	return m_eControleTool;
+}
+
+void CEditor::Change_ControleTool(const TransformControleTool _tool)
+{
+	m_eControleTool = _tool;
 }
 
 void CEditor::Set_SelectedGameObject(CGameObject* _target)

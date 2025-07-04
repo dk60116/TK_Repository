@@ -70,19 +70,37 @@ void CTransform::Render_Editor()
     ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
     ImGuizmo::AllowAxisFlip(false);
 
-    ImGuiIO& io = ImGui::GetIO();
-    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
+
+    if (vp)
+    {
+        ImGuizmo::SetRect
+        (
+            vp->TopLeftX,
+            vp->TopLeftY,
+            vp->Width,
+            vp->Height
+        );
+    }
+    else
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    }
 
     static ImGuizmo::OPERATION currentGizmoOperation = ImGuizmo::TRANSLATE;
 
-    if (ImGui::IsKeyPressed(ImGuiKey_T))
+    CEditor& editor = CEditor::GetInstance();
+    CEditor::TransformControleTool mode = editor.Get_ControleTool();
+
+    if (mode == CEditor::TransformControleTool::MOVE)
         currentGizmoOperation = ImGuizmo::TRANSLATE;
-    if (ImGui::IsKeyPressed(ImGuiKey_R))
+    if (mode == CEditor::TransformControleTool::ROTATE)
         currentGizmoOperation = ImGuizmo::ROTATE;
-    if (ImGui::IsKeyPressed(ImGuiKey_S))
+    if (mode == CEditor::TransformControleTool::SCALE)
         currentGizmoOperation = ImGuizmo::SCALE;
 
-    bool manipulated = ImGuizmo::Manipulate
+    _bool manipulated = ImGuizmo::Manipulate
     (
         view,
         projection,
@@ -93,7 +111,7 @@ void CTransform::Render_Editor()
 
     if (manipulated)
     {
-        _matrix newWorldMatrix = XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(world));
+        _matrix newWorldMatrix = XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(world));
 
         if (m_pParent)
         {
@@ -103,27 +121,24 @@ void CTransform::Render_Editor()
             _matrix localMatrix = newWorldMatrix * parentInv;
 
             // 로컬 위치/회전/스케일 추출
-            XMVECTOR S, R, T;
+            _vector S, R, T;
             XMMatrixDecompose(&S, &R, &T, localMatrix);
 
             // 저장
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vScale), S);
-            XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&m_vQuaternion), R);
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), T);
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vScale), S);
+            XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), R);
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vPosition), T);
         }
         else
         {
             // 부모 없으면 그냥 월드 == 로컬
-            XMVECTOR S, R, T;
+            _vector S, R, T;
             XMMatrixDecompose(&S, &R, &T, newWorldMatrix);
 
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vScale), S);
-            XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&m_vQuaternion), R);
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&m_vPosition), T);
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vScale), S);
+            XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), R);
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vPosition), T);
         }
-
-        // 이걸 해야 Bind_Matrix() 때 최신 로컬로 계산됩니다.
-        Bind_Matrix();
     }
 }
 
@@ -173,6 +188,11 @@ void CTransform::Set_Parent(CTransform* _parent)
 const _bool CTransform::Is_Root() const
 {
     return m_bIsRootParent;
+}
+
+CTransform* CTransform::Get_Child()
+{
+    return m_lChildList.front();
 }
 
 CTransform* CTransform::Get_Child(const _int _index)
@@ -500,8 +520,7 @@ void CTransform::Add_EulerAnglesZ(const _float _value)
 
 void CTransform::Set_LocalEulerAngles(const vector3& _rot)
 {
-    quaternion deltaQ = vector3(_rot.x, _rot.y, _rot.z).to_quaternion();
-    Set_Quaternion(deltaQ);
+    m_vQuaternion = quaternion::from_euler(_rot);
 
     m_vEulerAngles = _rot;
 }
@@ -619,6 +638,11 @@ void CTransform::Set_LocalScale(const vector3& _scale)
 void CTransform::Set_LocalScale(const _float _x, const _float _y, const _float _z)
 {
     m_vScale = vector3(_x, _y, _z);
+}
+
+void CTransform::Set_LocalScale(const _float _value)
+{
+    m_vScale = vector3::one() * _value;
 }
 
 void CTransform::Set_LocalScaleX(const _float _value)
