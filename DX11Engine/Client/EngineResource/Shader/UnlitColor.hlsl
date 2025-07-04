@@ -17,11 +17,16 @@ cbuffer PerMaterial : register(b2)
     float3 padding; // 16바이트 정렬
 };
 
+cbuffer PerBones : register(b3)
+{
+    float4x4 gBones[128];
+};
+
 // ───────────── 텍스처 및 샘플러
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
-
 // ───────────── 버텍스 입력
+
 struct VSIn
 {
     float3 posL : POSITION;
@@ -43,8 +48,17 @@ struct VSOut
 VSOut VSMain(VSIn v)
 {
     VSOut o;
+    
+    float4 skinnedPos = float4(0, 0, 0, 0);
+    [unroll]
+    for (int i = 0; i < 4; ++i)
+    {
+        uint idx = v.boneIndices[i];
+        float w = v.boneWeights[i]; // ← 올바른 가중치
+        skinnedPos += mul(float4(v.posL, 1.0f), gBones[idx]) * w;
+    }
 
-    float4 posW = mul(float4(v.posL, 1.0f), world);
+    float4 posW = mul(skinnedPos, world);
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
 

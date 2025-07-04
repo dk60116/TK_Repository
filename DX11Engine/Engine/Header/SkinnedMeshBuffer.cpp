@@ -103,9 +103,9 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
         // Assimp 행렬 -> XMMATRIX 변환
         const aiMatrix4x4& offset = bone->mOffsetMatrix;
 
-        XMMATRIX matOffset = XMMatrixTranspose
+        _matrix matOffset = XMMatrixTranspose
         (
-            XMMATRIX
+            _matrix
             (
                 offset.a1, offset.a2, offset.a3, offset.a4,
                 offset.b1, offset.b2, offset.b3, offset.b4,
@@ -113,10 +113,6 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
                 offset.d1, offset.d2, offset.d3, offset.d4
             )
         );
-
-        _matrix scaleMat = XMMatrixScaling(scaleFactor, scaleFactor, scaleFactor);
-
-        matOffset = scaleMat * matOffset;
 
         _float4x4 mat4x4 = {};
         
