@@ -248,7 +248,7 @@ void CMaterial::Bind_Texture()
 
 		if (FAILED(m_pDevice->CreateSamplerState(&sampDesc, &gSamplerState)))
 		{
-			CDebug::LogError("SamplerState 생성 실패");
+			CDebug::LogError(L"Creaet failed Sample Material");
 			return;
 		}
 	}

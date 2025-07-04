@@ -36,11 +36,11 @@ void CInspectorBox::Render()
 
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-	ImVec2 panelSize = ImVec2(width, viewport->Size.y);
+	ImVec2 panelSize = ImVec2(width, viewport->Size.y - editorOption.topBarHeight);
 
 	ImGui::SetNextWindowPos
 	(
-		ImVec2(viewport->Pos.x + viewport->Size.x, viewport->Pos.y),
+		ImVec2(viewport->Pos.x + viewport->Size.x, viewport->Pos.y + editorOption.topBarHeight),
 		0,
 		ImVec2(1.0f, 0.0f)
 	);

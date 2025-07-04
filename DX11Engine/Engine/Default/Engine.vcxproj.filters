@@ -130,6 +130,9 @@
     <ClInclude Include="..\Header\InspectorBox.h">
       <Filter>Editor\EditorBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\TopToolBar.h">
+      <Filter>Editor\EditorBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -349,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\ImGuizmo.cpp">
       <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\TopToolBar.cpp">
+      <Filter>Editor\EditorBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

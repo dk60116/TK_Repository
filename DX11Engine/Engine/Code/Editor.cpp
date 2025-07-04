@@ -1,4 +1,5 @@
 #include "epch.h"
+#include "TopToolBar.h"
 #include "HierachyBox.h"
 #include "InspectorBox.h"
 
@@ -6,8 +7,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 CEditor::CEditor()
 	: m_hEditorWindow(nullptr)
-	, m_pHierachyBox(nullptr)
-	, m_pInspectorBox(nullptr)
 	, m_mBoxList({})
 	, m_sOptions({})
 	, m_pSelectedGameObject(nullptr)
@@ -42,18 +41,25 @@ HRESULT CEditor::Initialize()
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
 
-	m_pHierachyBox = CHierachyBox::Create();
-	if (m_pHierachyBox)
+	CTopToolBar* toolbar = CTopToolBar::Create();
+	if (toolbar)
 	{
-		m_pHierachyBox->AddRef();
-		m_mBoxList.emplace(L"Hierachy", m_pHierachyBox);
+		m_mBoxList.emplace(L"TopTool", toolbar);
+		toolbar->AddRef();
 	}
 
-	m_pInspectorBox = CInspectorBox::Create();
-	if (m_pInspectorBox)
+	CHierachyBox* hierachyBox = CHierachyBox::Create();
+	if (hierachyBox)
 	{
-		m_pInspectorBox->AddRef();
-		m_mBoxList.emplace(L"Inspector", m_pInspectorBox);
+		m_mBoxList.emplace(L"Hierachy", hierachyBox);
+		hierachyBox->AddRef();
+	}
+
+	CInspectorBox* inspectorBox = CInspectorBox::Create();
+	if (inspectorBox)
+	{
+		m_mBoxList.emplace(L"Inspector", inspectorBox);
+		inspectorBox->AddRef();
 	}
 
 	return S_OK;
@@ -64,8 +70,6 @@ void CEditor::Release()
 #ifndef _DEBUG
 	return;
 #endif // DEBUG
-
-	Safe_Release(m_pHierachyBox);
 
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX11_Shutdown();

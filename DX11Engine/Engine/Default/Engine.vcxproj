@@ -195,6 +195,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h" />
     <ClInclude Include="..\Header\Texture.h" />
     <ClInclude Include="..\Header\Timer.h" />
+    <ClInclude Include="..\Header\TopToolBar.h" />
     <ClInclude Include="..\Header\Transform.h" />
     <ClInclude Include="..\Header\MeshBuffer.h" />
     <ClInclude Include="epch.h" />
@@ -280,6 +281,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
+    <ClCompile Include="..\Code\TopToolBar.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\MeshBuffer.cpp" />
     <ClCompile Include="..\Code\WICTextureLoader.cpp">

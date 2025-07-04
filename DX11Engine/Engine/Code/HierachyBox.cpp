@@ -36,9 +36,14 @@ void CHierachyBox::Render()
 
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
-	ImVec2 panelSize = ImVec2(width, viewport->Size.y);
+	ImVec2 panelSize = ImVec2(width, viewport->Size.y - editorOption.topBarHeight);
 
-	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x - editorOption.inspectorWidth, viewport->Pos.y), 0, ImVec2(1.0f, 0.0f));
+	ImGui::SetNextWindowPos
+	(
+		ImVec2(viewport->Pos.x + viewport->Size.x - editorOption.inspectorWidth, viewport->Pos.y + editorOption.topBarHeight),
+		0,
+		ImVec2(1.0f, 0.0f)
+	);
 
 	ImGui::SetNextWindowSize(panelSize);
 
@@ -51,11 +56,15 @@ void CHierachyBox::Render()
 		ImGuiWindowFlags_NoCollapse
 	);
 
+	ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 12.f);
+
 	if (currentScene)
 	{
 		for (auto& obj : currentScene->Get_RootObjects())
 			RenderObjectHierarchy(obj);
 	}
+
+	ImGui::PopStyleVar();
 
 	ImGui::End();
 }

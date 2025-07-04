@@ -248,12 +248,12 @@ const _matrix CTransform::Get_InverseWorldMatrix() const
     return XMMatrixInverse(nullptr, mat);
 }
 
-vector3 CTransform::Get_Position() const
+const vector3 CTransform::Get_Position() const
 {
     return m_vWorldPosition;
 }
 
-vector3 CTransform::Get_LocalPosition() const
+const vector3 CTransform::Get_LocalPosition() const
 {
     return m_vPosition;
 }
@@ -261,7 +261,7 @@ vector3 CTransform::Get_LocalPosition() const
 const vector3 CTransform::Get_EulerAngles()
 {
     if (!m_pParent)
-        return m_vEulerAngles;
+        m_vQuaternion.to_euler();
     else
     {
         _matrix worldMatrix = XMLoadFloat4x4(&m_vMatWorld);
@@ -280,14 +280,24 @@ const vector3 CTransform::Get_EulerAngles()
     return vector3::zero();
 }
 
-const vector3& CTransform::Get_LocalEulerAngles()
+const vector3 CTransform::Get_LocalEulerAngles() const
 {
-    return m_vEulerAngles;
+    return m_vQuaternion.to_euler();
 }
 
 const vector3& CTransform::Get_LocalScale()
 {
     return m_vScale;
+}
+
+const quaternion CTransform::Get_Quaternion() const
+{
+    return XMQuaternionRotationMatrix(XMLoadFloat4x4(&m_vMatWorld));
+}
+
+const quaternion& CTransform::Get_LocalQuaternion() const
+{
+    return m_vQuaternion;
 }
 
 void CTransform::Set_Position(const vector3& _pos)
@@ -379,7 +389,19 @@ void CTransform::Add_PositionZ(const _float _value)
 
 void CTransform::Set_Quaternion(const quaternion& _value)
 {
+    CTransform* tempParent = nullptr;
+
+    if (m_pParent)
+    {
+        tempParent = m_pParent;
+        Set_Parent(static_cast<CTransform*>(nullptr));
+        Bind_Matrix();
+    }
+
     m_vQuaternion = _value;
+
+    if (tempParent)
+        Set_Parent(tempParent);
 }
 
 void CTransform::Set_LocalQuaternion(const quaternion& _value)
@@ -623,7 +645,8 @@ void CTransform::LookAt(const vector3& _target)
     vector3 right = fwd.cross(upAxis).normalized();   // LH
     vector3 up = right.cross(fwd);
 
-    _matrix rot = {
+    _matrix rot = 
+    {
         right.x,  right.y,  right.z, 0,
         up.x,     up.y,     up.z,    0,
         fwd.x,    fwd.y,    fwd.z,   0,

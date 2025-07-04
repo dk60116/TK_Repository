@@ -11,6 +11,7 @@ public:
 	{
 		UINT windowWidth = 1600;
 		UINT windowHeight = 720;
+		UINT topBarHeight = 25;
 		UINT hierachyWidth = 250;
 		UINT inspectorWidth = 260;
 
@@ -43,10 +44,7 @@ private:
 	HWND m_hEditorWindow;
 
 private:
-	class CEditorBox* m_pHierachyBox;
-	class CEditorBox* m_pInspectorBox;
-
-	map<wstring, CEditorBox*> m_mBoxList;
+	map<wstring, class CEditorBox*> m_mBoxList;
 
 private:
 	EDITORWINOPTION m_sOptions;
