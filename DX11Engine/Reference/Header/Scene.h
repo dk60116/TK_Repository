@@ -45,6 +45,7 @@ public:
     list <CCamera*>& Get_CameraList();
     CCamera* Add_Camera(CCamera* _camera);
     CGameObject* Instantiate(CGameObject* _gameObject);
+    HRESULT SaveScene(const wstring& _filePath);
 
 private:
     ID3D11Device* m_pDevice;

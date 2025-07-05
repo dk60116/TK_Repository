@@ -46,6 +46,9 @@ using Microsoft::WRL::ComPtr;
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
+#include "json.hpp"
+using json = nlohmann::json;
+
 // 커스텀 헤더파일
 #include "MainProcess.h"
 using namespace std;

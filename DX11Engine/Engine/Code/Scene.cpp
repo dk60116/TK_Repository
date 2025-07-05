@@ -324,3 +324,8 @@ CGameObject* CScene::Instantiate(CGameObject* _gameObject)
 
 	return newObj;
 }
+
+HRESULT CScene::SaveScene(const wstring& _filePath)
+{
+	return S_OK;
+}
