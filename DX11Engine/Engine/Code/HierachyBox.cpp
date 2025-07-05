@@ -94,7 +94,7 @@ void CHierachyBox::RenderObjectHierarchy(CGameObject* _obj)
 
 	_bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
 
-	if (ImGui::IsItemClicked())
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 		editor.Set_SelectedGameObject(_obj);
 
 	if (hasChildren && nodeOpen)

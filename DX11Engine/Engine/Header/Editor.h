@@ -13,7 +13,7 @@ public:
 	{
 		UINT windowWidth = 1600;
 		UINT windowHeight = 720;
-		UINT topBarHeight = 25;
+		UINT topBarHeight = 28;
 		UINT hierachyWidth = 250;
 		UINT inspectorWidth = 260;
 

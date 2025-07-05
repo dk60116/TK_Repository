@@ -59,5 +59,12 @@ inline T* CResources::LoadOnScene(const wstring& _name)
 
 	T* resultResource = dynamic_cast<T*>(r);
 
+	if (!r)
+	{
+		CEngineResource* r = CSceneManager::GetInstance().Get_TempScene()->Find_Resource(_name);
+
+		T* resultResource = dynamic_cast<T*>(r);
+	}
+
 	return resultResource;
 }

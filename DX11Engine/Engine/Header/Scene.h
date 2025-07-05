@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CScene abstract : public UObject
 {
     friend class CSceneManager;
+    friend class CSceneLoader;
 
 protected:
     CScene();

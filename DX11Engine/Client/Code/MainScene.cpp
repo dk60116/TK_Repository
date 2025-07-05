@@ -24,7 +24,7 @@ HRESULT CMainScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	CMeshBuffer* mb = CResources::GetInstance().CreateResource<CMeshBuffer>(L"Cube", L"Cube", nullptr);
+	CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Cube (MeshBuffer)");
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
 	CMaterial* boxMat = CMaterial::Create();

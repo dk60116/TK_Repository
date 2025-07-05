@@ -2,6 +2,9 @@
 #include "InspectorBox.h"
 
 CInspectorBox::CInspectorBox()
+	: m_fRXDrag(0.f)
+    , m_fRYDrag(0.f)
+    , m_fRZDrag(0.f)
 {
 }
 
@@ -136,30 +139,50 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::Text("Rotation");
             ImGui::TableSetColumnIndex(1);
 
+            const _float rotationDeg = 2.5f;
+
             // X
+            _float prevX = m_fRXDrag;
             ImGui::TextUnformatted("X"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##X", &rotation.x, 0.1f))
-                transform->Set_LocalEulerAnglesX(rotation.x);
+            if (ImGui::DragFloat("##X", &m_fRXDrag, 1.f))
+            {
+                _float delta = m_fRXDrag - prevX;
+                transform->Add_EulerAnglesX((delta > 0) ? rotationDeg : -rotationDeg);
+            }
             ImGui::PopItemWidth();
+
+            m_fRXDrag = rotation.x;
 
             ImGui::SameLine();
 
             // Y
+            _float prevY = m_fRYDrag;
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Y", &rotation.y, 0.1f))
-                transform->Set_LocalEulerAnglesY(rotation.y);
+            if (ImGui::DragFloat("##Y", &m_fRYDrag, 1.f))
+            {
+                _float delta = m_fRYDrag - prevY;
+                transform->Add_EulerAnglesY((delta > 0) ? rotationDeg : -rotationDeg);
+            }
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
 
             // Z
+            _float prevZ = m_fRZDrag;
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Z", &rotation.z, 0.1f))
-                transform->Set_LocalEulerAnglesZ(rotation.z);
+            if (ImGui::DragFloat("##Z", &m_fRZDrag, 0.1f))
+            {
+                _float delta = m_fRZDrag - prevZ;
+                transform->Add_EulerAnglesZ((delta > 0) ? rotationDeg : -rotationDeg);
+            }
             ImGui::PopItemWidth();
+
+            prevX = 0.f;
+            prevY = 0.f;
+            prevZ = 0.f;
 
             ImGui::EndTable();
         }

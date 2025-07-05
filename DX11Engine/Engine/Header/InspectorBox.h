@@ -21,6 +21,7 @@ public:
 
 private:
 	void ShowTransform(CGameObject* _obj);
+	_float m_fRXDrag, m_fRYDrag, m_fRZDrag;
 };
 
 NS_END
