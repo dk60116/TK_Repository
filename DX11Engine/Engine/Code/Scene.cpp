@@ -12,6 +12,7 @@ CScene::CScene()
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_pEditorCamera(nullptr)
+	, m_iUniqueObjectCount(0)
 {
 	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
 	m_pContext = CGraphicDevice::GetInstance().Get_Context();
@@ -72,6 +73,8 @@ HRESULT CScene::Initialize()
 {
 	SceneRelease();
 
+	m_iUniqueObjectCount = 0;
+
 	m_mResourceList = m_mTempResourceList;
 
 	m_mTempResourceList.clear();
@@ -80,7 +83,7 @@ HRESULT CScene::Initialize()
 
 #ifndef _CLIENT_BUILD
 	CEditor::GetInstance().Set_SelectedGameObject(nullptr);
-	CGameObject* ecObj = Add_GameObject(L"__Editor Camera Object__");
+	CGameObject* ecObj = Add_GameObject(L"Editor Camera Object");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
 #endif
 
@@ -241,6 +244,8 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	CGameObject* newObj = new CGameObject(_name, m_pDevice, m_pContext);
 	newObj->AddRef();
 
+	newObj->m_iUniqueID = m_iUniqueObjectCount++;
+
 	m_lObjectList.push_back(newObj);
 
 	newObj->Set_ObjectName(_name);
@@ -264,7 +269,7 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	{
 		if ((*it)->Get_Transform()->Is_Root())
 		{
-			if ((*it)->Get_ObjectName() != L"__Editor Camera Object__")
+			if ((*it)->m_iUniqueID != 0)
 				result.push_back(*it);
 		}
 	}

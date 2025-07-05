@@ -76,6 +76,7 @@ public:
 	class CTransform* Get_Transform() const;
 	void Set_Transform(CTransform* _transform);
 
+	const _uint Get_UniqueID() const;
 	wstring Get_ObjectName() const;
 	void Set_ObjectName(wstring& _name);
 
@@ -87,6 +88,7 @@ private:
 	ID3D11DeviceContext* m_pContext;
 
 private:
+	_uint m_iUniqueID;
 	wstring m_strGameObjectName;
 	_bool m_bActive;
 

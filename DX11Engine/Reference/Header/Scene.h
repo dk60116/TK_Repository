@@ -47,11 +47,11 @@ public:
     CGameObject* Instantiate(CGameObject* _gameObject);
     HRESULT SaveScene(const wstring& _filePath);
 
-private:
+protected:
     ID3D11Device* m_pDevice;
     ID3D11DeviceContext* m_pContext;
 
-private:
+protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
     list <CGameObject*> m_lObjectList;
@@ -61,6 +61,9 @@ private:
 
     unordered_map<wstring, CEngineResource*> m_mResourceList;
     unordered_map<wstring, CEngineResource*> m_mTempResourceList;
+
+protected:
+    _uint m_iUniqueObjectCount;
 };
 
 NS_END

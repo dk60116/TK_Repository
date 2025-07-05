@@ -60,6 +60,8 @@ void CInspectorBox::Render()
 
     if (selectedObj)
     {
+        ImGui::Text(("[" + std::to_string(selectedObj->Get_UniqueID()) + " ] ").c_str());
+        ImGui::SameLine();
         ImGui::Text("%s", CEngineString::WStringToString(selectedObj->Get_ObjectName()).c_str());
 
         ShowTransform(selectedObj);
@@ -102,7 +104,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // X
             ImGui::TextUnformatted("X"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##X", &position.x, 0.1f))
+            if (ImGui::InputFloat("##X", &position.x, 0.0f, 0.0f))
                 transform->Set_LocalPosition(position);
             ImGui::PopItemWidth();
 
@@ -111,7 +113,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // Y
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Y", &position.y, 0.1f))
+            if (ImGui::InputFloat("##Y", &position.y, 0.0f, 0.0f))
                 transform->Set_LocalPosition(position);
             ImGui::PopItemWidth();
 
@@ -120,7 +122,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // Z
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Z", &position.z, 0.1f))
+            if (ImGui::InputFloat("##Z", &position.z, 0.0f, 0.0f))
                 transform->Set_LocalPosition(position);
             ImGui::PopItemWidth();
 

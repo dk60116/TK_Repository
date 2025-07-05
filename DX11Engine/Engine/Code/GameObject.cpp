@@ -2,7 +2,8 @@
 #include "GameObject.h"
 
 CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
-	: m_strGameObjectName(L"")
+	: m_iUniqueID(999999)
+	, m_strGameObjectName(L"")
 	, m_bActive(true)
 	, m_lComponentList({})
 	, m_pScene(nullptr)
@@ -278,6 +279,11 @@ CTransform* CGameObject::Get_Transform() const
 void CGameObject::Set_Transform(CTransform* _transform)
 {
 	m_pTransform = _transform;
+}
+
+const _uint CGameObject::Get_UniqueID() const
+{
+	return m_iUniqueID;
 }
 
 wstring CGameObject::Get_ObjectName() const
