@@ -100,4 +100,6 @@ void CSceneManager::LoadComplete()
 		m_pCrtScene->Initialize();
 		m_bLoading = false;
 	}
+
+	m_pCrtScene->Awake();
 }

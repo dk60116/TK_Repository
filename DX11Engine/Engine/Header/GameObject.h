@@ -72,6 +72,9 @@ public:
 	template<typename T>
 	T* GetComponent();
 
+	const _bool IsActive() const;
+	void SetActive(const _bool _active);
+
 	list<CComponent*>& Get_ComponentList();
 	class CTransform* Get_Transform() const;
 	void Set_Transform(CTransform* _transform);

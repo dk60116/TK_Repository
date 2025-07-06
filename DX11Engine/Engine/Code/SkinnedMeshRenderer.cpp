@@ -164,7 +164,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	//    m_pMeshBuffer->m_vBoneOffsetMatrices: 역 바인드포즈 행렬
 	_matrix boneMatrices[128] = {};
 
-	for (UINT i = 0; i < m_vBones.size(); ++i)
+	for (_uint i = 0; i < m_vBones.size(); ++i)
 	{
 		if (m_vBones[i])
 		{
@@ -182,12 +182,6 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 			// 최종 본 행렬
 			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
-
-			if (CInput::GetInstance().GetKeyDown(M))
-			{
-				CDebug::Log(Get_BoneName(i) + L" InvBind Matrix");
-				CDebug::Log(invBindPose);
-			}
 		}
 		else
 		{

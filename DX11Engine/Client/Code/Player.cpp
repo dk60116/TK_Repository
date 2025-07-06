@@ -38,10 +38,10 @@ HRESULT CPlayer::Initialize()
 	m_pSkinnedMeshRenderer->Set_Mesh(smb);
 	m_pSkinnedMeshRenderer->Set_Material(playerMat);
 
-	//CAnimation* anim_Idle = CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Model (Animation)");
+	CAnimation* anim_Idle = CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Idle (Animation)");
 
-	//CAnimator* m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
-	//m_pAnimator->Add_Animation(L"Idle", anim_Idle);
+	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
+	m_pAnimator->Add_Animation(L"Run", anim_Idle);
 
 	//m_pAnimator->Play(L"Idle");
 
@@ -58,6 +58,12 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
+	if (CInput::GetInstance().GetKeyDown(M))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"Run");
+	}
+
 	if (CInput::GetInstance().GetKey(W))
 	{
 		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().forward * DELTA_TIME);

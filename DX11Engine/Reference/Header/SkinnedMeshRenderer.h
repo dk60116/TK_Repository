@@ -8,6 +8,7 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CSkinnedMeshRenderer : public CRenderer
 {
 	friend class CGameObject;
+	friend class CAnimator;
 
 private:
 	CSkinnedMeshRenderer();

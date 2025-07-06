@@ -60,7 +60,14 @@ void CInspectorBox::Render()
 
     if (selectedObj)
     {
-        ImGui::Text(("[" + std::to_string(selectedObj->Get_UniqueID()) + " ] ").c_str());
+        _bool active = selectedObj->IsActive();
+
+        if (ImGui::Checkbox("##ActiveToggle", &active))
+            selectedObj->SetActive(active);
+
+        ImGui::SameLine(0.0f, 6.0f);
+
+        ImGui::Text(("[" + std::to_string(selectedObj->Get_UniqueID()) + "] ").c_str());
         ImGui::SameLine();
         ImGui::Text("%s", CEngineString::WStringToString(selectedObj->Get_ObjectName()).c_str());
 

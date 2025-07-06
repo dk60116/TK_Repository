@@ -46,6 +46,7 @@ public:
     CCamera* Add_Camera(CCamera* _camera);
     CGameObject* Instantiate(CGameObject* _gameObject);
     HRESULT SaveScene(const wstring& _filePath);
+    const _uint Get_UniqueObjectCount() const;
 
 protected:
     ID3D11Device* m_pDevice;

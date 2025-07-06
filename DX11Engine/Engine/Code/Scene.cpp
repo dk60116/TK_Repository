@@ -87,14 +87,6 @@ HRESULT CScene::Initialize()
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
 #endif
 
-	for (TRAVERSAL_ITER(m_lObjectList, it))
-	{
-		if (FAILED((*it)->Initialize()))
-			return E_FAIL;
-		else
-			(*it)->Awake();
-	}
-
 	CDebug::Log(L"Load scene Complete: " + m_strSceneName);
 
 	return S_OK;
@@ -109,7 +101,10 @@ void CScene::Awake()
 void CScene::Start()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-		(*it)->Start();
+	{
+		if ((*it)->IsActive())
+			(*it)->Start();
+	}
 }
 
 void CScene::Update_Editor()
@@ -121,23 +116,37 @@ void CScene::Update_Editor()
 void CScene::Update()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-		(*it)->Update();
+	{
+		if ((*it)->IsActive())
+			(*it)->Update();
+	}
 }
 
 void CScene::FixedUpdate()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-		(*it)->FixedUpdate();
+	{
+		if ((*it)->IsActive())
+			(*it)->FixedUpdate();
+	}
 }
 
 void CScene::LateUpdateEditor()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-		(*it)->LateUpdate_Editor();
+	{
+		if ((*it)->IsActive())
+			(*it)->LateUpdate_Editor();
+	}
 }
 
 void CScene::LateUpdate()
 {
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->IsActive())
+			(*it)->LateUpdate();
+	}
 }
 
 void CScene::Render_Editor()
@@ -149,10 +158,13 @@ void CScene::Render_Editor()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		(*it)->OnPreCull();
-		(*it)->OnPreRender();
-		(*it)->Render_Editor();
-		(*it)->OnPostRender();
+		if ((*it)->IsActive())
+		{
+			(*it)->OnPreCull();
+			(*it)->OnPreRender();
+			(*it)->Render_Editor();
+			(*it)->OnPostRender();
+		}
 	}
 }
 
@@ -168,10 +180,13 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		(*it)->OnPreCull();
-		(*it)->OnPreRender();
-		(*it)->Render();
-		(*it)->OnPostRender();
+		if ((*it)->IsActive())
+		{
+			(*it)->OnPreCull();
+			(*it)->OnPreRender();
+			(*it)->Render();
+			(*it)->OnPostRender();
+		}
 	}
 }
 
@@ -333,4 +348,9 @@ CGameObject* CScene::Instantiate(CGameObject* _gameObject)
 HRESULT CScene::SaveScene(const wstring& _filePath)
 {
 	return S_OK;
+}
+
+const _uint CScene::Get_UniqueObjectCount() const
+{
+	return m_iUniqueObjectCount;
 }

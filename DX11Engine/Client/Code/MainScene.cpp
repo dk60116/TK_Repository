@@ -46,7 +46,7 @@ HRESULT CMainScene::Initialize()
 	box1Renderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
-	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, - 1.f, 0.f));
+	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, - 3.f, 0.f));
 
 	box1Obj->Get_Transform()->Set_Parent(boxObj->Get_Transform());
 	box1Obj->Get_Transform()->Set_LocalPosition(vector3(0.f, -1.f, 0.f));

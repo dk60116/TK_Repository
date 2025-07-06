@@ -3,6 +3,7 @@
 
 CAnimation::CAnimation()
 	: m_vBoneAnimation({})
+	, m_bLoopTime(false)
 	, m_fDuration(0.f)
 	, m_fTicksPerSecond(0.f)
 {
@@ -13,15 +14,16 @@ CAnimation::~CAnimation()
 	OnDestroy();
 }
 
-void CAnimation::Sample(_float timeSec, unordered_map<wstring, BoneTransform>& out) const
+void CAnimation::Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const
 {
-	if (m_vBoneAnimation.empty() || m_fDuration == 0.f) return;
+	if (m_vBoneAnimation.empty() || m_fDuration == 0.f)
+		return;
 
-	double ticks = timeSec * m_fTicksPerSecond;
+	double ticks = _timeSec * m_fTicksPerSecond;
 	double time = fmod(ticks, m_fDuration);
 
-	out.clear();
-	out.reserve(m_vBoneAnimation.size());
+	_out.clear();
+	_out.reserve(m_vBoneAnimation.size());
 
 	for (const auto& ba : m_vBoneAnimation)
 	{
@@ -35,7 +37,7 @@ void CAnimation::Sample(_float timeSec, unordered_map<wstring, BoneTransform>& o
 		float span = float(keys[i2].timeStamp - keys[i1].timeStamp);
 		float  t = span > 0.f ? float((time - keys[i1].timeStamp) / span) : 0.f;
 
-		// --- 보간 ---
+		// 보간
 		BoneTransform bt;
 		XMStoreFloat3(&bt.pos,
 			XMVectorLerp(XMLoadFloat3(&keys[i1].position), XMLoadFloat3(&keys[i2].position), t));
@@ -47,7 +49,7 @@ void CAnimation::Sample(_float timeSec, unordered_map<wstring, BoneTransform>& o
 		XMStoreFloat3(&bt.scale,
 			XMVectorLerp(XMLoadFloat3(&keys[i1].scaling), XMLoadFloat3(&keys[i2].scaling), t));
 
-		out.emplace(ba.boneName, bt);
+		_out.emplace(ba.boneName, bt);
 	}
 }
 
@@ -90,10 +92,14 @@ HRESULT CAnimation::Initialize(const wstring& _name, const wstring& _filePath, v
 
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile
-	(
+	const aiScene* scene = importer.ReadFile(
 		filePathUTF8,
-		aiProcess_Triangulate | aiProcess_LimitBoneWeights
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices | 
+		aiProcess_GenSmoothNormals | 
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded | 
+		aiProcess_LimitBoneWeights
 	);
 
 	if (!scene || !scene->HasAnimations())

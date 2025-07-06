@@ -29,15 +29,18 @@ HRESULT CAnimator::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+void CAnimator::Awake()
+{
 	if (!m_pSkinnedRenderer)
 	{
 		m_pSkinnedRenderer = m_pGameObject->GetComponent<CSkinnedMeshRenderer>();
-		
+
 		if (m_pSkinnedRenderer)
 			m_pSkinnedRenderer->AddRef();
 	}
-
-	return S_OK;
 }
 
 void CAnimator::Update()
@@ -45,43 +48,40 @@ void CAnimator::Update()
     if (!m_bIsPlaying || !m_pSkinnedRenderer || !m_pCrtAnimation)
         return;
 
-    m_fCurrentTime += DELTA_TIME * m_fPlaybackSpeed;
-    const float duration = m_pCrtAnimation->Get_Duration();
+	m_fCurrentTime += DELTA_TIME * m_fPlaybackSpeed;
 
-    if (m_bLoop)
-        m_fCurrentTime = fmod(m_fCurrentTime, duration);
-    else if (m_fCurrentTime >= duration)
-    {
-        m_fCurrentTime = duration;
-        m_bIsPlaying = false;
-    }
+	const float duration = m_pCrtAnimation->Get_Duration();
+	if (m_bLoop)
+		m_fCurrentTime = fmodf(m_fCurrentTime, duration);
+	else if (m_fCurrentTime >= duration)
+	{
+		m_fCurrentTime = duration;
+		m_bIsPlaying = false;
+	}
 
-    unordered_map<wstring, CAnimation::BoneTransform> local;
-    m_pCrtAnimation->Sample(m_fCurrentTime, local);
+	// 2) 현재 시각의 키프레임 샘플링 --------------------
+	unordered_map<wstring, CAnimation::BoneTransform> sampled;
+	m_pCrtAnimation->Sample(m_fCurrentTime, sampled);
 
-    const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
-    m_vFinalBoneMatrix.assign(boneCount, XMMatrixIdentity());
+	// 3) 각 본 CTransform 갱신 -------------------------
+	const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
 
-    for (uint32_t i = 0; i < boneCount; ++i)
-    {
-        const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
-        const CTransform* node = m_pSkinnedRenderer->Get_BoneTransform(i);
+	for (uint32_t i = 0; i < boneCount; ++i)
+	{
+		CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
+		if (!bone) continue;
 
-        XMMATRIX M = node->Get_LocalMatrix();
-        if (auto it = local.find(name); it != local.end())
-        {
-            const auto& bt = it->second;
-            M = XMMatrixScaling(bt.scale.x, bt.scale.y, bt.scale.z) *
-                XMMatrixRotationQuaternion(XMLoadFloat4(&bt.rot)) *
-                XMMatrixTranslation(bt.pos.x, bt.pos.y, bt.pos.z);
-        }
+		const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 
-        for (auto* p = node->Get_Parent(); p; p = p->Get_Parent())
-            M *= p->Get_LocalMatrix();
+		auto it = sampled.find(name);
+		if (it == sampled.end()) continue;
 
-        M *= XMLoadFloat4x4(&m_pSkinnedRenderer->Get_BoneOffsetMatrix(i));
-        m_vFinalBoneMatrix[i] = XMMatrixTranspose(M); // VS column-major
-    }
+		const auto& bt = it->second;
+
+		bone->Set_LocalPosition(bt.pos);
+		bone->Set_LocalQuaternion(bt.rot);
+		bone->Set_LocalScale(bt.scale);
+	}
 }
 
 void CAnimator::OnDestroy()

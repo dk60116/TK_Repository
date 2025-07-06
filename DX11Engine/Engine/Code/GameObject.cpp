@@ -16,7 +16,8 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 }
 
 CGameObject::CGameObject(const CGameObject& _rhs)
-	: m_strGameObjectName(_rhs.m_strGameObjectName)
+	: m_iUniqueID(999999)
+	, m_strGameObjectName(_rhs.m_strGameObjectName)
 	, m_bActive(_rhs.m_bActive)
 	, m_lComponentList(_rhs.m_lComponentList)
 	, m_pScene(_rhs.m_pScene)
@@ -24,6 +25,7 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_pDevice(_rhs.m_pDevice)
 	, m_pContext(_rhs.m_pContext)
 {
+	m_iUniqueID = CSceneManager::GetInstance().Get_CrtScene()->Get_UniqueObjectCount();
 }
 
 CGameObject::~CGameObject()
@@ -264,6 +266,16 @@ void CGameObject::OnApplicationQuit()
 		if ((*it)->Get_Enable())
 			(*it)->OnApplicationQuit();
 	}
+}
+
+const _bool CGameObject::IsActive() const
+{
+	return m_bActive;
+}
+
+void CGameObject::SetActive(const _bool _active)
+{
+	m_bActive = _active;
 }
 
 list<CComponent*>& CGameObject::Get_ComponentList()
