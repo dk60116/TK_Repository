@@ -28,7 +28,7 @@ private:
 public:
 	HRESULT Initialize() override;
 	void Update() override;
-	void Render_Editor() override;
+	void Render_Gizmo() override;
 	void OnDestroy() override;
 
 public:

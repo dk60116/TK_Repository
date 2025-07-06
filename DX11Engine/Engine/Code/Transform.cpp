@@ -44,7 +44,7 @@ void CTransform::Update()
     Bind_Direction();
 }
 
-void CTransform::Render_Editor()
+void CTransform::Render_Gizmo()
 {
     if (CEditor::GetInstance().Get_SelectedGameObject() != m_pGameObject)
         return;

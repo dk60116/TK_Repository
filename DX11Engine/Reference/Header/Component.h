@@ -55,6 +55,8 @@ public:
 	virtual void Render();
 	virtual void OnPostRender();
 
+	virtual void Render_Gizmo();
+
 	virtual void OnEnable();
 	virtual void OnDisable();
 	virtual void OnDestroy();

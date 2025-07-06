@@ -165,6 +165,8 @@ void CScene::Render_Editor()
 			(*it)->Render_Editor();
 			(*it)->OnPostRender();
 		}
+
+		(*it)->Render_Gizmo();
 	}
 }
 

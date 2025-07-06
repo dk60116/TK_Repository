@@ -230,6 +230,12 @@ void CGameObject::OnPostRender()
 	}
 }
 
+void CGameObject::Render_Gizmo()
+{
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+		(*it)->Render_Gizmo();
+}
+
 void CGameObject::OnEnable()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))

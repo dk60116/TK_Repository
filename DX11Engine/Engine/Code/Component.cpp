@@ -116,6 +116,10 @@ void CComponent::OnPostRender()
 {
 }
 
+void CComponent::Render_Gizmo()
+{
+}
+
 void CComponent::OnEnable()
 {
 }
