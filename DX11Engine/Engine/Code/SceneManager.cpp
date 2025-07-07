@@ -73,12 +73,18 @@ void CSceneManager::LoadScene(wstring _scene)
 		return;
 	}
 
-	CDebug::Log(L"Load scene start: " + _scene);
-
 	auto iter = m_mSceneList.find(_scene);
 
 	if (iter == m_mSceneList.end())
+	{
+		CDebug::LogError(L"Load Scene Fail: Not found Scene: " + _scene);
 		return;
+	}
+	else
+		CDebug::Log(L"Load scene start: " + _scene);
+
+	if (m_pCrtScene)
+		CEditor::GetInstance().Set_EditorCamTransform(Get_EditorCamera()->Get_Transform());
 
 	m_pTempScene = iter->second;
 
@@ -102,4 +108,9 @@ void CSceneManager::LoadComplete()
 	}
 
 	m_pCrtScene->Awake();
+}
+
+CCamera* CSceneManager::Get_EditorCamera()
+{
+	return m_pCrtScene->Get_EditorCamera();
 }

@@ -83,8 +83,11 @@ HRESULT CScene::Initialize()
 
 #ifndef _CLIENT_BUILD
 	CEditor::GetInstance().Set_SelectedGameObject(nullptr);
+	CEditor::GetInstance().MoveTo_SelectedGameObject(nullptr);
 	CGameObject* ecObj = Add_GameObject(L"Editor Camera Object");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
+	m_pEditorCamera->Get_Transform()->Set_Position(CEditor::GetInstance().Get_EditorCamPositon());
+	m_pEditorCamera->Get_Transform()->Set_Quaternion(CEditor::GetInstance().Get_EditorCamQuaternion());
 #endif
 
 	CDebug::Log(L"Load scene Complete: " + m_strSceneName);

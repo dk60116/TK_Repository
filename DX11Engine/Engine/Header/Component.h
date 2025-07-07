@@ -80,6 +80,21 @@ protected:
 protected:
 	_bool m_bEnable;
 	class CGameObject* m_pGameObject;
+
+public:
+	virtual vector<FieldInfo> GetInspectorFields();
+
+protected:
+	inline FieldType DetectFieldType(bool&) { return FieldType::BOOL; }
+	inline FieldType DetectFieldType(int&) { return FieldType::INT; }
+	inline FieldType DetectFieldType(float&) { return FieldType::FLOAT; }
+	inline FieldType DetectFieldType(vector2&) { return FieldType::VECTOR2; }
+	inline FieldType DetectFieldType(vector2Int&) { return FieldType::VECTOR2INT; }
+	inline FieldType DetectFieldType(vector3&) { return FieldType::VECTOR3; }
+	inline FieldType DetectFieldType(vector3Int&) { return FieldType::VECTOR3INT; }
+	inline FieldType DetectFieldType(wstring&) { return FieldType::STRING; }
+	inline FieldType DetectFieldType(UObject*) { return FieldType::POINTER; }
+	inline FieldType DetectFieldType(ColorValue&) { return FieldType::COLOR; }
 };
 
 NS_END

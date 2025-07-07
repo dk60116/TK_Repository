@@ -16,6 +16,10 @@ public:
 	virtual void OnDestroy() PURE;
 
 protected:
+	void Toggle_Begin();
+	void Toggle_End();
+
+protected:
 	wstring m_strBoxName;
 };
 

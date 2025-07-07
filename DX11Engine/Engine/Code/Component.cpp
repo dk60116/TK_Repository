@@ -157,6 +157,11 @@ void CComponent::Set_Object(CGameObject* _gameObject)
 	m_pGameObject = _gameObject;
 }
 
+vector<FieldInfo> CComponent::GetInspectorFields()
+{
+	return vector<FieldInfo> {};
+}
+
 CTransform* CComponent::Get_Transform()
 {
 	return m_pGameObject->Get_Transform();

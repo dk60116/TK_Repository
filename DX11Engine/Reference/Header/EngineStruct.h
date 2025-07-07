@@ -5,6 +5,21 @@
 
 namespace Engine
 {
+#pragma region Serialize
+    enum class FieldType
+    {
+        BOOL, INT, FLOAT, FLOAT_RX, FLOAT_RY, FLOAT_RZ, VECTOR3, VECTOR3INT, VECTOR2, VECTOR2INT, STRING, POINTER, COLOR
+    };
+
+    struct FieldInfo
+    {
+        wstring name;
+        FieldType type;
+        void* ptr;
+        wstring filePath;
+    };
+#pragma endregion
+
 #pragma region vector2
     struct vector2
     {
@@ -491,6 +506,16 @@ namespace Engine
             return vector3(_b.x - _a.x, _b.y - _a.y, _b.z - _a.z).length();
         }
 
+        static const vector3 Lerp(const vector3& a, const vector3& b, _float t)
+        {
+            return vector3
+            {
+                a.x * (1.f - t) + b.x * t,
+                a.y * (1.f - t) + b.y * t,
+                a.z * (1.f - t) + b.z * t
+            };
+        }
+
         static vector3 zero()
         {
             return vector3(0.f, 0.f, 0.f);
@@ -829,7 +854,7 @@ namespace Engine
         {
         }
 
-        quaternion(_vector vec)
+        quaternion(const _vector vec)
         {
             _float4 temp;
             XMStoreFloat4(&temp, vec);

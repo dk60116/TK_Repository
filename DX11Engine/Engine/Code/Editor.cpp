@@ -11,6 +11,15 @@ CEditor::CEditor()
 	, m_sOptions({})
 	, m_eControleTool(TransformControleTool::MOVE)
 	, m_pSelectedGameObject(nullptr)
+	, m_pMoveTargetGameObject(nullptr)
+	, m_vCameraPos({})
+	, m_vCameraQuat({})
+	, m_bDoubleClicked(false)
+	, m_bIsMovingCamera(false)
+	, m_vCameraMoveStartPos({})
+	, m_vCameraMoveTargetPos({})
+	, m_fCameraMoveDuration(0.3f)
+	, m_fCameraMoveProgress(0.f)
 {
 }
 
@@ -104,6 +113,26 @@ void CEditor::Editor_Update_Begin()
 void CEditor::Editor_Update_During()
 {
 	ChangeControleTool();
+
+	if (m_bIsMovingCamera)
+	{
+		const float dt = CTime::GetInstance().Get_DeltaTime();
+		m_fCameraMoveProgress += dt / m_fCameraMoveDuration;
+
+		if (m_fCameraMoveProgress >= 1.f)
+		{
+			m_fCameraMoveProgress = 1.f;
+			m_bIsMovingCamera = false;
+		}
+
+		float t = m_fCameraMoveProgress;
+		t = t * t * (3.f - 2.f * t);
+
+		vector3 interpPos = vector3::Lerp(m_vCameraMoveStartPos, m_vCameraMoveTargetPos, t);
+
+		CTransform* camTransform = CSceneManager::GetInstance().Get_EditorCamera()->Get_Transform();
+		camTransform->Set_Position(interpPos);
+	}
 }
 
 void CEditor::Editor_Update_End()
@@ -169,19 +198,19 @@ LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 void CEditor::ChangeControleTool()
 {
-	if (!CInput::GetInstance().GetMouseButton(1))
+	if (!CInput::GetInstance().GetMouseButton_Editor(1))
 	{
-		if (CInput::GetInstance().GetKeyDown(Q))
+		if (CInput::GetInstance().GetKeyDown_Editor(Q))
 			Change_ControleTool(TransformControleTool::VIEW);
-		if (CInput::GetInstance().GetKeyDown(W))
+		if (CInput::GetInstance().GetKeyDown_Editor(W))
 			Change_ControleTool(TransformControleTool::MOVE);
-		if (CInput::GetInstance().GetKeyDown(E))
+		if (CInput::GetInstance().GetKeyDown_Editor(E))
 			Change_ControleTool(TransformControleTool::ROTATE);
-		if (CInput::GetInstance().GetKeyDown(R))
+		if (CInput::GetInstance().GetKeyDown_Editor(R))
 			Change_ControleTool(TransformControleTool::SCALE);
-		if (CInput::GetInstance().GetKeyDown(T))
+		if (CInput::GetInstance().GetKeyDown_Editor(T))
 			Change_ControleTool(TransformControleTool::RECT);
-		if (CInput::GetInstance().GetKeyDown(Y))
+		if (CInput::GetInstance().GetKeyDown_Editor(Y))
 			Change_ControleTool(TransformControleTool::TRANSFORM);
 	}
 }
@@ -214,6 +243,22 @@ void CEditor::Change_ControleTool(const TransformControleTool _tool)
 	m_eControleTool = _tool;
 }
 
+const vector3 CEditor::Get_EditorCamPositon() const
+{
+	return m_vCameraPos;
+}
+
+const quaternion CEditor::Get_EditorCamQuaternion() const
+{
+	return m_vCameraQuat;
+}
+
+void CEditor::Set_EditorCamTransform(CTransform* _transform)
+{
+	m_vCameraPos = _transform->Get_Position();
+	m_vCameraQuat = _transform->Get_Quaternion();
+}
+
 void CEditor::Set_SelectedGameObject(CGameObject* _target)
 {
 	if (_target == m_pSelectedGameObject)
@@ -228,6 +273,33 @@ void CEditor::Set_SelectedGameObject(CGameObject* _target)
 		m_pSelectedGameObject = _target;
 		m_pSelectedGameObject->AddRef();
 	}
+}
+
+void CEditor::MoveTo_SelectedGameObject(CGameObject* _target)
+{
+	if (!_target)
+	{
+		m_pMoveTargetGameObject = nullptr;
+		return;
+	}
+
+	if (_target == m_pMoveTargetGameObject)
+		m_bDoubleClicked = !m_bDoubleClicked;
+	else
+		m_bDoubleClicked = false;
+
+	_float distance = m_bDoubleClicked ? 6.f : 3.f;
+
+	m_pMoveTargetGameObject = _target;
+
+	_float3 targetPos = _target->Get_Transform()->Get_Position();
+	CTransform& ect = *CSceneManager::GetInstance().Get_EditorCamera()->Get_Transform();
+
+	m_vCameraMoveStartPos = ect.Get_Position();
+	m_vCameraMoveTargetPos = targetPos + ect.Get_Directions().forward * -distance;
+
+	m_fCameraMoveProgress = 0.f;
+	m_bIsMovingCamera = true;
 }
 
 CGameObject* CEditor::Get_SelectedGameObject() const

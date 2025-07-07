@@ -47,6 +47,17 @@ private: \
     }
 
 #define DELTA_TIME CTime::GetInstance().Get_DeltaTime()
+
+#define BEGIN_SERIALIZEFIELD \
+	public: \
+	std::vector<FieldInfo> GetInspectorFields() override { \
+	std::vector<FieldInfo> _fields;
+
+#define SERIALIZEFIELD(var) \
+	_fields.push_back({std::wstring(L#var).substr(3), DetectFieldType(var), &var});
+
+#define END_SERIALIZEFIELD \
+	return _fields; }
 }
 
 #endif // Engine_Macro_h__

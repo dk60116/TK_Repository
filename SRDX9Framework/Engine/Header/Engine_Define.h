@@ -71,8 +71,8 @@
 
 #define BEGIN_SERIALIZEFIELD \
 public: \
-std::vector<FieldInfo> GetInspectorFields() override { \
-std::vector<FieldInfo> _fields;
+vector<FieldInfo> GetInspectorFields() override { \
+vector<FieldInfo> _fields;
 
 #define SERIALIZEFIELD(var) \
 _fields.push_back({std::wstring(L#var).substr(3), DetectFieldType(var), &var});

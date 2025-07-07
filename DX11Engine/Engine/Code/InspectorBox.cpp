@@ -62,21 +62,42 @@ void CInspectorBox::Render()
     {
         _bool active = selectedObj->IsActive();
 
+        _float baseY = ImGui::GetCursorPosY();
+
+        Toggle_Begin();
+
         if (ImGui::Checkbox("##ActiveToggle", &active))
             selectedObj->SetActive(active);
 
+        static CGameObject* s_NameTarget = nullptr;
+        static std::string  s_EditName;
+        if (s_NameTarget != selectedObj)
+        {
+            s_NameTarget = selectedObj;
+            s_EditName = CEngineString::WStringToString(selectedObj->Get_ObjectName());
+        }
+
         ImGui::SameLine(0.0f, 6.0f);
 
+        ImGui::SetCursorPosY(baseY);
         ImGui::Text(("[" + std::to_string(selectedObj->Get_UniqueID()) + "] ").c_str());
         ImGui::SameLine();
-        ImGui::Text("%s", CEngineString::WStringToString(selectedObj->Get_ObjectName()).c_str());
+        ImGui::SetCursorPosY(baseY + 3.f);
+        ImGui::SetNextItemWidth(140.0f);                
+        if (ImGui::InputText("##ObjName", &s_EditName,
+            ImGuiInputTextFlags_AutoSelectAll |
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            wstring targetName = CEngineString::StringToWString(s_EditName);
+            selectedObj->Set_ObjectName(targetName);
+        }
+
+        Toggle_End();
 
         ShowTransform(selectedObj);
     }
     else
-    {
         ImGui::Text("No object selected.");
-    }
 
 	ImGui::End();
 }

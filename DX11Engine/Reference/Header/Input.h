@@ -35,6 +35,7 @@ public:
     _bool GetMouseButtonDown(_int _button);
     _bool GetMouseButtonUp(_int _button);
 
+    const vector2Int GetMousePos_Editor();
     const vector2Int GetMousePos();
 
     const _float GetAxis_Editor(const wstring _axisName);

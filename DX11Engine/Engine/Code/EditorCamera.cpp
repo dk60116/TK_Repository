@@ -5,13 +5,15 @@ CEditorCamera::CEditorCamera()
 	: CCamera{}
 	, m_sOptions({})
 	, m_bRMouseDowned(false)
+	, m_v2MouseDragDelta({})
+	, m_v2PrevMosuePos({})
 	, m_fPitch(0.f)
 	, m_fYaw(0.f)
 	, m_bMoving(false)
 	, m_fMoveTimeTotal(0.25f)
 	, m_fMoveTimeCur(0.f)
-	, m_v3MoveFrom(vector3::zero())
-	, m_v3MoveTo(vector3::zero())
+	, m_v3MoveFrom({})
+	, m_v3MoveTo({})
 	, m_bZoomDistToggle(false)
 {
 	m_strName = L"Editor Camera";
@@ -56,7 +58,7 @@ void CEditorCamera::Update_Editor()
 		float smoothT = t * t * (3.f - 2.f * t);
 
 		_vector newPos = XMVectorLerp(moveFrom, moveTo, smoothT);
-		Get_Transform()->Set_Position(vector3(newPos));
+		Get_Transform()->Add_Position(vector3(newPos));
 	}
 	else
 	{
@@ -70,11 +72,11 @@ void CEditorCamera::Update_Editor()
 
 		if (isRightMouseDown || isMiddleMouseDown)
 		{
-			vector2Int currentMouse = CInput::GetInstance().GetMousePos();
+			vector2Int currentMouse = CInput::GetInstance().GetMousePos_Editor();
 
 			if (!m_bRMouseDowned)
 			{
-				m_v2PrevMosuePos = CInput::GetInstance().GetMousePos();
+				m_v2PrevMosuePos = CInput::GetInstance().GetMousePos_Editor();
 				m_bRMouseDowned = true;
 				return;
 			}
@@ -99,10 +101,10 @@ void CEditorCamera::Update_Editor()
 				{
 					if (m_v2MouseDragDelta != vector2::zero())
 					{
-						m_fYaw += m_v2MouseDragDelta.x * DELTA_TIME * m_sOptions.rotateSpeed;
-						m_fPitch += m_v2MouseDragDelta.y * DELTA_TIME * m_sOptions.rotateSpeed;
+						m_fYaw = m_v2MouseDragDelta.x * DELTA_TIME * m_sOptions.rotateSpeed;
+						m_fPitch = m_v2MouseDragDelta.y * DELTA_TIME * m_sOptions.rotateSpeed;
 
-						camTransform.Set_EulerAngles(m_fPitch, m_fYaw, 0.f);
+						camTransform.Add_EulerAngles(m_fPitch, m_fYaw, 0.f);
 					}
 				}
 			}
@@ -125,7 +127,7 @@ void CEditorCamera::Update_Editor()
 		}
 	}
 
-	const _float _wheel = CInput::GetInstance().GetAxis(L"Mouse ScrollWheel");
+	const _float _wheel = CInput::GetInstance().GetAxis_Editor(L"Mouse ScrollWheel");
 
 	if (_wheel != 0)
 	{

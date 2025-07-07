@@ -43,6 +43,11 @@ private:
     _float m_fCurrentTime;
     _float m_fPlaybackSpeed;
     vector<_matrix> m_vFinalBoneMatrix;
+
+    BEGIN_SERIALIZEFIELD
+        SERIALIZEFIELD(m_pSkinnedRenderer)
+        SERIALIZEFIELD(m_pCrtAnimation)
+    END_SERIALIZEFIELD
 };
 
 NS_END

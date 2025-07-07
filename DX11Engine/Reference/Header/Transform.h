@@ -46,13 +46,13 @@ public:
 	const _matrix Get_InverseWorldMatrix() const;
 
 public:
-	const vector3 Get_Position() const;
-	const vector3 Get_LocalPosition() const;
+	vector3 Get_Position() const;
+	vector3 Get_LocalPosition() const;
 
 	const vector3 Get_EulerAngles();
-	const vector3 Get_LocalEulerAngles() const;
+	const vector3 Get_LocalEulerAngles();
 	
-	const vector3& Get_LocalScale();
+	vector3 Get_LocalScale();
 
 	const quaternion Get_Quaternion() const;
 	const quaternion& Get_LocalQuaternion() const;

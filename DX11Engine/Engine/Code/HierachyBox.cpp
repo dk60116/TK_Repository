@@ -97,6 +97,9 @@ void CHierachyBox::RenderObjectHierarchy(CGameObject* _obj)
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 		editor.Set_SelectedGameObject(_obj);
 
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+		CEditor::GetInstance().MoveTo_SelectedGameObject(_obj);
+
 	if (hasChildren && nodeOpen)
 	{
 		for (auto* child : _obj->Get_Transform()->Get_ChldList())

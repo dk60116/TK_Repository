@@ -268,12 +268,12 @@ const _matrix CTransform::Get_InverseWorldMatrix() const
     return XMMatrixInverse(nullptr, mat);
 }
 
-const vector3 CTransform::Get_Position() const
+vector3 CTransform::Get_Position() const
 {
     return m_vWorldPosition;
 }
 
-const vector3 CTransform::Get_LocalPosition() const
+vector3 CTransform::Get_LocalPosition() const
 {
     return m_vPosition;
 }
@@ -300,12 +300,12 @@ const vector3 CTransform::Get_EulerAngles()
     return vector3::zero();
 }
 
-const vector3 CTransform::Get_LocalEulerAngles() const
+const vector3 CTransform::Get_LocalEulerAngles()
 {
     return m_vQuaternion.to_euler();
 }
 
-const vector3& CTransform::Get_LocalScale()
+vector3 CTransform::Get_LocalScale()
 {
     return m_vScale;
 }
@@ -422,6 +422,8 @@ void CTransform::Set_Quaternion(const quaternion& _value)
 
     if (tempParent)
         Set_Parent(tempParent);
+
+    m_vEulerAngles = m_vQuaternion.to_euler();
 }
 
 void CTransform::Set_LocalQuaternion(const quaternion& _value)
@@ -453,6 +455,8 @@ void CTransform::Set_EulerAngles(const vector3& _rot)
 
     if (tempParent)
         Set_Parent(tempParent);
+
+    m_vEulerAngles = _rot;
 }
 
 void CTransform::Set_EulerAngles(const _float _x, const _float _y, const _float _z)
@@ -548,7 +552,7 @@ void CTransform::Add_LocalEulerAngles(const vector3& _rot)
 
 void CTransform::Add_LocalEulerAngles(const _float _x, const _float _y, const _float _z)
 {
-    Set_LocalEulerAngles(vector3(_x, _y, _z));
+    Add_LocalEulerAngles(vector3(_x, _y, _z));
 }
 
 void CTransform::Add_LocalEulerAnglesX(const _float _value)

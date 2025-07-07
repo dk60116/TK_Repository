@@ -37,6 +37,7 @@ using Microsoft::WRL::ComPtr;
 
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include <imgui_stdlib.h>
 
 #ifdef NEED_RESTORE_NEW
 #define new DEBUG_NEW

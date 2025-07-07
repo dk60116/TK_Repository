@@ -56,7 +56,6 @@ HRESULT CMainScene::Initialize()
 
 	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
 	m_pPlayer->Get_Transform()->Get_Child()->Set_LocalScale(0.01f);
-	CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera()->Get_Transform()->Set_PositionZ(-5.f);
 
 	return S_OK;
 }

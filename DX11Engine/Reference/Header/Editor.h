@@ -39,8 +39,15 @@ public:
 public:
 	const TransformControleTool Get_ControleTool() const;
 	void Change_ControleTool(const TransformControleTool _tool);
+	const vector3 Get_EditorCamPositon() const;
+	const quaternion Get_EditorCamQuaternion() const;
+	void Set_EditorCamTransform(class CTransform* _transform);
 	void Set_SelectedGameObject(class CGameObject* _target);
+	void MoveTo_SelectedGameObject(class CGameObject* _target);
 	CGameObject* Get_SelectedGameObject() const;
+
+private:
+	HWND m_hEditorWindow;
 
 private:
 	HWND CreateEditorWindow();
@@ -48,8 +55,15 @@ private:
 
 	void ChangeControleTool();
 
-private:
-	HWND m_hEditorWindow;
+	_bool m_bDoubleClicked;
+
+	vector3 m_vCameraPos;
+	quaternion m_vCameraQuat;
+	_bool m_bIsMovingCamera;
+	vector3 m_vCameraMoveStartPos;
+	vector3 m_vCameraMoveTargetPos;
+	_float m_fCameraMoveProgress;
+	_float m_fCameraMoveDuration;
 
 private:
 	map<wstring, class CEditorBox*> m_mBoxList;
@@ -60,6 +74,7 @@ private:
 private:
 	TransformControleTool m_eControleTool;
 	CGameObject* m_pSelectedGameObject;
+	CGameObject* m_pMoveTargetGameObject;
 };
 
 NS_END

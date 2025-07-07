@@ -23,7 +23,7 @@ public:
 	void LoadComplete();
 
 public:
-	class CEditorCamera* Get_EditorCamera();
+	class CCamera* Get_EditorCamera();
 
 private:
 	CScene* m_pCrtScene;

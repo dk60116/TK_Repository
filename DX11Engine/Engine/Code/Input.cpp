@@ -149,17 +149,29 @@ bool CInput::GetMouseButtonUp(_int _button)
     return !m_bKeyState[_button] && !IsEditor();
 }
 
+const vector2Int CInput::GetMousePos_Editor()
+{
+    POINT ptMouse;
+    GetCursorPos(&ptMouse);
+    ScreenToClient(CEditor::GetInstance().Get_EditorWindow(), &ptMouse);
+
+    return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
+}
+
 const vector2Int CInput::GetMousePos()
 {
     POINT ptMouse;
     GetCursorPos(&ptMouse);
-    //ScreenToClient(CEngineEditor::GetInstance().FindWindowHandle(L"Game"), &ptMouse);
+    ScreenToClient(CDisplay::GetInstance().Get_GameWindow(), &ptMouse);
 
-    return vector2Int((int)ptMouse.x, (int)ptMouse.y);
+    return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }
 
 const _float CInput::GetAxis_Editor(const wstring _axisName)
 {
+    if (!IsEditor())
+        return 0.f;
+
     _float result = 0.f;
 
     if (_axisName == L"Horizontal")
@@ -196,6 +208,9 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
 
 const _float CInput::GetAxis(const wstring _axisName)
 {
+    if (IsEditor())
+        return 0.f;
+
     _float result = 0.f;
 
     if (_axisName == L"Horizontal")
