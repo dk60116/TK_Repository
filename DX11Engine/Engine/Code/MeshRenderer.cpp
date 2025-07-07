@@ -100,6 +100,10 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	pBuffer->Render();
 }
 
+void CMeshRenderer::Render_Outline(CCamera* _cam)
+{
+}
+
 CMeshFilter* CMeshRenderer::Get_MeshFilter()
 {
 	return m_pMeshFilter;

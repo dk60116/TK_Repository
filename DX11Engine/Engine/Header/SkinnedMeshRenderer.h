@@ -35,6 +35,7 @@ public:
 protected:
 	void CreateBoneHierachy(const aiNode* _node, CTransform* _parent);
 	void Render_WithCamera(CCamera* _cam) override;
+	void Render_Outline(CCamera* _cam) override;
 
 public:
 	void Set_Mesh(CSkinnedMeshBuffer* _Mesh);

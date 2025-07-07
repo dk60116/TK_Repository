@@ -27,6 +27,7 @@ public:
 
 protected:
 	void Render_WithCamera(CCamera* _cam) override;
+	void Render_Outline(CCamera* _cam) override;
 
 public:
 	CMeshFilter* Get_MeshFilter();

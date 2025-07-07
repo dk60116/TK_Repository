@@ -207,6 +207,44 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	m_pMeshBuffer->Render();
 }
 
+void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
+{
+	if (!_cam)
+		return;
+
+	// 월드, 뷰, 프로젝션
+	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
+
+	// 스케일업 (조금 크게)
+	_matrix scale = XMMatrixScaling(1.03f, 1.03f, 1.03f);
+	matWorld = scale * matWorld;
+
+	_matrix matView = _cam->Get_ViewMatrix();
+	_matrix matProj = _cam->Get_ProjectionMatrix();
+
+	m_pContext->OMSetDepthStencilState(CGraphicDevice::GetInstance().Get_DepthStencil_NoWrite(), 0);
+
+	m_pContext->RSSetState(CGraphicDevice::GetInstance().Get_Rasterizer_CullFront());
+
+	// 4) 아웃라인 머티리얼 바인딩 (단색 셰이더)
+	CMaterial* outlineMat = nullptr;
+
+	if (outlineMat)
+	{
+		outlineMat->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
+
+		// 본 상수 버퍼 바인딩
+		m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+
+		// 메시 렌더링
+		m_pMeshBuffer->Render();
+	}
+
+	// 5) 상태 복원
+	m_pContext->OMSetDepthStencilState(nullptr, 0);
+	m_pContext->RSSetState(nullptr);
+}
+
 void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 {
 	Safe_Release(m_pMeshBuffer);

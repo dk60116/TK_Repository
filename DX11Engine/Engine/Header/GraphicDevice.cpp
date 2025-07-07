@@ -8,6 +8,8 @@ CGraphicDevice::CGraphicDevice()
 	, m_pBackBufferRTV(nullptr)
 	, m_pDepthStencilView(nullptr)
 	, m_hCrtWndow(nullptr)
+	, m_pDepthStencilNoWrite(nullptr)
+	, m_pRasterizerCullFront(nullptr)
 {
 }
 
@@ -46,6 +48,29 @@ HRESULT CGraphicDevice::Initialize()
 	vp.MaxDepth = 1.0f;
 	m_pContext->RSSetViewports(1, &vp);
 
+	{
+		D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+		dsDesc.DepthEnable = TRUE;
+		dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+		HRESULT hr = m_pDevice->CreateDepthStencilState(&dsDesc, &m_pDepthStencilNoWrite);
+
+		if (FAILED(hr))
+			return E_FAIL;
+	}
+
+	{
+		D3D11_RASTERIZER_DESC rsDesc = {};
+		rsDesc.FillMode = D3D11_FILL_SOLID;
+		rsDesc.CullMode = D3D11_CULL_FRONT;
+		rsDesc.DepthClipEnable = TRUE;
+
+		HRESULT hr = m_pDevice->CreateRasterizerState(&rsDesc, &m_pRasterizerCullFront);
+		if (FAILED(hr))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -56,6 +81,8 @@ void CGraphicDevice::Destroy()
 	Safe_Release(m_pBackBufferRTV);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+	Safe_Release(m_pDepthStencilNoWrite);
+	Safe_Release(m_pRasterizerCullFront);
 
 	CoUninitialize();
 }
@@ -227,6 +254,16 @@ const D3D11_VIEWPORT* CGraphicDevice::Get_CurrentViewport()
 		return nullptr;
 
 	return &it->second.viewport;
+}
+
+ID3D11DepthStencilState* CGraphicDevice::Get_DepthStencil_NoWrite() const
+{
+	return m_pDepthStencilNoWrite;
+}
+
+ID3D11RasterizerState* CGraphicDevice::Get_Rasterizer_CullFront() const
+{
+	return m_pRasterizerCullFront;
 }
 
 HRESULT CGraphicDevice::Ready_BackBufferRenderTargetView()
