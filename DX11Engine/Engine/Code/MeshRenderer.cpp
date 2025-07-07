@@ -84,6 +84,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	// MeshBuffer 가져오기
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
+
 	if (!pBuffer)
 		return;
 

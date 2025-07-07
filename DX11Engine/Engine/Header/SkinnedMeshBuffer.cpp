@@ -159,8 +159,8 @@ void CSkinnedMeshBuffer::Render()
 
     ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
-    UINT stride = m_sInfo.vertexSize;
-    UINT offset = 0;
+    _uint stride = m_sInfo.vertexSize;
+    _uint offset = 0;
 
     context->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
@@ -197,21 +197,21 @@ const _float4x4& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)
 
 void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<VertexSkinnedBuffer>& vertices)
 {
-    // 1) 본 인덱스/가중치 할당
-    for (UINT i = 0; i < mesh->mNumBones; ++i)
+    // 본 인덱스/가중치 할당
+    for (_uint i = 0; i < mesh->mNumBones; ++i)
     {
         const aiBone* bone = mesh->mBones[i];
 
-        for (UINT j = 0; j < bone->mNumWeights; ++j)
+        for (_uint j = 0; j < bone->mNumWeights; ++j)
         {
             const aiVertexWeight& vw = bone->mWeights[j];
 
-            UINT vertexId = vw.mVertexId;
+            _uint vertexId = vw.mVertexId;
             float weight = vw.mWeight;
 
             auto& v = vertices[vertexId];
 
-            for (UINT k = 0; k < 4; ++k)
+            for (_uint k = 0; k < 4; ++k)
             {
                 if (v.boneWeights[k] == 0.0f)
                 {
@@ -223,7 +223,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
         }
     }
 
-    // 2) 각 버텍스의 가중치를 큰 순서로 정렬 + 인덱스 함께 정렬
+    // 각 버텍스의 가중치를 큰 순서로 정렬 + 인덱스 함께 정렬
     for (auto& v : vertices)
     {
         // 가중치와 인덱스를 쌍으로 모음
@@ -256,7 +256,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
             }
         }
 
-        // 3) 정규화
+        // 정규화
         float sum = v.boneWeights[0] + v.boneWeights[1] + v.boneWeights[2] + v.boneWeights[3];
         if (sum > 0.0f)
         {

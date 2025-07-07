@@ -119,9 +119,28 @@ void CAnimator::Play(const wstring& _animName)
 	}
 }
 
+void CAnimator::Pause()
+{
+	m_bIsPlaying = false;
+}
+
+void CAnimator::Stop()
+{
+	m_fCurrentTime = 0.f;
+
+	Update();
+
+	m_bIsPlaying = false;
+}
+
 void CAnimator::SetLoop(const _bool _loop)
 {
 	m_bLoop = _loop;
+}
+
+void CAnimator::SetSpeed(const _float _value)
+{
+	m_fPlaybackSpeed = _value;
 }
 
 CAnimation* CAnimator::Get_CurrentAnimation()

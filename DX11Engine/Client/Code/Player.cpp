@@ -43,6 +43,8 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Run", anim_Idle);
 
+	m_pAnimator->SetLoop(true);
+	//m_pAnimator->Set_PlaybackSpeed(0.1f);
 	//m_pAnimator->Play(L"Idle");
 
 	return S_OK;
@@ -62,6 +64,12 @@ void CPlayer::Update()
 	{
 		if (m_pAnimator)
 			m_pAnimator->Play(L"Run");
+	}
+
+	if (CInput::GetInstance().GetKeyDown(N))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Stop();
 	}
 
 	if (CInput::GetInstance().GetKey(W))

@@ -26,7 +26,11 @@ public:
     void Set_PlaybackSpeed(const _float _value);
 
     void Play(const wstring& _animName);
+    void Pause();
+    void Stop();
+
     void SetLoop(const _bool _loop);
+    void SetSpeed(const _float _value);
 
 public:
     CAnimation* Get_CurrentAnimation();
