@@ -6,6 +6,8 @@ CSceneManager::CSceneManager()
 	, m_pTempScene(nullptr)
 	, m_mSceneList({})
 	, m_bLoading(false)
+	, m_pEditorCamObj(nullptr)
+	, m_pEditorCamera(nullptr)
 {
 }
 

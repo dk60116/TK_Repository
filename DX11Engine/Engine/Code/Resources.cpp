@@ -4,6 +4,7 @@
 CResources::CResources()
 	: m_strDefaultAssetPath(L"../Assets/")
 	, m_strEngineFilePath(L"../EngineResource/")
+	, m_mGameResourceList({})
 {
 }
 
@@ -20,6 +21,10 @@ CResources& CResources::GetInstance()
 
 void CResources::Release()
 {
+	for (TRAVERSAL_ITER(m_mGameResourceList, it))
+		Safe_Release((*it).second);
+
+	m_mGameResourceList.clear();
 }
 
 _bool CResources::FileExists(wstring& _path)

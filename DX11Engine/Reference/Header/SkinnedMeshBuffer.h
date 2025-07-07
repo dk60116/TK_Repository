@@ -19,7 +19,7 @@ private:
 public:
 	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
 	void Render();
-	void OnDestroy();
+	void OnDestroy() override;
 
 private:
 	void FillBoneWeightsAndIndices(const aiMesh* mesh, vector<VertexSkinnedBuffer>& vertices);

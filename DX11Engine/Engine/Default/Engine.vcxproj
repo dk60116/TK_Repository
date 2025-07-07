@@ -191,6 +191,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\SceneLoader.h" />
     <ClInclude Include="..\Header\SceneManager.h" />
     <ClInclude Include="..\Header\EngineTime.h" />
+    <ClInclude Include="..\Header\Shader.h" />
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h" />
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h" />
     <ClInclude Include="..\Header\Texture.h" />
@@ -282,6 +283,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\SceneLoader.cpp" />
     <ClCompile Include="..\Code\SceneManager.cpp" />
     <ClCompile Include="..\Code\EngineTime.cpp" />
+    <ClCompile Include="..\Code\Shader.cpp" />
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />

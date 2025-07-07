@@ -133,6 +133,9 @@
     <ClInclude Include="..\Header\TopToolBar.h">
       <Filter>Editor\EditorBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Shader.h">
+      <Filter>Resource\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -215,6 +218,9 @@
     </Filter>
     <Filter Include="Resource\MeshBuffer">
       <UniqueIdentifier>{d66f54ef-9586-4b17-93bc-2206c9e3b325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Shader">
+      <UniqueIdentifier>{bdeabc89-ffd2-4664-ab5f-40105daaa391}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\imgui_stdlib.cpp">
       <Filter>System\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Shader.cpp">
+      <Filter>Resource\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

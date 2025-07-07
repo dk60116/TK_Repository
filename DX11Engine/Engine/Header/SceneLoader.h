@@ -19,11 +19,12 @@ public:
 
 public:
 	void StartLoading(vector<string>& _nameList, vector<string>& _fileList);
-	void ThreadLoadingLoop();
-	void Shutdown();
+	void EndLoading();
 
 private:
-	void LoadComplete(class CEngineResource* _ptr, wstring _name);
+	void ThreadLoadingLoop();
+	void LoadComplete_Scene(class CEngineResource* _ptr, wstring _name);
+	void Shutdown();
 
 private:
 	HANDLE m_hThread;
@@ -33,6 +34,8 @@ private:
 
 	_bool m_bRunning;
 	_bool m_bLoading;
+
+	_bool m_bGameResourceCreated;
 };
 
 NS_END

@@ -262,7 +262,7 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 	if (m_pMeshBuffer->m_pAssimpScene)
 	{
 		// RootNode를 어디서 시작할지 결정
-		const aiNode* rootBoneNode = m_pMeshBuffer->m_pAssimpScene->mRootNode->FindNode("Armature");
+		const aiNode* rootBoneNode = m_pMeshBuffer->m_pAssimpScene->mRootNode;
 		if (rootBoneNode)
 		{
 			// MeshRenderer GameObject에 RootBone을 붙임

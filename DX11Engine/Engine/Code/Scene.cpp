@@ -245,6 +245,11 @@ CEngineResource* CScene::Find_Resource(const wstring& _name)
 	if (iter != m_mResourceList.end())
 		return iter->second;
 
+	auto iter1 = m_mTempResourceList.find(_name);
+
+	if (iter1 != m_mTempResourceList.end())
+		return iter1->second;
+
 	return nullptr;
 }
 

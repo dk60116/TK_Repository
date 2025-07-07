@@ -1,6 +1,7 @@
 #pragma once
 
 #include "epch.h"
+#include "Shader.h"
 #include "Texture.h"
 #include "Animation.h"
 
@@ -17,14 +18,19 @@ private:
 	void Release();
 
 public:
-	template<typename T>
-	T* CreateResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
+    template<typename T>
+    T* CreateGameResource(const wstring& _name, const wstring& _path, void* _desc = nullptr);
 
 	template<typename T>
+	T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
+
+    template<typename T>
 	T* LoadOnScene(const wstring& _name);
 
 	static _bool FileExists(wstring& _path);
 	static _bool FileExists(string& _path);
+
+    unordered_map<wstring, CEngineResource*> m_mGameResourceList;
 
 private:
 	wstring m_strDefaultAssetPath;
@@ -34,33 +40,86 @@ private:
 NS_END
 
 template<typename T>
-inline T* CResources::CreateResource(const wstring& _name, const wstring& _path, void* _desc, const _bool _tempScene)
+inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _path, void* _desc)
 {
-	T* newResource = T::Create(m_strDefaultAssetPath + _path);
+    T* newResource = T::Create(m_strDefaultAssetPath + _path);
 
-	if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
-	{
-		delete newResource;
-		return nullptr;
-	}
+    if (!newResource)
+        return nullptr;
 
-	if (!_tempScene)
-		CSceneManager::GetInstance().Get_CrtScene()->Add_Resource(_name, newResource);
-	else
-		CSceneManager::GetInstance().Get_TempScene()->Add_TempResource(_name, newResource);
+    if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
+    {
+        delete newResource;
+        return nullptr;
+    }
 
-	return newResource;
+    m_mGameResourceList.emplace(_name, newResource);
+
+    return newResource;
+}
+
+template<typename T>
+inline T* CResources::CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc, const _bool _tempScene)
+{
+    CScene* targetScene = _tempScene
+        ? CSceneManager::GetInstance().Get_TempScene()
+        : CSceneManager::GetInstance().Get_CrtScene();
+
+    CEngineResource* existing = targetScene->Find_Resource(_name);
+
+    if (existing)
+    {
+        T* existingTyped = dynamic_cast<T*>(existing);
+
+        if (existingTyped)
+        {
+            existingTyped->AddRef();
+            return existingTyped;
+        }
+        else
+        {
+            CDebug::LogError(L"Create Scene Resource failed SameName: [" + _name + L"]");
+            return nullptr;
+        }
+    }
+
+    T* newResource = T::Create(m_strDefaultAssetPath + _path);
+
+    if (!newResource)
+        return nullptr;
+
+    if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
+    {
+        delete newResource;
+        return nullptr;
+    }
+
+    if (!_tempScene)
+        targetScene->Add_Resource(_name, newResource);
+    else
+        targetScene->Add_TempResource(_name, newResource);
+
+    return newResource;
 }
 
 template<typename T>
 inline T* CResources::LoadOnScene(const wstring& _name)
 {
-	CEngineResource* r = CSceneManager::GetInstance().Get_CrtScene()->Find_Resource(_name);
+    if (_name == L"UnlitColor (Shader)")
+        int a = 0;
+
+    CEngineResource* r = nullptr;
+
+    if (CSceneManager::GetInstance().Get_CrtScene())
+        r = CSceneManager::GetInstance().Get_CrtScene()->Find_Resource(_name);
 
 	T* resultResource = dynamic_cast<T*>(r);
 
 	if (!r)
 	{
+		if (!CSceneManager::GetInstance().Get_TempScene())
+			return nullptr;
+
 		CEngineResource* r = CSceneManager::GetInstance().Get_TempScene()->Find_Resource(_name);
 
 		T* resultResource = dynamic_cast<T*>(r);

@@ -7,6 +7,7 @@ CSceneLoader::CSceneLoader()
 	, m_mReadyFiles({})
 	, m_bRunning(false)
 	, m_bLoading(true)
+	, m_bGameResourceCreated(false)
 {
 }
 
@@ -60,6 +61,11 @@ void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _file
 	LeaveCriticalSection(&m_pCriticalSection);
 }
 
+void CSceneLoader::EndLoading()
+{
+	m_bGameResourceCreated = false;
+}
+
 void CSceneLoader::ThreadLoadingLoop()
 {
 	while (m_bRunning)
@@ -84,18 +90,22 @@ void CSceneLoader::ThreadLoadingLoop()
 			wstring wName = CEngineString::StringToWString(name);
 			wstring path = CEngineString::StringToWString(file);
 
-			for (_int i = 0; i < 1; ++i)
+			if (!m_bGameResourceCreated)
 			{
-				if (path.find(L".png") != wstring::npos)
-				{
-					LoadComplete(CResources::GetInstance().CreateResource<CTexture>(wName + L" (Texture)", path, nullptr, true), wName + L" (Texture)");
-				}
-				else if (path.find(L".fbx") != wstring::npos)
-				{
-					LoadComplete(CResources::GetInstance().CreateResource<CMeshBuffer>(wName + L" (MeshBuffer)", path, nullptr, true), wName + L" (MeshBuffer)");
-					LoadComplete(CResources::GetInstance().CreateResource<CSkinnedMeshBuffer>(wName + L" (SkinnedMeshBuffer)", path, nullptr, true), wName + L" (SkinnedMeshBuffer)");
-					LoadComplete(CResources::GetInstance().CreateResource<CAnimation>(wName + L" (Animation)", path, nullptr, true), wName + L" (Animation)");
-				}
+				CShader::SHADERDESC shaderDesc = { L"../EngineResource/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elemetDesc };
+				LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CShader>(L"UnlitColor (Shader)", L"../EngineResource/Shader/UnlitColor.hlsl", &shaderDesc, true), L"UnlitColor (Shader)");
+				m_bGameResourceCreated = true;
+			}
+
+			if (path.find(L".png") != wstring::npos)
+			{
+				LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", path, nullptr, true), wName + L" (Texture)");
+			}
+			else if (path.find(L".fbx") != wstring::npos)
+			{
+				LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (MeshBuffer)", path, nullptr, true), wName + L" (MeshBuffer)");
+				LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (SkinnedMeshBuffer)", path, nullptr, true), wName + L" (SkinnedMeshBuffer)");
+				LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimation>(wName + L" (Animation)", path, nullptr, true), wName + L" (Animation)");
 			}
 		}
 		else
@@ -116,7 +126,7 @@ void CSceneLoader::Shutdown()
 	DeleteCriticalSection(&m_pCriticalSection);
 }
 
-void CSceneLoader::LoadComplete(CEngineResource* _ptr, wstring _name)
+void CSceneLoader::LoadComplete_Scene(CEngineResource* _ptr, wstring _name)
 {
 	if (_ptr)
 		CDebug::Log(L"Resource Created: " + _name);

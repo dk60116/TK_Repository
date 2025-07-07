@@ -100,7 +100,10 @@ void CMainProcess::Update_MainApp()
     }
 
     if (CSceneManager::GetInstance().Is_Loading() && !CSceneLoader::GetInstance().Is_Loading())
+    {
+        CSceneLoader::GetInstance().EndLoading();
         CSceneManager::GetInstance().LoadComplete();
+    }
 }
 
 void CMainProcess::Release_MainApp()
