@@ -25,6 +25,8 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CEditor::GetInstance().Initialize()))
         return E_FAIL;
+    if (FAILED(CResources::GetInstance().Initialize()))
+        return E_FAIL;
     if (FAILED(CSceneManager::GetInstance().Initialize()))
         return E_FAIL;
     if (FAILED(CSceneLoader::GetInstance().Initialize()))
@@ -100,10 +102,7 @@ void CMainProcess::Update_MainApp()
     }
 
     if (CSceneManager::GetInstance().Is_Loading() && !CSceneLoader::GetInstance().Is_Loading())
-    {
-        CSceneLoader::GetInstance().EndLoading();
         CSceneManager::GetInstance().LoadComplete();
-    }
 }
 
 void CMainProcess::Release_MainApp()

@@ -19,7 +19,6 @@ public:
 
 public:
 	void StartLoading(vector<string>& _nameList, vector<string>& _fileList);
-	void EndLoading();
 
 private:
 	void ThreadLoadingLoop();
@@ -34,8 +33,6 @@ private:
 
 	_bool m_bRunning;
 	_bool m_bLoading;
-
-	_bool m_bGameResourceCreated;
 };
 
 NS_END

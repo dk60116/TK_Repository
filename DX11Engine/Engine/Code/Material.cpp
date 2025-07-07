@@ -32,8 +32,10 @@ HRESULT CMaterial::Initialize(const wstring _path)
 {
 	if (!m_pShader)
 	{
-		m_pShader = CResources::GetInstance().LoadOnScene<CShader>(L"UnlitColor (Shader)");
-		m_pShader->AddRef();
+		m_pShader = CResources::GetInstance().LoadOnGame<CShader>(L"UnlitColor (Shader)");
+
+		if (m_pShader)
+			m_pShader->AddRef();
 	}
 
 	if (FAILED(Create_ConstantBuffer()))

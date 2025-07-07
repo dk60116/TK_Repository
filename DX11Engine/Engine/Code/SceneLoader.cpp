@@ -7,7 +7,6 @@ CSceneLoader::CSceneLoader()
 	, m_mReadyFiles({})
 	, m_bRunning(false)
 	, m_bLoading(true)
-	, m_bGameResourceCreated(false)
 {
 }
 
@@ -61,11 +60,6 @@ void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _file
 	LeaveCriticalSection(&m_pCriticalSection);
 }
 
-void CSceneLoader::EndLoading()
-{
-	m_bGameResourceCreated = false;
-}
-
 void CSceneLoader::ThreadLoadingLoop()
 {
 	while (m_bRunning)
@@ -89,13 +83,6 @@ void CSceneLoader::ThreadLoadingLoop()
 
 			wstring wName = CEngineString::StringToWString(name);
 			wstring path = CEngineString::StringToWString(file);
-
-			if (!m_bGameResourceCreated)
-			{
-				CShader::SHADERDESC shaderDesc = { L"../EngineResource/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elemetDesc };
-				LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CShader>(L"UnlitColor (Shader)", L"../EngineResource/Shader/UnlitColor.hlsl", &shaderDesc, true), L"UnlitColor (Shader)");
-				m_bGameResourceCreated = true;
-			}
 
 			if (path.find(L".png") != wstring::npos)
 			{

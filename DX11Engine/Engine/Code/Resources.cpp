@@ -19,6 +19,14 @@ CResources& CResources::GetInstance()
 	return inst;
 }
 
+HRESULT CResources::Initialize()
+{
+	CShader::SHADERDESC shaderDesc = { L"../EngineResource/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elemetDesc };
+	CreateGameResource<CShader>(L"UnlitColor (Shader)", L"../EngineResource/Shader/UnlitColor.hlsl", &shaderDesc);
+
+	return S_OK;
+}
+
 void CResources::Release()
 {
 	for (TRAVERSAL_ITER(m_mGameResourceList, it))

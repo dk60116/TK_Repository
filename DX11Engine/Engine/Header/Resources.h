@@ -14,6 +14,9 @@ class ENGINE_DLL CResources final
 {
 	SINGLETONCLASS(CResources);
 
+public:
+    HRESULT Initialize();
+
 private:
 	void Release();
 
@@ -23,6 +26,9 @@ public:
 
 	template<typename T>
 	T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
+
+    template<typename T>
+    T* LoadOnGame(const wstring& _name);
 
     template<typename T>
 	T* LoadOnScene(const wstring& _name);
@@ -103,11 +109,21 @@ inline T* CResources::CreateSceneResource(const wstring& _name, const wstring& _
 }
 
 template<typename T>
+inline T* CResources::LoadOnGame(const wstring& _name)
+{
+    auto iter = m_mGameResourceList.find(_name);
+
+    if (iter == m_mGameResourceList.end())
+        return nullptr;
+
+    T* resultResource = dynamic_cast<T*>(iter->second);
+
+    return resultResource;
+}
+
+template<typename T>
 inline T* CResources::LoadOnScene(const wstring& _name)
 {
-    if (_name == L"UnlitColor (Shader)")
-        int a = 0;
-
     CEngineResource* r = nullptr;
 
     if (CSceneManager::GetInstance().Get_CrtScene())
