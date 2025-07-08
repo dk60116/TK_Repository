@@ -36,7 +36,7 @@ CEditor& CEditor::GetInstance()
 
 HRESULT CEditor::Initialize()
 {
-#ifdef _Engine_Build
+#ifdef _CLIENT_BUILD
 	return S_OK;
 #endif
 
@@ -77,9 +77,9 @@ HRESULT CEditor::Initialize()
 
 void CEditor::Release()
 {
-#ifndef _DEBUG
+#ifdef _CLIENT_BUILD
 	return;
-#endif // DEBUG
+#endif
 
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX11_Shutdown();

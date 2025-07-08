@@ -85,8 +85,10 @@ void CSceneManager::LoadScene(wstring _scene)
 	else
 		CDebug::Log(L"Load scene start: " + _scene);
 
+#ifndef  _CLIENT_BUILD
 	if (m_pCrtScene)
 		CEditor::GetInstance().Set_EditorCamTransform(Get_EditorCamera()->Get_Transform());
+#endif
 
 	m_pTempScene = iter->second;
 

@@ -51,6 +51,10 @@ CDebug& CDebug::GetInstance()
 
 HRESULT CDebug::Initialize()
 {
+#ifdef _CLIENT_BUILD
+    return S_OK;
+#endif
+
     AllocConsole();
     FILE* fp;
     freopen_s(&fp, "CONOUT$", "w", stdout);

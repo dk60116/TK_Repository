@@ -3,6 +3,8 @@
 #ifndef Engine_Define_h__
 #define Engine_Define_h__
 
+//#define _CLIENT_BUILD
+
 #define REGISTER_CLASS(T) \
     namespace { struct AutoRegister_##T { AutoRegister_##T() { \
         Engine::FactoryManager::GetInstance().Register(#T, []() -> Engine::UObject* { return new T(); }); \
