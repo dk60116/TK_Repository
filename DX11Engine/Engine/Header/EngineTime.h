@@ -18,9 +18,10 @@ public:
 	void Release();
 
 public:
-	_int Get_FPS();
-	_float Get_DeltaTime();
-	void SetTimeScale(const float _value);
+	const _int Get_FPS() const;
+	const _float Get_DeltaTime() const;
+	const _float Get_ElaspedTime() const;
+	void SetTimeScale(const _float _value);
 
 private:
 	CTimer* m_pTimer;

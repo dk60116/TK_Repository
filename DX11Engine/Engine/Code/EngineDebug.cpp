@@ -82,6 +82,8 @@ void CDebug::Release()
 
 void CDebug::Log(const char* format, ...)
 {
+    ShowElapsedTime();
+
     va_list args;
     va_start(args, format);
     vprintf(format, args);
@@ -92,6 +94,8 @@ void CDebug::Log(const char* format, ...)
 
 void CDebug::Log(const string format, ...)
 {
+    ShowElapsedTime();
+
     va_list args;
     va_start(args, format);
 
@@ -187,6 +191,8 @@ void CDebug::Log(const _matrix format, ...)
 
 void CDebug::LogError(const char* format, ...)
 {
+    ShowElapsedTime();
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
@@ -207,6 +213,8 @@ void CDebug::LogError(const char* format, ...)
 
 void CDebug::LogError(const string format, ...)
 {
+    ShowElapsedTime();
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
@@ -265,6 +273,8 @@ void CDebug::LogError(const vector3 format, ...)
 
 void CDebug::LogWarnning(const char* format, ...)
 {
+    ShowElapsedTime();
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
@@ -285,6 +295,8 @@ void CDebug::LogWarnning(const char* format, ...)
 
 void CDebug::LogWarnning(const string format, ...)
 {
+    ShowElapsedTime();
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
@@ -359,6 +371,13 @@ string CDebug::MemoryUseLog()
     }
 
     return "";
+}
+
+void CDebug::ShowElapsedTime()
+{
+    _float elaspedTime = CTime::GetInstance().Get_ElaspedTime();
+    cout << fixed << setprecision(2);
+    cout << '[' << elaspedTime << ']' << ' ';
 }
 
 //CDebug::CDebug() {}

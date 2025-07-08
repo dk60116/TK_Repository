@@ -18,7 +18,7 @@ public:
 	const _bool Is_Loading() const;
 
 public:
-	void StartLoading(vector<string>& _nameList, vector<string>& _fileList);
+	void StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList);
 
 private:
 	void ThreadLoadingLoop();
@@ -28,7 +28,7 @@ private:
 	HANDLE m_hThread;
 	CRITICAL_SECTION m_pCriticalSection;
 
-	unordered_map<string, string> m_mReadyFiles;
+	vector<string> m_mReadyFiles_Name, m_mReadyFiles_Path, m_mReadyFiles_Format;
 
 	_bool m_bRunning;
 	_bool m_bLoading;

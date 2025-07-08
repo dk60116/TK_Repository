@@ -1,6 +1,26 @@
 #include "epch.h"
 #include "EngineString.h"
 
+_bool CEngineString::Contains(const string& _str, const string& _target)
+{
+    return _str.find(_target) != string::npos;
+}
+
+_bool CEngineString::Contains(const wstring& _wstr, const wstring& _wtarget)
+{
+    return _wstr.find(_wtarget) != string::npos;
+}
+
+_bool CEngineString::Contains(const string& _str, const char _target)
+{
+    return _str.find(_target) != string::npos;
+}
+
+_bool CEngineString::Contains(const wstring& _wstr, const wchar_t _wtarget)
+{
+    return _wstr.find(_wtarget) != string::npos;
+}
+
 string CEngineString::WStringToString(const wstring& _wstr)
 {
     if (_wstr.empty())
@@ -24,30 +44,52 @@ wstring CEngineString::StringToWString(const string& _str)
     return wstr;
 }
 
-string CEngineString::Trim(const string& str)
+string CEngineString::Trim(const string& _str)
 {
     const char* whitespace = " \t\n\r";
 
-    const size_t start = str.find_first_not_of(whitespace);
+    const size_t start = _str.find_first_not_of(whitespace);
 
     if (start == string::npos)
         return "";
 
-    const size_t end = str.find_last_not_of(whitespace);
+    const size_t end = _str.find_last_not_of(whitespace);
     
-    return str.substr(start, end - start + 1);
+    return _str.substr(start, end - start + 1);
 }
 
-wstring CEngineString::Trim(const wstring& wstr)
+wstring CEngineString::Trim(const wstring& _wstr)
 {
     const wchar_t* whitespace = L" \t\n\r";
 
-    const size_t start = wstr.find_first_not_of(whitespace);
+    const size_t start = _wstr.find_first_not_of(whitespace);
 
     if (start == wstring::npos)
         return L"";
 
-    const size_t end = wstr.find_last_not_of(whitespace);
+    const size_t end = _wstr.find_last_not_of(whitespace);
     
-    return wstr.substr(start, end - start + 1);
+    return _wstr.substr(start, end - start + 1);
+}
+
+vector<string> CEngineString::Split(const string& _str, const string& _delimiter)
+{
+    vector<string> tokens;
+    if (_delimiter.empty()) 
+        return tokens;
+    if (_str.find(_delimiter) == string::npos) 
+        return tokens;
+
+    size_t start = 0;
+    size_t pos = 0;
+
+    while ((pos = _str.find(_delimiter, start)) != string::npos)
+    {
+        tokens.emplace_back(_str.substr(start, pos - start));
+        start = pos + _delimiter.length();
+    }
+
+    tokens.emplace_back(_str.substr(start));
+
+    return tokens;
 }

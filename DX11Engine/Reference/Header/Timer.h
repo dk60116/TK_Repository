@@ -14,8 +14,9 @@ private:
 	virtual ~CTimer();
 
 public:
-	const int Get_FPS() const;
+	const _int Get_FPS() const;
 	const _float Get_TimeDelta() const;
+	const _float Get_ElapsedTime() const;
 
 public:
 	HRESULT Ready_Timer();
@@ -25,6 +26,8 @@ private:
 	void Destroy();
 
 private:
+	LARGE_INTEGER m_iFrequency;
+	LARGE_INTEGER m_iStartTime;
 	LARGE_INTEGER m_iFrameTime;
 	LARGE_INTEGER m_iFixTime;
 	LARGE_INTEGER m_iLastTime;

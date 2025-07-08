@@ -26,49 +26,6 @@ CScene::~CScene()
 	SceneRelease();
 }
 
-HRESULT CScene::PreLoadResources()
-{
-	string path = "../Assets/Scenes/" + CEngineString::WStringToString(m_strSceneName) + ".scene";
-	ifstream file(path);
-	if (!file)
-	{
-		CDebug::LogError("Can not Open file");
-		return E_FAIL;
-	}
-
-	string line;
-	vector<string> nameList;
-	vector<string> fileList;
-
-	while (getline(file, line))
-	{
-		size_t pos = line.find(':');
-		if (pos != string::npos)
-		{
-			string name = line.substr(0, pos);
-			string filepath = line.substr(pos + 1);
-
-			name = CEngineString::Trim(name);
-			filepath = CEngineString::Trim(filepath);
-
-			if (!CResources::FileExists(filepath))
-			{
-				nameList.push_back(name);
-				fileList.push_back(filepath);
-				CDebug::Log("Add File: " + filepath + " (Name: " + name + ")");
-			}
-			else
-				CDebug::LogWarnning("Failed Add File: " + filepath);
-		}
-		else
-			CDebug::LogError("Invalid line format: " + line);
-	}
-
-	CSceneLoader::GetInstance().StartLoading(nameList, fileList);
-
-	return S_OK;
-}
-
 HRESULT CScene::Initialize()
 {
 	SceneRelease();
@@ -368,4 +325,54 @@ HRESULT CScene::SaveScene(const wstring& _filePath)
 const _uint CScene::Get_UniqueObjectCount() const
 {
 	return m_iUniqueObjectCount;
+}
+
+HRESULT CScene::PreLoadResources()
+{
+	string path = "../Assets/Scenes/" + CEngineString::WStringToString(m_strSceneName) + ".scene";
+	ifstream file(path);
+	if (!file)
+	{
+		CDebug::LogError("Can not Open file");
+		return E_FAIL;
+	}
+
+	string line;
+	vector<string> nameList;
+	vector<string> fileList;
+	vector<string> formatList;
+
+	while (getline(file, line))
+	{
+		if (CEngineString::Contains(line, ':'))
+		{
+			auto split = CEngineString::Split(line, " : ");
+
+			string name = "";
+			string filepath = "";
+			string format = "";
+
+			name = split[0];
+			filepath = split[1];
+
+			if (split.size() >= 3)
+				format = split[2];
+
+			if (!CResources::FileExists(filepath))
+			{
+				nameList.push_back(name);
+				fileList.push_back(filepath);
+				formatList.push_back(format);
+				CDebug::Log("Add File: " + filepath + " (Name: " + name + ")");
+			}
+			else
+				CDebug::LogWarnning("Failed Add File: " + filepath);
+		}
+		else
+			CDebug::LogError("Invalid line format: " + line);
+	}
+
+	CSceneLoader::GetInstance().StartLoading(nameList, fileList, formatList);
+
+	return S_OK;
 }

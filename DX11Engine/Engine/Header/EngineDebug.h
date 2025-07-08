@@ -46,6 +46,9 @@ public:
     static void LogWarnning(const vector3 format, ...);
 
     static string MemoryUseLog();
+
+private:
+    static void ShowElapsedTime();
 };
 
 NS_END

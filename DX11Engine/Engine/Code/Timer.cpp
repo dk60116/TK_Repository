@@ -2,7 +2,9 @@
 #include "Timer.h"
 
 CTimer::CTimer()
-    : m_iFrameTime({})
+	: m_iFrequency({})
+	, m_iStartTime({})
+    , m_iFrameTime({})
     , m_iFixTime({})
     , m_iLastTime({})
     , m_iCpuTick({})
@@ -20,6 +22,8 @@ CTimer::~CTimer()
 
 HRESULT CTimer::Ready_Timer()
 {
+	QueryPerformanceFrequency(&m_iFrequency);
+	QueryPerformanceCounter(&m_iStartTime);
 	QueryPerformanceCounter(&m_iFrameTime);			// 1077
 	QueryPerformanceCounter(&m_iLastTime);			// 1085
 	QueryPerformanceCounter(&m_iFixTime);			// 1090
@@ -74,4 +78,13 @@ const int CTimer::Get_FPS() const
 const _float CTimer::Get_TimeDelta() const
 {
 	return m_fTimeDelta;
+}
+
+const _float CTimer::Get_ElapsedTime() const
+{
+	LARGE_INTEGER now;
+	QueryPerformanceCounter(&now);
+
+	LONGLONG elapsedCounts = now.QuadPart - m_iStartTime.QuadPart;
+	return static_cast<double>(elapsedCounts) / static_cast<double>(m_iFrequency.QuadPart);
 }

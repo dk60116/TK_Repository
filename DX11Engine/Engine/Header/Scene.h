@@ -13,9 +13,6 @@ protected:
     CScene();
     ~CScene();
 
-protected:
-    HRESULT PreLoadResources();
-
 public:
     virtual HRESULT Initialize();
     virtual void Awake();
@@ -47,6 +44,9 @@ public:
     CGameObject* Instantiate(CGameObject* _gameObject);
     HRESULT SaveScene(const wstring& _filePath);
     const _uint Get_UniqueObjectCount() const;
+
+protected:
+    HRESULT PreLoadResources();
 
 protected:
     ID3D11Device* m_pDevice;

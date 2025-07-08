@@ -149,8 +149,11 @@ void CAnimator::OnDestroy()
 
 void CAnimator::Add_Animation(const wstring& _animName, CAnimation* _anim)
 {
-	if (_anim == nullptr)
+	if (!_anim)
+	{
+		CDebug::LogError(L"Add Animation failed - Animation is nullptr: " + m_pGameObject->Get_ObjectName());
 		return;
+	}
 
 	m_mAnimationList[_animName] = _anim;
 

@@ -35,7 +35,12 @@ HRESULT CTime::Ready_Time()
 
 	m_pTimer->AddRef();
 
-	m_pTimer->Ready_Timer();
+	if (FAILED(m_pTimer->Ready_Timer()))
+	{
+		delete m_pTimer;
+		m_pTimer = nullptr;
+		E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -48,17 +53,22 @@ void CTime::Update()
 	m_pTimer->Update();
 }
 
-_int CTime::Get_FPS()
+const _int CTime::Get_FPS() const
 {
 	return m_pTimer->Get_FPS();
 }
 
-_float CTime::Get_DeltaTime()
+const _float CTime::Get_DeltaTime() const
 {
 	return m_pTimer->Get_TimeDelta();
 }
 
-void CTime::SetTimeScale(const float _value)
+const _float CTime::Get_ElaspedTime() const
+{
+	return m_pTimer->Get_ElapsedTime();
+}
+
+void CTime::SetTimeScale(const _float _value)
 {
 	m_fTimeScale = _value;
 }

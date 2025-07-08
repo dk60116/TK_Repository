@@ -23,10 +23,12 @@ HRESULT CPlayer::Initialize()
 	__super::Initialize();
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
+	//CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Girl_Tex (Texture)");
 	CMaterial* playerMat = CMaterial::Create();
 	playerMat->Set_Texture(tex, 0);
 
-	CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Link_Model (MeshBuffer)");
+	//CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Link_Model (MeshBuffer)");
+	CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Girl_Model (MeshBuffer)");
 
 	//m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
 	//mb->Set_Scalefactor(0.01f);

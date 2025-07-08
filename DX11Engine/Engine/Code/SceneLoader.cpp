@@ -4,7 +4,9 @@
 CSceneLoader::CSceneLoader()
 	: m_hThread(nullptr)
 	, m_pCriticalSection()
-	, m_mReadyFiles({})
+	, m_mReadyFiles_Name({})
+	, m_mReadyFiles_Path({})
+	, m_mReadyFiles_Format({})
 	, m_bRunning(false)
 	, m_bLoading(true)
 {
@@ -48,12 +50,13 @@ const _bool CSceneLoader::Is_Loading() const
 	return m_bLoading;
 }
 
-void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _fileList)
+void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList)
 {
 	EnterCriticalSection(&m_pCriticalSection);
 
-	for (_int i = 0; i < _fileList.size(); ++i)
-		m_mReadyFiles.emplace(_nameList[i], _fileList[i]);
+	m_mReadyFiles_Name = _nameList;
+	m_mReadyFiles_Path = _fileList;
+	m_mReadyFiles_Format = _formatList;
 
 	m_bLoading = true;
 
@@ -66,33 +69,37 @@ void CSceneLoader::ThreadLoadingLoop()
 	{
 		EnterCriticalSection(&m_pCriticalSection);
 
-		if (!m_mReadyFiles.empty())
+		if (!m_mReadyFiles_Name.empty())
 		{
 			m_bLoading = true;
 
-			// 맵의 첫 번째 요소 반복자
-			auto iter = m_mReadyFiles.begin();
+			string name = m_mReadyFiles_Name.back();
+			string file = m_mReadyFiles_Path.back();
+			string format = m_mReadyFiles_Format.back();
 
-			string name = iter->first;
-			string file = iter->second;
-
-			// 맵에서 제거
-			m_mReadyFiles.erase(iter);
+			m_mReadyFiles_Name.pop_back();
+			m_mReadyFiles_Path.pop_back();
+			m_mReadyFiles_Format.pop_back();
 
 			LeaveCriticalSection(&m_pCriticalSection);
 
 			wstring wName = CEngineString::StringToWString(name);
-			wstring path = CEngineString::StringToWString(file);
+			wstring wFile = CEngineString::StringToWString(file);
+			wstring wFormat = CEngineString::StringToWString(format);
 
-			if (path.find(L".png") != wstring::npos)
+			if (CEngineString::Contains(wFile, L".png"))
 			{
-				CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", path, nullptr, true));
+				if (CEngineString::Contains(wFormat, L"[Texture]"))
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));
 			}
-			else if (path.find(L".fbx") != wstring::npos)
+			else if (CEngineString::Contains(wFile, L".fbx"))
 			{
-				CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (MeshBuffer)", path, nullptr, true));
-				CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (SkinnedMeshBuffer)", path, nullptr, true));
-				CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimation>(wName + L" (Animation)", path, nullptr, true));
+				if (CEngineString::Contains(wFormat, L"[Mesh]"))
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (MeshBuffer)", wFile, nullptr, true));
+				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (SkinnedMeshBuffer)", wFile, nullptr, true));
+				if (CEngineString::Contains(wFormat, L"[Animation]"))
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimation>(wName + L" (Animation)", wFile, nullptr, true));
 			}
 		}
 		else

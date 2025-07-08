@@ -52,4 +52,6 @@ using json = nlohmann::json;
 
 // 커스텀 헤더파일
 #include "MainProcess.h"
+#include <iostream> 
+#include <string>
 using namespace std;
