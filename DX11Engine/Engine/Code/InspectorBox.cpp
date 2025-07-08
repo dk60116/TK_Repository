@@ -185,7 +185,6 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             m_fRXDrag = rotation.x;
 
             ImGui::SameLine();
-
             // Y
             _float prevY = m_fRYDrag;
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
@@ -197,8 +196,9 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             }
             ImGui::PopItemWidth();
 
-            ImGui::SameLine();
+            m_fRYDrag = rotation.y;
 
+            ImGui::SameLine();
             // Z
             _float prevZ = m_fRZDrag;
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
@@ -209,6 +209,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
                 transform->Add_EulerAnglesZ((delta > 0) ? rotationDeg : -rotationDeg);
             }
             ImGui::PopItemWidth();
+
+            m_fRZDrag = rotation.z;
 
             prevX = 0.f;
             prevY = 0.f;

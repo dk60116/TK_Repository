@@ -38,7 +38,7 @@ protected:
 
 protected:
 	ViewMode m_eCamViewMode;
-	_matrix m_vViewMatrix, m_vProjMatrix;
+	_float4x4 m_vViewMatrix, m_vProjMatrix;
 
 	_float m_fAspect;
 	ColorValue m_vBackgroundColor;

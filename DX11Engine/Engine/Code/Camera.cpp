@@ -3,8 +3,8 @@
 
 CCamera::CCamera()
 	: m_eCamViewMode()
-	, m_vViewMatrix(XMMatrixIdentity())
-	, m_vProjMatrix(XMMatrixIdentity())
+	, m_vViewMatrix()
+	, m_vProjMatrix()
 	, m_vBackgroundColor(ColorValue(49, 77, 121, 255))
 	, m_fAspect(1.f)
 	, m_fNear(0.1f)
@@ -42,12 +42,16 @@ void CCamera::Update()
 
 _matrix CCamera::Get_ViewMatrix() const
 {
-	return m_vViewMatrix;
+	_matrix result = XMLoadFloat4x4(&m_vViewMatrix);
+
+	return result;
 }
 
 _matrix CCamera::Get_ProjectionMatrix() const
 {
-	return m_vProjMatrix;
+	_matrix result = XMLoadFloat4x4(&m_vProjMatrix);
+
+	return result;
 }
 
 const CCamera::ViewMode CCamera::Get_ViewMode() const
@@ -82,7 +86,9 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 
 void CCamera::Bind_ViewMatrix()
 {
-	m_vViewMatrix = Get_Transform()->Get_InverseWorldMatrix();
+	_matrix inverseWorldMatrix = Get_Transform()->Get_InverseWorldMatrix();
+
+	XMStoreFloat4x4(&m_vViewMatrix, inverseWorldMatrix);
 }
 
 void CCamera::Bind_ProjectionMatrix()
@@ -91,13 +97,15 @@ void CCamera::Bind_ProjectionMatrix()
 	{
 	case CCamera::PERSPECTIVE:
 	{
-		m_vProjMatrix = XMMatrixPerspectiveFovLH
+		_matrix projMat = XMMatrixPerspectiveFovLH
 		(
 			XMConvertToRadians(m_fFieldOfView),
 			m_fAspect,
 			m_fNear,
 			m_fFar
 		);
+
+		XMStoreFloat4x4(&m_vProjMatrix, projMat);
 	}
 	break;
 	case CCamera::ORTHOGRAPHIC:
@@ -105,13 +113,15 @@ void CCamera::Bind_ProjectionMatrix()
 		const _float fHalfHeight = m_fSize * 0.5f;
 		const _float fHalfWidth = fHalfHeight * m_fAspect;
 
-		m_vProjMatrix = XMMatrixOrthographicOffCenterLH
+		_matrix projMat = XMMatrixOrthographicOffCenterLH
 		(
 			-fHalfWidth, fHalfWidth,
 			-fHalfHeight, fHalfHeight,
 			m_fNear,
 			m_fFar
 		);
+
+		XMStoreFloat4x4(&m_vProjMatrix, projMat);
 	}
 	break;
 	default:
