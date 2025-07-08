@@ -50,6 +50,7 @@ void CSkinnedMeshRenderer::OnPreRender()
 void CSkinnedMeshRenderer::Render_Editor()
 {
 	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
+	Render_Outline(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
 }
 
 void CSkinnedMeshRenderer::Render()
@@ -209,8 +210,32 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 {
+	return;
+
 	if (!_cam)
 		return;
+
+	D3D11_RASTERIZER_DESC rtDesc = {};
+	rtDesc.FillMode = D3D11_FILL_SOLID;
+	rtDesc.CullMode = D3D11_CULL_FRONT;
+	rtDesc.DepthClipEnable = TRUE;
+	rtDesc.DepthBias = 0;
+	rtDesc.SlopeScaledDepthBias = 0;
+	rtDesc.DepthBiasClamp = 0;
+	rtDesc.MultisampleEnable = FALSE;
+	rtDesc.AntialiasedLineEnable = FALSE;
+	rtDesc.ScissorEnable = FALSE;
+
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	dsDesc.DepthEnable = TRUE;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	ID3D11RasterizerState* outlineRasterizer;
+	m_pDevice->CreateRasterizerState(&rtDesc, &outlineRasterizer);
+
+	ID3D11DepthStencilState* outlineStencil;
+	m_pDevice->CreateDepthStencilState(&dsDesc, &outlineStencil);
 
 	// 월드, 뷰, 프로젝션
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
@@ -226,12 +251,12 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 
 	m_pContext->RSSetState(CGraphicDevice::GetInstance().Get_Rasterizer_CullFront());
 
-	// 4) 아웃라인 머티리얼 바인딩 (단색 셰이더)
-	CMaterial* outlineMat = nullptr;
-
-	if (outlineMat)
+	// 아웃라인 머티리얼 바인딩 (단색 셰이더)
+	
+	if (m_pOutlineMat)
 	{
-		outlineMat->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
+		m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
+		m_pOutlineMat->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
 		// 본 상수 버퍼 바인딩
 		m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
@@ -247,6 +272,9 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 
 void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 {
+	if (_mesh == m_pMeshBuffer)
+		return;
+
 	Safe_Release(m_pMeshBuffer);
 
 	m_pMeshBuffer = _mesh;

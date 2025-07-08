@@ -22,7 +22,6 @@ public:
 
 private:
 	void ThreadLoadingLoop();
-	void LoadComplete_Scene(class CEngineResource* _ptr, wstring _name);
 	void Shutdown();
 
 private:

@@ -25,7 +25,7 @@ public:
     void Add_Animation(const wstring& _animName, CAnimation* _anim);
     void Set_PlaybackSpeed(const _float _value);
 
-    void Play(const wstring& _animName);
+    void Play(const wstring& _animName, const _float _blendDuration = 0.f);
     void Pause();
     void Stop();
 
@@ -38,11 +38,13 @@ public:
 private:
     class CSkinnedMeshRenderer* m_pSkinnedRenderer;
     unordered_map<wstring, CAnimation*> m_mAnimationList;
-    CAnimation* m_pCrtAnimation;
-    _bool m_bIsPlaying, m_bLoop;
-    _float m_fCurrentTime;
+    CAnimation* m_pCrtAnimation, * m_pNextAnimation;
+    _bool m_bIsPlaying, m_bBlending, m_bLoop;
+    _float m_fCurrentTime, m_fBlendTime, m_fBlendDuration;
     _float m_fPlaybackSpeed;
     vector<_matrix> m_vFinalBoneMatrix;
+
+    unordered_map<wstring, CAnimation::BoneTransform> m_mBlendStartPose;
 
     BEGIN_SERIALIZEFIELD
         SERIALIZEFIELD(m_pSkinnedRenderer)

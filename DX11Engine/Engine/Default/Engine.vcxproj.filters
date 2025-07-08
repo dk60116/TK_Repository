@@ -29,7 +29,7 @@
       <Filter>Engine\Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Component.h">
-      <Filter>Component</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Scene.h">
       <Filter>Management\Scene</Filter>
@@ -59,13 +59,13 @@
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Transform.h">
-      <Filter>Component\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshBuffer.h">
       <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Camera.h">
-      <Filter>Component\Camera</Filter>
+      <Filter>Components\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Material.h">
       <Filter>Resource\Material</Filter>
@@ -80,16 +80,16 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\RectTransform.h">
-      <Filter>Component\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshFilter.h">
-      <Filter>Component\Render</Filter>
+      <Filter>Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Editor.h">
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\EditorCamera.h">
-      <Filter>Component\Camera</Filter>
+      <Filter>Components\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\EngineResource.h">
       <Filter>Resource</Filter>
@@ -101,19 +101,19 @@
       <Filter>Resource\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Renderer.h">
-      <Filter>Component\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshRenderer.h">
-      <Filter>Component\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h">
-      <Filter>Component\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h">
       <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Animator.h">
-      <Filter>Component\Animator</Filter>
+      <Filter>Components\Animator</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\EngineString.h">
       <Filter>System\String</Filter>
@@ -147,9 +147,6 @@
     <Filter Include="Engine\Headers">
       <UniqueIdentifier>{240ae53d-6561-4cfe-b6df-857f49379c42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component">
-      <UniqueIdentifier>{b26f12a9-4ef8-4c23-91d7-ed3c07bfae0d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Management">
       <UniqueIdentifier>{99f28925-828e-4a8c-839d-05a156844934}</UniqueIdentifier>
     </Filter>
@@ -174,15 +171,6 @@
     <Filter Include="Window">
       <UniqueIdentifier>{1c6d9619-5592-42af-9755-fd84bb861c52}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\Transform">
-      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Component\Render">
-      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Component\Camera">
-      <UniqueIdentifier>{13c5e534-fed3-47c8-87a7-f04e0066d5f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{32b85b70-b413-4afa-81f2-18b3ea430c0c}</UniqueIdentifier>
     </Filter>
@@ -201,12 +189,6 @@
     <Filter Include="Resource\Animation">
       <UniqueIdentifier>{66c10c99-3f4d-4a84-8cf8-bae5005e5571}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\Render\Renderer">
-      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Component\Animator">
-      <UniqueIdentifier>{9b13f646-b322-48f1-b39e-7cc784eb49b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource\Material">
       <UniqueIdentifier>{ff070008-c856-4498-a70c-0964b8f68cb0}</UniqueIdentifier>
     </Filter>
@@ -222,6 +204,24 @@
     <Filter Include="Resource\Shader">
       <UniqueIdentifier>{bdeabc89-ffd2-4664-ab5f-40105daaa391}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{b26f12a9-4ef8-4c23-91d7-ed3c07bfae0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Transform">
+      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Render">
+      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Render\Renderer">
+      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Camera">
+      <UniqueIdentifier>{13c5e534-fed3-47c8-87a7-f04e0066d5f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Animator">
+      <UniqueIdentifier>{9b13f646-b322-48f1-b39e-7cc784eb49b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epch.cpp">
@@ -231,7 +231,7 @@
       <Filter>Engine\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Component.cpp">
-      <Filter>Component</Filter>
+      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Scene.cpp">
       <Filter>Management\Scene</Filter>
@@ -261,13 +261,13 @@
       <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Transform.cpp">
-      <Filter>Component\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshBuffer.cpp">
       <Filter>Resource\MeshBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Camera.cpp">
-      <Filter>Component\Camera</Filter>
+      <Filter>Components\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Material.cpp">
       <Filter>Resource\Material</Filter>
@@ -279,10 +279,10 @@
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\RectTransform.cpp">
-      <Filter>Component\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshFilter.cpp">
-      <Filter>Component\Render</Filter>
+      <Filter>Components\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp">
       <Filter>Engine\Headers</Filter>
@@ -312,7 +312,7 @@
       <Filter>System\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\EditorCamera.cpp">
-      <Filter>Component\Camera</Filter>
+      <Filter>Components\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\WICTextureLoader.cpp">
       <Filter>Engine\DirectX</Filter>
@@ -327,19 +327,19 @@
       <Filter>Resource\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Renderer.cpp">
-      <Filter>Component\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshRenderer.cpp">
-      <Filter>Component\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp">
-      <Filter>Component\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp">
       <Filter>Resource\MeshBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Animator.cpp">
-      <Filter>Component\Animator</Filter>
+      <Filter>Components\Animator</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\EngineString.cpp">
       <Filter>System\String</Filter>

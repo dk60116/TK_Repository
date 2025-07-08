@@ -15,6 +15,7 @@ public:
 	void OnDestroy() override;
 
 protected:
+	HRESULT Initialize() override;
 	virtual void Render_WithCamera(CCamera* _cam) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
 
@@ -23,5 +24,6 @@ public:
 
 protected:
 	CMaterial* m_pMaterial;
+	CMaterial* m_pOutlineMat;
 };
 

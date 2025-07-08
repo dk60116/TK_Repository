@@ -7,6 +7,7 @@ CAnimation::CAnimation()
 	, m_fDuration(0.f)
 	, m_fTicksPerSecond(0.f)
 {
+	m_strName = L"Animation";
 }
 
 CAnimation::~CAnimation()

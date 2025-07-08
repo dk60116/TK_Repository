@@ -38,14 +38,13 @@ HRESULT CPlayer::Initialize()
 	m_pSkinnedMeshRenderer->Set_Mesh(smb);
 	m_pSkinnedMeshRenderer->Set_Material(playerMat);
 
-	CAnimation* anim_Idle = CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Idle (Animation)");
-
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
-	m_pAnimator->Add_Animation(L"Run", anim_Idle);
+	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Idle (Animation)"));
+	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().LoadOnScene<CAnimation>(L"Link_Run (Animation)"));
 
 	m_pAnimator->SetLoop(true);
 	//m_pAnimator->Set_PlaybackSpeed(0.1f);
-	//m_pAnimator->Play(L"Idle");
+	//m_pAnimator->Play(L"Run");
 
 	return S_OK;
 }
@@ -60,13 +59,19 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
+	if (CInput::GetInstance().GetKeyDown(N))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"Idle", 0.2f);
+	}
+
 	if (CInput::GetInstance().GetKeyDown(M))
 	{
 		if (m_pAnimator)
-			m_pAnimator->Play(L"Run");
+			m_pAnimator->Play(L"Run", 0.1f);
 	}
 
-	if (CInput::GetInstance().GetKeyDown(N))
+	if (CInput::GetInstance().GetKeyDown(X))
 	{
 		if (m_pAnimator)
 			m_pAnimator->Stop();

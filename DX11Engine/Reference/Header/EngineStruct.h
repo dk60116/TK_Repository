@@ -403,7 +403,7 @@ namespace Engine
 #pragma endregion
 
 #pragma region vector3
-    struct vector3
+    struct ENGINE_DLL vector3
     {
         float x;
         float y;
@@ -971,6 +971,58 @@ namespace Engine
             return result;
         }
 
+        static quaternion Slerp(const quaternion& _q1, const quaternion& _q2, const _float _t)
+        {
+            float dot = _q1.x * _q2.x + _q1.y * _q2.y + _q1.z * _q2.z + _q1.w * _q2.w;
+
+            // 만약 dot < 0이면 반대방향 쿼터니언을 사용 (단일 해 선택)
+            quaternion q2b = _q2;
+            if (dot < 0.0f)
+            {
+                dot = -dot;
+                q2b.x = -q2b.x;
+                q2b.y = -q2b.y;
+                q2b.z = -q2b.z;
+                q2b.w = -q2b.w;
+            }
+
+            const float DOT_THRESHOLD = 0.9995f;
+            if (dot > DOT_THRESHOLD)
+            {
+                quaternion result;
+                result.x = _q1.x + _t * (q2b.x - _q1.x);
+                result.y = _q1.y + _t * (q2b.y - _q1.y);
+                result.z = _q1.z + _t * (q2b.z - _q1.z);
+                result.w = _q1.w + _t * (q2b.w - _q1.w);
+
+                // Normalize
+                _float mag = sqrtf(result.x * result.x + result.y * result.y + result.z * result.z + result.w * result.w);
+                result.x /= mag;
+                result.y /= mag;
+                result.z /= mag;
+                result.w /= mag;
+
+                return result;
+            }
+
+            _float theta_0 = acosf(dot);
+            _float theta = theta_0 * _t;
+
+            _float sin_theta = sinf(theta);
+            _float sin_theta_0 = sinf(theta_0);
+
+            _float s0 = cosf(theta) - dot * sin_theta / sin_theta_0;
+            _float s1 = sin_theta / sin_theta_0;
+
+            quaternion result;
+            result.x = (s0 * _q1.x) + (s1 * q2b.x);
+            result.y = (s0 * _q1.y) + (s1 * q2b.y);
+            result.z = (s0 * _q1.z) + (s1 * q2b.z);
+            result.w = (s0 * _q1.w) + (s1 * q2b.w);
+
+            return result;
+        }
+
         vector3 to_euler() const
         {
             vector3 euler;
@@ -1162,6 +1214,29 @@ namespace Engine
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+        };
+    };
+
+    struct VertexSkinnedOutlineBuffer
+    {
+        _float3 position;
+        _float3 normal;
+        _float2 uv;
+        _float3 tangent;
+        UINT boneIndices[4] = { 0,0,0,0 };
+        _float boneWeights[4] = { 0,0,0,0 };
+        _float lineWidth = 1.f;
+
+        static const _uint numElements = 7;
+        static constexpr D3D11_INPUT_ELEMENT_DESC elemetDesc[numElements] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
     };
 #pragma endregion;

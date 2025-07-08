@@ -22,7 +22,7 @@ HRESULT CEngineResource::Initialize(const wstring& _name, const wstring& _filePa
 
 const wstring& CEngineResource::Get_ResourceName() const
 {
-	return m_strName;
+	return m_strResourceName;
 }
 
 void CEngineResource::Set_ResourceName(const wstring& _name)

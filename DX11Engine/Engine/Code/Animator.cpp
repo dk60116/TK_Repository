@@ -6,11 +6,16 @@ CAnimator::CAnimator()
 	: m_pSkinnedRenderer(nullptr)
 	, m_mAnimationList({})
 	, m_pCrtAnimation(nullptr)
+	, m_pNextAnimation(nullptr)
     , m_bIsPlaying(false)
+	, m_bBlending(false)
 	, m_bLoop(false)
 	, m_fCurrentTime(0.f)
+	, m_fBlendTime(0.f)
+	, m_fBlendDuration(0.f)
 	, m_fPlaybackSpeed(1.f)
 	, m_vFinalBoneMatrix({})
+	, m_mBlendStartPose({})
 {
 	m_strName = L"Animator";
 }
@@ -49,6 +54,56 @@ void CAnimator::Update()
         return;
 
 	m_fCurrentTime += DELTA_TIME * m_fPlaybackSpeed;
+
+	if (m_bBlending)
+	{
+		m_fBlendTime += DELTA_TIME;
+
+		float t = m_fBlendTime / m_fBlendDuration;
+
+		if (t >= 1.f)
+		{
+			// 블렌딩 완료
+			m_pCrtAnimation = m_pNextAnimation;
+			m_pNextAnimation = nullptr;
+			m_fCurrentTime = 0.f;
+			m_bBlending = false;
+			t = 1.f;
+			return;
+		}
+
+		// 현재/다음 애니메이션 각각 샘플링
+		unordered_map<wstring, CAnimation::BoneTransform> sampledNext;
+		m_pNextAnimation->Sample(m_fCurrentTime, sampledNext);
+
+		const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
+		for (uint32_t i = 0; i < boneCount; ++i)
+		{
+			CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
+			if (!bone) continue;
+
+			const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
+
+			const auto& startIt = m_mBlendStartPose.find(name);
+			const auto& nextIt = sampledNext.find(name);
+
+			if (startIt != m_mBlendStartPose.end() && nextIt != sampledNext.end())
+			{
+				const auto& btStart = startIt->second;
+				const auto& btNext = nextIt->second;
+
+				// 선형 보간 (Lerp)
+				vector3 pos = vector3::Lerp(btStart.pos, btNext.pos, t);
+				vector3 scale = vector3::Lerp(btStart.scale, btNext.scale, t);
+				quaternion rot = quaternion::Slerp(btStart.rot, btNext.rot, t);
+
+				bone->Set_LocalPosition(pos);
+				bone->Set_LocalQuaternion(rot);
+				bone->Set_LocalScale(scale);
+			}
+		}
+		return;
+	}
 
 	const float duration = m_pCrtAnimation->Get_Duration();
 	if (m_bLoop)
@@ -107,16 +162,40 @@ void CAnimator::Set_PlaybackSpeed(const _float _value)
 	m_fPlaybackSpeed = _value;
 }
 
-void CAnimator::Play(const wstring& _animName)
+void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 {
 	auto iter = m_mAnimationList.find(_animName);
-	
-	if (iter != m_mAnimationList.end())
+
+	if (iter == m_mAnimationList.end())
 	{
-		m_pCrtAnimation = iter->second;
+		CDebug::LogError(L"Animator play failed - Animation not found: " + _animName + L" - " + m_pGameObject->Get_ObjectName());
+		return;
+	}
+
+	CAnimation* nextAnim = iter->second;
+
+	if (_blendDuration <= 0.f || !m_pCrtAnimation)
+	{
+		m_pCrtAnimation = nextAnim;
+		m_pNextAnimation = nullptr;
 		m_fCurrentTime = 0.f;
 		m_bIsPlaying = true;
+		m_bBlending = false;
+		return;
 	}
+
+	m_pNextAnimation = nextAnim;
+	m_fBlendTime = 0.f;
+	m_fBlendDuration = _blendDuration;
+	m_bBlending = true;
+
+	if (!m_bIsPlaying)
+		m_fCurrentTime = 0.f;
+	
+	m_mBlendStartPose.clear();
+	m_pCrtAnimation->Sample(m_fCurrentTime, m_mBlendStartPose);
+	
+	m_bIsPlaying = true;
 }
 
 void CAnimator::Pause()

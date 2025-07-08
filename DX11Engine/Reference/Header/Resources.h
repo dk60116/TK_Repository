@@ -21,6 +21,10 @@ private:
 	void Release();
 
 public:
+    static void LoadComplete_Game(const CEngineResource* _ptr);
+    static void LoadComplete_Scene(const CEngineResource* _ptr);
+
+public:
     template<typename T>
     T* CreateGameResource(const wstring& _name, const wstring& _path, void* _desc = nullptr);
 
