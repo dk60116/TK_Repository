@@ -19,6 +19,7 @@ public:
 	void OnDestroy() override;
 
 private:
+	void ShowSelectSceneButton();
 	void ShowFPS();
 };
 

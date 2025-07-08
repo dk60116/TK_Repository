@@ -43,7 +43,7 @@ void CSceneManager::Release()
 CScene* CSceneManager::CreateScene(CScene* _newScene, wstring _name)
 {
 	CScene* newScene = dynamic_cast<CScene*>(_newScene);
-	newScene->Set_Name(_name);
+	newScene->Set_SceneName(_name);
 
 	m_mSceneList.emplace(_name, newScene);
 
@@ -60,6 +60,11 @@ CScene* CSceneManager::Get_CrtScene()
 CScene* CSceneManager::Get_TempScene()
 {
 	return m_pTempScene;
+}
+
+const map<wstring, CScene*>& CSceneManager::Get_SceneList()
+{
+	return m_mSceneList;
 }
 
 const _bool CSceneManager::Is_Loading() const
@@ -97,6 +102,11 @@ void CSceneManager::LoadScene(wstring _scene)
 		m_pTempScene->PreLoadResources();
 		m_bLoading = true;
 	}
+}
+
+void CSceneManager::LoadScene(CScene* _scene)
+{
+	LoadScene(_scene->Get_SceneName());
 }
 
 void CSceneManager::LoadComplete()

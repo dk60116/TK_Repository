@@ -27,7 +27,7 @@ public:
     virtual void SceneRelease();
 
 public:
-    void Set_Name(const wstring _name);
+    void Set_SceneName(const wstring _name);
     const wstring& Get_SceneName() const;
 
 public:

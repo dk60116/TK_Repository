@@ -24,25 +24,23 @@ HRESULT CMainScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	CMeshBuffer* mb = CResources::GetInstance().CreateSceneResource<CMeshBuffer>(L"Cube", L"Cube", nullptr);
-
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
 	CMaterial* boxMat = CMaterial::Create();
 	boxMat->Set_Texture(tex, 0);
 
 	boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
-	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
 	boxRenderer->Set_Material(boxMat);
 
 	CGameObject* box2Obj = Add_GameObject(L"Box2");
 	CMeshRenderer* box2Renderer = box2Obj->AddComponent<CMeshRenderer>();
-	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
 	box2Renderer->Set_Material(boxMat);
 
 	CGameObject* box1Obj = Add_GameObject(L"Box1");
 	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
-	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(mb);
+	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
 	box1Renderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());

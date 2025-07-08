@@ -21,6 +21,8 @@ CResources& CResources::GetInstance()
 
 HRESULT CResources::Initialize()
 {
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube", L"Cube"));
+
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResource/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elemetDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));
 

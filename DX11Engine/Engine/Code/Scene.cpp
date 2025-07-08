@@ -14,6 +14,8 @@ CScene::CScene()
 	, m_pEditorCamera(nullptr)
 	, m_iUniqueObjectCount(0)
 {
+	m_strName = L"Scene";
+
 	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
 	m_pContext = CGraphicDevice::GetInstance().Get_Context();
 
@@ -172,14 +174,14 @@ void CScene::SceneRelease()
 	Safe_Release(m_pContext);
 }
 
-void CScene::Set_Name(const wstring _name)
+void CScene::Set_SceneName(const wstring _name)
 {
 	m_strSceneName = _name;
 }
 
 const wstring& CScene::Get_SceneName() const
 {
-	return m_strName;
+	return m_strSceneName;
 }
 
 CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)

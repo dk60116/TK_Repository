@@ -61,8 +61,7 @@ void CTopToolBar::Render()
 		ImGuiWindowFlags_NoSavedSettings
 	);
 
-	ImGui::Text("This is the Top Toolbar.");
-
+	ShowSelectSceneButton();
 	ShowFPS();
 
 	ImGui::End();
@@ -72,6 +71,30 @@ void CTopToolBar::Render()
 
 void CTopToolBar::OnDestroy()
 {
+}
+
+void CTopToolBar::ShowSelectSceneButton()
+{
+	if (ImGui::Button("Scenes"))
+	{
+		ImGui::OpenPopup("ScenePopup");
+	}
+
+	auto sceneList = CSceneManager::GetInstance().Get_SceneList();
+
+	if (ImGui::BeginPopup("ScenePopup"))
+	{
+		for (TRAVERSAL_ITER(sceneList, it))
+		{
+			if (ImGui::Button(CEngineString::WStringToString((*it).second->Get_SceneName()).c_str()))
+			{
+				CSceneManager::GetInstance().LoadScene((*it).second);
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+	}
 }
 
 void CTopToolBar::ShowFPS()

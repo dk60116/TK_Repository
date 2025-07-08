@@ -136,6 +136,9 @@
     <ClInclude Include="..\Header\Shader.h">
       <Filter>Resource\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\UIManager.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -221,6 +224,9 @@
     </Filter>
     <Filter Include="Components\Animator">
       <UniqueIdentifier>{9b13f646-b322-48f1-b39e-7cc784eb49b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\UI">
+      <UniqueIdentifier>{86549875-3b27-40ce-9dd6-219ee1be20e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -367,6 +373,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Shader.cpp">
       <Filter>Resource\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UIManager.cpp">
+      <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

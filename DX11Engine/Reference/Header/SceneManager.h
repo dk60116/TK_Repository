@@ -17,9 +17,11 @@ public:
 	CScene* CreateScene(CScene* _newScene, wstring _name);
 	CScene* Get_CrtScene();
 	CScene* Get_TempScene();
+	const map<wstring, CScene*>& Get_SceneList();
 	const _bool Is_Loading() const;
 
 	void LoadScene(wstring _scene);
+	void LoadScene(CScene* _scene);
 	void LoadComplete();
 
 public:
