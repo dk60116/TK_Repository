@@ -105,12 +105,17 @@ void CDebug::Log(const wstring format, ...)
     Log(CEngineString::WStringToString(format));
 }
 
-void CDebug::Log(const int format, ...)
+void CDebug::Log(const _bool format, ...)
+{
+	Log(format ? "True" : "False");
+}
+
+void CDebug::Log(const _int format, ...)
 {
     Log(to_string(format));
 }
 
-void CDebug::Log(const float format, ...)
+void CDebug::Log(const _float format, ...)
 {
     Log(to_string(format));
 }
@@ -224,12 +229,17 @@ void CDebug::LogError(const wstring format, ...)
     LogError(CEngineString::WStringToString(format));
 }
 
-void CDebug::LogError(const int format, ...)
+void CDebug::LogError(const _bool format, ...)
+{
+	LogError(format ? "True" : "False");    
+}
+
+void CDebug::LogError(const _int format, ...)
 {
     LogError(to_string(format));
 }
 
-void CDebug::LogError(const float format, ...)
+void CDebug::LogError(const _float format, ...)
 {
     LogError(to_string(format));
 }
@@ -297,12 +307,17 @@ void CDebug::LogWarnning(const wstring format, ...)
     LogWarnning(CEngineString::WStringToString(format));
 }
 
-void CDebug::LogWarnning(const int format, ...)
+void CDebug::LogWarnning(const _bool format, ...)
+{
+    LogWarnning(format ? "True" : "False");
+}
+
+void CDebug::LogWarnning(const _int format, ...)
 {
     LogWarnning(to_string(format));
 }
 
-void CDebug::LogWarnning(const float format, ...)
+void CDebug::LogWarnning(const _float format, ...)
 {
     LogWarnning(to_string(format));
 }

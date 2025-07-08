@@ -60,6 +60,7 @@ inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _p
     }
 
     m_mGameResourceList.emplace(_name, newResource);
+	newResource->AddRef();
 
     return newResource;
 }
@@ -67,38 +68,16 @@ inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _p
 template<typename T>
 inline T* CResources::CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc, const _bool _tempScene)
 {
-    CScene* targetScene = _tempScene
-        ? CSceneManager::GetInstance().Get_TempScene()
-        : CSceneManager::GetInstance().Get_CrtScene();
-
-    CEngineResource* existing = targetScene->Find_Resource(_name);
-
-    if (existing)
-    {
-        T* existingTyped = dynamic_cast<T*>(existing);
-
-        if (existingTyped)
-        {
-            existingTyped->AddRef();
-            return existingTyped;
-        }
-        else
-        {
-            CDebug::LogError(L"Create Scene Resource failed SameName: [" + _name + L"]");
-            return nullptr;
-        }
-    }
-
-    T* newResource = T::Create(m_strDefaultAssetPath + _path);
-
-    if (!newResource)
-        return nullptr;
+	T* newResource = T::Create(m_strDefaultAssetPath + _path);
 
     if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
     {
         delete newResource;
         return nullptr;
     }
+
+	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+		CSceneManager::GetInstance().Get_CrtScene();
 
     if (!_tempScene)
         targetScene->Add_Resource(_name, newResource);

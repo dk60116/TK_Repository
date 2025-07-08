@@ -79,6 +79,11 @@ HRESULT CScene::Initialize()
 
 	m_mTempResourceList.clear();
 
+	auto pRes = CResources::GetInstance().LoadOnGame<CShader>(L"UnlitColor (Shader)");
+
+	if (pRes == nullptr)
+		CDebug::LogError("NULL");
+
 	CDebug::Log(CDebug::MemoryUseLog());
 
 #ifndef _CLIENT_BUILD
