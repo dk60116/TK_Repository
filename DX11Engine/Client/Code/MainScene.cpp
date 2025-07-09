@@ -44,7 +44,7 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* box1Obj = Add_GameObject(L"Box1");
 	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
-	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube(MeshBuffer)"));
+	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (MeshBuffer)"));
 	box1Renderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());

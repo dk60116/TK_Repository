@@ -128,10 +128,10 @@ void CScene::Render_Editor()
 	{
 		if ((*it)->IsActive())
 		{
-			(*it)->OnPreCull();
-			(*it)->OnPreRender();
+			(*it)->OnPreCull_Editor();
+			(*it)->OnPreRender_Editor();
 			(*it)->Render_Editor();
-			(*it)->OnPostRender();
+			(*it)->OnPostRender_Editor();
 		}
 
 		(*it)->Render_Gizmo();

@@ -31,16 +31,34 @@ HRESULT CCanvas::Initialize()
 
 	if (m_pRectMesh && !m_pLineMat)
 	{
+		m_pLineMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
+		m_pLineMat->AddRef();
 	}
-
-	if (m_pLineMat)
-		m_pLineMat->Set_Shader(CResources::GetInstance().LoadOnScene<CShader>(L"DefaultLine (Shader)"));
 
 	return S_OK;
 }
 
+void CCanvas::OnPreRender_Editor()
+{
+	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+}
+
 void CCanvas::Render_Editor()
 {
+	CCamera* cam = CSceneManager::GetInstance().Get_EditorCamera();
+
+	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
+	_matrix matView = cam->Get_ViewMatrix();
+	_matrix matProj = cam->Get_ProjectionMatrix();
+
+	m_pLineMat->Bind(matWorld, matView, matProj, 0);
+
+	m_pRectMesh->Render();
+}
+
+void CCanvas::OnPostRender_Editor()
+{
+	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void CCanvas::OnDestroy()

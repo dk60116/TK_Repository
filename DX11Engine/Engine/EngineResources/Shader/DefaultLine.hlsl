@@ -1,32 +1,73 @@
-cbuffer PerFrame : register(b0)
+// ───────────── 상수 버퍼
+cbuffer PerObject : register(b0)
 {
-    matrix View;
-    matrix Projection;
+    float4x4 world;
 };
 
-struct VS_IN
+cbuffer PerCamera : register(b1)
 {
-    float3 pos : POSITION;
-    float4 col : COLOR0;
+    float4x4 view;
+    float4x4 proj;
 };
 
-struct VS_OUT
+cbuffer PerMaterial : register(b2)
+{
+    float4 baseColor;
+    uint boneCount;
+    float3 padding; // 16바이트 정렬
+};
+
+cbuffer PerBones : register(b3)
+{
+    float4x4 gBones[128];
+};
+
+// ───────────── 버텍스 입력
+struct VSIn
+{
+    float3 posL : POSITION;
+    uint4 boneIndices : BLENDINDICES;
+    float4 boneWeights : BLENDWEIGHT;
+};
+
+// ───────────── 버텍스 출력
+struct VSOut
 {
     float4 posH : SV_POSITION;
-    float4 col : COLOR0;
 };
 
-VS_OUT VSMain(VS_IN input)
+// ───────────── 버텍스 셰이더
+VSOut VSMain(VSIn v)
 {
-    VS_OUT output;
-    float4 worldPos = float4(input.pos, 1);
-    output.posH = mul(worldPos, View);
-    output.posH = mul(output.posH, Projection);
-    output.col = input.col;
-    return output;
+    VSOut o;
+
+    float4 skinnedPos = float4(0, 0, 0, 0);
+    if (boneCount)
+    {
+        [unroll]
+        for (int i = 0; i < 4; ++i)
+        {
+            uint idx = v.boneIndices[i];
+            float w = v.boneWeights[i];
+            skinnedPos += mul(float4(v.posL, 1), gBones[idx]) * w;
+        }
+    }
+    else
+    {
+        skinnedPos = float4(v.posL, 1);
+    }
+
+    // 월드, 뷰, 프로젝션 변환
+    float4 posW = mul(skinnedPos, world);
+    float4 posV = mul(posW, view);
+    o.posH = mul(posV, proj);
+
+    return o;
 }
 
-float4 PSMain(VS_OUT input) : SV_TARGET
+// ───────────── 픽셀 셰이더
+float4 PSMain(VSOut input) : SV_TARGET
 {
-    return input.col;
+    // 단일 색상 출력
+    return baseColor;
 }

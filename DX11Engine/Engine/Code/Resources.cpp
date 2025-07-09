@@ -24,7 +24,7 @@ HRESULT CResources::Initialize()
 	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (MeshBuffer)", L"Cube"));
 	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (MeshBuffer)", L"Quad"));
 
-	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  LineColorBuffer::numElements, LineColorBuffer::elemetDesc };
+	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexColorSkinnedBuffer::numElements, VertexColorSkinnedBuffer::elemetDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
 
 	CShader* dlShader = LoadOnGame<CShader>(L"DefaultLine (Shader)");

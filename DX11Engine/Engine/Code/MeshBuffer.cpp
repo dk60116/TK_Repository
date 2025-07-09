@@ -115,7 +115,10 @@ void CMeshBuffer::OnDestroy()
 void CMeshBuffer::Render()
 {
     if (!m_pVertexBuffer)
+    {
+        CDebug::LogError("Mesh buffer failed render - No vertex buffer");
         return;
+    }
 
     UINT stride = m_sInfo.vertexSize;
     UINT offset = 0;

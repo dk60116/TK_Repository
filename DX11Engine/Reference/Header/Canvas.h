@@ -20,7 +20,9 @@ private:
 
 public:
     HRESULT Initialize() override;
+    void OnPreRender_Editor();
     void Render_Editor() override;
+    void OnPostRender_Editor() override;
     void OnDestroy() override;
 
 private:

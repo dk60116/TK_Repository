@@ -60,7 +60,7 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 	if (m_pShader)
 		m_pShader->Bind();
 
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Bind_Texture();
 
