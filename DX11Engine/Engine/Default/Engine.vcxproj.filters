@@ -137,6 +137,12 @@
       <Filter>Resource\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\UIManager.h">
+      <Filter>System\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Canvas.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\UI.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -225,8 +231,11 @@
     <Filter Include="Components\Animator">
       <UniqueIdentifier>{9b13f646-b322-48f1-b39e-7cc784eb49b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\UI">
+    <Filter Include="System\UI">
       <UniqueIdentifier>{86549875-3b27-40ce-9dd6-219ee1be20e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\UI">
+      <UniqueIdentifier>{511ad8be-e748-43ab-a669-e924d53b9e63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -375,6 +384,12 @@
       <Filter>Resource\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\UIManager.cpp">
+      <Filter>System\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Canvas.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UI.cpp">
       <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>

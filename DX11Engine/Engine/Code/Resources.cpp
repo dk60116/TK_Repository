@@ -23,10 +23,10 @@ HRESULT CResources::Initialize()
 {
 	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube", L"Cube"));
 
-	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResource/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elemetDesc };
+	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elemetDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));
 
-	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResource/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elemetDesc };
+	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResources/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elemetDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"Outline (Shader)", L"", &outlineShaderDesc));
 
 	return S_OK;
@@ -63,5 +63,6 @@ _bool CResources::FileExists(wstring& _path)
 
 _bool CResources::FileExists(string& _path)
 {
-	return fs::exists(_path) && fs::is_regular_file(_path);
+	DWORD attrib = GetFileAttributesA(_path.c_str());
+	return (attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY);
 }

@@ -119,10 +119,16 @@ inline T* CGameObject::AddComponent()
 		return nullptr;
 	}
 
-	if (dynamic_cast<class CCamera*>(newComponent))
+	if (CCamera* cam = dynamic_cast<class CCamera*>(newComponent))
 	{
-		if (!dynamic_cast<CEditorCamera*>(newComponent))
-			m_pScene->Add_Camera(dynamic_cast<class CCamera*>(newComponent));
+		if (cam)
+			m_pScene->Add_Camera(cam);
+	}
+
+	if (CCanvas* canv = dynamic_cast<class CCanvas*>(newComponent))
+	{
+		if (canv)
+			m_pScene->Add_Canvas(canv);
 	}
 
 	//if (dynamic_cast<CLight*>(newComponent))

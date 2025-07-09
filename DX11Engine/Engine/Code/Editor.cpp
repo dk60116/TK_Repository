@@ -20,6 +20,8 @@ CEditor::CEditor()
 	, m_vCameraMoveTargetPos({})
 	, m_fCameraMoveDuration(0.3f)
 	, m_fCameraMoveProgress(0.f)
+	, m_hEditorWindowIcon_Default(nullptr)
+	, m_hEditorWindoIcon_Small(nullptr)
 {
 }
 
@@ -153,6 +155,24 @@ HWND CEditor::CreateEditorWindow()
 	RECT rc = { 0, 0, static_cast<LONG>(m_sOptions.windowWidth), static_cast<LONG>(m_sOptions.windowHeight) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
+	m_hEditorWindowIcon_Default = (HICON)LoadImageW
+	(
+		NULL,
+		L"../EngineResources/Icon/Engine_Icon.ico",
+		IMAGE_ICON,
+		32, 32,
+		LR_LOADFROMFILE | LR_DEFAULTSIZE
+	);
+
+	m_hEditorWindoIcon_Small = (HICON)LoadImageW
+	(
+		NULL,
+		L"../EngineResources/Icon/Engine_Icon.ico",
+		IMAGE_ICON,
+		16, 16,
+		LR_LOADFROMFILE
+	);
+
 	HWND hwnd = CreateWindowEx
 	(
 		0,
@@ -166,6 +186,8 @@ HWND CEditor::CreateEditorWindow()
 		CDisplay::GetInstance().Get_HInstance(),
 		nullptr
 	);
+
+	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hEditorWindoIcon_Small);
 
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);

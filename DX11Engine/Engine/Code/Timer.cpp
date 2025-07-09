@@ -86,5 +86,5 @@ const _float CTimer::Get_ElapsedTime() const
 	QueryPerformanceCounter(&now);
 
 	LONGLONG elapsedCounts = now.QuadPart - m_iStartTime.QuadPart;
-	return static_cast<double>(elapsedCounts) / static_cast<double>(m_iFrequency.QuadPart);
+	return static_cast<_float>(elapsedCounts) / static_cast<_float>(m_iFrequency.QuadPart);
 }

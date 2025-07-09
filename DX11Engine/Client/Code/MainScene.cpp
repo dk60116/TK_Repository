@@ -5,6 +5,7 @@
 CMainScene::CMainScene()
 	: CScene{}
 	, m_pMainCamera(nullptr)
+	, m_pCanvas(nullptr)
 	, m_pPlayer(nullptr)
 {
 }
@@ -24,11 +25,14 @@ HRESULT CMainScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
+	CGameObject* canvasObj = Add_GameObject(L"Canvas");
+	m_pCanvas = canvasObj->AddComponent<CCanvas>();
+
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
 	CMaterial* boxMat = CMaterial::Create();
 	boxMat->Set_Texture(tex, 0);
 
-	boxObj = Add_GameObject(L"Box");
+	CGameObject* boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
 	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
 	boxRenderer->Set_Material(boxMat);
@@ -64,7 +68,4 @@ void CMainScene::Update()
 
 	if (CInput::GetInstance().GetKeyDown(Alpha1))
 		CSceneManager::GetInstance().LoadScene(L"Main Scene");
-
-	if (CInput::GetInstance().GetKeyDown(Alpha4))
-		boxObj->Get_Transform()->Set_Parent(nullptr);
 }

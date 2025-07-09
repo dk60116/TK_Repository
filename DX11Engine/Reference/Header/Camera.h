@@ -21,6 +21,8 @@ private:
 public:
 	HRESULT Initialize() override;
 	void Update() override;
+	void Render() override;
+	void RenderUI();
 
 public:
 	_matrix Get_ViewMatrix() const;
@@ -45,6 +47,8 @@ protected:
 	_float m_fNear, m_fFar;
 	_float m_fFieldOfView;
 	_float m_fSize;
+
+	list<CCanvas*> m_lCanvasList;
 };
 
 NS_END

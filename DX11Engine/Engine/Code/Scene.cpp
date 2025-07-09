@@ -11,6 +11,7 @@ CScene::CScene()
 	, m_mTempResourceList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
+	, m_lCanvasList({})
 	, m_pEditorCamera(nullptr)
 	, m_iUniqueObjectCount(0)
 {
@@ -297,16 +298,52 @@ CCamera* CScene::Get_EditorCamera() const
 	return m_pEditorCamera;
 }
 
-list<class CCamera*>& CScene::Get_CameraList()
+const list<class CCamera*>& CScene::Get_CameraList()
 {
 	return m_lCameraList;
 }
 
 CCamera* CScene::Add_Camera(CCamera* _camera)
 {
+	if (!_camera)
+		return nullptr;
+
 	m_lCameraList.push_back(_camera);
 
-	return _camera;
+	return m_lCameraList.back();
+}
+
+CCanvas* CScene::Get_Canvas(const _int _index) const
+{
+	_int i = 0;
+
+	if (m_lCanvasList.size() <= 0)
+		return nullptr;
+
+	for (TRAVERSAL_ITER(m_lCanvasList, it))
+	{
+		++i;
+
+		if (_index == i)
+			return (*it);
+	}
+
+	return m_lCanvasList.back();
+}
+
+const list<CCanvas*>& CScene::Get_CanvasList()
+{
+	return m_lCanvasList;
+}
+
+CCanvas* CScene::Add_Canvas(CCanvas* _canvas)
+{
+	if (!_canvas)
+		return nullptr;
+
+	m_lCanvasList.push_back(_canvas);
+
+	return m_lCanvasList.back();
 }
 
 CGameObject* CScene::Instantiate(CGameObject* _gameObject)

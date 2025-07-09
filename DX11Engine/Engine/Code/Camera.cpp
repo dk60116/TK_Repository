@@ -40,6 +40,14 @@ void CCamera::Update()
 	Bind_ProjectionMatrix();
 }
 
+void CCamera::Render()
+{
+}
+
+void CCamera::RenderUI()
+{
+}
+
 _matrix CCamera::Get_ViewMatrix() const
 {
 	_matrix result = XMLoadFloat4x4(&m_vViewMatrix);

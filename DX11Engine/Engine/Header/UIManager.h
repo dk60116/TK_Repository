@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CUIManager
+class ENGINE_DLL CUIManager final
 {
 	SINGLETONCLASS(CUIManager);
 };

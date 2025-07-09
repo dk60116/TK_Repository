@@ -36,11 +36,17 @@ public:
     class CEngineResource* Add_TempResource(const wstring& _name, class CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     vector<CGameObject*> Get_RootObjects();
+
     class CCamera* Get_Camera() const;
     CCamera* Get_Camera(const _int _index) const;
     CCamera* Get_EditorCamera() const;
-    list <CCamera*>& Get_CameraList();
+    const list <CCamera*>& Get_CameraList();
     CCamera* Add_Camera(CCamera* _camera);
+
+    class CCanvas* Get_Canvas(const _int _index) const;
+    const list <CCanvas*>& Get_CanvasList();
+    CCanvas* Add_Canvas(CCanvas* _canvas);
+
     CGameObject* Instantiate(CGameObject* _gameObject);
     HRESULT SaveScene(const wstring& _filePath);
     const _uint Get_UniqueObjectCount() const;
@@ -57,6 +63,7 @@ protected:
     wstring m_strSceneName;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;
+    list<CCanvas*> m_lCanvasList;
 
     CCamera* m_pEditorCamera;
 

@@ -159,6 +159,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Animation.h" />
     <ClInclude Include="..\Header\Animator.h" />
     <ClInclude Include="..\Header\Camera.h" />
+    <ClInclude Include="..\Header\Canvas.h" />
     <ClInclude Include="..\Header\Component.h" />
     <ClInclude Include="..\Header\Display.h" />
     <ClInclude Include="..\Header\Editor.h" />
@@ -199,6 +200,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\TopToolBar.h" />
     <ClInclude Include="..\Header\Transform.h" />
     <ClInclude Include="..\Header\MeshBuffer.h" />
+    <ClInclude Include="..\Header\UI.h" />
     <ClInclude Include="..\Header\UIManager.h" />
     <ClInclude Include="epch.h" />
     <ClInclude Include="resource.h" />
@@ -210,6 +212,7 @@ call copy.bat</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Code\Camera.cpp" />
+    <ClCompile Include="..\Code\Canvas.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\Display.cpp" />
     <ClCompile Include="..\Code\Editor.cpp" />
@@ -291,6 +294,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\TopToolBar.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\MeshBuffer.cpp" />
+    <ClCompile Include="..\Code\UI.cpp" />
     <ClCompile Include="..\Code\UIManager.cpp" />
     <ClCompile Include="..\Code\WICTextureLoader.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

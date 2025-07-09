@@ -75,6 +75,9 @@ private:
 	TransformControleTool m_eControleTool;
 	CGameObject* m_pSelectedGameObject;
 	CGameObject* m_pMoveTargetGameObject;
+
+private:
+	HICON m_hEditorWindowIcon_Default, m_hEditorWindoIcon_Small;
 };
 
 NS_END
