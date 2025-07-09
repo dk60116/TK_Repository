@@ -23,7 +23,9 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	if (!m_pOutlineMat)
-		m_pOutlineMat = CMaterial::Create();
+	{
+
+	}
 	
 	if (m_pOutlineMat)
 		m_pOutlineMat->AddRef();
@@ -36,7 +38,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	}
 
-	m_pOutlineMat->Set_Shader(outShader);
+	//m_pOutlineMat->Set_Shader(outShader);
 
 	return S_OK;
 }

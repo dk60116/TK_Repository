@@ -309,6 +309,11 @@ wstring CGameObject::Get_ObjectName() const
 	return m_strGameObjectName;
 }
 
+wstring CGameObject::Get_ObjectNameID() const
+{
+	return m_strGameObjectName + L"[" + to_wstring(m_iUniqueID) + L"]";
+}
+
 void CGameObject::Set_ObjectName(wstring& _name)
 {
 	m_strGameObjectName = _name;

@@ -1164,6 +1164,19 @@ namespace Engine
 #pragma endregion
 
 #pragma region VertexBuffer
+    struct LineColorBuffer
+    {
+        _float3 position;
+        _float4 color;
+
+        static const _uint numElements = 2;
+        static constexpr D3D11_INPUT_ELEMENT_DESC elemetDesc[numElements] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
+    };
+
     struct VertexTexNormalBuffer
     {
         _float3  position;

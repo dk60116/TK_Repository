@@ -21,13 +21,13 @@ CSkinnedMeshBuffer* CSkinnedMeshBuffer::Create(const wstring& _filePath)
 	return new CSkinnedMeshBuffer();
 }
 
-HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _desc)
+HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
     if (FAILED(CEngineResource::Initialize(_name, _filePath, _desc)))
         return E_FAIL;
 
     ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
-    
+
     if (!device)
         return E_FAIL;
 
@@ -113,7 +113,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, wstring _filePath, 
         );
 
         _float4x4 mat4x4 = {};
-        
+
         XMStoreFloat4x4(&mat4x4, matOffset);
 
         m_vBoneOffsetMatrices.push_back(mat4x4);

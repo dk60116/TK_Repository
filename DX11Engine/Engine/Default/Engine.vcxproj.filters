@@ -97,7 +97,7 @@
     <ClInclude Include="..\Header\Texture.h">
       <Filter>Resource\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\Animation.h">
+    <ClInclude Include="..\Header\AnimationClip.h">
       <Filter>Resource\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Renderer.h">
@@ -338,7 +338,7 @@
     <ClCompile Include="..\Code\Texture.cpp">
       <Filter>Resource\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Animation.cpp">
+    <ClCompile Include="..\Code\AnimationClip.cpp">
       <Filter>Resource\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Renderer.cpp">

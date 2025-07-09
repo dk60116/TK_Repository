@@ -22,7 +22,7 @@ CMeshBuffer* CMeshBuffer::Create(const wstring& _filePath)
     return new CMeshBuffer();
 }
 
-HRESULT CMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _desc)
+HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
     if (FAILED(__super::Initialize(_name, _filePath, _desc)))
         return E_FAIL;
@@ -31,6 +31,8 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, wstring _filePath, void* _
 
     if (_filePath == L"../Assets/Cube")
         info = CreateCube();
+    else if (_filePath == L"../Assets/Quad")
+        info = CreateQuad();
     else
     {
         const _float scaleFactor = _desc ? *reinterpret_cast<_float*>(_desc) : 1.f;
@@ -182,7 +184,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()
             {{-length, -length, -length}, { 0, -1,  0}, {0, 0}, {1, 0, 0}},
     };
 
-    static UINT cubeIndices[36] =
+    static _uint cubeIndices[36] =
     {
         2,1,0, 3,2,0,   // 앞
         6,5,4, 7,6,4,   // 뒤
@@ -209,6 +211,38 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateSphere()
 {
     MeshBufferInitiaizeInfo result = {};
     return result;
+}
+
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateQuad()
+{
+    MeshBufferInitiaizeInfo info = {};
+
+    const _float length = 0.5f;
+
+    VertexTexNormalTangentBuffer quadVertices[4] =
+    {
+            {{-length, -length, 0}, { 0,  0, -1}, {0, 1}, {1, 0, 0}},
+            {{ length, -length, 0}, { 0,  0, -1}, {1, 1}, {1, 0, 0}},
+            {{ length,  length, 0}, { 0,  0, -1}, {1, 0}, {1, 0, 0}},
+            {{-length,  length, 0}, { 0,  0, -1}, {0, 0}, {1, 0, 0}},
+    };
+
+    static _uint quadIndices[6] =
+    {
+        2,1,0, 3,2,0
+    };
+
+    CMeshBuffer::MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    desc.vertexSize = sizeof(VertexTexNormalTangentBuffer);
+    desc.vertextCount = _countof(quadVertices);
+    desc.indexCount = _countof(quadIndices);
+
+    info.buffer.assign(begin(quadVertices), end(quadVertices));
+    info.indices.assign(begin(quadIndices), end(quadIndices));
+    info.desc = desc;
+
+    return info;
 }
 
 CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
@@ -245,7 +279,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
     };
 
     // 인덱스 (0-1-2)
-    UINT triIndices[3] = { 0, 1, 2 };
+    _uint triIndices[3] = { 0, 1, 2 };
 
     // 버텍스 복사
     info.buffer.assign(std::begin(triVerts), std::end(triVerts));

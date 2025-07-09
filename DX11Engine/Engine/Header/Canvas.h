@@ -20,7 +20,15 @@ private:
 
 public:
     HRESULT Initialize() override;
-    void Update() override;
+    void Render_Editor() override;
+    void OnDestroy() override;
+
+private:
+    RenderMode m_eRenderMode;
+    list<CUI*> m_lUIObjectList;
+
+    CMeshBuffer* m_pRectMesh;
+    CMaterial* m_pLineMat;
 };
 
 NS_END

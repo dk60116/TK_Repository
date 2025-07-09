@@ -33,6 +33,8 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CInput::GetInstance().Initialize()))
         return E_FAIL;
+    if (FAILED(CUIManager::GetInstance().Initialize()))
+        return E_FAIL;
 
 #ifndef _CLIENT_BUILD
     CEditor::EDITORWINOPTION sOption = CEditor::GetInstance().Get_Options();

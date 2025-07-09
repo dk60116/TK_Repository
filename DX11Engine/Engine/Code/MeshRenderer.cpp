@@ -66,19 +66,19 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 {
 	if (!_cam)
 	{
-		CDebug::LogError("MeshRenderer: No Camera assigned.");
+		CDebug::LogError(L"MeshRenderer: No Camera assigned." + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
 	if (!m_pMeshFilter)
 	{
-		CDebug::LogError("MeshRenderer: No MeshFilter assigned.");
+		CDebug::LogError(L"MeshRenderer: No MeshFilter assigned:" + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
 	if (!m_pMaterial)
 	{
-		CDebug::LogError("MeshRenderer: No material assigned.");
+		CDebug::LogError(L"MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 

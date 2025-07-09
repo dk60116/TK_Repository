@@ -80,7 +80,7 @@ void CInspectorBox::Render()
         ImGui::SameLine(0.0f, 6.0f);
 
         ImGui::SetCursorPosY(baseY);
-        ImGui::Text(("[" + std::to_string(selectedObj->Get_UniqueID()) + "] ").c_str());
+        ImGui::Text(("[" + to_string(selectedObj->Get_UniqueID()) + "] ").c_str());
         ImGui::SameLine();
         ImGui::SetCursorPosY(baseY + 3.f);
         ImGui::SetNextItemWidth(140.0f);                

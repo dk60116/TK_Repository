@@ -1,5 +1,5 @@
 #include "epch.h"
-#include "Animation.h"
+#include "AnimationClip.h"
 
 CAnimation::CAnimation()
 	: m_vBoneAnimation({})

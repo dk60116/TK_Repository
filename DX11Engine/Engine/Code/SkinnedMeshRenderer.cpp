@@ -145,13 +145,13 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	if (!m_pMaterial)
 	{
-		CDebug::LogError(L"Skinned MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectName());
+		CDebug::LogError(L"Skinned MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
 	if (!m_pMeshBuffer)
 	{
-		CDebug::LogError(L"Skinned MeshRenderer: No MeshBuffer assigned:" + m_pGameObject->Get_ObjectName());
+		CDebug::LogError(L"Skinned MeshRenderer: No MeshBuffer assigned:" + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 

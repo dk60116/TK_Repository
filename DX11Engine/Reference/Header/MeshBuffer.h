@@ -32,13 +32,14 @@ private:
 	static CMeshBuffer* Create(const wstring& _filePath);
 
 protected:
-	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
+	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy();
 
 private:
 	MeshBufferInitiaizeInfo CreateCube();
 	MeshBufferInitiaizeInfo CreateSphere();
 	MeshBufferInitiaizeInfo CreatePlane();
+	MeshBufferInitiaizeInfo CreateQuad();
 	MeshBufferInitiaizeInfo CreateCylinder();
 	MeshBufferInitiaizeInfo CreateTriangle();
 	MeshBufferInitiaizeInfo CreateObjectMesh(const string& _filePath, const _float _scaleFactor = 1.f);

@@ -16,8 +16,8 @@ private:
 private:
 	static CSkinnedMeshBuffer* Create(const wstring& _filePath);
 
-public:
-	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
+protected:
+	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void Render();
 	void OnDestroy() override;
 

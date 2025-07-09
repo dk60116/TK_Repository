@@ -24,7 +24,7 @@ HRESULT CPlayer::Initialize()
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 	//CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Girl_Tex (Texture)");
-	CMaterial* playerMat = CMaterial::Create();
+	CMaterial* playerMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
 	playerMat->Set_Texture(tex, 0);
 
 	//CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Link_Model (MeshBuffer)");

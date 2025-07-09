@@ -151,7 +151,7 @@ void CAnimator::Add_Animation(const wstring& _animName, CAnimation* _anim)
 {
 	if (!_anim)
 	{
-		CDebug::LogError(L"Add Animation failed - Animation is nullptr: " + m_pGameObject->Get_ObjectName());
+		CDebug::LogError(L"Add Animation failed - Animation is nullptr: " + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
@@ -171,7 +171,7 @@ void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 
 	if (iter == m_mAnimationList.end())
 	{
-		CDebug::LogError(L"Animator play failed - Animation not found: " + _animName + L" - " + m_pGameObject->Get_ObjectName());
+		CDebug::LogError(L"Animator play failed - Animation not found: " + _animName + L" - " + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 

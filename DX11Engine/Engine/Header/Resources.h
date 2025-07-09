@@ -3,7 +3,7 @@
 #include "epch.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Animation.h"
+#include "AnimationClip.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -37,9 +37,10 @@ public:
     template<typename T>
 	T* LoadOnScene(const wstring& _name);
 
-	static _bool FileExists(wstring& _path);
-	static _bool FileExists(string& _path);
+	static _bool FileExists(const wstring& _path);
+	static _bool FileExists(const string& _path);
 
+    unordered_map<wstring, CEngineResource*> m_mEditorResourceList;
     unordered_map<wstring, CEngineResource*> m_mGameResourceList;
 
 private:

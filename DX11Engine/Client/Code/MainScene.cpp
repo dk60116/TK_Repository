@@ -29,22 +29,22 @@ HRESULT CMainScene::Initialize()
 	m_pCanvas = canvasObj->AddComponent<CCanvas>();
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
-	CMaterial* boxMat = CMaterial::Create();
+	CMaterial* boxMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
 	boxMat->Set_Texture(tex, 0);
 
 	CGameObject* boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
-	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
+	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (MeshBuffer)"));
 	boxRenderer->Set_Material(boxMat);
 
 	CGameObject* box2Obj = Add_GameObject(L"Box2");
 	CMeshRenderer* box2Renderer = box2Obj->AddComponent<CMeshRenderer>();
-	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
+	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (MeshBuffer)"));
 	box2Renderer->Set_Material(boxMat);
 
 	CGameObject* box1Obj = Add_GameObject(L"Box1");
 	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
-	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube"));
+	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube(MeshBuffer)"));
 	box1Renderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
@@ -58,6 +58,11 @@ HRESULT CMainScene::Initialize()
 
 	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
 	m_pPlayer->Get_Transform()->Get_Child()->Set_LocalScale(0.01f);
+
+	CGameObject* quadObject = Add_GameObject(L"Rect");
+	CMeshRenderer* quadRender = quadObject->AddComponent<CMeshRenderer>();
+	quadRender->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (MeshBuffer)"));
+	quadRender->Set_Material(boxMat);
 
 	return S_OK;
 }

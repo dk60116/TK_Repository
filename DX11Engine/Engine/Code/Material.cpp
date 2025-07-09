@@ -22,20 +22,18 @@ CMaterial* CMaterial::Create(const wstring _path)
 {
 	CMaterial* newMaterial = new CMaterial();
 
-	if (FAILED(newMaterial->Initialize(_path)))
-		return nullptr;
-
 	return newMaterial;
 }
 
-HRESULT CMaterial::Initialize(const wstring _path)
+HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _desc)
 {
-	if (!m_pShader)
-	{
-		m_pShader = CResources::GetInstance().LoadOnGame<CShader>(L"UnlitColor (Shader)");
+	if (FAILED(__super::Initialize(_name, _filePath, _desc)))
+		return E_FAIL;
 
-		if (m_pShader)
-			m_pShader->AddRef();
+	if (_desc)
+	{
+		MATERIALDESC* matDesc = reinterpret_cast<MATERIALDESC*>(_desc);
+		Set_Shader(matDesc->shaderPointer);
 	}
 
 	if (FAILED(Create_ConstantBuffer()))

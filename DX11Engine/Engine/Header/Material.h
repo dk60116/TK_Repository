@@ -1,21 +1,29 @@
 #pragma once
 
-#include "Object.h"
+#include "EngineResource.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CMaterial final : public UObject
+class ENGINE_DLL CMaterial final : public CEngineResource
 {
+	friend class CResources;
+
+public:
+	typedef struct Material
+	{
+		CShader* shaderPointer;
+	} MATERIALDESC;
+
 private:
 	explicit CMaterial();
 	virtual ~CMaterial();
 
-public:
+private:
 	static CMaterial* Create(const wstring _path = L"");
 
 private:
-	HRESULT Initialize(const wstring _path = L"");
-	void OnDestroy();
+	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
+	void OnDestroy() override;
 
 public:
 	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount) const;
