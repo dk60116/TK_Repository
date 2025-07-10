@@ -2,6 +2,7 @@
 #include "UI.h"
 
 CUI::CUI()
+	: m_pRectTransform(nullptr)
 {
 }
 

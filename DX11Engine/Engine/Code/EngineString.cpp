@@ -75,9 +75,9 @@ wstring CEngineString::Trim(const wstring& _wstr)
 vector<string> CEngineString::Split(const string& _str, const string& _delimiter)
 {
     vector<string> tokens;
-    if (_delimiter.empty()) 
+    if (_delimiter.empty())
         return tokens;
-    if (_str.find(_delimiter) == string::npos) 
+    if (_str.find(_delimiter) == string::npos)
         return tokens;
 
     size_t start = 0;

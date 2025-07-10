@@ -29,7 +29,11 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
     MeshBufferInitiaizeInfo info = {};
 
-    if (_filePath == L"../Assets/Cube")
+    if (_filePath == L"../Assets/Line")
+        info = CreateLine();
+    else if (_filePath == L"../Assets/LineRect")
+        info = CreateLineRect();
+    else if (_filePath == L"../Assets/Cube")
         info = CreateCube();
     else if (_filePath == L"../Assets/Quad")
         info = CreateQuad();
@@ -140,6 +144,61 @@ void CMeshBuffer::Render()
         CGraphicDevice::GetInstance().Get_Context()->DrawIndexed(m_sInfo.indexCount, 0, 0);
     else
         CGraphicDevice::GetInstance().Get_Context()->Draw(m_sInfo.vertextCount, 0);
+}
+
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateLine()
+{
+    MeshBufferInitiaizeInfo info = {};
+
+    const _float length = 0.5f;
+
+    VertexTexNormalTangentBuffer lineVertices[2] =
+    {
+        {{-length, 0, 0}, { 0, 0, 0}, {0, 0}, {0, 0, 0}},
+        {{ length, 0, 0}, { 0, 0, 0}, {0, 0}, {0, 0, 0}}
+    };
+
+    CMeshBuffer::MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+    desc.vertexSize = sizeof(VertexTexNormalTangentBuffer);
+    desc.vertextCount = _countof(lineVertices);
+    desc.indexCount = 0;
+
+    info.buffer.assign(begin(lineVertices), end(lineVertices));
+
+    info.desc = desc;
+
+    return info;
+}
+
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateLineRect()
+{
+    MeshBufferInitiaizeInfo info = {};
+
+    const _float length = 0.5f;
+
+    VertexTexNormalTangentBuffer rectVertices[8]
+    {
+        {{-length, length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ length, length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ length, length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ length, -length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ length, -length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ -length, -length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ -length, -length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }},
+        {{ -length, length, 0}, { 0, 0, 0 }, { 0, 0 }, { 0, 0, 0 }}
+    };
+
+    CMeshBuffer::MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+    desc.vertexSize = sizeof(VertexTexNormalTangentBuffer);
+    desc.vertextCount = _countof(rectVertices);
+    desc.indexCount = 0;
+
+    info.buffer.assign(begin(rectVertices), end(rectVertices));
+    info.desc = desc;
+
+    return info;
 }
 
 CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()

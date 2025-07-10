@@ -25,11 +25,11 @@ HRESULT CCanvas::Initialize()
 
 	if (!m_pRectMesh)
 	{
-		m_pRectMesh = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (MeshBuffer)");
+		m_pRectMesh = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"LineRect (MeshBuffer)");
 		m_pRectMesh->AddRef();
 	}
 
-	if (m_pRectMesh && !m_pLineMat)
+	if (!m_pLineMat)
 	{
 		m_pLineMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
 		m_pLineMat->AddRef();
@@ -40,7 +40,8 @@ HRESULT CCanvas::Initialize()
 
 void CCanvas::OnPreRender_Editor()
 {
-	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	if (!m_pRectMesh)
+		return;
 }
 
 void CCanvas::Render_Editor()
@@ -51,19 +52,19 @@ void CCanvas::Render_Editor()
 	_matrix matView = cam->Get_ViewMatrix();
 	_matrix matProj = cam->Get_ProjectionMatrix();
 
-	m_pLineMat->Bind(matWorld, matView, matProj, 0);
+	if (m_pLineMat)
+		m_pLineMat->Bind(matWorld, matView, matProj, 0);
 
-	m_pRectMesh->Render();
+	if (m_pRectMesh)
+		m_pRectMesh->Render();
 }
 
 void CCanvas::OnPostRender_Editor()
 {
-	m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void CCanvas::OnDestroy()
 {
-
 	Safe_Release(m_pRectMesh);
 	Safe_Release(m_pLineMat);
 }

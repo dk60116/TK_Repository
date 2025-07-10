@@ -36,6 +36,8 @@ protected:
 	void OnDestroy();
 
 private:
+	MeshBufferInitiaizeInfo CreateLine();
+	MeshBufferInitiaizeInfo CreateLineRect();
 	MeshBufferInitiaizeInfo CreateCube();
 	MeshBufferInitiaizeInfo CreateSphere();
 	MeshBufferInitiaizeInfo CreatePlane();

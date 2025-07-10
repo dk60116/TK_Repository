@@ -21,6 +21,8 @@ CResources& CResources::GetInstance()
 
 HRESULT CResources::Initialize()
 {
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Line (MeshBuffer)", L"Line"));
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"LineRect (MeshBuffer)", L"LineRect"));
 	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (MeshBuffer)", L"Cube"));
 	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (MeshBuffer)", L"Quad"));
 
