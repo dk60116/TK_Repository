@@ -11,6 +11,7 @@ class ENGINE_DLL CMeshBuffer : public CEngineResource
 public:
 	typedef struct MeshBufferDescription
 	{
+		_bool useDeviceTopology = false;
 		D3D11_PRIMITIVE_TOPOLOGY topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		UINT vertexSize = 0;
 		UINT vertextCount = 0;

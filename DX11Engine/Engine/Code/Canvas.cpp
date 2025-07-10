@@ -42,6 +42,8 @@ void CCanvas::OnPreRender_Editor()
 {
 	if (!m_pRectMesh)
 		return;
+	
+	Get_Transform()->Set_LocalScale(10.f, 5.f, 0.f);
 }
 
 void CCanvas::Render_Editor()

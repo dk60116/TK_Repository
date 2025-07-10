@@ -138,7 +138,8 @@ void CMeshBuffer::Render()
         (m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
     }
 
-    CGraphicDevice::GetInstance().Get_Context()->IASetPrimitiveTopology(m_sInfo.topology);
+    if (!m_sInfo.useDeviceTopology)
+        CGraphicDevice::GetInstance().Get_Context()->IASetPrimitiveTopology(m_sInfo.topology);
 
     if (m_pIndexBuffer)
         CGraphicDevice::GetInstance().Get_Context()->DrawIndexed(m_sInfo.indexCount, 0, 0);
