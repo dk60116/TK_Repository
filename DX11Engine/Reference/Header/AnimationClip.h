@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CAnimation : public CEngineResource
+class ENGINE_DLL CAnimationClip : public CEngineResource
 {
 	friend class CResources;
 
@@ -31,8 +31,8 @@ public:
 	};
 
 protected:
-	CAnimation();
-	~CAnimation();
+	CAnimationClip();
+	~CAnimationClip();
 
 public:
 	void Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const;
@@ -40,7 +40,7 @@ public:
 	_float Get_Duration() const;
 
 protected:
-	static CAnimation* Create(const wstring& _filePath);
+	static CAnimationClip* Create(const wstring& _filePath);
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 

@@ -143,3 +143,7 @@ void CEditorCamera::Update()
 	Bind_ViewMatrix();
 	Bind_ProjectionMatrix();
 }
+
+void CEditorCamera::OnDestroy()
+{
+}

@@ -24,6 +24,7 @@ public:
     HRESULT Initialize() override;
 	void Update_Editor() override;
 	void Update() override;
+    void OnDestroy() override;
 
 	static CEditorCamera* Create();
 

@@ -28,9 +28,6 @@ public:
 private:
     RenderMode m_eRenderMode;
     list<CUI*> m_lUIObjectList;
-
-    CMeshBuffer* m_pRectMesh;
-    CMaterial* m_pLineMat;
 };
 
 NS_END

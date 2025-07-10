@@ -95,11 +95,11 @@ void CSceneLoader::ThreadLoadingLoop()
 			else if (CEngineString::Contains(wFile, L".fbx"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Mesh]"))
-					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (MeshBuffer)", wFile, nullptr, true));
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Mesh Buffer)", wFile, nullptr, true));
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
-					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (SkinnedMeshBuffer)", wFile, nullptr, true));
-				if (CEngineString::Contains(wFormat, L"[Animation]"))
-					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimation>(wName + L" (Animation)", wFile, nullptr, true));
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));
+				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))
+					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
 			}
 		}
 		else

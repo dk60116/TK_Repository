@@ -73,7 +73,7 @@ void CAnimator::Update()
 		}
 
 		// 현재/다음 애니메이션 각각 샘플링
-		unordered_map<wstring, CAnimation::BoneTransform> sampledNext;
+		unordered_map<wstring, CAnimationClip::BoneTransform> sampledNext;
 		m_pNextAnimation->Sample(m_fCurrentTime, sampledNext);
 
 		const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
@@ -115,7 +115,7 @@ void CAnimator::Update()
 	}
 
 	// 2) 현재 시각의 키프레임 샘플링 --------------------
-	unordered_map<wstring, CAnimation::BoneTransform> sampled;
+	unordered_map<wstring, CAnimationClip::BoneTransform> sampled;
 	m_pCrtAnimation->Sample(m_fCurrentTime, sampled);
 
 	// 3) 각 본 CTransform 갱신 -------------------------
@@ -147,7 +147,7 @@ void CAnimator::OnDestroy()
 	Safe_Release(m_pSkinnedRenderer);
 }
 
-void CAnimator::Add_Animation(const wstring& _animName, CAnimation* _anim)
+void CAnimator::Add_Animation(const wstring& _animName, CAnimationClip* _anim)
 {
 	if (!_anim)
 	{
@@ -175,7 +175,7 @@ void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 		return;
 	}
 
-	CAnimation* nextAnim = iter->second;
+	CAnimationClip* nextAnim = iter->second;
 
 	if (_blendDuration <= 0.f || !m_pCrtAnimation)
 	{
@@ -225,7 +225,7 @@ void CAnimator::SetSpeed(const _float _value)
 	m_fPlaybackSpeed = _value;
 }
 
-CAnimation* CAnimator::Get_CurrentAnimation()
+CAnimationClip* CAnimator::Get_CurrentAnimation()
 {
 	return m_pCrtAnimation;
 }

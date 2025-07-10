@@ -11,7 +11,6 @@ CComponent::CComponent()
 
 CComponent::~CComponent()
 {
-	OnDestroy();
 	Release();
 }
 
@@ -125,10 +124,6 @@ void CComponent::OnEnable()
 }
 
 void CComponent::OnDisable()
-{
-}
-
-void CComponent::OnDestroy()
 {
 }
 

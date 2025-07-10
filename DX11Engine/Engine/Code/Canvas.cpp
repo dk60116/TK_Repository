@@ -4,8 +4,6 @@
 CCanvas::CCanvas()
 	: m_eRenderMode(RenderMode::ScreenSpace_Overlay)
 	, m_lUIObjectList({})
-	, m_pRectMesh(nullptr)
-	, m_pLineMat(nullptr)
 {
 }
 
@@ -23,27 +21,22 @@ HRESULT CCanvas::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	if (!m_pRectMesh)
-	{
-		m_pRectMesh = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"LineRect (MeshBuffer)");
-		m_pRectMesh->AddRef();
-	}
-
-	if (!m_pLineMat)
-	{
-		m_pLineMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
-		m_pLineMat->AddRef();
-	}
-
 	return S_OK;
 }
 
 void CCanvas::OnPreRender_Editor()
 {
-	if (!m_pRectMesh)
+	if (!m_pRectGizmoMesh)
 		return;
+
+	vector2 resolution = vector2(CDisplay::GetInstance().Get_ScreenResolution().x, CDisplay::GetInstance().Get_ScreenResolution().y);
 	
-	Get_Transform()->Set_LocalScale(10.f, 5.f, 0.f);
+	if (m_eRenderMode == RenderMode::ScreenSpace_Overlay)
+	{
+		Get_Transform()->Set_Position(10.f, 10.f, 0.f);
+		Get_Transform()->Set_EulerAngles(vector3::zero());
+		Get_Transform()->Set_LocalScale(resolution.x * 0.01f, resolution.y * 0.01f, 1.f);
+	}
 }
 
 void CCanvas::Render_Editor()
@@ -57,16 +50,19 @@ void CCanvas::Render_Editor()
 	if (m_pLineMat)
 		m_pLineMat->Bind(matWorld, matView, matProj, 0);
 
-	if (m_pRectMesh)
-		m_pRectMesh->Render();
+	if (m_pRectGizmoMesh)
+		m_pRectGizmoMesh->Render();
 }
 
 void CCanvas::OnPostRender_Editor()
 {
+
 }
 
 void CCanvas::OnDestroy()
 {
-	Safe_Release(m_pRectMesh);
-	Safe_Release(m_pLineMat);
+	for (TRAVERSAL_ITER(m_lUIObjectList, it))
+		Safe_Release(*it);
+
+	m_lUIObjectList.clear();
 }

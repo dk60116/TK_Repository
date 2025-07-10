@@ -1,7 +1,7 @@
 #include "epch.h"
 #include "AnimationClip.h"
 
-CAnimation::CAnimation()
+CAnimationClip::CAnimationClip()
 	: m_vBoneAnimation({})
 	, m_bLoopTime(false)
 	, m_fDuration(0.f)
@@ -10,12 +10,12 @@ CAnimation::CAnimation()
 	m_strName = L"Animation";
 }
 
-CAnimation::~CAnimation()
+CAnimationClip::~CAnimationClip()
 {
 	OnDestroy();
 }
 
-void CAnimation::Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const
+void CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const
 {
 	if (m_vBoneAnimation.empty() || m_fDuration == 0.f)
 		return;
@@ -54,22 +54,22 @@ void CAnimation::Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& 
 	}
 }
 
-const _bool CAnimation::IsLoop() const
+const _bool CAnimationClip::IsLoop() const
 {
 	return m_bLoopTime;
 }
 
-_float CAnimation::Get_Duration() const
+_float CAnimationClip::Get_Duration() const
 {
 	return m_fDuration;
 }
 
-CAnimation* CAnimation::Create(const wstring& _filePath)
+CAnimationClip* CAnimationClip::Create(const wstring& _filePath)
 {
-	return new CAnimation();
+	return new CAnimationClip();
 }
 
-void CAnimation::OnDestroy()
+void CAnimationClip::OnDestroy()
 {
 	__super::Release();
 
@@ -79,7 +79,7 @@ void CAnimation::OnDestroy()
 	m_fTicksPerSecond = 0.f;
 }
 
-HRESULT CAnimation::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
+HRESULT CAnimationClip::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
 	if (FAILED(__super::Initialize(_name, _filePath, _desc)))
 		return E_FAIL;

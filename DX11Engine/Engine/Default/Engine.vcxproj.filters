@@ -145,6 +145,9 @@
     <ClInclude Include="..\Header\UI.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Image.h">
+      <Filter>Components\UI\UIContents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -236,6 +239,9 @@
     </Filter>
     <Filter Include="Components\UI">
       <UniqueIdentifier>{511ad8be-e748-43ab-a669-e924d53b9e63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\UI\UIContents">
+      <UniqueIdentifier>{52f3d678-cc67-4e3b-bbb0-59a1b574f1ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -391,6 +397,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\UI.cpp">
       <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Image.cpp">
+      <Filter>Components\UI\UIContents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

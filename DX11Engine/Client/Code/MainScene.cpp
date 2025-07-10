@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "MainScene.h"
 #include "Player.h"
+#include "UI.h"
 
 CMainScene::CMainScene()
 	: CScene{}
@@ -34,17 +35,17 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
-	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (MeshBuffer)"));
+	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	boxRenderer->Set_Material(boxMat);
 
 	CGameObject* box2Obj = Add_GameObject(L"Box2");
 	CMeshRenderer* box2Renderer = box2Obj->AddComponent<CMeshRenderer>();
-	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (MeshBuffer)"));
+	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	box2Renderer->Set_Material(boxMat);
 
 	CGameObject* box1Obj = Add_GameObject(L"Box1");
 	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
-	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (MeshBuffer)"));
+	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	box1Renderer->Set_Material(boxMat);
 
 	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
@@ -61,8 +62,11 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* quadObject = Add_GameObject(L"Rect");
 	CMeshRenderer* quadRender = quadObject->AddComponent<CMeshRenderer>();
-	quadRender->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (MeshBuffer)"));
+	quadRender->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)"));
 	quadRender->Set_Material(boxMat);
+
+	CGameObject* ImageObject = Add_GameObject(L"Image");
+	CImage* image = ImageObject->AddComponent<CImage>();
 
 	return S_OK;
 }

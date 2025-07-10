@@ -18,12 +18,17 @@ cbuffer PerMaterial : register(b2)
 struct VSIn
 {
     float3 posL : POSITION;
+    float4 uv : TEXCOORD0;
 };
 
 struct VSOut
 {
     float4 posH : SV_POSITION;
+    float2 uv : TEXCOORD0;
 };
+
+Texture2D gTexture : register(t0);
+SamplerState gSampler : register(s0);
 
 // 式式式式式 Vertex Shader
 VSOut VSMain(VSIn input)
@@ -40,7 +45,7 @@ VSOut VSMain(VSIn input)
 // 式式式式式 Pixel Shader
 float4 PSMain(VSOut input) : SV_TARGET
 {
-    return gBaseColor;
+    return gTexture.Sample(gSampler, input.uv) * gBaseColor;
 }
 
 // 式式式式式 Technique

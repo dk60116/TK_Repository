@@ -22,7 +22,7 @@ public:
 	HRESULT Initialize() override;
 	void Update() override;
 	void Render() override;
-	void RenderUI();
+	void OnDestroy() override;
 
 public:
 	_matrix Get_ViewMatrix() const;
@@ -38,6 +38,10 @@ protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
+private:
+	void RenderMesh();
+	void RenderUI();
+
 protected:
 	ViewMode m_eCamViewMode;
 	_float4x4 m_vViewMatrix, m_vProjMatrix;
@@ -48,7 +52,7 @@ protected:
 	_float m_fFieldOfView;
 	_float m_fSize;
 
-	list<CCanvas*> m_lCanvasList;
+	vector<class CUI*> m_vUIList;
 };
 
 NS_END

@@ -11,6 +11,7 @@ CCamera::CCamera()
 	, m_fFar(600.f)
 	, m_fFieldOfView(60.f)
 	, m_fSize(5.f)
+	, m_vUIList({})
 {
 	m_strName = L"Camera";
 }
@@ -42,9 +43,11 @@ void CCamera::Update()
 
 void CCamera::Render()
 {
+	RenderMesh();
+	RenderUI();
 }
 
-void CCamera::RenderUI()
+void CCamera::OnDestroy()
 {
 }
 
@@ -134,5 +137,17 @@ void CCamera::Bind_ProjectionMatrix()
 	break;
 	default:
 		break;
+	}
+}
+
+void CCamera::RenderMesh()
+{
+}
+
+void CCamera::RenderUI()
+{
+	for (TRAVERSAL_ITER(m_vUIList, it))
+	{
+
 	}
 }

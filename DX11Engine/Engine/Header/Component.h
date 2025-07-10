@@ -59,7 +59,7 @@ public:
 
 	virtual void OnEnable();
 	virtual void OnDisable();
-	virtual void OnDestroy();
+	virtual void OnDestroy() PURE;
 
 	virtual void OnApplicationQuit();
 

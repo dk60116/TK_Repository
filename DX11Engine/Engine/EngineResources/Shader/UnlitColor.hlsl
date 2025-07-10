@@ -77,5 +77,5 @@ VSOut VSMain(VSIn v)
 float4 PSMain(VSOut input) : SV_TARGET
 {
     float4 texColor = gTexture.Sample(gSampler, input.uv);
-    return useTexture ? texColor : baseColor;
+    return texColor * baseColor;
 }

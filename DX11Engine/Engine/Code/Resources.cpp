@@ -21,10 +21,10 @@ CResources& CResources::GetInstance()
 
 HRESULT CResources::Initialize()
 {
-	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Line (MeshBuffer)", L"Line"));
-	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"LineRect (MeshBuffer)", L"LineRect"));
-	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (MeshBuffer)", L"Cube"));
-	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (MeshBuffer)", L"Quad"));
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Line (Mesh Buffer)", L"Line"));
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"LineRect (Mesh Buffer)", L"LineRect"));
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (Mesh Buffer)", L"Cube"));
+	LoadComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (Mesh Buffer)", L"Quad"));
 
 	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexColorSkinnedBuffer::numElements, VertexColorSkinnedBuffer::elemetDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
@@ -42,6 +42,13 @@ HRESULT CResources::Initialize()
 
 	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResources/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elemetDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"Outline (Shader)", L"", &outlineShaderDesc));
+
+	CShader::SHADERDESC dUIShaderDesc = { L"../EngineResources/Shader/DefaultUI.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elemetDesc };
+	LoadComplete_Game(CreateGameResource<CShader>(L"DefaultUI (Shader)", L"", &dUIShaderDesc));
+
+	CShader* duiShader = LoadOnGame<CShader>(L"DefaultUI (Shader)");
+	CMaterial::MATERIALDESC duiMatDesc = { duiShader };
+	LoadComplete_Game(CreateGameResource<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc));
 
 	return S_OK;
 }

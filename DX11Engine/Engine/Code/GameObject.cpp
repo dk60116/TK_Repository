@@ -296,7 +296,17 @@ CTransform* CGameObject::Get_Transform() const
 
 void CGameObject::Set_Transform(CTransform* _transform)
 {
+	m_lComponentList.remove(m_pTransform);
+	Safe_Release(m_pTransform);
+	m_pTransform = nullptr;
+
 	m_pTransform = _transform;
+
+	if (m_pTransform)
+	{
+		m_lComponentList.push_back(m_pTransform);
+		m_pTransform->AddRef();
+	}
 }
 
 const _uint CGameObject::Get_UniqueID() const

@@ -31,8 +31,13 @@ namespace Engine
         {
         }
 
-        vector2(float _x, float _y)
+        vector2(_float _x, _float _y)
             : x(_x), y(_y)
+        {
+        }
+
+        vector2(_int _x, _int _y)
+            : x(static_cast<_float>(_x)), y(static_cast<_float>(_y))
         {
         }
 
@@ -1164,23 +1169,23 @@ namespace Engine
 #pragma endregion
 
 #pragma region VertexBuffer
-    struct LineColorBuffer
+    struct VertexTexColorBuffer
     {
         _float3 position;
-        _float4 color;
+        _float2 uv;
 
         static const _uint numElements = 2;
         static constexpr D3D11_INPUT_ELEMENT_DESC elemetDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
     };
 
     struct VertexTexNormalBuffer
     {
-        _float3  position;
-        _float3  normal;
+        _float3 position;
+        _float3 normal;
         _float2 uv;
 
         static const _uint numElements = 3;
