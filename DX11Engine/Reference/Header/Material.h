@@ -26,7 +26,7 @@ private:
 	void OnDestroy() override;
 
 public:
-	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount) const;
+	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
 
 public:
 	class CTexture* Get_Texture(_int _index) const;

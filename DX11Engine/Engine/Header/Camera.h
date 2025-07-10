@@ -34,11 +34,13 @@ public:
 	const ColorValue& Get_BackgroundColor() const;
 	void Set_BackgroundColor(const ColorValue& _color);
 
+	void Add_RenderTarget_UI(class CUI* _ui);
+
 protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
-private:
+public:
 	void RenderMesh();
 	void RenderUI();
 

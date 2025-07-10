@@ -26,6 +26,26 @@ HRESULT CImage::Initialize()
 
 void CImage::Render_Editor()
 {
+	CCamera* cam = CSceneManager::GetInstance().Get_EditorCamera();
+
+	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
+	_matrix matView = cam->Get_ViewMatrix();
+	_matrix matProj = cam->Get_ProjectionMatrix();
+
+	if (m_pMaterial)
+		m_pMaterial->Bind(matWorld, matView, matProj, 0);
+
+	if (m_pRectMesh)
+		m_pRectMesh->Render();
+
+	if (m_pGameObject != CEditor::GetInstance().Get_SelectedGameObject())
+		return;
+
+	if (m_pLineMat)
+		m_pLineMat->Bind(matWorld, matView, matProj, 0);
+
+	if (m_pRectGizmoMesh)
+		m_pRectGizmoMesh->Render();
 }
 
 void CImage::Render()

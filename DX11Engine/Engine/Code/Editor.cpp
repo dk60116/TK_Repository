@@ -87,12 +87,12 @@ void CEditor::Release()
 	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
 
-	Safe_Release(m_pSelectedGameObject);
-
 	for (TRAVERSAL_ITER(m_mBoxList, it))
 		Safe_Release((*it).second);
 
 	m_mBoxList.clear();
+
+	Safe_Release(m_pSelectedGameObject);
 }
 
 HWND CEditor::Get_EditorWindow()
@@ -292,6 +292,9 @@ void CEditor::Set_SelectedGameObject(CGameObject* _target)
 
 	if (m_pSelectedGameObject)
 	{
+		if (m_pSelectedGameObject->Get_ObjectName() == L"Canvas")
+			int a = 0;
+
 		m_pSelectedGameObject = _target;
 		m_pSelectedGameObject->AddRef();
 	}

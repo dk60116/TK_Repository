@@ -155,8 +155,16 @@ void CScene::Render_Game()
 			(*it)->OnPreCull();
 			(*it)->OnPreRender();
 			(*it)->Render();
-			(*it)->OnPostRender();
 		}
+	}
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		(*it)->RenderUI();
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->IsActive())
+			(*it)->OnPostRender();
 	}
 }
 
@@ -342,6 +350,7 @@ CCanvas* CScene::Add_Canvas(CCanvas* _canvas)
 		return nullptr;
 
 	m_lCanvasList.push_back(_canvas);
+	m_lCanvasList.back()->AddRef();
 
 	return m_lCanvasList.back();
 }

@@ -43,8 +43,6 @@ void CCamera::Update()
 
 void CCamera::Render()
 {
-	RenderMesh();
-	RenderUI();
 }
 
 void CCamera::OnDestroy()
@@ -95,6 +93,11 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 	m_vBackgroundColor = _color;
 }
 
+void CCamera::Add_RenderTarget_UI(CUI* _ui)
+{
+	m_vUIList.push_back(_ui);
+}
+
 void CCamera::Bind_ViewMatrix()
 {
 	_matrix inverseWorldMatrix = Get_Transform()->Get_InverseWorldMatrix();
@@ -112,8 +115,7 @@ void CCamera::Bind_ProjectionMatrix()
 		(
 			XMConvertToRadians(m_fFieldOfView),
 			m_fAspect,
-			m_fNear,
-			m_fFar
+			m_fNear, m_fFar
 		);
 
 		XMStoreFloat4x4(&m_vProjMatrix, projMat);
@@ -128,8 +130,7 @@ void CCamera::Bind_ProjectionMatrix()
 		(
 			-fHalfWidth, fHalfWidth,
 			-fHalfHeight, fHalfHeight,
-			m_fNear,
-			m_fFar
+			m_fNear, m_fFar
 		);
 
 		XMStoreFloat4x4(&m_vProjMatrix, projMat);
@@ -146,8 +147,21 @@ void CCamera::RenderMesh()
 
 void CCamera::RenderUI()
 {
+	const _float fHalfHeight = m_fSize * 0.5f;
+	const _float fHalfWidth = fHalfHeight * m_fAspect;
+
+	_matrix projMat = XMMatrixOrthographicOffCenterLH
+	(
+		-fHalfWidth, fHalfWidth,
+		-fHalfHeight, fHalfHeight,
+		m_fNear,
+		m_fFar
+	);
+
 	for (TRAVERSAL_ITER(m_vUIList, it))
 	{
-
+		
 	}
+
+	m_vUIList.clear();
 }

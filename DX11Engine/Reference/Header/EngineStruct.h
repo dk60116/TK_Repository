@@ -910,6 +910,17 @@ namespace Engine
             return quaternion(qResult);
         }
 
+        quaternion& operator-=(const quaternion& rhs)
+        {
+            XMVECTOR q1 = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(this));
+            XMVECTOR q2 = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&rhs));
+
+            XMVECTOR qResult = XMVectorSubtract(q1, q2);
+
+            XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(this), qResult);
+            return *this;
+        }
+
         quaternion& operator*=(const quaternion& rhs)
         {
             *this = *this * rhs;

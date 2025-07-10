@@ -23,11 +23,11 @@ HRESULT CMainScene::Initialize()
 	CGameObject* cameraObject = Add_GameObject(L"Main Camera");
 	m_pMainCamera = cameraObject->AddComponent<CCamera>();
 
-	CGameObject* playerObj = Add_GameObject(L"Player");
-	m_pPlayer = playerObj->AddComponent<CPlayer>();
-
 	CGameObject* canvasObj = Add_GameObject(L"Canvas");
 	m_pCanvas = canvasObj->AddComponent<CCanvas>();
+
+	CGameObject* playerObj = Add_GameObject(L"Player");
+	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
 	CMaterial* boxMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
@@ -48,13 +48,13 @@ HRESULT CMainScene::Initialize()
 	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	box1Renderer->Set_Material(boxMat);
 
-	boxObj->Get_Transform()->Set_Parent(playerObj->Get_Transform());
-	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, - 3.f, 0.f));
+	//boxObj->Get_Transform()->SetParent(playerObj->Get_Transform());
+	boxObj->Get_Transform()->Set_LocalPosition(vector3(0.f, -3.f, 0.f));
 
-	box1Obj->Get_Transform()->Set_Parent(boxObj->Get_Transform());
-	box1Obj->Get_Transform()->Set_LocalPosition(vector3(0.f, -1.f, 0.f));
+	box1Obj->Get_Transform()->Set_Position(vector3(0.f, 0.f, 0.f));
+	box1Obj->Get_Transform()->SetParent(boxObj->Get_Transform());
 
-	box2Obj->Get_Transform()->Set_Parent(box1Obj->Get_Transform());
+	box2Obj->Get_Transform()->SetParent(box1Obj->Get_Transform());
 	box2Obj->Get_Transform()->Set_LocalPosition(vector3(-1.f, 0.f, 0.f));
 
 	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
@@ -67,6 +67,11 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* ImageObject = Add_GameObject(L"Image");
 	CImage* image = ImageObject->AddComponent<CImage>();
+
+	ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
+	ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
+
+	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
 
 	return S_OK;
 }

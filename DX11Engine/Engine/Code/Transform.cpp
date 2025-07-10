@@ -152,7 +152,7 @@ CTransform* CTransform::Get_Parent() const
     return m_pParent;
 }
 
-void CTransform::Set_Parent(CTransform* _parent)
+void CTransform::SetParent(CTransform* _parent)
 {
     if (_parent == m_pParent)
         return;
@@ -160,6 +160,9 @@ void CTransform::Set_Parent(CTransform* _parent)
     vector3 tempPos = m_vWorldPosition;
     Get_EulerAngles();
     quaternion tempQ = m_vWorldQuaternion;
+
+    _matrix tempMatrix = XMMatrixIdentity();
+    XMStoreFloat4x4(&m_vMatWorld, tempMatrix);
 
     if (m_pParent)
     {
@@ -180,6 +183,11 @@ void CTransform::Set_Parent(CTransform* _parent)
     {
         m_pParent->m_lChildList.push_back(this);
         m_pParent->AddRef();
+
+        m_pParent->Bind_Matrix();
+        Bind_Matrix();
+
+        SetTransformForMatrix(tempMatrix);
     }
     
     m_bIsRootParent = !m_pParent;
@@ -327,14 +335,14 @@ void CTransform::Set_Position(const vector3& _pos)
     if (m_pParent)
     {
         tempParent = m_pParent;
-        Set_Parent(static_cast<CTransform*>(nullptr));
+        SetParent(static_cast<CTransform*>(nullptr));
         Bind_Matrix();
     }
 
     m_vPosition = _pos;
 
     if (tempParent)
-        Set_Parent(tempParent);
+        SetParent(tempParent);
 }
 
 void CTransform::Set_Position(const _float _x, const _float _y, const _float _z)
@@ -414,14 +422,14 @@ void CTransform::Set_Quaternion(const quaternion& _value)
     if (m_pParent)
     {
         tempParent = m_pParent;
-        Set_Parent(static_cast<CTransform*>(nullptr));
+        SetParent(static_cast<CTransform*>(nullptr));
         Bind_Matrix();
     }
 
     m_vQuaternion = _value;
 
     if (tempParent)
-        Set_Parent(tempParent);
+        SetParent(tempParent);
 
     m_vEulerAngles = m_vQuaternion.to_euler();
 }
@@ -449,14 +457,14 @@ void CTransform::Set_EulerAngles(const vector3& _rot)
     if (m_pParent)
     {
         tempParent = m_pParent;
-        Set_Parent(static_cast<CTransform*>(nullptr));
+        SetParent(static_cast<CTransform*>(nullptr));
         Bind_Matrix();
     }
 
     Set_LocalEulerAngles(_rot);
 
     if (tempParent)
-        Set_Parent(tempParent);
+        SetParent(tempParent);
 
     m_vEulerAngles = _rot;
 }
@@ -485,14 +493,14 @@ void CTransform::Add_EulerAngles(const vector3& _rot)
     if (m_pParent)
     {
         tempParent = m_pParent;
-        Set_Parent(static_cast<CTransform*>(nullptr));
+        SetParent(static_cast<CTransform*>(nullptr));
         Bind_Matrix();
     }
 
     Add_LocalEulerAngles(_rot);
 
     if (tempParent)
-        Set_Parent(tempParent);
+        SetParent(tempParent);
 }
 
 void CTransform::Add_EulerAngles(const _float _x, const _float _y, const _float _z)
@@ -656,6 +664,31 @@ void CTransform::Set_LocalScaleY(const _float _value)
 void CTransform::Set_LocalScaleZ(const _float _value)
 {
     m_vScale.z = _value;
+}
+
+void CTransform::SetTransformForMatrix(_matrix _matWorld)
+{
+    _matrix localMatrix = _matWorld;
+
+    if (m_pParent)
+    {
+        // 부모가 있다면 부모 월드 행렬의 역행렬로 로컬 행렬을 구함
+        _matrix parentInv = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_pParent->m_vMatWorld));
+        localMatrix = _matWorld * parentInv;
+    }
+
+    // 로컬 행렬에서 스케일, 회전 쿼터니언, 위치 분해
+    _vector S, R, T;
+    XMMatrixDecompose(&S, &R, &T, localMatrix);
+
+    // 로컬에 저장
+    XMStoreFloat3(reinterpret_cast<_float3*>(&m_vScale), S);
+    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), R);
+    XMStoreFloat3(reinterpret_cast<_float3*>(&m_vPosition), T);
+
+    // 변경사항을 반영하기 위해 행렬 갱신
+    Bind_Matrix();
+    Bind_Direction();
 }
 
 void CTransform::LookAt(const vector3& _target)

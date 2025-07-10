@@ -33,6 +33,9 @@ HRESULT CEditorCamera::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	m_fNear = 0.1f;
+	m_fFar = 1000000.f;
+
 	return S_OK;
 }
 
@@ -131,8 +134,15 @@ void CEditorCamera::Update_Editor()
 
 	if (_wheel != 0)
 	{
-		if (!isShift)
-			camTransform.Add_Position(camTransform.Get_Directions().forward * _wheel * DELTA_TIME * m_sOptions.zoomSpeed);
+		if (m_eCamViewMode == ViewMode::PERSPECTIVE)
+		{
+			if (!isShift)
+				camTransform.Add_Position(camTransform.Get_Directions().forward * _wheel * DELTA_TIME * m_sOptions.zoomSpeed);
+		}
+		else
+		{
+			m_fSize -= _wheel * DELTA_TIME * m_sOptions.zoomSpeed;
+		}
 	}
 }
 

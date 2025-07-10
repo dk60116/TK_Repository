@@ -101,7 +101,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 	CTransform* boneTransform = boneGO->Get_Transform();
 
 	if (_parent)
-		boneTransform->Set_Parent(_parent);
+		boneTransform->SetParent(_parent);
 
 	aiVector3D scaling, position;
 	aiQuaternion rotation;

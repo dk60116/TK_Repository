@@ -32,6 +32,8 @@ HRESULT CUI::Initialize()
 	{
 		m_pLineMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
 		m_pLineMat->AddRef();
+
+		m_pLineMat->Set_DiffuseColor(ColorValue::white());
 	}
 #endif
 
@@ -42,6 +44,7 @@ HRESULT CUI::Initialize()
 		if (m_pRectTransform)
 		{
 			m_pGameObject->Set_Transform(m_pRectTransform);
+			m_pRectTransform->Set_UI(this);
 			m_pRectTransform->AddRef();
 		}
 	}
@@ -90,4 +93,23 @@ void CUI::Set_Material(CMaterial* _material)
 
 	if (m_pMaterial)
 		m_pMaterial->AddRef();
+}
+
+void CUI::Bind_Matrix(const _fmatrix _view, const _cmatrix _projection)
+{
+	m_pMaterial->Bind(Get_Transform()->Get_WorldMatrix(), _view, _projection);
+	m_pRectMesh->Render();
+}
+
+void CUI::Set_Canvas(CCanvas* _canvas)
+{
+	if (_canvas == m_pCanvas)
+		return;
+
+	Safe_Release(m_pCanvas);
+
+	m_pCanvas = _canvas;
+
+	if (m_pCanvas)
+		m_pCanvas->AddRef();
 }

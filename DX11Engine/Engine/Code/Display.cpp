@@ -32,6 +32,9 @@ HRESULT CDisplay::Initialize(HINSTANCE _hInst, HWND _hGameWnd, HWND _hEditorWnd)
 	m_hGameWindow = _hGameWnd;
 	m_hEditorWindow = _hEditorWnd;
 
+	RECT rc;
+	GetClientRect(m_hGameWindow, &rc);
+
 	return S_OK;
 }
 

@@ -23,7 +23,12 @@ public:
     void OnPreRender_Editor();
     void Render_Editor() override;
     void OnPostRender_Editor() override;
+    void Render() override;
     void OnDestroy() override;
+
+public:
+    void Add_UIObject(CUI* _ui);
+    const RenderMode Get_RenderMode() const;
 
 private:
     RenderMode m_eRenderMode;

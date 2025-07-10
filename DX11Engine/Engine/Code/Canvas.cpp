@@ -21,6 +21,15 @@ HRESULT CCanvas::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	vector2 resolution = vector2(CDisplay::GetInstance().Get_ScreenResolution().x, CDisplay::GetInstance().Get_ScreenResolution().y);
+
+	if (m_eRenderMode == RenderMode::ScreenSpace_Overlay)
+	{
+		Get_Transform()->Set_Position(10.f, 10.f, 0.f);
+		Get_Transform()->Set_EulerAngles(vector3::zero());
+		Get_Transform()->Set_LocalScale(resolution.x * 0.01f, resolution.y * 0.01f, 1.f);
+	}
+
 	return S_OK;
 }
 
@@ -56,7 +65,30 @@ void CCanvas::Render_Editor()
 
 void CCanvas::OnPostRender_Editor()
 {
+}
 
+void CCanvas::Render()
+{
+	_matrix viewMat = XMMatrixTranslation(10.f, 10.f, 0.f);
+
+	_vector det;
+	_matrix inverseMat = XMMatrixInverse(&det, viewMat);
+
+	const _float aspect = CDisplay::GetInstance().Get_Aspect();
+	const _float fHalfHeight = 7.2f * 0.5f;
+	const _float fHalfWidth = fHalfHeight * aspect;
+
+	const _matrix projMat = XMMatrixOrthographicOffCenterLH
+	(
+		-fHalfWidth, fHalfWidth,
+		-fHalfHeight, fHalfHeight,
+		0.f, 1.f
+	);
+
+	for (TRAVERSAL_ITER(m_lUIObjectList, it))
+	{
+		(*it)->Bind_Matrix(inverseMat, projMat);
+	}
 }
 
 void CCanvas::OnDestroy()
@@ -65,4 +97,18 @@ void CCanvas::OnDestroy()
 		Safe_Release(*it);
 
 	m_lUIObjectList.clear();
+}
+
+void CCanvas::Add_UIObject(CUI* _ui)
+{
+	if (_ui)
+	{
+		m_lUIObjectList.push_back(_ui);
+		m_lUIObjectList.back()->AddRef();
+	}
+}
+
+const CCanvas::RenderMode CCanvas::Get_RenderMode() const
+{
+	return m_eRenderMode;
 }

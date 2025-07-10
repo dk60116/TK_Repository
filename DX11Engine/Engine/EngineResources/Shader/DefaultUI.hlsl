@@ -12,6 +12,7 @@ cbuffer PerCamera : register(b1)
 cbuffer PerMaterial : register(b2)
 {
     float4 gBaseColor;
+    uint useTexture;
 }
 
 // ───── 버텍스 구조
@@ -45,7 +46,10 @@ VSOut VSMain(VSIn input)
 // ───── Pixel Shader
 float4 PSMain(VSOut input) : SV_TARGET
 {
-    return gTexture.Sample(gSampler, input.uv) * gBaseColor;
+    if (useTexture != 0)
+        return gTexture.Sample(gSampler, input.uv) * gBaseColor;
+    else
+        return gBaseColor;
 }
 
 // ───── Technique

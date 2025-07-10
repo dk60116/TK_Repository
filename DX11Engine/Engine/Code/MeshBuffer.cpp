@@ -124,8 +124,8 @@ void CMeshBuffer::Render()
         return;
     }
 
-    UINT stride = m_sInfo.vertexSize;
-    UINT offset = 0;
+    _uint stride = m_sInfo.vertexSize;
+    _uint offset = 0;
 
     CGraphicDevice::GetInstance().Get_Context()->IASetVertexBuffers
     (

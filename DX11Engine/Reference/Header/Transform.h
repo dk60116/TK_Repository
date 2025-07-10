@@ -33,7 +33,7 @@ public:
 
 public:
 	CTransform* Get_Parent() const;
-	void Set_Parent(CTransform* _parent);
+	virtual void SetParent(CTransform* _parent);
 	const _bool Is_Root() const;
 	CTransform* Get_Child();
 	CTransform* Get_Child(const _int _index);
@@ -111,6 +111,8 @@ public:
 	void Set_LocalScaleX(const _float _value);
 	void Set_LocalScaleY(const _float _value);
 	void Set_LocalScaleZ(const _float _value);
+
+	void SetTransformForMatrix(_matrix _matWorld);
 
 	void LookAt(const vector3& _target);
 
