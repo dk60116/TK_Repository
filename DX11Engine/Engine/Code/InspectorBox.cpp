@@ -133,7 +133,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::TableSetColumnIndex(1);
             
             // X
-            ImGui::TextUnformatted("X"); ImGui::SameLine();
+            ImGui::TextUnformatted("X");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##X", &position.x, 0.f, 0.f))
                 transform->Set_LocalPosition(position);
@@ -142,7 +143,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             // Y
-            ImGui::TextUnformatted("Y"); ImGui::SameLine();
+            ImGui::TextUnformatted("Y");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Y", &position.y, 0.f, 0.f))
                 transform->Set_LocalPosition(position);
@@ -151,7 +153,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             // Z
-            ImGui::TextUnformatted("Z"); ImGui::SameLine();
+            ImGui::TextUnformatted("Z");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Z", &position.z, 0.f, 0.f))
                 transform->Set_LocalPosition(position);
@@ -176,7 +179,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
 
             // X
             _float prevX = m_fRXDrag;
-            ImGui::TextUnformatted("X"); ImGui::SameLine();
+            ImGui::TextUnformatted("X");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##X", &rotation.x, 0.f))
             {
@@ -187,7 +191,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::SameLine();
             // Y
             _float prevY = m_fRYDrag;
-            ImGui::TextUnformatted("Y"); ImGui::SameLine();
+            ImGui::TextUnformatted("Y");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Y", &rotation.y, 0.f))
             {
@@ -198,7 +203,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::SameLine();
             // Z
             _float prevZ = m_fRZDrag;
-            ImGui::TextUnformatted("Z"); ImGui::SameLine();
+            ImGui::TextUnformatted("Z");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Z", &rotation.z, 0.f))
             {
@@ -226,7 +232,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::TableSetColumnIndex(1);
 
             // X
-            ImGui::TextUnformatted("X"); ImGui::SameLine();
+            ImGui::TextUnformatted("X");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##X", &scale.x, 0.f))
                 transform->Set_LocalScale(scale);
@@ -235,7 +242,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             // Y
-            ImGui::TextUnformatted("Y"); ImGui::SameLine();
+            ImGui::TextUnformatted("Y");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Y", &scale.y, 0.f))
                 transform->Set_LocalScale(scale);
@@ -244,7 +252,8 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             // Z
-            ImGui::TextUnformatted("Z"); ImGui::SameLine();
+            ImGui::TextUnformatted("Z"); 
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Z", &scale.z, 0.f))
                 transform->Set_LocalScale(scale);
@@ -267,7 +276,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
         const _float boxWidth = 34.f;
 
         vector2 position = rectTransform->Get_AnchoredPosition();
-        if (ImGui::BeginTable("Rotation Table", 2, ImGuiTableFlags_BordersInnerV))
+        if (ImGui::BeginTable("Base Table", 2, ImGuiTableFlags_BordersInnerV))
         {
             ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, LabelWidth);
             ImGui::TableSetupColumn("Value");
@@ -277,7 +286,8 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::TableSetColumnIndex(1);
 
             // X
-            ImGui::TextUnformatted("Pos X"); ImGui::SameLine();
+            ImGui::TextUnformatted("Pos X");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Pos X", &position.x, 0.f))
             {
@@ -288,7 +298,8 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             // Y
-            ImGui::TextUnformatted("Pos Y"); ImGui::SameLine();
+            ImGui::TextUnformatted("Pos Y");
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Pos Y", &position.y, 0.f))
             {
@@ -313,7 +324,8 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::TableSetColumnIndex(1);
 
             // X
-            ImGui::TextUnformatted("Width"); ImGui::SameLine();
+            ImGui::TextUnformatted("Width"); 
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Width", &width, 0.f))
             {
@@ -324,7 +336,8 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             // Y
-            ImGui::TextUnformatted("Height"); ImGui::SameLine();
+            ImGui::TextUnformatted("Height"); 
+            ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Height", &height, 0.f))
             {
@@ -335,6 +348,84 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
 
             ImGui::EndTable();
+        }
+
+        vector2 pivot = rectTransform->Get_Pivot();
+        if (ImGui::BeginTable("Pivot Table", 2, ImGuiTableFlags_BordersInnerV))
+        {
+            ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, LabelWidth);
+            ImGui::TableSetupColumn("Value");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Pivot");
+            ImGui::TableSetColumnIndex(1);
+
+            // X
+            ImGui::TextUnformatted("X");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##X", &pivot.x, 0.f))
+                rectTransform->Set_Pivot(pivot.x, pivot.y);
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine();
+
+            // Y
+            ImGui::TextUnformatted("Y");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Y", &pivot.y, 0.f))
+                rectTransform->Set_Pivot(pivot.x, pivot.y);
+            ImGui::PopItemWidth();
+
+            ImGui::EndTable();
+        }
+
+        CRectTransform::Anchors anchors = rectTransform->Get_Anchors();
+        if (ImGui::TreeNode("Anchors"))
+        {
+            ImGui::Text("Min");
+            ImGui::SameLine();
+
+            // X
+            ImGui::TextUnformatted("X");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Xmin", &anchors.min.x, 0.f))
+                rectTransform->Set_PivotMin(anchors.min.x, anchors.min.y);
+            ImGui::PopItemWidth();
+            
+            ImGui::SameLine();
+            // Y
+            ImGui::TextUnformatted("Y");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Ymin", &pivot.y, 0.f))
+                rectTransform->Set_PivotMin(pivot.x, pivot.y);
+            ImGui::PopItemWidth();
+
+            ImGui::Text("Max");
+            ImGui::SameLine();
+
+            // X
+            ImGui::TextUnformatted("X");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Xmax", &anchors.max.x, 0.f))
+                rectTransform->Set_PivotMax(anchors.max.x, anchors.max.y);
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine();
+            // Y
+            ImGui::TextUnformatted("Y");
+            ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Ymax", &pivot.y, 0.f))
+                rectTransform->Set_PivotMax(pivot.x, pivot.y);
+            ImGui::PopItemWidth();
+
+            ImGui::TreePop();
         }
     }
 }

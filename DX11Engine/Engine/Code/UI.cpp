@@ -8,6 +8,7 @@ CUI::CUI()
 	, m_pLineMat(nullptr)
 	, m_pRectMesh(nullptr)
 	, m_pMaterial(nullptr)
+	, m_bIsCanvas(false)
 {
 }
 

@@ -8,7 +8,7 @@ CRectTransform::CRectTransform()
 	, m_fWidth(0.f)
 	, m_fHeight(0.f)
 	, m_sAnchors({})
-	, m_fPivot(vector2::one() * 1.f)
+	, m_fPivot(vector2::one() * 0.5f)
     , m_pParentRect(nullptr)
     , m_bIsRootRect(true)
 {
@@ -75,7 +75,6 @@ void CRectTransform::Render_Gizmo()
 
     if (m_pUI->Is_Canvas())
     {
-
     }
     else if (!m_pParentRect)
     {
@@ -88,7 +87,6 @@ void CRectTransform::Render_Gizmo()
     else
     {
         pivotTrans = vector2(m_fPivot.x * m_vScale.x * m_pParentRect->m_fWidth * 0.01f - m_vAnchoredSclae.x * 0.5f, m_fPivot.y * m_vScale.y * m_pParentRect->m_fHeight * 0.01f - m_vAnchoredSclae.y * 0.5f);
-        //pivotTrans = vector2();
         _matrix translateMat = XMMatrixTranslation(pivotTrans.x, pivotTrans.y, 0.f);
         worldMatrix *= translateMat;
     }
@@ -212,8 +210,13 @@ void CRectTransform::SetParent(CTransform* _parent)
     {
         m_bIsRootRect = false;
 
+        Safe_Release(m_pParentRect);
+
         if (m_pParent)
+        {
             m_pParentRect = dynamic_cast<CRectTransform*>(_parent);
+            m_pParentRect->AddRef();
+        }
     }
 
     return;
@@ -232,4 +235,47 @@ const _float CRectTransform::Get_Width() const
 const _float CRectTransform::Get_Height() const
 {
 	return m_fHeight;
+}
+
+const vector2 CRectTransform::Get_Pivot() const
+{
+    return m_fPivot;
+}
+
+void CRectTransform::Set_Pivot(vector2 _pivot)
+{
+    _pivot.x = clamp(_pivot.x, 0.f, 1.f);
+    _pivot.y = clamp(_pivot.x, 0.f, 1.f);
+
+    m_fPivot = _pivot;
+}
+
+void CRectTransform::Set_Pivot(const _float _x, const _float _y)
+{
+    Set_Pivot(vector2(_x, _y));
+}
+
+const CRectTransform::Anchors& CRectTransform::Get_Anchors()
+{
+    return m_sAnchors;
+}
+
+void CRectTransform::Set_PivotMin(const vector2 _pivot)
+{
+    m_sAnchors.min = _pivot;
+}
+
+void CRectTransform::Set_PivotMin(const _float _x, const _float _y)
+{
+    m_sAnchors.min = vector2(_x, _y);
+}
+
+void CRectTransform::Set_PivotMax(const vector2 _pivot)
+{
+    m_sAnchors.max = _pivot;
+}
+
+void CRectTransform::Set_PivotMax(const _float _x, const _float _y)
+{
+    m_sAnchors.max = vector2(_x, _y);
 }

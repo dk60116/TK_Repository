@@ -9,7 +9,8 @@ class ENGINE_DLL CRectTransform final : public CTransform
 public:
 	struct Anchors
 	{
-		vector2 min = vector2::one() * 0.5f, max = vector2::one() * 0.5f;
+		vector2 min = vector2::one() * 0.5f;
+		vector2 max = vector2::one() * 0.5f;
 	};
 
 	friend class CGameObject;
@@ -33,6 +34,14 @@ public:
 	const vector2 Get_AnchoredPosition() const;
 	const _float Get_Width() const;
 	const _float Get_Height() const;
+	const vector2 Get_Pivot() const;
+	void Set_Pivot(vector2 _pivot);
+	void Set_Pivot(const _float _x, const _float _y);
+	const Anchors& Get_Anchors();
+	void Set_PivotMin(const vector2 _pivot);
+	void Set_PivotMin(const _float _x, const _float _y);
+	void Set_PivotMax(const vector2 _pivot);
+	void Set_PivotMax(const _float _x, const _float _y);
 
 private:
 	void Set_UI(CUI* _pUI);
