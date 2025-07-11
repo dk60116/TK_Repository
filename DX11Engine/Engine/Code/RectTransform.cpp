@@ -41,7 +41,10 @@ void CRectTransform::Update()
         m_fHeight = canvasSize.y * 100.f * m_vScale.y;
 
         m_vAnchoredPosition.x = canvasSize.x * 100.f * m_vPosition.x + (m_fWidth * (m_fPivot.x - 0.5f));
+        m_vAnchoredPosition.x += canvasSize.x * 100.f * (0.5f - m_sAnchors.min.x);
+
         m_vAnchoredPosition.y = canvasSize.y * 100.f * m_vPosition.y + (m_fHeight * (m_fPivot.y - 0.5f));
+        m_vAnchoredPosition.y += canvasSize.y * 100.f * (0.5f - m_sAnchors.min.y);
     }
     else
     {
@@ -197,7 +200,7 @@ void CRectTransform::SetParent(CTransform* _parent)
 {
 	__super::SetParent(_parent);
 
-	CCanvas* canvas = _parent->Get_GameObject()->GetComponent<CCanvas>();
+    CCanvas* canvas = _parent->Find_ComponentParentRecursive<CCanvas>();
 
     if (canvas)
     {
@@ -245,7 +248,7 @@ const vector2 CRectTransform::Get_Pivot() const
 void CRectTransform::Set_Pivot(vector2 _pivot)
 {
     _pivot.x = clamp(_pivot.x, 0.f, 1.f);
-    _pivot.y = clamp(_pivot.x, 0.f, 1.f);
+    _pivot.y = clamp(_pivot.y, 0.f, 1.f);
 
     m_fPivot = _pivot;
 }
@@ -260,22 +263,22 @@ const CRectTransform::Anchors& CRectTransform::Get_Anchors()
     return m_sAnchors;
 }
 
-void CRectTransform::Set_PivotMin(const vector2 _pivot)
+void CRectTransform::Set_AnchorsMin(const vector2 _pivot)
 {
     m_sAnchors.min = _pivot;
 }
 
-void CRectTransform::Set_PivotMin(const _float _x, const _float _y)
+void CRectTransform::Set_AnchorsMin(const _float _x, const _float _y)
 {
     m_sAnchors.min = vector2(_x, _y);
 }
 
-void CRectTransform::Set_PivotMax(const vector2 _pivot)
+void CRectTransform::Set_AnchorsMax(const vector2 _pivot)
 {
     m_sAnchors.max = _pivot;
 }
 
-void CRectTransform::Set_PivotMax(const _float _x, const _float _y)
+void CRectTransform::Set_AnchorsMax(const _float _x, const _float _y)
 {
     m_sAnchors.max = vector2(_x, _y);
 }

@@ -54,4 +54,19 @@ void CImage::Render()
 
 void CImage::OnDestroy()
 {
+	Safe_Release(m_pTexture);
+}
+
+void CImage::SetTexture(CTexture* _texture)
+{
+	Safe_Release(m_pTexture);
+
+	m_pTexture = _texture;
+
+	if (m_pTexture)
+	{
+		m_pTexture->AddRef();
+
+		m_pMaterial->Set_Texture(m_pTexture, 0);
+	}
 }

@@ -19,7 +19,7 @@ cbuffer PerMaterial : register(b2)
 struct VSIn
 {
     float3 posL : POSITION;
-    float4 uv : TEXCOORD0;
+    float2 uv : TEXCOORD0;
 };
 
 struct VSOut
@@ -39,6 +39,7 @@ VSOut VSMain(VSIn input)
     float4 worldPos = mul(float4(input.posL, 1.0f), gWorld);
     float4 viewPos = mul(worldPos, gView);
     output.posH = mul(viewPos, gProj);
+    output.uv = input.uv;
 
     return output;
 }

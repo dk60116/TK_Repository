@@ -393,7 +393,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Xmin", &anchors.min.x, 0.f))
-                rectTransform->Set_PivotMin(anchors.min.x, anchors.min.y);
+                rectTransform->Set_AnchorsMin(anchors.min.x, anchors.min.y);
             ImGui::PopItemWidth();
             
             ImGui::SameLine();
@@ -401,8 +401,8 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::TextUnformatted("Y");
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::InputFloat("##Ymin", &pivot.y, 0.f))
-                rectTransform->Set_PivotMin(pivot.x, pivot.y);
+            if (ImGui::InputFloat("##Ymin", &anchors.min.y, 0.f))
+                rectTransform->Set_AnchorsMin(anchors.min.x, anchors.min.y);
             ImGui::PopItemWidth();
 
             ImGui::Text("Max");
@@ -413,7 +413,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Xmax", &anchors.max.x, 0.f))
-                rectTransform->Set_PivotMax(anchors.max.x, anchors.max.y);
+                rectTransform->Set_AnchorsMax(anchors.max.x, anchors.max.y);
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -421,8 +421,8 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::TextUnformatted("Y");
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::InputFloat("##Ymax", &pivot.y, 0.f))
-                rectTransform->Set_PivotMax(pivot.x, pivot.y);
+            if (ImGui::InputFloat("##Ymax", &anchors.max.y, 0.f))
+                rectTransform->Set_AnchorsMax(anchors.max.x, anchors.max.y);
             ImGui::PopItemWidth();
 
             ImGui::TreePop();

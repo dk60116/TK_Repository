@@ -46,6 +46,10 @@ public:
 	const _matrix Get_InverseWorldMatrix() const;
 
 public:
+	template <typename T>
+	T* Find_ComponentParentRecursive();
+
+public:
 	vector3 Get_Position() const;
 	vector3 Get_LocalPosition() const;
 
@@ -133,3 +137,18 @@ protected:
 
 NS_END
 
+template<typename T>
+inline T* CTransform::Find_ComponentParentRecursive()
+{
+	CTransform* tempParent = this;
+
+	while (tempParent)
+	{
+		if (T* com = tempParent->Get_GameObject()->GetComponent<T>())
+			return com;
+
+		tempParent = tempParent->m_pParent;
+	}
+
+	return nullptr;
+}

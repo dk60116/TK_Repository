@@ -20,9 +20,12 @@ public:
 	void Render_Editor() override;
 	void Render() override;
 	void OnDestroy() override;
+	
+public:
+	void SetTexture(CTexture* _texture);
 
 private:
-	class CTextrue* m_pTexture;
+	class CTexture* m_pTexture;
 };
 
 NS_END

@@ -38,10 +38,10 @@ public:
 	void Set_Pivot(vector2 _pivot);
 	void Set_Pivot(const _float _x, const _float _y);
 	const Anchors& Get_Anchors();
-	void Set_PivotMin(const vector2 _pivot);
-	void Set_PivotMin(const _float _x, const _float _y);
-	void Set_PivotMax(const vector2 _pivot);
-	void Set_PivotMax(const _float _x, const _float _y);
+	void Set_AnchorsMin(const vector2 _pivot);
+	void Set_AnchorsMin(const _float _x, const _float _y);
+	void Set_AnchorsMax(const vector2 _pivot);
+	void Set_AnchorsMax(const _float _x, const _float _y);
 
 private:
 	void Set_UI(CUI* _pUI);

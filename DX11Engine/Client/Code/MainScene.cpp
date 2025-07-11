@@ -68,14 +68,16 @@ HRESULT CMainScene::Initialize()
 	CGameObject* ImageObject = Add_GameObject(L"Image");
 	CImage* image = ImageObject->AddComponent<CImage>();
 
+	image->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Girl_Tex (Texture)"));
+
 	CGameObject* ImageObject2 = Add_GameObject(L"Image2");
 	CImage* image2 = ImageObject2->AddComponent<CImage>();
 
 	ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
 	ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
 
-	ImageObject2->Get_Transform()->SetParent(ImageObject->Get_Transform());
-	ImageObject2->Get_Transform()->Set_LocalPosition(vector3::zero());
+	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
+	ImageObject2->Get_Transform()->Set_LocalPosition(vector3::zero() + vector3::right() * 0.1f);
 	//ImageObject->Get_Transform()->Set_LocalScale(ImageObject->Get_Transform()->Get_LocalScale() * 2.f);
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
