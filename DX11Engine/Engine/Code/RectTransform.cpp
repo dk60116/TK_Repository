@@ -3,8 +3,9 @@
 
 CRectTransform::CRectTransform()
 	: m_pUI(nullptr)
-	, m_iWidth(0)
-	, m_iHeight(0)
+	, m_vRPosition({})
+	, m_fWidth(0.f)
+	, m_fHeight(0.f)
 {
 	m_strName = L"Rect Transform";
 }
@@ -17,6 +18,23 @@ CRectTransform* CRectTransform::Create()
 {
 	return new CRectTransform();
 }
+
+void CRectTransform::Update()
+{
+	__super::Update();
+
+	CCanvas* canvas = m_pUI->Get_Canvas();
+
+	if (!canvas)
+		return;
+
+	vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+
+	m_fWidth = canvasSize.x * 100.f * m_vScale.x;
+
+	if (CInput::GetInstance().GetKeyDown_Editor(M))
+		CDebug::Log(m_pGameObject->Get_ObjectName() + L": " + to_wstring(m_fWidth));
+;}
 
 void CRectTransform::OnDestroy()
 {

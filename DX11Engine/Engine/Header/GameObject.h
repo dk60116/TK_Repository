@@ -110,6 +110,7 @@ template<typename T>
 inline T* CGameObject::AddComponent()
 {
 	T* newComponent = T::Create();
+
 	dynamic_cast<CComponent*>(newComponent)->Set_Object(this);
 	newComponent->AddRef();
 	m_lComponentList.push_back(newComponent);

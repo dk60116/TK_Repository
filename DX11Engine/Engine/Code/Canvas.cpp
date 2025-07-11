@@ -5,6 +5,7 @@ CCanvas::CCanvas()
 	: m_eRenderMode(RenderMode::ScreenSpace_Overlay)
 	, m_lUIObjectList({})
 {
+	m_strName = L"Canvas";
 }
 
 CCanvas::~CCanvas()

@@ -11,6 +11,7 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 	, m_pDevice(_pDevice)
 	, m_pContext(_pContext)
 {
+	m_strName = L"Game Object";
 	m_pDevice->AddRef();
 	m_pContext->AddRef();
 }
@@ -75,6 +76,9 @@ void CGameObject::Update()
 		if ((*it)->Get_Enable())
 			(*it)->Update();
 	}
+
+	if (GetComponent<CRectTransform>())
+		int a = 0;
 }
 
 void CGameObject::FixedUpdate()

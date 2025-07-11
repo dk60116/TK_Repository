@@ -17,6 +17,7 @@ private:
 	static CRectTransform* Create();
 
 public:
+	void Update() override;
 	void OnDestroy() override;
 
 public:
@@ -27,7 +28,8 @@ private:
 
 private:
 	CUI* m_pUI;
-	_int m_iWidth, m_iHeight;
+	vector2 m_vRPosition;
+	_float m_fWidth, m_fHeight;
 };
 
 NS_END

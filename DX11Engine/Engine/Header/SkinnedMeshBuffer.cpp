@@ -55,9 +55,9 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
     using VTX = VertexSkinnedBuffer;
 
     vector<VTX> vertices;
-    vector<UINT> indices;
+    vector<_uint> indices;
 
-    for (UINT i = 0; i < mesh->mNumVertices; ++i)
+    for (_uint i = 0; i < mesh->mNumVertices; ++i)
     {
         VTX v = {};
         const aiVector3D& pos = mesh->mVertices[i];
@@ -73,7 +73,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
         vertices.push_back(v);
     }
 
-    for (UINT f = 0; f < mesh->mNumFaces; ++f)
+    for (_uint f = 0; f < mesh->mNumFaces; ++f)
     {
         const aiFace& face = mesh->mFaces[f];
         if (face.mNumIndices != 3)
@@ -122,7 +122,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
     FillBoneWeightsAndIndices(mesh, vertices);
 
     D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = UINT(vertices.size() * sizeof(VTX));
+    vbDesc.ByteWidth = _uint(vertices.size() * sizeof(VTX));
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
     vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -131,7 +131,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
 
     // Index Buffer
     D3D11_BUFFER_DESC ibDesc = {};
-    ibDesc.ByteWidth = UINT(indices.size() * sizeof(UINT));
+    ibDesc.ByteWidth = _uint(indices.size() * sizeof(_uint));
     ibDesc.Usage = D3D11_USAGE_DEFAULT;
     ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
@@ -145,8 +145,8 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
         return E_FAIL;
 
     m_sInfo.vertexSize = sizeof(VTX);
-    m_sInfo.vertextCount = UINT(vertices.size());
-    m_sInfo.indexCount = UINT(indices.size());
+    m_sInfo.vertextCount = _uint(vertices.size());
+    m_sInfo.indexCount = _uint(indices.size());
     m_sInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
     return S_OK;
@@ -227,7 +227,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
     for (auto& v : vertices)
     {
         // 가중치와 인덱스를 쌍으로 모음
-        vector<std::pair<UINT, float>> bonePairs;
+        vector<pair<_uint, float>> bonePairs;
         for (int k = 0; k < 4; ++k)
         {
             if (v.boneWeights[k] > 0.0f)
@@ -236,7 +236,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
 
         // 큰 가중치 순으로 정렬
         sort(bonePairs.begin(), bonePairs.end(),
-            [](const pair<UINT, float>& a, const pair<UINT, float>& b)
+            [](const pair<_uint, float>& a, const pair<_uint, float>& b)
             {
                 return a.second > b.second;
             });

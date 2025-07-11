@@ -58,7 +58,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
     if (info.desc.indexCount > 0 && !info.indices.empty())
     {
-        size_t indexSize = sizeof(UINT) * info.desc.indexCount;
+        size_t indexSize = sizeof(_uint) * info.desc.indexCount;
         m_pIndexSysMem = malloc(indexSize);
         memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
     }
@@ -67,7 +67,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
     // VertexBuffer »ý¼º
     D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = static_cast<UINT>(info.desc.vertexSize * info.desc.vertextCount);
+    vbDesc.ByteWidth = static_cast<_uint>(info.desc.vertexSize * info.desc.vertextCount);
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
     vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -82,7 +82,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
     if (info.desc.indexCount > 0 && info.indices.size() > 0)
     {
         D3D11_BUFFER_DESC ibDesc = {};
-        ibDesc.ByteWidth = sizeof(UINT) * info.desc.indexCount;
+        ibDesc.ByteWidth = sizeof(_uint) * info.desc.indexCount;
         ibDesc.Usage = D3D11_USAGE_DEFAULT;
         ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 

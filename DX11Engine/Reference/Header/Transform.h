@@ -120,7 +120,7 @@ private:
 	void Bind_Matrix();
 	void Bind_Direction();
 
-private:
+protected:
 	_bool m_bIsRootParent;
 	CTransform* m_pParent;
 	list<CTransform*> m_lChildList;

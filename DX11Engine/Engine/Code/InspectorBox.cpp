@@ -94,7 +94,10 @@ void CInspectorBox::Render()
 
         Toggle_End();
 
-        ShowTransform(selectedObj);
+        if (!selectedObj->GetComponent<CRectTransform>())
+            ShowTransform(selectedObj);
+        else
+            ShowRectTransform(selectedObj);
     }
     else
         ImGui::Text("No object selected.");
@@ -259,4 +262,9 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             ImGui::EndTable();
         }
     }
+}
+
+void CInspectorBox::ShowRectTransform(CGameObject* _obj)
+{
+    CRectTransform* rectTransform = dynamic_cast<CRectTransform*>(_obj->Get_Transform());
 }

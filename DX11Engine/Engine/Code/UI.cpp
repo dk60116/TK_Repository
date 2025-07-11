@@ -101,6 +101,11 @@ void CUI::Bind_Matrix(const _fmatrix _view, const _cmatrix _projection)
 	m_pRectMesh->Render();
 }
 
+CCanvas* CUI::Get_Canvas() const
+{
+	return m_pCanvas;
+}
+
 void CUI::Set_Canvas(CCanvas* _canvas)
 {
 	if (_canvas == m_pCanvas)

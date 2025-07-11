@@ -65,11 +65,11 @@ HRESULT CMainScene::Initialize()
 	quadRender->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)"));
 	quadRender->Set_Material(boxMat);
 
-	CGameObject* ImageObject = Add_GameObject(L"Image");
-	CImage* image = ImageObject->AddComponent<CImage>();
+	//CGameObject* ImageObject = Add_GameObject(L"Image");
+	//CImage* image = ImageObject->AddComponent<CImage>();
 
-	ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
-	ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
+	//ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
+	//ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
 

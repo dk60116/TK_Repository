@@ -26,6 +26,7 @@ public:
 	void Bind_Matrix(const _fmatrix _view, const _cmatrix _projection);
 
 private:
+	CCanvas* Get_Canvas() const;
 	void Set_Canvas(class CCanvas* _canvas);
 
 protected:
