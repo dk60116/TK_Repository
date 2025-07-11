@@ -135,7 +135,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // X
             ImGui::TextUnformatted("X"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::InputFloat("##X", &position.x, 0.0f, 0.0f))
+            if (ImGui::InputFloat("##X", &position.x, 0.f, 0.f))
                 transform->Set_LocalPosition(position);
             ImGui::PopItemWidth();
 
@@ -144,7 +144,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // Y
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::InputFloat("##Y", &position.y, 0.0f, 0.0f))
+            if (ImGui::InputFloat("##Y", &position.y, 0.f, 0.f))
                 transform->Set_LocalPosition(position);
             ImGui::PopItemWidth();
 
@@ -153,7 +153,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // Z
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::InputFloat("##Z", &position.z, 0.0f, 0.0f))
+            if (ImGui::InputFloat("##Z", &position.z, 0.f, 0.f))
                 transform->Set_LocalPosition(position);
             ImGui::PopItemWidth();
 
@@ -178,42 +178,33 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             _float prevX = m_fRXDrag;
             ImGui::TextUnformatted("X"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##X", &m_fRXDrag, 1.f))
+            if (ImGui::InputFloat("##X", &rotation.x, 0.f))
             {
-                _float delta = m_fRXDrag - prevX;
-                transform->Add_EulerAnglesX((delta > 0) ? rotationDeg : -rotationDeg);
+                transform->Set_LocalEulerAngles(rotation);
             }
             ImGui::PopItemWidth();
-
-            m_fRXDrag = rotation.x;
 
             ImGui::SameLine();
             // Y
             _float prevY = m_fRYDrag;
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Y", &m_fRYDrag, 1.f))
+            if (ImGui::InputFloat("##Y", &rotation.y, 0.f))
             {
-                _float delta = m_fRYDrag - prevY;
-                transform->Add_EulerAnglesY((delta > 0) ? rotationDeg : -rotationDeg);
+                transform->Set_LocalEulerAngles(rotation);
             }
             ImGui::PopItemWidth();
-
-            m_fRYDrag = rotation.y;
 
             ImGui::SameLine();
             // Z
             _float prevZ = m_fRZDrag;
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Z", &m_fRZDrag, 0.1f))
+            if (ImGui::InputFloat("##Z", &rotation.z, 0.f))
             {
-                _float delta = m_fRZDrag - prevZ;
-                transform->Add_EulerAnglesZ((delta > 0) ? rotationDeg : -rotationDeg);
+                transform->Set_LocalEulerAngles(rotation);
             }
             ImGui::PopItemWidth();
-
-            m_fRZDrag = rotation.z;
 
             prevX = 0.f;
             prevY = 0.f;
@@ -237,7 +228,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // X
             ImGui::TextUnformatted("X"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##X", &scale.x, 0.1f))
+            if (ImGui::InputFloat("##X", &scale.x, 0.f))
                 transform->Set_LocalScale(scale);
             ImGui::PopItemWidth();
 
@@ -246,7 +237,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // Y
             ImGui::TextUnformatted("Y"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Y", &scale.y, 0.1f))
+            if (ImGui::InputFloat("##Y", &scale.y, 0.f))
                 transform->Set_LocalScale(scale);
             ImGui::PopItemWidth();
 
@@ -255,7 +246,7 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
             // Z
             ImGui::TextUnformatted("Z"); ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
-            if (ImGui::DragFloat("##Z", &scale.z, 0.1f))
+            if (ImGui::InputFloat("##Z", &scale.z, 0.f))
                 transform->Set_LocalScale(scale);
             ImGui::PopItemWidth();
 
@@ -267,4 +258,83 @@ void CInspectorBox::ShowTransform(CGameObject* _obj)
 void CInspectorBox::ShowRectTransform(CGameObject* _obj)
 {
     CRectTransform* rectTransform = dynamic_cast<CRectTransform*>(_obj->Get_Transform());
+
+    if (rectTransform)
+    {
+        ImGui::Text("Rect Transform");
+
+        const _float LabelWidth = 0.f;
+        const _float boxWidth = 34.f;
+
+        vector2 position = rectTransform->Get_AnchoredPosition();
+        if (ImGui::BeginTable("Rotation Table", 2, ImGuiTableFlags_BordersInnerV))
+        {
+            ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, LabelWidth);
+            ImGui::TableSetupColumn("Value");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TableSetColumnIndex(1);
+
+            // X
+            ImGui::TextUnformatted("Pos X"); ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Pos X", &position.x, 0.f))
+            {
+
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine();
+
+            // Y
+            ImGui::TextUnformatted("Pos Y"); ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Pos Y", &position.y, 0.f))
+            {
+
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine();
+
+            ImGui::EndTable();
+        }
+
+        _float width = rectTransform->Get_Width();
+        _float height = rectTransform->Get_Height();
+        if (ImGui::BeginTable("Rotation Table", 2, ImGuiTableFlags_BordersInnerV))
+        {
+            ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, LabelWidth);
+            ImGui::TableSetupColumn("Value");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TableSetColumnIndex(1);
+
+            // X
+            ImGui::TextUnformatted("Width"); ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Width", &width, 0.f))
+            {
+
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine();
+
+            // Y
+            ImGui::TextUnformatted("Height"); ImGui::SameLine();
+            ImGui::PushItemWidth(boxWidth);
+            if (ImGui::InputFloat("##Height", &height, 0.f))
+            {
+
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine();
+
+            ImGui::EndTable();
+        }
+    }
 }

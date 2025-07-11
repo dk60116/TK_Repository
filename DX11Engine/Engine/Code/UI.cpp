@@ -40,7 +40,7 @@ HRESULT CUI::Initialize()
 	if (!m_pRectTransform)
 	{
 		m_pRectTransform = m_pGameObject->AddComponent<CRectTransform>();
-		
+
 		if (m_pRectTransform)
 		{
 			m_pGameObject->Set_Transform(m_pRectTransform);
@@ -99,6 +99,11 @@ void CUI::Bind_Matrix(const _fmatrix _view, const _cmatrix _projection)
 {
 	m_pMaterial->Bind(Get_Transform()->Get_WorldMatrix(), _view, _projection);
 	m_pRectMesh->Render();
+}
+
+const _bool CUI::Is_Canvas() const
+{
+	return m_bIsCanvas;
 }
 
 CCanvas* CUI::Get_Canvas() const

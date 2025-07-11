@@ -302,6 +302,7 @@ void CGameObject::Set_Transform(CTransform* _transform)
 {
 	m_lComponentList.remove(m_pTransform);
 	Safe_Release(m_pTransform);
+
 	m_pTransform = nullptr;
 
 	m_pTransform = _transform;

@@ -14,7 +14,9 @@ CCanvas::~CCanvas()
 
 CCanvas* CCanvas::Create()
 {
-	return new CCanvas();
+	CCanvas* newCanvas = new CCanvas();
+	newCanvas->m_bIsCanvas = true;
+	return newCanvas;
 }
 
 HRESULT CCanvas::Initialize()

@@ -26,6 +26,7 @@ public:
 	void Bind_Matrix(const _fmatrix _view, const _cmatrix _projection);
 
 private:
+	const _bool Is_Canvas() const;
 	CCanvas* Get_Canvas() const;
 	void Set_Canvas(class CCanvas* _canvas);
 
@@ -34,6 +35,8 @@ protected:
 	class CCanvas* m_pCanvas;
 	CMeshBuffer* m_pRectMesh;
 	CMaterial* m_pMaterial;
+
+	_bool m_bIsCanvas;
 
 protected:
 	CMeshBuffer* m_pRectGizmoMesh;

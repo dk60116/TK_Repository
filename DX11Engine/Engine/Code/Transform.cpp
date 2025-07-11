@@ -591,15 +591,11 @@ void CTransform::Bind_Matrix()
     _matrix worldMat = {};
 
     if (m_pParent)
-    {
         worldMat = matWorldF * XMLoadFloat4x4(&m_pParent->m_vMatWorld);
-        XMStoreFloat4x4(&m_vMatWorld, worldMat);
-    }
     else
-    {
         worldMat = matWorldF;
-        XMStoreFloat4x4(&m_vMatWorld, worldMat);
-    }
+
+    XMStoreFloat4x4(&m_vMatWorld, worldMat);
 
     m_vWorldPosition = vector3(m_vMatWorld._41, m_vMatWorld._42, m_vMatWorld._43);
 

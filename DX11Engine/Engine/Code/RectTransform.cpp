@@ -3,9 +3,14 @@
 
 CRectTransform::CRectTransform()
 	: m_pUI(nullptr)
-	, m_vRPosition({})
+	, m_vAnchoredPosition({})
+    , m_vAnchoredSclae({})
 	, m_fWidth(0.f)
 	, m_fHeight(0.f)
+	, m_sAnchors({})
+	, m_fPivot(vector2::one() * 1.f)
+    , m_pParentRect(nullptr)
+    , m_bIsRootRect(true)
 {
 	m_strName = L"Rect Transform";
 }
@@ -23,18 +28,159 @@ void CRectTransform::Update()
 {
 	__super::Update();
 
-	CCanvas* canvas = m_pUI->Get_Canvas();
+    if (!m_pParentRect)
+    {
+        CCanvas* canvas = m_pUI->Get_Canvas();
 
-	if (!canvas)
-		return;
+        if (!canvas)
+            return;
 
-	vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+        vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
 
-	m_fWidth = canvasSize.x * 100.f * m_vScale.x;
+        m_fWidth = canvasSize.x * 100.f * m_vScale.x;
+        m_fHeight = canvasSize.y * 100.f * m_vScale.y;
 
-	if (CInput::GetInstance().GetKeyDown_Editor(M))
-		CDebug::Log(m_pGameObject->Get_ObjectName() + L": " + to_wstring(m_fWidth));
-;}
+        m_vAnchoredPosition.x = canvasSize.x * 100.f * m_vPosition.x + (m_fWidth * (m_fPivot.x - 0.5f));
+        m_vAnchoredPosition.y = canvasSize.y * 100.f * m_vPosition.y + (m_fHeight * (m_fPivot.y - 0.5f));
+    }
+    else
+    {
+        m_fWidth = m_pParentRect->m_fWidth * m_vScale.x;
+        m_fHeight = m_pParentRect->m_fHeight * m_vScale.y;
+
+        m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + (m_fWidth * (m_fPivot.x - 0.5f));
+        m_vAnchoredPosition.y = m_pParentRect->m_fHeight * m_vPosition.y + (m_fHeight * (m_fPivot.y - 0.5f));
+    }
+
+    m_vAnchoredSclae = vector2(m_fWidth * 0.01f, m_fHeight * 0.01f);
+}
+
+void CRectTransform::Render_Gizmo()
+{
+    if (CEditor::GetInstance().Get_SelectedGameObject() != m_pGameObject)
+        return;
+
+    CCanvas* canvas = m_pUI->Get_Canvas();
+
+    vector2 canvasSize = {};
+
+    CCamera* editorCam = CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera();
+
+    _matrix viewMatrix = editorCam->Get_ViewMatrix();
+    _matrix projMatrix = editorCam->Get_ProjectionMatrix();
+
+    _matrix worldMatrix = XMLoadFloat4x4(&m_vMatWorld);
+
+    vector2 pivotTrans = {};
+
+    if (m_pUI->Is_Canvas())
+    {
+
+    }
+    else if (!m_pParentRect)
+    {
+        canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+
+        pivotTrans = vector2(m_fPivot.x * m_vScale.x * canvasSize.x - m_vAnchoredSclae.x * 0.5f, m_fPivot.y * m_vScale.y * canvasSize.y - m_vAnchoredSclae.y * 0.5f);
+        _matrix translateMat = XMMatrixTranslation(pivotTrans.x, pivotTrans.y, 0.f);
+        worldMatrix *= translateMat;
+    }
+    else
+    {
+        pivotTrans = vector2(m_fPivot.x * m_vScale.x * m_pParentRect->m_fWidth * 0.01f - m_vAnchoredSclae.x * 0.5f, m_fPivot.y * m_vScale.y * m_pParentRect->m_fHeight * 0.01f - m_vAnchoredSclae.y * 0.5f);
+        //pivotTrans = vector2();
+        _matrix translateMat = XMMatrixTranslation(pivotTrans.x, pivotTrans.y, 0.f);
+        worldMatrix *= translateMat;
+    }
+
+    _float world[16];
+    memcpy(world, &worldMatrix, sizeof(float) * 16);
+
+    _float view[16];
+    memcpy(view, &viewMatrix, sizeof(float) * 16);
+
+    _float projection[16];
+    memcpy(projection, &projMatrix, sizeof(float) * 16);
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::BeginFrame();
+    ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+    ImGuizmo::AllowAxisFlip(false);
+
+    const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
+
+    if (vp)
+    {
+        ImGuizmo::SetRect
+        (
+            vp->TopLeftX,
+            vp->TopLeftY,
+            vp->Width,
+            vp->Height
+        );
+    }
+    else
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    }
+
+    static ImGuizmo::OPERATION currentGizmoOperation = ImGuizmo::TRANSLATE;
+
+    CEditor& editor = CEditor::GetInstance();
+    CEditor::TransformControleTool mode = editor.Get_ControleTool();
+
+    if (mode == CEditor::TransformControleTool::MOVE)
+        currentGizmoOperation = ImGuizmo::TRANSLATE;
+    if (mode == CEditor::TransformControleTool::ROTATE)
+        currentGizmoOperation = ImGuizmo::ROTATE;
+    if (mode == CEditor::TransformControleTool::SCALE)
+        currentGizmoOperation = ImGuizmo::SCALE;
+
+    _bool manipulated = ImGuizmo::Manipulate
+    (
+        view,
+        projection,
+        currentGizmoOperation,
+        ImGuizmo::LOCAL,
+        world
+    );
+
+    if (manipulated)
+    {
+        _matrix newWorldMatrix = XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(world));
+
+        _matrix translateMat = XMMatrixTranslation(-pivotTrans.x, -pivotTrans.y, 0.f);
+        newWorldMatrix *= translateMat;
+
+        if (m_pParent)
+        {
+            // 부모의 월드 행렬의 역행렬
+            _matrix parentInv = XMMatrixInverse(nullptr, m_pParent->Get_WorldMatrix());
+            // 로컬 행렬 구하기
+            _matrix localMatrix = newWorldMatrix * parentInv;
+
+            // 로컬 위치/회전/스케일 추출
+            _vector S, R, T;
+            XMMatrixDecompose(&S, &R, &T, localMatrix);
+
+            // 저장
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vScale), S);
+            XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), R);
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vPosition), T);
+        }
+        else
+        {
+            // 부모 없으면 그냥 월드 == 로컬
+            _vector S, R, T;
+            XMMatrixDecompose(&S, &R, &T, newWorldMatrix);
+
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vScale), S);
+            XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), R);
+            XMStoreFloat3(reinterpret_cast<_float3*>(&m_vPosition), T);
+        }
+    }
+}
 
 void CRectTransform::OnDestroy()
 {
@@ -55,9 +201,35 @@ void CRectTransform::SetParent(CTransform* _parent)
 
 	CCanvas* canvas = _parent->Get_GameObject()->GetComponent<CCanvas>();
 
-	if (canvas)
-	{
-		m_pUI->Set_Canvas(canvas);
-		canvas->Add_UIObject(m_pUI);
-	}
+    if (canvas)
+    {
+        m_pUI->Set_Canvas(canvas);
+        canvas->Add_UIObject(m_pUI);
+
+        m_bIsRootRect = true;
+    }
+    else
+    {
+        m_bIsRootRect = false;
+
+        if (m_pParent)
+            m_pParentRect = dynamic_cast<CRectTransform*>(_parent);
+    }
+
+    return;
+}
+
+const vector2 CRectTransform::Get_AnchoredPosition() const
+{
+	return m_vAnchoredPosition;
+}
+
+const _float CRectTransform::Get_Width() const
+{
+	return m_fWidth;
+}
+
+const _float CRectTransform::Get_Height() const
+{
+	return m_fHeight;
 }

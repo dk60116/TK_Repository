@@ -150,18 +150,18 @@ void CCamera::RenderUI()
 	const _float fHalfHeight = m_fSize * 0.5f;
 	const _float fHalfWidth = fHalfHeight * m_fAspect;
 
-	_matrix projMat = XMMatrixOrthographicOffCenterLH
-	(
-		-fHalfWidth, fHalfWidth,
-		-fHalfHeight, fHalfHeight,
-		m_fNear,
-		m_fFar
-	);
+	//_matrix projMat = XMMatrixOrthographicOffCenterLH
+	//(
+	//	-fHalfWidth, fHalfWidth,
+	//	-fHalfHeight, fHalfHeight,
+	//	m_fNear,
+	//	m_fFar
+	//);
 
-	for (TRAVERSAL_ITER(m_vUIList, it))
-	{
-		
-	}
+	//for (TRAVERSAL_ITER(m_vUIList, it))
+	//{
+	//	
+	//}
 
 	m_vUIList.clear();
 }

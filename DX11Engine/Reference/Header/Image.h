@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CImage : public CUI
+class ENGINE_DLL CImage final : public CUI
 {
 	friend class CGameObject;
 
