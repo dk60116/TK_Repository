@@ -57,7 +57,8 @@ private:
 
 private:
 	CUI* m_pUI;
-	vector2 m_vAnchoredPosition, m_vAnchoredSclae;
+	vector2 m_vAnchoredPosition, m_vAnchoredScale;
+	vector2 m_vStaticWH;
 	_float m_fWidth, m_fHeight;
 
 	Anchors m_sAnchors;
