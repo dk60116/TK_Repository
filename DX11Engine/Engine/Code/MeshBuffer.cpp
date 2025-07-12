@@ -31,6 +31,8 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
     if (_filePath == L"../Assets/Line")
         info = CreateLine();
+    else if (_filePath == L"../Assets/Rect")
+        info = CreateRect();
     else if (_filePath == L"../Assets/LineRect")
         info = CreateLineRect();
     else if (_filePath == L"../Assets/Cube")
@@ -165,7 +167,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateLine()
     desc.vertextCount = _countof(lineVertices);
     desc.indexCount = 0;
 
-    info.buffer.assign(begin(lineVertices), end(lineVertices));
+    info.buffer.assign(reinterpret_cast<uint8_t*>(lineVertices), reinterpret_cast<uint8_t*>(lineVertices) + sizeof(lineVertices));
 
     info.desc = desc;
 
@@ -196,7 +198,39 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateLineRect()
     desc.vertextCount = _countof(rectVertices);
     desc.indexCount = 0;
 
-    info.buffer.assign(begin(rectVertices), end(rectVertices));
+    info.buffer.assign(reinterpret_cast<uint8_t*>(rectVertices), reinterpret_cast<uint8_t*>(rectVertices) + sizeof(rectVertices));
+    info.desc = desc;
+
+    return info;
+}
+
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateRect()
+{
+    MeshBufferInitiaizeInfo info = {};
+
+    const _float length = 0.5f;
+
+    VertexTexColorBuffer quadVertices[4] =
+    {
+            {{-length, -length, 0}, {0, 1}},
+            {{ length, -length, 0}, {1, 1}},
+            {{ length,  length, 0}, {1, 0}},
+            {{-length,  length, 0}, {0, 0}}
+    };
+
+    static _uint quadIndices[6] =
+    {
+        2,1,0, 3,2,0
+    };
+
+    CMeshBuffer::MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    desc.vertexSize = sizeof(VertexTexColorBuffer);
+    desc.vertextCount = _countof(quadVertices);
+    desc.indexCount = _countof(quadIndices);
+
+    info.buffer.assign(reinterpret_cast<uint8_t*>(quadVertices), reinterpret_cast<uint8_t*>(quadVertices) + sizeof(quadVertices));
+    info.indices.assign(begin(quadIndices), end(quadIndices));
     info.desc = desc;
 
     return info;
@@ -263,7 +297,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()
     desc.vertextCount = _countof(cubeVertices);
     desc.indexCount = _countof(cubeIndices);
 
-    info.buffer.assign(begin(cubeVertices), end(cubeVertices));
+    info.buffer.assign(reinterpret_cast<uint8_t*>(cubeVertices), reinterpret_cast<uint8_t*>(cubeVertices) + sizeof(cubeVertices));
     info.indices.assign(begin(cubeIndices), end(cubeIndices));
     info.desc = desc;
 
@@ -301,7 +335,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateQuad()
     desc.vertextCount = _countof(quadVertices);
     desc.indexCount = _countof(quadIndices);
 
-    info.buffer.assign(begin(quadVertices), end(quadVertices));
+    info.buffer.assign(reinterpret_cast<uint8_t*>(quadVertices),reinterpret_cast<uint8_t*>(quadVertices) + sizeof(quadVertices));
     info.indices.assign(begin(quadIndices), end(quadIndices));
     info.desc = desc;
 
@@ -344,11 +378,8 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
     // 인덱스 (0-1-2)
     _uint triIndices[3] = { 0, 1, 2 };
 
-    // 버텍스 복사
-    info.buffer.assign(std::begin(triVerts), std::end(triVerts));
-
-    // 인덱스 복사
-    info.indices.assign(std::begin(triIndices), std::end(triIndices));
+    info.buffer.assign(reinterpret_cast<uint8_t*>(triVerts), reinterpret_cast<uint8_t*>(triVerts) + sizeof(triVerts));
+    info.indices.assign(begin(triIndices), end(triIndices));
 
     // 메쉬 설명
     MESHBUFFERDESC desc{};
@@ -393,14 +424,14 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
     }
 
     vector<VTX>  vertices;
-    vector<UINT> indices;
+    vector<_uint> indices;
 
     auto copyMesh = [&](const aiMesh* mesh)
         {
-            const UINT base = static_cast<UINT>(vertices.size());
+            const _uint base = static_cast<_uint>(vertices.size());
 
             /* 정점 */
-            for (UINT i = 0; i < mesh->mNumVertices; ++i)
+            for (_uint i = 0; i < mesh->mNumVertices; ++i)
             {
                 VTX v{};
                 /* 위치 */
@@ -451,7 +482,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
             }
 
             // 인덱스(얼굴)
-            for (UINT f = 0; f < mesh->mNumFaces; ++f)
+            for (_uint f = 0; f < mesh->mNumFaces; ++f)
             {
                 const aiFace& face = mesh->mFaces[f];
                 if (face.mNumIndices != 3) 
@@ -465,10 +496,10 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
     // 씬 노드 재귀 순회
     function<void(const aiNode*)> traverse = [&](const aiNode* node)
         {
-            for (UINT m = 0; m < node->mNumMeshes; ++m)
+            for (_uint m = 0; m < node->mNumMeshes; ++m)
                 copyMesh(scene->mMeshes[node->mMeshes[m]]);
 
-            for (UINT c = 0; c < node->mNumChildren; ++c)
+            for (_uint c = 0; c < node->mNumChildren; ++c)
                 traverse(node->mChildren[c]);
         };
 
@@ -478,11 +509,16 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
     MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     desc.vertexSize = sizeof(VTX);
-    desc.vertextCount = static_cast<UINT>(vertices.size());
-    desc.indexCount = static_cast<UINT>(indices.size());
+    desc.vertextCount = static_cast<_uint>(vertices.size());
+    desc.indexCount = static_cast<_uint>(indices.size());
 
-    info.buffer.assign(vertices.begin(), vertices.end());
+    info.buffer.assign
+    (
+        reinterpret_cast<const uint8_t*>(vertices.data()),
+        reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size()
+    );
     info.indices.assign(indices.begin(), indices.end());
+    
     info.desc = desc;
 
     return info;
@@ -518,7 +554,7 @@ void CMeshBuffer::Set_Scalefactor(const _float _value)
 
     if (info.desc.indexCount > 0 && !info.indices.empty())
     {
-        size_t indexSize = sizeof(UINT) * info.desc.indexCount;
+        size_t indexSize = sizeof(_uint) * info.desc.indexCount;
         m_pIndexSysMem = malloc(indexSize);
         memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
     }
@@ -528,7 +564,7 @@ void CMeshBuffer::Set_Scalefactor(const _float _value)
 
     // Vertex Buffer
     D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = static_cast<UINT>(size);
+    vbDesc.ByteWidth = static_cast<_uint>(size);
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
     vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -542,7 +578,7 @@ void CMeshBuffer::Set_Scalefactor(const _float _value)
     if (info.desc.indexCount > 0 && !info.indices.empty())
     {
         D3D11_BUFFER_DESC ibDesc = {};
-        ibDesc.ByteWidth = sizeof(UINT) * info.desc.indexCount;
+        ibDesc.ByteWidth = sizeof(_uint) * info.desc.indexCount;
         ibDesc.Usage = D3D11_USAGE_DEFAULT;
         ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 

@@ -13,6 +13,8 @@ cbuffer PerMaterial : register(b2)
 {
     float4 gBaseColor;
     uint useTexture;
+    uint boneCount;
+    float2 padding;
 }
 
 // ───── 버텍스 구조
@@ -48,7 +50,7 @@ VSOut VSMain(VSIn input)
 float4 PSMain(VSOut input) : SV_TARGET
 {
     if (useTexture != 0)
-        return gTexture.Sample(gSampler, input.uv) * gBaseColor;
+        return gTexture.Sample(gSampler, input.uv);
     else
         return gBaseColor;
 }

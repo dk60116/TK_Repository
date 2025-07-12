@@ -8,7 +8,7 @@ CRectTransform::CRectTransform()
 	, m_fWidth(0.f)
 	, m_fHeight(0.f)
 	, m_sAnchors({})
-	, m_fPivot(vector2::one() * 0.5f)
+	, m_vPivot(vector2::one() * 0.5f)
     , m_pParentRect(nullptr)
     , m_bIsRootRect(true)
 {
@@ -35,15 +35,15 @@ void CRectTransform::Update()
         if (!canvas)
             return;
 
-        vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+        const vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
 
         m_fWidth = canvasSize.x * 100.f * m_vScale.x;
         m_fHeight = canvasSize.y * 100.f * m_vScale.y;
 
-        m_vAnchoredPosition.x = canvasSize.x * 100.f * m_vPosition.x + (m_fWidth * (m_fPivot.x - 0.5f));
+        m_vAnchoredPosition.x = canvasSize.x * 100.f * m_vPosition.x + (m_fWidth * (m_vPivot.x - 0.5f));
         m_vAnchoredPosition.x += canvasSize.x * 100.f * (0.5f - m_sAnchors.min.x);
 
-        m_vAnchoredPosition.y = canvasSize.y * 100.f * m_vPosition.y + (m_fHeight * (m_fPivot.y - 0.5f));
+        m_vAnchoredPosition.y = canvasSize.y * 100.f * m_vPosition.y + (m_fHeight * (m_vPivot.y - 0.5f));
         m_vAnchoredPosition.y += canvasSize.y * 100.f * (0.5f - m_sAnchors.min.y);
     }
     else
@@ -51,8 +51,11 @@ void CRectTransform::Update()
         m_fWidth = m_pParentRect->m_fWidth * m_vScale.x;
         m_fHeight = m_pParentRect->m_fHeight * m_vScale.y;
 
-        m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + (m_fWidth * (m_fPivot.x - 0.5f));
-        m_vAnchoredPosition.y = m_pParentRect->m_fHeight * m_vPosition.y + (m_fHeight * (m_fPivot.y - 0.5f));
+        m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + (m_fWidth * (m_vPivot.x - 0.5f));
+        m_vAnchoredPosition.x += m_pParentRect->m_fWidth * (0.5f - m_sAnchors.min.x);
+
+        m_vAnchoredPosition.y = m_pParentRect->m_fHeight * m_vPosition.y + (m_fHeight * (m_vPivot.y - 0.5f));
+        m_vAnchoredPosition.y += m_pParentRect->m_fHeight * (0.5f - m_sAnchors.min.y);
     }
 
     m_vAnchoredSclae = vector2(m_fWidth * 0.01f, m_fHeight * 0.01f);
@@ -83,13 +86,13 @@ void CRectTransform::Render_Gizmo()
     {
         canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
 
-        pivotTrans = vector2(m_fPivot.x * m_vScale.x * canvasSize.x - m_vAnchoredSclae.x * 0.5f, m_fPivot.y * m_vScale.y * canvasSize.y - m_vAnchoredSclae.y * 0.5f);
+        pivotTrans = vector2(m_vPivot.x * m_vScale.x * canvasSize.x - m_vAnchoredSclae.x * 0.5f, m_vPivot.y * m_vScale.y * canvasSize.y - m_vAnchoredSclae.y * 0.5f);
         _matrix translateMat = XMMatrixTranslation(pivotTrans.x, pivotTrans.y, 0.f);
         worldMatrix *= translateMat;
     }
     else
     {
-        pivotTrans = vector2(m_fPivot.x * m_vScale.x * m_pParentRect->m_fWidth * 0.01f - m_vAnchoredSclae.x * 0.5f, m_fPivot.y * m_vScale.y * m_pParentRect->m_fHeight * 0.01f - m_vAnchoredSclae.y * 0.5f);
+        pivotTrans = vector2(m_vPivot.x * m_vScale.x * m_pParentRect->m_fWidth * 0.01f - m_vAnchoredSclae.x * 0.5f, m_vPivot.y * m_vScale.y * m_pParentRect->m_fHeight * 0.01f - m_vAnchoredSclae.y * 0.5f);
         _matrix translateMat = XMMatrixTranslation(pivotTrans.x, pivotTrans.y, 0.f);
         worldMatrix *= translateMat;
     }
@@ -207,18 +210,20 @@ void CRectTransform::SetParent(CTransform* _parent)
         m_pUI->Set_Canvas(canvas);
         canvas->Add_UIObject(m_pUI);
 
-        m_bIsRootRect = true;
-    }
-    else
-    {
-        m_bIsRootRect = false;
-
         Safe_Release(m_pParentRect);
 
         if (m_pParent)
         {
-            m_pParentRect = dynamic_cast<CRectTransform*>(_parent);
-            m_pParentRect->AddRef();
+            if (!m_pParent->Get_GameObject()->GetComponent<CCanvas>())
+            {
+                m_pParentRect = dynamic_cast<CRectTransform*>(_parent);
+                m_bIsRootRect = false;
+            }
+            else
+                m_bIsRootRect = true;
+
+            if (m_pParentRect)
+                m_pParentRect->AddRef();
         }
     }
 
@@ -242,7 +247,7 @@ const _float CRectTransform::Get_Height() const
 
 const vector2 CRectTransform::Get_Pivot() const
 {
-    return m_fPivot;
+    return m_vPivot;
 }
 
 void CRectTransform::Set_Pivot(vector2 _pivot)
@@ -250,7 +255,7 @@ void CRectTransform::Set_Pivot(vector2 _pivot)
     _pivot.x = clamp(_pivot.x, 0.f, 1.f);
     _pivot.y = clamp(_pivot.y, 0.f, 1.f);
 
-    m_fPivot = _pivot;
+    m_vPivot = _pivot;
 }
 
 void CRectTransform::Set_Pivot(const _float _x, const _float _y)
@@ -281,4 +286,64 @@ void CRectTransform::Set_AnchorsMax(const vector2 _pivot)
 void CRectTransform::Set_AnchorsMax(const _float _x, const _float _y)
 {
     m_sAnchors.max = vector2(_x, _y);
+}
+
+void CRectTransform::Set_WidthHeight(const vector2 _rect)
+{
+    CCanvas* canvas = m_pUI->Get_Canvas();
+
+    if (!canvas)
+        return;
+
+    const vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+    const vector2 canvasResize = canvasSize * 100.f;
+
+    const vector2 def = vector2(m_fWidth - _rect.x, m_fHeight - _rect.y);
+
+    if (!m_pParentRect)
+    {
+        m_vScale.x = _rect.x / canvasResize.x;
+        m_vScale.y = _rect.y / canvasResize.y;
+
+        m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / canvasResize.x;
+        m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / canvasResize.y;
+    }
+    else
+    {
+        m_vScale.x = _rect.x / m_pParentRect->m_fWidth;
+        m_vScale.y = _rect.y / m_pParentRect->m_fHeight;
+
+        m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / m_pParentRect->m_fWidth;
+        m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / m_pParentRect->m_fHeight;
+    }
+}
+
+void CRectTransform::Set_WidthHeight(const _float _x, const _float _y)
+{
+    Set_WidthHeight(vector2(_x, _y));
+}
+
+void CRectTransform::Set_WidthHeight(const _int _x, const _int _y)
+{
+    Set_WidthHeight(vector2(_x, _y));
+}
+
+void CRectTransform::Set_Width(const _float _value)
+{
+    Set_WidthHeight(_value, m_fHeight);
+}
+
+void CRectTransform::Set_Width(const _int _value)
+{
+    Set_WidthHeight(static_cast<_float>(_value), m_fHeight);
+}
+
+void CRectTransform::Set_Height(const _float _value)
+{
+    Set_WidthHeight(m_fWidth, _value);
+}
+
+void CRectTransform::Set_Height(const _int _value)
+{
+    Set_WidthHeight(m_fWidth, static_cast<_float>(_value));
 }

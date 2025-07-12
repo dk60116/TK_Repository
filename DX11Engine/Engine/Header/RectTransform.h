@@ -43,8 +43,17 @@ public:
 	void Set_AnchorsMax(const vector2 _pivot);
 	void Set_AnchorsMax(const _float _x, const _float _y);
 
+public:
+	void Set_WidthHeight(const vector2 _rect);
+	void Set_WidthHeight(const _float _x, const _float _y);
+	void Set_WidthHeight(const _int _x, const _int _y);
+	void Set_Width(const _float _value);
+	void Set_Width(const _int _value);
+	void Set_Height(const _float _value);
+	void Set_Height(const _int _value);
+
 private:
-	void Set_UI(CUI* _pUI);
+	void Set_UI(class CUI* _pUI);
 
 private:
 	CUI* m_pUI;
@@ -52,7 +61,7 @@ private:
 	_float m_fWidth, m_fHeight;
 
 	Anchors m_sAnchors;
-	vector2 m_fPivot;
+	vector2 m_vPivot;
 
 	CRectTransform* m_pParentRect;
 	_bool m_bIsRootRect;

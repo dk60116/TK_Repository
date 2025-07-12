@@ -1,7 +1,6 @@
 Scene name : Main Scene
 Link_Model : Player/Link.fbx : [Skinned Mesh]
-Link_Texture : Player/texture_0.png : [Texture]
-TestTexture : Player/texture_1.png : [Texture]
+Link_Texture : Player/Link_Texture.png : [Texture]
 Link_Idle : Player/Link_Idle.fbx : [Animation Clip]
 Link_Run : Player/Link_Run.fbx : [Animation Clip]
 Girl_Tex : Player/GirlTex.png : [Texture]

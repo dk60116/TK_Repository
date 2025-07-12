@@ -328,9 +328,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Width", &width, 0.f))
-            {
-
-            }
+                rectTransform->Set_WidthHeight(vector2(width, height));
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -340,9 +338,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Height", &height, 0.f))
-            {
-
-            }
+                rectTransform->Set_WidthHeight(vector2(width, height));
             ImGui::PopItemWidth();
 
             ImGui::SameLine();

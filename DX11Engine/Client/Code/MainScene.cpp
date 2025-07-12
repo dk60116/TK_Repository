@@ -29,7 +29,7 @@ HRESULT CMainScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"TestTexture (Texture)");
+	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 	CMaterial* boxMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
 	boxMat->Set_Texture(tex, 0);
 
@@ -77,7 +77,7 @@ HRESULT CMainScene::Initialize()
 	ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
-	ImageObject2->Get_Transform()->Set_LocalPosition(vector3::zero() + vector3::right() * 0.1f);
+	ImageObject2->Get_Transform()->Set_LocalPosition(vector3::zero());
 	//ImageObject->Get_Transform()->Set_LocalScale(ImageObject->Get_Transform()->Get_LocalScale() * 2.f);
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);

@@ -20,7 +20,7 @@ public:
 
 	struct MeshBufferInitiaizeInfo
 	{
-		vector<VertexTexNormalTangentBuffer> buffer;
+		vector<uint8_t> buffer;
 		vector<UINT> indices;
 		MESHBUFFERDESC desc = {};
 	};
@@ -39,6 +39,7 @@ protected:
 private:
 	MeshBufferInitiaizeInfo CreateLine();
 	MeshBufferInitiaizeInfo CreateLineRect();
+	MeshBufferInitiaizeInfo CreateRect();
 	MeshBufferInitiaizeInfo CreateCube();
 	MeshBufferInitiaizeInfo CreateSphere();
 	MeshBufferInitiaizeInfo CreatePlane();

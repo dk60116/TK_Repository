@@ -81,7 +81,8 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 
 	// b2: PerMaterial
 	MaterialCB mat = {};
-	mat.baseColor = XMFLOAT4(
+	mat.baseColor = XMFLOAT4
+	(
 		m_vDiffuseColor.r / 255.f,
 		m_vDiffuseColor.g / 255.f,
 		m_vDiffuseColor.b / 255.f,
