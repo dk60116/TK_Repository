@@ -258,17 +258,13 @@ void CRectTransform::Set_Pivot(vector2 _pivot)
     _pivot.x = clamp(_pivot.x, 0.f, 1.f);
     _pivot.y = clamp(_pivot.y, 0.f, 1.f);
 
-    CCanvas* canvas = m_pUI->Get_Canvas();
-
-    if (!canvas)
-        return;
-
-    const vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+    const vector2 diff = _pivot - m_vPivot;
+    CDebug::Log(diff);
 
     m_vPivot = _pivot;
 
-    m_vAnchoredPosition.x -= m_fWidth * (0.5f - m_vPivot.x);
-    m_vAnchoredPosition.y -= m_fHeight * (0.5f - m_vPivot.y);
+    m_vAnchoredPosition.x += diff.x * (0.5f - m_vPivot.x) * m_fWidth;
+    m_vAnchoredPosition.y += diff.y * (0.5f - m_vPivot.y) * m_fHeight;
 }
 
 void CRectTransform::Set_Pivot(const _float _x, const _float _y)
