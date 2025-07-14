@@ -465,7 +465,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
                     mesh->mTextureCoords[0][i].y
                 };
                 else
-                    v.uv = { 0,0 };
+                    v.uv = { 0, 0 };
 
                 // ÅºÁ¨Æ®
                 if (mesh->HasTangentsAndBitangents())
