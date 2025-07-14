@@ -25,6 +25,17 @@ CRectTransform* CRectTransform::Create()
 	return new CRectTransform();
 }
 
+HRESULT CRectTransform::Initialize()
+{
+    if (FAILED(__super::Initialize()))
+        return E_FAIL;
+
+    m_fWidth = 100.f;
+    m_fHeight = 100.f;
+
+    return S_OK;
+}
+
 void CRectTransform::Update()
 {
 	__super::Update();
@@ -42,23 +53,19 @@ void CRectTransform::Update()
         m_vScale.y = m_fHeight * (1.f / canvasSize.y) * 0.01f;
 
         m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f)) / (canvasSize.x * 100.f);
-        //m_vPosition.x += canvasSize.x * 100.f * (0.5f - m_sAnchors.min.x);
+        m_vPosition.x += canvasSize.x * (0.5f - m_sAnchors.min.x);
 
         m_vPosition.y = (m_vAnchoredPosition.y - m_fHeight * (m_vPivot.y - 0.5f)) / (canvasSize.y * 100.f);
-        //m_vAnchoredPosition.y += canvasSize.y * 100.f * (0.5f - m_sAnchors.min.y);
     }
     else
     {
-        //m_fWidth = m_pParentRect->m_fWidth * m_vScale.x;
-        //m_fHeight = m_pParentRect->m_fHeight * m_vScale.y;
+        vector2 parentSize = vector2(m_pParentRect->m_fWidth, m_pParentRect->m_fHeight);
 
-        m_vScale.x = (m_vStaticWH.x / m_pParentRect->m_vScale.x) * (1.f / (canvasSize.x * 100.f));
+        m_vScale.x = m_fWidth * 0.01f * (1.f / m_pParentRect->m_vAnchoredScale.x);
+        m_vScale.y = m_fHeight * 0.01f * (1.f / m_pParentRect->m_vAnchoredScale.y);
 
-        m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + (m_fWidth * (m_vPivot.x - 0.5f));
-        m_vAnchoredPosition.x += m_pParentRect->m_fWidth * (0.5f - m_sAnchors.min.x);
-
-        m_vAnchoredPosition.y = m_pParentRect->m_fHeight * m_vPosition.y + (m_fHeight * (m_vPivot.y - 0.5f));
-        m_vAnchoredPosition.y += m_pParentRect->m_fHeight * (0.5f - m_sAnchors.min.y);
+        m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f)) / parentSize.x;
+        m_vPosition.y = (m_vAnchoredPosition.y - m_fHeight * (m_vPivot.y - 0.5f)) / parentSize.y;
     }
 
     m_vAnchoredScale = vector2(m_fWidth * 0.01f, m_fHeight * 0.01f);
@@ -238,6 +245,11 @@ const vector2 CRectTransform::Get_AnchoredPosition() const
 	return m_vAnchoredPosition;
 }
 
+void CRectTransform::Set_AnchoredPosition(const vector2 _pos)
+{
+    m_vAnchoredPosition = _pos;
+}
+
 const _float CRectTransform::Get_Width() const
 {
 	return m_fWidth;
@@ -259,17 +271,35 @@ void CRectTransform::Set_Pivot(vector2 _pivot)
     _pivot.y = clamp(_pivot.y, 0.f, 1.f);
 
     const vector2 diff = _pivot - m_vPivot;
-    CDebug::Log(diff);
+
+    m_vAnchoredPosition += diff * vector2(m_fWidth, m_fHeight);
 
     m_vPivot = _pivot;
-
-    m_vAnchoredPosition.x += diff.x * (0.5f - m_vPivot.x) * m_fWidth;
-    m_vAnchoredPosition.y += diff.y * (0.5f - m_vPivot.y) * m_fHeight;
 }
 
 void CRectTransform::Set_Pivot(const _float _x, const _float _y)
 {
     Set_Pivot(vector2(_x, _y));
+}
+
+void CRectTransform::Set_PivotX(_float _value)
+{
+    _value = clamp(_value, 0.f, 1.f);
+
+    const _float diff = _value - m_vPivot.x;
+    m_vAnchoredPosition.x += diff * m_fWidth;
+
+    m_vPivot.x = _value;
+}
+
+void CRectTransform::Set_PivotY(_float _value)
+{
+    _value = clamp(_value, 0.f, 1.f);
+
+    const _float diff = _value - m_vPivot.y;
+    m_vAnchoredPosition.y += diff * m_fWidth;
+
+    m_vPivot.y = _value;
 }
 
 const CRectTransform::Anchors& CRectTransform::Get_Anchors()

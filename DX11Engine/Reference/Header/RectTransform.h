@@ -24,6 +24,7 @@ private:
 	static CRectTransform* Create();
 
 public:
+	HRESULT Initialize() override;
 	void Update() override;
 	void Render_Gizmo() override;
 	void OnDestroy() override;
@@ -32,11 +33,14 @@ public:
 	void SetParent(CTransform* _parent) override;
 
 	const vector2 Get_AnchoredPosition() const;
+	void Set_AnchoredPosition(const vector2 _pos);
 	const _float Get_Width() const;
 	const _float Get_Height() const;
 	const vector2 Get_Pivot() const;
 	void Set_Pivot(vector2 _pivot);
 	void Set_Pivot(const _float _x, const _float _y);
+	void Set_PivotX(_float _value);
+	void Set_PivotY(_float _value);
 	const Anchors& Get_Anchors();
 	void Set_AnchorsMin(const vector2 _pivot);
 	void Set_AnchorsMin(const _float _x, const _float _y);

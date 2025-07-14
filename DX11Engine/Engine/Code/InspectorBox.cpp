@@ -290,9 +290,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Pos X", &position.x, 0.f))
-            {
-
-            }
+                rectTransform->Set_AnchoredPosition(position);
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -302,9 +300,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Pos Y", &position.y, 0.f))
-            {
-
-            }
+                rectTransform->Set_AnchoredPosition(position);
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -362,7 +358,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##X", &pivot.x, 0.f))
-                rectTransform->Set_Pivot(pivot.x, pivot.y);
+                rectTransform->Set_Pivot(pivot);
             ImGui::PopItemWidth();
 
             ImGui::SameLine();
@@ -372,7 +368,7 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
             ImGui::SameLine();
             ImGui::PushItemWidth(boxWidth);
             if (ImGui::InputFloat("##Y", &pivot.y, 0.f))
-                rectTransform->Set_Pivot(pivot.x, pivot.y);
+                rectTransform->Set_Pivot(pivot);
             ImGui::PopItemWidth();
 
             ImGui::EndTable();
