@@ -48,7 +48,7 @@ void CMeshRenderer::Render_Editor()
 
 void CMeshRenderer::Render()
 {
-	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_Camera());
+	CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
 }
 
 void CMeshRenderer::OnPostRender()

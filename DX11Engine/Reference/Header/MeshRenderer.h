@@ -25,7 +25,7 @@ public:
 
 	void OnDestroy() override;
 
-protected:
+public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;
 

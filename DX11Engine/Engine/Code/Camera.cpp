@@ -11,6 +11,7 @@ CCamera::CCamera()
 	, m_fFar(600.f)
 	, m_fFieldOfView(60.f)
 	, m_fSize(5.f)
+	, m_vMeshList({})
 	, m_vUIList({})
 {
 	m_strName = L"Camera";
@@ -93,6 +94,11 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 	m_vBackgroundColor = _color;
 }
 
+void CCamera::Add_RenderTarget_Mesh(CRenderer* _mesh)
+{
+	m_vMeshList.push_back(_mesh);
+}
+
 void CCamera::Add_RenderTarget_UI(CUI* _ui)
 {
 	m_vUIList.push_back(_ui);
@@ -143,6 +149,10 @@ void CCamera::Bind_ProjectionMatrix()
 
 void CCamera::RenderMesh()
 {
+	for (TRAVERSAL_ITER(m_vMeshList, it))
+	{
+		(*it)->Render_WithCamera(this);
+	}
 }
 
 void CCamera::RenderUI()

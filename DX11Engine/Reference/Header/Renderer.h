@@ -2,6 +2,8 @@
 
 #include "Component.h"
 
+NS_BEGIN(Engine)
+
 class ENGINE_DLL CRenderer abstract : public CComponent
 {
 protected:	
@@ -16,6 +18,8 @@ public:
 
 protected:
 	HRESULT Initialize() override;
+
+public:
 	virtual void Render_WithCamera(CCamera* _cam) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
 
@@ -26,4 +30,6 @@ protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
 };
+
+NS_END
 

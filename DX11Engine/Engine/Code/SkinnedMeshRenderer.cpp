@@ -55,7 +55,7 @@ void CSkinnedMeshRenderer::Render_Editor()
 
 void CSkinnedMeshRenderer::Render()
 {
-	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_Camera());
+	CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
 }
 
 void CSkinnedMeshRenderer::OnPostRender()

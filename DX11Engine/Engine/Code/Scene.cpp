@@ -159,6 +159,8 @@ void CScene::Render_Game()
 	}
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
+		(*it)->RenderMesh();
+	for (TRAVERSAL_ITER(m_lCameraList, it))
 		(*it)->RenderUI();
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))

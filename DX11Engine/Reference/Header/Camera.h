@@ -34,6 +34,7 @@ public:
 	const ColorValue& Get_BackgroundColor() const;
 	void Set_BackgroundColor(const ColorValue& _color);
 
+	void Add_RenderTarget_Mesh(class CRenderer* _mesh);
 	void Add_RenderTarget_UI(class CUI* _ui);
 
 protected:
@@ -54,8 +55,8 @@ protected:
 	_float m_fFieldOfView;
 	_float m_fSize;
 
-	vector<class CUI*> m_vUIList;
+	vector<CRenderer*> m_vMeshList;
+	vector<CUI*> m_vUIList;
 };
 
 NS_END
-
