@@ -25,6 +25,7 @@ public:
 public:
 	void Bind_Mesh();
 	void Bind_Matrix(const _fmatrix _view, const _cmatrix _projection);
+	void Render_WithCamera(CCamera* _camera);
 	CRectTransform* Get_RectTransform() const;
 
 private:

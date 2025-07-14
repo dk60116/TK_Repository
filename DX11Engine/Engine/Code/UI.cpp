@@ -106,6 +106,28 @@ void CUI::Bind_Matrix(const _fmatrix _view, const _cmatrix _projection)
 	m_pMaterial->Bind(Get_Transform()->Get_WorldMatrix(), _view, _projection);
 }
 
+void CUI::Render_WithCamera(CCamera* _camera)
+{
+	//_matrix matWorld = Get_Transform()->Get_WorldMatrix();
+	//_matrix matView = _camera->Get_ViewMatrix();
+	//_matrix matProj = _camera->Get_ProjectionMatrix();
+
+	//if (m_pMaterial)
+	//	m_pMaterial->Bind(matWorld, matView, matProj, 0);
+
+	//if (m_pRectMesh)
+	//	m_pRectMesh->Render();
+
+	//if (m_pGameObject != CEditor::GetInstance().Get_SelectedGameObject())
+	//	return;
+
+	//if (m_pLineMat)
+	//	m_pLineMat->Bind(matWorld, matView, matProj, 0);
+
+	//if (m_pRectGizmoMesh)
+	//	m_pRectGizmoMesh->Render();
+}
+
 const _bool CUI::Is_Canvas() const
 {
 	return m_bIsCanvas;

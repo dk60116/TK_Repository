@@ -151,12 +151,13 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if ((*it)->IsActive())
-		{
-			(*it)->OnPreCull();
-			(*it)->OnPreRender();
 			(*it)->Render();
-		}
 	}
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		(*it)->OnPreCull();
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		(*it)->OnPreRender();
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		(*it)->RenderMesh();
