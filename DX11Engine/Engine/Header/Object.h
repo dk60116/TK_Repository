@@ -12,19 +12,19 @@ public:
 
 public:
 	void AddRef();
-	UINT Release();
+	_uint Release();
 
 public:
 	const wstring& Get_UName() const;
-	const UINT Get_RefCnt() const;
+	const _uint Get_RefCnt() const;
 
 protected:
 	wstring m_strName;
-	UINT m_iInstanceId;
+	_uint m_iInstanceId;
 
 private:
-	static atomic<UINT> s_iNextInstanceID;
-	atomic<UINT> m_iRefCount;
+	static atomic<_uint> s_iNextInstanceID;
+	atomic<_uint> m_iRefCount;
 };
 
 NS_END
