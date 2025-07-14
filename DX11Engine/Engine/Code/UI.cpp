@@ -124,3 +124,8 @@ void CUI::Set_Canvas(CCanvas* _canvas)
 	if (m_pCanvas)
 		m_pCanvas->AddRef();
 }
+
+CRectTransform* CUI::Get_RectTransform() const
+{
+	return m_pRectTransform;
+}

@@ -24,6 +24,7 @@ public:
 
 public:
 	void Bind_Matrix(const _fmatrix _view, const _cmatrix _projection);
+	CRectTransform* Get_RectTransform() const;
 
 private:
 	const _bool Is_Canvas() const;

@@ -259,13 +259,23 @@ void CRectTransform::Set_AnchoredPosition(const vector2 _pos)
 
     if (!m_pParentRect)
     {
-        const float A = canvasSize.x * 100.f;
+        const _float xA = canvasSize.x * 100.f;
+        const _float yA = canvasSize.y * 100.f;
 
-        m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f) - A * (0.5f - m_sAnchors.min.x)) / A;
+        m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f) - xA * (0.5f - m_sAnchors.min.x)) / xA;
+        m_vPosition.y = (m_vAnchoredPosition.y - m_fHeight * (m_vPivot.y - 0.5f) - yA * (0.5f - m_sAnchors.min.y)) / yA;
     }
     else
     {
-        m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f) - A * (0.5f - m_sAnchors.min.x)) / A;
+        const _float xA = m_pParentRect->m_fWidth;
+        const _float yA = m_pParentRect->m_fHeight;
+        const _float xP = m_fWidth * (m_vPivot.x - 0.5f);
+        const _float yP = m_fHeight * (m_vPivot.y - 0.5f);
+        const _float xS = xA * (0.5f - m_sAnchors.min.x);
+        const _float yS = yA * (0.5f - m_sAnchors.min.y);
+
+        m_vPosition.x = (m_vAnchoredPosition.x - xP - xS) / xA;
+        m_vPosition.y = (m_vAnchoredPosition.y - xP - yS) / yA;
     }
 }
 

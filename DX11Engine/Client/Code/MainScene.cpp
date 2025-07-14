@@ -68,13 +68,15 @@ HRESULT CMainScene::Initialize()
 	CGameObject* ImageObject = Add_GameObject(L"Image");
 	CImage* image = ImageObject->AddComponent<CImage>();
 
-	image->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Girl_Tex (Texture)"));
+	image->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_BG (Texture)"));
 
 	CGameObject* ImageObject2 = Add_GameObject(L"Image2");
 	CImage* image2 = ImageObject2->AddComponent<CImage>();
 
 	ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
 	ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
+
+	image->Get_RectTransform()->Set_WidthHeight(1280, 720);
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
 	ImageObject2->Get_Transform()->Set_LocalPosition(vector3::zero());

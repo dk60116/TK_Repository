@@ -1,4 +1,5 @@
 Scene name : Main Scene
+Main_BG : MainMenu/Main_Backgrouond.png : [Texture]
 Link_Model : Player/Link.fbx : [Skinned Mesh]
 Link_Texture : Player/Link_Texture.png : [Texture]
 Link_Idle : Player/Link_Idle.fbx : [Animation Clip]

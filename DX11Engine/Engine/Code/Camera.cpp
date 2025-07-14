@@ -163,5 +163,5 @@ void CCamera::RenderUI()
 	//	
 	//}
 
-	m_vUIList.clear();
+	//m_vUIList.clear();
 }
