@@ -74,12 +74,9 @@ HRESULT CMainScene::Initialize()
 	CImage* image2 = ImageObject2->AddComponent<CImage>();
 
 	ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
-	ImageObject->Get_Transform()->Set_LocalPosition(vector3::zero());
-
 	image->Get_RectTransform()->Set_WidthHeight(1280, 720);
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
-	ImageObject2->Get_Transform()->Set_LocalPosition(vector3::zero());
 	//ImageObject->Get_Transform()->Set_LocalScale(ImageObject->Get_Transform()->Get_LocalScale() * 2.f);
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);

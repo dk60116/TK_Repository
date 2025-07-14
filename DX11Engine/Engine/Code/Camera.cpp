@@ -153,12 +153,33 @@ void CCamera::RenderMesh()
 	{
 		(*it)->Render_WithCamera(this);
 	}
+
+	m_vMeshList.clear();
 }
 
 void CCamera::RenderUI()
 {
+	_matrix viewMat = XMMatrixTranslation(10.f, 10.f, 0.f);
+
+	_vector det = {};
+	const _matrix inverseMat = XMMatrixInverse(&det, viewMat);
+
+	const _float aspect = CDisplay::GetInstance().Get_Aspect();
+	const _float fHalfHeight = 7.2f * 0.5f;
+	const _float fHalfWidth = fHalfHeight * aspect;
+
+	const _matrix projMat = XMMatrixOrthographicOffCenterLH
+	(
+		-fHalfWidth, fHalfWidth,
+		-fHalfHeight, fHalfHeight,
+		0.f, 1.f
+	);
+
 	for (TRAVERSAL_ITER(m_vUIList, it))
 	{
-		(*it)->Render_WithCamera(this);
+		(*it)->Bind_Matrix(inverseMat, projMat);
+		(*it)->Bind_Mesh();
 	}
+
+	m_vUIList.clear();
 }

@@ -236,6 +236,9 @@ void CRectTransform::SetParent(CTransform* _parent)
             if (m_pParentRect)
                 m_pParentRect->AddRef();
         }
+
+        Set_WidthHeight(100.f, 100.f);
+        Set_AnchoredPosition(0.f, 0.f);
     }
 
     return;
@@ -262,8 +265,16 @@ void CRectTransform::Set_AnchoredPosition(const vector2 _pos)
         const _float xA = canvasSize.x * 100.f;
         const _float yA = canvasSize.y * 100.f;
 
-        m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f) - xA * (0.5f - m_sAnchors.min.x)) / xA;
-        m_vPosition.y = (m_vAnchoredPosition.y - m_fHeight * (m_vPivot.y - 0.5f) - yA * (0.5f - m_sAnchors.min.y)) / yA;
+        if (xA != 0 && yA != 0)
+        {
+            m_vPosition.x = (m_vAnchoredPosition.x - m_fWidth * (m_vPivot.x - 0.5f) - xA * (0.5f - m_sAnchors.min.x)) / xA;
+            m_vPosition.y = (m_vAnchoredPosition.y - m_fHeight * (m_vPivot.y - 0.5f) - yA * (0.5f - m_sAnchors.min.y)) / yA;
+        }
+        else
+        {
+            m_vPosition.x = 0.f;
+            m_vPosition.y = 0.f;
+        }
     }
     else
     {
@@ -274,9 +285,22 @@ void CRectTransform::Set_AnchoredPosition(const vector2 _pos)
         const _float xS = xA * (0.5f - m_sAnchors.min.x);
         const _float yS = yA * (0.5f - m_sAnchors.min.y);
 
-        m_vPosition.x = (m_vAnchoredPosition.x - xP - xS) / xA;
-        m_vPosition.y = (m_vAnchoredPosition.y - xP - yS) / yA;
+        if (xA != 0 && yA != 0)
+        {
+            m_vPosition.x = (m_vAnchoredPosition.x - xP - xS) / xA;
+            m_vPosition.y = (m_vAnchoredPosition.y - xP - yS) / yA;
+        }
+        else
+        {
+            m_vPosition.x = 0.f;
+            m_vPosition.y = 0.f;
+        }
     }
+}
+
+void CRectTransform::Set_AnchoredPosition(const _float _x, const _float _y)
+{
+    Set_AnchoredPosition(vector2(_x, _y));
 }
 
 const _float CRectTransform::Get_Width() const
@@ -354,11 +378,14 @@ void CRectTransform::Set_WidthHeight(const vector2 _rect)
     }
     else
     {
-        m_vScale.x = (_rect.x / m_pParentRect->m_fWidth);
-        m_vScale.y = _rect.y / m_pParentRect->m_fHeight;
+        if (m_pParentRect->m_fWidth != 0 && m_pParentRect->m_fHeight != 0)
+        {
+            m_vScale.x = _rect.x / m_pParentRect->m_fWidth;
+            m_vScale.y = _rect.y / m_pParentRect->m_fHeight;
 
-        m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / m_pParentRect->m_fWidth;
-        m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / m_pParentRect->m_fHeight;
+            m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / m_pParentRect->m_fWidth;
+            m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / m_pParentRect->m_fHeight;
+        }
 
         m_vStaticWH = _rect;
     }

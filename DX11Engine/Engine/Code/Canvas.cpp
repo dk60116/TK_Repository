@@ -72,26 +72,9 @@ void CCanvas::OnPostRender_Editor()
 
 void CCanvas::Render()
 {
-	_matrix viewMat = XMMatrixTranslation(10.f, 10.f, 0.f);
-
-	_vector det;
-	_matrix inverseMat = XMMatrixInverse(&det, viewMat);
-
-	const _float aspect = CDisplay::GetInstance().Get_Aspect();
-	const _float fHalfHeight = 7.2f * 0.5f;
-	const _float fHalfWidth = fHalfHeight * aspect;
-
-	const _matrix projMat = XMMatrixOrthographicOffCenterLH
-	(
-		-fHalfWidth, fHalfWidth,
-		-fHalfHeight, fHalfHeight,
-		0.f, 1.f
-	);
-
 	for (TRAVERSAL_ITER(m_lUIObjectList, it))
 	{
-		(*it)->Bind_Matrix(inverseMat, projMat);
-		(*it)->Bind_Mesh();
+		CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_UI(*it);
 	}
 }
 
