@@ -96,10 +96,14 @@ void CUI::Set_Material(CMaterial* _material)
 		m_pMaterial->AddRef();
 }
 
+void CUI::Bind_Mesh()
+{
+	m_pRectMesh->Render();
+}
+
 void CUI::Bind_Matrix(const _fmatrix _view, const _cmatrix _projection)
 {
 	m_pMaterial->Bind(Get_Transform()->Get_WorldMatrix(), _view, _projection);
-	m_pRectMesh->Render();
 }
 
 const _bool CUI::Is_Canvas() const

@@ -91,6 +91,7 @@ void CCanvas::Render()
 	for (TRAVERSAL_ITER(m_lUIObjectList, it))
 	{
 		(*it)->Bind_Matrix(inverseMat, projMat);
+		(*it)->Bind_Mesh();
 	}
 }
 

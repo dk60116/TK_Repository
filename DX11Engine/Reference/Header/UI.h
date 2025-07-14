@@ -23,6 +23,7 @@ public:
 	void Set_Material(CMaterial* _material);
 
 public:
+	void Bind_Mesh();
 	void Bind_Matrix(const _fmatrix _view, const _cmatrix _projection);
 	CRectTransform* Get_RectTransform() const;
 
