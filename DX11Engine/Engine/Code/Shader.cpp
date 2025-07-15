@@ -17,9 +17,7 @@ CShader::~CShader()
 
 CShader* CShader::Create(const wstring _path)
 {
-	CShader* newShader = new CShader();
-
-	return newShader;
+	return new CShader();
 }
 
 ID3D11VertexShader* CShader::Get_VertexShader() const

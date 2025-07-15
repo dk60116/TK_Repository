@@ -85,7 +85,7 @@ HRESULT CMainScene::Initialize()
  	CMeshRenderer* templeRenderer = templeObj->AddComponent<CMeshRenderer>();
 	
 	templeRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Temple_Model (Mesh Buffer)"));
-	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.001f);
 
 	return S_OK;

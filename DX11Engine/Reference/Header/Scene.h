@@ -44,6 +44,9 @@ public:
     const list <CCamera*>& Get_CameraList();
     CCamera* Add_Camera(CCamera* _camera);
 
+    const list<class CLight*>& Get_LightList();
+    CLight* Add_Light(CLight* _light);
+
     class CCanvas* Get_Canvas(const _int _index) const;
     const list <CCanvas*>& Get_CanvasList();
     CCanvas* Add_Canvas(CCanvas* _canvas);
@@ -68,6 +71,7 @@ protected:
     wstring m_strSceneName;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;
+    list <CLight*> m_lLightList;
     list<CCanvas*> m_lCanvasList;
 
     CCamera* m_pEditorCamera;

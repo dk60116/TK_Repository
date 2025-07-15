@@ -148,6 +148,9 @@
     <ClInclude Include="..\Header\Image.h">
       <Filter>Components\UI\UIContents</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Light.h">
+      <Filter>Components\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -242,6 +245,9 @@
     </Filter>
     <Filter Include="Components\UI\UIContents">
       <UniqueIdentifier>{52f3d678-cc67-4e3b-bbb0-59a1b574f1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Light">
+      <UniqueIdentifier>{838c0c00-6e95-4875-877c-6d3835f8427b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Image.cpp">
       <Filter>Components\UI\UIContents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Light.cpp">
+      <Filter>Components\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

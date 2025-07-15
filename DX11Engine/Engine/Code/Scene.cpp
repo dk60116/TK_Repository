@@ -368,6 +368,21 @@ CCamera* CScene::Add_Camera(CCamera* _camera)
 	return m_lCameraList.back();
 }
 
+const list<CLight*>& CScene::Get_LightList()
+{
+	return m_lLightList;
+}
+
+CLight* CScene::Add_Light(CLight* _light)
+{
+	if (!_light)
+		return nullptr;
+
+	m_lLightList.push_back(_light);
+
+	return m_lLightList.back();
+}
+
 CCanvas* CScene::Get_Canvas(const _int _index) const
 {
 	_int i = 0;

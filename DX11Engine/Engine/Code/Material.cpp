@@ -25,6 +25,14 @@ CMaterial::CMaterial(const CMaterial& _other)
 
 	if (m_pShader)
 		m_pShader->AddRef();
+	if (m_pMatrixBuffer)
+		m_pMatrixBuffer->AddRef();
+	if (m_pCameraBuffer)
+		m_pCameraBuffer->AddRef();
+	if (m_pMaterialBuffer)
+		m_pMaterialBuffer->AddRef();
+	if (m_pMaterialBuffer)
+		m_pMaterialBuffer->AddRef();
 }
 
 CMaterial::~CMaterial()
@@ -34,9 +42,7 @@ CMaterial::~CMaterial()
 
 CMaterial* CMaterial::Create(const wstring _path)
 {
-	CMaterial* newMaterial = new CMaterial();
-
-	return newMaterial;
+	return new CMaterial();
 }
 
 CMaterial* CMaterial::Clone(const CMaterial& _other)

@@ -127,14 +127,17 @@ inline T* CGameObject::AddComponent()
 			m_pScene->Add_Camera(cam);
 	}
 
+	if (CLight* light = dynamic_cast<class CLight*>(newComponent))
+	{
+		if (light)
+			m_pScene->Add_Light(light);
+	}
+
 	if (CCanvas* canv = dynamic_cast<class CCanvas*>(newComponent))
 	{
 		if (canv)
 			m_pScene->Add_Canvas(canv);
 	}
-
-	//if (dynamic_cast<CLight*>(newComponent))
-	//	m_pScene->AddLight(dynamic_cast<CLight*>(newComponent));
 
 	return newComponent;
 }

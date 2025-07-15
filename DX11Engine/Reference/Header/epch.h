@@ -25,6 +25,7 @@
 #include "Transform.h"
 #include "RectTransform.h"
 #include "Camera.h"
+#include "Light.h"
 #include "Material.h"
 #include "MeshFilter.h"
 #include "Renderer.h"

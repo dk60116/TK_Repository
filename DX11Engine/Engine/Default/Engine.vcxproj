@@ -171,6 +171,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\HierachyBox.h" />
     <ClInclude Include="..\Header\Image.h" />
     <ClInclude Include="..\Header\InspectorBox.h" />
+    <ClInclude Include="..\Header\Light.h" />
     <ClInclude Include="..\Header\Renderer.h" />
     <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\GameObject.h" />
@@ -232,6 +233,7 @@ call copy.bat</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Code\InspectorBox.cpp" />
+    <ClCompile Include="..\Code\Light.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
