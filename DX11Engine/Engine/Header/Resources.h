@@ -35,6 +35,9 @@ public:
     T* LoadOnGame(const wstring& _name);
 
     template<typename T>
+    T* CloneOnGame(const wstring& _name);
+
+    template<typename T>
 	T* LoadOnScene(const wstring& _name);
 
 	static _bool FileExists(const wstring& _path);
@@ -103,6 +106,14 @@ inline T* CResources::LoadOnGame(const wstring& _name)
     T* resultResource = dynamic_cast<T*>(iter->second);
 
     return resultResource;
+}
+
+template<typename T>
+inline T* CResources::CloneOnGame(const wstring& _name)
+{
+    T* proto = LoadOnGame<T>(_name);
+
+    return T::Clone(*proto);
 }
 
 template<typename T>

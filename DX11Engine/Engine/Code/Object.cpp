@@ -17,10 +17,10 @@ void UObject::AddRef()
 	++m_iRefCount;
 }
 
-UINT UObject::Release()
+_uint UObject::Release()
 {
-    int prevRefCount = m_iRefCount;
-    int refCount = --m_iRefCount;
+    _uint prevRefCount = m_iRefCount;
+    _uint refCount = --m_iRefCount;
 
     if (refCount == 0)
         delete this;

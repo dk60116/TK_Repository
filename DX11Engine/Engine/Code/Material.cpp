@@ -13,6 +13,17 @@ CMaterial::CMaterial()
 	m_strName = L"Material";
 }
 
+CMaterial::CMaterial(const CMaterial& _other)
+	: m_pShader(_other.m_pShader)
+	, m_pMatrixBuffer(_other.m_pMatrixBuffer)
+	, m_pCameraBuffer(_other.m_pCameraBuffer)
+	, m_pMaterialBuffer(_other.m_pMaterialBuffer)
+	, m_vTextureList({})
+	, m_vDiffuseColor(ColorValue::white())
+{
+	m_strName = L"Material (Clone)";
+}
+
 CMaterial::~CMaterial()
 {
 	OnDestroy();
@@ -23,6 +34,13 @@ CMaterial* CMaterial::Create(const wstring _path)
 	CMaterial* newMaterial = new CMaterial();
 
 	return newMaterial;
+}
+
+CMaterial* CMaterial::Clone(const CMaterial& _other)
+{
+	CMaterial* cloneMaterial = new CMaterial(_other);
+
+	return cloneMaterial;
 }
 
 HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _desc)
@@ -59,8 +77,6 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 
 	if (m_pShader)
 		m_pShader->Bind();
-
-	//context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Bind_Texture();
 
@@ -167,8 +183,12 @@ void CMaterial::Bind_Texture() const
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
 	ID3D11ShaderResourceView* texture = nullptr;
+
 	if (!m_vTextureList.empty() && m_vTextureList[0])
 		texture = m_vTextureList[0]->Get_SRV();
+
+	if (CEngineString::Contains(m_strName, L"Clone"))
+		int a = 0;
 
 	context->PSSetShaderResources(0, 1, &texture);
 

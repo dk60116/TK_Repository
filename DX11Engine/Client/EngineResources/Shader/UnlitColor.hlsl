@@ -76,6 +76,11 @@ VSOut VSMain(VSIn v)
 // 式式式式式式式式式式式式式 а撚 樁檜渦
 float4 PSMain(VSOut input) : SV_TARGET
 {
-    float4 texColor = gTexture.Sample(gSampler, input.uv);
-    return texColor * baseColor;
+    if (useTexture != 0)
+    {
+        float4 texColor = gTexture.Sample(gSampler, input.uv);
+        return texColor * baseColor;
+    }
+    else
+        return baseColor;
 }

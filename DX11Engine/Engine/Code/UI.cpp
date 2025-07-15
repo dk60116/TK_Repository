@@ -54,7 +54,7 @@ HRESULT CUI::Initialize()
 		Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)"));
 
 	if (!m_pMaterial)
-		Set_Material(CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultUIMaterial (Material)"));
+		Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"DefaultUIMaterial (Material)"));
 
 	return S_OK;
 }

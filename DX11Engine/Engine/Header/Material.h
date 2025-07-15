@@ -16,10 +16,12 @@ public:
 
 private:
 	explicit CMaterial();
+	CMaterial(const CMaterial& _other);
 	virtual ~CMaterial();
 
 private:
 	static CMaterial* Create(const wstring _path = L"");
+	static CMaterial* Clone(const CMaterial& _other);
 
 private:
 	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);

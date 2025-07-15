@@ -29,9 +29,9 @@ HRESULT CMainScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
-	CMaterial* boxMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
-	boxMat->Set_Texture(tex, 0);
+	CTexture* linkTex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
+	CMaterial* boxMat = CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)");
+	boxMat->Set_Texture(linkTex, 0);
 
 	CGameObject* boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
@@ -80,6 +80,13 @@ HRESULT CMainScene::Initialize()
 	//ImageObject->Get_Transform()->Set_LocalScale(ImageObject->Get_Transform()->Get_LocalScale() * 2.f);
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
+
+	CGameObject* templeObj = Add_GameObject(L"Temple");
+ 	CMeshRenderer* templeRenderer = templeObj->AddComponent<CMeshRenderer>();
+	
+	templeRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Temple_Model (Mesh Buffer)"));
+	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.001f);
 
 	return S_OK;
 }

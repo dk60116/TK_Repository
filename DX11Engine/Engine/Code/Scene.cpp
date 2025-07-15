@@ -41,11 +41,6 @@ HRESULT CScene::Initialize()
 
 	m_mTempResourceList.clear();
 
-	auto pRes = CResources::GetInstance().LoadOnGame<CShader>(L"UnlitColor (Shader)");
-
-	if (pRes == nullptr)
-		CDebug::LogError("NULL");
-
 	D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
 	depthDefaultDesc.DepthEnable = TRUE;
 	depthDefaultDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
