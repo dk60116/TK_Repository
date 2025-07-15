@@ -370,21 +370,37 @@ void CRectTransform::Set_WidthHeight(const vector2 _rect)
 
     if (!m_pParentRect)
     {
-        m_vScale.x = _rect.x / canvasResize.x;
-        m_vScale.y = _rect.y / canvasResize.y;
+        if (canvasResize.x != 0 && canvasResize.y != 0)
+        {
+            m_vScale.x = _rect.x / canvasResize.x;
+            m_vScale.y = _rect.y / canvasResize.y;
 
-        m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / canvasResize.x;
-        m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / canvasResize.y;
+            m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / canvasResize.x;
+            m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / canvasResize.y;
+        }
+        else
+        {
+            m_vScale.x = 0;
+            m_vScale.y = 0;
+        }
     }
     else
     {
         if (m_pParentRect->m_fWidth != 0 && m_pParentRect->m_fHeight != 0)
         {
-            m_vScale.x = _rect.x / m_pParentRect->m_fWidth;
-            m_vScale.y = _rect.y / m_pParentRect->m_fHeight;
+            if (m_pParentRect->m_fWidth != 0 && m_pParentRect->m_fHeight != 0)
+            {
+                m_vScale.x = _rect.x / m_pParentRect->m_fWidth;
+                m_vScale.y = _rect.y / m_pParentRect->m_fHeight;
 
-            m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / m_pParentRect->m_fWidth;
-            m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / m_pParentRect->m_fHeight;
+                m_vPosition.x -= (def.x * (0.5f - m_vPivot.x)) / m_pParentRect->m_fWidth;
+                m_vPosition.y -= (def.y * (0.5f - m_vPivot.y)) / m_pParentRect->m_fHeight;
+            }
+            else
+            {
+                m_vScale.x = 0;
+                m_vScale.y = 0;
+            }
         }
 
         m_vStaticWH = _rect;

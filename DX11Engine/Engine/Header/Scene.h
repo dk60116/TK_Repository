@@ -51,6 +51,10 @@ public:
     HRESULT SaveScene(const wstring& _filePath);
     const _uint Get_UniqueObjectCount() const;
 
+public:
+    ID3D11DepthStencilState* Get_MeshStencillState() const;
+    ID3D11DepthStencilState* Get_UIStencillState() const;
+
 protected:
     HRESULT PreLoadResources();
 
@@ -72,6 +76,8 @@ protected:
 
 protected:
     _uint m_iUniqueObjectCount;
+
+    ID3D11DepthStencilState* m_pMeshDepthStencilState, * m_pUIDepthStencilState;
 };
 
 NS_END

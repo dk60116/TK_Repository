@@ -26,6 +26,8 @@ HRESULT CImage::Initialize()
 
 void CImage::Render_Editor()
 {
+	m_pContext->OMSetDepthStencilState(CSceneManager::GetInstance().Get_CrtScene()->Get_UIStencillState(), 0);
+
 	CCamera* cam = CSceneManager::GetInstance().Get_EditorCamera();
 
 	_matrix matWorld = Get_Transform()->Get_WorldMatrix();

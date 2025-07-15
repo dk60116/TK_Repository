@@ -151,7 +151,8 @@ void CCamera::RenderMesh()
 {
 	for (TRAVERSAL_ITER(m_vMeshList, it))
 	{
-		(*it)->Render_WithCamera(this);
+		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+			(*it)->Render_WithCamera(this);
 	}
 
 	m_vMeshList.clear();
@@ -177,8 +178,11 @@ void CCamera::RenderUI()
 
 	for (TRAVERSAL_ITER(m_vUIList, it))
 	{
-		(*it)->Bind_Matrix(inverseMat, projMat);
-		(*it)->Bind_Mesh();
+		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+		{
+			(*it)->Bind_Matrix(inverseMat, projMat);
+			(*it)->Bind_Mesh();
+		}
 	}
 
 	m_vUIList.clear();

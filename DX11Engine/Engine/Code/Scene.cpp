@@ -14,6 +14,8 @@ CScene::CScene()
 	, m_lCanvasList({})
 	, m_pEditorCamera(nullptr)
 	, m_iUniqueObjectCount(0)
+	, m_pMeshDepthStencilState(nullptr)
+	, m_pUIDepthStencilState(nullptr)
 {
 	m_strName = L"Scene";
 
@@ -43,6 +45,24 @@ HRESULT CScene::Initialize()
 
 	if (pRes == nullptr)
 		CDebug::LogError("NULL");
+
+	D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
+	depthDefaultDesc.DepthEnable = TRUE;
+	depthDefaultDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthDefaultDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthDefaultDesc.StencilEnable = FALSE;
+
+	if (FAILED(m_pDevice->CreateDepthStencilState(&depthDefaultDesc, &m_pMeshDepthStencilState)))
+		return E_FAIL;
+
+	D3D11_DEPTH_STENCIL_DESC depthDisabledDesc = {};
+	depthDisabledDesc.DepthEnable = FALSE;
+	depthDisabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthDisabledDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	depthDisabledDesc.StencilEnable = FALSE;
+
+	if (FAILED(m_pDevice->CreateDepthStencilState(&depthDisabledDesc, &m_pUIDepthStencilState)))
+		return E_FAIL;
 
 	CDebug::Log(CDebug::MemoryUseLog());
 
@@ -159,10 +179,21 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		(*it)->OnPreRender();
 
+	m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
+
 	for (TRAVERSAL_ITER(m_lCameraList, it))
-		(*it)->RenderMesh();
+	{
+		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+			(*it)->RenderMesh();
+	}
+
+	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
+
 	for (TRAVERSAL_ITER(m_lCameraList, it))
-		(*it)->RenderUI();
+	{
+		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+			(*it)->RenderUI();
+	}
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
@@ -173,6 +204,9 @@ void CScene::Render_Game()
 
 void CScene::SceneRelease()
 {
+	m_lCameraList.clear();
+	m_lCanvasList.clear();
+
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		Safe_Release(*it);
 
@@ -426,4 +460,14 @@ HRESULT CScene::PreLoadResources()
 	CSceneLoader::GetInstance().StartLoading(nameList, fileList, formatList);
 
 	return S_OK;
+}
+
+ID3D11DepthStencilState* CScene::Get_MeshStencillState() const
+{
+	return m_pMeshDepthStencilState;
+}
+
+ID3D11DepthStencilState* CScene::Get_UIStencillState() const
+{
+	return m_pUIDepthStencilState;
 }

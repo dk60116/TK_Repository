@@ -49,6 +49,7 @@ void CSkinnedMeshRenderer::OnPreRender()
 
 void CSkinnedMeshRenderer::Render_Editor()
 {
+	m_pContext->OMSetDepthStencilState(CSceneManager::GetInstance().Get_CrtScene()->Get_MeshStencillState(), 0);
 	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
 	Render_Outline(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
 }

@@ -43,6 +43,7 @@ void CMeshRenderer::OnPreRender()
 
 void CMeshRenderer::Render_Editor()
 {
+	m_pContext->OMSetDepthStencilState(CSceneManager::GetInstance().Get_CrtScene()->Get_MeshStencillState(), 0);
 	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
 }
 
