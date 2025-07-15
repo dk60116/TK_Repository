@@ -9,9 +9,6 @@ class ENGINE_DLL CRenderer abstract : public CComponent
 protected:	
 	explicit CRenderer();
 	~CRenderer();
-
-public:
-	CRenderer* Create();
 	
 public:
 	void OnDestroy() override;
