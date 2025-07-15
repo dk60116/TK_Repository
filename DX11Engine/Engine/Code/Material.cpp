@@ -22,6 +22,9 @@ CMaterial::CMaterial(const CMaterial& _other)
 	, m_vDiffuseColor(ColorValue::white())
 {
 	m_strName = L"Material (Clone)";
+
+	if (m_pShader)
+		m_pShader->AddRef();
 }
 
 CMaterial::~CMaterial()

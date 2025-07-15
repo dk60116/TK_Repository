@@ -31,9 +31,10 @@ public:
     const wstring& Get_SceneName() const;
 
 public:
-    class CEngineResource* Add_Resource(const wstring& _name, class CEngineResource* _resource);
+    class CEngineResource* Add_Resource(const wstring& _name, CEngineResource* _resource);
     class CEngineResource* Find_Resource(const wstring& _name);
-    class CEngineResource* Add_TempResource(const wstring& _name, class CEngineResource* _resource);
+    class CEngineResource* Add_TempResource(const wstring& _name, CEngineResource* _resource);
+    class CEngineResource* Add_CloneResourece(CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     vector<CGameObject*> Get_RootObjects();
 
@@ -71,8 +72,8 @@ protected:
 
     CCamera* m_pEditorCamera;
 
-    unordered_map<wstring, CEngineResource*> m_mResourceList;
-    unordered_map<wstring, CEngineResource*> m_mTempResourceList;
+    unordered_map<wstring, CEngineResource*> m_mResourceList, m_mTempResourceList;
+    vector<CEngineResource*> m_vCloneResourceList;
 
 protected:
     _uint m_iUniqueObjectCount;

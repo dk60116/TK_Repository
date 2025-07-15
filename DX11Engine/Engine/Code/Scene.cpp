@@ -9,6 +9,7 @@ CScene::CScene()
 	, m_strSceneName(L"")
 	, m_mResourceList({})
 	, m_mTempResourceList({})
+	, m_vCloneResourceList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_lCanvasList({})
@@ -204,12 +205,14 @@ void CScene::SceneRelease()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		Safe_Release(*it);
-
 	for (TRAVERSAL_ITER(m_mResourceList, it))
 		Safe_Release((*it).second);
+	for (TRAVERSAL_ITER(m_vCloneResourceList, it))
+		Safe_Release(*it);
 
 	m_lObjectList.clear();
 	m_mResourceList.clear();
+	m_vCloneResourceList.clear();
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
@@ -227,7 +230,8 @@ const wstring& CScene::Get_SceneName() const
 
 CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)
 {
-	if (!_resource) return nullptr;
+	if (!_resource) 
+		return nullptr;
 
 	auto [it, inserted] = m_mResourceList.try_emplace(_name, _resource);
 
@@ -261,9 +265,20 @@ CEngineResource* CScene::Find_Resource(const wstring& _name)
 CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource* _resource)
 {
 	if (!_resource)
-		nullptr;
+		return nullptr;
 
 	m_mTempResourceList.emplace(_name, _resource);
+	_resource->AddRef();
+
+	return _resource;
+}
+
+CEngineResource* CScene::Add_CloneResourece(CEngineResource* _resource)
+{
+	if (!_resource)
+		return nullptr;
+
+	m_vCloneResourceList.push_back(_resource);
 	_resource->AddRef();
 
 	return _resource;

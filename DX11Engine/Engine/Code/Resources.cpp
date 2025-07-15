@@ -34,12 +34,12 @@ HRESULT CResources::Initialize()
 	CMaterial::MATERIALDESC dlMatDesc = { dlShader };
 	LoadComplete_Game(CreateGameResource<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc));
 
-	//CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
-	//LoadComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
+	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
 
-	//CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
-	//CMaterial::MATERIALDESC litMatDesc = { litShader };
-	//LoadComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
+	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
+	CMaterial::MATERIALDESC litMatDesc = { litShader };
+	LoadComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));

@@ -113,7 +113,11 @@ inline T* CResources::CloneOnGame(const wstring& _name)
 {
     T* proto = LoadOnGame<T>(_name);
 
-    return T::Clone(*proto);
+    T* clone = T::Clone(*proto);
+
+    CSceneManager::GetInstance().Get_CrtScene()->Add_CloneResourece(clone);
+
+    return clone;
 }
 
 template<typename T>
