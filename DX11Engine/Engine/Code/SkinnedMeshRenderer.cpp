@@ -144,7 +144,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	if (!m_vMaterials)
+	if (!m_pMaterial)
 	{
 		CDebug::LogError(L"Skinned MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
 		return;
@@ -200,7 +200,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	}
 
 	// 4) 머티리얼 바인딩
-	m_vMaterials->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
+	m_pMaterial->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
 	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);

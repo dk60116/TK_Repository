@@ -77,7 +77,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	if (!m_vMaterials)
+	if (!m_pMaterial)
 	{
 		CDebug::LogError(L"MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
 		return;
@@ -95,7 +95,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
 	// 셰이더 + 텍스처 + 상수 버퍼 바인딩
-	m_vMaterials->Bind(matWorld, matView, matProj, 0);
+	m_pMaterial->Bind(matWorld, matView, matProj, 0);
 
 	//실제 메쉬 렌더링 (버퍼 바인딩 및 Draw)
 	pBuffer->Render();
