@@ -65,7 +65,9 @@ HRESULT CMainScene::Initialize()
 	box2Obj->Get_Transform()->SetParent(box1Obj->Get_Transform());
 	box2Obj->Get_Transform()->Set_LocalPosition(vector3(-1.f, 0.f, 0.f));
 
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 0.f, -5.f);
+	m_pMainCamera->Get_Transform()->Set_Position(0.f, 5.f, -5.f);
+	m_pMainCamera->Get_Transform()->Set_EulerAnglesX(20.f);
+	
 	m_pPlayer->Get_Transform()->Get_Child()->Set_LocalScale(0.01f);
 
 	CGameObject* quadObject = Add_GameObject(L"Rect");
@@ -94,7 +96,7 @@ HRESULT CMainScene::Initialize()
 	
 	templeRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Temple_Model (Mesh Buffer)"));
 	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
-	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.001f);
+	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.01f);
 
 	return S_OK;
 }

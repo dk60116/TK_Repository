@@ -476,14 +476,17 @@ void CTransform::Set_EulerAngles(const _float _x, const _float _y, const _float 
 
 void CTransform::Set_EulerAnglesX(const _float _x)
 {
+    Set_EulerAngles(_x, m_vEulerAngles.y, m_vEulerAngles.z);
 }
 
 void CTransform::Set_EulerAnglesY(const _float _y)
 {
+    Set_EulerAngles(m_vEulerAngles.x, _y, m_vEulerAngles.z);
 }
 
 void CTransform::Set_EulerAnglesZ(const _float _z)
 {
+    Set_EulerAngles(m_vEulerAngles.x, m_vEulerAngles.y, _z);
 }
 
 void CTransform::Add_EulerAngles(const vector3& _rot)

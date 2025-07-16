@@ -119,7 +119,7 @@ void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatri
 		m_vDiffuseColor.a / 255.f
 	);
 	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
-	mat.specular = 25.f;
+	mat.smoothness = 0.5f;
 	mat.boneCount = _boneCount;
 	mat.padding = 0.f;
 

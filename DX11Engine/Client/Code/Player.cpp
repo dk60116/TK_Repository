@@ -46,6 +46,11 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Run (Animation)"));
 
 	m_pAnimator->SetLoop(true);
+
+	Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
+
+	CDebug::LogError(Get_Transform()->Get_Child(0)->Get_GameObject()->Get_ObjectName());
+
 	//m_pAnimator->Set_PlaybackSpeed(0.1f);
 	//m_pAnimator->Play(L"Run");
 
@@ -95,14 +100,6 @@ void CPlayer::Update()
 	if (CInput::GetInstance().GetKey(D))
 	{
 		Get_Transform()->Add_EulerAnglesY(45.f * DELTA_TIME);
-	}
-	if (CInput::GetInstance().GetKey(E))
-	{
-		Get_Transform()->Add_EulerAnglesX(45.f * DELTA_TIME);
-	}
-	if (CInput::GetInstance().GetKey(Q))
-	{
-		Get_Transform()->Add_EulerAnglesX(-45.f * DELTA_TIME);
 	}
 	if (CInput::GetInstance().GetKey(R))
 	{

@@ -16,7 +16,7 @@ cbuffer PerMaterial : register(b2)
 {
     float4 baseColor; // rgba 0~1
     uint useTexture;
-    float specular;
+    float smoothness;
     uint boneCount;
     float mpadding; // 16B alignment
 };
@@ -164,8 +164,9 @@ float4 PSMain(VSOut input) : SV_TARGET
         // Specular
         float3 R = reflect(-L, N);
         float RdotV = saturate(dot(R, V));
-        float specPower = 8.f;
-        float3 specular = lightColor * pow(RdotV, specPower) * intensity * attenuation;
+        float3 fSpecular = pow(RdotV, 50);
+        float specularStrength = smoothness;
+        float3 specular = lightColor * fSpecular * specularStrength * intensity * attenuation;
         specularSum += specular;
         
         // Ambient

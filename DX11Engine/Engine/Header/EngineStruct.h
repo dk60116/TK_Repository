@@ -1313,7 +1313,7 @@ namespace Engine
     {
         _float4 baseColor;
         _uint  useTexture;
-        _float specular;
+        _float smoothness;
         _uint  boneCount;
         _float padding;
     };
