@@ -31,21 +31,21 @@ HRESULT CResources::Initialize()
 	LoadComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
 
 	CShader* dlShader = LoadOnGame<CShader>(L"DefaultLine (Shader)");
-	CMaterial::MATERIALDESC dlMatDesc = { dlShader };
+	CMaterial::MATERIALDESC dlMatDesc = { dlShader, false };
 	LoadComplete_Game(CreateGameResource<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc));
 
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
 
 	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
-	CMaterial::MATERIALDESC litMatDesc = { litShader };
+	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
 	LoadComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));
 
 	CShader* ulcShader = LoadOnGame<CShader>(L"UnlitColor (Shader)");
-	CMaterial::MATERIALDESC ulcMatDesc = { ulcShader };
+	CMaterial::MATERIALDESC ulcMatDesc = { ulcShader, false };
 	LoadComplete_Game(CreateGameResource<CMaterial>(L"UnlitMaterial (Material)", L"", &ulcMatDesc));
 
 	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResources/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elementDesc };
@@ -55,7 +55,7 @@ HRESULT CResources::Initialize()
 	LoadComplete_Game(CreateGameResource<CShader>(L"DefaultUI (Shader)", L"", &dUIShaderDesc));
 
 	CShader* duiShader = LoadOnGame<CShader>(L"DefaultUI (Shader)");
-	CMaterial::MATERIALDESC duiMatDesc = { duiShader };
+	CMaterial::MATERIALDESC duiMatDesc = { duiShader, false };
 	LoadComplete_Game(CreateGameResource<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc));
 
 	return S_OK;
@@ -72,7 +72,7 @@ void CResources::Release()
 void CResources::LoadComplete_Game(const CEngineResource* _ptr)
 {
 	if (_ptr)
-		CDebug::Log(L"Create Game resource successed: " + _ptr->Get_ResourceName());
+		CDebug::Log(L"Create Game resource successfully: " + _ptr->Get_ResourceName());
 	else
 		CDebug::LogError("Create Game resource failed");
 }
@@ -80,7 +80,7 @@ void CResources::LoadComplete_Game(const CEngineResource* _ptr)
 void CResources::LoadComplete_Scene(const CEngineResource* _ptr)
 {
 	if (_ptr)
-		CDebug::Log(L"Create Scene resource successed: " + _ptr->Get_ResourceName());
+		CDebug::Log(L"Create Scene resource successfully: " + _ptr->Get_ResourceName());
 	else
 		CDebug::LogError("Create Scene resource failed");
 }

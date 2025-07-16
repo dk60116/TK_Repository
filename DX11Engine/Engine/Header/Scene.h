@@ -44,7 +44,7 @@ public:
     const list <CCamera*>& Get_CameraList();
     CCamera* Add_Camera(CCamera* _camera);
 
-    const list<class CLight*>& Get_LightList();
+    list<class CLight*> Get_LightList() const;
     CLight* Add_Light(CLight* _light);
 
     class CCanvas* Get_Canvas(const _int _index) const;

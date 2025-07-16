@@ -6,6 +6,7 @@
 CMainScene::CMainScene()
 	: CScene{}
 	, m_pMainCamera(nullptr)
+	, m_pDirLight(nullptr)
 	, m_pCanvas(nullptr)
 	, m_pPlayer(nullptr)
 {
@@ -23,6 +24,12 @@ HRESULT CMainScene::Initialize()
 	CGameObject* cameraObject = Add_GameObject(L"Main Camera");
 	m_pMainCamera = cameraObject->AddComponent<CCamera>();
 
+	CGameObject* lightObject = Add_GameObject(L"Directional Light");
+	m_pDirLight = lightObject->AddComponent<CLight>();
+
+	CGameObject* lightObject2 = Add_GameObject(L"Directional Light2");
+	CLight* light2 = lightObject2->AddComponent<CLight>();
+
 	CGameObject* canvasObj = Add_GameObject(L"Canvas");
 	m_pCanvas = canvasObj->AddComponent<CCanvas>();
 
@@ -30,7 +37,7 @@ HRESULT CMainScene::Initialize()
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
 	CTexture* linkTex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
-	CMaterial* boxMat = CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)");
+	CMaterial* boxMat = CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)");
 	boxMat->Set_Texture(linkTex, 0);
 
 	CGameObject* boxObj = Add_GameObject(L"Box");

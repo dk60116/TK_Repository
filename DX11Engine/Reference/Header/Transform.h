@@ -50,8 +50,8 @@ public:
 	T* Find_ComponentParentRecursive();
 
 public:
-	vector3 Get_Position() const;
-	vector3 Get_LocalPosition() const;
+	const vector3 Get_Position();
+	const vector3 Get_LocalPosition();
 
 	const vector3 Get_EulerAngles();
 	const vector3 Get_LocalEulerAngles();

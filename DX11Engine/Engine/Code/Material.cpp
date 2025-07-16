@@ -7,6 +7,8 @@ CMaterial::CMaterial()
 	, m_pMatrixBuffer(nullptr)
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
+	, m_pLightBuffer(nullptr)
+	, m_bUseLight(false)
 	, m_vTextureList({})
 	, m_vDiffuseColor(ColorValue::white())
 {
@@ -18,6 +20,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 	, m_pMatrixBuffer(_other.m_pMatrixBuffer)
 	, m_pCameraBuffer(_other.m_pCameraBuffer)
 	, m_pMaterialBuffer(_other.m_pMaterialBuffer)
+	, m_pLightBuffer(_other.m_pLightBuffer)
+	, m_bUseLight(_other.m_bUseLight)
 	, m_vTextureList({})
 	, m_vDiffuseColor(ColorValue::white())
 {
@@ -31,8 +35,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 		m_pCameraBuffer->AddRef();
 	if (m_pMaterialBuffer)
 		m_pMaterialBuffer->AddRef();
-	if (m_pMaterialBuffer)
-		m_pMaterialBuffer->AddRef();
+	if (m_pLightBuffer)
+		m_pLightBuffer->AddRef();
 }
 
 CMaterial::~CMaterial()
@@ -61,6 +65,7 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 	{
 		MATERIALDESC* matDesc = reinterpret_cast<MATERIALDESC*>(_desc);
 		Set_Shader(matDesc->shaderPointer);
+		m_bUseLight = matDesc->usingRight;
 	}
 
 	if (FAILED(Create_ConstantBuffer()))
@@ -75,6 +80,7 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pMatrixBuffer);
 	Safe_Release(m_pCameraBuffer);
 	Safe_Release(m_pMaterialBuffer);
+	Safe_Release(m_pLightBuffer);
 
 	for (TRAVERSAL_ITER(m_vTextureList, it))
 		Safe_Release(*it);
@@ -120,6 +126,24 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 	context->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
 	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 	context->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+}
+
+void CMaterial::Bind_Light(LightInfo* _lights, _uint _count)
+{
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+	LightCB buffer = {};
+	memcpy(buffer.lights, _lights, sizeof(LightInfo) * _count);
+	buffer.lightCount = _count;
+
+	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
+	context->VSSetConstantBuffers(4, 1, &m_pLightBuffer);
+	context->PSSetConstantBuffers(4, 1, &m_pLightBuffer);
+}
+
+const _bool CMaterial::IsUseLight() const
+{
+	return m_bUseLight;
 }
 
 CTexture* CMaterial::Get_Texture(_int _index) const
@@ -169,20 +193,29 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
-	// 式式 b0 : MatrixCB (VS)
+	// b0 : MatrixCB (VS)
 	desc.ByteWidth = sizeof(MatrixCB);
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pMatrixBuffer)))
 		return E_FAIL;
 
-	// 式 b1 : View/Proj Matrix
+	// b1 : View/Proj Matrix
 	desc.ByteWidth = sizeof(_matrix) * 2;
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pCameraBuffer)))
 		return E_FAIL;
 
-	// 式式 b2 : MaterialCB (PS)
+	// b2 : MaterialCB (PS)
 	desc.ByteWidth = sizeof(MaterialCB);
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pMaterialBuffer)))
 		return E_FAIL;
+
+	// b4 : Light (PS)
+	if (m_bUseLight)
+	{
+		desc.ByteWidth = sizeof(LightCB);
+
+		if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pLightBuffer)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

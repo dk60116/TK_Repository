@@ -3,7 +3,7 @@
 
 CLight::CLight()
 	: m_eType(Type::Directional)
-	, m_fIntencity(1.f)
+	, m_fIntensity(1.f)
 	, m_fRange(10.f)
 	, m_vDiffuseColor(ColorValue::white())
 	, m_vSpecularColor(ColorValue::white())
@@ -55,15 +55,31 @@ void CLight::Set_Type(const Type _type)
 
 const _float CLight::Get_Intencity() const
 {
-	return m_fIntencity;
+	return m_fIntensity;
 }
 
 void CLight::Set_Intencity(const _float _value)
 {
-	m_fIntencity = _value;
+	m_fIntensity = _value;
 }
 
 void CLight::Set_Color(const ColorValue _color)
 {
 	m_vDiffuseColor = _color;
+}
+
+const LightInfo CLight::To_LightInfo()
+{
+	LightInfo result = {};
+
+	const vector3 _pos = Get_Transform()->Get_Position();
+	const vector3 _dir = Get_Transform()->Get_Directions().forward;
+	result.position = _float3(_pos.x, _pos.y, _pos.z);
+	result.intensity = m_fIntensity;
+	result.direction = _float3(_dir.x, _dir.y, _dir.z);
+	result.color = m_vDiffuseColor.f3Color();
+	result.type = static_cast<_uint>(m_eType);
+	result.range = m_fRange;
+
+	return result;
 }

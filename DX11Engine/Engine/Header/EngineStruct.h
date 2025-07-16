@@ -1114,9 +1114,14 @@ namespace Engine
                 static_cast<UINT32>(b);
         }
 
-        XMFLOAT4 dColor() const
+        constexpr _float3 f3Color() noexcept
         {
-            return XMFLOAT4(r, g, b, a);
+            return _float3(r / 255.f, g / 255.f, b / 255.f);
+        }
+
+        constexpr _float4 f4Color() noexcept
+        {
+            return _float4(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
         }
 
         //COLORREF rColor() const
@@ -1174,6 +1179,7 @@ namespace Engine
             BYTE v = BYTE(255 * _value);
             return ColorValue(v, v, v, 255);
         }
+
         static ColorValue magenta() { return ColorValue(255, 0, 255, 255); }
         static ColorValue transparent() { return ColorValue(0, 0, 0, 0); }
     };
@@ -1290,6 +1296,18 @@ namespace Engine
 #pragma endregion;
 
 #pragma region ShaderBuffer
+    struct LightInfo
+    {
+        _float3 position;
+        _float intensity;
+        _float3 direction;
+        _float spotAngle;
+        _float3 color;
+        _float range;
+        _uint type;
+        _float3 _pad;
+    };
+
     struct MatrixCB
     {
         _matrix world = XMMatrixIdentity();
@@ -1300,9 +1318,16 @@ namespace Engine
     struct MaterialCB
     {
         _float4 baseColor;
-        UINT  useTexture;
-        UINT  boneCount;
+        _uint  useTexture;
+        _uint  boneCount;
         _float2 padding;
+    };
+
+    struct LightCB
+    {
+        LightInfo lights[64];
+        _uint lightCount;
+        _int padding[3];
     };
 #pragma endregion
 

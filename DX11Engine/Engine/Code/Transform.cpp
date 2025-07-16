@@ -276,12 +276,12 @@ const _matrix CTransform::Get_InverseWorldMatrix() const
     return XMMatrixInverse(nullptr, mat);
 }
 
-vector3 CTransform::Get_Position() const
+const vector3 CTransform::Get_Position()
 {
     return m_vWorldPosition;
 }
 
-vector3 CTransform::Get_LocalPosition() const
+const vector3 CTransform::Get_LocalPosition()
 {
     return m_vPosition;
 }

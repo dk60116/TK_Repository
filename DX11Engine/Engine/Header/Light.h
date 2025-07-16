@@ -9,7 +9,7 @@ class ENGINE_DLL CLight final : public CComponent
 	friend class CGameObject;
 
 public:
-	enum class Type { Directional, point, spot };
+	enum class Type : _uint { Directional = 0, point = 1, spot = 2 };
 
 protected:
 	explicit CLight();
@@ -33,10 +33,12 @@ public:
 	void Set_Intencity(const _float _value);
 	void Set_Color(const ColorValue _color);
 
+	const LightInfo To_LightInfo();
+
 private:
 	Type m_eType;
 
-	_float m_fIntencity, m_fRange;
+	_float m_fIntensity, m_fRange;
 	ColorValue m_vDiffuseColor, m_vSpecularColor;
 };
 

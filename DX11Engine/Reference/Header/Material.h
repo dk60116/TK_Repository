@@ -12,6 +12,7 @@ public:
 	typedef struct Material
 	{
 		CShader* shaderPointer;
+		_bool usingRight = true;
 	} MATERIALDESC;
 
 private:
@@ -29,8 +30,10 @@ private:
 
 public:
 	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
+	void Bind_Light(LightInfo* _lights, _uint _count);
 
 public:
+	const _bool IsUseLight() const;
 	class CTexture* Get_Texture(_int _index) const;
 
 public:
@@ -49,7 +52,9 @@ private:
 	ID3D11Buffer* m_pMatrixBuffer;
 	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pMaterialBuffer;
+	ID3D11Buffer* m_pLightBuffer;
 
+	_bool m_bUseLight;
 	vector<class CTexture*> m_vTextureList;
 	ColorValue m_vDiffuseColor;
 };

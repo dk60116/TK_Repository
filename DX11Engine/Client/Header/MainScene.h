@@ -14,6 +14,7 @@ public:
 
 private:
 	CCamera* m_pMainCamera;
+	CLight* m_pDirLight;
 	CCanvas* m_pCanvas;
 	class CPlayer* m_pPlayer;
 };

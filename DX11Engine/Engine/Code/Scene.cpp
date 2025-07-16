@@ -368,9 +368,17 @@ CCamera* CScene::Add_Camera(CCamera* _camera)
 	return m_lCameraList.back();
 }
 
-const list<CLight*>& CScene::Get_LightList()
+list<CLight*> CScene::Get_LightList() const
 {
-	return m_lLightList;
+	list<CLight*> filteredList = {};
+
+	for (TRAVERSAL_ITER(m_lLightList, it))
+	{
+		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+			filteredList.push_back((*it));
+	}
+
+	return filteredList;
 }
 
 CLight* CScene::Add_Light(CLight* _light)
