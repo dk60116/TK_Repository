@@ -25,30 +25,15 @@ cbuffer PerBones : register(b3)
 
 //式式式式式式式式式式式式式式式式式式 塭檜お 薑曖 式式式式式式式式式式式式式式式式式式
 #define MAX_LIGHTS 64
+
 #define LIGHT_TYPE_DIRECTIONAL 0
-#define LIGHT_TYPE_POINT       1
-// #define LIGHT_TYPE_SPOT     2   // �挫敹�
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
 
-struct Light
-{
-    float3 position;
-    float intensity; // 16B 蝸煜 0
-
-    float3 direction;
-    float spotAngle; // 16B 蝸煜 1 (direction 欽嬪漱攪)
-
-    float3 color;
-    float range; // 16B 蝸煜 2
-
-    uint type;
-    float3 _pad; // 16B 蝸煜 3 (ぬ註)
-};
-
+#pragma pack_matrix(row_major)
 cbuffer PerLight : register(b4)
 {
-    Light gLight[MAX_LIGHTS];
-    int gLightCount;
-    int3 _padL; // 16B 薑溺
+    float4x4 gLight[MAX_LIGHTS];
 };
 
 //式式式式式式式式式式式式式式式式式式 臢蝶籀 & 價Ы楝 式式式式式式式式式式式式式式式式式式
@@ -119,50 +104,66 @@ VSOut VSMain(VSIn v)
     o.posW = posW.xyz;
     o.normalW = normalW;
     o.uv = v.uv;
+    
     return o;
 }
 
 //式式式式式式式式式式式式式式式式式式 а撚 樁檜渦 式式式式式式式式式式式式式式式式式式
 float4 PSMain(VSOut input) : SV_TARGET
-{
-    float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv) : float4(1, 1, 1, 1);
+{    
+    float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv)
+                                 : float4(1, 1, 1, 1);
+
     float3 N = normalize(input.normalW);
     float3 diffuseSum = float3(0, 0, 0);
+    float3 ambientSum = float3(0, 0, 0);
 
-    // 罹楝 塭檜お 援瞳
-    for (int i = 0; i < gLightCount; ++i)
+    int lightCount = (int) gLight[0][3][3];
+
+    for (int i = 0; i < lightCount; ++i)
     {
+        if (gLight[i][3][2] < 0.5)
+            continue;
+
+        uint lightType = (uint) gLight[i][3][0];
+        float3 lightPos = float3(gLight[i][0][0], gLight[i][0][1], gLight[i][0][2]);
+        float3 lightDir = float3(gLight[i][1][0], gLight[i][1][1], gLight[i][1][2]);
+        float3 lightColor = float3(gLight[i][2][0], gLight[i][2][1], gLight[i][2][2]);
+        float intensity = gLight[i][1][3];
+        float range = gLight[i][0][3];
+        float attenuationK = gLight[i][3][1];
+        float ambientK = gLight[i][2][3];
+
         float3 L;
         float attenuation = 1.0f;
 
-        if (gLight[i].type == LIGHT_TYPE_DIRECTIONAL)
+        if (lightType == LIGHT_TYPE_DIRECTIONAL)
         {
-            L = normalize(-gLight[i].direction);
+            L = normalize(-lightDir);
         }
-        else if (gLight[i].type == LIGHT_TYPE_POINT)
+        else if (lightType == LIGHT_TYPE_POINT)
         {
-            float3 toLight = gLight[i].position - input.posW;
+            float3 toLight = lightPos - input.posW;
             float dist = length(toLight);
             L = toLight / dist;
-
-            // 摹⑽ 馬潸 (range 頂縑憮虜 艙щ)
-            attenuation = saturate(1.0f - dist / gLight[i].range);
+            attenuation = saturate(1.0f - dist / range) * attenuationK;
         }
         else
         {
-            // 蝶ウ塭檜お朝 掘⑷ж雖 彊擠
             continue;
         }
 
         float NdotL = saturate(dot(N, L));
-        float3 diffuse = gLight[i].color * NdotL * gLight[i].intensity * attenuation;
-
+        float3 diffuse = lightColor * NdotL * intensity * attenuation;
         diffuseSum += diffuse;
+
+        float3 ambient = lightColor * ambientK;
+        ambientSum += ambient;
     }
 
-    // 漆檜蝶 鏽楝諦 培ж晦
-    float3 finalColor = texColor.rgb * diffuseSum;
+    diffuseSum = max(diffuseSum, float3(0.2f, 0.2f, 0.2f));
+    float3 lit = ambientSum + diffuseSum;
+    float3 finalColor = texColor.rgb * saturate(lit);
 
-    //return float4(gLightCount / 10.0, 0, 0, 1);
-    return float4(saturate(finalColor), texColor.a);
+    return float4(finalColor, texColor.a);
 }

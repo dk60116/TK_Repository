@@ -322,6 +322,11 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	return result;
 }
 
+const CScene::LightSettings& CScene::Get_LightSetting()
+{
+	return m_sLightSettings;
+}
+
 CCamera* CScene::Get_Camera() const
 {
 	if (m_lCameraList.size() <= 0)
@@ -368,17 +373,9 @@ CCamera* CScene::Add_Camera(CCamera* _camera)
 	return m_lCameraList.back();
 }
 
-list<CLight*> CScene::Get_LightList() const
+const list<CLight*>& CScene::Get_LightList()
 {
-	list<CLight*> filteredList = {};
-
-	for (TRAVERSAL_ITER(m_lLightList, it))
-	{
-		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
-			filteredList.push_back((*it));
-	}
-
-	return filteredList;
+	return m_lLightList;
 }
 
 CLight* CScene::Add_Light(CLight* _light)

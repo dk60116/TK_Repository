@@ -27,8 +27,9 @@ HRESULT CMainScene::Initialize()
 	CGameObject* lightObject = Add_GameObject(L"Directional Light");
 	m_pDirLight = lightObject->AddComponent<CLight>();
 
-	CGameObject* lightObject2 = Add_GameObject(L"Directional Light2");
-	CLight* light2 = lightObject2->AddComponent<CLight>();
+	CGameObject* lightObject2 = Add_GameObject(L"Point Light");
+	CLight* pointLight = lightObject2->AddComponent<CLight>();
+	pointLight->Set_Type(CLight::Type::point);
 
 	CGameObject* canvasObj = Add_GameObject(L"Canvas");
 	m_pCanvas = canvasObj->AddComponent<CCanvas>();

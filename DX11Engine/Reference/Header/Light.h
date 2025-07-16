@@ -29,16 +29,16 @@ public:
 public:
 	const Type Get_Type() const;
 	void Set_Type(const Type _type);
-	const _float Get_Intencity() const;
-	void Set_Intencity(const _float _value);
+	const _float Get_Intensity() const;
+	void Set_Intensity(const _float _value);
 	void Set_Color(const ColorValue _color);
 
-	const LightInfo To_LightInfo();
+	const _float4x4 To_LightInfo();
 
 private:
 	Type m_eType;
 
-	_float m_fIntensity, m_fRange;
+	_float m_fIntensity, m_fRange, m_fSpotAngle, m_fAttenuation;
 	ColorValue m_vDiffuseColor, m_vSpecularColor;
 };
 

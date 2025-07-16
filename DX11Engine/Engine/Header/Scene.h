@@ -9,6 +9,12 @@ class ENGINE_DLL CScene abstract : public UObject
     friend class CSceneManager;
     friend class CSceneLoader;
 
+public:
+    struct LightSettings
+    {
+        float ambient = 0.2f;
+    };
+
 protected:
     CScene();
     ~CScene();
@@ -38,13 +44,15 @@ public:
     class CGameObject* Add_GameObject(wstring _name);
     vector<CGameObject*> Get_RootObjects();
 
+    const LightSettings& Get_LightSetting();
+
     class CCamera* Get_Camera() const;
     CCamera* Get_Camera(const _int _index) const;
     CCamera* Get_EditorCamera() const;
     const list <CCamera*>& Get_CameraList();
     CCamera* Add_Camera(CCamera* _camera);
 
-    list<class CLight*> Get_LightList() const;
+    const list<class CLight*>& Get_LightList();
     CLight* Add_Light(CLight* _light);
 
     class CCanvas* Get_Canvas(const _int _index) const;
@@ -69,6 +77,7 @@ protected:
 protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
+    LightSettings m_sLightSettings;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;
     list <CLight*> m_lLightList;

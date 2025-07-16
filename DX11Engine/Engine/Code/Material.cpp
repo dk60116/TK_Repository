@@ -128,16 +128,20 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 	context->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 }
 
-void CMaterial::Bind_Light(LightInfo* _lights, _uint _count)
+void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 {
+	if (!_lights || !m_bUseLight || !m_pLightBuffer)
+		return;
+
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
 	LightCB buffer = {};
-	memcpy(buffer.lights, _lights, sizeof(LightInfo) * _count);
-	buffer.lightCount = _count;
+
+	// 데이터 복사
+	const _uint maxCount = min(_count, 64u);
+	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
 
 	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
-	context->VSSetConstantBuffers(4, 1, &m_pLightBuffer);
 	context->PSSetConstantBuffers(4, 1, &m_pLightBuffer);
 }
 

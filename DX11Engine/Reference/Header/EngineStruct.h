@@ -1296,18 +1296,6 @@ namespace Engine
 #pragma endregion;
 
 #pragma region ShaderBuffer
-    struct LightInfo
-    {
-        _float3 position;
-        _float intensity;
-        _float3 direction;
-        _float spotAngle;
-        _float3 color;
-        _float range;
-        _uint type;
-        _float3 _pad;
-    };
-
     struct MatrixCB
     {
         _matrix world = XMMatrixIdentity();
@@ -1325,9 +1313,7 @@ namespace Engine
 
     struct LightCB
     {
-        LightInfo lights[64];
-        _uint lightCount;
-        _int padding[3];
+        _matrix lights[64];
     };
 #pragma endregion
 
