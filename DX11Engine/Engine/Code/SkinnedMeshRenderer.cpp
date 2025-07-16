@@ -157,6 +157,8 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	}
 
 	// 1) 월드, 뷰, 프로젝션 매트릭스
+	vector3 cPos = _cam->Get_Transform()->Get_Position();
+	_float3 camPos = cPos.toFloat3();
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
@@ -200,7 +202,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	}
 
 	// 4) 머티리얼 바인딩
-	m_pMaterial->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
+	m_pMaterial->Bind(matWorld, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
 	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
@@ -245,6 +247,8 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 	_matrix scale = XMMatrixScaling(1.03f, 1.03f, 1.03f);
 	matWorld = scale * matWorld;
 
+	vector3 cPos = _cam->Get_Transform()->Get_Position();
+	_float3 camPos = cPos.toFloat3();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
@@ -254,17 +258,17 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 
 	// 아웃라인 머티리얼 바인딩 (단색 셰이더)
 	
-	if (m_pOutlineMat)
-	{
-		m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
-		m_pOutlineMat->Bind(matWorld, matView, matProj, static_cast<_uint>(m_vBones.size()));
+	//if (m_pOutlineMat)
+	//{
+	//	m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
+	//	m_pOutlineMat->Bind(matWorld, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
-		// 본 상수 버퍼 바인딩
-		m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+	//	// 본 상수 버퍼 바인딩
+	//	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
-		// 메시 렌더링
-		m_pMeshBuffer->Render();
-	}
+	//	// 메시 렌더링
+	//	m_pMeshBuffer->Render();
+	//}
 
 	// 5) 상태 복원
 	m_pContext->OMSetDepthStencilState(nullptr, 0);

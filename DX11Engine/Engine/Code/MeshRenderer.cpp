@@ -90,12 +90,15 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 
 	// World / View / Projection 행렬 계산
+
+	vector3 cPos = _cam->Get_Transform()->Get_Position();
+	_float3 camPos = cPos.toFloat3();
 	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
 	// 셰이더 + 텍스처 + 상수 버퍼 바인딩
-	m_pMaterial->Bind(matWorld, matView, matProj, 0);
+	m_pMaterial->Bind(matWorld, camPos, matView, matProj, 0);
 
 	if (m_pMaterial->IsUseLight())
 	{

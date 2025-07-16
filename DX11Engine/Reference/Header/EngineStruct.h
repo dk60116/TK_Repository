@@ -1298,17 +1298,24 @@ namespace Engine
 #pragma region ShaderBuffer
     struct MatrixCB
     {
-        _matrix world = XMMatrixIdentity();
-        _matrix view = XMMatrixIdentity();
-        _matrix proj = XMMatrixIdentity();
+        _matrix world;
+    };
+
+    struct CameraCB
+    {
+        _float3 camPos;
+        _matrix view;
+        _matrix proj;
+        _float padding;
     };
 
     struct MaterialCB
     {
         _float4 baseColor;
         _uint  useTexture;
+        _float specular;
         _uint  boneCount;
-        _float2 padding;
+        _float padding;
     };
 
     struct LightCB

@@ -5,8 +5,10 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
+    float3 gPos;
     float4x4 gView;
     float4x4 gProj;
+    float cpadding;
 }
 
 cbuffer PerMaterial : register(b2)
@@ -46,21 +48,10 @@ VSOut VSMain(VSIn input)
     return output;
 }
 
-// 式式式式式 Pixel Shader
 float4 PSMain(VSOut input) : SV_TARGET
 {
     if (useTexture != 0)
         return gTexture.Sample(gSampler, input.uv);
     else
         return gBaseColor;
-}
-
-// 式式式式式 Technique
-technique11 UnlitColor
-{
-    pass P0
-    {
-        SetVertexShader(CompileShader(vs_5_0, VSMain()));
-        SetPixelShader(CompileShader(ps_5_0, PSMain()));
-    }
 }

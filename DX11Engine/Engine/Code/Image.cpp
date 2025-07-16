@@ -30,12 +30,13 @@ void CImage::Render_Editor()
 
 	CCamera* cam = CSceneManager::GetInstance().Get_EditorCamera();
 
+	_float3 camPos = _float3();
 	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
 	_matrix matView = cam->Get_ViewMatrix();
 	_matrix matProj = cam->Get_ProjectionMatrix();
 
 	if (m_pMaterial)
-		m_pMaterial->Bind(matWorld, matView, matProj, 0);
+		m_pMaterial->Bind(matWorld, camPos, matView, matProj, 0);
 
 	if (m_pRectMesh)
 		m_pRectMesh->Render();
@@ -44,7 +45,7 @@ void CImage::Render_Editor()
 		return;
 
 	if (m_pLineMat)
-		m_pLineMat->Bind(matWorld, matView, matProj, 0);
+		m_pLineMat->Bind(matWorld, camPos, matView, matProj, 0);
 
 	if (m_pRectGizmoMesh)
 		m_pRectGizmoMesh->Render();

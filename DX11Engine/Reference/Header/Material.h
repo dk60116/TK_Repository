@@ -29,7 +29,7 @@ private:
 	void OnDestroy() override;
 
 public:
-	void Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
+	void Bind(const _fmatrix _world, const _float3 _camPos, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
 	void Bind_Light(_matrix* _lights, const _uint _count);
 
 public:

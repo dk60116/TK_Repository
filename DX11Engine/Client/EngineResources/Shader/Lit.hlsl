@@ -6,16 +6,19 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
+    float3 pos;
     float4x4 view;
     float4x4 proj;
+    float cpadding;
 };
 
 cbuffer PerMaterial : register(b2)
 {
     float4 baseColor; // rgba 0~1
     uint useTexture;
+    float specular;
     uint boneCount;
-    float2 padding; // 16B alignment
+    float mpadding; // 16B alignment
 };
 
 cbuffer PerBones : register(b3)
@@ -111,12 +114,14 @@ VSOut VSMain(VSIn v)
 //式式式式式式式式式式式式式式式式式式 а撚 樁檜渦 式式式式式式式式式式式式式式式式式式
 float4 PSMain(VSOut input) : SV_TARGET
 {    
-    float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv)
-                                 : float4(1, 1, 1, 1);
+    float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv) : float4(1, 1, 1, 1);
 
     float3 N = normalize(input.normalW);
+    float3 V = normalize(pos - input.posW);
+    
     float3 diffuseSum = float3(0, 0, 0);
     float3 ambientSum = float3(0, 0, 0);
+    float3 specularSum = float3(0, 0, 0);
 
     int lightCount = (int) gLight[0][3][3];
 
@@ -149,21 +154,30 @@ float4 PSMain(VSOut input) : SV_TARGET
             attenuation = saturate(1.0f - dist / range) * attenuationK;
         }
         else
-        {
             continue;
-        }
 
+        // Diffuse
         float NdotL = saturate(dot(N, L));
         float3 diffuse = lightColor * NdotL * intensity * attenuation;
         diffuseSum += diffuse;
-
+        
+        // Specular
+        float3 R = reflect(-L, N);
+        float RdotV = saturate(dot(R, V));
+        float specPower = 8.f;
+        float3 specular = lightColor * pow(RdotV, specPower) * intensity * attenuation;
+        specularSum += specular;
+        
+        // Ambient
         float3 ambient = lightColor * ambientK;
         ambientSum += ambient;
     }
 
     diffuseSum = max(diffuseSum, float3(0.2f, 0.2f, 0.2f));
-    float3 lit = ambientSum + diffuseSum;
-    float3 finalColor = texColor.rgb * saturate(lit);
+    float3 litDiffuse = texColor.rgb * saturate(ambientSum + diffuseSum);
+    float3 finalColor = litDiffuse + specularSum;
+    
+    finalColor = saturate(finalColor);
 
     return float4(finalColor, texColor.a);
 }

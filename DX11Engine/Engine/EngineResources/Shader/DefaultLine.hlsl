@@ -6,8 +6,10 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float4x4 view;
-    float4x4 proj;
+    float3 gPos;
+    float4x4 gView;
+    float4x4 gProj;
+    float cpadding;
 };
 
 cbuffer PerMaterial : register(b2)
@@ -59,8 +61,8 @@ VSOut VSMain(VSIn v)
 
     // 월드, 뷰, 프로젝션 변환
     float4 posW = mul(skinnedPos, world);
-    float4 posV = mul(posW, view);
-    o.posH = mul(posV, proj);
+    float4 posV = mul(posW, gView);
+    o.posH = mul(posV, gProj);
 
     return o;
 }

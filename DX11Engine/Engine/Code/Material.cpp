@@ -86,7 +86,7 @@ void CMaterial::OnDestroy()
 		Safe_Release(*it);
 }
 
-void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount) const
+void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount) const
 {
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
@@ -96,18 +96,17 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 	Bind_Texture();
 
 	// b0: PerObject
-	struct PerObjectCB { _matrix world; };
-	PerObjectCB obj{};
-	obj.world = XMMatrixTranspose(_world);
-	context->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &obj, 0, 0);
+	MatrixCB matrixCB = {};
+	matrixCB.world = XMMatrixTranspose(_world);
+	context->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &matrixCB, 0, 0);
 	context->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
 
 	// b1: PerCamera
-	struct PerCameraCB { _matrix view; _matrix proj; };
-	PerCameraCB cam{};
-	cam.view = XMMatrixTranspose(_view);
-	cam.proj = XMMatrixTranspose(_projection);
-	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &cam, 0, 0);
+	CameraCB camCB = {};
+	camCB.camPos = _camPos;
+	camCB.view = XMMatrixTranspose(_view);
+	camCB.proj = XMMatrixTranspose(_projection);
+	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &camCB, 0, 0);
 	context->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 
 	// b2: PerMaterial
@@ -120,8 +119,9 @@ void CMaterial::Bind(const _fmatrix _world, const _cmatrix _view, const _cmatrix
 		m_vDiffuseColor.a / 255.f
 	);
 	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
+	mat.specular = 25.f;
 	mat.boneCount = _boneCount;
-	mat.padding = { 0, 0 };
+	mat.padding = 0.f;
 
 	context->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
 	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
@@ -203,7 +203,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 		return E_FAIL;
 
 	// b1 : View/Proj Matrix
-	desc.ByteWidth = sizeof(_matrix) * 2;
+	desc.ByteWidth = sizeof(CameraCB);
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pCameraBuffer)))
 		return E_FAIL;
 

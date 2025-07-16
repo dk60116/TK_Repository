@@ -103,7 +103,7 @@ void CUI::Bind_Mesh()
 
 void CUI::Bind_Matrix(const _fmatrix _view, const _cmatrix _projection)
 {
-	m_pMaterial->Bind(Get_Transform()->Get_WorldMatrix(), _view, _projection);
+	m_pMaterial->Bind(Get_Transform()->Get_WorldMatrix(), _float3(), _view, _projection);
 }
 
 const _bool CUI::Is_Canvas() const

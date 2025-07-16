@@ -6,8 +6,10 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
+    float3 pos;
     float4x4 view;
     float4x4 proj;
+    float cpadding;
 };
 
 cbuffer PerMaterial : register(b2)
@@ -15,7 +17,7 @@ cbuffer PerMaterial : register(b2)
     float4 baseColor;
     uint useTexture;
     uint boneCount;
-    float2 padding; // 16바이트 정렬
+    float2 mpadding;
 };
 
 cbuffer PerBones : register(b3)

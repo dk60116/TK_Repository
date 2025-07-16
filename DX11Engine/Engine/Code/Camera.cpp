@@ -165,6 +165,9 @@ void CCamera::RenderUI()
 	_vector det = {};
 	const _matrix inverseMat = XMMatrixInverse(&det, viewMat);
 
+	_float4 camPosF4;
+	XMStoreFloat4(&camPosF4, inverseMat.r[3]);
+
 	const _float aspect = CDisplay::GetInstance().Get_Aspect();
 	const _float fHalfHeight = 7.2f * 0.5f;
 	const _float fHalfWidth = fHalfHeight * aspect;
