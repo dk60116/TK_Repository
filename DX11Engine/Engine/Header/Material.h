@@ -11,7 +11,7 @@ class ENGINE_DLL CMaterial final : public CEngineResource
 public:
 	typedef struct Material
 	{
-		CShader* shaderPointer;
+		class CShader* shaderPointer;
 		_bool usingRight = true;
 	} MATERIALDESC;
 

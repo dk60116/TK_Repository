@@ -2,6 +2,9 @@
 #define Engine_Struct_h__
 
 #include "EngineTypedef.h"
+#include "MeshBuffer.h"
+#include "Material.h"
+#include "Texture.h"
 
 namespace Engine
 {
@@ -1324,6 +1327,17 @@ namespace Engine
     };
 #pragma endregion
 
+#pragma region FBX Resources
+    enum MeshBundleHex { MESHBUFFER = 0x0001, MATERIAL = 0x0010, TEXTURE = 0x0100 };
+
+    struct MeshBundle
+    {
+        CMeshBuffer* meshBuffer = nullptr;
+        CMaterial* material = nullptr;
+        CTexture* texture = nullptr;
+    };
+#pragma endregion;
+
     typedef struct tagIndex16
     {
         _ushort  _0;
@@ -1337,7 +1351,6 @@ namespace Engine
         _ulong	_0;
         _ulong	_1;
         _ulong	_2;
-
     }INDEX32;
 
 #endif // Engine_Struct_h__

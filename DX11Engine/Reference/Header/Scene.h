@@ -39,10 +39,10 @@ public:
 public:
     class CEngineResource* Add_Resource(const wstring& _name, CEngineResource* _resource);
     class CEngineResource* Find_Resource(const wstring& _name);
-    vector<class CMeshBuffer*> Find_MeshInfoResource(const wstring& _name);
+    vector<MeshBundle> Find_MeshInfoResource(const wstring& _name);
     class CEngineResource* Add_TempResource(const wstring& _name, CEngineResource* _resource);
-    void Add_MeshBundle(const wstring& _name, vector<CMeshBuffer*> _resource);
-    void Add_TempMeshBundle(const wstring& _name, vector<CMeshBuffer*> _resource);
+    void Add_MeshBundle(const wstring& _name, vector<MeshBundle> _resource);
+    void Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resource);
     class CEngineResource* Add_CloneResourece(CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     vector<CGameObject*> Get_RootObjects();
@@ -89,7 +89,7 @@ protected:
     CCamera* m_pEditorCamera;
 
     unordered_map<wstring, CEngineResource*> m_mResourceList, m_mTempResourceList;
-    unordered_map<wstring, vector<CMeshBuffer*>> m_mMeshBundleList, m_mTempMeshBundleList;
+    unordered_map<wstring, vector<MeshBundle>> m_mMeshBundleList, m_mTempMeshBundleList;
     vector<CEngineResource*> m_vCloneResourceList;
 
 protected:

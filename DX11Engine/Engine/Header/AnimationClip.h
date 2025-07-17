@@ -40,7 +40,7 @@ public:
 	_float Get_Duration() const;
 
 protected:
-	static CAnimationClip* Create(const wstring& _filePath);
+	static CAnimationClip* Create();
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 

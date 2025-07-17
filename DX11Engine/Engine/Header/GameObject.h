@@ -81,7 +81,7 @@ public:
 	class CTransform* Get_Transform() const;
 	void Set_Transform(CTransform* _transform);
 
-	void CreateMeshHierachy(vector<class CMeshBuffer*> _meshInfos);
+	void CreateMeshHierachy(vector<MeshBundle> _meshInfos);
 
 	const _uint Get_UniqueID() const;
 	wstring Get_ObjectName() const;

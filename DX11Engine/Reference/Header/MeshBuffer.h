@@ -31,7 +31,6 @@ protected:
 
 private:
 	static CMeshBuffer* Create();
-	static CMeshBuffer* Create(const wstring& _filePath);
 
 protected:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;

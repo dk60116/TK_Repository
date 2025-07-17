@@ -314,18 +314,27 @@ void CGameObject::Set_Transform(CTransform* _transform)
 	}
 }
 
-void CGameObject::CreateMeshHierachy(vector<CMeshBuffer*> _meshInfos)
+void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 {
 	CTransform* parentTransform = Get_Transform();
 
 	for (_uint i = 0; i < _meshInfos.size(); ++i)
 	{
-		CGameObject* child = m_pScene->Add_GameObject(_meshInfos[i]->Get_ResourceName());
+		if (!_meshInfos[i].meshBuffer)
+			continue;
+
+		CGameObject* child = m_pScene->Add_GameObject(_meshInfos[i].meshBuffer->Get_ResourceName());
 		child->Get_Transform()->SetParent(parentTransform);
 
 		CMeshRenderer* ren = child->AddComponent<CMeshRenderer>();
-		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i]);
+
+		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
 		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+
+		if (!_meshInfos[i].texture)
+			continue;
+
+		ren->Get_Material()->Set_Texture(_meshInfos[i].texture, 0);
 	}
 }
 

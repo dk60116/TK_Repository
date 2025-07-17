@@ -85,14 +85,14 @@ void CResources::LoadComplete_Scene(const CEngineResource* _ptr)
 		CDebug::LogError("Create Scene resource failed");
 }
 
-vector<CMeshBuffer*> CResources::CreateSceneMeshBuffers(const wstring& _name, const wstring& _path, void* _desc, const _bool _tempScene)
+vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const wstring& _path, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;
 
 	if (_desc)
 		scaleFactor = *reinterpret_cast<_float*>(_desc);
 
-	vector<CMeshBuffer*> resultList = {};
+	vector<MeshBundle> resultList = {};
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile
@@ -110,17 +110,56 @@ vector<CMeshBuffer*> CResources::CreateSceneMeshBuffers(const wstring& _name, co
 	{
 		CDebug::LogError(L"Create Scene mesh bundle failed: " + _path);
 		return {};
-	}
+	};
 
 	for (_uint i = 0; i < scene->mNumMeshes; ++i)
 	{
-		CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
-		CMeshBuffer* mb = CMeshBuffer::Create();;
+		MeshBundle newBundle = {};
 
-		mb->Initailize_Custom(info, nullptr);
-		mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
+		if (_filter & MESHBUFFER)
+		{
+			CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
+			CMeshBuffer* mb = CMeshBuffer::Create();;
 
-		resultList.push_back(mb);
+			mb->Initailize_Custom(info, nullptr);
+			mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
+
+			newBundle.meshBuffer = mb;
+		}
+
+		if ((_filter & MATERIAL))
+		{
+			if (scene->HasMaterials())
+			{
+				aiMaterial* newMat = scene->mMaterials[i];
+
+				aiString texPath;
+				if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+				{
+					string path = texPath.C_Str();
+
+					filesystem::path fbxDir = filesystem::path(_path).parent_path();
+					filesystem::path texRelPath = filesystem::u8path(path);
+
+					filesystem::path fullPath = fbxDir / texRelPath;
+
+					wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
+
+					CTexture* newTex = CTexture::Create();
+					newTex->Initialize(lastPath, lastPath, nullptr);
+
+					newBundle.texture = newTex;
+				}
+			}
+		}
+
+		if ((_filter & TEXTURE))
+		{
+			if (scene->HasTextures())
+				aiTexture* newTex = scene->mTextures[i];
+		}
+
+		resultList.push_back(newBundle);
 	}
 
 	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
@@ -136,9 +175,9 @@ vector<CMeshBuffer*> CResources::CreateSceneMeshBuffers(const wstring& _name, co
 	return resultList;
 }
 
-vector<CMeshBuffer*> CResources::LoadMeshBuffersOnScene(const wstring& _name)
+vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
 {
-	vector<CMeshBuffer*> r = {};
+	vector<MeshBundle> r = {};
 
 	if (CSceneManager::GetInstance().Get_CrtScene())
 		r = CSceneManager::GetInstance().Get_CrtScene()->Find_MeshInfoResource(_name);

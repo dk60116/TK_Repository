@@ -14,7 +14,7 @@ private:
 	~CSkinnedMeshBuffer();
 
 private:
-	static CSkinnedMeshBuffer* Create(const wstring& _filePath);
+	static CSkinnedMeshBuffer* Create();
 
 protected:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;

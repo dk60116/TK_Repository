@@ -16,7 +16,7 @@ CSkinnedMeshBuffer::~CSkinnedMeshBuffer()
     OnDestroy();
 }
 
-CSkinnedMeshBuffer* CSkinnedMeshBuffer::Create(const wstring& _filePath)
+CSkinnedMeshBuffer* CSkinnedMeshBuffer::Create()
 {
 	return new CSkinnedMeshBuffer();
 }

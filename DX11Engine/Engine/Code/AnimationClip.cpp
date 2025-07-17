@@ -64,7 +64,7 @@ _float CAnimationClip::Get_Duration() const
 	return m_fDuration;
 }
 
-CAnimationClip* CAnimationClip::Create(const wstring& _filePath)
+CAnimationClip* CAnimationClip::Create()
 {
 	return new CAnimationClip();
 }

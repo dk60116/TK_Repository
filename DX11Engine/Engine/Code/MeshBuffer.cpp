@@ -22,11 +22,6 @@ CMeshBuffer* CMeshBuffer::Create()
     return new CMeshBuffer();
 }
 
-CMeshBuffer* CMeshBuffer::Create(const wstring& _filePath)
-{
-    return new CMeshBuffer();
-}
-
 HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
     if (FAILED(__super::Initialize(_name, _filePath, _desc)))

@@ -44,6 +44,10 @@ HRESULT CScene::Initialize()
 	m_mMeshBundleList = m_mTempMeshBundleList;
 
 	m_mTempResourceList.clear();
+
+	for (TRAVERSAL_ITER(m_mTempMeshBundleList, it))
+		(*it).second.clear();
+
 	m_mTempMeshBundleList.clear();
 
 	D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
@@ -205,6 +209,7 @@ void CScene::Render_Game()
 void CScene::SceneRelease()
 {
 	m_lCameraList.clear();
+	m_lLightList.clear();
 	m_lCanvasList.clear();
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
@@ -214,7 +219,11 @@ void CScene::SceneRelease()
 	for (TRAVERSAL_ITER(m_mMeshBundleList, it))
 	{
 		for (TRAVERSAL_ITER((*it).second, it1))
-			Safe_Release(*it1);
+		{
+			Safe_Release((*it1).meshBuffer);
+			Safe_Release((*it1).material);
+			Safe_Release((*it1).texture);
+		}
 
 		(*it).second.clear();
 	}
@@ -274,7 +283,7 @@ CEngineResource* CScene::Find_Resource(const wstring& _name)
 	return nullptr;
 }
 
-vector<CMeshBuffer*> CScene::Find_MeshInfoResource(const wstring& _name)
+vector<MeshBundle> CScene::Find_MeshInfoResource(const wstring& _name)
 {
 	auto iter = m_mMeshBundleList.find(_name);
 
@@ -300,13 +309,33 @@ CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource*
 	return _resource;
 }
 
-void CScene::Add_MeshBundle(const wstring& _name, vector<CMeshBuffer*> _resource)
+void CScene::Add_MeshBundle(const wstring& _name, vector<MeshBundle> _resource)
 {
+	for (TRAVERSAL_ITER(_resource, it))
+	{
+		if ((*it).meshBuffer)
+			(*it).meshBuffer->AddRef();
+		if ((*it).material)
+			(*it).material->AddRef();
+		if ((*it).texture)
+			(*it).texture->AddRef();
+	}
+
 	m_mMeshBundleList.emplace(_name, _resource);
 }
 
-void CScene::Add_TempMeshBundle(const wstring& _name, vector<CMeshBuffer*> _resource)
+void CScene::Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resource)
 {
+	for (TRAVERSAL_ITER(_resource, it))
+	{
+		if ((*it).meshBuffer)
+			(*it).meshBuffer->AddRef();
+		if ((*it).material)
+			(*it).material->AddRef();
+		if ((*it).texture)
+			(*it).texture->AddRef();
+	}
+
 	m_mTempMeshBundleList.emplace(_name, _resource);
 }
 

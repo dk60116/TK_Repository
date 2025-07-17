@@ -31,7 +31,7 @@ public:
 	template<typename T>
 	T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
 
-    vector<class CMeshBuffer*> CreateSceneMeshBuffers(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
+    vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, const wstring& _path, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
 
     template<typename T>
     T* LoadOnGame(const wstring& _name);
@@ -42,7 +42,7 @@ public:
     template<typename T>
 	T* LoadOnScene(const wstring& _name);
 
-    vector<class CMeshBuffer*> LoadMeshBuffersOnScene(const wstring& _name);
+    vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
 
 	static _bool FileExists(const wstring& _path);
 	static _bool FileExists(const string& _path);
@@ -60,7 +60,7 @@ NS_END
 template<typename T>
 inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _path, void* _desc)
 {
-    T* newResource = T::Create(m_strDefaultAssetPath + _path);
+    T* newResource = T::Create();
 
     if (!newResource)
         return nullptr;
@@ -80,7 +80,7 @@ inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _p
 template<typename T>
 inline T* CResources::CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc, const _bool _tempScene)
 {
-	T* newResource = T::Create(m_strDefaultAssetPath + _path);
+	T* newResource = T::Create();
 
     if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
     {

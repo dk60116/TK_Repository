@@ -12,7 +12,7 @@ CTexture::~CTexture()
 	OnDestroy();
 }
 
-CTexture* CTexture::Create(const wstring& _filePath)
+CTexture* CTexture::Create()
 {
 	return new CTexture();
 }
