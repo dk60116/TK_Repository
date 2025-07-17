@@ -197,6 +197,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Shader.h" />
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h" />
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h" />
+    <ClInclude Include="..\Header\Terrain.h" />
     <ClInclude Include="..\Header\Texture.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\TopToolBar.h" />
@@ -293,6 +294,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\EngineTime.cpp" />
     <ClCompile Include="..\Code\Shader.cpp" />
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="..\Code\Terrain.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\TopToolBar.cpp" />

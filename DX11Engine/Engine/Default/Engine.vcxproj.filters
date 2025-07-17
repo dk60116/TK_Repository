@@ -151,6 +151,9 @@
     <ClInclude Include="..\Header\Light.h">
       <Filter>Components\Light</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Terrain.h">
+      <Filter>Components\Render\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -409,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Light.cpp">
       <Filter>Components\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Terrain.cpp">
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
