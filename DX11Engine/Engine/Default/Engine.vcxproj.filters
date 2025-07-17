@@ -154,6 +154,9 @@
     <ClInclude Include="..\Header\Terrain.h">
       <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Physics.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -251,6 +254,9 @@
     </Filter>
     <Filter Include="Components\Light">
       <UniqueIdentifier>{838c0c00-6e95-4875-877c-6d3835f8427b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{51d2a266-3de0-4dcf-8589-2d5d539001c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -415,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Terrain.cpp">
       <Filter>Components\Render\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Physics.cpp">
+      <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

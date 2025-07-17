@@ -3,7 +3,7 @@
 
 CLight::CLight()
 	: m_eType(Type::Directional)
-	, m_fIntensity(0.5f)
+	, m_fIntensity(1.f)
 	, m_fRange(10.f)
 	, m_fSpotAngle(45.f)
 	, m_fAttenuation(1.f)

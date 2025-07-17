@@ -95,7 +95,16 @@ void CSceneLoader::ThreadLoadingLoop()
 			else if (CEngineString::Contains(wFile, L".fbx"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Mesh]"))
-					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", wFile, MESHBUFFER | MATERIAL | TEXTURE, nullptr, true);
+				{
+					_int filter = MESHBUFFER;
+
+					if (CEngineString::Contains(wFormat, L"[Material]"))
+						filter |= MATERIAL;
+					if (CEngineString::Contains(wFormat, L"[Texture]"))
+						filter |= TEXTURE;
+
+					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", wFile, filter, nullptr, true);
+				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
 					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));
 				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))

@@ -39,6 +39,15 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
         info = CreateCube();
     else if (_filePath == L"../Assets/Quad")
         info = CreateQuad();
+    else if (_filePath == L"../Assets/Terrain")
+    {
+        TERRAINBUFFERDESC terainDesc = {};
+
+        if (_desc)
+            terainDesc = *reinterpret_cast<TERRAINBUFFERDESC*>(_desc);
+
+        info = CreateTerrain(terainDesc.landscape, terainDesc.portrait, 0);
+    }
     else
         return S_OK;
 
@@ -460,12 +469,98 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
     info.buffer.assign(reinterpret_cast<uint8_t*>(triVerts), reinterpret_cast<uint8_t*>(triVerts) + sizeof(triVerts));
     info.indices.assign(begin(triIndices), end(triIndices));
 
-    // 메쉬 설명
     MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     desc.vertexSize = sizeof(VTX);
     desc.vertextCount = _countof(triVerts);
     desc.indexCount = _countof(triIndices);
+
+    info.desc = desc;
+
+    return info;
+}
+
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _uint _sizeZ, const _float _scale)
+{
+    if (_sizeX < 1)
+        _sizeX = 1;
+    if (_sizeZ < 1)
+        _sizeZ = 1;
+
+    MeshBufferInitiaizeInfo info = {};
+
+    using VTX = VertexTexNormalTangentBuffer;
+
+    const _float startX = -static_cast<_float>(_sizeX) * _scale;
+    const _float startZ = static_cast<_float>(_sizeZ) * _scale;
+
+    const _uint vertCountX = _sizeX + 1;
+    const _uint vertCountZ = _sizeZ + 1;
+    const _uint totalVerts = vertCountX * vertCountZ;
+    const _uint totalQuads = _sizeX * _sizeZ;
+    const _uint totalIndices = totalQuads * 6;
+
+    vector<VTX> vertices = {};
+    vector<_uint> indices = {};
+    vertices.reserve(totalVerts);
+    indices.reserve(totalIndices);
+
+    for (_uint z = 0; z < vertCountZ; ++z)
+    {
+        for (_uint x = 0; x < vertCountX; ++x)
+        {
+            VTX v = {};
+            v.position =
+            {
+                startX + x * 1.f,
+                0.f,
+                startZ + z * 1.f
+            };
+
+            v.normal = { 0.f, 1.f, 0.f };
+
+            v.uv =
+            {
+                static_cast<_float>(x) / _sizeX,
+                static_cast<_float>(z) / _sizeZ
+            };
+
+            v.tangent = { 1.f, 0.f, 0.f };
+
+            vertices.emplace_back(v);
+        };
+    }
+
+    for (_uint z = 0; z < _sizeZ; ++z)
+    {
+        for (_uint x = 0; x < _sizeX; ++x)
+        {
+            _uint v0 = x + z * vertCountX;
+            _uint v1 = (x + 1) + z * vertCountX;
+            _uint v2 = x + (z + 1) * vertCountX;
+            _uint v3 = (x + 1) + (z + 1) * vertCountX;
+
+            indices.push_back(v0);
+            indices.push_back(v1);
+            indices.push_back(v2);
+
+            indices.push_back(v2);
+            indices.push_back(v1);
+            indices.push_back(v3);
+        }
+    }
+
+    info.buffer.assign(
+        reinterpret_cast<const uint8_t*>(vertices.data()),
+        reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size());
+
+    info.indices.assign(indices.begin(), indices.end());
+
+    MESHBUFFERDESC desc{};
+    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    desc.vertexSize = sizeof(VTX);
+    desc.vertextCount = static_cast<_uint>(vertices.size());
+    desc.indexCount = static_cast<_uint>(indices.size());
 
     info.desc = desc;
 

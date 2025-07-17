@@ -224,7 +224,6 @@ namespace Engine
     {
         return vector2(-v.x, -v.y);
     }
-
 #pragma endregion
 
 #pragma region vector2Int
@@ -407,7 +406,6 @@ namespace Engine
     {
         return vector2Int(-v.x, -v.y);
     }
-}
 #pragma endregion
 
 #pragma region vector3
@@ -1327,7 +1325,7 @@ namespace Engine
     };
 #pragma endregion
 
-#pragma region FBX Resources
+#pragma region FBXResources
     enum MeshBundleHex { MESHBUFFER = 0x0001, MATERIAL = 0x0010, TEXTURE = 0x0100 };
 
     struct MeshBundle
@@ -1352,5 +1350,5 @@ namespace Engine
         _ulong	_1;
         _ulong	_2;
     }INDEX32;
-
+}
 #endif // Engine_Struct_h__
