@@ -89,11 +89,12 @@ HRESULT CAnimationClip::Initialize(const wstring& _name, const wstring& _filePat
 	if (!device)
 		return E_FAIL;
 
-	string filePathUTF8(m_strFilePath.begin(), m_strFilePath.end());
+	string filePathUTF8 = CEngineString::WStringToString(_filePath);
 
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile(
+	const aiScene* scene = importer.ReadFile
+	(
 		filePathUTF8,
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices | 

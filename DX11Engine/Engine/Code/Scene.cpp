@@ -10,6 +10,8 @@ CScene::CScene()
 	, m_mResourceList({})
 	, m_mTempResourceList({})
 	, m_vCloneResourceList({})
+	, m_mMeshBundleList({})
+	, m_mTempMeshBundleList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_lCanvasList({})
@@ -39,8 +41,10 @@ HRESULT CScene::Initialize()
 	m_iUniqueObjectCount = 0;
 
 	m_mResourceList = m_mTempResourceList;
+	m_mMeshBundleList = m_mTempMeshBundleList;
 
 	m_mTempResourceList.clear();
+	m_mTempMeshBundleList.clear();
 
 	D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
 	depthDefaultDesc.DepthEnable = TRUE;
@@ -207,11 +211,19 @@ void CScene::SceneRelease()
 		Safe_Release(*it);
 	for (TRAVERSAL_ITER(m_mResourceList, it))
 		Safe_Release((*it).second);
+	for (TRAVERSAL_ITER(m_mMeshBundleList, it))
+	{
+		for (TRAVERSAL_ITER((*it).second, it1))
+			Safe_Release(*it1);
+
+		(*it).second.clear();
+	}
 	for (TRAVERSAL_ITER(m_vCloneResourceList, it))
 		Safe_Release(*it);
 
 	m_lObjectList.clear();
 	m_mResourceList.clear();
+	m_mMeshBundleList.clear();
 	m_vCloneResourceList.clear();
 
 	Safe_Release(m_pDevice);
@@ -262,6 +274,21 @@ CEngineResource* CScene::Find_Resource(const wstring& _name)
 	return nullptr;
 }
 
+vector<CMeshBuffer*> CScene::Find_MeshInfoResource(const wstring& _name)
+{
+	auto iter = m_mMeshBundleList.find(_name);
+
+	if (iter != m_mMeshBundleList.end())
+		return iter->second;
+
+	auto iter1 = m_mTempMeshBundleList.find(_name);
+
+	if (iter1 != m_mTempMeshBundleList.end())
+		return iter1->second;
+
+	return {};
+}
+
 CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource* _resource)
 {
 	if (!_resource)
@@ -271,6 +298,16 @@ CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource*
 	_resource->AddRef();
 
 	return _resource;
+}
+
+void CScene::Add_MeshBundle(const wstring& _name, vector<CMeshBuffer*> _resource)
+{
+	m_mMeshBundleList.emplace(_name, _resource);
+}
+
+void CScene::Add_TempMeshBundle(const wstring& _name, vector<CMeshBuffer*> _resource)
+{
+	m_mTempMeshBundleList.emplace(_name, _resource);
 }
 
 CEngineResource* CScene::Add_CloneResourece(CEngineResource* _resource)

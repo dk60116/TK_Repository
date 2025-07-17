@@ -13,15 +13,15 @@ public:
 	{
 		_bool useDeviceTopology = false;
 		D3D11_PRIMITIVE_TOPOLOGY topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		UINT vertexSize = 0;
-		UINT vertextCount = 0;
-		UINT indexCount = 0;
+		_uint vertexSize = 0;
+		_uint vertextCount = 0;
+		_uint indexCount = 0;
 	}MESHBUFFERDESC;
 
 	struct MeshBufferInitiaizeInfo
 	{
-		vector<uint8_t> buffer;
-		vector<UINT> indices;
+		vector<uint8_t> buffer = {};
+		vector<UINT> indices = {};
 		MESHBUFFERDESC desc = {};
 	};
 
@@ -30,11 +30,18 @@ protected:
 	~CMeshBuffer();
 
 private:
+	static CMeshBuffer* Create();
 	static CMeshBuffer* Create(const wstring& _filePath);
 
 protected:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy();
+
+public:
+	HRESULT Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc);
+
+public:
+	static wstring FindMeshName(const aiScene* scene, _uint meshIndex, aiNode* node = nullptr);
 
 private:
 	MeshBufferInitiaizeInfo CreateLine();
@@ -47,7 +54,8 @@ private:
 	MeshBufferInitiaizeInfo CreateCylinder();
 	MeshBufferInitiaizeInfo CreateTriangle();
 	MeshBufferInitiaizeInfo CreateTerrain(_uint _sizeX, _uint _sizeY);
-	MeshBufferInitiaizeInfo CreateObjectMesh(const string& _filePath, const _float _scaleFactor = 1.f);
+
+	static MeshBufferInitiaizeInfo CreateObjectMesh(const aiScene* _aiScene, const _uint _index = 0, const _float _scaleFactor = 1.f);
 
 public:
 	void Render();

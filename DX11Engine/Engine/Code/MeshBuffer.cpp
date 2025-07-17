@@ -17,6 +17,11 @@ CMeshBuffer::~CMeshBuffer()
 	OnDestroy();
 }
 
+CMeshBuffer* CMeshBuffer::Create()
+{
+    return new CMeshBuffer();
+}
+
 CMeshBuffer* CMeshBuffer::Create(const wstring& _filePath)
 {
     return new CMeshBuffer();
@@ -40,10 +45,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
     else if (_filePath == L"../Assets/Quad")
         info = CreateQuad();
     else
-    {
-        const _float scaleFactor = _desc ? *reinterpret_cast<_float*>(_desc) : 1.f;
-        info = CreateObjectMesh(CEngineString::WStringToString(_filePath), scaleFactor);
-    }
+        return S_OK;
 
     if (!(info.buffer.size() > 0))
         return E_FAIL;
@@ -91,7 +93,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
         D3D11_SUBRESOURCE_DATA ibData = {};
         ibData.pSysMem = info.indices.data();
 
-        hr = FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer));
+        hr = device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer);
     }
 
     if (FAILED(hr))
@@ -101,6 +103,88 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
     }
 
     return hr;
+}
+
+HRESULT CMeshBuffer::Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc)
+{
+    if (!(_info.buffer.size() > 0))
+        return E_FAIL;
+
+    if (_info.desc.vertexSize == 0 || _info.desc.vertextCount == 0)
+        return E_FAIL;
+
+    m_sInfo = {};
+    m_sInfo = _info.desc;
+
+    size_t size = _info.desc.vertexSize * _info.desc.vertextCount;
+
+    m_pVertexSysMem = malloc(size);
+    memcpy(m_pVertexSysMem, _info.buffer.data(), size);
+
+    if (_info.desc.indexCount > 0 && !_info.indices.empty())
+    {
+        size_t indexSize = sizeof(_uint) * _info.desc.indexCount;
+        m_pIndexSysMem = malloc(indexSize);
+        memcpy(m_pIndexSysMem, _info.indices.data(), indexSize);
+    }
+
+    ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
+
+    // VertexBuffer 생성
+    D3D11_BUFFER_DESC vbDesc = {};
+    vbDesc.ByteWidth = static_cast<_uint>(_info.desc.vertexSize * _info.desc.vertextCount);
+    vbDesc.Usage = D3D11_USAGE_DEFAULT;
+    vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vbData = {};
+    vbData.pSysMem = _info.buffer.data();
+
+    HRESULT hr = S_OK;
+
+    hr = device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer);
+
+    // IndexBuffer 생성
+    if (_info.desc.indexCount > 0 && _info.indices.size() > 0)
+    {
+        D3D11_BUFFER_DESC ibDesc = {};
+        ibDesc.ByteWidth = sizeof(_uint) * _info.desc.indexCount;
+        ibDesc.Usage = D3D11_USAGE_DEFAULT;
+        ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA ibData = {};
+        ibData.pSysMem = _info.indices.data();
+
+        hr = device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer);
+    }
+
+    if (FAILED(hr))
+    {
+        CDebug::LogError(L"Assimp MeshBuffer load failed: " + m_strFilePath);
+        return E_FAIL;
+    }
+
+    return hr;
+}
+
+wstring CMeshBuffer::FindMeshName(const aiScene* scene, _uint meshIndex, aiNode* node)
+{
+    if (!node)
+        node = scene->mRootNode;
+
+    for (unsigned int i = 0; i < node->mNumMeshes; ++i)
+    {
+        if (node->mMeshes[i] == meshIndex)
+            return CEngineString::StringToWString(node->mName.C_Str());
+    }
+
+    for (unsigned int i = 0; i < node->mNumChildren; ++i)
+    {
+        wstring result = FindMeshName(scene, meshIndex, node->mChildren[i]);
+        if (!result.empty())
+            return result;
+    }
+
+    return L"";
 }
 
 void CMeshBuffer::OnDestroy()
@@ -393,119 +477,58 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
     return info;
 }
 
-CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string& _filePath, const _float _scaleFactor)
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const aiScene* _aiScene, const _uint _index, const _float _scaleFactor)
 {
     MeshBufferInitiaizeInfo info = {};
-
     using VTX = VertexTexNormalTangentBuffer;
 
-    // 모델 로딩 
-    Assimp::Importer importer;
-
-    const aiScene* scene = importer.ReadFile
-    (
-        _filePath,
-        aiProcess_Triangulate |   // 모든 면을 삼각형화
-        aiProcess_JoinIdenticalVertices |   // 중복 정점 병합
-        aiProcess_GenNormals |   // 노멀 없으면 생성
-        aiProcess_CalcTangentSpace |   // 텍스처 좌표 기반 탄젠트
-        aiProcess_ConvertToLeftHanded |   // DirectX 좌표계
-        aiProcess_FlipUVs
-    );
-
-    if (!scene)
+    if (!_aiScene)
     {
-        const char* error = importer.GetErrorString();
-        OutputDebugStringA("Assimp load failed: ");
-        OutputDebugStringA(error);
-        OutputDebugStringA("\n");
-
-        return MeshBufferInitiaizeInfo();
+        OutputDebugStringA("Assimp load failed or mesh index out of bounds.\n");
+        return {};
     }
 
-    vector<VTX>  vertices;
+    const aiMesh* mesh = _aiScene->mMeshes[_index];
+
+    vector<VTX> vertices;
     vector<_uint> indices;
 
-    auto copyMesh = [&](const aiMesh* mesh)
-        {
-            const _uint base = static_cast<_uint>(vertices.size());
-
-            /* 정점 */
-            for (_uint i = 0; i < mesh->mNumVertices; ++i)
-            {
-                VTX v{};
-                /* 위치 */
-                v.position = 
-                { 
-                    mesh->mVertices[i].x,
-                    mesh->mVertices[i].y,
-                    mesh->mVertices[i].z
-                };
-
-                v.position.x *= _scaleFactor;
-                v.position.y *= _scaleFactor;
-                v.position.z *= _scaleFactor;
-                                
-                 // 노멀
-                if (mesh->HasNormals()) 
-                    v.normal = 
-                { 
-                    mesh->mNormals[i].x,
-                    mesh->mNormals[i].y,
-                    mesh->mNormals[i].z 
-                };
-                else
-                    v.normal = { 0,0,0 };
-
-                // UV(0)
-                if (mesh->HasTextureCoords(0))
-                    v.uv = 
-                {
-                    mesh->mTextureCoords[0][i].x,
-                    mesh->mTextureCoords[0][i].y
-                };
-                else
-                    v.uv = { 0, 0 };
-
-                // 탄젠트
-                if (mesh->HasTangentsAndBitangents())
-                    v.tangent = 
-                { 
-                    mesh->mTangents[i].x,
-                    mesh->mTangents[i].y,
-                    mesh->mTangents[i].z 
-                };
-                else
-                    v.tangent = { 0,0,0 };
-
-                vertices.emplace_back(v);
-            }
-
-            // 인덱스(얼굴)
-            for (_uint f = 0; f < mesh->mNumFaces; ++f)
-            {
-                const aiFace& face = mesh->mFaces[f];
-                if (face.mNumIndices != 3) 
-                    continue;
-                indices.push_back(base + face.mIndices[0]);
-                indices.push_back(base + face.mIndices[1]);
-                indices.push_back(base + face.mIndices[2]);
-            }
+    // 정점 복사
+    for (_uint i = 0; i < mesh->mNumVertices; ++i)
+    {
+        VTX v{};
+        v.position = {
+            mesh->mVertices[i].x * _scaleFactor,
+            mesh->mVertices[i].y * _scaleFactor,
+            mesh->mVertices[i].z * _scaleFactor
         };
 
-    // 씬 노드 재귀 순회
-    function<void(const aiNode*)> traverse = [&](const aiNode* node)
-        {
-            for (_uint m = 0; m < node->mNumMeshes; ++m)
-                copyMesh(scene->mMeshes[node->mMeshes[m]]);
+        v.normal = mesh->HasNormals() ?
+            _float3{ mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z } :
+            _float3{ 0, 0, 0 };
 
-            for (_uint c = 0; c < node->mNumChildren; ++c)
-                traverse(node->mChildren[c]);
-        };
+        v.uv = mesh->HasTextureCoords(0) ?
+            _float2{ mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y } :
+            _float2{ 0, 0 };
 
-    traverse(scene->mRootNode);
+        v.tangent = mesh->HasTangentsAndBitangents() ?
+            _float3{ mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z } :
+            _float3{ 0, 0, 0 };
 
-    // MeshBuffer 생성
+        vertices.emplace_back(v);
+    }
+
+    // 인덱스 복사
+    for (_uint f = 0; f < mesh->mNumFaces; ++f)
+    {
+        const aiFace& face = mesh->mFaces[f];
+        if (face.mNumIndices != 3) continue;
+        indices.push_back(face.mIndices[0]);
+        indices.push_back(face.mIndices[1]);
+        indices.push_back(face.mIndices[2]);
+    }
+
+    // 버퍼 정보 세팅
     MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     desc.vertexSize = sizeof(VTX);
@@ -517,8 +540,8 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const string&
         reinterpret_cast<const uint8_t*>(vertices.data()),
         reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size()
     );
+
     info.indices.assign(indices.begin(), indices.end());
-    
     info.desc = desc;
 
     return info;
@@ -531,63 +554,64 @@ const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 
 void CMeshBuffer::Set_Scalefactor(const _float _value)
 {
-    OnDestroy();
+    //OnDestroy();
 
-    // 새 MeshBuffer 정보 생성
-    MeshBufferInitiaizeInfo info = CreateObjectMesh
-    (
-        CEngineString::WStringToString(m_strFilePath),
-        _value
-    );
+    //// 새 MeshBuffer 정보 생성
+    //MeshBufferInitiaizeInfo info = CreateObjectMesh
+    //(
+    //    CEngineString::WStringToString(m_strFilePath),
+    //    0,
+    //    _value
+    //);
 
-    if (info.buffer.empty() || info.desc.vertexSize == 0 || info.desc.vertextCount == 0)
-        return;
+    //if (info.buffer.empty() || info.desc.vertexSize == 0 || info.desc.vertextCount == 0)
+    //    return;
 
-    // 정보 저장
-    m_sInfo = info.desc;
+    //// 정보 저장
+    //m_sInfo = info.desc;
 
-    size_t size = info.desc.vertexSize * info.desc.vertextCount;
+    //size_t size = info.desc.vertexSize * info.desc.vertextCount;
 
-    // CPU 메모리 복사
-    m_pVertexSysMem = malloc(size);
-    memcpy(m_pVertexSysMem, info.buffer.data(), size);
+    //// CPU 메모리 복사
+    //m_pVertexSysMem = malloc(size);
+    //memcpy(m_pVertexSysMem, info.buffer.data(), size);
 
-    if (info.desc.indexCount > 0 && !info.indices.empty())
-    {
-        size_t indexSize = sizeof(_uint) * info.desc.indexCount;
-        m_pIndexSysMem = malloc(indexSize);
-        memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
-    }
+    //if (info.desc.indexCount > 0 && !info.indices.empty())
+    //{
+    //    size_t indexSize = sizeof(_uint) * info.desc.indexCount;
+    //    m_pIndexSysMem = malloc(indexSize);
+    //    memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
+    //}
 
-    // GPU 버퍼 생성
-    ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
+    //// GPU 버퍼 생성
+    //ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
 
-    // Vertex Buffer
-    D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = static_cast<_uint>(size);
-    vbDesc.Usage = D3D11_USAGE_DEFAULT;
-    vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    //// Vertex Buffer
+    //D3D11_BUFFER_DESC vbDesc = {};
+    //vbDesc.ByteWidth = static_cast<_uint>(size);
+    //vbDesc.Usage = D3D11_USAGE_DEFAULT;
+    //vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-    D3D11_SUBRESOURCE_DATA vbData = {};
-    vbData.pSysMem = info.buffer.data();
+    //D3D11_SUBRESOURCE_DATA vbData = {};
+    //vbData.pSysMem = info.buffer.data();
 
-    if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
-        return;
+    //if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
+    //    return;
 
-    // Index Buffer
-    if (info.desc.indexCount > 0 && !info.indices.empty())
-    {
-        D3D11_BUFFER_DESC ibDesc = {};
-        ibDesc.ByteWidth = sizeof(_uint) * info.desc.indexCount;
-        ibDesc.Usage = D3D11_USAGE_DEFAULT;
-        ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    //// Index Buffer
+    //if (info.desc.indexCount > 0 && !info.indices.empty())
+    //{
+    //    D3D11_BUFFER_DESC ibDesc = {};
+    //    ibDesc.ByteWidth = sizeof(_uint) * info.desc.indexCount;
+    //    ibDesc.Usage = D3D11_USAGE_DEFAULT;
+    //    ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-        D3D11_SUBRESOURCE_DATA ibData = {};
-        ibData.pSysMem = info.indices.data();
+    //    D3D11_SUBRESOURCE_DATA ibData = {};
+    //    ibData.pSysMem = info.indices.data();
 
-        if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
-            return;
-    }
+    //    if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
+    //        return;
+    //}
 }
 
 ID3D11Buffer* CMeshBuffer::Get_VertexBuffer() const

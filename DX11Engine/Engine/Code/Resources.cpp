@@ -85,6 +85,67 @@ void CResources::LoadComplete_Scene(const CEngineResource* _ptr)
 		CDebug::LogError("Create Scene resource failed");
 }
 
+vector<CMeshBuffer*> CResources::CreateSceneMeshBuffers(const wstring& _name, const wstring& _path, void* _desc, const _bool _tempScene)
+{
+	_float scaleFactor = 1.f;
+
+	if (_desc)
+		scaleFactor = *reinterpret_cast<_float*>(_desc);
+
+	vector<CMeshBuffer*> resultList = {};
+
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile
+	(
+		CEngineString::WStringToString(m_strDefaultAssetPath + _path),
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_FlipUVs
+	);
+
+	if (!scene)
+	{
+		CDebug::LogError(L"Create Scene mesh bundle failed: " + _path);
+		return {};
+	}
+
+	for (_uint i = 0; i < scene->mNumMeshes; ++i)
+	{
+		CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
+		CMeshBuffer* mb = CMeshBuffer::Create();;
+
+		mb->Initailize_Custom(info, nullptr);
+		mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
+
+		resultList.push_back(mb);
+	}
+
+	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+		CSceneManager::GetInstance().Get_CrtScene();
+
+	if (!_tempScene)
+		targetScene->Add_MeshBundle(_name, resultList);
+	else
+		targetScene->Add_TempMeshBundle(_name, resultList);
+
+	CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);
+
+	return resultList;
+}
+
+vector<CMeshBuffer*> CResources::LoadMeshBuffersOnScene(const wstring& _name)
+{
+	vector<CMeshBuffer*> r = {};
+
+	if (CSceneManager::GetInstance().Get_CrtScene())
+		r = CSceneManager::GetInstance().Get_CrtScene()->Find_MeshInfoResource(_name);
+
+	return r;
+}
+
 _bool CResources::FileExists(const wstring& _path)
 {
 	const string path = CEngineString::WStringToString(_path);

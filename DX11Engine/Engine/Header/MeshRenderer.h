@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
+#include "MeshBuffer.h"
 
 NS_BEGIN(Engine)
 

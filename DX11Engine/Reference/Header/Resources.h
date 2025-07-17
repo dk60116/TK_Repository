@@ -6,7 +6,7 @@
 #include "AnimationClip.h"
 
 #include <filesystem>
-namespace fs = std::filesystem;
+namespace fs = filesystem;
 
 NS_BEGIN(Engine)
 
@@ -31,6 +31,8 @@ public:
 	template<typename T>
 	T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
 
+    vector<class CMeshBuffer*> CreateSceneMeshBuffers(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
+
     template<typename T>
     T* LoadOnGame(const wstring& _name);
 
@@ -39,6 +41,8 @@ public:
 
     template<typename T>
 	T* LoadOnScene(const wstring& _name);
+
+    vector<class CMeshBuffer*> LoadMeshBuffersOnScene(const wstring& _name);
 
 	static _bool FileExists(const wstring& _path);
 	static _bool FileExists(const string& _path);

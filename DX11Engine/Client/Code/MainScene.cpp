@@ -94,7 +94,8 @@ HRESULT CMainScene::Initialize()
 	CGameObject* templeObj = Add_GameObject(L"Temple");
  	CMeshRenderer* templeRenderer = templeObj->AddComponent<CMeshRenderer>();
 	
-	templeRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Temple_Model (Mesh Buffer)"));
+	templeObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"Temple_Model (MeshBuffer)"));
+
 	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 	templeRenderer->Get_Material()->Set_FloatValue(L"Smoothness", 0.5f);
 	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.01f);

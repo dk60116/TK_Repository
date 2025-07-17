@@ -69,8 +69,8 @@ void CInspectorBox::Render()
         if (ImGui::Checkbox("##ActiveToggle", &active))
             selectedObj->SetActive(active);
 
-        static CGameObject* s_NameTarget = nullptr;
-        static std::string  s_EditName;
+        CGameObject* s_NameTarget = nullptr;
+        string  s_EditName;
         if (s_NameTarget != selectedObj)
         {
             s_NameTarget = selectedObj;
@@ -83,8 +83,9 @@ void CInspectorBox::Render()
         ImGui::Text(("[" + to_string(selectedObj->Get_UniqueID()) + "] ").c_str());
         ImGui::SameLine();
         ImGui::SetCursorPosY(baseY + 3.f);
-        ImGui::SetNextItemWidth(140.0f);                
-        if (ImGui::InputText("##ObjName", &s_EditName,
+        ImGui::SetNextItemWidth(140.0f);
+        string label = "##ObjName" + std::to_string(selectedObj->Get_UniqueID());
+        if (ImGui::InputText(label.c_str(), &s_EditName,
             ImGuiInputTextFlags_AutoSelectAll |
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
