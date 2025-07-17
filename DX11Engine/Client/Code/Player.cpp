@@ -93,19 +93,11 @@ void CPlayer::Update()
 	}
 	if (CInput::GetInstance().GetKey(A))
 	{
-		Get_Transform()->Add_EulerAnglesY(-45.f * DELTA_TIME);
+		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().left * DELTA_TIME);
 	}
 	if (CInput::GetInstance().GetKey(D))
 	{
-		Get_Transform()->Add_EulerAnglesY(45.f * DELTA_TIME);
-	}
-	if (CInput::GetInstance().GetKey(R))
-	{
-		Get_Transform()->Add_EulerAnglesZ(-45.f * DELTA_TIME);
-	}
-	if (CInput::GetInstance().GetKey(T))
-	{
-		Get_Transform()->Add_EulerAnglesZ(45.f * DELTA_TIME);
+		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().right * DELTA_TIME);
 	}
 }
 
