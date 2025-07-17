@@ -96,6 +96,7 @@ HRESULT CMainScene::Initialize()
 	
 	templeRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Temple_Model (Mesh Buffer)"));
 	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+	templeRenderer->Get_Material()->Set_FloatValue(L"Smoothness", 0.5f);
 	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.01f);
 
 	return S_OK;

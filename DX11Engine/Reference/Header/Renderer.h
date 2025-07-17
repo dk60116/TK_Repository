@@ -21,6 +21,7 @@ public:
 	virtual void Render_Outline(CCamera* _cam) PURE;
 
 public:
+	CMaterial* Get_Material();
 	void Set_Material(CMaterial* _material);
 
 protected:

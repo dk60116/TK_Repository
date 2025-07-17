@@ -33,8 +33,6 @@ HRESULT CUI::Initialize()
 	{
 		m_pLineMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
 		m_pLineMat->AddRef();
-
-		m_pLineMat->Set_DiffuseColor(ColorValue::white());
 	}
 #endif
 

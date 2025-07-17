@@ -46,6 +46,7 @@ private:
 	MeshBufferInitiaizeInfo CreateQuad();
 	MeshBufferInitiaizeInfo CreateCylinder();
 	MeshBufferInitiaizeInfo CreateTriangle();
+	MeshBufferInitiaizeInfo CreateTerrain(_uint _sizeX, _uint _sizeY);
 	MeshBufferInitiaizeInfo CreateObjectMesh(const string& _filePath, const _float _scaleFactor = 1.f);
 
 public:

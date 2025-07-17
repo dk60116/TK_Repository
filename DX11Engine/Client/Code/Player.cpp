@@ -49,8 +49,6 @@ HRESULT CPlayer::Initialize()
 
 	Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
 
-	CDebug::LogError(Get_Transform()->Get_Child(0)->Get_GameObject()->Get_ObjectName());
-
 	//m_pAnimator->Set_PlaybackSpeed(0.1f);
 	//m_pAnimator->Play(L"Run");
 

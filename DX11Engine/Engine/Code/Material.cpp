@@ -10,7 +10,9 @@ CMaterial::CMaterial()
 	, m_pLightBuffer(nullptr)
 	, m_bUseLight(false)
 	, m_vTextureList({})
-	, m_vDiffuseColor(ColorValue::white())
+	, m_mIntValues({})
+	, m_mFloatValues({})
+	, m_mVectorValues({})
 {
 	m_strName = L"Material";
 }
@@ -23,7 +25,9 @@ CMaterial::CMaterial(const CMaterial& _other)
 	, m_pLightBuffer(_other.m_pLightBuffer)
 	, m_bUseLight(_other.m_bUseLight)
 	, m_vTextureList({})
-	, m_vDiffuseColor(ColorValue::white())
+	, m_mFloatValues(_other.m_mFloatValues)
+	, m_mIntValues(_other.m_mIntValues)
+	, m_mVectorValues(_other.m_mVectorValues)
 {
 	m_strName = L"Material (Clone)";
 
@@ -37,6 +41,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 		m_pMaterialBuffer->AddRef();
 	if (m_pLightBuffer)
 		m_pLightBuffer->AddRef();
+
+	BaseInitValues();
 }
 
 CMaterial::~CMaterial()
@@ -71,6 +77,8 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 	if (FAILED(Create_ConstantBuffer()))
 		return E_FAIL;
 
+	BaseInitValues();
+
 	return S_OK;
 }
 
@@ -84,6 +92,16 @@ void CMaterial::OnDestroy()
 
 	for (TRAVERSAL_ITER(m_vTextureList, it))
 		Safe_Release(*it);
+}
+
+void CMaterial::BaseInitValues()
+{
+	{
+		m_mFloatValues.emplace(L"Smoothness", 0.f);
+	}
+	{
+		m_mVectorValues.emplace(L"DiffuseColor", ColorValue::white().f4Color());
+	}
 }
 
 void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount) const
@@ -111,15 +129,16 @@ void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatri
 
 	// b2: PerMaterial
 	MaterialCB mat = {};
+
 	mat.baseColor = XMFLOAT4
 	(
-		m_vDiffuseColor.r / 255.f,
-		m_vDiffuseColor.g / 255.f,
-		m_vDiffuseColor.b / 255.f,
-		m_vDiffuseColor.a / 255.f
+		m_mVectorValues.at(L"DiffuseColor").x,
+		m_mVectorValues.at(L"DiffuseColor").y,
+		m_mVectorValues.at(L"DiffuseColor").z,
+		m_mVectorValues.at(L"DiffuseColor").w
 	);
 	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
-	mat.smoothness = 0.5f;
+	mat.smoothness = m_mFloatValues.at(L"Smoothness");
 	mat.boneCount = _boneCount;
 	mat.padding = 0.f;
 
@@ -155,11 +174,6 @@ CTexture* CMaterial::Get_Texture(_int _index) const
 	return m_vTextureList[_index];
 }
 
-void CMaterial::Set_DiffuseColor(const ColorValue& _color)
-{
-	m_vDiffuseColor = _color;
-}
-
 void CMaterial::Set_Texture(CTexture* _texture, _int _index)
 {
 	if (_index < 0)
@@ -173,6 +187,36 @@ void CMaterial::Set_Texture(CTexture* _texture, _int _index)
 
 	if (_texture)
 		_texture->AddRef();
+}
+
+void CMaterial::Set_FloatValue(const wstring _key, const _float _value)
+{
+	auto it = m_mFloatValues.find(_key);
+
+	if (it != m_mFloatValues.end())
+		m_mFloatValues[_key] = _value;
+	else
+		CDebug::LogError(L"Material - Set_FloatValue Failed - Key not found: " + _key  + L" - " + m_strResourceName);
+}
+
+void CMaterial::Set_IntValue(const wstring _key, const _int _value)
+{
+	auto it = m_mFloatValues.find(_key);
+
+	if (it != m_mFloatValues.end())
+		m_mIntValues[_key] = _value;
+	else
+		CDebug::LogError(L"Material - Set_IntValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
+}
+
+void CMaterial::Set_VectorValue(const wstring _key, const _float4 _value)
+{
+	auto it = m_mVectorValues.find(_key);
+
+	if (it != m_mVectorValues.end())
+		m_mVectorValues[_key] = _value;
+	else
+		CDebug::LogError(L"Material - Set_VectorValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
 }
 
 void CMaterial::Set_Shader(CShader* _shader)

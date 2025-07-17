@@ -43,6 +43,11 @@ HRESULT CRenderer::Initialize()
 	return S_OK;
 }
 
+CMaterial* CRenderer::Get_Material()
+{
+	return m_pMaterial;
+}
+
 void CRenderer::Set_Material(CMaterial* _material)
 {
 	Safe_Release(m_pMaterial);
