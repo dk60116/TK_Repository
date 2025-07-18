@@ -207,7 +207,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
             const aiVertexWeight& vw = bone->mWeights[j];
 
             _uint vertexId = vw.mVertexId;
-            float weight = vw.mWeight;
+            _float weight = vw.mWeight;
 
             auto& v = vertices[vertexId];
 
@@ -242,7 +242,7 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
             });
 
         // 다시 배열에 복사
-        for (int k = 0; k < 4; ++k)
+        for (_uint k = 0; k < 4; ++k)
         {
             if (k < bonePairs.size())
             {
@@ -257,10 +257,10 @@ void CSkinnedMeshBuffer::FillBoneWeightsAndIndices(const aiMesh* mesh, vector<Ve
         }
 
         // 정규화
-        float sum = v.boneWeights[0] + v.boneWeights[1] + v.boneWeights[2] + v.boneWeights[3];
+        _float sum = v.boneWeights[0] + v.boneWeights[1] + v.boneWeights[2] + v.boneWeights[3];
         if (sum > 0.0f)
         {
-            for (int k = 0; k < 4; ++k)
+            for (_uint k = 0; k < 4; ++k)
                 v.boneWeights[k] /= sum;
         }
     }
