@@ -25,6 +25,9 @@ private:
 	void Shutdown();
 
 private:
+	CMeshBuffer::TERRAINBUFFERDESC FormatToTerrainDesc(wstring _name, wstring _format) const;
+
+private:
 	HANDLE m_hThread;
 	CRITICAL_SECTION m_pCriticalSection;
 

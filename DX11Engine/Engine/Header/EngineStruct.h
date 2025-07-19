@@ -1323,6 +1323,11 @@ namespace Engine
     {
         _matrix lights[64];
     };
+
+    struct ImageCB
+    {
+        _float4 values;
+    };
 #pragma endregion
 
 #pragma region FBXResources

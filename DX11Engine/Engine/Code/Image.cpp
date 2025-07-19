@@ -21,6 +21,14 @@ HRESULT CImage::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	D3D11_BUFFER_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.ByteWidth = sizeof(ImageCB);
+
+	if (FAILED(m_pDevice->CreateBuffer(&desc, nullptr, &m_pImageBuffer)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -53,11 +61,36 @@ void CImage::Render_Editor()
 
 void CImage::Render()
 {
+	ImageCB imageValue = { _float4(m_fFillAmount, 0, 0, 0) };
+	m_pContext->UpdateSubresource(m_pImageBuffer, 0, nullptr, &imageValue, 0, 0);
+	m_pContext->PSSetConstantBuffers(3, 1, &m_pImageBuffer);
 }
 
 void CImage::OnDestroy()
 {
 	Safe_Release(m_pTexture);
+}
+
+const CImage::FillMethod CImage::Get_FillMethod() const
+{
+	return m_eFillMethod;
+}
+
+void CImage::Set_FillMethod(FillMethod _fillMethod)
+{
+	m_eFillMethod = _fillMethod;
+}
+
+const _float CImage::GetFillAmount() const
+{
+	return m_fFillAmount;
+}
+
+void CImage::SetFillAmount(_float _fill)
+{
+	_fill = clamp(_fill, 0.f, 1.f);
+
+	m_fFillAmount = _fill;
 }
 
 void CImage::SetTexture(CTexture* _texture)

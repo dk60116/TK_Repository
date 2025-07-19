@@ -90,7 +90,7 @@ void CSceneLoader::ThreadLoadingLoop()
 			if (CEngineString::Contains(wFile, L".png"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Texture]"))
-					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));
+					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));
 			}
 			else if (CEngineString::Contains(wFile, L".fbx"))
 			{
@@ -106,9 +106,14 @@ void CSceneLoader::ThreadLoadingLoop()
 					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", wFile, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
-					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));
+					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));
 				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))
-					CResources::LoadComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
+					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
+			}
+			else if (wFile == L"Terrain")
+			{
+				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
+				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
 			}
 		}
 		else
@@ -127,4 +132,28 @@ void CSceneLoader::Shutdown()
 	WaitForSingleObject(m_hThread, INFINITE);
 	CloseHandle(m_hThread);
 	DeleteCriticalSection(&m_pCriticalSection);
+}
+
+CMeshBuffer::TERRAINBUFFERDESC CSceneLoader::FormatToTerrainDesc(wstring _name, wstring _format) const
+{
+	CMeshBuffer::TERRAINBUFFERDESC terrainDesc = {};
+
+	wstring terrainFormat = CEngineString::Erase(_format, L"[");
+	terrainFormat = CEngineString::Erase(terrainFormat, L"]");
+
+	vector<wstring> tokens = CEngineString::Split(terrainFormat, L", ");
+	vector<_float> values = {};
+
+	for (size_t i = 0; i < 5; ++i)
+		values.push_back(stof(tokens[i]));
+
+	terrainDesc.isHeightMapBase = values[0] > 0.5f;
+	terrainDesc.landscape = static_cast<_uint>(values[1]);
+	terrainDesc.portrait = static_cast<_uint>(values[2]);
+	terrainDesc.size = values[3];
+	terrainDesc.heightWeight = values[4];
+	CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", tokens[5], nullptr, true));
+	terrainDesc.heightMap = _name + L" - Terrain Height map (Texture)";
+
+	return terrainDesc;
 }

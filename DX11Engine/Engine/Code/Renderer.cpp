@@ -22,6 +22,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	if (!m_pMaterial)
+	{
+		Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+	}
+
 	if (!m_pOutlineMat)
 	{
 

@@ -27,11 +27,12 @@ public:
 
 	typedef struct TerainMeshBufferDesctiption
 	{
-		_bool heightMapBase = false;
+		_bool isHeightMapBase = false;
 		_uint landscape = 100;
 		_uint portrait = 100;
 		_float size = 0.5f;
-		class CTexture* heightMap = nullptr;
+		_float heightWeight = 1.f;
+		wstring heightMap = L"";
 	}TERRAINBUFFERDESC;
 
 protected:
@@ -61,7 +62,7 @@ private:
 	MeshBufferInitiaizeInfo CreateQuad();
 	MeshBufferInitiaizeInfo CreateCylinder();
 	MeshBufferInitiaizeInfo CreateTriangle();
-	MeshBufferInitiaizeInfo CreateTerrain(_uint _sizeX, _uint _sizeZ, const _float _size);
+	MeshBufferInitiaizeInfo CreateTerrain(_uint _sizeX, _uint _sizeZ, const _float _size, _float _heighyWeight, ID3D11Texture2D* _heightMap);
 
 	static MeshBufferInitiaizeInfo CreateObjectMesh(const aiScene* _aiScene, const _uint _index = 0, const _float _scaleFactor = 1.f);
 
@@ -82,7 +83,10 @@ protected:
 
 private:
 	void* m_pVertexSysMem;
-	void* m_pIndexSysMem ;
+	void* m_pIndexSysMem;
+
+private:
+	ID3D11Texture2D* m_pTempTexture;
 };
 
 NS_END

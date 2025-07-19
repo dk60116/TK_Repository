@@ -19,6 +19,11 @@ cbuffer PerMaterial : register(b2)
     float2 padding;
 }
 
+cbuffer PerFillAmount : register(b3)
+{
+    float gFillAmount;
+}
+
 // ───── 버텍스 구조
 struct VSIn
 {
@@ -50,8 +55,9 @@ VSOut VSMain(VSIn input)
 
 float4 PSMain(VSOut input) : SV_TARGET
 {
-    if (useTexture != 0)
-        return gTexture.Sample(gSampler, input.uv);
-    else
-        return gBaseColor;
+    
+    
+    return (useTexture != 0)
+         ? gTexture.Sample(gSampler, input.uv)
+         : gBaseColor;
 }

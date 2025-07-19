@@ -277,9 +277,6 @@ void CMaterial::Bind_Texture() const
 	if (!m_vTextureList.empty() && m_vTextureList[0])
 		texture = m_vTextureList[0]->Get_SRV();
 
-	if (CEngineString::Contains(m_strName, L"Clone"))
-		int a = 0;
-
 	context->PSSetShaderResources(0, 1, &texture);
 
 	static ID3D11SamplerState* gSamplerState = nullptr;

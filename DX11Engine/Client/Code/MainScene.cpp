@@ -9,6 +9,7 @@ CMainScene::CMainScene()
 	, m_pDirLight(nullptr)
 	, m_pCanvas(nullptr)
 	, m_pPlayer(nullptr)
+	, m_pImage2(nullptr)
 {
 }
 
@@ -82,7 +83,9 @@ HRESULT CMainScene::Initialize()
 	image->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_BG (Texture)"));
 
 	CGameObject* ImageObject2 = Add_GameObject(L"Image2");
-	CImage* image2 = ImageObject2->AddComponent<CImage>();
+	m_pImage2 = ImageObject2->AddComponent<CImage>();
+
+	m_pImage2->SetFillAmount(1.f);
 
 	ImageObject->Get_Transform()->SetParent(canvasObj->Get_Transform());
 	image->Get_RectTransform()->Set_WidthHeight(1280, 720);
@@ -97,9 +100,13 @@ HRESULT CMainScene::Initialize()
 	
 	templeObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"Temple_Model (MeshBuffer)"));
 
-	templeRenderer->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 	templeRenderer->Get_Material()->Set_FloatValue(L"Smoothness", 0.5f);
 	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.01f);
+
+	CGameObject* terrainObj = Add_GameObject(L"Terrain");
+	CMeshRenderer* terrainBuffer = terrainObj->AddComponent<CMeshRenderer>();
+	terrainBuffer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Sample_Terrain (Terrain MeshBuffer)"));
+	terrainBuffer->Get_Material()->Set_Texture(CResources::GetInstance().LoadOnScene<CTexture>(L"Terrain_MainTex (Texture)")); 
 
 	return S_OK;
 }
@@ -110,4 +117,17 @@ void CMainScene::Update()
 
 	if (CInput::GetInstance().GetKeyDown(Alpha1))
 		CSceneManager::GetInstance().LoadScene(L"Main Scene");
+
+	_float fill = m_pImage2->GetFillAmount();
+
+	if (CInput::GetInstance().GetKey(O))
+	{
+		m_pImage2->SetFillAmount(fill - DELTA_TIME);
+		CDebug::Log(m_pImage2->GetFillAmount());
+	}
+	if (CInput::GetInstance().GetKey(P))
+	{
+		m_pImage2->SetFillAmount(fill + DELTA_TIME);
+		CDebug::Log(m_pImage2->GetFillAmount());
+	}
 }

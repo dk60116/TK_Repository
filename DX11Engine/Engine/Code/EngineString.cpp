@@ -95,3 +95,55 @@ vector<string> CEngineString::Split(const string& _str, const string& _delimiter
 
     return tokens;
 }
+
+vector<wstring> CEngineString::Split(const wstring& _wstr, const wstring& _delimiter)
+{
+    vector<wstring> tokens;
+
+    if (_delimiter.empty())
+        return tokens;
+
+    if (_wstr.find(_delimiter) == string::npos)
+        return tokens;
+
+    size_t start = 0;
+    size_t pos = 0;
+
+    while ((pos = _wstr.find(_delimiter, start)) != string::npos)
+    {
+        tokens.emplace_back(_wstr.substr(start, pos - start));
+        start = pos + _delimiter.length();
+    }
+
+    tokens.emplace_back(_wstr.substr(start));
+
+    return tokens;
+}
+
+string CEngineString::Erase(const string& _str, const string& _target)
+{
+    string result = _str;
+    size_t pos = 0;
+
+    if (_target.empty())
+        return result;
+
+    while ((pos = result.find(_target, pos)) != string::npos)
+        result.erase(pos, _target.length());
+
+    return result;
+}
+
+wstring CEngineString::Erase(const wstring& _wstr, const wstring& _target)
+{
+    wstring result = _wstr;
+    size_t pos = 0;
+
+    if (_target.empty())
+        return result;
+
+    while ((pos = result.find(_target, pos)) != string::npos)
+        result.erase(pos, _target.length());
+
+    return result;
+}

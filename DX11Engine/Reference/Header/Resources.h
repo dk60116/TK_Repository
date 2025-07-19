@@ -21,8 +21,8 @@ private:
 	void Release();
 
 public:
-    static void LoadComplete_Game(const CEngineResource* _ptr);
-    static void LoadComplete_Scene(const CEngineResource* _ptr);
+    static void LoadResourceComplete_Game(const CEngineResource* _ptr);
+    static void LoadResourceComplete_Scene(const CEngineResource* _ptr);
 
 public:
     template<typename T>
@@ -141,7 +141,7 @@ inline T* CResources::LoadOnScene(const wstring& _name)
 
 		CEngineResource* r = CSceneManager::GetInstance().Get_TempScene()->Find_Resource(_name);
 
-		T* resultResource = dynamic_cast<T*>(r);
+		resultResource = dynamic_cast<T*>(r);
 	}
 
 	return resultResource;

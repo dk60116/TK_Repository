@@ -18,9 +18,16 @@ private:
 	void OnDestroy() override;
 
 public:
+	ID3D11Texture2D* Get_Texture() const;
 	ID3D11ShaderResourceView* Get_SRV() const;
 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pSRV;
+	const D3D11_TEXTURE2D_DESC& Get_TextureDesc();
+
+private:
+	ID3D11Texture2D* m_pTexture;
+	ID3D11ShaderResourceView* m_pSRV;
+
+	D3D11_TEXTURE2D_DESC m_sTextureDesc;
 };
 
 NS_END

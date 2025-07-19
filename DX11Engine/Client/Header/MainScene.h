@@ -17,5 +17,6 @@ private:
 	CLight* m_pDirLight;
 	CCanvas* m_pCanvas;
 	class CPlayer* m_pPlayer;
+	CImage* m_pImage2;
 };
 

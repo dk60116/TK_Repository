@@ -41,12 +41,22 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
         info = CreateQuad();
     else if (_filePath == L"../Assets/Terrain")
     {
-        TERRAINBUFFERDESC terainDesc = {};
+        TERRAINBUFFERDESC terrainDesc = {};
 
         if (_desc)
-            terainDesc = *reinterpret_cast<TERRAINBUFFERDESC*>(_desc);
+            terrainDesc = *reinterpret_cast<TERRAINBUFFERDESC*>(_desc);
 
-        info = CreateTerrain(terainDesc.landscape, terainDesc.portrait, 0);
+        if (terrainDesc.isHeightMapBase)
+        {
+            CTexture* heightMap = CResources::GetInstance().LoadOnScene<CTexture>(terrainDesc.heightMap);
+
+            if (heightMap)
+                info = CreateTerrain(terrainDesc.landscape, terrainDesc.portrait, terrainDesc.size, terrainDesc.heightWeight, heightMap->Get_Texture());
+            else
+                CDebug::LogError(L"Failded create terrain mesh buffer - Height map texture not found: " + terrainDesc.heightMap);
+        }
+        else
+            info = CreateTerrain(terrainDesc.landscape, terrainDesc.portrait, 0, 0, nullptr);
     }
     else
         return S_OK;
@@ -480,19 +490,10 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTriangle()
     return info;
 }
 
-CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _uint _sizeZ, const _float _scale)
+CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _uint _sizeZ, const _float _scale, _float _heighyWeight, ID3D11Texture2D* _heightMap)
 {
-    if (_sizeX < 1)
-        _sizeX = 1;
-    if (_sizeZ < 1)
-        _sizeZ = 1;
-
-    MeshBufferInitiaizeInfo info = {};
-
-    using VTX = VertexTexNormalTangentBuffer;
-
-    const _float startX = -static_cast<_float>(_sizeX) * _scale;
-    const _float startZ = static_cast<_float>(_sizeZ) * _scale;
+    _sizeX = std::max<_uint>(_sizeX, 1);
+    _sizeZ = std::max<_uint>(_sizeZ, 1);
 
     const _uint vertCountX = _sizeX + 1;
     const _uint vertCountZ = _sizeZ + 1;
@@ -500,69 +501,140 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
     const _uint totalQuads = _sizeX * _sizeZ;
     const _uint totalIndices = totalQuads * 6;
 
-    vector<VTX> vertices = {};
-    vector<_uint> indices = {};
-    vertices.reserve(totalVerts);
+    const _float startX = -static_cast<_float>(_sizeX) * _scale;
+    const _float startZ =  static_cast<_float>(_sizeZ) * _scale;
+
+    using VTX = VertexTexNormalTangentBuffer;
+    std::vector<VTX>  vertices(totalVerts);
+    std::vector<_uint> indices;
     indices.reserve(totalIndices);
 
+    vector<uint8_t> heightPixels;
+    _uint hmWidth  = 0, hmHeight = 0, hmStride = 0;
+
+    if (_heightMap)
+    {
+        ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
+        ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+        D3D11_TEXTURE2D_DESC hDesc{};
+        _heightMap->GetDesc(&hDesc);
+        hmWidth  = hDesc.Width;
+        hmHeight = hDesc.Height;
+
+        D3D11_TEXTURE2D_DESC sDesc = hDesc;
+        sDesc.BindFlags      = 0;
+        sDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+        sDesc.Usage          = D3D11_USAGE_STAGING;
+        ID3D11Texture2D* staging = nullptr;
+        device->CreateTexture2D(&sDesc, nullptr, &staging);
+        staging->AddRef();
+        context->CopyResource(staging, _heightMap);
+
+        D3D11_MAPPED_SUBRESOURCE m{};
+        context->Map(staging, 0, D3D11_MAP_READ, 0, &m);
+        hmStride = static_cast<_uint>(m.RowPitch);
+        heightPixels.assign(static_cast<uint8_t*>(m.pData), static_cast<uint8_t*>(m.pData) + m.RowPitch * hmHeight);
+        context->Unmap(staging, 0);
+
+        context->Unmap(staging, 0);
+        context->Flush();
+        staging->Release();
+        staging = nullptr;
+    }
+
+    auto SampleHeight = [&](float u, float v) -> float
+    {
+        if (heightPixels.empty()) 
+            return 0.f;
+        _uint x = static_cast<_uint>(std::clamp(u, 0.f, 1.f) * (hmWidth  - 1));
+        _uint y = static_cast<_uint>(std::clamp(v, 0.f, 1.f) * (hmHeight - 1));
+        const _uint bytesPerPixel = 4;               // 대부분 R8G8B8A8
+        uint8_t* row = &heightPixels[y * hmStride];
+        uint8_t  gray = row[x * bytesPerPixel + 0];   // 보통 [0]=B, [2]=R
+        return (gray / 255.f) * _heighyWeight * 25.f;
+    };
+
+    auto idx = [vertCountX](_uint x, _uint z) { return z * vertCountX + x; };
+
+    // 정점 생성
     for (_uint z = 0; z < vertCountZ; ++z)
     {
+        const float v = static_cast<float>(z) / _sizeZ;
         for (_uint x = 0; x < vertCountX; ++x)
         {
-            VTX v = {};
-            v.position =
-            {
-                startX + x * 1.f,
-                0.f,
-                startZ + z * 1.f
-            };
+            const float u = static_cast<float>(x) / _sizeX; 
+            const float h = SampleHeight(u, v);
 
-            v.normal = { 0.f, 1.f, 0.f };
-
-            v.uv =
-            {
-                static_cast<_float>(x) / _sizeX,
-                static_cast<_float>(z) / _sizeZ
-            };
-
-            v.tangent = { 1.f, 0.f, 0.f };
-
-            vertices.emplace_back(v);
-        };
+            VTX& vert   = vertices[idx(x, z)];
+            vert.position = { startX + x * _scale,  h,  startZ - z * _scale };
+            vert.normal   = { 0, 1, 0 }; 
+            vert.uv       = { u, v };
+            vert.tangent  = { 1, 0, 0 };  
+        }
     }
 
     for (_uint z = 0; z < _sizeZ; ++z)
     {
         for (_uint x = 0; x < _sizeX; ++x)
         {
-            _uint v0 = x + z * vertCountX;
-            _uint v1 = (x + 1) + z * vertCountX;
-            _uint v2 = x + (z + 1) * vertCountX;
-            _uint v3 = (x + 1) + (z + 1) * vertCountX;
+            _uint v0 = idx(x,     z);
+            _uint v1 = idx(x + 1, z);
+            _uint v2 = idx(x,     z + 1);
+            _uint v3 = idx(x + 1, z + 1);
 
-            indices.push_back(v0);
-            indices.push_back(v1);
-            indices.push_back(v2);
+            indices.push_back(v0); indices.push_back(v1); indices.push_back(v2);
+            indices.push_back(v1); indices.push_back(v3); indices.push_back(v2);
 
-            indices.push_back(v2);
-            indices.push_back(v1);
-            indices.push_back(v3);
+            auto& p0 = vertices[v0].position;
+            auto& p1 = vertices[v1].position;
+            auto& p2 = vertices[v2].position;
+            auto& p3 = vertices[v3].position;
+
+            XMVECTOR edge10 = XMVectorSet(p1.x - p0.x, p1.y - p0.y, p1.z - p0.z, 0.f);
+            XMVECTOR edge20 = XMVectorSet(p2.x - p0.x, p2.y - p0.y, p2.z - p0.z, 0.f);
+            XMVECTOR n0Vec = XMVector3Normalize(XMVector3Cross(edge10, edge20));
+
+            XMVECTOR edge11 = XMVectorSet(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z, 0.f);
+            XMVECTOR edge21 = XMVectorSet(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z, 0.f);
+            XMVECTOR n1Vec = XMVector3Normalize(XMVector3Cross(edge11, edge21));
+
+            _float3 n0{}, n1{};
+            XMStoreFloat3(&n0, n0Vec);
+            XMStoreFloat3(&n1, n1Vec);
+
+            XMVECTOR v0n = XMLoadFloat3(&vertices[v0].normal);
+            XMVECTOR v1n = XMLoadFloat3(&vertices[v1].normal);
+            XMVECTOR v2n = XMLoadFloat3(&vertices[v2].normal);
+            XMVECTOR v3n = XMLoadFloat3(&vertices[v3].normal);
+
+            v0n = XMVectorAdd(v0n, XMLoadFloat3(&n0));
+            v1n = XMVectorAdd(v1n, XMVectorAdd(XMLoadFloat3(&n0), XMLoadFloat3(&n1)));
+            v2n = XMVectorAdd(v2n, XMVectorAdd(XMLoadFloat3(&n0), XMLoadFloat3(&n1)));
+            v3n = XMVectorAdd(v3n, XMLoadFloat3(&n1));
+
+            XMStoreFloat3(&vertices[v0].normal, v0n);
+            XMStoreFloat3(&vertices[v1].normal, v1n);
+            XMStoreFloat3(&vertices[v2].normal, v2n);
+            XMStoreFloat3(&vertices[v3].normal, v3n);
         }
     }
 
-    info.buffer.assign(
-        reinterpret_cast<const uint8_t*>(vertices.data()),
-        reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size());
+    for (auto& v : vertices)
+    {
+        XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&v.normal));
+        XMStoreFloat3(&v.normal, n);
+    }
 
+    MeshBufferInitiaizeInfo info{};
+    info.buffer.assign(reinterpret_cast<const uint8_t*>(vertices.data()),
+                       reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size());
     info.indices.assign(indices.begin(), indices.end());
 
-    MESHBUFFERDESC desc{};
-    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    desc.vertexSize = sizeof(VTX);
-    desc.vertextCount = static_cast<_uint>(vertices.size());
-    desc.indexCount = static_cast<_uint>(indices.size());
-
-    info.desc = desc;
+    info.desc.topology     = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    info.desc.vertexSize   = sizeof(VTX);
+    info.desc.vertextCount = static_cast<_uint>(vertices.size());
+    info.desc.indexCount   = static_cast<_uint>(indices.size());
 
     return info;
 }
