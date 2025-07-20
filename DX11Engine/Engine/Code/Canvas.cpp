@@ -45,7 +45,7 @@ void CCanvas::OnPreRender_Editor()
 	
 	if (m_eRenderMode == RenderMode::ScreenSpace_Overlay)
 	{
-		Get_Transform()->Set_Position(10.f, 10.f, 0.f);
+		Get_Transform()->Set_Position(50.f, 50.f, 0.f);
 		Get_Transform()->Set_EulerAngles(vector3::zero());
 		Get_Transform()->Set_LocalScale(resolution.x * 0.01f, resolution.y * 0.01f, 1.f);
 	}

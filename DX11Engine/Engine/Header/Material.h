@@ -15,7 +15,9 @@ public:
 		_bool usingRight = true;
 		vector<pair<wstring, _float>> customFloatValues = {};
 		vector<pair<wstring, _int>> customIntValues = {};
-		vector<pair<wstring, _float4>> customVectorValues = {};
+		vector<pair<wstring, _float2>> customVector2Values = {};
+		vector<pair<wstring, _float3>> customVector3Values = {};
+		vector<pair<wstring, _float4>> customVector4Values = {};
 		vector<pair<wstring, _float4x4>> customMatrixValues = {};
 	} MATERIALDESC;
 
@@ -39,6 +41,7 @@ public:
 	void BindMatrix(const _fmatrix _world);
 	void BindCamera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
 	void Bind_Light(_matrix* _lights, const _uint _count);
+	void Bind_CustomValues();
 
 public:
 	const _bool IsUseLight() const;
@@ -50,7 +53,9 @@ public:
 
 	void Set_FloatValue(const wstring _key, const _float _value);
 	void Set_IntValue(const wstring _key, const _int _value);
-	void Set_VectorValue(const wstring _key, const _float4 _value);
+	void Set_Vector2Value(const wstring _key, const _float2 _value);
+	void Set_Vector3Value(const wstring _key, const _float3 _value);
+	void Set_Vector4Value(const wstring _key, const _float4 _value);
 	void SetMatrixValue(const wstring _key, const _float4x4 _value);
 
 private:
@@ -65,12 +70,15 @@ private:
 	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pMaterialBuffer;
 	ID3D11Buffer* m_pLightBuffer;
+	vector<BYTE> m_vCustomBufferList;
 
 	_bool m_bUseLight;
 	vector<class CTexture*> m_vTextureList;
 	unordered_map<wstring, _float> m_mFloatValues;
 	unordered_map<wstring, _int> m_mIntValues;
-	unordered_map<wstring, _float4> m_mVectorValues;
+	unordered_map<wstring, _float2> m_mVector2Values;
+	unordered_map<wstring, _float3> m_mVector3Values;
+	unordered_map<wstring, _float4> m_mVector4Values;
 	unordered_map<wstring, _float4x4> m_mMatrixValues;
 };
 

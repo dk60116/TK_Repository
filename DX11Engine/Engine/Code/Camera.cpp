@@ -160,7 +160,7 @@ void CCamera::RenderMesh()
 
 void CCamera::RenderUI()
 {
-	_matrix viewMat = XMMatrixTranslation(10.f, 10.f, 0.f);
+	_matrix viewMat = XMMatrixTranslation(50.f, 50.f, 0.f);
 
 	_vector det = {};
 	const _matrix inverseMat = XMMatrixInverse(&det, viewMat);

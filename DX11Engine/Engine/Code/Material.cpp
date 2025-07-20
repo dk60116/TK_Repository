@@ -8,11 +8,14 @@ CMaterial::CMaterial()
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
 	, m_pLightBuffer(nullptr)
+	, m_vCustomBufferList({})
 	, m_bUseLight(false)
 	, m_vTextureList({})
 	, m_mIntValues({})
 	, m_mFloatValues({})
-	, m_mVectorValues({})
+	, m_mVector2Values({})
+	, m_mVector3Values({})
+	, m_mVector4Values({})
 	, m_mMatrixValues({})
 {
 	m_strName = L"Material";
@@ -24,11 +27,15 @@ CMaterial::CMaterial(const CMaterial& _other)
 	, m_pCameraBuffer(_other.m_pCameraBuffer)
 	, m_pMaterialBuffer(_other.m_pMaterialBuffer)
 	, m_pLightBuffer(_other.m_pLightBuffer)
+	, m_vCustomBufferList({})
 	, m_bUseLight(_other.m_bUseLight)
 	, m_vTextureList({})
 	, m_mFloatValues(_other.m_mFloatValues)
 	, m_mIntValues(_other.m_mIntValues)
-	, m_mVectorValues(_other.m_mVectorValues)
+	, m_mVector2Values(_other.m_mVector2Values)
+	, m_mVector3Values(_other.m_mVector3Values)
+	, m_mVector4Values(_other.m_mVector4Values)
+	, m_mMatrixValues(_other.m_mMatrixValues)
 {
 	m_strName = L"Material (Clone)";
 
@@ -75,13 +82,29 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		m_bUseLight = matDesc->usingRight;
 
 		for (const auto& [key, value] : matDesc->customFloatValues)
+		{
 			m_mFloatValues.emplace(key, value);
+		}
 		for (const auto& [key, value] : matDesc->customIntValues)
+		{
 			m_mIntValues.emplace(key, value);
-		for (const auto& [key, value] : matDesc->customVectorValues)
-			m_mVectorValues.emplace(key, value);
+		}
+		for (const auto& [key, value] : matDesc->customVector2Values)
+		{
+			m_mVector2Values.emplace(key, value);
+		}
+		for (const auto& [key, value] : matDesc->customVector3Values)
+		{
+			m_mVector3Values.emplace(key, value);
+		}
+		for (const auto& [key, value] : matDesc->customVector4Values)
+		{
+			m_mVector4Values.emplace(key, value);
+		}
 		for (const auto& [key, value] : matDesc->customMatrixValues)
+		{
 			m_mMatrixValues.emplace(key, value);
+		}
 	}
 
 	if (FAILED(Create_ConstantBuffer()))
@@ -100,8 +123,11 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pMaterialBuffer);
 	Safe_Release(m_pLightBuffer);
 
+	m_vCustomBufferList.clear();
+
 	for (TRAVERSAL_ITER(m_vTextureList, it))
 		Safe_Release(*it);
+	m_vTextureList.clear();
 }
 
 void CMaterial::BaseInitValues()
@@ -110,7 +136,7 @@ void CMaterial::BaseInitValues()
 		m_mFloatValues.emplace(L"Smoothness", 0.f);
 	}
 	{
-		m_mVectorValues.emplace(L"DiffuseColor", ColorValue::white().f4Color());
+		m_mVector4Values.emplace(L"DiffuseColor", ColorValue::white().f4Color());
 	}
 }
 
@@ -147,10 +173,10 @@ void CMaterial::BindCamera(const _float3 _camPos, const _fmatrix _view, const _c
 
 	mat.baseColor = XMFLOAT4
 	(
-		m_mVectorValues.at(L"DiffuseColor").x,
-		m_mVectorValues.at(L"DiffuseColor").y,
-		m_mVectorValues.at(L"DiffuseColor").z,
-		m_mVectorValues.at(L"DiffuseColor").w
+		m_mVector4Values.at(L"DiffuseColor").x,
+		m_mVector4Values.at(L"DiffuseColor").y,
+		m_mVector4Values.at(L"DiffuseColor").z,
+		m_mVector4Values.at(L"DiffuseColor").w
 	);
 
 	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
@@ -178,6 +204,20 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 
 	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
 	context->PSSetConstantBuffers(4, 1, &m_pLightBuffer);
+}
+
+void CMaterial::Bind_CustomValues()
+{
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+	for (TRAVERSAL_ITER(m_mFloatValues, it))
+	{
+	}
+
+	ID3D11Buffer* v2Buffer;
+	for (TRAVERSAL_ITER(m_mVector2Values, it))
+	{
+	}
 }
 
 const _bool CMaterial::IsUseLight() const
@@ -225,14 +265,34 @@ void CMaterial::Set_IntValue(const wstring _key, const _int _value)
 		CDebug::LogError(L"Material - Set_IntValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
 }
 
-void CMaterial::Set_VectorValue(const wstring _key, const _float4 _value)
+void CMaterial::Set_Vector2Value(const wstring _key, const _float2 _value)
 {
-	auto it = m_mVectorValues.find(_key);
+	auto it = m_mVector2Values.find(_key);
 
-	if (it != m_mVectorValues.end())
-		m_mVectorValues[_key] = _value;
+	if (it != m_mVector2Values.end())
+		m_mVector2Values[_key] = _value;
 	else
-		CDebug::LogError(L"Material - Set_VectorValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
+		CDebug::LogError(L"Material - Set_Vector2Value Failed - Key not found: " + _key + L" - " + m_strResourceName);
+}
+
+void CMaterial::Set_Vector3Value(const wstring _key, const _float3 _value)
+{
+	auto it = m_mVector3Values.find(_key);
+
+	if (it != m_mVector3Values.end())
+		m_mVector3Values[_key] = _value;
+	else
+		CDebug::LogError(L"Material - Set_Vector3Value Failed - Key not found: " + _key + L" - " + m_strResourceName);
+}
+
+void CMaterial::Set_Vector4Value(const wstring _key, const _float4 _value)
+{
+	auto it = m_mVector4Values.find(_key);
+
+	if (it != m_mVector4Values.end())
+		m_mVector4Values[_key] = _value;
+	else
+		CDebug::LogError(L"Material - Set_Vector4Value Failed - Key not found: " + _key + L" - " + m_strResourceName);
 }
 
 void CMaterial::SetMatrixValue(const wstring _key, const _float4x4 _value)

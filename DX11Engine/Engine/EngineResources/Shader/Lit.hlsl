@@ -1,4 +1,4 @@
-//────────────────── 상수 버퍼 ──────────────────
+// 상수 버퍼
 cbuffer PerObject : register(b0)
 {
     float4x4 world;
@@ -18,7 +18,7 @@ cbuffer PerMaterial : register(b2)
     uint useTexture;
     float smoothness;
     uint boneCount;
-    float mpadding; // 16B alignment
+    float mpadding;
 };
 
 cbuffer PerBones : register(b3)
@@ -28,11 +28,11 @@ cbuffer PerBones : register(b3)
 
 cbuffer PerCustomValue : register(b10)
 {
-    float2 tilling;
-    float2 offset;
+    float2 gTiling;
+    float2 gOffset;
 }
 
-//────────────────── 라이트 정의 ──────────────────
+// 라이트 정의
 #define MAX_LIGHTS 64
 
 #define LIGHT_TYPE_DIRECTIONAL 0
@@ -45,11 +45,11 @@ cbuffer PerLight : register(b4)
     float4x4 gLight[MAX_LIGHTS];
 };
 
-//────────────────── 텍스처 & 샘플러 ──────────────────
+// 텍스처 & 샘플러
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
-//────────────────── 버텍스 입출력 ──────────────────
+// 버텍스 입출력
 struct VSIn
 {
     float3 posL : POSITION;
@@ -68,12 +68,12 @@ struct VSOut
     float2 uv : TEXCOORD0;
 };
 
-//────────────────── 버텍스 셰이더 ──────────────────
+// 버텍스 셰이더
 VSOut VSMain(VSIn v)
 {
     VSOut o;
 
-    //── 스킨 포지션
+    // 스킨 포지션
     float4 skinnedPos = float4(v.posL, 1);
     if (boneCount)
     {
@@ -87,7 +87,7 @@ VSOut VSMain(VSIn v)
         }
     }
 
-    //── 스킨 노멀
+    // 스킨 노멀
     float3 skinnedN = v.normalL;
     if (boneCount)
     {
@@ -101,15 +101,15 @@ VSOut VSMain(VSIn v)
         }
     }
 
-    //── 월드 변환
+    // 월드 변환
     float4 posW = mul(skinnedPos, world);
     float3 normalW = normalize(mul((float3x3) world, skinnedN));
 
-    //── MVP
+    // MVP
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
 
-    //── 출력
+    // 출력
     o.posW = posW.xyz;
     o.normalW = normalW;
     o.uv = v.uv;
@@ -117,10 +117,10 @@ VSOut VSMain(VSIn v)
     return o;
 }
 
-//────────────────── 픽셀 셰이더 ──────────────────
+// 픽셀 셰이더
 float4 PSMain(VSOut input) : SV_TARGET
 {    
-    float2 tillingUv = float2(input.uv.x / tilling.x, input.uv.y / tilling.y);
+    float2 tillingUV = float2(input.uv.x / gTiling.x, input.uv.y / gTiling.y);
     float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv) : float4(1, 1, 1, 1);
 
     float3 N = normalize(input.normalW);
