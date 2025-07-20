@@ -26,6 +26,12 @@ cbuffer PerBones : register(b3)
     float4x4 gBones[128];
 };
 
+cbuffer PerCustomValue : register(b10)
+{
+    float2 tilling;
+    float2 offset;
+}
+
 //式式式式式式式式式式式式式式式式式式 塭檜お 薑曖 式式式式式式式式式式式式式式式式式式
 #define MAX_LIGHTS 64
 
@@ -114,6 +120,7 @@ VSOut VSMain(VSIn v)
 //式式式式式式式式式式式式式式式式式式 а撚 樁檜渦 式式式式式式式式式式式式式式式式式式
 float4 PSMain(VSOut input) : SV_TARGET
 {    
+    float2 tillingUv = float2(input.uv.x / tilling.x, input.uv.y / tilling.y);
     float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv) : float4(1, 1, 1, 1);
 
     float3 N = normalize(input.normalW);

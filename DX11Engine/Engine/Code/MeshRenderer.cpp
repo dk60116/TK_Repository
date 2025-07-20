@@ -98,7 +98,8 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
 	// 셰이더 + 텍스처 + 상수 버퍼 바인딩
-	m_pMaterial->Bind(matWorld, camPos, matView, matProj, 0);
+	m_pMaterial->BindMatrix(matWorld);
+	m_pMaterial->BindCamera(camPos, matView, matProj, 0);
 
 	if (m_pMaterial->IsUseLight())
 	{

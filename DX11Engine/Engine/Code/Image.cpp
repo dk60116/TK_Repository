@@ -44,7 +44,10 @@ void CImage::Render_Editor()
 	_matrix matProj = cam->Get_ProjectionMatrix();
 
 	if (m_pMaterial)
-		m_pMaterial->Bind(matWorld, camPos, matView, matProj, 0);
+	{
+		m_pMaterial->BindMatrix(matWorld);
+		m_pMaterial->BindCamera(camPos, matView, matProj, 0);
+	}
 
 	if (m_pRectMesh)
 		m_pRectMesh->Render();
@@ -53,7 +56,10 @@ void CImage::Render_Editor()
 		return;
 
 	if (m_pLineMat)
-		m_pLineMat->Bind(matWorld, camPos, matView, matProj, 0);
+	{
+		m_pLineMat->BindMatrix(matWorld);
+		m_pLineMat->BindCamera(camPos, matView, matProj, 0);
+	}
 
 	if (m_pRectGizmoMesh)
 		m_pRectGizmoMesh->Render();

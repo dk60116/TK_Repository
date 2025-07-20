@@ -202,7 +202,8 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	}
 
 	// 4) 머티리얼 바인딩
-	m_pMaterial->Bind(matWorld, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
+	m_pMaterial->BindMatrix(matWorld);
+	m_pMaterial->BindCamera(camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
 	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);

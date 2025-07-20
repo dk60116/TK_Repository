@@ -13,6 +13,10 @@ public:
 	{
 		class CShader* shaderPointer;
 		_bool usingRight = true;
+		vector<pair<wstring, _float>> customFloatValues = {};
+		vector<pair<wstring, _int>> customIntValues = {};
+		vector<pair<wstring, _float4>> customVectorValues = {};
+		vector<pair<wstring, _float4x4>> customMatrixValues = {};
 	} MATERIALDESC;
 
 private:
@@ -32,7 +36,8 @@ private:
 	void BaseInitValues();
 
 public:
-	void Bind(const _fmatrix _world, const _float3 _camPos, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
+	void BindMatrix(const _fmatrix _world);
+	void BindCamera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
 	void Bind_Light(_matrix* _lights, const _uint _count);
 
 public:
@@ -42,9 +47,11 @@ public:
 public:
 	void Set_Shader(CShader* _shader);
 	void Set_Texture(CTexture* _texture, _int _index = 0);
+
 	void Set_FloatValue(const wstring _key, const _float _value);
 	void Set_IntValue(const wstring _key, const _int _value);
 	void Set_VectorValue(const wstring _key, const _float4 _value);
+	void SetMatrixValue(const wstring _key, const _float4x4 _value);
 
 private:
 	HRESULT Create_ConstantBuffer();
@@ -64,6 +71,7 @@ private:
 	unordered_map<wstring, _float> m_mFloatValues;
 	unordered_map<wstring, _int> m_mIntValues;
 	unordered_map<wstring, _float4> m_mVectorValues;
+	unordered_map<wstring, _float4x4> m_mMatrixValues;
 };
 
 NS_END

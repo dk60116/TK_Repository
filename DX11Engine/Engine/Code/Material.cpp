@@ -13,6 +13,7 @@ CMaterial::CMaterial()
 	, m_mIntValues({})
 	, m_mFloatValues({})
 	, m_mVectorValues({})
+	, m_mMatrixValues({})
 {
 	m_strName = L"Material";
 }
@@ -72,6 +73,15 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		MATERIALDESC* matDesc = reinterpret_cast<MATERIALDESC*>(_desc);
 		Set_Shader(matDesc->shaderPointer);
 		m_bUseLight = matDesc->usingRight;
+
+		for (const auto& [key, value] : matDesc->customFloatValues)
+			m_mFloatValues.emplace(key, value);
+		for (const auto& [key, value] : matDesc->customIntValues)
+			m_mIntValues.emplace(key, value);
+		for (const auto& [key, value] : matDesc->customVectorValues)
+			m_mVectorValues.emplace(key, value);
+		for (const auto& [key, value] : matDesc->customMatrixValues)
+			m_mMatrixValues.emplace(key, value);
 	}
 
 	if (FAILED(Create_ConstantBuffer()))
@@ -104,7 +114,18 @@ void CMaterial::BaseInitValues()
 	}
 }
 
-void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatrix _view, const _cmatrix _projection, const _uint _boneCount) const
+void CMaterial::BindMatrix(const _fmatrix _world)
+{
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+	// b0: PerObject
+	MatrixCB matrixCB = {};
+	matrixCB.world = XMMatrixTranspose(_world);
+	context->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &matrixCB, 0, 0);
+	context->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
+}
+
+void CMaterial::BindCamera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount) const
 {
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
@@ -112,12 +133,6 @@ void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatri
 		m_pShader->Bind();
 
 	Bind_Texture();
-
-	// b0: PerObject
-	MatrixCB matrixCB = {};
-	matrixCB.world = XMMatrixTranspose(_world);
-	context->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &matrixCB, 0, 0);
-	context->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
 
 	// b1: PerCamera
 	CameraCB camCB = {};
@@ -137,6 +152,7 @@ void CMaterial::Bind(const _fmatrix _world, const _float3 _camPos, const _cmatri
 		m_mVectorValues.at(L"DiffuseColor").z,
 		m_mVectorValues.at(L"DiffuseColor").w
 	);
+
 	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
 	mat.smoothness = m_mFloatValues.at(L"Smoothness");
 	mat.boneCount = _boneCount;
@@ -217,6 +233,16 @@ void CMaterial::Set_VectorValue(const wstring _key, const _float4 _value)
 		m_mVectorValues[_key] = _value;
 	else
 		CDebug::LogError(L"Material - Set_VectorValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
+}
+
+void CMaterial::SetMatrixValue(const wstring _key, const _float4x4 _value)
+{
+	auto it = m_mMatrixValues.find(_key);
+
+	if (it != m_mMatrixValues.end())
+		m_mMatrixValues[_key] = _value;
+	else
+		CDebug::LogError(L"Material - Set_MatrixValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
 }
 
 void CMaterial::Set_Shader(CShader* _shader)

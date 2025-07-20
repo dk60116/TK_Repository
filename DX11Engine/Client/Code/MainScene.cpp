@@ -77,12 +77,12 @@ HRESULT CMainScene::Initialize()
 	quadRender->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)"));
 	quadRender->Set_Material(boxMat);
 
-	CGameObject* ImageObject = Add_GameObject(L"Image");
+	CGameObject* ImageObject = Add_GameObject(L"Background");
 	CImage* image = ImageObject->AddComponent<CImage>();
 
 	image->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_BG (Texture)"));
 
-	CGameObject* ImageObject2 = Add_GameObject(L"Image2");
+	CGameObject* ImageObject2 = Add_GameObject(L"Logo");
 	m_pImage2 = ImageObject2->AddComponent<CImage>();
 	m_pImage2->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_Logo (Texture)"));
 
@@ -92,7 +92,7 @@ HRESULT CMainScene::Initialize()
 	image->Get_RectTransform()->Set_WidthHeight(1280, 720);
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
-	m_pImage2->Get_RectTransform()->Set_WidthHeight(200, 200);
+	m_pImage2->Get_RectTransform()->Set_WidthHeight(250, 250);
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
 

@@ -183,7 +183,7 @@ void CCamera::RenderUI()
 	{
 		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
 		{
-			(*it)->Bind_Matrix(inverseMat, projMat);
+			(*it)->Bind_Camrea(inverseMat, projMat);
 			(*it)->Bind_Mesh();
 		}
 	}
