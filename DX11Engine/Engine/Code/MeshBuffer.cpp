@@ -528,7 +528,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
         sDesc.Usage          = D3D11_USAGE_STAGING;
         ID3D11Texture2D* staging = nullptr;
         device->CreateTexture2D(&sDesc, nullptr, &staging);
-        staging->AddRef();
         context->CopyResource(staging, _heightMap);
 
         D3D11_MAPPED_SUBRESOURCE m{};
@@ -537,7 +536,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
         heightPixels.assign(static_cast<uint8_t*>(m.pData), static_cast<uint8_t*>(m.pData) + m.RowPitch * hmHeight);
         context->Unmap(staging, 0);
 
-        context->Unmap(staging, 0);
         context->Flush();
         staging->Release();
         staging = nullptr;

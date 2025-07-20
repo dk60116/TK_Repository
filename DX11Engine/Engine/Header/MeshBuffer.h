@@ -84,9 +84,6 @@ protected:
 private:
 	void* m_pVertexSysMem;
 	void* m_pIndexSysMem;
-
-private:
-	ID3D11Texture2D* m_pTempTexture;
 };
 
 NS_END
