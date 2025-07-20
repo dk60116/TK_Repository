@@ -21,8 +21,6 @@ CTexture* CTexture::Create()
 
 void CTexture::OnDestroy()
 {
-	__super::Release();
-
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pSRV);
 }

@@ -171,10 +171,10 @@ float4 PSMain(VSOut input) : SV_TARGET
         
         // Ambient
         float3 ambient = lightColor * ambientK;
-        ambientSum += ambient;
+        ambientSum += ambient;  
     }
 
-    diffuseSum = max(diffuseSum, float3(0.2f, 0.2f, 0.2f));
+    diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
     float3 litDiffuse = texColor.rgb * saturate(ambientSum + diffuseSum);
     float3 finalColor = litDiffuse + specularSum;
     

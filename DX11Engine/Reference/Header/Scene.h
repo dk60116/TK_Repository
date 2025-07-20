@@ -12,7 +12,7 @@ class ENGINE_DLL CScene abstract : public UObject
 public:
     struct LightSettings
     {
-        float ambient = 0.2f;
+        float ambient = 0.1f;
     };
 
 protected:

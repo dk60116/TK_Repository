@@ -61,6 +61,7 @@ void CRectTransform::Update()
         m_fHeight = m_pParentRect->m_fHeight * m_vScale.y;
 
         m_vScale.x = (m_vStaticWH.x / m_pParentRect->m_vScale.x) * (1.f / (canvasSize.x * 100.f));
+        m_vScale.y = (m_vStaticWH.y / m_pParentRect->m_vScale.y) * (1.f / (canvasSize.y * 100.f));
 
         m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + (m_fWidth * (m_vPivot.x - 0.5f));
         m_vAnchoredPosition.x += m_pParentRect->m_fWidth * (0.5f - m_sAnchors.min.x);
@@ -402,9 +403,9 @@ void CRectTransform::Set_WidthHeight(const vector2 _rect)
                 m_vScale.y = 0;
             }
         }
-
-        m_vStaticWH = _rect;
     }
+
+    m_vStaticWH = _rect;
 }
 
 void CRectTransform::Set_WidthHeight(const _float _x, const _float _y)

@@ -84,6 +84,7 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* ImageObject2 = Add_GameObject(L"Image2");
 	m_pImage2 = ImageObject2->AddComponent<CImage>();
+	m_pImage2->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_Logo (Texture)"));
 
 	m_pImage2->SetFillAmount(1.f);
 
@@ -91,7 +92,7 @@ HRESULT CMainScene::Initialize()
 	image->Get_RectTransform()->Set_WidthHeight(1280, 720);
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
-	//ImageObject->Get_Transform()->Set_LocalScale(ImageObject->Get_Transform()->Get_LocalScale() * 2.f);
+	m_pImage2->Get_RectTransform()->Set_WidthHeight(200, 200);
 
 	//m_pMainCamera->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
 
