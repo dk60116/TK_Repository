@@ -9,7 +9,7 @@ class CEditorCamera : public CCamera
 public:
     struct EditorCameraOption
     {
-        _float moveSpeed = 4.f;
+        _float moveSpeed = 6.f;
         _float crtMoveSpeed = 0.f;
         _float rotateSpeed = 25.f;
         _float dragSpeed = 2.f;

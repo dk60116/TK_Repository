@@ -11,6 +11,7 @@ CMaterial::CMaterial()
 	, m_pCustomBuffer(nullptr)
 	, m_vCustomBufferByteList({})
 	, m_bUseLight(false)
+	, m_vBaseColor(ColorValue::white().f4Color())
 	, m_vTextureList({})
 	, m_mIntValues({})
 	, m_mFloatValues({})
@@ -24,14 +25,15 @@ CMaterial::CMaterial()
 
 CMaterial::CMaterial(const CMaterial& _other)
 	: m_pShader(_other.m_pShader)
-	, m_pMatrixBuffer(_other.m_pMatrixBuffer)
-	, m_pCameraBuffer(_other.m_pCameraBuffer)
-	, m_pMaterialBuffer(_other.m_pMaterialBuffer)
-	, m_pLightBuffer(_other.m_pLightBuffer)
-	, m_pCustomBuffer(_other.m_pCustomBuffer)
-	, m_vCustomBufferByteList({})
+	, m_pMatrixBuffer(nullptr)
+	, m_pCameraBuffer(nullptr)
+	, m_pMaterialBuffer(nullptr)
+	, m_pLightBuffer(nullptr)
+	, m_pCustomBuffer(nullptr)
+	, m_vCustomBufferByteList(_other.m_vCustomBufferByteList)
 	, m_bUseLight(_other.m_bUseLight)
 	, m_vTextureList({})
+	, m_vBaseColor(ColorValue::white().f4Color())
 	, m_mFloatValues(_other.m_mFloatValues)
 	, m_mIntValues(_other.m_mIntValues)
 	, m_mVector2Values(_other.m_mVector2Values)
@@ -43,18 +45,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 
 	if (m_pShader)
 		m_pShader->AddRef();
-	if (m_pMatrixBuffer)
-		m_pMatrixBuffer->AddRef();
-	if (m_pCameraBuffer)
-		m_pCameraBuffer->AddRef();
-	if (m_pMaterialBuffer)
-		m_pMaterialBuffer->AddRef();
-	if (m_pLightBuffer)
-		m_pLightBuffer->AddRef();
-	if (m_pCustomBuffer)
-		m_pCameraBuffer->AddRef();
 
-	BaseInitValues();
+	Create_ConstantBuffer();
 }
 
 CMaterial::~CMaterial()
@@ -69,9 +61,7 @@ CMaterial* CMaterial::Create(const wstring _path)
 
 CMaterial* CMaterial::Clone(const CMaterial& _other)
 {
-	CMaterial* cloneMaterial = new CMaterial(_other);
-
-	return cloneMaterial;
+	return new CMaterial(_other);
 }
 
 HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _desc)
@@ -125,8 +115,6 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		return E_FAIL;
 	}
 
-	BaseInitValues();
-
 	return S_OK;
 }
 
@@ -143,16 +131,6 @@ void CMaterial::OnDestroy()
 	for (TRAVERSAL_ITER(m_vTextureList, it))
 		Safe_Release(*it);
 	m_vTextureList.clear();
-}
-
-void CMaterial::BaseInitValues()
-{
-	{
-		m_mFloatValues.emplace(L"Smoothness", 0.f);
-	}
-	{
-		m_mVector4Values.emplace(L"DiffuseColor", ColorValue::white().f4Color());
-	}
 }
 
 void CMaterial::Bind_Matrix(const _fmatrix _world)
@@ -186,29 +164,20 @@ void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _
 	// b2: PerMaterial
 	MaterialCB mat = {};
 
-	mat.baseColor = XMFLOAT4
-	(
-		m_mVector4Values.at(L"DiffuseColor").x,
-		m_mVector4Values.at(L"DiffuseColor").y,
-		m_mVector4Values.at(L"DiffuseColor").z,
-		m_mVector4Values.at(L"DiffuseColor").w
-	);
-
+	mat.baseColor = m_vBaseColor;
 	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
-	mat.smoothness = m_mFloatValues.at(L"Smoothness");
 	mat.boneCount = _boneCount;
-	mat.padding = 0.f;
 
 	context->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
 	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 	context->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+
+	if (m_vCustomBufferByteList.size() > 0)
+		Bind_CustomValues();
 }
 
 void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 {
-	if (m_pCustomBuffer)
-		Bind_CustomValues();
-
 	if (!_lights || !m_bUseLight || !m_pLightBuffer)
 		return;
 
@@ -226,8 +195,33 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 
 void CMaterial::Bind_CustomValues()
 {
-	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+	m_vCustomBufferByteList.clear();
 
+	// 순서 중요: HLSL과 일치해야 함
+	for (const auto& [key, value] : m_mFloatValues)
+	{
+		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(float));
+	}
+	for (const auto& [key, value] : m_mIntValues)
+	{
+		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(int));
+	}
+	for (const auto& [key, value] : m_mVector2Values)
+	{
+		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
+		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(float));
+	}
+	// TODO: Vector3, Vector4, Matrix 등도 추가 가능
+
+	// 정렬 맞추기 (16바이트 단위)
+	while (m_vCustomBufferByteList.size() % 16 != 0)
+		m_vCustomBufferByteList.push_back(0);
+
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 	context->UpdateSubresource(m_pCustomBuffer, 0, nullptr, m_vCustomBufferByteList.data(), 0, 0);
 	context->PSSetConstantBuffers(10, 1, &m_pCustomBuffer);
 }
@@ -362,13 +356,14 @@ HRESULT CMaterial::Create_ConstantBuffer()
 		if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pLightBuffer)))
 			return E_FAIL;
 	}
-	
+
 	// b10: Custom
 	if (m_vCustomBufferByteList.size() > 0)
 	{
-		desc.ByteWidth = static_cast<_uint>(sizeof(m_vCustomBufferByteList));
-		auto a = desc.ByteWidth;
-		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		_uint byteWidth = static_cast<_uint>(m_vCustomBufferByteList.size());
+		byteWidth = (byteWidth + 15) & ~15;
+		
+		desc.ByteWidth = byteWidth;
 
 		if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pCustomBuffer)))
 			return E_FAIL;

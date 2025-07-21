@@ -94,7 +94,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
     m_vBoneOffsetMatrices.clear();
     m_vBoneOffsetMatrices.reserve(mesh->mNumBones);
 
-    for (UINT b = 0; b < mesh->mNumBones; ++b)
+    for (_uint b = 0; b < mesh->mNumBones; ++b)
     {
         const aiBone* bone = mesh->mBones[b];
 

@@ -39,6 +39,7 @@ HRESULT CResources::Initialize()
 
 	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
 	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
+	litMatDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
 	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
 	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));

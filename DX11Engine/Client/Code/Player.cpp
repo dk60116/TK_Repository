@@ -23,23 +23,11 @@ HRESULT CPlayer::Initialize()
 	__super::Initialize();
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
-	//CTexture* tex = nullptr;
-	//CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Girl_Tex (Texture)");
-	CMaterial* playerMat = CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)");
-	playerMat->Set_Texture(tex, 0);
-
-	//CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Link_Model (MeshBuffer)");
-	CMeshBuffer* mb = CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Girl_Model (Mesh Buffer)");
-
-	//m_pMeshRenderer = m_pGameObject->AddComponent<CMeshRenderer>();
-	//mb->Set_Scalefactor(0.01f);
-	//m_pMeshRenderer->Get_MeshFilter()->Set_MeshBuffer(mb);
-	//m_pMeshRenderer->Set_Material(playerMat);
 
 	CSkinnedMeshBuffer* smb = CResources::GetInstance().LoadOnScene<CSkinnedMeshBuffer>(L"Link_Model (Skinned MeshBuffer)");
 	m_pSkinnedMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();
 	m_pSkinnedMeshRenderer->Set_Mesh(smb);
-	m_pSkinnedMeshRenderer->Set_Material(playerMat);
+	m_pSkinnedMeshRenderer->Get_Material()->Set_Texture(tex, 0);
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));

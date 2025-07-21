@@ -26,6 +26,8 @@ HRESULT CSkinnedMeshRenderer::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	auto mat = m_pMaterial;
+
 	// 본 행렬 상수 버퍼 생성 (최대 본 갯수 = 128 가정)
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;

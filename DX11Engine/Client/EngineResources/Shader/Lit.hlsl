@@ -16,9 +16,8 @@ cbuffer PerMaterial : register(b2)
 {
     float4 baseColor; // rgba 0~1
     uint useTexture;
-    float smoothness;
     uint boneCount;
-    float mpadding;
+    float2 mpadding;
 };
 
 cbuffer PerBones : register(b3)
@@ -28,6 +27,7 @@ cbuffer PerBones : register(b3)
 
 cbuffer PerCustomValue : register(b10)
 {
+    float gSmoothness;
     float2 gTiling;
     float2 gOffset;
 }
@@ -120,8 +120,8 @@ VSOut VSMain(VSIn v)
 // «»ºø ºŒ¿Ã¥ı
 float4 PSMain(VSOut input) : SV_TARGET
 {    
-    float2 tillingUV = float2(input.uv.x / gTiling.x, input.uv.y / gTiling.y);
-    float4 texColor = useTexture ? gTexture.Sample(gSampler, input.uv) : float4(1, 1, 1, 1);
+    float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
+    float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
 
     float3 N = normalize(input.normalW);
     float3 V = normalize(pos - input.posW);
@@ -172,7 +172,7 @@ float4 PSMain(VSOut input) : SV_TARGET
         float3 R = reflect(-L, N);
         float RdotV = saturate(dot(R, V));
         float3 fSpecular = pow(RdotV, 50);
-        float specularStrength = smoothness;
+        float specularStrength = gSmoothness;
         float3 specular = lightColor * fSpecular * specularStrength * intensity * attenuation;
         specularSum += specular;
         

@@ -101,13 +101,16 @@ HRESULT CMainScene::Initialize()
 	
 	templeObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"Temple_Model (MeshBuffer)"));
 
-	templeRenderer->Get_Material()->Set_FloatValue(L"Smoothness", 0.5f);
+	templeRenderer->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 	templeRenderer->Get_Transform()->Get_Transform()->Set_LocalScale(0.01f);
 
 	CGameObject* terrainObj = Add_GameObject(L"Terrain");
 	CMeshRenderer* terrainBuffer = terrainObj->AddComponent<CMeshRenderer>();
 	terrainBuffer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Sample_Terrain (Terrain MeshBuffer)"));
-	terrainBuffer->Get_Material()->Set_Texture(CResources::GetInstance().LoadOnScene<CTexture>(L"Terrain_MainTex (Texture)")); 
+	terrainBuffer->Get_Material()->Set_Texture(CResources::GetInstance().LoadOnScene<CTexture>(L"Terrain_MainTex (Texture)"));
+	
+	terrainBuffer->Get_Material()->Set_FloatValue(L"gSmoothness", 1.f);
+	terrainBuffer->Get_Material()->Set_Vector2Value(L"gTiling", _float2(300.f, 300.f));
 
 	return S_OK;
 }

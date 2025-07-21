@@ -34,9 +34,6 @@ private:
 	HRESULT Initialize(const wstring& _name, wstring _filePath, void* _desc);
 	void OnDestroy() override;
 
-private:
-	void BaseInitValues();
-
 public:
 	void Bind_Matrix(const _fmatrix _world);
 	void Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
@@ -74,6 +71,7 @@ private:
 	vector<BYTE> m_vCustomBufferByteList;
 
 	_bool m_bUseLight;
+	_float4 m_vBaseColor;
 	vector<class CTexture*> m_vTextureList;
 	unordered_map<wstring, _float> m_mFloatValues;
 	unordered_map<wstring, _int> m_mIntValues;

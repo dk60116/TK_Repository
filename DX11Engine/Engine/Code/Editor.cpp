@@ -286,17 +286,11 @@ void CEditor::Set_SelectedGameObject(CGameObject* _target)
 	if (_target == m_pSelectedGameObject)
 		return;
 
-	Safe_Release(m_pSelectedGameObject);
-
 	m_pSelectedGameObject = _target;
 
 	if (m_pSelectedGameObject)
 	{
-		if (m_pSelectedGameObject->Get_ObjectName() == L"Canvas")
-			int a = 0;
-
 		m_pSelectedGameObject = _target;
-		m_pSelectedGameObject->AddRef();
 	}
 }
 
