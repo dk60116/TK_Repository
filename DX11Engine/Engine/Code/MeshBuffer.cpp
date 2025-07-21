@@ -542,7 +542,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
         staging = nullptr;
     }
 
-    auto SampleHeight = [&](float u, float v) -> float
+    auto SampleHeight = [&](_float u, _float v)->_float
         {
             if (heightPixels.empty())
                 return 0.f;

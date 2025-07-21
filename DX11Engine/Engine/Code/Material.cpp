@@ -8,7 +8,8 @@ CMaterial::CMaterial()
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
 	, m_pLightBuffer(nullptr)
-	, m_vCustomBufferList({})
+	, m_pCustomBuffer(nullptr)
+	, m_vCustomBufferByteList({})
 	, m_bUseLight(false)
 	, m_vTextureList({})
 	, m_mIntValues({})
@@ -27,7 +28,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 	, m_pCameraBuffer(_other.m_pCameraBuffer)
 	, m_pMaterialBuffer(_other.m_pMaterialBuffer)
 	, m_pLightBuffer(_other.m_pLightBuffer)
-	, m_vCustomBufferList({})
+	, m_pCustomBuffer(_other.m_pCustomBuffer)
+	, m_vCustomBufferByteList({})
 	, m_bUseLight(_other.m_bUseLight)
 	, m_vTextureList({})
 	, m_mFloatValues(_other.m_mFloatValues)
@@ -49,6 +51,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 		m_pMaterialBuffer->AddRef();
 	if (m_pLightBuffer)
 		m_pLightBuffer->AddRef();
+	if (m_pCustomBuffer)
+		m_pCameraBuffer->AddRef();
 
 	BaseInitValues();
 }
@@ -84,14 +88,22 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		for (const auto& [key, value] : matDesc->customFloatValues)
 		{
 			m_mFloatValues.emplace(key, value);
+			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
+			m_vCustomBufferByteList.push_back(*p);
 		}
 		for (const auto& [key, value] : matDesc->customIntValues)
 		{
 			m_mIntValues.emplace(key, value);
+			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
+			m_vCustomBufferByteList.push_back(value);
 		}
 		for (const auto& [key, value] : matDesc->customVector2Values)
 		{
 			m_mVector2Values.emplace(key, value);
+			const BYTE* pX = reinterpret_cast<const BYTE*>(&value.x);
+			const BYTE* pY = reinterpret_cast<const BYTE*>(&value.y);
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pX, pX + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pY, pY + sizeof(_float));
 		}
 		for (const auto& [key, value] : matDesc->customVector3Values)
 		{
@@ -108,7 +120,10 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 	}
 
 	if (FAILED(Create_ConstantBuffer()))
+	{
+		CDebug::LogError(L"Material - Create_ConstantBuffer Failed: " + m_strResourceName);
 		return E_FAIL;
+	}
 
 	BaseInitValues();
 
@@ -123,7 +138,7 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pMaterialBuffer);
 	Safe_Release(m_pLightBuffer);
 
-	m_vCustomBufferList.clear();
+	m_vCustomBufferByteList.clear();
 
 	for (TRAVERSAL_ITER(m_vTextureList, it))
 		Safe_Release(*it);
@@ -140,7 +155,7 @@ void CMaterial::BaseInitValues()
 	}
 }
 
-void CMaterial::BindMatrix(const _fmatrix _world)
+void CMaterial::Bind_Matrix(const _fmatrix _world)
 {
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
@@ -151,7 +166,7 @@ void CMaterial::BindMatrix(const _fmatrix _world)
 	context->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
 }
 
-void CMaterial::BindCamera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount) const
+void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount)
 {
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
@@ -191,6 +206,9 @@ void CMaterial::BindCamera(const _float3 _camPos, const _fmatrix _view, const _c
 
 void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 {
+	if (m_pCustomBuffer)
+		Bind_CustomValues();
+
 	if (!_lights || !m_bUseLight || !m_pLightBuffer)
 		return;
 
@@ -210,14 +228,8 @@ void CMaterial::Bind_CustomValues()
 {
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
-	for (TRAVERSAL_ITER(m_mFloatValues, it))
-	{
-	}
-
-	ID3D11Buffer* v2Buffer;
-	for (TRAVERSAL_ITER(m_mVector2Values, it))
-	{
-	}
+	context->UpdateSubresource(m_pCustomBuffer, 0, nullptr, m_vCustomBufferByteList.data(), 0, 0);
+	context->PSSetConstantBuffers(10, 1, &m_pCustomBuffer);
 }
 
 const _bool CMaterial::IsUseLight() const
@@ -332,7 +344,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pMatrixBuffer)))
 		return E_FAIL;
 
-	// b1 : View/Proj Matrix
+	// b1 : View/Proj Matrix (VS)
 	desc.ByteWidth = sizeof(CameraCB);
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pCameraBuffer)))
 		return E_FAIL;
@@ -342,13 +354,30 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pMaterialBuffer)))
 		return E_FAIL;
 
-	// b4 : Light (PS)
+	// b4: Light (PS)
 	if (m_bUseLight)
 	{
 		desc.ByteWidth = sizeof(LightCB);
 
 		if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pLightBuffer)))
 			return E_FAIL;
+	}
+	
+	// b10: Custom
+	if (m_vCustomBufferByteList.size() > 0)
+	{
+		desc.ByteWidth = static_cast<_uint>(sizeof(m_vCustomBufferByteList));
+		auto a = desc.ByteWidth;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+		if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pCustomBuffer)))
+			return E_FAIL;
+
+		if (!m_pCustomBuffer)
+		{
+			CDebug::LogError(L"Material - Create_ConstantBuffer Failed - m_pCustomBuffer is null: " + m_strResourceName);
+			return E_FAIL;
+		}
 	}
 
 	return S_OK;

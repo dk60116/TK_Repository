@@ -101,8 +101,8 @@ void CUI::Bind_Mesh()
 
 void CUI::Bind_Camrea(const _fmatrix _view, const _cmatrix _projection)
 {
-	m_pMaterial->BindMatrix(Get_Transform()->Get_WorldMatrix());
-	m_pMaterial->BindCamera(_float3(), _view, _projection);
+	m_pMaterial->Bind_Matrix(Get_Transform()->Get_WorldMatrix());
+	m_pMaterial->Bind_Camera(_float3(), _view, _projection);
 }
 
 const _bool CUI::Is_Canvas() const

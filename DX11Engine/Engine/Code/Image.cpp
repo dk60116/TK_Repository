@@ -45,8 +45,8 @@ void CImage::Render_Editor()
 
 	if (m_pMaterial)
 	{
-		m_pMaterial->BindMatrix(matWorld);
-		m_pMaterial->BindCamera(camPos, matView, matProj, 0);
+		m_pMaterial->Bind_Matrix(matWorld);
+		m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
 	}
 
 	if (m_pRectMesh)
@@ -57,8 +57,8 @@ void CImage::Render_Editor()
 
 	if (m_pLineMat)
 	{
-		m_pLineMat->BindMatrix(matWorld);
-		m_pLineMat->BindCamera(camPos, matView, matProj, 0);
+		m_pLineMat->Bind_Matrix(matWorld);
+		m_pLineMat->Bind_Camera(camPos, matView, matProj, 0);
 	}
 
 	if (m_pRectGizmoMesh)

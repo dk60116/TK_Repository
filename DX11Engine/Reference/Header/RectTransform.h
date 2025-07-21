@@ -52,6 +52,7 @@ public:
 	void Set_WidthHeight(const vector2 _rect);
 	void Set_WidthHeight(const _float _x, const _float _y);
 	void Set_WidthHeight(const _int _x, const _int _y);
+	void Set_WidthHeight(const _int _wh);
 	void Set_Width(const _float _value);
 	void Set_Width(const _int _value);
 	void Set_Height(const _float _value);

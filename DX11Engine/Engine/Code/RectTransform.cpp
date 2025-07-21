@@ -418,6 +418,11 @@ void CRectTransform::Set_WidthHeight(const _int _x, const _int _y)
     Set_WidthHeight(vector2(_x, _y));
 }
 
+void CRectTransform::Set_WidthHeight(const _int _wh)
+{
+	Set_WidthHeight(_wh, _wh);
+}
+
 void CRectTransform::Set_Width(const _float _value)
 {
     Set_WidthHeight(_value, m_fHeight);

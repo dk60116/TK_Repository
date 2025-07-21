@@ -63,8 +63,8 @@ void CCanvas::Render_Editor()
 
 	if (m_pLineMat)
 	{
-		m_pLineMat->BindMatrix(matWorld);
-		m_pLineMat->BindCamera(camPos, matView, matProj, 0);
+		m_pLineMat->Bind_Matrix(matWorld);
+		m_pLineMat->Bind_Camera(camPos, matView, matProj, 0);
 	}
 
 	if (m_pRectGizmoMesh)

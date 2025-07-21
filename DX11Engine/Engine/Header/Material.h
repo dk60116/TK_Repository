@@ -38,8 +38,8 @@ private:
 	void BaseInitValues();
 
 public:
-	void BindMatrix(const _fmatrix _world);
-	void BindCamera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0) const;
+	void Bind_Matrix(const _fmatrix _world);
+	void Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
 	void Bind_Light(_matrix* _lights, const _uint _count);
 	void Bind_CustomValues();
 
@@ -70,7 +70,8 @@ private:
 	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pMaterialBuffer;
 	ID3D11Buffer* m_pLightBuffer;
-	vector<BYTE> m_vCustomBufferList;
+	ID3D11Buffer* m_pCustomBuffer;
+	vector<BYTE> m_vCustomBufferByteList;
 
 	_bool m_bUseLight;
 	vector<class CTexture*> m_vTextureList;
