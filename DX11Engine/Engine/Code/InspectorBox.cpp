@@ -50,11 +50,14 @@ void CInspectorBox::Render()
 
 	ImGui::SetNextWindowSize(panelSize);
 
-	ImGui::Begin(CEngineString::WStringToString(m_strBoxName).c_str(),
+	ImGui::Begin
+    (
+        CEngineString::WStringToString(m_strBoxName).c_str(),
 		nullptr,
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoCollapse);
+		ImGuiWindowFlags_NoCollapse
+    );
 
     CGameObject* selectedObj = editor.Get_SelectedGameObject();
 

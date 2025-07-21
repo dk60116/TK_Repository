@@ -1,5 +1,6 @@
 #include "epch.h"
 #include "TopToolBar.h"
+#include "ProjectBox.h"
 #include "HierachyBox.h"
 #include "InspectorBox.h"
 
@@ -58,6 +59,13 @@ HRESULT CEditor::Initialize()
 	{
 		m_mBoxList.emplace(L"TopTool", toolbar);
 		toolbar->AddRef();
+	}
+
+	CProjectBox* projectBox = CProjectBox::Create();
+	if (projectBox)
+	{
+		m_mBoxList.emplace(L"Project", projectBox);
+		projectBox->AddRef();
 	}
 
 	CHierachyBox* hierachyBox = CHierachyBox::Create();
@@ -249,7 +257,7 @@ const vector2Int CEditor::Get_WindowResolution() const
 
 const vector2Int CEditor::Get_ScreenResolution() const
 {
-	_int width = _int(m_sOptions.windowWidth - (m_sOptions.hierachyWidth + m_sOptions.inspectorWidth));
+	_int width = _int(m_sOptions.windowWidth - (m_sOptions.projectWidth + m_sOptions.hierachyWidth + m_sOptions.inspectorWidth));
 	_int height = _int(m_sOptions.windowHeight - (m_sOptions.topBarHeight));
 
 	return vector2Int(width, height);

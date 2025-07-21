@@ -11,11 +11,12 @@ public:
 
 	typedef struct EditopWindowOptionsDescription
 	{
-		UINT windowWidth = 1600;
-		UINT windowHeight = 720;
-		UINT topBarHeight = 28;
-		UINT hierachyWidth = 250;
-		UINT inspectorWidth = 260;
+		_uint windowWidth = 1750;
+		_uint windowHeight = 720;
+		_uint topBarHeight = 28;
+		_uint projectWidth = 220;
+		_uint hierachyWidth = 250;
+		_uint inspectorWidth = 260;
 
 	}EDITORWINOPTION;
 

@@ -157,6 +157,9 @@
     <ClInclude Include="..\Header\Physics.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\ProjectBox.h">
+      <Filter>Editor\EditorBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Physics.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ProjectBox.cpp">
+      <Filter>Editor\EditorBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

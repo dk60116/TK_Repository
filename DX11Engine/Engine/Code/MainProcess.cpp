@@ -40,7 +40,7 @@ HRESULT CMainProcess::Initialize()
     CEditor::EDITORWINOPTION sOption = CEditor::GetInstance().Get_Options();
 
     vector2Int offsetMin = vector2Int(0, (_int)sOption.topBarHeight);
-    vector2Int offsetMax = vector2Int(_int(sOption.hierachyWidth + sOption.inspectorWidth), 0);
+    vector2Int offsetMax = vector2Int(_int(sOption.projectWidth + sOption.hierachyWidth + sOption.inspectorWidth), 0);
 
     CGraphicDevice::GetInstance().Add_SwapChain
     (
