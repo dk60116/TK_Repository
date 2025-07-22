@@ -25,6 +25,14 @@ public:
     static void LoadResourceComplete_Scene(const CEngineResource* _ptr);
 
 public:
+    HRESULT ConvertFBXToMeshBufferData(const wstring _readFilePath);
+    void ConvertFBXToSkinnedBufferData(const wstring _filePath);
+
+public:
+    HRESULT SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
+    vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
+
+public:
     template<typename T>
     T* CreateGameResource(const wstring& _name, const wstring& _path, void* _desc = nullptr);
 

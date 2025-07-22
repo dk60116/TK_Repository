@@ -21,7 +21,7 @@ public:
 	struct MeshBufferInitiaizeInfo
 	{
 		vector<uint8_t> buffer = {};
-		vector<UINT> indices = {};
+		vector<_uint> indices = {};
 		MESHBUFFERDESC desc = {};
 	};
 
@@ -53,9 +53,9 @@ public:
 	static wstring FindMeshName(const aiScene* scene, _uint meshIndex, aiNode* node = nullptr);
 
 private:
-	MeshBufferInitiaizeInfo CreateLine();
-	MeshBufferInitiaizeInfo CreateLineRect();
-	MeshBufferInitiaizeInfo CreateRect();
+	static MeshBufferInitiaizeInfo CreateLine();
+	static MeshBufferInitiaizeInfo CreateLineRect();
+	static MeshBufferInitiaizeInfo CreateRect();
 	MeshBufferInitiaizeInfo CreateCube();
 	MeshBufferInitiaizeInfo CreateSphere();
 	MeshBufferInitiaizeInfo CreatePlane();

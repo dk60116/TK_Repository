@@ -20,9 +20,6 @@ public:
 	const wstring& Get_ResourceName() const;
 	void Set_ResourceName(const wstring& _name);
 
-public:
-	HRESULT Load(const wstring& path);
-
 protected:
 	wstring m_strResourceName;
 	wstring m_strFilePath;

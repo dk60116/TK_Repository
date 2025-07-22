@@ -30,11 +30,6 @@ void CEngineResource::Set_ResourceName(const wstring& _name)
 	m_strResourceName = _name;
 }
 
-HRESULT CEngineResource::Load(const wstring& path)
-{
-	return S_OK;
-}
-
 void CEngineResource::OnDestroy()
 {
 }

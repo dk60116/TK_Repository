@@ -56,6 +56,13 @@ void CProjectBox::Render()
 		ImGuiWindowFlags_NoCollapse
 	);
 
+	if (CInput::GetInstance().GetKeyDown_Editor(C))
+		CResources::GetInstance().ConvertFBXToMeshBufferData(L"Map/Temple.fbx");
+	if (CInput::GetInstance().GetKeyDown_Editor(V))
+	{
+		CResources::GetInstance().ReadMeshBufferInfos(L"Map_Temple.meshdata");
+	}
+
 	ImGui::End();
 }
 

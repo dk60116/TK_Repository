@@ -109,7 +109,7 @@ HRESULT CMainScene::Initialize()
 	terrainBuffer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Sample_Terrain (Terrain MeshBuffer)"));
 	terrainBuffer->Get_Material()->Set_Texture(CResources::GetInstance().LoadOnScene<CTexture>(L"Terrain_MainTex (Texture)"));
 	
-	terrainBuffer->Get_Material()->Set_FloatValue(L"gSmoothness", 1.f);
+	terrainBuffer->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 	terrainBuffer->Get_Material()->Set_Vector2Value(L"gTiling", _float2(300.f, 300.f));
 
 	return S_OK;

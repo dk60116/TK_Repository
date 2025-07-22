@@ -88,6 +88,193 @@ void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
 		CDebug::LogError("Failed create Scene resource");
 }
 
+HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
+{
+	Assimp::Importer importer;
+	const aiScene* aiScene = importer.ReadFile
+	(
+		CEngineString::WStringToString(m_strDefaultAssetPath + _readFilePath),
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_FlipUVs
+	);
+
+	if (!aiScene)
+	{
+		CDebug::LogError(L"Create Scene mesh bundle failed: " + _readFilePath);
+		return E_FAIL;
+	};
+
+	using VTX = VertexTexNormalTangentBuffer;
+
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferList = {};
+
+	if (!aiScene)
+	{
+		OutputDebugStringA("Assimp load failed or mesh index out of bounds.\n");
+		return E_FAIL;
+	}
+
+	for (size_t i = 0; i < aiScene->mNumMeshes; ++i)
+	{
+		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
+
+		const aiMesh* mesh = aiScene->mMeshes[i];
+
+		vector<VTX> vertices;
+		vector<_uint> indices;
+
+		// 정점 복사
+		for (_uint j = 0; j < mesh->mNumVertices; ++j)
+		{
+			VTX v{};
+			v.position = 
+			{
+				mesh->mVertices[j].x,
+				mesh->mVertices[j].y,
+				mesh->mVertices[j].z
+			};
+
+			v.normal = mesh->HasNormals() ?
+				_float3{ mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z } :
+				_float3{ 0, 0, 0 };
+
+			v.uv = mesh->HasTextureCoords(0) ?
+				_float2{ mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y } :
+				_float2{ 0, 0 };
+
+			v.tangent = mesh->HasTangentsAndBitangents() ?
+				_float3{ mesh->mTangents[j].x, mesh->mTangents[j].y, mesh->mTangents[j].z } :
+				_float3{ 0, 0, 0 };
+
+			vertices.emplace_back(v);
+		}
+
+		// 인덱스 복사
+		for (_uint f = 0; f < mesh->mNumFaces; ++f)
+		{
+			const aiFace& face = mesh->mFaces[f];
+			if (face.mNumIndices != 3) continue;
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+
+		// 버퍼 정보 세팅
+		CMeshBuffer::MESHBUFFERDESC desc{};
+		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		desc.vertexSize = sizeof(VTX);
+		desc.vertextCount = static_cast<_uint>(vertices.size());
+		desc.indexCount = static_cast<_uint>(indices.size());
+
+		info.buffer.assign
+		(
+			reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size()
+		);
+
+		info.indices.assign(indices.begin(), indices.end());
+		info.desc = desc;
+
+		bufferList.push_back(info);
+	}
+
+	auto splitPath = CEngineString::Split(_readFilePath, L"/");
+
+	wstring fileFolder = splitPath[splitPath.size() - 2];
+	wstring fileNameExt = splitPath[splitPath.size() - 1];
+	
+	auto pureName = CEngineString::Split(fileNameExt, L".")[0];
+
+	wstring saveName = fileFolder + L"_" + pureName;
+
+	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/" + saveName + L".meshdata", bufferList)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
+{
+	using namespace std;
+
+	ofstream out(_filePath, ios::binary);
+
+	if (!out.is_open())
+		return E_FAIL;
+
+	_uint count = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
+
+	for (const auto& info : _infoList)
+	{
+		_uint bufferSize = static_cast<_uint>(info.buffer.size());
+		out.write(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		if (bufferSize > 0)
+			out.write(reinterpret_cast<const char*>(info.buffer.data()), bufferSize);
+
+		_uint indicesSize = static_cast<_uint>(info.indices.size());
+		out.write(reinterpret_cast<char*>(&indicesSize), sizeof(_uint));
+		if (indicesSize > 0)
+			out.write(reinterpret_cast<const char*>(info.indices.data()), sizeof(_uint) * indicesSize);
+
+		out.write(reinterpret_cast<const char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+	}
+
+	out.close();
+
+	CDebug::Log(L"Save complete meshdata: " + _filePath);
+
+	return S_OK;
+}
+
+vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring _binFileName)
+{
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = {};
+
+	using namespace std;
+
+	ifstream in(L"BinaryAssets/" + _binFileName, ios::binary);
+
+	if (!in.is_open())
+		return {};
+
+	_uint count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
+
+		_uint bufferSize = 0;
+		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		if (bufferSize > 0)
+		{
+			info.buffer.resize(bufferSize);
+			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
+		}
+
+		_uint indexCount = 0;
+		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
+		if (indexCount > 0)
+		{
+			info.indices.resize(indexCount);
+			in.read(reinterpret_cast<char*>(info.indices.data()), sizeof(_uint) * indexCount);
+		}
+
+		in.read(reinterpret_cast<char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+
+		infoList.push_back(info);
+	}
+
+	in.close();
+
+	return infoList;
+}
+
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const wstring& _path, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;
@@ -97,83 +284,65 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const
 
 	vector<MeshBundle> resultList = {};
 
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile
-	(
-		CEngineString::WStringToString(m_strDefaultAssetPath + _path),
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace |
-		aiProcess_ConvertToLeftHanded |
-		aiProcess_FlipUVs
-	);
+	//for (_uint i = 0; i < scene->mNumMeshes; ++i)
+	//{
+	//	MeshBundle newBundle = {};
 
-	if (!scene)
-	{
-		CDebug::LogError(L"Create Scene mesh bundle failed: " + _path);
-		return {};
-	};
+	//	if (_filter & MESHBUFFER)
+	//	{
+	//		CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
+	//		CMeshBuffer* mb = CMeshBuffer::Create();
 
-	for (_uint i = 0; i < scene->mNumMeshes; ++i)
-	{
-		MeshBundle newBundle = {};
+	//		mb->Initailize_Custom(info, nullptr);
+	//		mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
 
-		if (_filter & MESHBUFFER)
-		{
-			CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
-			CMeshBuffer* mb = CMeshBuffer::Create();;
+	//		newBundle.meshBuffer = mb;
+	//	}
 
-			mb->Initailize_Custom(info, nullptr);
-			mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
+	//	if ((_filter & MATERIAL))
+	//	{
+	//		if (scene->HasMaterials())
+	//		{
+	//			aiMaterial* newMat = scene->mMaterials[i];
 
-			newBundle.meshBuffer = mb;
-		}
+	//			aiString texPath;
+	//			if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+	//			{
+	//				string path = texPath.C_Str();
 
-		if ((_filter & MATERIAL))
-		{
-			if (scene->HasMaterials())
-			{
-				aiMaterial* newMat = scene->mMaterials[i];
+	//				filesystem::path fbxDir = filesystem::path(_path).parent_path();
+	//				filesystem::path texRelPath = filesystem::u8path(path);
 
-				aiString texPath;
-				if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
-				{
-					string path = texPath.C_Str();
+	//				filesystem::path fullPath = fbxDir / texRelPath;
 
-					filesystem::path fbxDir = filesystem::path(_path).parent_path();
-					filesystem::path texRelPath = filesystem::u8path(path);
+	//				wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
 
-					filesystem::path fullPath = fbxDir / texRelPath;
+	//				CTexture* newTex = CTexture::Create();
+	//				newTex->Initialize(lastPath, lastPath, nullptr);
 
-					wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
+	//				newBundle.texture = newTex;
+	//			}
+	//		}
+	//	}
 
-					CTexture* newTex = CTexture::Create();
-					newTex->Initialize(lastPath, lastPath, nullptr);
+	//	if ((_filter & TEXTURE))
+	//	{
+	//		if (scene->HasTextures())
+	//			aiTexture* newTex = scene->mTextures[i];
+	//	}
 
-					newBundle.texture = newTex;
-				}
-			}
-		}
+	//	resultList.push_back(newBundle);
+	//}
 
-		if ((_filter & TEXTURE))
-		{
-			if (scene->HasTextures())
-				aiTexture* newTex = scene->mTextures[i];
-		}
+	//CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+	//	CSceneManager::GetInstance().Get_CrtScene();
 
-		resultList.push_back(newBundle);
-	}
+	//if (!_tempScene)
+	//	targetScene->Add_MeshBundle(_name, resultList);
+	//else
+	//	targetScene->Add_TempMeshBundle(_name, resultList);
 
-	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
-		CSceneManager::GetInstance().Get_CrtScene();
-
-	if (!_tempScene)
-		targetScene->Add_MeshBundle(_name, resultList);
-	else
-		targetScene->Add_TempMeshBundle(_name, resultList);
-
-	CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);
+	//CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);
 
 	return resultList;
 }
