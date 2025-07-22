@@ -104,9 +104,15 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
 
 	if (!aiScene)
 	{
-		CDebug::LogError(L"Create Scene mesh bundle failed: " + _readFilePath);
+		CDebug::LogError(L"Create Scene mesh bundle failed - Can not create AIScene: " + _readFilePath);
 		return E_FAIL;
 	};
+
+	if (!aiScene->HasMeshes())
+	{
+		CDebug::LogError(L"Create Scene mesh bundle failed - AIScene not has meshes: " + _readFilePath);
+		return E_FAIL;
+	}
 
 	using VTX = VertexTexNormalTangentBuffer;
 
@@ -197,6 +203,11 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
 	return S_OK;
 }
 
+HRESULT CResources::ConverFBXToMaterialTextureData(const wstring _readFilePath)
+{
+	return S_OK;
+}
+
 HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
 	using namespace std;
@@ -284,65 +295,65 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const
 
 	vector<MeshBundle> resultList = {};
 
-	//for (_uint i = 0; i < scene->mNumMeshes; ++i)
-	//{
-	//	MeshBundle newBundle = {};
+	for (_uint i = 0; i < scene->mNumMeshes; ++i)
+	{
+		MeshBundle newBundle = {};
 
-	//	if (_filter & MESHBUFFER)
-	//	{
-	//		CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
-	//		CMeshBuffer* mb = CMeshBuffer::Create();
+		if (_filter & MESHBUFFER)
+		{
+			CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
+			CMeshBuffer* mb = CMeshBuffer::Create();
 
-	//		mb->Initailize_Custom(info, nullptr);
-	//		mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
+			mb->Initailize_Custom(info, nullptr);
+			mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
 
-	//		newBundle.meshBuffer = mb;
-	//	}
+			newBundle.meshBuffer = mb;
+		}
 
-	//	if ((_filter & MATERIAL))
-	//	{
-	//		if (scene->HasMaterials())
-	//		{
-	//			aiMaterial* newMat = scene->mMaterials[i];
+		if ((_filter & MATERIAL))
+		{
+			if (scene->HasMaterials())
+			{
+				aiMaterial* newMat = scene->mMaterials[i];
 
-	//			aiString texPath;
-	//			if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
-	//			{
-	//				string path = texPath.C_Str();
+				aiString texPath;
+				if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+				{
+					string path = texPath.C_Str();
 
-	//				filesystem::path fbxDir = filesystem::path(_path).parent_path();
-	//				filesystem::path texRelPath = filesystem::u8path(path);
+					filesystem::path fbxDir = filesystem::path(_path).parent_path();
+					filesystem::path texRelPath = filesystem::u8path(path);
 
-	//				filesystem::path fullPath = fbxDir / texRelPath;
+					filesystem::path fullPath = fbxDir / texRelPath;
 
-	//				wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
+					wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
 
-	//				CTexture* newTex = CTexture::Create();
-	//				newTex->Initialize(lastPath, lastPath, nullptr);
+					CTexture* newTex = CTexture::Create();
+					newTex->Initialize(lastPath, lastPath, nullptr);
 
-	//				newBundle.texture = newTex;
-	//			}
-	//		}
-	//	}
+					newBundle.texture = newTex;
+				}
+			}
+		}
 
-	//	if ((_filter & TEXTURE))
-	//	{
-	//		if (scene->HasTextures())
-	//			aiTexture* newTex = scene->mTextures[i];
-	//	}
+		if ((_filter & TEXTURE))
+		{
+			if (scene->HasTextures())
+				aiTexture* newTex = scene->mTextures[i];
+		}
 
-	//	resultList.push_back(newBundle);
-	//}
+		resultList.push_back(newBundle);
+	}
 
-	//CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
-	//	CSceneManager::GetInstance().Get_CrtScene();
+	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+		CSceneManager::GetInstance().Get_CrtScene();
 
-	//if (!_tempScene)
-	//	targetScene->Add_MeshBundle(_name, resultList);
-	//else
-	//	targetScene->Add_TempMeshBundle(_name, resultList);
+	if (!_tempScene)
+		targetScene->Add_MeshBundle(_name, resultList);
+	else
+		targetScene->Add_TempMeshBundle(_name, resultList);
 
-	//CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);
+	CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);
 
 	return resultList;
 }

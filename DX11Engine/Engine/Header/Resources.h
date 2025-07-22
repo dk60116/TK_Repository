@@ -26,6 +26,7 @@ public:
 
 public:
     HRESULT ConvertFBXToMeshBufferData(const wstring _readFilePath);
+    HRESULT ConverFBXToTextureData(const wstring _readFilePath);
     void ConvertFBXToSkinnedBufferData(const wstring _filePath);
 
 public:
