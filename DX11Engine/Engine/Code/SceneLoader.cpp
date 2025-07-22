@@ -96,14 +96,25 @@ void CSceneLoader::ThreadLoadingLoop()
 			{
 				if (CEngineString::Contains(wFormat, L"[Mesh]"))
 				{
-					_int filter = MESHBUFFER;
+					_int filter = FILTER_MESHBUFFER;
 
 					if (CEngineString::Contains(wFormat, L"[Material]"))
-						filter |= MATERIAL;
+						filter |= FILTER_MATERIAL;
 					if (CEngineString::Contains(wFormat, L"[Texture]"))
-						filter |= TEXTURE;
+						filter |= FILTER_TEXTURE;
+					if (CEngineString::Contains(wFormat, L"[Bone]"))
+						filter |= FILTER_BONE;
 
-					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", wFile, filter, nullptr, true);
+					auto meshDataSplit = CEngineString::Split(wFile, L"/");
+					wstring meshDataFolder = meshDataSplit[meshDataSplit.size() - 2];
+					wstring meshDataTail = meshDataSplit[meshDataSplit.size() - 1];
+					wstring meshDataName = CEngineString::Split(meshDataTail, L".")[0];
+
+					const wstring meshdataPath = meshDataFolder + L"_" + meshDataName + L".meshdata";
+
+					auto meshInfoList = CResources::GetInstance().ReadMeshBufferInfos(meshdataPath);
+
+					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", meshInfoList, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
 					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));

@@ -92,7 +92,7 @@ void CHierachyBox::RenderObjectHierarchy(CGameObject* _obj)
 	if (!hasChildren)
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-	_bool nodeOpen = ImGui::TreeNodeEx((name + "##" + std::to_string(reinterpret_cast<size_t>(_obj))).c_str(), flags);
+	_bool nodeOpen = ImGui::TreeNodeEx((name + "##" + to_string(reinterpret_cast<size_t>(_obj))).c_str(), flags);
 
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 		editor.Set_SelectedGameObject(_obj);

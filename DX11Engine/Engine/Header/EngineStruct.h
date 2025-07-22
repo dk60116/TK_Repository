@@ -1044,7 +1044,7 @@ namespace Engine
         {
             vector3 euler;
 
-            XMFLOAT4 quat;
+            _float4 quat;
             XMStoreFloat4(&quat, *this);
 
             float sinp = 2.f * (quat.w * quat.x - quat.z * quat.y);
@@ -1074,14 +1074,14 @@ namespace Engine
             );
         }
 
-        XMMATRIX to_matrix() const
+        _matrix to_matrix() const
         {
-            XMVECTOR q = XMVectorSet(x, y, z, w);
+            _vector q = XMVectorSet(x, y, z, w);
 
             return XMMatrixRotationQuaternion(q);
         }
 
-        operator XMVECTOR() const
+        operator _vector() const
         {
             return XMVectorSet(x, y, z, w);
         }
@@ -1330,7 +1330,7 @@ namespace Engine
 #pragma endregion
 
 #pragma region FBXResources
-    enum MeshBundleHex { MESHBUFFER = 0x0001, MATERIAL = 0x0010, TEXTURE = 0x0100 };
+    enum MeshBundleHex { FILTER_MESHBUFFER = 0x000001, FILTER_MATERIAL = 0x000010, FILTER_TEXTURE = 0x000100, FILTER_BONE = 0x001000 };
 
     struct MeshBundle
     {

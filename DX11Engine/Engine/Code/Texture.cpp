@@ -27,6 +27,9 @@ void CTexture::OnDestroy()
 
 HRESULT CTexture::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
 {
+	if (_filePath.size() <= 0)
+		return S_OK;
+
 	if (FAILED(__super::Initialize(_name, _filePath, _desc)))
 		return E_FAIL;
 

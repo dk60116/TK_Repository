@@ -104,13 +104,13 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 
 	if (!aiScene)
 	{
-		CDebug::LogError(L"Create Scene mesh bundle failed - Can not create AIScene: " + _filePath);
+		CDebug::LogError(L"Failed create mesh buffer - Can not create AIScene: " + _filePath);
 		return E_FAIL;
 	};
 
 	if (!aiScene->HasMeshes())
 	{
-		CDebug::LogError(L"Create Scene mesh bundle failed - AIScene not has meshes: " + _filePath);
+		CDebug::LogError(L"Failed create mesh buffer - AIScene not has meshes: " + _filePath);
 		return E_FAIL;
 	}
 
@@ -222,7 +222,12 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 	wstring saveName = fileFolder + L"_" + pureName;
 
 	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/" + saveName + L".meshdata", bufferInfoList)))
+	{
+		CDebug::LogError(L"Failed ceate mesh Data - can not save: " + _filePath);
 		return E_FAIL;
+	}
+
+	CDebug::Log(L"Complete ceate mesh Data: " + _filePath);
 
 	return S_OK;
 }
@@ -344,7 +349,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 	{
 		MeshBundle newBundle;
 
-		if (_filter & MESHBUFFER)
+		if (_filter & FILTER_MESHBUFFER)
 		{
 			CMeshBuffer* newBuffer = CMeshBuffer::Create();
 			newBuffer->Initailize_Custom(_infoList[i], _desc);
@@ -352,7 +357,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 			newBundle.meshBuffer = newBuffer;
 		}
 
-		if (_filter & MATERIAL)
+		if (_filter & FILTER_MATERIAL)
 		{
 			CTexture* newTex = CTexture::Create();
 			newTex->Initialize(_infoList[i].diffuseMapPath, _infoList[i].diffuseMapPath, nullptr);

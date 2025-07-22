@@ -20,7 +20,12 @@ public:
 	void OnDestroy() override;
 
 private:
-	void RenderFoldersHierarchy();
+	void RenderAssetFoldersHierarchy();
+	void RenderBinaryFoldersHierarchy();
+	void RenderDirectoryRecursive(const fs::path& _dirPath);
+
+private:
+	fs::path m_strCurrentSelectedFilePath;
 };
 
 NS_END

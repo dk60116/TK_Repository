@@ -130,6 +130,8 @@ HRESULT CMeshBuffer::Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _des
     m_sInfo = {};
     m_sInfo = _info.desc;
 
+    m_strResourceName = _info.meshName;
+
     size_t size = _info.desc.vertexSize * _info.desc.vertextCount;
 
     m_pVertexSysMem = malloc(size);

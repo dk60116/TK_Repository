@@ -19,5 +19,7 @@ public:
 	static vector<wstring> Split(const wstring& _wstr, const wstring& _delimiter);
 	static string Erase(const string& _str, const string& _target);
 	static wstring Erase(const wstring& _wstr, const wstring& _target);
+	static string Replace(const string& _str, const string& dest, const string& target);
+	static wstring Replace(const wstring& _wstr, const wstring& dest, const wstring& target);
 };
 
