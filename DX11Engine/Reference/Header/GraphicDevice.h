@@ -37,6 +37,8 @@ public:
 	HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin = vector2Int::zero(), vector2Int _offsetMax = vector2Int::zero());
 
 	const D3D11_VIEWPORT* Get_CurrentViewport();
+	const D3D11_VIEWPORT* Get_GameViewport();
+	const D3D11_VIEWPORT* Get_EditorViewport();
 
 	ID3D11DepthStencilState* Get_DepthStencil_NoWrite() const;
 	ID3D11RasterizerState* Get_Rasterizer_CullFront() const;

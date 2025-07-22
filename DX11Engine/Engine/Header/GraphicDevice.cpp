@@ -256,6 +256,26 @@ const D3D11_VIEWPORT* CGraphicDevice::Get_CurrentViewport()
 	return &it->second.viewport;
 }
 
+const D3D11_VIEWPORT* CGraphicDevice::Get_GameViewport()
+{
+	auto it = m_mSwapChains.find(CDisplay::GetInstance().Get_GameWindow());
+
+	if (it == m_mSwapChains.end())
+		return nullptr;
+
+	return &it->second.viewport;
+}
+
+const D3D11_VIEWPORT* CGraphicDevice::Get_EditorViewport()
+{
+	auto it = m_mSwapChains.find(CDisplay::GetInstance().Get_EditorWindow());
+
+	if (it == m_mSwapChains.end())
+		return nullptr;
+
+	return &it->second.viewport;
+}
+
 ID3D11DepthStencilState* CGraphicDevice::Get_DepthStencil_NoWrite() const
 {
 	return m_pDepthStencilNoWrite;

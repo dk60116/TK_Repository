@@ -46,6 +46,7 @@ public:
     class CEngineResource* Add_CloneResourece(CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     vector<CGameObject*> Get_RootObjects();
+    vector<CGameObject*> Get_MeshObjects();
 
     const LightSettings& Get_LightSetting();
 

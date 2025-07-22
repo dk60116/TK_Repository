@@ -75,7 +75,7 @@ _bool CInput::GetMouseButtonDown_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && IsEditor();
+    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && IsEditor();
 }
 
 _bool CInput::GetMouseButtonUp_Editor(_int _button)
@@ -89,7 +89,7 @@ _bool CInput::GetMouseButtonUp_Editor(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && IsEditor();
+    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && IsEditor();
 }
 
 bool CInput::GetKey(_int _iKey)
@@ -132,7 +132,7 @@ bool CInput::GetMouseButtonDown(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !IsEditor();
+    return m_bKeyState[_button] &&!m_bPrevKeyState[_button] && !IsEditor();
 }
 
 bool CInput::GetMouseButtonUp(_int _button)
@@ -146,14 +146,17 @@ bool CInput::GetMouseButtonUp(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && !IsEditor();
+    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && !IsEditor();
 }
 
 const vector2Int CInput::GetMousePos_Editor()
 {
     POINT ptMouse;
     GetCursorPos(&ptMouse);
+
     ScreenToClient(CEditor::GetInstance().Get_EditorWindow(), &ptMouse);
+
+    ptMouse.y -= CEditor::GetInstance().Get_Options().topBarHeight;
 
     return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }

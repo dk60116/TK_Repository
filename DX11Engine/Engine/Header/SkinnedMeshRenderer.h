@@ -40,6 +40,7 @@ public:
 	void Render_Outline(CCamera* _cam) override;
 
 public:
+	CSkinnedMeshBuffer* Get_MeshBuffer();
 	void Set_Mesh(CSkinnedMeshBuffer* _Mesh);
 
 private:

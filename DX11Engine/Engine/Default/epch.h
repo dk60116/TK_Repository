@@ -31,6 +31,7 @@
 #include "Renderer.h"
 #include "MeshRenderer.h"
 #include "SkinnedMeshRenderer.h"
+#include "Physics.h"
 #include "Animator.h"
 #include "UIManager.h"
 #include "UI.h"

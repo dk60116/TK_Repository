@@ -388,6 +388,22 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	return result;
 }
 
+vector<CGameObject*> CScene::Get_MeshObjects()
+{
+	vector<CGameObject*> result = {};
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->GetComponent<CMeshRenderer>() || (*it)->GetComponent<CSkinnedMeshRenderer>())
+		{
+			if ((*it)->m_iUniqueID != 0)
+				result.push_back(*it);
+		}
+	}
+
+	return result;
+}
+
 const CScene::LightSettings& CScene::Get_LightSetting()
 {
 	return m_sLightSettings;
