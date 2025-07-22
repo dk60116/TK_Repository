@@ -20,9 +20,11 @@ public:
 
 	struct MeshBufferInitiaizeInfo
 	{
+		wstring meshName = L"";
 		vector<uint8_t> buffer = {};
 		vector<_uint> indices = {};
 		MESHBUFFERDESC desc = {};
+		wstring diffuseMapPath = L"";
 	};
 
 	typedef struct TerainMeshBufferDesctiption

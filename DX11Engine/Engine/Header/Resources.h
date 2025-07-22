@@ -25,8 +25,7 @@ public:
     static void LoadResourceComplete_Scene(const CEngineResource* _ptr);
 
 public:
-    HRESULT ConvertFBXToMeshBufferData(const wstring _readFilePath);
-    HRESULT ConverFBXToTextureData(const wstring _readFilePath);
+    HRESULT ConvertFBXToMeshBufferData(const wstring _filePath);
     void ConvertFBXToSkinnedBufferData(const wstring _filePath);
 
 public:
@@ -40,7 +39,7 @@ public:
 	template<typename T>
 	T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
 
-    vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, const wstring& _path, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
 
     template<typename T>
     T* LoadOnGame(const wstring& _name);

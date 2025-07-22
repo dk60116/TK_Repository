@@ -21,6 +21,7 @@ public:
 	void Set_ResourceName(const wstring& _name);
 
 protected:
+	_uint m_resourceID;
 	wstring m_strResourceName;
 	wstring m_strFilePath;
 };

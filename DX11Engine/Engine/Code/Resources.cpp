@@ -88,12 +88,12 @@ void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
 		CDebug::LogError("Failed create Scene resource");
 }
 
-HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
+HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* aiScene = importer.ReadFile
 	(
-		CEngineString::WStringToString(m_strDefaultAssetPath + _readFilePath),
+		CEngineString::WStringToString(m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_GenNormals |
@@ -104,19 +104,19 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
 
 	if (!aiScene)
 	{
-		CDebug::LogError(L"Create Scene mesh bundle failed - Can not create AIScene: " + _readFilePath);
+		CDebug::LogError(L"Create Scene mesh bundle failed - Can not create AIScene: " + _filePath);
 		return E_FAIL;
 	};
 
 	if (!aiScene->HasMeshes())
 	{
-		CDebug::LogError(L"Create Scene mesh bundle failed - AIScene not has meshes: " + _readFilePath);
+		CDebug::LogError(L"Create Scene mesh bundle failed - AIScene not has meshes: " + _filePath);
 		return E_FAIL;
 	}
 
 	using VTX = VertexTexNormalTangentBuffer;
 
-	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferList = {};
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList = {};
 
 	if (!aiScene)
 	{
@@ -124,11 +124,15 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
 		return E_FAIL;
 	}
 
-	for (size_t i = 0; i < aiScene->mNumMeshes; ++i)
+	const _bool hasMaterial = aiScene->HasMaterials();
+
+	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
 	{
 		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
 
 		const aiMesh* mesh = aiScene->mMeshes[i];
+
+		info.meshName = CMeshBuffer::FindMeshName(aiScene, i);
 
 		vector<VTX> vertices;
 		vector<_uint> indices;
@@ -185,10 +189,30 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
 		info.indices.assign(indices.begin(), indices.end());
 		info.desc = desc;
 
-		bufferList.push_back(info);
+		if (hasMaterial)
+		{
+			aiMaterial* newMat = aiScene->mMaterials[i];
+
+			aiString texPath;
+			if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			{
+				string path = texPath.C_Str();
+
+				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+				filesystem::path texRelPath = filesystem::u8path(path);
+
+				filesystem::path fullPath = fbxDir / texRelPath;
+
+				wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
+
+				info.diffuseMapPath = lastPath;
+			}
+		}
+
+		bufferInfoList.push_back(info);
 	}
 
-	auto splitPath = CEngineString::Split(_readFilePath, L"/");
+	auto splitPath = CEngineString::Split(_filePath, L"/");
 
 	wstring fileFolder = splitPath[splitPath.size() - 2];
 	wstring fileNameExt = splitPath[splitPath.size() - 1];
@@ -197,14 +221,9 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _readFilePath)
 
 	wstring saveName = fileFolder + L"_" + pureName;
 
-	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/" + saveName + L".meshdata", bufferList)))
+	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/" + saveName + L".meshdata", bufferInfoList)))
 		return E_FAIL;
 
-	return S_OK;
-}
-
-HRESULT CResources::ConverFBXToMaterialTextureData(const wstring _readFilePath)
-{
 	return S_OK;
 }
 
@@ -222,6 +241,11 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuf
 
 	for (const auto& info : _infoList)
 	{
+		_uint nameSize = static_cast<_uint>(info.meshName.size());
+		out.write(reinterpret_cast<char*>(&nameSize), sizeof(_uint));
+		if (nameSize > 0)
+			out.write(reinterpret_cast<const char*>(info.meshName.data()), sizeof(wchar_t) * nameSize);
+
 		_uint bufferSize = static_cast<_uint>(info.buffer.size());
 		out.write(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
 		if (bufferSize > 0)
@@ -233,6 +257,11 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuf
 			out.write(reinterpret_cast<const char*>(info.indices.data()), sizeof(_uint) * indicesSize);
 
 		out.write(reinterpret_cast<const char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+
+		_uint diffuseTexPathSize = static_cast<_uint>(info.diffuseMapPath.size());
+		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
+		if (diffuseTexPathSize > 0)
+			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathSize);
 	}
 
 	out.close();
@@ -260,6 +289,14 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	{
 		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
 
+		_uint nameCount = 0;
+		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
+		if (nameCount > 0)
+		{
+			info.meshName.resize(nameCount);
+			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
+		}
+
 		_uint bufferSize = 0;
 		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
 		if (bufferSize > 0)
@@ -278,6 +315,14 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 		in.read(reinterpret_cast<char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
 
+		_uint diffuseTexPathCount = 0;
+		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
+		if (indexCount > 0)
+		{
+			info.diffuseMapPath.resize(diffuseTexPathCount);
+			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
+		}
+
 		infoList.push_back(info);
 	}
 
@@ -286,7 +331,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	return infoList;
 }
 
-vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const wstring& _path, _int _filter, void* _desc, const _bool _tempScene)
+vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;
 
@@ -295,7 +340,38 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const
 
 	vector<MeshBundle> resultList = {};
 
-	for (_uint i = 0; i < scene->mNumMeshes; ++i)
+	for (_uint i = 0; i < _infoList.size(); ++i)
+	{
+		MeshBundle newBundle;
+
+		if (_filter & MESHBUFFER)
+		{
+			CMeshBuffer* newBuffer = CMeshBuffer::Create();
+			newBuffer->Initailize_Custom(_infoList[i], _desc);
+
+			newBundle.meshBuffer = newBuffer;
+		}
+
+		if (_filter & MATERIAL)
+		{
+			CTexture* newTex = CTexture::Create();
+			newTex->Initialize(_infoList[i].diffuseMapPath, _infoList[i].diffuseMapPath, nullptr);
+
+			newBundle.texture = newTex;
+		}
+
+		resultList.push_back(newBundle);
+	}
+
+	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+		CSceneManager::GetInstance().Get_CrtScene();
+
+	if (!_tempScene)
+		targetScene->Add_MeshBundle(_name, resultList);
+	else
+		targetScene->Add_TempMeshBundle(_name, resultList);
+
+	/*for (_uint i = 0; i < scene->mNumMeshes; ++i)
 	{
 		MeshBundle newBundle = {};
 
@@ -353,7 +429,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, const
 	else
 		targetScene->Add_TempMeshBundle(_name, resultList);
 
-	CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);
+	CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);*/
 
 	return resultList;
 }

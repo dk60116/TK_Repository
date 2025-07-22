@@ -103,7 +103,7 @@ void CSceneLoader::ThreadLoadingLoop()
 					if (CEngineString::Contains(wFormat, L"[Texture]"))
 						filter |= TEXTURE;
 
-					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", wFile, filter, nullptr, true);
+					//CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", wFile, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
 					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));
