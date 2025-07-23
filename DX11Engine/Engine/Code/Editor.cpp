@@ -99,8 +99,6 @@ void CEditor::Release()
 		Safe_Release((*it).second);
 
 	m_mBoxList.clear();
-
-	Safe_Release(m_pSelectedGameObject);
 }
 
 HWND CEditor::Get_EditorWindow()
