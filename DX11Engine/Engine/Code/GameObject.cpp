@@ -316,6 +316,12 @@ void CGameObject::Set_Transform(CTransform* _transform)
 
 void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 {
+	if (_meshInfos.size() <= 0)
+	{
+		CDebug::LogError(L"Failed create MeshHierachy: " + m_strGameObjectName);
+		return;
+	}
+
 	CTransform* parentTransform = Get_Transform();
 
 	for (_uint i = 0; i < _meshInfos.size(); ++i)

@@ -64,6 +64,11 @@ void CProjectBox::Render()
 
 	ImGui::PopStyleVar();
 
+	if (CInput::GetInstance().GetKeyDown_Editor(C))
+	{
+		CResources::GetInstance().ReadSkinnedBufferInfos(L"Player_Link.skinneddata");
+	}
+
 	ImGui::End();
 }
 
@@ -141,7 +146,7 @@ void CProjectBox::RenderDirectoryRecursive(const fs::path& _dirPath)
 						{
 							wstring path = CEngineString::Erase(entry.path().wstring(), L"../Assets\\");
 							path = CEngineString::Replace(path, L"\\", L"/");
-							CResources::GetInstance().ConvertFBXToMeshBufferData(path);
+							CResources::GetInstance().ConvertFBXToSkinnedBufferData(path);
 						}
 					}
 

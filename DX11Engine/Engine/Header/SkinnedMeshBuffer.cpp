@@ -66,6 +66,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
 
         v.position = _float3(pos.x, pos.y, pos.z);
         v.normal = _float3(normal.x, normal.y, normal.z);
+        v.tangent = _float3(tangent.x, tangent.y, tangent.z);
 
         if (mesh->HasTextureCoords(0))
             v.uv = _float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
@@ -85,7 +86,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
 
     m_vBoneNames.clear();
 
-    for (UINT b = 0; b < mesh->mNumBones; ++b)
+    for (_uint b = 0; b < mesh->mNumBones; ++b)
     {
         string bn = mesh->mBones[b]->mName.C_Str();
         m_vBoneNames.emplace_back(bn.begin(), bn.end());
@@ -188,6 +189,33 @@ void CSkinnedMeshBuffer::OnDestroy()
     }
 
     m_vBoneNames.clear();
+}
+
+void CSkinnedMeshBuffer::FillBoneWeights(VertexSkinnedBuffer& _targetBuffer, const _uint _index, const _float _weight)
+{
+    for (_uint i = 0; i < 4; ++i)
+    {
+        if (_targetBuffer.boneWeights[i] == 0.f)
+        {
+            _targetBuffer.boneIndices[i] = _index;
+            _targetBuffer.boneWeights[i] = _weight;
+            return;
+        }
+    }
+
+    // 4개 꽉 찼다면 가장 작은 weight을 대체
+    _uint minIndex = 0;
+    for (int i = 1; i < 4; ++i)
+    {
+        if (_targetBuffer.boneWeights[i] < _targetBuffer.boneWeights[minIndex])
+            minIndex = i;
+    }
+
+    if (_targetBuffer.boneWeights[minIndex] < _weight)
+    {
+        _targetBuffer.boneIndices[minIndex] = _index;
+        _targetBuffer.boneWeights[minIndex] = _weight;
+    }
 }
 
 const _float4x4& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)

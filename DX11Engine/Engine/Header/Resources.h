@@ -3,6 +3,7 @@
 #include "epch.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "SkinnedMeshBuffer.h"
 #include "AnimationClip.h"
 
 #include <filesystem>
@@ -21,16 +22,19 @@ private:
 	void Release();
 
 public:
-    static void LoadResourceComplete_Game(const CEngineResource* _ptr);
-    static void LoadResourceComplete_Scene(const CEngineResource* _ptr);
+    static void LoadResourceComplete_Game(const class CEngineResource* _ptr);
+    static void LoadResourceComplete_Scene(const class CEngineResource* _ptr);
 
 public:
     HRESULT ConvertFBXToMeshBufferData(const wstring _filePath);
-    void ConvertFBXToSkinnedBufferData(const wstring _filePath);
+    HRESULT ConvertFBXToSkinnedBufferData(const wstring _filePath);
 
 public:
     HRESULT SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
     vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
+    HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList);
+    vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> ReadSkinnedBufferInfos(const wstring _binFileName);
+
 
 public:
     template<typename T>
