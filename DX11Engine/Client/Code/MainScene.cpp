@@ -134,11 +134,4 @@ void CMainScene::Update()
 		m_pImage2->SetFillAmount(fill + DELTA_TIME);
 		CDebug::Log(m_pImage2->GetFillAmount());
 	}
-
-	if (CInput::GetInstance().GetMouseButtonDown_Editor(0))
-	{
-		CDebug::Log(CInput::GetInstance().GetMousePos_Editor());
-
-		auto hit = CPhysics::GetInstance().Laycast(vector3{}, vector3{});
-	}
 }

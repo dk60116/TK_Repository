@@ -190,3 +190,91 @@ void CCamera::RenderUI()
 
 	m_vUIList.clear();
 }
+
+CPhysics::Ray CCamera::ScreenPointToRay(const vector2Int& _pixel, _float _maxDist)
+{
+	auto res = CDisplay::GetInstance().Get_ScreenResolution();
+	_float w = static_cast<float>(res.x);
+	_float h = static_cast<float>(res.y);
+
+	_float xNdc = 2.0f * _pixel.x / w - 1.0f;
+	_float yNdc = -2.0f * _pixel.y / h + 1.0f;
+
+	_vector ptNear = XMVectorSet(xNdc, yNdc, 0.f, 1.f);
+	_vector ptFar = XMVectorSet(xNdc, yNdc, 1.f, 1.f);
+
+	_matrix view = XMLoadFloat4x4(&m_vViewMatrix);
+	_matrix proj = XMLoadFloat4x4(&m_vProjMatrix);
+	_matrix invVP = XMMatrixInverse(nullptr, view * proj);
+
+	ptNear = XMVector4Transform(ptNear, invVP);
+	ptFar = XMVector4Transform(ptFar, invVP);
+	ptNear /= XMVectorGetW(ptNear);
+	ptFar /= XMVectorGetW(ptFar);
+
+	_float3 origin, dir;
+	XMStoreFloat3(&origin, ptNear);
+
+	if (m_eCamViewMode == PERSPECTIVE)
+	{
+		_vector rayDir = XMVectorSubtract(ptFar, ptNear);
+		rayDir = XMVector3Normalize(rayDir);
+		XMStoreFloat3(&dir, rayDir);
+	}
+	else
+	{
+		XMStoreFloat3(&origin, ptNear);
+		dir = Get_Transform()->Get_Directions().forward;
+	}
+
+	vector3 resultDir = vector3(dir);
+
+	return CPhysics::Ray{ origin, resultDir.normalized(), _maxDist };
+}
+
+CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist)
+{
+	auto eo = CEditor::GetInstance().Get_Options();
+
+	auto res = CEditor::GetInstance().Get_ScreenResolution();
+	_float w = static_cast<_float>(res.x - 40);
+	_float h = static_cast<_float>(res.y + 20);
+
+	_float xNdc = 2.0f * _pixel.x / w - 1.0f;
+	_float yNdc = -2.0f * _pixel.y / h + 1.0f;
+
+	_vector ptNear = XMVectorSet(xNdc, yNdc, 0.f, 1.f);
+	_vector ptFar = XMVectorSet(xNdc, yNdc, 1.f, 1.f);
+
+	_matrix view = XMLoadFloat4x4(&m_vViewMatrix);
+	_matrix proj = XMLoadFloat4x4(&m_vProjMatrix);
+	_matrix invVP = XMMatrixInverse(nullptr, view * proj);
+
+	ptNear = XMVector4Transform(ptNear, invVP);
+	ptFar = XMVector4Transform(ptFar, invVP);
+	ptNear /= XMVectorGetW(ptNear);
+	ptFar /= XMVectorGetW(ptFar);
+
+	_float3 origin, dir;
+	XMStoreFloat3(&origin, ptNear);
+
+	if (m_eCamViewMode == PERSPECTIVE)
+	{
+		_vector camPos = Get_Transform()->Get_WorldMatrix().r[3];
+		_vector rayDir = XMVectorSubtract(ptFar, camPos);
+
+		XMStoreFloat3(&origin, camPos);
+		XMStoreFloat3(&dir, rayDir);
+	}
+	else
+	{
+		XMStoreFloat3(&origin, ptNear);
+		dir = Get_Transform()->Get_Directions().forward;
+	}
+
+	vector3 resultDir = vector3(dir);
+
+	CPhysics::Ray result = { origin, resultDir.normalized(), _maxDist };
+
+	return result;
+}

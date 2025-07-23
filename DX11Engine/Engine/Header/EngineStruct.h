@@ -615,9 +615,14 @@ namespace Engine
             return vector3(XMVectorGetX(cross), XMVectorGetY(cross), XMVectorGetZ(cross));
         }
 
-        operator XMFLOAT3() const
+        const _vector toXMVector() const
         {
-            return XMFLOAT3(x, y, z);
+            return XMVectorSet(x, y, z, 0.f);
+        }
+
+        operator _float3() const
+        {
+            return _float3(x, y, z);
         }
     };
 
@@ -979,7 +984,7 @@ namespace Engine
             return out;
         }
 
-        static quaternion from_axis_angle(vector3& _axis, const _float _radians)
+        static quaternion from_axis_angle(const vector3& _axis, const _float _radians)
         {
             _vector q = XMQuaternionRotationAxis(_axis.toXMVector(), _radians);
 

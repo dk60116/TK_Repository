@@ -16,60 +16,137 @@ CPhysics& CPhysics::GetInstance()
 	return inst;
 }
 
-CPhysics::LAYCASTHIT CPhysics::Laycast(vector3 _worldPos, vector3 _direction, _float _maxDistance)
+vector<CPhysics::RAYCASTHIT> CPhysics::Raycast(const Ray& _ray)
 {
-	LAYCASTHIT result;
+    vector<RAYCASTHIT> hits;
+    const vector3 dirN = _ray.dir.normalized();
 
-	_float closestDist = _maxDistance;
-	CGameObject* closestObject = nullptr;
-	vector3 hitPoint = {};
-	vector3 hitNormal = {};
+    auto objs = CSceneManager::GetInstance().Get_CrtScene()->Get_MeshObjects();
 
-	for (auto& object : CSceneManager::GetInstance().Get_CrtScene()->Get_MeshObjects())
-	{
-		CDebug::Log(object->Get_ObjectName());
+    for (auto* obj : objs)
+    {
+        if (!obj || !obj->IsActive())
+            continue;
 
-		CMeshBuffer* mesh = nullptr;
+        CMeshRenderer* renderer = obj->GetComponent<CMeshRenderer>();
+        if (!renderer)
+            continue;
 
-		if (object->GetComponent<CMeshRenderer>())
-			mesh = object->GetComponent<CMeshRenderer>()->Get_MeshFilter()->Get_MeshBuffer();
-		else
-			mesh = object->GetComponent<CSkinnedMeshRenderer>()->Get_MeshBuffer();
+        CMeshFilter* mf = renderer->Get_MeshFilter();
+        if (!mf)
+            continue;
 
-		if (!mesh)
-			continue;
+        CMeshBuffer* buffer = mf->Get_MeshBuffer();
+        if (!buffer)
+            continue;
 
-		_matrix worldMat = object->Get_Transform()->Get_WorldMatrix();
+        const auto& desc = buffer->Get_Info();
+        const _uint* indices = static_cast<const _uint*>(buffer->m_pIndexSysMem);
+        const _float3* verts = static_cast<const _float3*>(buffer->m_pVertexSysMem);
 
-		//for (_int i = 0; i < mesh->GetIndexCount(); i += 3)
-		//{
-		//	vector3 v0 = TransformPosition(mesh->GetVertex(i + 0), worldMat);
-		//	vector3 v1 = TransformPosition(mesh->GetVertex(i + 1), worldMat);
-		//	vector3 v2 = TransformPosition(mesh->GetVertex(i + 2), worldMat);
+        const _uint triCnt = desc.indexCount / 3;
+        if (triCnt == 0)
+            continue;
 
-		//	_float dist = 0.f;
-		//	vector3 normal;
-		//	if (RayIntersectsTriangle(_worldPos, _direction, v0, v1, v2, dist, normal))
-		//	{
-		//		if (dist < closestDist)
-		//		{
-		//			closestDist = dist;
-		//			closestObject = object;
-		//			hitPoint = _worldPos + _direction * dist;
-		//			hitNormal = normal;
-		//		}
-		//	}
-		}
-	}
+        _matrix mWorld = obj->Get_Transform()->Get_WorldMatrix();
 
-	if (closestObject)
-	{
-		result.isHit = true;
-		result.distance = closestDist;
-		result.hitPos = hitPoint;
-		result.hitNormal = hitNormal;
-		result.object = closestObject;
-	}
+        _float closestTHit = FLT_MAX;
+        vector3 closestNormal = {};
+        vector3 closestHitPos = {};
+        _bool foundHit = false;
 
-	return result;
+        for (_uint i = 0; i < triCnt; ++i)
+        {
+            _float3 p0 = verts[indices[i * 3 + 0]];
+            _float3 p1 = verts[indices[i * 3 + 1]];
+            _float3 p2 = verts[indices[i * 3 + 2]];
+
+            _float3 wp0, wp1, wp2;
+            XMStoreFloat3(&wp0, XMVector3TransformCoord(XMLoadFloat3(&p0), mWorld));
+            XMStoreFloat3(&wp1, XMVector3TransformCoord(XMLoadFloat3(&p1), mWorld));
+            XMStoreFloat3(&wp2, XMVector3TransformCoord(XMLoadFloat3(&p2), mWorld));
+
+            _float tHit;
+            vector3 nHit;
+            if (IntersectRayTri(_ray, wp0, wp1, wp2, tHit, nHit) && tHit <= _ray.maxDist)
+            {
+                if (tHit < closestTHit)
+                {
+                    closestTHit = tHit;
+                    closestNormal = nHit;
+                    closestHitPos = _ray.origin + dirN * tHit;
+                    foundHit = true;
+                }
+            }
+        }
+
+        if (foundHit)
+        {
+            RAYCASTHIT hit;
+            hit.isHit = true;
+            hit.distance = closestTHit;
+            hit.hitPos = closestHitPos;
+            hit.hitNormal = closestNormal.normalized();
+            hit.object = obj;
+            hits.emplace_back(hit);
+        }
+    }
+
+    sort(hits.begin(), hits.end(),
+        [](const RAYCASTHIT& a, const RAYCASTHIT& b) { return a.distance < b.distance; });
+
+    return hits;
+}
+
+_bool CPhysics::IntersectRayTri(
+    const Ray& ray,
+    const _float3& v0F,
+    const _float3& v1F,
+    const _float3& v2F,
+    _float& t,              
+    vector3& outNormal)
+{
+    constexpr float EPS = 1e-6f;
+
+    _float3 xmRayOrg3 = ray.origin;
+    _float3 xmRayDir3 = ray.dir;
+
+    const XMVECTOR orig = XMLoadFloat3(&xmRayOrg3);
+    const XMVECTOR dir = XMLoadFloat3(&xmRayDir3);
+
+    const XMVECTOR v0 = XMLoadFloat3(&v0F);
+    const XMVECTOR v1 = XMLoadFloat3(&v1F);
+    const XMVECTOR v2 = XMLoadFloat3(&v2F);
+
+    const XMVECTOR e1 = XMVectorSubtract(v1, v0);
+    const XMVECTOR e2 = XMVectorSubtract(v2, v0);
+
+    const XMVECTOR p = XMVector3Cross(dir, e2);
+    const float det = XMVectorGetX(XMVector3Dot(e1, p));
+
+    if (fabsf(det) < EPS) return false;
+
+    const float invDet = 1.f / det;
+
+    const XMVECTOR s = XMVectorSubtract(orig, v0);  
+    const float u = XMVectorGetX(XMVector3Dot(s, p)) * invDet;
+    if (u < 0.f || u > 1.f) return false;
+
+    const XMVECTOR q = XMVector3Cross(s, e1);
+    const float v = XMVectorGetX(XMVector3Dot(dir, q)) * invDet;
+    if (v < 0.f || (u + v) > 1.f) return false;
+
+    t = XMVectorGetX(XMVector3Dot(e2, q)) * invDet;
+
+    if (t < 0.f) 
+        return false;   
+
+    XMVECTOR n = XMVector3Cross(e1, e2);
+    n = XMVector3Normalize(n);
+    _float3 on;
+    XMStoreFloat3(&on, n);
+
+    outNormal = vector3(on.x, on.y, on.z);
+
+    return true;
 }

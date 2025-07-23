@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CMeshBuffer : public CEngineResource
 {
 	friend class CResources;
+	friend class CPhysics;
 
 public:
 	typedef struct MeshBufferDescription

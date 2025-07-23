@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Physics.h"
 
 NS_BEGIN(Engine)
 
@@ -44,6 +45,10 @@ protected:
 public:
 	void RenderMesh();
 	void RenderUI();
+
+public:
+	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
+	CPhysics::Ray ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist = 999999.f);
 
 protected:
 	ViewMode m_eCamViewMode;

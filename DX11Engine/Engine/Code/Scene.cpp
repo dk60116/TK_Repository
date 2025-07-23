@@ -103,6 +103,25 @@ void CScene::Update_Editor()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		(*it)->Update_Editor();
+
+	if (CInput::GetInstance().GetMouseButtonDown_Editor(0))
+	{
+		const vector2Int point = CInput::GetInstance().GetMousePos_Editor();
+		CPhysics::Ray ray = m_pEditorCamera->ScreenPointToRay_Editor(point);
+
+		auto hits =  CPhysics::GetInstance().Raycast(ray);
+
+		if (hits.size() <= 0)
+			return;
+
+		auto firstHit = hits[0];
+
+		CDebug::LogError("Ray Origin & Dir");
+		CDebug::LogError(ray.origin);
+		CDebug::LogError(ray.dir);
+		CDebug::LogError("HitPos");
+		CDebug::LogError(firstHit.hitPos);
+	}
 }
 
 void CScene::Update()
