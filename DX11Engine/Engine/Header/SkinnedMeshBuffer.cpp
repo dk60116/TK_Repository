@@ -162,11 +162,11 @@ void CSkinnedMeshBuffer::Render()
     _uint stride = m_sInfo.vertexSize;
     _uint offset = 0;
 
-    context->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+    context->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
     if (m_pIndexBuffer)
     {
-        context->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+        context->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
         context->IASetPrimitiveTopology(m_sInfo.topology);
         context->DrawIndexed(m_sInfo.indexCount, 0, 0);
     }

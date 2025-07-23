@@ -32,6 +32,7 @@ public:
 
 public:
 	CMeshFilter* Get_MeshFilter();
+	CMeshBuffer* Get_MeshBuffer() override;
 
 private:
 	CMeshFilter* m_pMeshFilter;

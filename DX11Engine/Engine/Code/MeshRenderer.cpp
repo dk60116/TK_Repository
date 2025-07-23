@@ -142,3 +142,8 @@ CMeshFilter* CMeshRenderer::Get_MeshFilter()
 {
 	return m_pMeshFilter;
 }
+
+CMeshBuffer* CMeshRenderer::Get_MeshBuffer()
+{
+	return m_pMeshFilter->Get_MeshBuffer();
+}

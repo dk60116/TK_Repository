@@ -17,12 +17,13 @@ protected:
 	HRESULT Initialize() override;
 
 public:
-	virtual void Render_WithCamera(CCamera* _cam) PURE;
+	virtual void Render_WithCamera(class CCamera* _cam) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
 
 public:
 	CMaterial* Get_Material();
 	void Set_Material(CMaterial* _material);
+	virtual CMeshBuffer* Get_MeshBuffer() PURE;
 
 protected:
 	CMaterial* m_pMaterial;

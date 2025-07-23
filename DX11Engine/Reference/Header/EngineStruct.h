@@ -2,7 +2,6 @@
 #define Engine_Struct_h__
 
 #include "EngineTypedef.h"
-#include "MeshBuffer.h"
 #include "Material.h"
 #include "Texture.h"
 
@@ -1339,7 +1338,7 @@ namespace Engine
 
     struct MeshBundle
     {
-        CMeshBuffer* meshBuffer = nullptr;
+        class CMeshBuffer* meshBuffer = nullptr;
         CMaterial* material = nullptr;
         CTexture* texture = nullptr;
     };

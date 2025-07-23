@@ -19,134 +19,84 @@ CPhysics& CPhysics::GetInstance()
 vector<CPhysics::RAYCASTHIT> CPhysics::Raycast(const Ray& _ray)
 {
     vector<RAYCASTHIT> hits;
-    const vector3 dirN = _ray.dir.normalized();
 
-    auto objs = CSceneManager::GetInstance().Get_CrtScene()->Get_MeshObjects();
+    vector<CRenderer*> renders = CSceneManager::GetInstance().Get_CrtScene()->Get_MeshObjects();
 
-    for (auto* obj : objs)
-    {
-        if (!obj || !obj->IsActive())
-            continue;
+	for (auto ren : renders)
+	{
+		CMeshBuffer* buffer = ren->Get_MeshBuffer();
 
-        CMeshRenderer* renderer = obj->GetComponent<CMeshRenderer>();
-        if (!renderer)
-            continue;
+		if (!buffer)
+			continue;
 
-        CMeshFilter* mf = renderer->Get_MeshFilter();
-        if (!mf)
-            continue;
+		vector<VertexTexNormalTangentBuffer> vb = buffer->Get_VertexBuffer();
+		vector<_uint> ib = buffer->Get_IndexBuffer();
 
-        CMeshBuffer* buffer = mf->Get_MeshBuffer();
-        if (!buffer)
-            continue;
+		if (vb.size() <= 0 || ib.size() <= 0)
+			continue;
 
-        const auto& desc = buffer->Get_Info();
-        const _uint* indices = static_cast<const _uint*>(buffer->m_pIndexSysMem);
-        const _float3* verts = static_cast<const _float3*>(buffer->m_pVertexSysMem);
+		CGameObject* obj = ren->Get_GameObject();
+		_matrix worldMatrix = obj->Get_Transform()->Get_WorldMatrix();
 
-        const _uint triCnt = desc.indexCount / 3;
-        if (triCnt == 0)
-            continue;
+		for (_uint i = 0; i < ib.size(); i += 3)
+		{
+			vector3 p0 = XMVector3TransformCoord(XMLoadFloat3(&vb[ib[i]].position), worldMatrix);
+			vector3 p1 = XMVector3TransformCoord(XMLoadFloat3(&vb[ib[i + 1]].position), worldMatrix);
+			vector3 p2 = XMVector3TransformCoord(XMLoadFloat3(&vb[ib[i + 2]].position), worldMatrix);
 
-        _matrix mWorld = obj->Get_Transform()->Get_WorldMatrix();
+			_float t = 0.f;
+			vector3 normal;
 
-        _float closestTHit = FLT_MAX;
-        vector3 closestNormal = {};
-        vector3 closestHitPos = {};
-        _bool foundHit = false;
+			if (IntersectRayTriangle(_ray.origin, _ray.dir, p0, p1, p2, t, normal))
+			{
+				if (t < 0 || t > _ray.maxDist)
+					continue;
 
-        for (_uint i = 0; i < triCnt; ++i)
-        {
-            _float3 p0 = verts[indices[i * 3 + 0]];
-            _float3 p1 = verts[indices[i * 3 + 1]];
-            _float3 p2 = verts[indices[i * 3 + 2]];
+				RAYCASTHIT hit;
+				hit.isHit = true;
+				hit.distance = t;
+				hit.hitNormal = normal;
+				hit.hitPos = _ray.origin + _ray.dir * t;
+				hit.object = obj;
 
-            _float3 wp0, wp1, wp2;
-            XMStoreFloat3(&wp0, XMVector3TransformCoord(XMLoadFloat3(&p0), mWorld));
-            XMStoreFloat3(&wp1, XMVector3TransformCoord(XMLoadFloat3(&p1), mWorld));
-            XMStoreFloat3(&wp2, XMVector3TransformCoord(XMLoadFloat3(&p2), mWorld));
+				hits.push_back(hit);
+			}
+		}
+	}
 
-            _float tHit;
-            vector3 nHit;
-            if (IntersectRayTri(_ray, wp0, wp1, wp2, tHit, nHit) && tHit <= _ray.maxDist)
-            {
-                if (tHit < closestTHit)
-                {
-                    closestTHit = tHit;
-                    closestNormal = nHit;
-                    closestHitPos = _ray.origin + dirN * tHit;
-                    foundHit = true;
-                }
-            }
-        }
-
-        if (foundHit)
-        {
-            RAYCASTHIT hit;
-            hit.isHit = true;
-            hit.distance = closestTHit;
-            hit.hitPos = closestHitPos;
-            hit.hitNormal = closestNormal.normalized();
-            hit.object = obj;
-            hits.emplace_back(hit);
-        }
-    }
-
-    sort(hits.begin(), hits.end(),
-        [](const RAYCASTHIT& a, const RAYCASTHIT& b) { return a.distance < b.distance; });
-
+	sort(hits.begin(), hits.end(), [](const RAYCASTHIT& a, const RAYCASTHIT& b) {return a.distance < b.distance; });
+     
     return hits;
 }
 
-_bool CPhysics::IntersectRayTri(
-    const Ray& ray,
-    const _float3& v0F,
-    const _float3& v1F,
-    const _float3& v2F,
-    _float& t,              
-    vector3& outNormal)
+_bool CPhysics::IntersectRayTriangle(const vector3& rayOrigin, const vector3& rayDir, const vector3& v0, const vector3& v1, const vector3& v2, _float& t, vector3& hitNormal)
 {
-    constexpr float EPS = 1e-6f;
+	const float EPSILON = 0.000001f;
 
-    _float3 xmRayOrg3 = ray.origin;
-    _float3 xmRayDir3 = ray.dir;
+	vector3 edge1 = v1 - v0;
+	vector3 edge2 = v2 - v0;
 
-    const XMVECTOR orig = XMLoadFloat3(&xmRayOrg3);
-    const XMVECTOR dir = XMLoadFloat3(&xmRayDir3);
+	vector3 h = rayDir.cross(edge2);
+	float a = edge1.dot(h);
+	if (fabs(a) < EPSILON)
+		return false;
 
-    const XMVECTOR v0 = XMLoadFloat3(&v0F);
-    const XMVECTOR v1 = XMLoadFloat3(&v1F);
-    const XMVECTOR v2 = XMLoadFloat3(&v2F);
+	float f = 1.0f / a;
+	vector3 s = rayOrigin - v0;
+	float u = f * s.dot(h);
+	if (u < 0.0f || u > 1.0f)
+		return false;
 
-    const XMVECTOR e1 = XMVectorSubtract(v1, v0);
-    const XMVECTOR e2 = XMVectorSubtract(v2, v0);
+	vector3 q = s.cross(edge1);
+	float v = f * rayDir.dot(q);
+	if (v < 0.0f || u + v > 1.0f)
+		return false;
 
-    const XMVECTOR p = XMVector3Cross(dir, e2);
-    const float det = XMVectorGetX(XMVector3Dot(e1, p));
-
-    if (fabsf(det) < EPS) return false;
-
-    const float invDet = 1.f / det;
-
-    const XMVECTOR s = XMVectorSubtract(orig, v0);  
-    const float u = XMVectorGetX(XMVector3Dot(s, p)) * invDet;
-    if (u < 0.f || u > 1.f) return false;
-
-    const XMVECTOR q = XMVector3Cross(s, e1);
-    const float v = XMVectorGetX(XMVector3Dot(dir, q)) * invDet;
-    if (v < 0.f || (u + v) > 1.f) return false;
-
-    t = XMVectorGetX(XMVector3Dot(e2, q)) * invDet;
-
-    if (t < 0.f) 
-        return false;   
-
-    XMVECTOR n = XMVector3Cross(e1, e2);
-    n = XMVector3Normalize(n);
-    _float3 on;
-    XMStoreFloat3(&on, n);
-
-    outNormal = vector3(on.x, on.y, on.z);
-
-    return true;
+	t = f * edge2.dot(q);
+	if (t > EPSILON) {
+		hitNormal = edge1.cross(edge2).normalized();
+		return true;
+	}
+	
+	return false;
 }

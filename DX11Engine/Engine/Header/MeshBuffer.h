@@ -67,20 +67,18 @@ private:
 	MeshBufferInitiaizeInfo CreateTriangle();
 	MeshBufferInitiaizeInfo CreateTerrain(_uint _sizeX, _uint _sizeZ, const _float _size, _float _heighyWeight, ID3D11Texture2D* _heightMap);
 
-	static MeshBufferInitiaizeInfo CreateObjectMesh(const aiScene* _aiScene, const _uint _index = 0, const _float _scaleFactor = 1.f);
-
 public:
 	void Render();
 
 public:
 	virtual void Set_Scalefactor(const _float _value);
-	ID3D11Buffer* Get_VertexBuffer() const;
-	ID3D11Buffer* Get_IndexBuffer() const;
+	vector<VertexTexNormalTangentBuffer> Get_VertexBuffer() const;
+	vector<_uint> Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
 
 protected:
-	ComPtr<ID3D11Buffer> m_pVertexBuffer;
-	ComPtr<ID3D11Buffer> m_pIndexBuffer;
+	ID3D11Buffer* m_pVertexBuffer;
+	ID3D11Buffer* m_pIndexBuffer;
 
 	MESHBUFFERDESC m_sInfo;
 

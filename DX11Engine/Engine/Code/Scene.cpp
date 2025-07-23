@@ -123,6 +123,12 @@ void CScene::Update_Editor()
 			CDebug::LogError(ray.dir);
 			CDebug::LogError("HitPos");
 			CDebug::LogError(firstHit.hitPos);
+			CDebug::LogError(firstHit.object->Get_ObjectName());
+
+			CGameObject* newObj = Add_GameObject(L"AddObj");
+			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
+			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
 		}
 	}
 }
@@ -410,16 +416,16 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	return result;
 }
 
-vector<CGameObject*> CScene::Get_MeshObjects()
+vector<CRenderer*> CScene::Get_MeshObjects()
 {
-	vector<CGameObject*> result = {};
+	vector<CRenderer*> result = {};
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->GetComponent<CMeshRenderer>() || (*it)->GetComponent<CSkinnedMeshRenderer>())
+		if (CRenderer* ren = (*it)->GetComponent<CRenderer>())
 		{
 			if ((*it)->m_iUniqueID != 0)
-				result.push_back(*it);
+				result.push_back(ren);
 		}
 	}
 

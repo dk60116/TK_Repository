@@ -231,14 +231,11 @@ void CMeshBuffer::Render()
 
     CGraphicDevice::GetInstance().Get_Context()->IASetVertexBuffers
     (
-        0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset
+        0, 1, &m_pVertexBuffer, &stride, &offset
     );
 
     if (m_pIndexBuffer)
-    {
-        CGraphicDevice::GetInstance().Get_Context()->IASetIndexBuffer
-        (m_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-    }
+        CGraphicDevice::GetInstance().Get_Context()->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
     if (!m_sInfo.useDeviceTopology)
         CGraphicDevice::GetInstance().Get_Context()->IASetPrimitiveTopology(m_sInfo.topology);
@@ -632,76 +629,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
     return info;
 }
 
-CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateObjectMesh(const aiScene* _aiScene, const _uint _index, const _float _scaleFactor)
-{
-    MeshBufferInitiaizeInfo info = {};
-    using VTX = VertexTexNormalTangentBuffer;
-
-    if (!_aiScene)
-    {
-        OutputDebugStringA("Assimp load failed or mesh index out of bounds.\n");
-        return {};
-    }
-
-    const aiMesh* mesh = _aiScene->mMeshes[_index];
-
-    vector<VTX> vertices;
-    vector<_uint> indices;
-
-    // 정점 복사
-    for (_uint i = 0; i < mesh->mNumVertices; ++i)
-    {
-        VTX v{};
-        v.position = {
-            mesh->mVertices[i].x * _scaleFactor,
-            mesh->mVertices[i].y * _scaleFactor,
-            mesh->mVertices[i].z * _scaleFactor
-        };
-
-        v.normal = mesh->HasNormals() ?
-            _float3{ mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z } :
-            _float3{ 0, 0, 0 };
-
-        v.uv = mesh->HasTextureCoords(0) ?
-            _float2{ mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y } :
-            _float2{ 0, 0 };
-
-        v.tangent = mesh->HasTangentsAndBitangents() ?
-            _float3{ mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z } :
-            _float3{ 0, 0, 0 };
-
-        vertices.emplace_back(v);
-    }
-
-    // 인덱스 복사
-    for (_uint f = 0; f < mesh->mNumFaces; ++f)
-    {
-        const aiFace& face = mesh->mFaces[f];
-        if (face.mNumIndices != 3) continue;
-        indices.push_back(face.mIndices[0]);
-        indices.push_back(face.mIndices[1]);
-        indices.push_back(face.mIndices[2]);
-    }
-
-    // 버퍼 정보 세팅
-    MESHBUFFERDESC desc{};
-    desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    desc.vertexSize = sizeof(VTX);
-    desc.vertextCount = static_cast<_uint>(vertices.size());
-    desc.indexCount = static_cast<_uint>(indices.size());
-
-    info.buffer.assign
-    (
-        reinterpret_cast<const uint8_t*>(vertices.data()),
-        reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size()
-    );
-
-    info.indices.assign(indices.begin(), indices.end());
-    info.desc = desc;
-
-    return info;
-}
-
 const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 {
 	return m_sInfo;
@@ -769,12 +696,28 @@ void CMeshBuffer::Set_Scalefactor(const _float _value)
     //}
 }
 
-ID3D11Buffer* CMeshBuffer::Get_VertexBuffer() const
+vector<VertexTexNormalTangentBuffer> CMeshBuffer::Get_VertexBuffer() const
 {
-	return m_pVertexBuffer.Get();
+    vector<VertexTexNormalTangentBuffer> result;
+    if (!m_pVertexSysMem || m_sInfo.vertexSize != sizeof(VertexTexNormalTangentBuffer))
+        return result;
+
+    const _uint count = m_sInfo.vertextCount;
+    auto* verts = static_cast<VertexTexNormalTangentBuffer*>(m_pVertexSysMem);
+
+    result.assign(verts, verts + count);
+    return result;
 }
 
-ID3D11Buffer* CMeshBuffer::Get_IndexBuffer() const
+vector<_uint> CMeshBuffer::Get_IndexBuffer() const
 {
-	return m_pIndexBuffer.Get();
+    vector<_uint> result;
+
+    if (!m_pIndexSysMem || m_sInfo.indexCount == 0)
+        return result;
+
+    _uint* pIndices = static_cast<_uint*>(m_pIndexSysMem);
+    result.assign(pIndices, pIndices + m_sInfo.indexCount);
+
+    return result;
 }

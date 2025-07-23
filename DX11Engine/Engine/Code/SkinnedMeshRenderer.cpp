@@ -278,7 +278,12 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 	m_pContext->RSSetState(nullptr);
 }
 
-CSkinnedMeshBuffer* CSkinnedMeshRenderer::Get_MeshBuffer()
+CMeshBuffer* CSkinnedMeshRenderer::Get_MeshBuffer()
+{
+	return m_pMeshBuffer;
+}
+
+CSkinnedMeshBuffer* CSkinnedMeshRenderer::Get_SkinnedMeshBuffer()
 {
 	return m_pMeshBuffer;
 }

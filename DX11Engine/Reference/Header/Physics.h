@@ -29,15 +29,10 @@ public:
 	vector<RAYCASTHIT> Raycast(const Ray& _ray);
 
 private:
-	_bool IntersectRayTri
-	(
-		const Ray& ray,
-		const _float3& v0F,
-		const _float3& v1F,
-		const _float3& v2F,
-		_float& t,
-		vector3& outNormal
-	);
+	_bool IntersectRayTriangle(
+		const vector3& rayOrigin, const vector3& rayDir,
+		const vector3& v0, const vector3& v1, const vector3& v2,
+		_float& t, vector3& hitNormal);
 };
 
 NS_END

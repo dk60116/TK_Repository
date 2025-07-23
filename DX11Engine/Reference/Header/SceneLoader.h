@@ -1,6 +1,7 @@
 #pragma once
 
 #include "epch.h"
+#include "MeshBuffer.h"
 
 NS_BEGIN(Engine)
 

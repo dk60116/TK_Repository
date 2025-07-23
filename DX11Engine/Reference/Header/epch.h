@@ -27,6 +27,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Material.h"
+#include "MeshBuffer.h"
 #include "MeshFilter.h"
 #include "Renderer.h"
 #include "MeshRenderer.h"
