@@ -397,12 +397,12 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 
 			auto aiMat = mesh->mBones[i]->mOffsetMatrix;
 
-			_float4x4 float44 = XMFLOAT4X4
+			_float4x4 float44 = _float4x4
 			(
-				aiMat.a1, aiMat.a2, aiMat.a3, aiMat.a4,
-				aiMat.b1, aiMat.b2, aiMat.b3, aiMat.b4,
-				aiMat.c1, aiMat.c2, aiMat.c3, aiMat.c4,
-				aiMat.d1, aiMat.d2, aiMat.d3, aiMat.d4
+				aiMat.a1, aiMat.b1, aiMat.c1, aiMat.d1,
+				aiMat.a2, aiMat.b2, aiMat.c2, aiMat.d2,
+				aiMat.a3, aiMat.b3, aiMat.c3, aiMat.d3,
+				aiMat.a4, aiMat.b4, aiMat.c4, aiMat.d4
 			);
 
 			info.boneOffsetMatrices.push_back(float44);
@@ -922,41 +922,40 @@ _bool CResources::FileExists(const string& _path)
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)
 {
-	using SKINNEDSKELETAL = CSkinnedMeshBuffer::SKINNEDSKELETAL;
+	using SKIN = CSkinnedMeshBuffer::SKINNEDSKELETAL;
 
-	// 1. 먼저 새 노드 추가 (push_back)
-	_outList.emplace_back(); // 공간만 확보
-
-	// 2. 참조로 안전하게 현재 노드 가져오기
-	SKINNEDSKELETAL& nodeInfo = _outList.back();
-
-	nodeInfo.nodeId = static_cast<_int>(_outList.size() - 1);
+	SKIN nodeInfo{};
+	nodeInfo.nodeId = static_cast<_int>(_outList.size());
+	nodeInfo.parentId = _parentId;
 	nodeInfo.name = CEngineString::StringToWString(_node->mName.C_Str());
 
-	const aiMatrix4x4& mat = _node->mTransformation;
+	// Transform
+	aiMatrix4x4 mat = _node->mTransformation;
 	nodeInfo.transformation = _float4x4
 	(
 		mat.a1, mat.b1, mat.c1, mat.d1,
-		mat.a2, mat.b2, mat.c2, mat.c2,
-		mat.a3, mat.b3, mat.c3, mat.c4,
+		mat.a2, mat.b2, mat.c2, mat.d2,
+		mat.a3, mat.b3, mat.c3, mat.d3,
 		mat.a4, mat.b4, mat.c4, mat.d4
 	);
 
-	nodeInfo.parentId = _parentId;
-
+	// Mesh indices
 	nodeInfo.numMeshes = _node->mNumMeshes;
 	for (_uint i = 0; i < _node->mNumMeshes; ++i)
 		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
 
-	// 3. 자식 처리
+	// 미리 push 해서 자식이 parentId 참고 가능
+	_outList.push_back(nodeInfo);
+	_int currentId = nodeInfo.nodeId;
+
+	// 자식 노드들 순회
 	for (_uint i = 0; i < _node->mNumChildren; ++i)
 	{
-		aiNode* child = _node->mChildren[i];
+		// 재귀 이전에 outList size를 얻어 자식 ID 추정
+		_int childId = static_cast<_int>(_outList.size());
+		_outList[currentId].childsId.push_back(childId);
+		_outList[currentId].numChild++;
 
-		TraverseSkeleton(child, nodeInfo.nodeId, _outList);
-
-		nodeInfo.childsId.push_back(static_cast<_int>(_outList.size() - 1));
+		TraverseSkeleton(_node->mChildren[i], currentId, _outList);
 	}
-
-	nodeInfo.numChild = static_cast<_uint>(nodeInfo.childsId.size());
 }

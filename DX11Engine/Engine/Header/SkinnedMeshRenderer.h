@@ -32,9 +32,6 @@ public:
 	CTransform* Get_BoneTransform(const _uint _index) const;
 	const _float4x4& Get_BoneOffsetMatrix(const _uint _index) const;
 
-protected:
-	void CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, _int _currentId, CTransform* _parent);
-	
 public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;
@@ -43,6 +40,7 @@ public:
 	CMeshBuffer* Get_MeshBuffer() override;
 	CSkinnedMeshBuffer* Get_SkinnedMeshBuffer();
 	void Set_Mesh(CSkinnedMeshBuffer* _Mesh);
+	void Set_Bones(const vector<CTransform*>& _bones, CTransform* _rootBone = nullptr);
 
 private:
 	CSkinnedMeshBuffer* m_pMeshBuffer;

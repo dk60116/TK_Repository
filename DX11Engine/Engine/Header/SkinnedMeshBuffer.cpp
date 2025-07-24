@@ -231,6 +231,16 @@ void CSkinnedMeshBuffer::OnDestroy()
     m_vBoneNames.clear();
 }
 
+const _uint CSkinnedMeshBuffer::Get_BoneCount() const
+{
+    return static_cast<_uint>(m_vBoneNames.size());
+}
+
+const wstring& CSkinnedMeshBuffer::Get_BoneNames(const _uint _index) const
+{
+    return m_vBoneNames[_index];
+}
+
 void CSkinnedMeshBuffer::FillBoneWeights(VertexSkinnedBuffer& _targetBuffer, const _uint _index, const _float _weight)
 {
     for (_uint i = 0; i < 4; ++i)

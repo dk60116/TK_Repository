@@ -346,68 +346,69 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
 {
-	if (_skinnedInfos.size() <= 0)
+	if (_skinnedInfos.empty()) return;
+
+	CTransform* rootTf = Get_Transform();
+	vector<CGameObject*> meshObjs;
+	vector<CTransform*>  boneTfs;
+	meshObjs.reserve(_skinnedInfos.size());
+	boneTfs.reserve(_bonesInfo.size());
+
+	for (auto& s : _skinnedInfos)
 	{
-		CDebug::LogError(L"Failed create SkinnedMeshHierachy: " + m_strGameObjectName);
-		return;
-	}
-
-	CTransform* parentTransform = Get_Transform();
-
-	for (_uint i = 0; i < _skinnedInfos.size(); ++i)
-	{
-		if (!_skinnedInfos[i].meshBuffer)
-			continue;
-
-		CGameObject* child = m_pScene->Add_GameObject(_skinnedInfos[i].meshBuffer->Get_ResourceName());
-		child->Get_Transform()->SetParent(parentTransform);
-
-		CSkinnedMeshRenderer* ren = child->AddComponent<CSkinnedMeshRenderer>();
-
-		ren->Set_Mesh(_skinnedInfos[i].meshBuffer);
+		if (!s.meshBuffer) continue;
+		CGameObject* g = m_pScene->Add_GameObject(s.meshBuffer->Get_ResourceName());
+		g->Get_Transform()->SetParent(rootTf);
+		auto* ren = g->AddComponent<CSkinnedMeshRenderer>();
+		ren->Set_Mesh(s.meshBuffer);
 		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
-
-		if (!_skinnedInfos[i].texture)
-			continue;
-
-		ren->Get_Material()->Set_Texture(_skinnedInfos[i].texture, 0);
+		if (s.texture) ren->Get_Material()->Set_Texture(s.texture, 0);
+		meshObjs.push_back(g);
 	}
 
-	vector<CTransform*> childList = {};
-
-	for (_uint i = 0; i < _bonesInfo.size(); ++i)
+	for (auto& b : _bonesInfo)
 	{
-		CGameObject* child = m_pScene->Add_GameObject(_bonesInfo[i].name);
-		childList.push_back(child->Get_Transform());
+		CGameObject* g = m_pScene->Add_GameObject(b.name);
+		boneTfs.push_back(g->Get_Transform());
 	}
 
-	for (_uint i = 0; i < static_cast<_uint>(childList.size()); ++i)
+	for (size_t i = 0; i < boneTfs.size(); ++i)
 	{
-		if (_bonesInfo[i].parentId >= 0)
-			childList[i]->SetParent(childList[_bonesInfo[i].parentId]);
-		else
-			childList[i]->SetParent(parentTransform);
+		_int pid = _bonesInfo[i].parentId;
+		boneTfs[i]->SetParent(pid >= 0 ? boneTfs[pid] : rootTf);
 	}
 
-	for (_uint i = 0; i < static_cast<_uint>(childList.size()); ++i)
+	for (size_t i = 0; i < boneTfs.size(); ++i)
 	{
 		_matrix m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
+		_vector S, R, T;
+		XMMatrixDecompose(&S, &R, &T, m);
+		boneTfs[i]->Set_LocalScale(S);
+		boneTfs[i]->Set_LocalQuaternion(R);
+		boneTfs[i]->Set_LocalPosition(T);
+	}
 
-		_vector scale;
-		_vector rotationQuat;
-		_vector translation;
-		XMMatrixDecompose(&scale, &rotationQuat, &translation, m);
+	unordered_map<wstring, CTransform*> nameMap;
+	for (size_t i = 0; i < boneTfs.size(); ++i)
+		nameMap[_bonesInfo[i].name] = boneTfs[i];
 
-		_float3 vScale, vTranslation;
-		_float4 vRotationQuat;
+	for (auto* g : meshObjs)
+	{
+		auto* ren = g->GetComponent<CSkinnedMeshRenderer>();
 
-		XMStoreFloat3(&vScale, scale);
-		XMStoreFloat4(&vRotationQuat, rotationQuat);
-		XMStoreFloat3(&vTranslation, translation);
+		if (!ren)
+			continue;
 
-		childList[i]->Set_LocalScale(scale);
-		childList[i]->Set_LocalQuaternion(rotationQuat);
-		childList[i]->Set_LocalPosition(translation);
+		_uint bc = ren->Get_SkinnedMeshBuffer()->Get_BoneCount();
+		vector<CTransform*> bones(bc, nullptr);
+		for (_uint i = 0; i < bc; ++i)
+		{
+			auto it = nameMap.find(ren->Get_SkinnedMeshBuffer()->Get_BoneNames(i));
+			if (it != nameMap.end())
+				bones[i] = it->second;
+		}
+
+		ren->Set_Bones(bones, boneTfs.empty() ? nullptr : boneTfs[0]);
 	}
 }
 

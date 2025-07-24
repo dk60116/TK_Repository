@@ -97,49 +97,6 @@ const _float4x4& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) 
 	return m_pMeshBuffer->Get_BoneOffsetMatrix(_index);
 }
 
-void CSkinnedMeshRenderer::CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, _int _currentId, CTransform* _parent)
-{
-	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(_skel.name);
-
-	CTransform* boneTransform = boneGO->Get_Transform();
-
-	if (_parent)
-		boneTransform->SetParent(_parent);
-
-	_vector scaling, rotate, translate;
-
-	_matrix mat = XMLoadFloat4x4(&_skel.transformation);
-
-	XMMatrixDecompose(&scaling, &rotate, &translate, mat);
-
-	boneTransform->Set_LocalPosition
-	(
-		XMVectorGetX(translate),
-		XMVectorGetY(translate),
-		XMVectorGetZ(translate)
-	);
-	
-	boneTransform->Set_LocalScale(XMVectorGetX(scaling), XMVectorGetY(scaling), XMVectorGetZ(scaling));
-	boneTransform->Set_LocalQuaternion(quaternion(XMVectorGetX(rotate), XMVectorGetY(rotate), XMVectorGetZ(rotate), XMVectorGetW(rotate)));
-
-	wstring nodeName = _skel.name;
-
-	auto it = find(m_pMeshBuffer->m_vBoneNames.begin(), m_pMeshBuffer->m_vBoneNames.end(), nodeName);
-	if (it != m_pMeshBuffer->m_vBoneNames.end())
-	{
-		// 순서 보존을 위해 인덱스를 구해서 정확한 위치에 삽입
-		size_t index = distance(m_pMeshBuffer->m_vBoneNames.begin(), it);
-		if (m_vBones.size() <= index)
-			m_vBones.resize(index + 1, nullptr);
-
-		m_vBones[index] = boneTransform;
-		boneTransform->AddRef();
-	}
-
-	for (_int childId : _skel.childsId)
-		CreateBoneHierachy(_skel, childId, boneTransform);
-}
-
 void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 {
 	if (!_cam)
@@ -306,16 +263,26 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 	}
 
 	m_pMeshBuffer->AddRef();
+}
 
-	//if (m_pMeshBuffer->m_pAssimpScene)
-	//{
-	//	// RootNode를 어디서 시작할지 결정
-	//	const aiNode* rootBoneNode = m_pMeshBuffer->m_pAssimpScene->mRootNode;
-	//	if (rootBoneNode)
-	//	{
-	//		// MeshRenderer GameObject에 RootBone을 붙임
-	//		m_vBones.clear();
-	//		CreateBoneHierachy(rootBoneNode, m_pGameObject->Get_Transform());
-	//	}
-	//}
+void CSkinnedMeshRenderer::Set_Bones(const vector<CTransform*>& _bones, CTransform* _rootBone)
+{
+	for (auto* t : m_vBones)        
+		Safe_Release(t);
+
+	m_vBones.clear();
+
+	for (auto* t : _bones)
+	{
+		if (t)
+			t->AddRef();        
+		m_vBones.push_back(t);
+	}
+
+	Safe_Release(m_pRootBone);
+
+	m_pRootBone = _rootBone;
+	
+	if (m_pRootBone)
+		m_pRootBone->AddRef();
 }
