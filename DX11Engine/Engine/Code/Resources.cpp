@@ -321,6 +321,9 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 
 		for (_uint b = 0; b < mesh->mNumBones; ++b)
 		{
+			if (!mesh->HasBones())
+				continue;
+
 			aiBone* bone = mesh->mBones[b];
 			string boneName = bone->mName.C_Str();
 
@@ -408,6 +411,11 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 		bufferInfoList.push_back(info);
 	}
 
+
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierachy = {};
+	unordered_map<aiNode*, _uint> nodeToIdMap;
+	TraverseSkeleton(aiScene->mRootNode, -1, skeletalHierachy);
+
 	auto splitPath = CEngineString::Split(_filePath, L"/");
 
 	wstring fileFolder = splitPath[splitPath.size() - 2];
@@ -417,7 +425,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 
 	wstring saveName = fileFolder + L"_" + pureName;
 
-	if (FAILED(SaveSkinnedBufferInfos(L"BinaryAssets/" + saveName + L".skinneddata", bufferInfoList)))
+	if (FAILED(SaveSkinnedBufferInfos(L"BinaryAssets/" + saveName + L".skinneddata", bufferInfoList, skeletalHierachy)))
 	{
 		CDebug::LogError(L"Failed ceate skinned mesh Data - can not save: " + _filePath);
 		return E_FAIL;
@@ -518,7 +526,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 		_uint diffuseTexPathCount = 0;
 		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
-		if (indexCount > 0)
+		if (diffuseTexPathCount > 0)
 		{
 			info.diffuseMapPath.resize(diffuseTexPathCount);
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
@@ -532,7 +540,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	return infoList;
 }
 
-HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList)
+HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo)
 {
 	using namespace std;
 
@@ -586,6 +594,45 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkin
 			out.write(reinterpret_cast<const char*>(info.boneOffsetMatrices.data()), sizeof(_float4x4) * boneMatricesSize);
 	}
 
+	typedef struct SkinnedNodeInfo
+	{
+		_int nodeId = -1;
+		wstring name = L"";
+		_float4x4 transformation = {};
+		_int parentId = -1;
+		_uint numChild = 0;
+		vector<_int> childsId = {};
+		_uint numMeshes = 0;
+		vector<_uint> meshsId = {};
+	}SKINNEDSKELETAL;
+
+	_uint skeletalCount = static_cast<_uint>(_skeletonInfo.size());
+	out.write(reinterpret_cast<const char*>(&skeletalCount), sizeof(_uint));
+	for (const auto& bone : _skeletonInfo)
+	{
+		out.write(reinterpret_cast<const char*>(&bone.nodeId), sizeof(_uint));
+
+		_uint nameLen = static_cast<_uint>(bone.name.size());
+		out.write(reinterpret_cast<const char*>(&nameLen), sizeof(_uint));
+		if (nameLen > 0)
+			out.write(reinterpret_cast<const char*>(bone.name.data()), sizeof(wchar_t) * nameLen);
+
+		out.write(reinterpret_cast<const char*>(&bone.transformation), sizeof(_float4x4));
+		out.write(reinterpret_cast<const char*>(&bone.parentId), sizeof(_int));
+
+		// child info
+		_uint childLen = static_cast<_uint>(bone.childsId.size());
+		out.write(reinterpret_cast<const char*>(&childLen), sizeof(_uint));
+		if (childLen > 0)
+			out.write(reinterpret_cast<const char*>(bone.childsId.data()), sizeof(_int) * childLen);
+
+		// mesh info
+		_uint meshLen = static_cast<_uint>(bone.meshsId.size());
+		out.write(reinterpret_cast<const char*>(&meshLen), sizeof(_uint));
+		if (meshLen > 0)
+			out.write(reinterpret_cast<const char*>(bone.meshsId.data()), sizeof(_int) * meshLen);
+	}
+
 	out.close();
 
 	CDebug::Log(L"Save complete skinneddata: " + _filePath);
@@ -593,9 +640,11 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkin
 	return S_OK;
 }
 
-vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> CResources::ReadSkinnedBufferInfos(const wstring _binFileName)
+CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstring _binFileName)
 {
 	using namespace std;
+
+	CSkinnedMeshBuffer::SkinnedBuffer resultBuffer = {};
 
 	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
 
@@ -639,7 +688,7 @@ vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> CResources::ReadSkinnedBu
 
 		_uint diffuseTexPathCount = 0;
 		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
-		if (indexCount > 0)
+		if (diffuseTexPathCount > 0)
 		{
 			info.diffuseMapPath.resize(diffuseTexPathCount);
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
@@ -680,9 +729,55 @@ vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> CResources::ReadSkinnedBu
 		infoList.push_back(info);
 	}
 
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalList = {};
+
+	_uint skeletalCount = 0;
+	in.read(reinterpret_cast<char*>(&skeletalCount), sizeof(_uint));
+
+	for (_uint i = 0; i < skeletalCount; ++i)
+	{
+		CSkinnedMeshBuffer::SKINNEDSKELETAL skeletal{};
+		in.read(reinterpret_cast<char*>(&skeletal.nodeId), sizeof(_uint));
+		
+		_uint nameLen = 0;
+		in.read(reinterpret_cast<char*>(&nameLen), sizeof(_uint));
+		if (nameLen > 0)
+		{
+			skeletal.name.resize(nameLen);
+			in.read(reinterpret_cast<char*>(skeletal.name.data()), sizeof(wchar_t) * nameLen);
+		}
+		
+		in.read(reinterpret_cast<char*>(&skeletal.transformation), sizeof(_float4x4));
+		in.read(reinterpret_cast<char*>(&skeletal.parentId), sizeof(_int));
+		in.read(reinterpret_cast<char*>(&skeletal.numMeshes), sizeof(_uint));
+
+		_uint childCount = 0;
+		in.read(reinterpret_cast<char*>(&childCount), sizeof(_uint));
+		if (childCount > 0)
+		{
+			skeletal.childsId.resize(childCount);
+			in.read(reinterpret_cast<char*>(skeletal.childsId.data()), sizeof(_int) * childCount);
+		}
+		skeletal.numChild = childCount;
+		
+		_uint meshCount = 0;
+		in.read(reinterpret_cast<char*>(&meshCount), sizeof(_uint));
+		skeletal.numMeshes = meshCount;
+		if (meshCount > 0)
+		{
+			skeletal.meshsId.resize(meshCount);
+			in.read(reinterpret_cast<char*>(skeletal.meshsId.data()), sizeof(_int) * meshCount);
+		}
+
+		skeletalList.push_back(skeletal);
+	}
+
+	resultBuffer.initList = infoList;
+	resultBuffer.skeletalList = skeletalList;
+
 	in.close();
 
-	return infoList;
+	return resultBuffer;
 }
 
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
@@ -707,7 +802,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 		if (_filter & FILTER_MESHBUFFER)
 		{
 			CMeshBuffer* newBuffer = CMeshBuffer::Create();
-			newBuffer->Initailize_Custom(_infoList[i], _desc);
+			newBuffer->Initiailize_Custom(_infoList[i], _desc);
 
 			newBundle.meshBuffer = newBuffer;
 		}
@@ -734,12 +829,71 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 	return resultList;
 }
 
+vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc, const _bool _tempScene)
+{
+	if (_infoList.size() <= 0)
+	{
+		CDebug::LogError(L"Failed create SceneSkinnedBundle - Empty list: " + _name);
+		return {};
+	}
+
+	_float scaleFactor = 1.f;
+
+	if (_desc)
+		scaleFactor = *reinterpret_cast<_float*>(_desc);
+
+	vector<SkinnedMeshBundle> resultList = {};
+
+	for (_uint i = 0; i < _infoList.size(); ++i)
+	{
+		SkinnedMeshBundle newBundle;
+
+		if (_filter & FILTER_MESHBUFFER)
+		{
+			CSkinnedMeshBuffer* newBuffer = CSkinnedMeshBuffer::Create();
+			newBuffer->Initiailize_Custom(_infoList[i], _desc);
+
+			newBundle.meshBuffer = newBuffer;
+		}
+
+		if (_filter & FILTER_MATERIAL)
+		{
+			CTexture* newTex = CTexture::Create();
+			newTex->Initialize(_infoList[i].diffuseMapPath, _infoList[i].diffuseMapPath, nullptr);
+
+			newBundle.texture = newTex;
+		}
+
+		resultList.push_back(newBundle);
+	}
+
+	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+		CSceneManager::GetInstance().Get_CrtScene();
+
+	if (!_tempScene)
+		targetScene->Add_SkinnedBundle(_name, resultList);
+	else
+		targetScene->Add_TempSkinnedBundle(_name, resultList);
+
+	return resultList;
+}
+
 vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
 {
 	vector<MeshBundle> r = {};
 
 	if (CSceneManager::GetInstance().Get_CrtScene())
 		r = CSceneManager::GetInstance().Get_CrtScene()->Find_MeshInfoResource(_name);
+
+	return r;
+}
+
+vector<SkinnedMeshBundle> CResources::LoadSkinnedMeshBuffersOnScene(const wstring& _name)
+{
+	vector<SkinnedMeshBundle> r = {};
+
+	if (CSceneManager::GetInstance().Get_CrtScene())
+		r = CSceneManager::GetInstance().Get_CrtScene()->Find_SkinnedMeshInfoResource(_name);
 
 	return r;
 }
@@ -754,4 +908,43 @@ _bool CResources::FileExists(const string& _path)
 {
 	DWORD attrib = GetFileAttributesA(_path.c_str());
 	return (attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY);
+}
+
+void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)
+{
+	using SKIN = CSkinnedMeshBuffer::SKINNEDSKELETAL;
+
+	SKIN nodeInfo{};
+	nodeInfo.nodeId = static_cast<_int>(_outList.size());
+	nodeInfo.parentId = _parentId;
+	nodeInfo.name = CEngineString::StringToWString(_node->mName.C_Str());
+
+	// Transform
+	aiMatrix4x4 mat = _node->mTransformation;
+	nodeInfo.transformation = _float4x4(
+		mat.a1, mat.a2, mat.a3, mat.a4,
+		mat.b1, mat.b2, mat.b3, mat.b4,
+		mat.c1, mat.c2, mat.c3, mat.c4,
+		mat.d1, mat.d2, mat.d3, mat.d4
+	);
+
+	// Mesh indices
+	nodeInfo.numMeshes = _node->mNumMeshes;
+	for (_uint i = 0; i < _node->mNumMeshes; ++i)
+		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
+
+	// 미리 push 해서 자식이 parentId 참고 가능
+	_outList.push_back(nodeInfo);
+	_int currentId = nodeInfo.nodeId;
+
+	// 자식 노드들 순회
+	for (_uint i = 0; i < _node->mNumChildren; ++i)
+	{
+		// 재귀 이전에 outList size를 얻어 자식 ID 추정
+		_int childId = static_cast<_int>(_outList.size());
+		_outList[currentId].childsId.push_back(childId);
+		_outList[currentId].numChild++;
+
+		TraverseSkeleton(_node->mChildren[i], currentId, _outList);
+	}
 }

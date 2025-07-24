@@ -24,10 +24,7 @@ HRESULT CPlayer::Initialize()
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 
-	CSkinnedMeshBuffer* smb = CResources::GetInstance().LoadOnScene<CSkinnedMeshBuffer>(L"Link_Model (Skinned MeshBuffer)");
-	m_pSkinnedMeshRenderer = m_pGameObject->AddComponent<CSkinnedMeshRenderer>();
-	m_pSkinnedMeshRenderer->Set_Mesh(smb);
-	m_pSkinnedMeshRenderer->Get_Material()->Set_Texture(tex, 0);
+	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"));
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
@@ -35,7 +32,8 @@ HRESULT CPlayer::Initialize()
 
 	m_pAnimator->SetLoop(true);
 
-	Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
+	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
+	//Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
 
 	//m_pAnimator->Set_PlaybackSpeed(0.1f);
 	//m_pAnimator->Play(L"Run");

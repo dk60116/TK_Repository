@@ -29,7 +29,7 @@ HRESULT CMeshFilter::Initialize()
 	return S_OK;
 }
 
-void CMeshFilter::Set_MeshBuffer(CMeshBuffer* _buffer)
+void CMeshFilter::Set_Mesh(CMeshBuffer* _buffer)
 {
 	if (m_pMeshBuffer == _buffer)
 		return;

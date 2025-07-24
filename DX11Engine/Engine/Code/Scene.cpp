@@ -12,6 +12,8 @@ CScene::CScene()
 	, m_vCloneResourceList({})
 	, m_mMeshBundleList({})
 	, m_mTempMeshBundleList({})
+	, m_mSkinnedBundleList({})
+	, m_mTempSkinnedBundleList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_lCanvasList({})
@@ -42,8 +44,10 @@ HRESULT CScene::Initialize()
 
 	m_mResourceList = m_mTempResourceList;
 	m_mMeshBundleList = m_mTempMeshBundleList;
+	m_mSkinnedBundleList = m_mTempSkinnedBundleList;
 
 	m_mTempResourceList.clear();
+	m_mTempSkinnedBundleList.clear();
 
 	for (TRAVERSAL_ITER(m_mTempMeshBundleList, it))
 		(*it).second.clear();
@@ -127,7 +131,7 @@ void CScene::Update_Editor()
 
 			CGameObject* newObj = Add_GameObject(L"AddObj");
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
-			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+			newRen->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
 		}
 	}
@@ -255,12 +259,24 @@ void CScene::SceneRelease()
 
 		(*it).second.clear();
 	}
+	for (TRAVERSAL_ITER(m_mSkinnedBundleList, it))
+	{
+		for (TRAVERSAL_ITER((*it).second, it1))
+		{
+			Safe_Release((*it1).meshBuffer);
+			Safe_Release((*it1).material);
+			Safe_Release((*it1).texture);
+		}
+
+		(*it).second.clear();
+	}
 	for (TRAVERSAL_ITER(m_vCloneResourceList, it))
 		Safe_Release(*it);
 
 	m_lObjectList.clear();
 	m_mResourceList.clear();
 	m_mMeshBundleList.clear();
+	m_mSkinnedBundleList.clear();
 	m_vCloneResourceList.clear();
 
 	Safe_Release(m_pDevice);
@@ -326,6 +342,21 @@ vector<MeshBundle> CScene::Find_MeshInfoResource(const wstring& _name)
 	return {};
 }
 
+vector<SkinnedMeshBundle> CScene::Find_SkinnedMeshInfoResource(const wstring& _name)
+{
+	auto iter = m_mSkinnedBundleList.find(_name);
+
+	if (iter != m_mSkinnedBundleList.end())
+		return iter->second;
+
+	auto iter1 = m_mTempSkinnedBundleList.find(_name);
+
+	if (iter1 != m_mTempSkinnedBundleList.end())
+		return iter1->second;
+
+	return {};
+}
+
 CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource* _resource)
 {
 	if (!_resource)
@@ -352,6 +383,21 @@ void CScene::Add_MeshBundle(const wstring& _name, vector<MeshBundle> _resource)
 	m_mMeshBundleList.emplace(_name, _resource);
 }
 
+void CScene::Add_SkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _resource)
+{
+	for (TRAVERSAL_ITER(_resource, it))
+	{
+		if ((*it).meshBuffer)
+			(*it).meshBuffer->AddRef();
+		if ((*it).material)
+			(*it).material->AddRef();
+		if ((*it).texture)
+			(*it).texture->AddRef();
+	}
+
+	m_mSkinnedBundleList.emplace(_name, _resource);
+}
+
 void CScene::Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resource)
 {
 	for (TRAVERSAL_ITER(_resource, it))
@@ -365,6 +411,21 @@ void CScene::Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resour
 	}
 
 	m_mTempMeshBundleList.emplace(_name, _resource);
+}
+
+void CScene::Add_TempSkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _resource)
+{
+	for (TRAVERSAL_ITER(_resource, it))
+	{
+		if ((*it).meshBuffer)
+			(*it).meshBuffer->AddRef();
+		if ((*it).material)
+			(*it).material->AddRef();
+		if ((*it).texture)
+			(*it).texture->AddRef();
+	}
+
+	m_mTempSkinnedBundleList.emplace(_name, _resource);
 }
 
 CEngineResource* CScene::Add_CloneResourece(CEngineResource* _resource)

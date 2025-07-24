@@ -117,7 +117,23 @@ void CSceneLoader::ThreadLoadingLoop()
 					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", meshInfoList, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
-					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CSkinnedMeshBuffer>(wName + L" (Skinned MeshBuffer)", wFile, nullptr, true));
+				{
+					_int filter = FILTER_MESHBUFFER;
+
+					if (CEngineString::Contains(wFormat, L"[Bone]"))
+						filter |= FILTER_BONE;
+
+					auto skinnedDataSplit = CEngineString::Split(wFile, L"/");
+					wstring skinnedDataFolder = skinnedDataSplit[skinnedDataSplit.size() - 2];
+					wstring skinnedDataTail = skinnedDataSplit[skinnedDataSplit.size() - 1];
+					wstring skinnedDataName = CEngineString::Split(skinnedDataTail, L".")[0];
+
+					const wstring skinneddataPath = skinnedDataFolder + L"_" + skinnedDataName + L".skinneddata";
+
+					auto skinnedInfoList = CResources::GetInstance().ReadSkinnedBufferInfos(skinneddataPath);
+
+					CResources::GetInstance().CreateSceneSkinnedBundle(wName + L" (MeshBuffer)", skinnedInfoList.initList, skinnedInfoList.skeletalList, filter, nullptr, true);
+				}
 				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))
 					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
 			}

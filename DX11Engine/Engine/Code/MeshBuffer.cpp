@@ -112,14 +112,14 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
     if (FAILED(hr))
     {
-        CDebug::LogError(L"Assimp MeshBuffer load failed: " + m_strFilePath);
+        CDebug::LogError(L"MeshBuffer load failed: " + m_strFilePath);
         return E_FAIL;
     }
 
     return hr;
 }
 
-HRESULT CMeshBuffer::Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc)
+HRESULT CMeshBuffer::Initiailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc)
 {
     if (!(_info.buffer.size() > 0))
         return E_FAIL;
@@ -175,7 +175,7 @@ HRESULT CMeshBuffer::Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _des
 
     if (FAILED(hr))
     {
-        CDebug::LogError(L"Assimp MeshBuffer load failed: " + m_strFilePath);
+        CDebug::LogError(L"MeshBuffer load failed(Custom): " + m_strFilePath);
         return E_FAIL;
     }
 

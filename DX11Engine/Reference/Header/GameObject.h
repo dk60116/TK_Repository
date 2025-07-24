@@ -82,6 +82,7 @@ public:
 	void Set_Transform(CTransform* _transform);
 
 	void CreateMeshHierachy(vector<MeshBundle> _meshInfos);
+	void CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos);
 
 	const _uint Get_UniqueID() const;
 	wstring Get_ObjectName() const;

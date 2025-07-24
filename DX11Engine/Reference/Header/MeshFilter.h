@@ -22,7 +22,7 @@ public:
 
 public:
 	CMeshBuffer* Get_MeshBuffer() const;
-	void Set_MeshBuffer(CMeshBuffer* _buffer);
+	void Set_Mesh(CMeshBuffer* _buffer);
 
 private:
 	CMeshBuffer* m_pMeshBuffer;

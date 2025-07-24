@@ -21,6 +21,24 @@ public:
 		vector<_float4x4> boneOffsetMatrices;
 	};
 
+	typedef struct SkinnedNodeInfo
+	{
+		_int nodeId = -1;
+		wstring name = L"";
+		_float4x4 transformation = {};
+		_int parentId = -1;
+		_uint numChild = 0;
+		vector<_int> childsId = {};
+		_uint numMeshes = 0;
+		vector<_uint> meshsId = {};
+	}SKINNEDSKELETAL;
+
+	struct SkinnedBuffer
+	{
+		vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> initList = {};
+		vector<SKINNEDSKELETAL> skeletalList = {};
+	};
+
 private:
 	explicit CSkinnedMeshBuffer();
 	~CSkinnedMeshBuffer();
@@ -30,6 +48,7 @@ private:
 
 protected:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
+	HRESULT Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, void* _desc);
 	void Render();
 	void OnDestroy() override;
 
@@ -41,8 +60,6 @@ private:
 	const _float4x4& Get_BoneOffsetMatrix(const _uint _index);
 
 private:
-	Assimp::Importer* m_pImporter;
-	const aiScene* m_pAssimpScene;
 	vector<wstring> m_vBoneNames;
 	vector<_float4x4> m_vBoneOffsetMatrices;
 };

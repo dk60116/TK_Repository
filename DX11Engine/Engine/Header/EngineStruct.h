@@ -1342,6 +1342,13 @@ namespace Engine
         CMaterial* material = nullptr;
         CTexture* texture = nullptr;
     };
+
+    struct SkinnedMeshBundle
+    {
+        class CSkinnedMeshBuffer* meshBuffer = nullptr;
+        CMaterial* material = nullptr;
+        CTexture* texture = nullptr;
+    };
 #pragma endregion;
 
     typedef struct tagIndex16

@@ -45,17 +45,17 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* boxObj = Add_GameObject(L"Box");
 	CMeshRenderer* boxRenderer = boxObj->AddComponent<CMeshRenderer>();
-	boxRenderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+	boxRenderer->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	boxRenderer->Set_Material(boxMat);
 
 	CGameObject* box2Obj = Add_GameObject(L"Box2");
 	CMeshRenderer* box2Renderer = box2Obj->AddComponent<CMeshRenderer>();
-	box2Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+	box2Renderer->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	box2Renderer->Set_Material(boxMat);
 
 	CGameObject* box1Obj = Add_GameObject(L"Box1");
 	CMeshRenderer* box1Renderer = box1Obj->AddComponent<CMeshRenderer>();
-	box1Renderer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+	box1Renderer->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 	box1Renderer->Set_Material(boxMat);
 
 	//boxObj->Get_Transform()->SetParent(playerObj->Get_Transform());
@@ -70,11 +70,11 @@ HRESULT CMainScene::Initialize()
 	m_pMainCamera->Get_Transform()->Set_Position(0.f, 5.f, -5.f);
 	m_pMainCamera->Get_Transform()->Set_EulerAnglesX(20.f);
 	
-	m_pPlayer->Get_Transform()->Get_Child()->Set_LocalScale(0.01f);
+	//m_pPlayer->Get_Transform()->Get_Child()->Set_LocalScale(0.01f);
 
 	CGameObject* quadObject = Add_GameObject(L"Rect");
 	CMeshRenderer* quadRender = quadObject->AddComponent<CMeshRenderer>();
-	quadRender->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)"));
+	quadRender->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)"));
 	quadRender->Set_Material(boxMat);
 
 	CGameObject* ImageObject = Add_GameObject(L"Background");
@@ -106,7 +106,7 @@ HRESULT CMainScene::Initialize()
 
 	CGameObject* terrainObj = Add_GameObject(L"Terrain");
 	CMeshRenderer* terrainBuffer = terrainObj->AddComponent<CMeshRenderer>();
-	terrainBuffer->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Sample_Terrain (Terrain MeshBuffer)"));
+	terrainBuffer->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnScene<CMeshBuffer>(L"Sample_Terrain (Terrain MeshBuffer)"));
 	terrainBuffer->Get_Material()->Set_Texture(CResources::GetInstance().LoadOnScene<CTexture>(L"Terrain_MainTex (Texture)"));
 	
 	terrainBuffer->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);

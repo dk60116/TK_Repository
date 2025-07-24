@@ -32,9 +32,8 @@ public:
 public:
     HRESULT SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
     vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
-    HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList);
-    vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> ReadSkinnedBufferInfos(const wstring _binFileName);
-
+    HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);
+    CSkinnedMeshBuffer::SkinnedBuffer ReadSkinnedBufferInfos(const wstring _binFileName);
 
 public:
     template<typename T>
@@ -44,6 +43,7 @@ public:
 	T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
 
     vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    vector<SkinnedMeshBundle> CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
 
     template<typename T>
     T* LoadOnGame(const wstring& _name);
@@ -55,12 +55,16 @@ public:
 	T* LoadOnScene(const wstring& _name);
 
     vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
+    vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
 
 	static _bool FileExists(const wstring& _path);
 	static _bool FileExists(const string& _path);
 
     unordered_map<wstring, CEngineResource*> m_mEditorResourceList;
     unordered_map<wstring, CEngineResource*> m_mGameResourceList;
+
+private:
+    void TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList);
 
 private:
 	wstring m_strDefaultAssetPath;

@@ -97,30 +97,32 @@ const _float4x4& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) 
 	return m_pMeshBuffer->Get_BoneOffsetMatrix(_index);
 }
 
-void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _parent)
+void CSkinnedMeshRenderer::CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, CTransform* _parent)
 {
-	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(CEngineString::StringToWString(_node->mName.C_Str()));
+	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(_skel.name);
 
 	CTransform* boneTransform = boneGO->Get_Transform();
 
 	if (_parent)
 		boneTransform->SetParent(_parent);
 
-	aiVector3D scaling, position;
-	aiQuaternion rotation;
-	_node->mTransformation.Decompose(scaling, rotation, position);
+	_vector scaling, rotate, translate;
+
+	_matrix mat = XMLoadFloat4x4(&_skel.transformation);
+
+	XMMatrixDecompose(&scaling, &rotate, &translate, mat);
 
 	boneTransform->Set_LocalPosition
 	(
-		position.x,
-		position.y,
-		position.z
+		XMVectorGetX(translate),
+		XMVectorGetY(translate),
+		XMVectorGetZ(translate)
 	);
 	
-	boneTransform->Set_LocalScale(scaling.x, scaling.y, scaling.z);
-	boneTransform->Set_LocalQuaternion(quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
+	boneTransform->Set_LocalScale(XMVectorGetX(scaling), XMVectorGetY(scaling), XMVectorGetZ(scaling));
+	boneTransform->Set_LocalQuaternion(quaternion(XMVectorGetX(rotate), XMVectorGetY(rotate), XMVectorGetZ(rotate), XMVectorGetW(rotate)));
 
-	wstring nodeName = CEngineString::StringToWString(_node->mName.C_Str());
+	wstring nodeName = _skel.name;
 
 	auto it = find(m_pMeshBuffer->m_vBoneNames.begin(), m_pMeshBuffer->m_vBoneNames.end(), nodeName);
 	if (it != m_pMeshBuffer->m_vBoneNames.end())
@@ -134,8 +136,8 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const aiNode* _node, CTransform* _
 		boneTransform->AddRef();
 	}
 
-	for (_uint i = 0; i < _node->mNumChildren; ++i)
-		CreateBoneHierachy(_node->mChildren[i], boneTransform);
+	//for (_uint i = 0; i < _skel.numChild; ++i)
+	//	CreateBoneHierachy(_skel.childsId[i], boneTransform);
 }
 
 void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
@@ -148,26 +150,26 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	if (!m_pMaterial)
 	{
-		CDebug::LogError(L"Skinned MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
+		CDebug::LogError(L"Skinned MeshRenderer - No material assigned: " + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
 	if (!m_pMeshBuffer)
 	{
-		CDebug::LogError(L"Skinned MeshRenderer: No MeshBuffer assigned:" + m_pGameObject->Get_ObjectNameID());
+		CDebug::LogError(L"Skinned MeshRenderer - No MeshBuffer assigned :" + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
-	// 1) 월드, 뷰, 프로젝션 매트릭스
+	// 월드, 뷰, 프로젝션 매트릭스
 	vector3 cPos = _cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
-	// 2) 본 행렬 계산
-	//    m_vBones: 각 본 Transform
-	//    m_pMeshBuffer->m_vBoneOffsetMatrices: 역 바인드포즈 행렬
+	// 본 행렬 계산
+	// m_vBones: 각 본 Transform
+	// m_pMeshBuffer->m_vBoneOffsetMatrices: 역 바인드포즈 행렬
 	_matrix boneMatrices[128] = {};
 
 	for (_uint i = 0; i < m_vBones.size(); ++i)
@@ -305,15 +307,15 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 
 	m_pMeshBuffer->AddRef();
 
-	if (m_pMeshBuffer->m_pAssimpScene)
-	{
-		// RootNode를 어디서 시작할지 결정
-		const aiNode* rootBoneNode = m_pMeshBuffer->m_pAssimpScene->mRootNode;
-		if (rootBoneNode)
-		{
-			// MeshRenderer GameObject에 RootBone을 붙임
-			m_vBones.clear();
-			CreateBoneHierachy(rootBoneNode, m_pGameObject->Get_Transform());
-		}
-	}
+	//if (m_pMeshBuffer->m_pAssimpScene)
+	//{
+	//	// RootNode를 어디서 시작할지 결정
+	//	const aiNode* rootBoneNode = m_pMeshBuffer->m_pAssimpScene->mRootNode;
+	//	if (rootBoneNode)
+	//	{
+	//		// MeshRenderer GameObject에 RootBone을 붙임
+	//		m_vBones.clear();
+	//		CreateBoneHierachy(rootBoneNode, m_pGameObject->Get_Transform());
+	//	}
+	//}
 }

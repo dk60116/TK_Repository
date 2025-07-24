@@ -3,8 +3,6 @@
 
 CSkinnedMeshBuffer::CSkinnedMeshBuffer()
     : CMeshBuffer{}
-    , m_pImporter(nullptr)
-    , m_pAssimpScene(nullptr)
     , m_vBoneNames({})
     , m_vBoneOffsetMatrices({})
 {
@@ -26,131 +24,179 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
     if (FAILED(CEngineResource::Initialize(_name, _filePath, _desc)))
         return E_FAIL;
 
+    //ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
+
+    //if (!device)
+    //    return E_FAIL;
+
+    //using VTX = VertexSkinnedBuffer;
+
+    //vector<VTX> vertices;
+    //vector<_uint> indices;
+
+    //for (_uint i = 0; i < mesh->mNumVertices; ++i)
+    //{
+    //    VTX v = {};
+    //    const aiVector3D& pos = mesh->mVertices[i];
+    //    const aiVector3D& normal = mesh->mNormals[i];
+    //    const aiVector3D& tangent = mesh->mTangents ? mesh->mTangents[i] : aiVector3D(0.f, 0.f, 0.f);
+
+    //    v.position = _float3(pos.x, pos.y, pos.z);
+    //    v.normal = _float3(normal.x, normal.y, normal.z);
+    //    v.tangent = _float3(tangent.x, tangent.y, tangent.z);
+
+    //    if (mesh->HasTextureCoords(0))
+    //        v.uv = _float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+
+    //    vertices.push_back(v);
+    //}
+
+    //for (_uint f = 0; f < mesh->mNumFaces; ++f)
+    //{
+    //    const aiFace& face = mesh->mFaces[f];
+    //    if (face.mNumIndices != 3)
+    //        continue;
+    //    indices.push_back(face.mIndices[0]);
+    //    indices.push_back(face.mIndices[1]);
+    //    indices.push_back(face.mIndices[2]);
+    //}
+
+    //m_vBoneNames.clear();
+
+    //for (_uint b = 0; b < mesh->mNumBones; ++b)
+    //{
+    //    string bn = mesh->mBones[b]->mName.C_Str();
+    //    m_vBoneNames.emplace_back(bn.begin(), bn.end());
+    //}
+
+    //m_vBoneOffsetMatrices.clear();
+    //m_vBoneOffsetMatrices.reserve(mesh->mNumBones);
+
+    //for (_uint b = 0; b < mesh->mNumBones; ++b)
+    //{
+    //    const aiBone* bone = mesh->mBones[b];
+
+    //    // Assimp 青纺 -> XMMATRIX 函券
+    //    const aiMatrix4x4& offset = bone->mOffsetMatrix;
+
+    //    _matrix matOffset = XMMatrixTranspose
+    //    (
+    //        _matrix
+    //        (
+    //            offset.a1, offset.a2, offset.a3, offset.a4,
+    //            offset.b1, offset.b2, offset.b3, offset.b4,
+    //            offset.c1, offset.c2, offset.c3, offset.c4,
+    //            offset.d1, offset.d2, offset.d3, offset.d4
+    //        )
+    //    );
+
+    //    _float4x4 mat4x4 = {};
+
+    //    XMStoreFloat4x4(&mat4x4, matOffset);
+
+    //    m_vBoneOffsetMatrices.push_back(mat4x4);
+    //}
+
+    //FillBoneWeightsAndIndices(mesh, vertices);
+
+    //D3D11_BUFFER_DESC vbDesc = {};
+    //vbDesc.ByteWidth = _uint(vertices.size() * sizeof(VTX));
+    //vbDesc.Usage = D3D11_USAGE_DEFAULT;
+    //vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    //D3D11_SUBRESOURCE_DATA vbData = {};
+    //vbData.pSysMem = vertices.data();
+
+    //// Index Buffer
+    //D3D11_BUFFER_DESC ibDesc = {};
+    //ibDesc.ByteWidth = _uint(indices.size() * sizeof(_uint));
+    //ibDesc.Usage = D3D11_USAGE_DEFAULT;
+    //ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+    //D3D11_SUBRESOURCE_DATA ibData = {};
+    //ibData.pSysMem = indices.data();
+
+    //if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
+    //    return E_FAIL;
+
+    //if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
+    //    return E_FAIL;
+
+    //m_sInfo.vertexSize = sizeof(VTX);
+    //m_sInfo.vertextCount = _uint(vertices.size());
+    //m_sInfo.indexCount = _uint(indices.size());
+    //m_sInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+    return S_OK;
+}
+
+HRESULT CSkinnedMeshBuffer::Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, void* _desc)
+{
+    if (!(_info.buffer.size() > 0))
+        return E_FAIL;
+
+    if (_info.desc.vertexSize == 0 || _info.desc.vertextCount == 0)
+        return E_FAIL;
+
+    m_sInfo = {};
+    m_sInfo = _info.desc;
+
+    m_strResourceName = _info.meshName;
+
+    size_t size = _info.desc.vertexSize * _info.desc.vertextCount;
+
+    m_pVertexSysMem = malloc(size);
+    memcpy(m_pVertexSysMem, _info.buffer.data(), size);
+
+    if (_info.desc.indexCount > 0 && !_info.indices.empty())
+    {
+        size_t indexSize = sizeof(_uint) * _info.desc.indexCount;
+        m_pIndexSysMem = malloc(indexSize);
+        memcpy(m_pIndexSysMem, _info.indices.data(), indexSize);
+    }
+
     ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
 
-    if (!device)
-        return E_FAIL;
-
-    m_pImporter = new Assimp::Importer();
-
-    m_pAssimpScene = m_pImporter->ReadFile
-    (
-        CEngineString::WStringToString(_filePath),
-        aiProcess_Triangulate |
-        aiProcess_JoinIdenticalVertices |
-        aiProcess_GenSmoothNormals |
-        aiProcess_CalcTangentSpace |
-        aiProcess_ConvertToLeftHanded |
-        aiProcess_LimitBoneWeights
-    );
-
-    if (!m_pAssimpScene || !m_pAssimpScene->HasMeshes())
-    {
-        CDebug::LogError(L"Assimp Skinned mesh load failed: " + m_strFilePath);
-        return E_FAIL;
-    }
-
-    const aiMesh* mesh = m_pAssimpScene->mMeshes[0];
-
-    using VTX = VertexSkinnedBuffer;
-
-    vector<VTX> vertices;
-    vector<_uint> indices;
-
-    for (_uint i = 0; i < mesh->mNumVertices; ++i)
-    {
-        VTX v = {};
-        const aiVector3D& pos = mesh->mVertices[i];
-        const aiVector3D& normal = mesh->mNormals[i];
-        const aiVector3D& tangent = mesh->mTangents ? mesh->mTangents[i] : aiVector3D(0.f, 0.f, 0.f);
-
-        v.position = _float3(pos.x, pos.y, pos.z);
-        v.normal = _float3(normal.x, normal.y, normal.z);
-        v.tangent = _float3(tangent.x, tangent.y, tangent.z);
-
-        if (mesh->HasTextureCoords(0))
-            v.uv = _float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
-
-        vertices.push_back(v);
-    }
-
-    for (_uint f = 0; f < mesh->mNumFaces; ++f)
-    {
-        const aiFace& face = mesh->mFaces[f];
-        if (face.mNumIndices != 3)
-            continue;
-        indices.push_back(face.mIndices[0]);
-        indices.push_back(face.mIndices[1]);
-        indices.push_back(face.mIndices[2]);
-    }
-
-    m_vBoneNames.clear();
-
-    for (_uint b = 0; b < mesh->mNumBones; ++b)
-    {
-        string bn = mesh->mBones[b]->mName.C_Str();
-        m_vBoneNames.emplace_back(bn.begin(), bn.end());
-    }
-
-    m_vBoneOffsetMatrices.clear();
-    m_vBoneOffsetMatrices.reserve(mesh->mNumBones);
-
-    for (_uint b = 0; b < mesh->mNumBones; ++b)
-    {
-        const aiBone* bone = mesh->mBones[b];
-
-        // Assimp 青纺 -> XMMATRIX 函券
-        const aiMatrix4x4& offset = bone->mOffsetMatrix;
-
-        _matrix matOffset = XMMatrixTranspose
-        (
-            _matrix
-            (
-                offset.a1, offset.a2, offset.a3, offset.a4,
-                offset.b1, offset.b2, offset.b3, offset.b4,
-                offset.c1, offset.c2, offset.c3, offset.c4,
-                offset.d1, offset.d2, offset.d3, offset.d4
-            )
-        );
-
-        _float4x4 mat4x4 = {};
-
-        XMStoreFloat4x4(&mat4x4, matOffset);
-
-        m_vBoneOffsetMatrices.push_back(mat4x4);
-    }
-
-    FillBoneWeightsAndIndices(mesh, vertices);
-
+    // VertexBuffer 积己
     D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = _uint(vertices.size() * sizeof(VTX));
+    vbDesc.ByteWidth = static_cast<_uint>(_info.desc.vertexSize * _info.desc.vertextCount);
     vbDesc.Usage = D3D11_USAGE_DEFAULT;
     vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
     D3D11_SUBRESOURCE_DATA vbData = {};
-    vbData.pSysMem = vertices.data();
+    vbData.pSysMem = _info.buffer.data();
 
-    // Index Buffer
-    D3D11_BUFFER_DESC ibDesc = {};
-    ibDesc.ByteWidth = _uint(indices.size() * sizeof(_uint));
-    ibDesc.Usage = D3D11_USAGE_DEFAULT;
-    ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    HRESULT hr = S_OK;
 
-    D3D11_SUBRESOURCE_DATA ibData = {};
-    ibData.pSysMem = indices.data();
+    hr = device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer);
 
-    if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
+    // IndexBuffer 积己
+    if (_info.desc.indexCount > 0 && _info.indices.size() > 0)
+    {
+        D3D11_BUFFER_DESC ibDesc = {};
+        ibDesc.ByteWidth = sizeof(_uint) * _info.desc.indexCount;
+        ibDesc.Usage = D3D11_USAGE_DEFAULT;
+        ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA ibData = {};
+        ibData.pSysMem = _info.indices.data();
+
+        hr = device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer);
+    }
+
+    if (FAILED(hr))
+    {
+        CDebug::LogError(L"SkinnedBuffer load failed(Custom): " + m_strFilePath);
         return E_FAIL;
+    }
 
-    if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
-        return E_FAIL;
+    if (_info.boneNames.size() > 0)
+        m_vBoneNames = _info.boneNames;
 
-    m_sInfo.vertexSize = sizeof(VTX);
-    m_sInfo.vertextCount = _uint(vertices.size());
-    m_sInfo.indexCount = _uint(indices.size());
-    m_sInfo.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    if (_info.boneOffsetMatrices.size() > 0)
+        m_vBoneOffsetMatrices = _info.boneOffsetMatrices;
 
-    return S_OK;
+    return hr;
 }
 
 void CSkinnedMeshBuffer::Render()
@@ -181,12 +227,6 @@ void CSkinnedMeshBuffer::Render()
 void CSkinnedMeshBuffer::OnDestroy()
 {
     __super::OnDestroy();
-
-    if (m_pImporter)
-    {
-        Safe_Delete(m_pImporter);
-        m_pAssimpScene = nullptr;
-    }
 
     m_vBoneNames.clear();
 }

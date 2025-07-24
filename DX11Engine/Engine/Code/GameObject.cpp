@@ -334,13 +334,43 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 		CMeshRenderer* ren = child->AddComponent<CMeshRenderer>();
 
-		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
+		ren->Get_MeshFilter()->Set_Mesh(_meshInfos[i].meshBuffer);
 		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 
 		if (!_meshInfos[i].texture)
 			continue;
 
 		ren->Get_Material()->Set_Texture(_meshInfos[i].texture, 0);
+	}
+}
+
+void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos)
+{
+	if (_skinnedInfos.size() <= 0)
+	{
+		CDebug::LogError(L"Failed create SkinnedMeshHierachy: " + m_strGameObjectName);
+		return;
+	}
+
+	CTransform* parentTransform = Get_Transform();
+
+	for (_uint i = 0; i < _skinnedInfos.size(); ++i)
+	{
+		if (!_skinnedInfos[i].meshBuffer)
+			continue;
+
+		CGameObject* child = m_pScene->Add_GameObject(_skinnedInfos[i].meshBuffer->Get_ResourceName());
+		child->Get_Transform()->SetParent(parentTransform);
+
+		CSkinnedMeshRenderer* ren = child->AddComponent<CSkinnedMeshRenderer>();
+
+		ren->Set_Mesh(_skinnedInfos[i].meshBuffer);
+		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+
+		if (!_skinnedInfos[i].texture)
+			continue;
+
+		ren->Get_Material()->Set_Texture(_skinnedInfos[i].texture, 0);
 	}
 }
 
