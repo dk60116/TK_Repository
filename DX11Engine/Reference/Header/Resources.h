@@ -56,6 +56,7 @@ public:
 
     vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
     vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
+    vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> LoadSkinnedBonesOnScene(const wstring& _name);
 
 	static _bool FileExists(const wstring& _path);
 	static _bool FileExists(const string& _path);

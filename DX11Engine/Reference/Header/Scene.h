@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Renderer.h"
+#include "SkinnedMeshBuffer.h"
 
 NS_BEGIN(Engine)
 
@@ -42,11 +43,14 @@ public:
     class CEngineResource* Find_Resource(const wstring& _name);
     vector<MeshBundle> Find_MeshInfoResource(const wstring& _name);
     vector<SkinnedMeshBundle> Find_SkinnedMeshInfoResource(const wstring& _name);
+    vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> Find_SkinnedBonesResource(const wstring& _name);
     class CEngineResource* Add_TempResource(const wstring& _name, CEngineResource* _resource);
     void Add_MeshBundle(const wstring& _name, vector<MeshBundle> _resource);
     void Add_SkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _resource);
     void Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resource);
     void Add_TempSkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _resource);
+    void Add_SkinnedMeshBone(const wstring& _name, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _resource);
+    void Add_TempSkinnedMeshBone(const wstring& _name, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _resource);
     class CEngineResource* Add_CloneResourece(CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
     vector<CGameObject*> Get_RootObjects();
@@ -96,6 +100,7 @@ protected:
     unordered_map<wstring, CEngineResource*> m_mResourceList, m_mTempResourceList;
     unordered_map<wstring, vector<MeshBundle>> m_mMeshBundleList, m_mTempMeshBundleList;
     unordered_map<wstring, vector<SkinnedMeshBundle>> m_mSkinnedBundleList, m_mTempSkinnedBundleList;
+    unordered_map<wstring, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>> m_mSkinnedBoneList, m_mTempSkinnedBoneList;
     vector<CEngineResource*> m_vCloneResourceList;
 
 protected:

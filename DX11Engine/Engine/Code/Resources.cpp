@@ -411,7 +411,6 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 		bufferInfoList.push_back(info);
 	}
 
-
 	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierachy = {};
 	unordered_map<aiNode*, _uint> nodeToIdMap;
 	TraverseSkeleton(aiScene->mRootNode, -1, skeletalHierachy);
@@ -594,18 +593,6 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkin
 			out.write(reinterpret_cast<const char*>(info.boneOffsetMatrices.data()), sizeof(_float4x4) * boneMatricesSize);
 	}
 
-	typedef struct SkinnedNodeInfo
-	{
-		_int nodeId = -1;
-		wstring name = L"";
-		_float4x4 transformation = {};
-		_int parentId = -1;
-		_uint numChild = 0;
-		vector<_int> childsId = {};
-		_uint numMeshes = 0;
-		vector<_uint> meshsId = {};
-	}SKINNEDSKELETAL;
-
 	_uint skeletalCount = static_cast<_uint>(_skeletonInfo.size());
 	out.write(reinterpret_cast<const char*>(&skeletalCount), sizeof(_uint));
 	for (const auto& bone : _skeletonInfo)
@@ -619,6 +606,9 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkin
 
 		out.write(reinterpret_cast<const char*>(&bone.transformation), sizeof(_float4x4));
 		out.write(reinterpret_cast<const char*>(&bone.parentId), sizeof(_int));
+
+		_uint numMeshes = bone.numMeshes;
+		out.write(reinterpret_cast<const char*>(&numMeshes), sizeof(_uint));
 
 		// child info
 		_uint childLen = static_cast<_uint>(bone.childsId.size());
@@ -759,7 +749,9 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 			in.read(reinterpret_cast<char*>(skeletal.childsId.data()), sizeof(_int) * childCount);
 		}
 		skeletal.numChild = childCount;
-		
+
+		skeletalList.push_back(skeletal);
+
 		_uint meshCount = 0;
 		in.read(reinterpret_cast<char*>(&meshCount), sizeof(_uint));
 		skeletal.numMeshes = meshCount;
@@ -768,8 +760,6 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 			skeletal.meshsId.resize(meshCount);
 			in.read(reinterpret_cast<char*>(skeletal.meshsId.data()), sizeof(_int) * meshCount);
 		}
-
-		skeletalList.push_back(skeletal);
 	}
 
 	resultBuffer.initList = infoList;
@@ -826,6 +816,8 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 	else
 		targetScene->Add_TempMeshBundle(_name, resultList);
 
+	CDebug::Log(L"Create Scene resource successfully: " + _name);
+
 	return resultList;
 }
 
@@ -871,9 +863,17 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 		CSceneManager::GetInstance().Get_CrtScene();
 
 	if (!_tempScene)
+	{
 		targetScene->Add_SkinnedBundle(_name, resultList);
+		targetScene->Add_SkinnedMeshBone(_name, _skelList);
+	}
 	else
+	{
 		targetScene->Add_TempSkinnedBundle(_name, resultList);
+		targetScene->Add_TempSkinnedMeshBone(_name, _skelList);
+	}
+
+	CDebug::Log(L"Create Scene resource successfully: " + _name);
 
 	return resultList;
 }
@@ -898,6 +898,16 @@ vector<SkinnedMeshBundle> CResources::LoadSkinnedMeshBuffersOnScene(const wstrin
 	return r;
 }
 
+vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> CResources::LoadSkinnedBonesOnScene(const wstring& _name)
+{
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> r = {};
+
+	if (CSceneManager::GetInstance().Get_CrtScene())
+		r = CSceneManager::GetInstance().Get_CrtScene()->Find_SkinnedBonesResource(_name);
+
+	return r;
+}
+
 _bool CResources::FileExists(const wstring& _path)
 {
 	const string path = CEngineString::WStringToString(_path);
@@ -912,39 +922,41 @@ _bool CResources::FileExists(const string& _path)
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)
 {
-	using SKIN = CSkinnedMeshBuffer::SKINNEDSKELETAL;
+	using SKINNEDSKELETAL = CSkinnedMeshBuffer::SKINNEDSKELETAL;
 
-	SKIN nodeInfo{};
-	nodeInfo.nodeId = static_cast<_int>(_outList.size());
-	nodeInfo.parentId = _parentId;
+	// 1. 먼저 새 노드 추가 (push_back)
+	_outList.emplace_back(); // 공간만 확보
+
+	// 2. 참조로 안전하게 현재 노드 가져오기
+	SKINNEDSKELETAL& nodeInfo = _outList.back();
+
+	nodeInfo.nodeId = static_cast<_int>(_outList.size() - 1);
 	nodeInfo.name = CEngineString::StringToWString(_node->mName.C_Str());
 
-	// Transform
-	aiMatrix4x4 mat = _node->mTransformation;
-	nodeInfo.transformation = _float4x4(
-		mat.a1, mat.a2, mat.a3, mat.a4,
-		mat.b1, mat.b2, mat.b3, mat.b4,
-		mat.c1, mat.c2, mat.c3, mat.c4,
-		mat.d1, mat.d2, mat.d3, mat.d4
+	const aiMatrix4x4& mat = _node->mTransformation;
+	nodeInfo.transformation = _float4x4
+	(
+		mat.a1, mat.b1, mat.c1, mat.d1,
+		mat.a2, mat.b2, mat.c2, mat.c2,
+		mat.a3, mat.b3, mat.c3, mat.c4,
+		mat.a4, mat.b4, mat.c4, mat.d4
 	);
 
-	// Mesh indices
+	nodeInfo.parentId = _parentId;
+
 	nodeInfo.numMeshes = _node->mNumMeshes;
 	for (_uint i = 0; i < _node->mNumMeshes; ++i)
 		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
 
-	// 미리 push 해서 자식이 parentId 참고 가능
-	_outList.push_back(nodeInfo);
-	_int currentId = nodeInfo.nodeId;
-
-	// 자식 노드들 순회
+	// 3. 자식 처리
 	for (_uint i = 0; i < _node->mNumChildren; ++i)
 	{
-		// 재귀 이전에 outList size를 얻어 자식 ID 추정
-		_int childId = static_cast<_int>(_outList.size());
-		_outList[currentId].childsId.push_back(childId);
-		_outList[currentId].numChild++;
+		aiNode* child = _node->mChildren[i];
 
-		TraverseSkeleton(_node->mChildren[i], currentId, _outList);
+		TraverseSkeleton(child, nodeInfo.nodeId, _outList);
+
+		nodeInfo.childsId.push_back(static_cast<_int>(_outList.size() - 1));
 	}
+
+	nodeInfo.numChild = static_cast<_uint>(nodeInfo.childsId.size());
 }

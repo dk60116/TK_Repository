@@ -344,7 +344,7 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 	}
 }
 
-void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos)
+void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
 {
 	if (_skinnedInfos.size() <= 0)
 	{
@@ -371,6 +371,43 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 			continue;
 
 		ren->Get_Material()->Set_Texture(_skinnedInfos[i].texture, 0);
+	}
+
+	vector<CTransform*> childList = {};
+
+	for (_uint i = 0; i < _bonesInfo.size(); ++i)
+	{
+		CGameObject* child = m_pScene->Add_GameObject(_bonesInfo[i].name);
+		childList.push_back(child->Get_Transform());
+	}
+
+	for (_uint i = 0; i < static_cast<_uint>(childList.size()); ++i)
+	{
+		if (_bonesInfo[i].parentId >= 0)
+			childList[i]->SetParent(childList[_bonesInfo[i].parentId]);
+		else
+			childList[i]->SetParent(parentTransform);
+	}
+
+	for (_uint i = 0; i < static_cast<_uint>(childList.size()); ++i)
+	{
+		_matrix m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
+
+		_vector scale;
+		_vector rotationQuat;
+		_vector translation;
+		XMMatrixDecompose(&scale, &rotationQuat, &translation, m);
+
+		_float3 vScale, vTranslation;
+		_float4 vRotationQuat;
+
+		XMStoreFloat3(&vScale, scale);
+		XMStoreFloat4(&vRotationQuat, rotationQuat);
+		XMStoreFloat3(&vTranslation, translation);
+
+		childList[i]->Set_LocalScale(scale);
+		childList[i]->Set_LocalQuaternion(rotationQuat);
+		childList[i]->Set_LocalPosition(translation);
 	}
 }
 

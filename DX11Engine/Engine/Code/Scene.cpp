@@ -13,7 +13,8 @@ CScene::CScene()
 	, m_mMeshBundleList({})
 	, m_mTempMeshBundleList({})
 	, m_mSkinnedBundleList({})
-	, m_mTempSkinnedBundleList({})
+	, m_mSkinnedBoneList({})
+	, m_mTempSkinnedBoneList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_lCanvasList({})
@@ -45,14 +46,19 @@ HRESULT CScene::Initialize()
 	m_mResourceList = m_mTempResourceList;
 	m_mMeshBundleList = m_mTempMeshBundleList;
 	m_mSkinnedBundleList = m_mTempSkinnedBundleList;
-
-	m_mTempResourceList.clear();
-	m_mTempSkinnedBundleList.clear();
+	m_mSkinnedBoneList = m_mTempSkinnedBoneList;
 
 	for (TRAVERSAL_ITER(m_mTempMeshBundleList, it))
 		(*it).second.clear();
+	for (TRAVERSAL_ITER(m_mTempSkinnedBundleList, it))
+		(*it).second.clear();
+	for (TRAVERSAL_ITER(m_mTempSkinnedBoneList, it))
+		(*it).second.clear();
 
+	m_mTempResourceList.clear();
 	m_mTempMeshBundleList.clear();
+	m_mTempSkinnedBundleList.clear();
+	m_mTempSkinnedBoneList.clear();
 
 	D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
 	depthDefaultDesc.DepthEnable = TRUE;
@@ -270,6 +276,8 @@ void CScene::SceneRelease()
 
 		(*it).second.clear();
 	}
+	for (TRAVERSAL_ITER(m_mSkinnedBoneList, it))
+		(*it).second.clear();
 	for (TRAVERSAL_ITER(m_vCloneResourceList, it))
 		Safe_Release(*it);
 
@@ -277,6 +285,7 @@ void CScene::SceneRelease()
 	m_mResourceList.clear();
 	m_mMeshBundleList.clear();
 	m_mSkinnedBundleList.clear();
+	m_mSkinnedBoneList.clear();
 	m_vCloneResourceList.clear();
 
 	Safe_Release(m_pDevice);
@@ -357,6 +366,21 @@ vector<SkinnedMeshBundle> CScene::Find_SkinnedMeshInfoResource(const wstring& _n
 	return {};
 }
 
+vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> CScene::Find_SkinnedBonesResource(const wstring& _name)
+{
+	auto iter = m_mSkinnedBoneList.find(_name);
+
+	if (iter != m_mSkinnedBoneList.end())
+		return iter->second;
+
+	auto iter1 = m_mTempSkinnedBoneList.find(_name);
+
+	if (iter1 != m_mTempSkinnedBoneList.end())
+		return iter1->second;
+
+	return {};
+}
+
 CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource* _resource)
 {
 	if (!_resource)
@@ -426,6 +450,16 @@ void CScene::Add_TempSkinnedBundle(const wstring& _name, vector<SkinnedMeshBundl
 	}
 
 	m_mTempSkinnedBundleList.emplace(_name, _resource);
+}
+
+void CScene::Add_SkinnedMeshBone(const wstring& _name, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _resource)
+{
+	m_mSkinnedBoneList.emplace(_name, _resource);
+}
+
+void CScene::Add_TempSkinnedMeshBone(const wstring& _name, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _resource)
+{
+	m_mTempSkinnedBoneList.emplace(_name, _resource);
 }
 
 CEngineResource* CScene::Add_CloneResourece(CEngineResource* _resource)

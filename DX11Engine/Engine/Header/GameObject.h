@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "Scene.h"
 #include "EditorCamera.h"
+#include "SkinnedMeshBuffer.h"
 
 NS_BEGIN(Engine)
 
@@ -82,7 +83,7 @@ public:
 	void Set_Transform(CTransform* _transform);
 
 	void CreateMeshHierachy(vector<MeshBundle> _meshInfos);
-	void CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos);
+	void CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo);
 
 	const _uint Get_UniqueID() const;
 	wstring Get_ObjectName() const;
