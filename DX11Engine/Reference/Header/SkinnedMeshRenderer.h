@@ -32,6 +32,8 @@ public:
 	CTransform* Get_BoneTransform(const _uint _index) const;
 	const _float4x4& Get_BoneOffsetMatrix(const _uint _index) const;
 
+	void CreateBoneHierachy(const vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& nodes, _int nodeIdx, CTransform* parentTf);
+
 public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;

@@ -350,9 +350,7 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 
 	CTransform* rootTf = Get_Transform();
 	vector<CGameObject*> meshObjs;
-	vector<CTransform*>  boneTfs;
 	meshObjs.reserve(_skinnedInfos.size());
-	boneTfs.reserve(_bonesInfo.size());
 
 	for (auto& s : _skinnedInfos)
 	{
@@ -362,53 +360,9 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 		auto* ren = g->AddComponent<CSkinnedMeshRenderer>();
 		ren->Set_Mesh(s.meshBuffer);
 		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
-		if (s.texture) ren->Get_Material()->Set_Texture(s.texture, 0);
+		if (s.texture) 
+			ren->Get_Material()->Set_Texture(s.texture, 0);
 		meshObjs.push_back(g);
-	}
-
-	for (auto& b : _bonesInfo)
-	{
-		CGameObject* g = m_pScene->Add_GameObject(b.name);
-		boneTfs.push_back(g->Get_Transform());
-	}
-
-	for (size_t i = 0; i < boneTfs.size(); ++i)
-	{
-		_int pid = _bonesInfo[i].parentId;
-		boneTfs[i]->SetParent(pid >= 0 ? boneTfs[pid] : rootTf);
-	}
-
-	for (size_t i = 0; i < boneTfs.size(); ++i)
-	{
-		_matrix m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
-		_vector S, R, T;
-		XMMatrixDecompose(&S, &R, &T, m);
-		boneTfs[i]->Set_LocalScale(S);
-		boneTfs[i]->Set_LocalQuaternion(R);
-		boneTfs[i]->Set_LocalPosition(T);
-	}
-
-	unordered_map<wstring, CTransform*> nameMap;
-	for (size_t i = 0; i < boneTfs.size(); ++i)
-		nameMap[_bonesInfo[i].name] = boneTfs[i];
-
-	for (auto* g : meshObjs)
-	{
-		auto* ren = g->GetComponent<CSkinnedMeshRenderer>();
-
-		if (!ren)
-			continue;
-
-		_uint bc = ren->Get_SkinnedMeshBuffer()->Get_BoneCount();
-		vector<CTransform*> bones(bc, nullptr);
-		for (_uint i = 0; i < bc; ++i)
-		{
-			auto it = nameMap.find(ren->Get_SkinnedMeshBuffer()->Get_BoneNames(i));
-			if (it != nameMap.end())
-				bones[i] = it->second;
-		}
-
-		ren->Set_Bones(bones, boneTfs.empty() ? nullptr : boneTfs[0]);
 	}
 }
 

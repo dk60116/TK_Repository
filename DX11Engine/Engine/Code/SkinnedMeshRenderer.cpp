@@ -97,6 +97,38 @@ const _float4x4& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) 
 	return m_pMeshBuffer->Get_BoneOffsetMatrix(_index);
 }
 
+void CSkinnedMeshRenderer::CreateBoneHierachy(const vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& nodes, _int nodeIdx, CTransform* parentTf)
+{
+	const auto& n = nodes[nodeIdx];
+
+	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(n.name);
+	CTransform* boneTf = boneGO->Get_Transform();
+
+	if (parentTf)
+		boneTf->SetParent(parentTf);
+
+	_matrix m = XMLoadFloat4x4(&n.transformation);
+	_vector S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m);
+	boneTf->Set_LocalScale(S);
+	boneTf->Set_LocalQuaternion(R);
+	boneTf->Set_LocalPosition(T);
+
+	auto it = std::find(m_pMeshBuffer->m_vBoneNames.begin(),
+		m_pMeshBuffer->m_vBoneNames.end(),
+		n.name);
+	if (it != m_pMeshBuffer->m_vBoneNames.end())
+	{
+		size_t idx = static_cast<size_t>(std::distance(m_pMeshBuffer->m_vBoneNames.begin(), it));
+		if (m_vBones.size() <= idx) m_vBones.resize(idx + 1, nullptr);
+		m_vBones[idx] = boneTf;
+		boneTf->AddRef();
+	}
+
+	for (auto childId : n.childsId)
+		CreateBoneHierachy(nodes, childId, boneTf);
+}
+
 void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 {
 	if (!_cam)
