@@ -41,7 +41,7 @@ void CAnimator::Awake()
 {
 	if (!m_pSkinnedRenderer)
 	{
-		m_pSkinnedRenderer = m_pGameObject->GetComponent<CSkinnedMeshRenderer>();
+		m_pSkinnedRenderer = m_pGameObject->Get_Transform()->Get_Child(0)->Get_GameObject()->GetComponent<CSkinnedMeshRenderer>();
 
 		if (m_pSkinnedRenderer)
 			m_pSkinnedRenderer->AddRef();
@@ -80,7 +80,8 @@ void CAnimator::Update()
 		for (uint32_t i = 0; i < boneCount; ++i)
 		{
 			CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
-			if (!bone) continue;
+			if (!bone)
+				continue;
 
 			const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 

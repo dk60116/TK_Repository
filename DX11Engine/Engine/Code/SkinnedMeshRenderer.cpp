@@ -59,6 +59,17 @@ void CSkinnedMeshRenderer::Render_Editor()
 void CSkinnedMeshRenderer::Render()
 {
 	CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+
+
+	if (CInput::GetInstance().GetKeyDown_Editor(X))
+	{
+		CDebug::LogError((int)m_vBones.size());
+
+		for (size_t i = 0; i < m_vBones.size(); i++)
+		{
+			CDebug::LogError(m_vBones[i]->Get_GameObject()->Get_ObjectName());
+		}
+	}
 }
 
 void CSkinnedMeshRenderer::OnPostRender()
@@ -74,6 +85,7 @@ void CSkinnedMeshRenderer::OnDestroy()
 
 	for (TRAVERSAL_ITER(m_vBones, it))
 		Safe_Release(*it);
+
 	m_vBones.clear();
 }
 
@@ -315,8 +327,5 @@ void CSkinnedMeshRenderer::Set_Bones(const vector<CTransform*>& _bones, CTransfo
 	}
 
 	if (_rootBone)
-	{
-		_rootBone->AddRef();
 		m_pRootBone = _rootBone;
-	}
 }

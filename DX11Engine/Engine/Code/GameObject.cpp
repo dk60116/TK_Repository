@@ -379,15 +379,15 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 
 	for (size_t i = 0; i < _bonesInfo.size(); ++i)
 	{
-		XMMATRIX m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
-		XMVECTOR S, R, T;
+		_matrix m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
+		_vector S, R, T;
 		XMMatrixDecompose(&S, &R, &T, m);
 		boneTfs[i]->Set_LocalScale(S);
 		boneTfs[i]->Set_LocalQuaternion(R);
 		boneTfs[i]->Set_LocalPosition(T);
 	}
 
-	std::unordered_map<std::wstring, CTransform*> nameMap;
+	unordered_map<wstring, CTransform*> nameMap;
 	nameMap.reserve(_bonesInfo.size());
 	for (size_t i = 0; i < _bonesInfo.size(); ++i)
 		nameMap[_bonesInfo[i].name] = boneTfs[i];
@@ -406,6 +406,7 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 			auto it = nameMap.find(bn);
 			if (it != nameMap.end()) bones[i] = it->second;
 		}
+
 		r->Set_Bones(bones, rootBone);
 	}
 }
