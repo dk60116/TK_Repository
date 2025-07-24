@@ -32,10 +32,8 @@ HRESULT CPlayer::Initialize()
 
 	m_pAnimator->SetLoop(true);
 
-	Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
-	Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
-	Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
-	Get_Transform()->Get_Child(1)->Set_LocalEulerAnglesY(180.f);
+	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
+	//Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
 
 	//m_pAnimator->Set_PlaybackSpeed(0.1f);
 	//m_pAnimator->Play(L"Run");

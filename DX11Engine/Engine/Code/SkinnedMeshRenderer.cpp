@@ -119,7 +119,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const vector<CSkinnedMeshBuffer::S
 		n.name);
 	if (it != m_pMeshBuffer->m_vBoneNames.end())
 	{
-		size_t idx = static_cast<size_t>(std::distance(m_pMeshBuffer->m_vBoneNames.begin(), it));
+		size_t idx = static_cast<size_t>(distance(m_pMeshBuffer->m_vBoneNames.begin(), it));
 		if (m_vBones.size() <= idx) m_vBones.resize(idx + 1, nullptr);
 		m_vBones[idx] = boneTf;
 		boneTf->AddRef();
@@ -299,22 +299,24 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 
 void CSkinnedMeshRenderer::Set_Bones(const vector<CTransform*>& _bones, CTransform* _rootBone)
 {
-	for (auto* t : m_vBones)        
+	for (auto* t : m_vBones)
 		Safe_Release(t);
 
 	m_vBones.clear();
 
+	Safe_Release(m_pRootBone);
+	m_pRootBone = nullptr;
+
+	m_vBones.reserve(_bones.size());
 	for (auto* t : _bones)
 	{
-		if (t)
-			t->AddRef();        
+		if (t) t->AddRef();
 		m_vBones.push_back(t);
 	}
 
-	Safe_Release(m_pRootBone);
-
-	m_pRootBone = _rootBone;
-	
-	if (m_pRootBone)
-		m_pRootBone->AddRef();
+	if (_rootBone)
+	{
+		_rootBone->AddRef();
+		m_pRootBone = _rootBone;
+	}
 }

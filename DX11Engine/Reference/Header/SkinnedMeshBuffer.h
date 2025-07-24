@@ -54,7 +54,7 @@ protected:
 
 public:
 	const _uint Get_BoneCount() const;
-	const wstring& Get_BoneNames(const _uint _index) const;
+	const wstring& Get_BoneName(const _uint _index) const;
 
 public:
 	static void FillBoneWeights(VertexSkinnedBuffer& _targetBuffer, const _uint _index, const _float _weight);

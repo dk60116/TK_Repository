@@ -236,7 +236,7 @@ const _uint CSkinnedMeshBuffer::Get_BoneCount() const
     return static_cast<_uint>(m_vBoneNames.size());
 }
 
-const wstring& CSkinnedMeshBuffer::Get_BoneNames(const _uint _index) const
+const wstring& CSkinnedMeshBuffer::Get_BoneName(const _uint _index) const
 {
     return m_vBoneNames[_index];
 }

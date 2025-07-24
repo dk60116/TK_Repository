@@ -349,20 +349,64 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 	if (_skinnedInfos.empty()) return;
 
 	CTransform* rootTf = Get_Transform();
-	vector<CGameObject*> meshObjs;
-	meshObjs.reserve(_skinnedInfos.size());
+	vector<CSkinnedMeshRenderer*> renderers;
+	renderers.reserve(_skinnedInfos.size());
 
-	for (auto& s : _skinnedInfos)
+	for (auto& si : _skinnedInfos)
 	{
-		if (!s.meshBuffer) continue;
-		CGameObject* g = m_pScene->Add_GameObject(s.meshBuffer->Get_ResourceName());
+		if (!si.meshBuffer) continue;
+		CGameObject* g = m_pScene->Add_GameObject(si.meshBuffer->Get_ResourceName());
 		g->Get_Transform()->SetParent(rootTf);
-		auto* ren = g->AddComponent<CSkinnedMeshRenderer>();
-		ren->Set_Mesh(s.meshBuffer);
-		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
-		if (s.texture) 
-			ren->Get_Material()->Set_Texture(s.texture, 0);
-		meshObjs.push_back(g);
+		auto* r = g->AddComponent<CSkinnedMeshRenderer>();
+		r->Set_Mesh(si.meshBuffer);
+		r->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		if (si.texture) r->Get_Material()->Set_Texture(si.texture, 0);
+		renderers.push_back(r);
+	}
+
+	vector<CTransform*> boneTfs(_bonesInfo.size(), nullptr);
+	for (size_t i = 0; i < _bonesInfo.size(); ++i)
+	{
+		CGameObject* g = m_pScene->Add_GameObject(_bonesInfo[i].name);
+		boneTfs[i] = g->Get_Transform();
+	}
+
+	for (size_t i = 0; i < _bonesInfo.size(); ++i)
+	{
+		_int pid = _bonesInfo[i].parentId;
+		boneTfs[i]->SetParent(pid >= 0 ? boneTfs[pid] : rootTf);
+	}
+
+	for (size_t i = 0; i < _bonesInfo.size(); ++i)
+	{
+		XMMATRIX m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
+		XMVECTOR S, R, T;
+		XMMatrixDecompose(&S, &R, &T, m);
+		boneTfs[i]->Set_LocalScale(S);
+		boneTfs[i]->Set_LocalQuaternion(R);
+		boneTfs[i]->Set_LocalPosition(T);
+	}
+
+	std::unordered_map<std::wstring, CTransform*> nameMap;
+	nameMap.reserve(_bonesInfo.size());
+	for (size_t i = 0; i < _bonesInfo.size(); ++i)
+		nameMap[_bonesInfo[i].name] = boneTfs[i];
+
+	CTransform* rootBone = nullptr;
+	for (auto& b : _bonesInfo)
+		if (b.parentId == -1) { rootBone = nameMap[b.name]; break; }
+
+	for (auto* r : renderers)
+	{
+		_uint bc = r->Get_SkinnedMeshBuffer()->Get_BoneCount();
+		vector<CTransform*> bones(bc, nullptr);
+		for (_uint i = 0; i < bc; ++i)
+		{
+			const wstring& bn = r->Get_SkinnedMeshBuffer()->Get_BoneName(i);
+			auto it = nameMap.find(bn);
+			if (it != nameMap.end()) bones[i] = it->second;
+		}
+		r->Set_Bones(bones, rootBone);
 	}
 }
 
