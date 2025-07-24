@@ -9,12 +9,12 @@ class ENGINE_DLL CAnimationClip : public CEngineResource
 	friend class CResources;
 
 public:
-	struct KeyFrame
+	struct Keyframe
 	{
 		double timeStamp = {};
-		XMFLOAT3 position = {};
-		XMFLOAT4 rotation = {};
-		XMFLOAT3 scaling = {};
+		_float3 position = {};
+		_float4 rotation = {};
+		_float3 scaling = {};
 	};
 
 	struct BoneTransform
@@ -26,8 +26,23 @@ public:
 
 	struct BoneAnimation
 	{
-		wstring boneName = {};
-		vector<KeyFrame> keyFrames = {};
+		wstring boneName = L"";
+		vector<Keyframe> keyframes = {};
+	};
+
+	struct NodeTrack
+	{
+		wstring nodeName;
+		vector<Keyframe> keyframes;
+	};
+
+	struct AnimationClipInitInfo
+	{
+		wstring name = L"";
+		_float duration = 0.f;
+		_float ticksPerSecond = 25.f;
+
+		vector<NodeTrack> tracks;
 	};
 
 protected:

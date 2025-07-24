@@ -128,14 +128,23 @@ void CSceneLoader::ThreadLoadingLoop()
 					wstring skinnedDataTail = skinnedDataSplit[skinnedDataSplit.size() - 1];
 					wstring skinnedDataName = CEngineString::Split(skinnedDataTail, L".")[0];
 
-					const wstring skinneddataPath = skinnedDataFolder + L"_" + skinnedDataName + L".skinneddata";
+					const wstring skinnedDataPath = skinnedDataFolder + L"_" + skinnedDataName + L".skinneddata";
 
-					auto skinnedInfoList = CResources::GetInstance().ReadSkinnedBufferInfos(skinneddataPath);
+					auto skinnedInfoList = CResources::GetInstance().ReadSkinnedBufferInfos(skinnedDataPath);
 
 					CResources::GetInstance().CreateSceneSkinnedBundle(wName + L" (MeshBuffer)", skinnedInfoList.initList, skinnedInfoList.skeletalList, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))
-					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
+				{
+					auto animationDataSplit = CEngineString::Split(wFile, L"/");
+					wstring animationDataFolder = animationDataSplit[animationDataSplit.size() - 2];
+					wstring animationDataTail = animationDataSplit[animationDataSplit.size() - 1];
+					wstring animationDataName = CEngineString::Split(animationDataTail, L".")[0];
+
+					const wstring animationdataPath = animationDataFolder + L"_" + animationDataName + L".animdata";
+
+					//CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
+				}
 			}
 			else if (wFile == L"Terrain")
 			{

@@ -28,7 +28,7 @@ void CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransfor
 
 	for (const auto& ba : m_vBoneAnimation)
 	{
-		const auto& keys = ba.keyFrames;
+		const auto& keys = ba.keyframes;
 		if (keys.empty()) continue;
 
 		size_t i1 = 0, i2 = 0;
@@ -138,7 +138,7 @@ HRESULT CAnimationClip::Initialize(const wstring& _name, const wstring& _filePat
 
 		for (size_t k = 0; k < numKeys; ++k)
 		{
-			KeyFrame keyframe = {};
+			Keyframe keyframe = {};
 
 			if (k < channel->mNumPositionKeys)
 			{
@@ -161,7 +161,7 @@ HRESULT CAnimationClip::Initialize(const wstring& _name, const wstring& _filePat
 				keyframe.timeStamp = channel->mScalingKeys[k].mTime;
 			}
 
-			boneAnim.keyFrames.push_back(keyframe);
+			boneAnim.keyframes.push_back(keyframe);
 		}
 
 		m_vBoneAnimation.push_back(move(boneAnim));

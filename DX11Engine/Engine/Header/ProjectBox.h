@@ -26,6 +26,8 @@ private:
 
 private:
 	fs::path m_strCurrentSelectedFilePath;
+	fs::path m_strPendingDeletePath;
+	_bool m_bRequestDelete;
 };
 
 NS_END

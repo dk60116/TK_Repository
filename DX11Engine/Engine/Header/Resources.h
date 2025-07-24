@@ -28,12 +28,14 @@ public:
 public:
     HRESULT ConvertFBXToMeshBufferData(const wstring _filePath);
     HRESULT ConvertFBXToSkinnedBufferData(const wstring _filePath);
+    HRESULT ConvertFBXToAnimationClipData(const wstring _filePath);
 
 public:
     HRESULT SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
     vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
     HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);
     CSkinnedMeshBuffer::SkinnedBuffer ReadSkinnedBufferInfos(const wstring _binFileName);
+    HRESULT SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList);
 
 public:
     template<typename T>

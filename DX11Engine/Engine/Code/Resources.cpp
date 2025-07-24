@@ -435,6 +435,57 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 	return S_OK;
 }
 
+HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
+{
+	Assimp::Importer importer;
+	const aiScene* aiScene = importer.ReadFile
+	(
+		CEngineString::WStringToString(m_strDefaultAssetPath + _filePath),
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_FlipUVs
+	);
+
+	if (!aiScene)
+	{
+		CDebug::LogError(L"Failed create skinned buffer - Can not create AIScene: " + _filePath);
+		return E_FAIL;
+	}
+
+	if (!aiScene->HasAnimations())
+	{
+		CDebug::LogError(L"Failed create animation clip buffer - AIScene has not animations: " + _filePath);
+		return E_FAIL;
+	}
+
+	vector<CAnimationClip::AnimationClipInitInfo> animationInfoList = {};
+
+	for (_uint i = 0; i < aiScene->mNumAnimations; i++)
+	{
+		CAnimationClip::AnimationClipInitInfo animInfo = {};
+
+		aiAnimation anim = *aiScene->mAnimations[i];
+
+		animInfo.name = CEngineString::StringToWString(anim.mName.C_Str());
+		animInfo.duration = static_cast<_float>(anim.mDuration);
+		animInfo.ticksPerSecond = anim.mTicksPerSecond;
+	
+		for (_uint i = 0; i < anim.mNumChannels; ++i)
+		{
+			animInfo.tracks.push_back({});
+
+			aiNodeAnim* nodeAnim = anim.mChannels[i];
+		}
+	}
+
+	CDebug::Log(L"Complete ceate animation clip Data: " + _filePath);
+
+	return S_OK;
+}
+
 HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
 	using namespace std;
@@ -768,6 +819,11 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 	in.close();
 
 	return resultBuffer;
+}
+
+HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
+{
+	return S_OK;
 }
 
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
