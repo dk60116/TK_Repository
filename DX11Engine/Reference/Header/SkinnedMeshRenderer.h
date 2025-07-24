@@ -33,7 +33,7 @@ public:
 	const _float4x4& Get_BoneOffsetMatrix(const _uint _index) const;
 
 protected:
-	void CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, CTransform* _parent);
+	void CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, _int _currentId, CTransform* _parent);
 	
 public:
 	void Render_WithCamera(CCamera* _cam) override;

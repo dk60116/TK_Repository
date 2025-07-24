@@ -97,7 +97,7 @@ const _float4x4& CSkinnedMeshRenderer::Get_BoneOffsetMatrix(const _uint _index) 
 	return m_pMeshBuffer->Get_BoneOffsetMatrix(_index);
 }
 
-void CSkinnedMeshRenderer::CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, CTransform* _parent)
+void CSkinnedMeshRenderer::CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDSKELETAL _skel, _int _currentId, CTransform* _parent)
 {
 	CGameObject* boneGO = m_pGameObject->Get_Scene()->Add_GameObject(_skel.name);
 
@@ -136,8 +136,8 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const CSkinnedMeshBuffer::SKINNEDS
 		boneTransform->AddRef();
 	}
 
-	//for (_uint i = 0; i < _skel.numChild; ++i)
-	//	CreateBoneHierachy(_skel.childsId[i], boneTransform);
+	for (_int childId : _skel.childsId)
+		CreateBoneHierachy(_skel, childId, boneTransform);
 }
 
 void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
