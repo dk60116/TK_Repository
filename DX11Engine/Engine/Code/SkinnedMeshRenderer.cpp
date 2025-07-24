@@ -126,7 +126,7 @@ void CSkinnedMeshRenderer::CreateBoneHierachy(const vector<CSkinnedMeshBuffer::S
 	boneTf->Set_LocalQuaternion(R);
 	boneTf->Set_LocalPosition(T);
 
-	auto it = std::find(m_pMeshBuffer->m_vBoneNames.begin(),
+	auto it = find(m_pMeshBuffer->m_vBoneNames.begin(),
 		m_pMeshBuffer->m_vBoneNames.end(),
 		n.name);
 	if (it != m_pMeshBuffer->m_vBoneNames.end())

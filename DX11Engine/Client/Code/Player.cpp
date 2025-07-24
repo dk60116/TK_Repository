@@ -26,6 +26,8 @@ HRESULT CPlayer::Initialize()
 
 	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::GetInstance().LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"));
 
+	m_pGameObject->Get_Transform()->Get_Child(0)->Get_GameObject()->GetComponent<CSkinnedMeshRenderer>()->Get_Material()->Set_Texture(tex, 0);
+
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
 	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Run (Animation)"));

@@ -26,7 +26,7 @@ public:
 
 	struct BoneAnimation
 	{
-		wstring boneName = {};
+		wstring boneName = L"";
 		vector<KeyFrame> keyFrames = {};
 	};
 
