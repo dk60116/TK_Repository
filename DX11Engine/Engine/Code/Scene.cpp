@@ -664,6 +664,9 @@ HRESULT CScene::PreLoadResources()
 
 	while (getline(file, line))
 	{
+		if (CEngineString::Contains(line, "//"))
+			continue;
+
 		if (CEngineString::Contains(line, ':'))
 		{
 			auto split = CEngineString::Split(line, " : ");

@@ -143,7 +143,12 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					const wstring animationdataPath = animationDataFolder + L"_" + animationDataName + L".animdata";
 
-					//CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true));
+					auto animaitonInfoList = CResources::GetInstance().ReadAnimationClipBufferInfos(animationdataPath);
+
+					CAnimationClip* newClip = CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true);
+
+					if (animaitonInfoList.size() > 0)
+						newClip->Initiailize_Custom(animaitonInfoList[0], nullptr);
 				}
 			}
 			else if (wFile == L"Terrain")

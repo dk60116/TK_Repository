@@ -467,18 +467,84 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 	{
 		CAnimationClip::AnimationClipInitInfo animInfo = {};
 
-		aiAnimation anim = *aiScene->mAnimations[i];
+		const aiAnimation* anim = aiScene->mAnimations[i];
 
-		animInfo.name = CEngineString::StringToWString(anim.mName.C_Str());
-		animInfo.duration = static_cast<_float>(anim.mDuration);
-		animInfo.ticksPerSecond = anim.mTicksPerSecond;
+		animInfo.name = CEngineString::StringToWString(anim->mName.C_Str());
+		animInfo.duration = static_cast<_float>(anim->mDuration);
+		animInfo.ticksPerSecond = (anim->mTicksPerSecond != 0.0) ? static_cast<_float>(anim->mTicksPerSecond) : 30.f;
 	
-		for (_uint i = 0; i < anim.mNumChannels; ++i)
+		for (_uint j = 0; j < anim->mNumChannels; ++j)
 		{
-			animInfo.tracks.push_back({});
+			aiNodeAnim* nodeAnim = anim->mChannels[j];
 
-			aiNodeAnim* nodeAnim = anim.mChannels[i];
+			CAnimationClip::NodeTrack track = {};
+
+			track.nodeName = CEngineString::StringToWString(nodeAnim->mNodeName.C_Str());
+			
+			_uint maxKeyCount = max
+			(
+				nodeAnim->mNumPositionKeys,
+				max(nodeAnim->mNumRotationKeys, nodeAnim->mNumScalingKeys)
+			);
+
+			for (_uint k = 0; k < maxKeyCount; ++k)
+			{
+				CAnimationClip::Keyframe key = {};
+
+				if (k < nodeAnim->mNumPositionKeys)
+				{
+					key.timeStamp = static_cast<_float>(nodeAnim->mPositionKeys[k].mTime);
+					key.position = vector3
+					(
+						nodeAnim->mPositionKeys[k].mValue.x,
+						nodeAnim->mPositionKeys[k].mValue.y,
+						nodeAnim->mPositionKeys[k].mValue.z
+					);
+				}
+
+				if (k < nodeAnim->mNumRotationKeys)
+				{
+					key.rotation = _float4
+					(
+						nodeAnim->mRotationKeys[k].mValue.x,
+						nodeAnim->mRotationKeys[k].mValue.y,
+						nodeAnim->mRotationKeys[k].mValue.z,
+						nodeAnim->mRotationKeys[k].mValue.w
+					);
+				}
+
+				if (k < nodeAnim->mNumScalingKeys)
+				{
+					key.scaling = vector3
+					(
+						nodeAnim->mScalingKeys[k].mValue.x,
+						nodeAnim->mScalingKeys[k].mValue.y,
+						nodeAnim->mScalingKeys[k].mValue.z
+					);
+				}
+
+				track.keyframes.push_back(key);
+			}
+
+			animInfo.tracks.push_back(track);
 		}
+
+		animationInfoList.push_back(animInfo);
+	}
+
+	auto splitPath = CEngineString::Split(_filePath, L"/");
+
+	wstring fileFolder = splitPath[splitPath.size() - 2];
+	wstring fileNameExt = splitPath[splitPath.size() - 1];
+
+	auto pureName = CEngineString::Split(fileNameExt, L".")[0];
+
+	wstring saveName = fileFolder + L"_" + pureName;
+
+	if (FAILED(SaveAnimationClipBufferInfos(L"BinaryAssets/" + saveName + L".animdata", animationInfoList)))
+	{
+		CDebug::LogError(L"Failed ceate animation clip Data - can not save: " + _filePath);
+		return E_FAIL;
 	}
 
 	CDebug::Log(L"Complete ceate animation clip Data: " + _filePath);
@@ -823,7 +889,127 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 
 HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
 {
+	using namespace std;
+
+	ofstream out(_filePath, ios::binary);
+	if (!out.is_open())
+		return E_FAIL;
+
+	_uint clipCount = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&clipCount), sizeof(_uint));
+
+	for (const auto& clip : _infoList)
+	{
+		_uint nameLen = static_cast<_uint>(clip.name.size());
+		out.write(reinterpret_cast<const char*>(&nameLen), sizeof(_uint));
+		if (nameLen)
+			out.write(reinterpret_cast<const char*>(clip.name.data()),
+				sizeof(wchar_t) * nameLen);
+
+		out.write(reinterpret_cast<const char*>(&clip.duration), sizeof(_float));
+		out.write(reinterpret_cast<const char*>(&clip.ticksPerSecond), sizeof(_float));
+
+		_uint trackCount = static_cast<_uint>(clip.tracks.size());
+		out.write(reinterpret_cast<const char*>(&trackCount), sizeof(_uint));
+
+		for (const auto& track : clip.tracks)
+		{
+			_uint nodeLen = static_cast<_uint>(track.nodeName.size());
+			out.write(reinterpret_cast<const char*>(&nodeLen), sizeof(_uint));
+			if (nodeLen)
+				out.write(reinterpret_cast<const char*>(track.nodeName.data()),
+					sizeof(wchar_t) * nodeLen);
+
+			_uint keyCount = static_cast<_uint>(track.keyframes.size());
+			out.write(reinterpret_cast<const char*>(&keyCount), sizeof(_uint));
+
+			for (const auto& key : track.keyframes)
+			{
+				out.write(reinterpret_cast<const char*>(&key.timeStamp), sizeof(double));
+				out.write(reinterpret_cast<const char*>(&key.position), sizeof(vector3));
+				out.write(reinterpret_cast<const char*>(&key.rotation), sizeof(_float4));
+				out.write(reinterpret_cast<const char*>(&key.scaling), sizeof(vector3));
+			}
+		}
+	}
+
+	out.close();
+	CDebug::Log(L"Save complete animation clip data: " + _filePath);
+	
 	return S_OK;
+}
+
+vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBufferInfos(const wstring _binFileName)
+{
+	using namespace std;
+	vector<CAnimationClip::AnimationClipInitInfo> clips;
+
+	ifstream in(L"BinaryAssets/" + _binFileName, ios::binary);
+	if (!in.is_open())
+	{
+		CDebug::LogError(L"Failed to open anim file: " + _binFileName);
+		return {};
+	}
+	_uint clipCount = 0;
+	in.read(reinterpret_cast<char*>(&clipCount), sizeof(_uint));
+	clips.reserve(clipCount);
+
+	for (_uint c = 0; c < clipCount; ++c)
+	{
+		CAnimationClip::AnimationClipInitInfo clip{};
+
+		_uint nameLen = 0;
+		in.read(reinterpret_cast<char*>(&nameLen), sizeof(_uint));
+		if (nameLen)
+		{
+			clip.name.resize(nameLen);
+			in.read(reinterpret_cast<char*>(clip.name.data()),
+				sizeof(wchar_t) * nameLen);
+		}
+
+		in.read(reinterpret_cast<char*>(&clip.duration), sizeof(_float));
+		in.read(reinterpret_cast<char*>(&clip.ticksPerSecond), sizeof(_float));
+
+		_uint trackCount = 0;
+		in.read(reinterpret_cast<char*>(&trackCount), sizeof(_uint));
+		clip.tracks.reserve(trackCount);
+
+		for (_uint t = 0; t < trackCount; ++t)
+		{
+			CAnimationClip::NodeTrack track{};
+
+			_uint nodeLen = 0;
+			in.read(reinterpret_cast<char*>(&nodeLen), sizeof(_uint));
+			if (nodeLen)
+			{
+				track.nodeName.resize(nodeLen);
+				in.read(reinterpret_cast<char*>(track.nodeName.data()),
+					sizeof(wchar_t) * nodeLen);
+			}
+
+			_uint keyCount = 0;
+			in.read(reinterpret_cast<char*>(&keyCount), sizeof(_uint));
+			track.keyframes.reserve(keyCount);
+
+			for (_uint k = 0; k < keyCount; ++k)
+			{
+				CAnimationClip::Keyframe key{};
+				in.read(reinterpret_cast<char*>(&key.timeStamp), sizeof(_double));
+				in.read(reinterpret_cast<char*>(&key.position), sizeof(vector3));
+				in.read(reinterpret_cast<char*>(&key.rotation), sizeof(_float4));
+				in.read(reinterpret_cast<char*>(&key.scaling), sizeof(vector3));
+				track.keyframes.emplace_back(move(key));
+			}
+
+			clip.tracks.emplace_back(move(track));
+		}
+
+		clips.emplace_back(move(clip));
+	}
+
+	in.close();
+
+	return clips;
 }
 
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)

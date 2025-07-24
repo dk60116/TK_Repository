@@ -87,7 +87,7 @@ void CInspectorBox::Render()
         ImGui::SameLine();
         ImGui::SetCursorPosY(baseY + 3.f);
         ImGui::SetNextItemWidth(140.0f);
-        string label = "##ObjName" + std::to_string(selectedObj->Get_UniqueID());
+        string label = "##ObjName" + to_string(selectedObj->Get_UniqueID());
         if (ImGui::InputText(label.c_str(), &s_EditName,
             ImGuiInputTextFlags_AutoSelectAll |
             ImGuiInputTextFlags_EnterReturnsTrue))

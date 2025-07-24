@@ -1,6 +1,9 @@
 #include "epch.h"
 #include "MeshBuffer.h"
 #include "SkinnedMeshBuffer.h"
+#include <mutex>
+
+static mutex g_d3dContextMutex;
 
 CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
@@ -527,18 +530,20 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
         sDesc.Usage = D3D11_USAGE_STAGING;
         ID3D11Texture2D* staging = nullptr;
         device->CreateTexture2D(&sDesc, nullptr, &staging);
-        context->CopyResource(staging, _heightMap);
 
-        D3D11_MAPPED_SUBRESOURCE m{};
-        context->Map(staging, 0, D3D11_MAP_READ, 0, &m);
-        hmStride = static_cast<_uint>(m.RowPitch);
-        heightPixels.assign(static_cast<uint8_t*>(m.pData), static_cast<uint8_t*>(m.pData) + m.RowPitch * hmHeight);
-        context->Unmap(staging, 0);
+        {
+            lock_guard<mutex> lock(g_d3dContextMutex);
 
-        context->Flush();
-        Safe_Release(_heightMap);
-        staging->Release();
-        staging = nullptr;
+            context->CopyResource(staging, _heightMap);
+
+            D3D11_MAPPED_SUBRESOURCE m{};
+            context->Map(staging, 0, D3D11_MAP_READ, 0, &m);
+            hmStride = static_cast<_uint>(m.RowPitch);
+            heightPixels.assign(static_cast<uint8_t*>(m.pData), static_cast<uint8_t*>(m.pData) + m.RowPitch * hmHeight);
+            context->Unmap(staging, 0);
+        }
+
+        Safe_Release(staging);
     }
 
     auto SampleHeight = [&](_float u, _float v)->_float

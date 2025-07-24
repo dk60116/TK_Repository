@@ -24,16 +24,10 @@ public:
 		_float3 scale = { 1.f ,1.f, 1.f };
 	};
 
-	struct BoneAnimation
-	{
-		wstring boneName = L"";
-		vector<Keyframe> keyframes = {};
-	};
-
 	struct NodeTrack
 	{
-		wstring nodeName;
-		vector<Keyframe> keyframes;
+		wstring nodeName = L"";
+		vector<Keyframe> keyframes = {};
 	};
 
 	struct AnimationClipInitInfo
@@ -49,19 +43,21 @@ protected:
 	CAnimationClip();
 	~CAnimationClip();
 
-public:
-	void Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const;
-	const _bool IsLoop() const;
-	_float Get_Duration() const;
-
 protected:
 	static CAnimationClip* Create();
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 
+public:
+	HRESULT Initiailize_Custom(AnimationClipInitInfo _info, void* _desc);
+
+public:
+	void Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const;
+	const _bool IsLoop() const;
+	_float Get_Duration() const;
 
 private:
-	vector<BoneAnimation> m_vBoneAnimation;
+	vector<NodeTrack> m_vBoneAnimation;
 	_bool m_bLoopTime;
 	_float m_fDuration;
 	_float m_fTicksPerSecond;

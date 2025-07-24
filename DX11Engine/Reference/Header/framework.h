@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#define WIN32_LEAN_AND_MEAN            
+#define WIN32_LEAN_AND_MEAN   
+#define NOMINMAX
 // Windows 헤더 파일
 #include <windows.h>
 #include <process.h>
@@ -31,6 +32,7 @@ using Microsoft::WRL::ComPtr;
 #include <memory.h>
 #include <tchar.h>
 #include <algorithm>
+#include <initializer_list>
 
 #ifdef new
 #undef new

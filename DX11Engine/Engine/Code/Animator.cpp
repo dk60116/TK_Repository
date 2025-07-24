@@ -59,7 +59,7 @@ void CAnimator::Update()
 	{
 		m_fBlendTime += DELTA_TIME;
 
-		float t = m_fBlendTime / m_fBlendDuration;
+		_float t = m_fBlendTime / m_fBlendDuration;
 
 		if (t >= 1.f)
 		{
@@ -106,7 +106,8 @@ void CAnimator::Update()
 		return;
 	}
 
-	const float duration = m_pCrtAnimation->Get_Duration();
+	const _float duration = m_pCrtAnimation->Get_Duration();
+
 	if (m_bLoop)
 		m_fCurrentTime = fmodf(m_fCurrentTime, duration);
 	else if (m_fCurrentTime >= duration)
@@ -115,14 +116,14 @@ void CAnimator::Update()
 		m_bIsPlaying = false;
 	}
 
-	// 2) 현재 시각의 키프레임 샘플링 --------------------
+	// 현재 시각의 키프레임 샘플링
 	unordered_map<wstring, CAnimationClip::BoneTransform> sampled;
 	m_pCrtAnimation->Sample(m_fCurrentTime, sampled);
 
-	// 3) 각 본 CTransform 갱신 -------------------------
-	const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
+	// 각 본 CTransform 갱신
+	const _uint boneCount = m_pSkinnedRenderer->Get_BoneCount();
 
-	for (uint32_t i = 0; i < boneCount; ++i)
+	for (_uint i = 0; i < boneCount; ++i)
 	{
 		CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
 		if (!bone) continue;

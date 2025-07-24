@@ -386,7 +386,7 @@ void CDebug::ShowElapsedTime()
 //HRESULT CDebug::Initialize() { return S_OK; }
 //void CDebug::Release() {}
 //void CDebug::Log(const char*, ...) {}
-//void CDebug::Log(const std::string format, ...) {}
+//void CDebug::Log(const string format, ...) {}
 //void CDebug::Log(const wstring format, ...) {}
 //void CDebug::Log(const int foramt, ...) {}
 //void CDebug::Log(const float format, ...) {}
