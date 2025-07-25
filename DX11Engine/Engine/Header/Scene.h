@@ -12,6 +12,16 @@ class ENGINE_DLL CScene abstract : public UObject
     friend class CSceneLoader;
 
 public:
+    typedef struct ObjectsTransformInfo
+    {
+        _uint objID;
+        wstring objName;
+        _float3 localPos;
+        _float3 localEuler;
+        _float3 localScale;
+    }SCENETRANSFORMINFO;
+
+public:
     struct LightSettings
     {
         float ambient = 0.1f;
@@ -37,6 +47,10 @@ public:
 public:
     void Set_SceneName(const wstring _name);
     const wstring& Get_SceneName() const;
+
+public:
+	vector<SCENETRANSFORMINFO> Covert_ObjectsTransformInfo() const;
+    void Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList);
 
 public:
     class CEngineResource* Add_Resource(const wstring& _name, CEngineResource* _resource);

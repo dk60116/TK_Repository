@@ -1,6 +1,7 @@
 #pragma once
 
 #include "epch.h"
+#include "Scene.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "SkinnedMeshBuffer.h"
@@ -31,6 +32,9 @@ public:
     HRESULT ConvertFBXToAnimationClipData(const wstring _filePath);
 
 public:
+	HRESULT SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList);
+	vector<CScene::ObjectsTransformInfo> ReadSceneObjectTransformInfos(const wstring _binFileName);
+
     HRESULT SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
     vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
     HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);

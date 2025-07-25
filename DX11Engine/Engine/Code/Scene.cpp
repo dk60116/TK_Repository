@@ -116,6 +116,15 @@ void CScene::Update_Editor()
 
 	if (CInput::GetInstance().GetKey_Editor(CONTROL))
 	{
+		if (CInput::GetInstance().GetKeyDown_Editor(S))
+		{
+			wstring path = L"BinaryAssets/Scene/" + m_strSceneName + L".scenedata";
+			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Covert_ObjectsTransformInfo());
+		}
+	}
+
+	if (CInput::GetInstance().GetKey_Editor(CONTROL))
+	{
 		if (CInput::GetInstance().GetMouseButtonDown_Editor(0))
 		{
 			const vector2Int point = CInput::GetInstance().GetMousePos_Editor();
@@ -300,6 +309,55 @@ void CScene::Set_SceneName(const wstring _name)
 const wstring& CScene::Get_SceneName() const
 {
 	return m_strSceneName;
+}
+
+vector<CScene::SCENETRANSFORMINFO> CScene::Covert_ObjectsTransformInfo() const
+{
+	vector<SCENETRANSFORMINFO> result = {};
+
+	_uint i = 0;
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		SCENETRANSFORMINFO info = {};
+
+		CTransform* tf = (*it)->Get_Transform();
+
+		info.objID = (*it)->m_iUniqueID;
+		info.objName = (*it)->m_strGameObjectName;
+		info.localPos = tf->Get_LocalPosition();
+		info.localScale = tf->Get_LocalScale();
+
+		if (i > 0)
+			result.push_back(info);
+
+		++i;
+	}
+
+	return result;
+}
+
+void CScene::Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList)
+{
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		CGameObject* obj = *it;
+
+		if (obj->m_iUniqueID == 0)
+			continue;
+
+		for (TRAVERSAL_ITER(_infoList, it1))
+		{
+			if ((*it1).objID == obj->m_iUniqueID)
+			{
+				CTransform* tf = obj->Get_Transform();
+				tf->Set_LocalPosition((*it1).localPos);
+				tf->Set_LocalScale((*it1).localScale);
+				tf->Set_LocalEulerAngles((*it1).localEuler);
+				break;
+			}
+		}
+	}
 }
 
 CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)

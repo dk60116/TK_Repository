@@ -552,6 +552,65 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 	return S_OK;
 }
 
+HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
+{
+	using namespace std;
+
+	ofstream out(_filePath, ios::binary);
+
+	if (!out.is_open())
+		return E_FAIL;
+
+	_uint count = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		CScene::ObjectsTransformInfo info = info;
+
+		out.write(reinterpret_cast<const char*>(&info.objID), sizeof(_uint));
+
+		_uint nameCount = static_cast<_uint>(info.objName.size());
+		out.write(reinterpret_cast<const char*>(&nameCount), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&info.objName), sizeof(wchar_t) * nameCount);
+		out.write(reinterpret_cast<const char*>(&info.localPos), sizeof(_float3));
+		out.write(reinterpret_cast<const char*>(&info.localEuler), sizeof(_float3));
+		out.write(reinterpret_cast<const char*>(&info.localScale), sizeof(_float3));
+	}
+
+	out.close();
+
+	CDebug::Log(L"Save complete scenedata: " + _filePath);
+
+	return S_OK;
+}
+
+vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(const wstring _binFileName)
+{
+	using namespace std;
+
+	vector<CScene::ObjectsTransformInfo> resultBuffer = {};
+
+	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
+
+	ifstream in(L"BinaryAssets/Scene" + _binFileName, ios::binary);
+
+	if (!in.is_open())
+		return {};
+
+	_uint count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+
+	}
+
+	in.close();
+
+	return resultBuffer;
+}
+
 HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
 	using namespace std;
