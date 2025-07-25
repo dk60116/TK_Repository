@@ -251,6 +251,11 @@ void CMaterial::Set_Texture(CTexture* _texture, _int _index)
 		_texture->AddRef();
 }
 
+void CMaterial::Set_BaseColor(const _float4& _color)
+{
+	m_vBaseColor = _color;
+}
+
 void CMaterial::Set_FloatValue(const wstring _key, const _float _value)
 {
 	auto it = m_mFloatValues.find(_key);

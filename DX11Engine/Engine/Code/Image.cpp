@@ -77,6 +77,11 @@ void CImage::OnDestroy()
 	Safe_Release(m_pTexture);
 }
 
+void CImage::SetColor(ColorValue _color)
+{
+	m_pMaterial->Set_BaseColor(_color.f4Color());
+}
+
 const CImage::FillMethod CImage::Get_FillMethod() const
 {
 	return m_eFillMethod;

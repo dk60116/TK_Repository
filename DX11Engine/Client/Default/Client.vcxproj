@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\LoadingScene.h" />
     <ClInclude Include="..\Header\MainScene.h" />
     <ClInclude Include="..\Header\Player.h" />
     <ClInclude Include="Client.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\MainScene.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="Client.cpp" />
