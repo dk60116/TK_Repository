@@ -121,6 +121,10 @@ void CSceneManager::LoadComplete()
 		m_bLoading = false;
 	}
 
+	wstring file = m_pCrtScene->Get_SceneName() + L".scenedata";
+	auto sceneTransformInfo = CResources::GetInstance().ReadSceneObjectTransformInfos(file);
+
+	m_pCrtScene->Bind_ObjectsTransform(sceneTransformInfo);
 	m_pCrtScene->Awake();
 }
 

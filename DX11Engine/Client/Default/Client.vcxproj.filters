@@ -36,6 +36,9 @@
     <ClInclude Include="..\Header\Player.h">
       <Filter>Scripts\Object</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\LoadingScene.h">
+      <Filter>Scripts\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Player.cpp">
       <Filter>Scripts\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\LoadingScene.cpp">
+      <Filter>Scripts\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -563,55 +563,60 @@ namespace Engine
 
         float length() const
         {
-            XMVECTOR v = XMVectorSet(x, y, z, 0.f);
-            XMVECTOR len = XMVector3Length(v);
+            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector len = XMVector3Length(v);
             return XMVectorGetX(len);
         }
 
         float lengthSq() const
         {
-            XMVECTOR v = XMVectorSet(x, y, z, 0.f);
-            XMVECTOR len = XMVector3LengthSq(v);
+            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector len = XMVector3LengthSq(v);
             return XMVectorGetX(len);
         }
 
         vector3 normalized() const
         {
-            XMVECTOR v = XMVectorSet(x, y, z, 0.f);
-            XMVECTOR normal = XMVector3Normalize(v);
+            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector normal = XMVector3Normalize(v);
             return vector3(XMVectorGetX(normal), XMVectorGetY(normal), XMVectorGetZ(normal));
         }
 
         float dot(const vector3& other) const
         {
-            XMVECTOR a = XMVectorSet(x, y, z, 0.f);
-            XMVECTOR b = XMVectorSet(other.x, other.y, other.z, 0.f);
-            XMVECTOR dot = XMVector3Dot(a, b);
+            _vector a = XMVectorSet(x, y, z, 0.f);
+            _vector b = XMVectorSet(other.x, other.y, other.z, 0.f);
+            _vector dot = XMVector3Dot(a, b);
             return XMVectorGetX(dot);
         }
 
         static float dot(const vector3& a, const vector3& b)
         {
-            XMVECTOR va = XMVectorSet(a.x, a.y, a.z, 0.f);
-            XMVECTOR vb = XMVectorSet(b.x, b.y, b.z, 0.f);
-            XMVECTOR dot = XMVector3Dot(va, vb);
+            _vector va = XMVectorSet(a.x, a.y, a.z, 0.f);
+            _vector vb = XMVectorSet(b.x, b.y, b.z, 0.f);
+            _vector dot = XMVector3Dot(va, vb);
             return XMVectorGetX(dot);
         }
 
         vector3 cross(const vector3& other) const
         {
-            XMVECTOR a = XMVectorSet(x, y, z, 0.f);
-            XMVECTOR b = XMVectorSet(other.x, other.y, other.z, 0.f);
-            XMVECTOR cross = XMVector3Cross(a, b);
+            _vector a = XMVectorSet(x, y, z, 0.f);
+            _vector b = XMVectorSet(other.x, other.y, other.z, 0.f);
+            _vector cross = XMVector3Cross(a, b);
             return vector3(XMVectorGetX(cross), XMVectorGetY(cross), XMVectorGetZ(cross));
         }
 
         static vector3 Cross(const vector3& a, const vector3& b)
         {
-            XMVECTOR va = XMVectorSet(a.x, a.y, a.z, 0.f);
-            XMVECTOR vb = XMVectorSet(b.x, b.y, b.z, 0.f);
-            XMVECTOR cross = XMVector3Cross(va, vb);
+            _vector va = XMVectorSet(a.x, a.y, a.z, 0.f);
+            _vector vb = XMVectorSet(b.x, b.y, b.z, 0.f);
+            _vector cross = XMVector3Cross(va, vb);
             return vector3(XMVectorGetX(cross), XMVectorGetY(cross), XMVectorGetZ(cross));
+        }
+
+        const _float3 to_float3()
+        {
+            return _float3(x, y, z);
         }
 
         const _vector toXMVector() const
@@ -1078,11 +1083,21 @@ namespace Engine
             );
         }
 
+        const _float4 to_float4()
+        {
+            return _float4(x, y, z, w);
+        }
+
         _matrix to_matrix() const
         {
             _vector q = XMVectorSet(x, y, z, w);
 
             return XMMatrixRotationQuaternion(q);
+        }
+
+        operator _float4() const
+        {
+            return _float4(x, y, z, w);
         }
 
         operator _vector() const

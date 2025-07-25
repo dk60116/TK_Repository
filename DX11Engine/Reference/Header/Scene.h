@@ -17,7 +17,7 @@ public:
         _uint objID;
         wstring objName;
         _float3 localPos;
-        _float3 localEuler;
+        _float4 localQuaternion;
         _float3 localScale;
     }SCENETRANSFORMINFO;
 
@@ -49,7 +49,7 @@ public:
     const wstring& Get_SceneName() const;
 
 public:
-	vector<SCENETRANSFORMINFO> Covert_ObjectsTransformInfo() const;
+	vector<SCENETRANSFORMINFO> Convert_ObjectsTransformInfo() const;
     void Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList);
 
 public:

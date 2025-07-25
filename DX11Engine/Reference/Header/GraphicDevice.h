@@ -10,9 +10,9 @@ public:
 	struct SwapChainSet
 	{
 		HWND hwnd = nullptr;
-		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
-		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> rtv;
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> dsv;
+		ComPtr<IDXGISwapChain> swapChain;
+		ComPtr<ID3D11RenderTargetView> rtv;
+		ComPtr<ID3D11DepthStencilView> dsv;
 		D3D11_VIEWPORT viewport;
 	};
 

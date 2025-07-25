@@ -566,15 +566,16 @@ HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vecto
 
 	for (_uint i = 0; i < count; ++i)
 	{
-		CScene::ObjectsTransformInfo info = info;
+		CScene::ObjectsTransformInfo info = _infoList[i];
 
 		out.write(reinterpret_cast<const char*>(&info.objID), sizeof(_uint));
 
-		_uint nameCount = static_cast<_uint>(info.objName.size());
-		out.write(reinterpret_cast<const char*>(&nameCount), sizeof(_uint));
-		out.write(reinterpret_cast<const char*>(&info.objName), sizeof(wchar_t) * nameCount);
+		_uint nameSize = static_cast<_uint>(info.objName.size());
+		if (nameSize > 0)
+			out.write(reinterpret_cast<const char*>(&nameSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(info.objName.data()), sizeof(wchar_t) * nameSize);
 		out.write(reinterpret_cast<const char*>(&info.localPos), sizeof(_float3));
-		out.write(reinterpret_cast<const char*>(&info.localEuler), sizeof(_float3));
+		out.write(reinterpret_cast<const char*>(&info.localQuaternion), sizeof(_float4));
 		out.write(reinterpret_cast<const char*>(&info.localScale), sizeof(_float3));
 	}
 
@@ -589,11 +590,9 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 {
 	using namespace std;
 
-	vector<CScene::ObjectsTransformInfo> resultBuffer = {};
+	vector<CScene::ObjectsTransformInfo> resultInfo = {};
 
-	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
-
-	ifstream in(L"BinaryAssets/Scene" + _binFileName, ios::binary);
+	ifstream in(L"BinaryAssets/Scene/" + _binFileName, ios::binary);
 
 	if (!in.is_open())
 		return {};
@@ -603,12 +602,32 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 
 	for (_uint i = 0; i < count; ++i)
 	{
+		CScene::ObjectsTransformInfo info = {};
 
+		_uint objId = 0;
+		in.read(reinterpret_cast<char*>(&objId), sizeof(_uint));
+		info.objID = objId;
+
+		_uint nameSize = 0;
+		in.read(reinterpret_cast<char*>(&nameSize), sizeof(_uint));
+		if (nameSize > 0)
+		{
+			wstring temp(nameSize, L'\0');
+			in.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * nameSize);
+			info.objName = move(temp);
+		}
+
+		_float3 pos = {};
+		in.read(reinterpret_cast<char*>(&info.localPos), sizeof(_float3));
+		in.read(reinterpret_cast<char*>(&info.localQuaternion), sizeof(_float4));
+		in.read(reinterpret_cast<char*>(&info.localScale), sizeof(_float3));
+
+		resultInfo.push_back(info);
 	}
 
 	in.close();
 
-	return resultBuffer;
+	return resultInfo;
 }
 
 HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)

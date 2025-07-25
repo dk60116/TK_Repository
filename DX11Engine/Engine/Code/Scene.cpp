@@ -119,7 +119,7 @@ void CScene::Update_Editor()
 		if (CInput::GetInstance().GetKeyDown_Editor(S))
 		{
 			wstring path = L"BinaryAssets/Scene/" + m_strSceneName + L".scenedata";
-			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Covert_ObjectsTransformInfo());
+			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());
 		}
 	}
 
@@ -311,7 +311,7 @@ const wstring& CScene::Get_SceneName() const
 	return m_strSceneName;
 }
 
-vector<CScene::SCENETRANSFORMINFO> CScene::Covert_ObjectsTransformInfo() const
+vector<CScene::SCENETRANSFORMINFO> CScene::Convert_ObjectsTransformInfo() const
 {
 	vector<SCENETRANSFORMINFO> result = {};
 
@@ -325,7 +325,10 @@ vector<CScene::SCENETRANSFORMINFO> CScene::Covert_ObjectsTransformInfo() const
 
 		info.objID = (*it)->m_iUniqueID;
 		info.objName = (*it)->m_strGameObjectName;
-		info.localPos = tf->Get_LocalPosition();
+		vector3 pos = tf->Get_LocalPosition();
+		info.localPos = pos;
+		const quaternion quat = tf->Get_LocalQuaternion();
+		info.localQuaternion = quat;
 		info.localScale = tf->Get_LocalScale();
 
 		if (i > 0)
@@ -353,8 +356,7 @@ void CScene::Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList)
 				CTransform* tf = obj->Get_Transform();
 				tf->Set_LocalPosition((*it1).localPos);
 				tf->Set_LocalScale((*it1).localScale);
-				tf->Set_LocalEulerAngles((*it1).localEuler);
-				break;
+				tf->Set_LocalQuaternion((*it1).localQuaternion);
 			}
 		}
 	}
