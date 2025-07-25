@@ -20,7 +20,8 @@ CPlayer* CPlayer::Create()
 
 HRESULT CPlayer::Initialize()
 {
-	__super::Initialize();
+	if (FAILED(__super::Initialize()))
+		return E_FAIL;
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 

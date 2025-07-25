@@ -31,4 +31,3 @@ private:
 };
 
 NS_END
-

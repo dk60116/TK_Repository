@@ -146,7 +146,7 @@ void CScene::Update_Editor()
 
 			CGameObject* newObj = Add_GameObject(L"AddObj");
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
-			newRen->Get_MeshFilter()->Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
 		}
 	}
@@ -364,17 +364,17 @@ void CScene::Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList)
 
 CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)
 {
-	if (!_resource) 
+	if (!_resource)
 		return nullptr;
 
 	auto [it, inserted] = m_mResourceList.try_emplace(_name, _resource);
 
-	if (inserted)    
+	if (inserted)
 	{
 		_resource->AddRef();
 		return _resource;
 	}
-	else                   
+	else
 	{
 		Safe_Release(_resource);
 		return it->second;

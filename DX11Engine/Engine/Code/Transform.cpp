@@ -2,18 +2,18 @@
 #include "Transform.h"
 
 CTransform::CTransform()
-	: m_bIsRootParent(true)
-	, m_pParent(nullptr)
-	, m_lChildList({})
-	, m_vPosition({})
-	, m_vScale(vector3::one())
-	, m_vEulerAngles({})
-	, m_vQuaternion(quaternion::identity())
+    : m_bIsRootParent(true)
+    , m_pParent(nullptr)
+    , m_lChildList({})
+    , m_vPosition({})
+    , m_vScale(vector3::one())
+    , m_vEulerAngles({})
+    , m_vQuaternion(quaternion::identity())
     , m_vWorldQuaternion(quaternion::identity())
     , m_vMatWorld()
     , m_vMatLocal()
     , m_vMatLocalRotation()
-	, m_sDirections({})
+    , m_sDirections({})
 {
     m_strName = L"Transform";
 }
@@ -24,7 +24,7 @@ CTransform::~CTransform()
 
 CTransform* CTransform::Create()
 {
-	return new CTransform();
+    return new CTransform();
 }
 
 HRESULT CTransform::Initialize()
@@ -189,7 +189,7 @@ void CTransform::SetParent(CTransform* _parent)
 
         SetTransformForMatrix(tempMatrix);
     }
-    
+
     m_bIsRootParent = !m_pParent;
 }
 
@@ -217,7 +217,7 @@ CTransform* CTransform::Get_Child(const _int _index)
     {
         if (i == _index)
             return (*it);
-        
+
         ++i;
     }
 
@@ -243,7 +243,7 @@ CTransform* CTransform::Find_ChildRecursive(wstring _name)
     for (TRAVERSAL_ITER(m_lChildList, it))
     {
         CTransform* found = (*it)->Find_ChildRecursive(_name);
-        
+
         if (found)
             return found;
     }
@@ -310,7 +310,7 @@ const vector3 CTransform::Get_EulerAngles()
 
         return m_vWorldQuaternion.to_euler();
     }
-    
+
     return vector3::zero();
 }
 
@@ -444,7 +444,7 @@ void CTransform::Set_LocalQuaternion(const quaternion& _value)
 {
     m_vQuaternion = _value;
 
-	m_vEulerAngles = m_vQuaternion.to_euler();
+    m_vEulerAngles = m_vQuaternion.to_euler();
 }
 
 void CTransform::Add_Quaternion(const quaternion& _delta)
@@ -614,10 +614,10 @@ void CTransform::Bind_Matrix()
     quaternion worldQ;
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&worldQ), Q);
 
-    vector3 eulerRad = worldQ.to_euler();     
+    vector3 eulerRad = worldQ.to_euler();
     vector3 eulerDeg = eulerRad * XMConvertToDegrees(1.0f);
 
-    m_vWorldEulerAngles = eulerDeg;           
+    m_vWorldEulerAngles = eulerDeg;
 }
 
 void CTransform::Bind_Direction()
@@ -705,7 +705,7 @@ void CTransform::LookAt(const vector3& _target)
     vector3 right = fwd.cross(upAxis).normalized();   // LH
     vector3 up = right.cross(fwd);
 
-    _matrix rot = 
+    _matrix rot =
     {
         right.x,  right.y,  right.z, 0,
         up.x,     up.y,     up.z,    0,

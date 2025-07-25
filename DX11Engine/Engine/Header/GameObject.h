@@ -118,7 +118,7 @@ inline T* CGameObject::AddComponent()
 	dynamic_cast<CComponent*>(newComponent)->Set_Object(this);
 	newComponent->AddRef();
 	m_lComponentList.push_back(newComponent);
-	
+
 	if (FAILED(newComponent->Initialize()))
 	{
 		Safe_Release(newComponent);

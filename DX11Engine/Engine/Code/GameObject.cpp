@@ -316,12 +316,6 @@ void CGameObject::Set_Transform(CTransform* _transform)
 
 void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 {
-	if (_meshInfos.size() <= 0)
-	{
-		CDebug::LogError(L"Failed create MeshHierachy: " + m_strGameObjectName);
-		return;
-	}
-
 	CTransform* parentTransform = Get_Transform();
 
 	for (_uint i = 0; i < _meshInfos.size(); ++i)
@@ -334,7 +328,7 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 		CMeshRenderer* ren = child->AddComponent<CMeshRenderer>();
 
-		ren->Get_MeshFilter()->Set_Mesh(_meshInfos[i].meshBuffer);
+		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
 		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 
 		if (!_meshInfos[i].texture)
@@ -346,7 +340,8 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
 {
-	if (_skinnedInfos.empty()) return;
+	if (_skinnedInfos.empty())
+		return;
 
 	CTransform* rootTf = Get_Transform();
 	vector<CSkinnedMeshRenderer*> renderers;
@@ -354,11 +349,13 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 
 	for (auto& si : _skinnedInfos)
 	{
-		if (!si.meshBuffer) continue;
+		if (!si.meshBuffer)
+			continue;
+
 		CGameObject* g = m_pScene->Add_GameObject(si.meshBuffer->Get_ResourceName());
 		g->Get_Transform()->SetParent(rootTf);
 		auto* r = g->AddComponent<CSkinnedMeshRenderer>();
-		r->Set_Mesh(si.meshBuffer);
+		r->Set_MeshBuffer(si.meshBuffer);
 		r->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 		if (si.texture) r->Get_Material()->Set_Texture(si.texture, 0);
 		renderers.push_back(r);
@@ -440,4 +437,3 @@ CScene* CGameObject::Get_Scene()
 {
 	return m_pScene;
 }
-

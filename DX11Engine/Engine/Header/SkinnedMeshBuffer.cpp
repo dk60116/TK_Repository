@@ -6,7 +6,7 @@ CSkinnedMeshBuffer::CSkinnedMeshBuffer()
     , m_vBoneNames({})
     , m_vBoneOffsetMatrices({})
 {
-	m_strName = L"Skinned Mesh Buffer";
+    m_strName = L"Skinned Mesh Buffer";
 }
 
 CSkinnedMeshBuffer::~CSkinnedMeshBuffer()
@@ -16,7 +16,7 @@ CSkinnedMeshBuffer::~CSkinnedMeshBuffer()
 
 CSkinnedMeshBuffer* CSkinnedMeshBuffer::Create()
 {
-	return new CSkinnedMeshBuffer();
+    return new CSkinnedMeshBuffer();
 }
 
 HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)

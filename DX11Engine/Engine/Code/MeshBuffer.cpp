@@ -1,9 +1,6 @@
 #include "epch.h"
 #include "MeshBuffer.h"
 #include "SkinnedMeshBuffer.h"
-#include <mutex>
-
-static mutex g_d3dContextMutex;
 
 CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
@@ -115,14 +112,14 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
     if (FAILED(hr))
     {
-        CDebug::LogError(L"MeshBuffer load failed: " + m_strFilePath);
+        CDebug::LogError(L"Assimp MeshBuffer load failed: " + m_strFilePath);
         return E_FAIL;
     }
 
     return hr;
 }
 
-HRESULT CMeshBuffer::Initiailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc)
+HRESULT CMeshBuffer::Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc)
 {
     if (!(_info.buffer.size() > 0))
         return E_FAIL;
@@ -178,7 +175,7 @@ HRESULT CMeshBuffer::Initiailize_Custom(MeshBufferInitiaizeInfo _info, void* _de
 
     if (FAILED(hr))
     {
-        CDebug::LogError(L"MeshBuffer load failed(Custom): " + m_strFilePath);
+        CDebug::LogError(L"Assimp MeshBuffer load failed: " + m_strFilePath);
         return E_FAIL;
     }
 
@@ -530,20 +527,18 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
         sDesc.Usage = D3D11_USAGE_STAGING;
         ID3D11Texture2D* staging = nullptr;
         device->CreateTexture2D(&sDesc, nullptr, &staging);
+        context->CopyResource(staging, _heightMap);
 
-        {
-            lock_guard<mutex> lock(g_d3dContextMutex);
+        D3D11_MAPPED_SUBRESOURCE m{};
+        context->Map(staging, 0, D3D11_MAP_READ, 0, &m);
+        hmStride = static_cast<_uint>(m.RowPitch);
+        heightPixels.assign(static_cast<uint8_t*>(m.pData), static_cast<uint8_t*>(m.pData) + m.RowPitch * hmHeight);
+        context->Unmap(staging, 0);
 
-            context->CopyResource(staging, _heightMap);
-
-            D3D11_MAPPED_SUBRESOURCE m{};
-            context->Map(staging, 0, D3D11_MAP_READ, 0, &m);
-            hmStride = static_cast<_uint>(m.RowPitch);
-            heightPixels.assign(static_cast<uint8_t*>(m.pData), static_cast<uint8_t*>(m.pData) + m.RowPitch * hmHeight);
-            context->Unmap(staging, 0);
-        }
-
-        Safe_Release(staging);
+        context->Flush();
+        Safe_Release(_heightMap);
+        staging->Release();
+        staging = nullptr;
     }
 
     auto SampleHeight = [&](_float u, _float v)->_float

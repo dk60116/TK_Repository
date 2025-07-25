@@ -59,17 +59,6 @@ void CSkinnedMeshRenderer::Render_Editor()
 void CSkinnedMeshRenderer::Render()
 {
 	CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
-
-
-	if (CInput::GetInstance().GetKeyDown_Editor(X))
-	{
-		CDebug::LogError((int)m_vBones.size());
-
-		for (size_t i = 0; i < m_vBones.size(); i++)
-		{
-			CDebug::LogError(m_vBones[i]->Get_GameObject()->Get_ObjectName());
-		}
-	}
 }
 
 void CSkinnedMeshRenderer::OnPostRender()
@@ -145,7 +134,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 {
 	if (!_cam)
 	{
-		CDebug::LogError("MeshRenderer: No Camera assigned.");
+		CDebug::LogError("Skinned MeshRenderer: No Camera assigned.");
 		return;
 	}
 
@@ -263,7 +252,7 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 	m_pContext->RSSetState(CGraphicDevice::GetInstance().Get_Rasterizer_CullFront());
 
 	// 아웃라인 머티리얼 바인딩 (단색 셰이더)
-	
+
 	//if (m_pOutlineMat)
 	//{
 	//	m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
@@ -291,7 +280,7 @@ CSkinnedMeshBuffer* CSkinnedMeshRenderer::Get_SkinnedMeshBuffer()
 	return m_pMeshBuffer;
 }
 
-void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
+void CSkinnedMeshRenderer::Set_MeshBuffer(CSkinnedMeshBuffer* _mesh)
 {
 	if (_mesh == m_pMeshBuffer)
 		return;
@@ -299,10 +288,10 @@ void CSkinnedMeshRenderer::Set_Mesh(CSkinnedMeshBuffer* _mesh)
 	Safe_Release(m_pMeshBuffer);
 
 	m_pMeshBuffer = _mesh;
-	
+
 	if (!m_pMeshBuffer)
 	{
-		CDebug::LogError("Skinned MeshRenderer: No MeshBuffer");
+		CDebug::LogError("Skinned MeshRenderer - Set_Mesh Failed - Skinned MeshRenderer: No MeshBuffer");
 		return;
 	}
 

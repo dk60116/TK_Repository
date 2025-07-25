@@ -49,7 +49,7 @@ public:
     const wstring& Get_SceneName() const;
 
 public:
-	vector<SCENETRANSFORMINFO> Convert_ObjectsTransformInfo() const;
+    vector<SCENETRANSFORMINFO> Convert_ObjectsTransformInfo() const;
     void Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList);
 
 public:
@@ -120,8 +120,7 @@ protected:
 protected:
     _uint m_iUniqueObjectCount;
 
-    ID3D11DepthStencilState* m_pMeshDepthStencilState, * m_pUIDepthStencilState;
+    ID3D11DepthStencilState* m_pMeshDepthStencilState,* m_pUIDepthStencilState;
 };
 
 NS_END
-

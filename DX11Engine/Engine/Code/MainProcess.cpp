@@ -11,8 +11,8 @@ CMainProcess::~CMainProcess()
 
 CMainProcess& CMainProcess::GetInstance()
 {
-	static CMainProcess inst;
-	return inst;
+    static CMainProcess inst;
+    return inst;
 }
 
 HRESULT CMainProcess::Initialize()

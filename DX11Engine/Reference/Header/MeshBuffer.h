@@ -50,7 +50,7 @@ protected:
 	void OnDestroy();
 
 public:
-	HRESULT Initiailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc);
+	HRESULT Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc);
 
 public:
 	static wstring FindMeshName(const aiScene* scene, _uint meshIndex, aiNode* node = nullptr);

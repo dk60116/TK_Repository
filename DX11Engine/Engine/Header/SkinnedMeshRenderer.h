@@ -41,7 +41,7 @@ public:
 public:
 	CMeshBuffer* Get_MeshBuffer() override;
 	CSkinnedMeshBuffer* Get_SkinnedMeshBuffer();
-	void Set_Mesh(CSkinnedMeshBuffer* _Mesh);
+	void Set_MeshBuffer(CSkinnedMeshBuffer* _Mesh);
 	void Set_Bones(const vector<CTransform*>& _bones, CTransform* _rootBone = nullptr);
 
 private:

@@ -110,7 +110,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 
 	if (!aiScene->HasMeshes())
 	{
-		CDebug::LogError(L"Failed create mesh buffer - AIScene has not meshes: " + _filePath);
+		CDebug::LogError(L"Failed create mesh buffer - AIScene not has meshes: " + _filePath);
 		return E_FAIL;
 	}
 
@@ -221,7 +221,6 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 
 	wstring saveName = fileFolder + L"_" + pureName;
 
-
 	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/" + saveName + L".meshdata", bufferInfoList)))
 	{
 		CDebug::LogError(L"Failed ceate mesh Data - can not save: " + _filePath);
@@ -278,7 +277,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 	using VTX = VertexSkinnedBuffer;
 
 	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> bufferInfoList = {};
-	
+
 	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
 	{
 		CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo info = {};
@@ -472,7 +471,7 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 		animInfo.name = CEngineString::StringToWString(anim->mName.C_Str());
 		animInfo.duration = static_cast<_float>(anim->mDuration);
 		animInfo.ticksPerSecond = (anim->mTicksPerSecond != 0.0) ? static_cast<_float>(anim->mTicksPerSecond) : 30.f;
-	
+
 		for (_uint j = 0; j < anim->mNumChannels; ++j)
 		{
 			aiNodeAnim* nodeAnim = anim->mChannels[j];
@@ -480,7 +479,7 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 			CAnimationClip::NodeTrack track = {};
 
 			track.nodeName = CEngineString::StringToWString(nodeAnim->mNodeName.C_Str());
-			
+
 			_uint maxKeyCount = max
 			(
 				nodeAnim->mNumPositionKeys,
@@ -559,7 +558,10 @@ HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vecto
 	ofstream out(_filePath, ios::binary);
 
 	if (!out.is_open())
+	{
+		CDebug::LogError(L"SaveSceneObjectTransformInfos failed - can not open: " + _filePath);
 		return E_FAIL;
+	}
 
 	_uint count = static_cast<_uint>(_infoList.size());
 	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
@@ -676,9 +678,9 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuf
 
 vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring _binFileName)
 {
-	using namespace std;
-
 	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = {};
+
+	using namespace std;
 
 	ifstream in(L"BinaryAssets/" + _binFileName, ios::binary);
 
@@ -720,7 +722,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 		_uint diffuseTexPathCount = 0;
 		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
-		if (diffuseTexPathCount > 0)
+		if (indexCount > 0)
 		{
 			info.diffuseMapPath.resize(diffuseTexPathCount);
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
@@ -923,7 +925,7 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 	{
 		CSkinnedMeshBuffer::SKINNEDSKELETAL skeletal{};
 		in.read(reinterpret_cast<char*>(&skeletal.nodeId), sizeof(_uint));
-		
+
 		_uint nameLen = 0;
 		in.read(reinterpret_cast<char*>(&nameLen), sizeof(_uint));
 		if (nameLen > 0)
@@ -931,7 +933,7 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 			skeletal.name.resize(nameLen);
 			in.read(reinterpret_cast<char*>(skeletal.name.data()), sizeof(wchar_t) * nameLen);
 		}
-		
+
 		in.read(reinterpret_cast<char*>(&skeletal.transformation), sizeof(_float4x4));
 		in.read(reinterpret_cast<char*>(&skeletal.parentId), sizeof(_int));
 		in.read(reinterpret_cast<char*>(&skeletal.numMeshes), sizeof(_uint));
@@ -1013,7 +1015,7 @@ HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector
 
 	out.close();
 	CDebug::Log(L"Save complete animation clip data: " + _filePath);
-	
+
 	return S_OK;
 }
 
@@ -1092,12 +1094,6 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
 {
-	if (_infoList.size() <= 0)
-	{
-		CDebug::LogError(L"Failed create SceneMeshBundle - Empty list: " + _name);
-		return {};
-	}
-
 	_float scaleFactor = 1.f;
 
 	if (_desc)
@@ -1112,7 +1108,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 		if (_filter & FILTER_MESHBUFFER)
 		{
 			CMeshBuffer* newBuffer = CMeshBuffer::Create();
-			newBuffer->Initiailize_Custom(_infoList[i], _desc);
+			newBuffer->Initailize_Custom(_infoList[i], _desc);
 
 			newBundle.meshBuffer = newBuffer;
 		}
@@ -1136,7 +1132,65 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 	else
 		targetScene->Add_TempMeshBundle(_name, resultList);
 
-	CDebug::Log(L"Create Scene resource successfully: " + _name);
+	/*for (_uint i = 0; i < scene->mNumMeshes; ++i)
+	{
+		MeshBundle newBundle = {};
+
+		if (_filter & MESHBUFFER)
+		{
+			CMeshBuffer::MeshBufferInitiaizeInfo info = CMeshBuffer::CreateObjectMesh(scene, i, scaleFactor);
+			CMeshBuffer* mb = CMeshBuffer::Create();
+
+			mb->Initailize_Custom(info, nullptr);
+			mb->Set_ResourceName(CMeshBuffer::FindMeshName(scene, i));
+
+			newBundle.meshBuffer = mb;
+		}
+
+		if ((_filter & MATERIAL))
+		{
+			if (scene->HasMaterials())
+			{
+				aiMaterial* newMat = scene->mMaterials[i];
+
+				aiString texPath;
+				if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+				{
+					string path = texPath.C_Str();
+
+					filesystem::path fbxDir = filesystem::path(_path).parent_path();
+					filesystem::path texRelPath = filesystem::u8path(path);
+
+					filesystem::path fullPath = fbxDir / texRelPath;
+
+					wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
+
+					CTexture* newTex = CTexture::Create();
+					newTex->Initialize(lastPath, lastPath, nullptr);
+
+					newBundle.texture = newTex;
+				}
+			}
+		}
+
+		if ((_filter & TEXTURE))
+		{
+			if (scene->HasTextures())
+				aiTexture* newTex = scene->mTextures[i];
+		}
+
+		resultList.push_back(newBundle);
+	}
+
+	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
+		CSceneManager::GetInstance().Get_CrtScene();
+
+	if (!_tempScene)
+		targetScene->Add_MeshBundle(_name, resultList);
+	else
+		targetScene->Add_TempMeshBundle(_name, resultList);
+
+	CDebug::Log(L"Create Scene Scene mesh bundle successfully: " + _name);*/
 
 	return resultList;
 }

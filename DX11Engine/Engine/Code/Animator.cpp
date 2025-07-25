@@ -7,7 +7,7 @@ CAnimator::CAnimator()
 	, m_mAnimationList({})
 	, m_pCrtAnimation(nullptr)
 	, m_pNextAnimation(nullptr)
-    , m_bIsPlaying(false)
+	, m_bIsPlaying(false)
 	, m_bBlending(false)
 	, m_bLoop(false)
 	, m_fCurrentTime(0.f)
@@ -50,8 +50,8 @@ void CAnimator::Awake()
 
 void CAnimator::Update()
 {
-    if (!m_bIsPlaying || !m_pSkinnedRenderer || !m_pCrtAnimation)
-        return;
+	if (!m_bIsPlaying || !m_pSkinnedRenderer || !m_pCrtAnimation)
+		return;
 
 	m_fCurrentTime += DELTA_TIME * m_fPlaybackSpeed;
 
@@ -196,10 +196,10 @@ void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 
 	if (!m_bIsPlaying)
 		m_fCurrentTime = 0.f;
-	
+
 	m_mBlendStartPose.clear();
 	m_pCrtAnimation->Sample(m_fCurrentTime, m_mBlendStartPose);
-	
+
 	m_bIsPlaying = true;
 }
 
