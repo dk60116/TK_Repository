@@ -2,8 +2,7 @@
 #include "Player.h"
 
 CPlayer::CPlayer()
-	: m_pMeshRenderer(nullptr)
-	, m_pSkinnedMeshRenderer(nullptr)
+	: m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
 {
 	m_strName = L"Player";

@@ -79,7 +79,7 @@ HRESULT CGameScene::Initialize()
 	//CGameObject* castleObj = Add_GameObject(L"Castle");
 	//castleObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"Castle_Model (MeshBuffer)"));
 
-	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"vahMedoh_Body");
+	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
 	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VM (MeshBuffer)"));
 
 	return S_OK;
@@ -87,6 +87,7 @@ HRESULT CGameScene::Initialize()
 
 void CGameScene::Awake()
 {
+	__super::Awake();
 }
 
 void CGameScene::Update()
