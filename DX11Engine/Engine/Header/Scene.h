@@ -12,13 +12,24 @@ class ENGINE_DLL CScene abstract : public UObject
     friend class CSceneLoader;
 
 public:
+    typedef struct ObjectsRectTransfomInfo
+    {
+        _float2 anchoredPos = {};
+        _float2 widthHeight = {};
+        _float2 pivot = {};
+        _float2 anchorMin = {};
+        _float2 anchorMax = {};
+    }SCENERECTINFO;
+
     typedef struct ObjectsTransformInfo
     {
-        _uint objID;
-        wstring objName;
-        _float3 localPos;
-        _float4 localQuaternion;
-        _float3 localScale;
+        _uint objID = 0;
+        wstring objName = L"";
+        _float3 localPos = {};
+        _float4 localQuaternion = {};
+        _float3 localScale = {};
+        _bool isRect = false;
+        SCENERECTINFO rectInfo = {};
     }SCENETRANSFORMINFO;
 
 public:

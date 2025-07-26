@@ -55,9 +55,12 @@ VSOut VSMain(VSIn input)
 
 float4 PSMain(VSOut input) : SV_TARGET
 {
-    float4 resultColor = (useTexture != 0) ? gTexture.Sample(gSampler, input.uv) : gBaseColor;
+    float4 resultColor = (useTexture != 0) ? gTexture.Sample(gSampler, input.uv) * gBaseColor : gBaseColor;
     
     if (resultColor.a < 0.01f)
+        discard;
+   
+    if (input.uv.x < gFillAmount.x)
         discard;
     
     return resultColor;

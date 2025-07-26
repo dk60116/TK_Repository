@@ -37,6 +37,7 @@ public:
 	void Set_AnchoredPosition(const _float _x, const _float _y);
 	const _float Get_Width() const;
 	const _float Get_Height() const;
+	const vector2 Get_WidthHeight() const;
 	const vector2 Get_Pivot() const;
 	void Set_Pivot(vector2 _pivot);
 	void Set_Pivot(const _float _x, const _float _y);

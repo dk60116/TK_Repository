@@ -573,12 +573,21 @@ HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vecto
 		out.write(reinterpret_cast<const char*>(&info.objID), sizeof(_uint));
 
 		_uint nameSize = static_cast<_uint>(info.objName.size());
-		if (nameSize > 0)
-			out.write(reinterpret_cast<const char*>(&nameSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&nameSize), sizeof(_uint));
 		out.write(reinterpret_cast<const char*>(info.objName.data()), sizeof(wchar_t) * nameSize);
 		out.write(reinterpret_cast<const char*>(&info.localPos), sizeof(_float3));
 		out.write(reinterpret_cast<const char*>(&info.localQuaternion), sizeof(_float4));
 		out.write(reinterpret_cast<const char*>(&info.localScale), sizeof(_float3));
+
+		out.write(reinterpret_cast<const char*>(&info.isRect), sizeof(_bool));
+		if (info.isRect)
+		{
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.anchoredPos), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.widthHeight), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.pivot), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.anchorMin), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.anchorMax), sizeof(_float2));
+		}
 	}
 
 	out.close();
@@ -618,11 +627,25 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 			in.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * nameSize);
 			info.objName = move(temp);
 		}
+		else
+			info.objName = L"";
 
 		_float3 pos = {};
 		in.read(reinterpret_cast<char*>(&info.localPos), sizeof(_float3));
 		in.read(reinterpret_cast<char*>(&info.localQuaternion), sizeof(_float4));
 		in.read(reinterpret_cast<char*>(&info.localScale), sizeof(_float3));
+
+		_bool isRect = false;
+		in.read(reinterpret_cast<char*>(&info.isRect), sizeof(_bool));
+		
+		if (info.isRect)
+		{
+			in.read(reinterpret_cast<char*>(&info.rectInfo.anchoredPos), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.widthHeight), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.pivot), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.anchorMin), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.anchorMax), sizeof(_float2));
+		}
 
 		resultInfo.push_back(info);
 	}

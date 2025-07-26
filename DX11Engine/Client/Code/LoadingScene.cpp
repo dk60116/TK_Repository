@@ -4,6 +4,7 @@
 CLoadingScene::CLoadingScene()
 	: m_pMainCamera(nullptr)
 	, m_pCanvas(nullptr)
+	, m_pLogoImage(nullptr)
 {
 }
 
@@ -24,13 +25,23 @@ HRESULT CLoadingScene::Initialize()
 
 	CGameObject* bgObj = Add_GameObject(L"BG");
 	CImage* bgImage = bgObj->AddComponent<CImage>();
-	bgObj->Get_Transform()->SetParent(m_pCanvas->Get_Transform());
+	bgImage->Get_Transform()->SetParent(m_pCanvas->Get_Transform());
 
 	CGameObject* bottomObject = Add_GameObject(L"Bottom");
 	CImage* bottomImage = bottomObject->AddComponent<CImage>();
 	bottomImage->Get_Transform()->SetParent(m_pCanvas->Get_Transform());
-
 	bottomImage->SetColor(ColorValue::black());
+
+	CGameObject* backLogoObj = Add_GameObject(L"Logo_Back");
+	CImage* backLogoImage = backLogoObj->AddComponent<CImage>();
+	backLogoImage->Get_Transform()->SetParent(m_pCanvas->Get_Transform());
+	backLogoImage->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Logo (Texture)"));
+	backLogoImage->SetColor(ColorValue::gray(0.5f));
+
+	CGameObject* logoObj = Add_GameObject(L"Logo");
+	m_pLogoImage = logoObj->AddComponent<CImage>();
+	m_pLogoImage->Get_Transform()->SetParent(backLogoImage->Get_Transform());
+	m_pLogoImage->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Logo (Texture)"));
 
 	return S_OK;
 }
@@ -38,4 +49,9 @@ HRESULT CLoadingScene::Initialize()
 void CLoadingScene::Update()
 {
 	__super::Update();
+
+	if (CInput::GetInstance().GetKey_Editor(M))
+	{
+		m_pLogoImage->Get_Transform()->Set_LocalEulerAnglesZ(40.f);
+	}
 }

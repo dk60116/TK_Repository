@@ -15,5 +15,6 @@ public:
 private:
 	CCamera* m_pMainCamera;
 	CCanvas* m_pCanvas;
+	CImage* m_pLogoImage;
 };
 

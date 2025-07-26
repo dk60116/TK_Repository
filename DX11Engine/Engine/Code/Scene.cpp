@@ -331,6 +331,23 @@ vector<CScene::SCENETRANSFORMINFO> CScene::Convert_ObjectsTransformInfo() const
 		info.localQuaternion = quat;
 		info.localScale = tf->Get_LocalScale();
 
+		CRectTransform* rect = (*it)->GetComponent<CRectTransform>();
+
+		info.isRect = rect ? true : false;
+
+		if (info.isRect)
+		{
+			SCENERECTINFO rectInfo = {};
+
+			rectInfo.anchoredPos = rect->Get_AnchoredPosition();
+			rectInfo.widthHeight = rect->Get_WidthHeight();
+			rectInfo.pivot = rect->Get_Pivot();
+			rectInfo.anchorMin = rect->Get_Anchors().min;
+			rectInfo.anchorMax = rect->Get_Anchors().max;
+
+			info.rectInfo = rectInfo;
+		}
+
 		if (i > 0)
 			result.push_back(info);
 
@@ -354,9 +371,20 @@ void CScene::Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList)
 			if ((*it1).objID == obj->m_iUniqueID)
 			{
 				CTransform* tf = obj->Get_Transform();
-				tf->Set_LocalPosition((*it1).localPos);
-				tf->Set_LocalScale((*it1).localScale);
+
+				if (!(*it1).isRect)
+					tf->Set_LocalScale((*it1).localScale);
+				else
+				{
+					CRectTransform* rect = obj->GetComponent<CRectTransform>();
+					rect->Set_Pivot((*it1).rectInfo.pivot);
+					rect->Set_AnchorsMin((*it1).rectInfo.anchorMin);
+					rect->Set_AnchorsMax((*it1).rectInfo.anchorMax);
+					rect->Set_WidthHeight((*it1).rectInfo.widthHeight);
+				}
+
 				tf->Set_LocalQuaternion((*it1).localQuaternion);
+				tf->Set_LocalPosition((*it1).localPos);
 			}
 		}
 	}

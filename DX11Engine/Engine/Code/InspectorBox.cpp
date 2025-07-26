@@ -87,7 +87,7 @@ void CInspectorBox::Render()
         ImGui::SameLine();
         ImGui::SetCursorPosY(baseY + 3.f);
         ImGui::SetNextItemWidth(140.0f);
-        string label = "##ObjName" + std::to_string(selectedObj->Get_UniqueID());
+        string label = "##ObjName" + to_string(selectedObj->Get_UniqueID());
         if (ImGui::InputText(label.c_str(), &s_EditName,
             ImGuiInputTextFlags_AutoSelectAll |
             ImGuiInputTextFlags_EnterReturnsTrue))
@@ -423,5 +423,48 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
 
             ImGui::TreePop();
         }
+
+        vector3 rotation = rectTransform->Get_LocalEulerAngles();
+        ImGui::Text("Rotation");
+        ImGui::SameLine();
+
+        // X
+        _float prevX = m_fRXDrag;
+        ImGui::TextUnformatted("X");
+        ImGui::SameLine();
+        ImGui::PushItemWidth(boxWidth);
+        if (ImGui::InputFloat("##X", &rotation.x, 0.f))
+        {
+            rectTransform->Set_LocalEulerAngles(rotation);
+        }
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine();
+        // Y
+        _float prevY = m_fRYDrag;
+        ImGui::TextUnformatted("Y");
+        ImGui::SameLine();
+        ImGui::PushItemWidth(boxWidth);
+        if (ImGui::InputFloat("##Y", &rotation.y, 0.f))
+        {
+            rectTransform->Set_LocalEulerAngles(rotation);
+        }
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine();
+        // Z
+        _float prevZ = m_fRZDrag;
+        ImGui::TextUnformatted("Z");
+        ImGui::SameLine();
+        ImGui::PushItemWidth(boxWidth);
+        if (ImGui::InputFloat("##Z", &rotation.z, 0.f))
+        {
+            rectTransform->Set_LocalEulerAngles(rotation);
+        }
+        ImGui::PopItemWidth();
+
+        prevX = 0.f;
+        prevY = 0.f;
+        prevZ = 0.f;
     }
 }

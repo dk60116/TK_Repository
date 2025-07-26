@@ -289,7 +289,7 @@ void CRectTransform::Set_AnchoredPosition(const vector2 _pos)
         if (xA != 0 && yA != 0)
         {
             m_vPosition.x = (m_vAnchoredPosition.x - xP - xS) / xA;
-            m_vPosition.y = (m_vAnchoredPosition.y - xP - yS) / yA;
+            m_vPosition.y = (m_vAnchoredPosition.y - yP - yS) / yA;
         }
         else
         {
@@ -314,6 +314,11 @@ const _float CRectTransform::Get_Height() const
     return m_fHeight;
 }
 
+const vector2 CRectTransform::Get_WidthHeight() const
+{
+    return vector2(m_fWidth, m_fHeight);
+}
+
 const vector2 CRectTransform::Get_Pivot() const
 {
     return m_vPivot;
@@ -330,6 +335,16 @@ void CRectTransform::Set_Pivot(vector2 _pivot)
 void CRectTransform::Set_Pivot(const _float _x, const _float _y)
 {
     Set_Pivot(vector2(_x, _y));
+}
+
+void CRectTransform::Set_PivotX(_float _value)
+{
+    Set_Pivot(_value, m_vPivot.y);
+}
+
+void CRectTransform::Set_PivotY(_float _value)
+{
+    Set_Pivot(m_vPivot.x, _value);
 }
 
 const CRectTransform::Anchors& CRectTransform::Get_Anchors()
