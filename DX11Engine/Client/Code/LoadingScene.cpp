@@ -52,6 +52,8 @@ void CLoadingScene::Awake()
 {
 	const wstring next = CGameManager::GetInstance().Get_NextScene();
 
+	m_fLoadGauge = 0.f;
+
 	if (next != L"")
 	{
 		CSceneManager::GetInstance().LoadScene(CGameManager::GetInstance().Get_NextScene());
@@ -66,5 +68,6 @@ void CLoadingScene::Update()
 	m_fLoadGauge = CSceneLoader::GetInstance().Get_LoadingProgress();
 
 	m_fLoadGauge = std::clamp(m_fLoadGauge, 0.f, 1.f);
+
 	m_pLogoImage->SetFillAmount(m_fLoadGauge);
 }

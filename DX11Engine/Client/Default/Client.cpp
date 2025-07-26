@@ -5,6 +5,7 @@
 #include "Client.h"
 #include "MainScene.h"
 #include "LoadingScene.h"
+#include "GameScene.h"
 
 #define MAX_LOADSTRING 100
 
@@ -142,7 +143,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    CLoadingScene* loadingScene = new CLoadingScene();
    CSceneManager::GetInstance().CreateScene(loadingScene, L"Loading Scene");
 
-   CSceneManager::GetInstance().LoadScene(L"Loading Scene");
+   CGameScene* gameScene = new CGameScene();
+   CSceneManager::GetInstance().CreateScene(gameScene, L"Game Scene");
+
+   CSceneManager::GetInstance().LoadScene(L"Main Scene");
 
    return TRUE;
 }

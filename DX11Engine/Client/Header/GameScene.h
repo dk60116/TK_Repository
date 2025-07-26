@@ -2,19 +2,21 @@
 
 #include "epch.h"
 
-class CMainScene final : public CScene
+class CGameScene final : public CScene
 {
 public:
-	CMainScene();
-	~CMainScene();
+	CGameScene();
+	~CGameScene();
 
 public:
 	HRESULT Initialize() override;
+	void Awake() override;
 	void Update() override;
 
 private:
 	CCamera* m_pMainCamera;
+	CLight* m_pDirLight;
 	CCanvas* m_pCanvas;
-	CImage* m_pLogoImage;
+	class CPlayer* m_pPlayer;
 };
 

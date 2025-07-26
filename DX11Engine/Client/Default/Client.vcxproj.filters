@@ -45,6 +45,9 @@
     <ClInclude Include="..\Header\GameManager.h">
       <Filter>Scripts\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\GameScene.h">
+      <Filter>Scripts\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\GameManager.cpp">
       <Filter>Scripts\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\GameScene.cpp">
+      <Filter>Scripts\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

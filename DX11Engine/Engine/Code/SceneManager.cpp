@@ -49,6 +49,19 @@ CScene* CSceneManager::CreateScene(CScene* _newScene, wstring _name)
 
 	newScene->AddRef();
 
+	string filePath = "../Assets/Scenes/" + CEngineString::WStringToString(_name) + ".scene";
+
+	if (!CResources::FileExists(filePath))
+	{
+		ofstream outFile(filePath);
+
+		if (outFile.is_open())
+		{
+			outFile << "SceneName : " << CEngineString::WStringToString(_name);
+			outFile.close();
+		}
+	}
+
 	return newScene;
 }
 
@@ -111,8 +124,6 @@ void CSceneManager::LoadScene(CScene* _scene)
 
 void CSceneManager::LoadComplete()
 {
-	Sleep(100);
-
 	m_pCrtScene = nullptr;
 	m_pCrtScene = m_pTempScene;
 	m_pTempScene = nullptr;

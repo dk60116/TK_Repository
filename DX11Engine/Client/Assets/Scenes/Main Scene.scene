@@ -1,12 +1,3 @@
 Scene name : Main Scene
 Main_BG : MainMenu/Main_Backgrouond.png : [Texture]
 Main_Logo : MainMenu/Zelda_Logo.png : [Texture]
-Link_Model : Player/Link.fbx : [Skinned Mesh]
-Link_Texture : Player/Link_Texture.png : [Texture]
-Link_Idle : Player/Link_Idle.fbx : [Animation Clip]
-Link_Run : Player/Link_Run.fbx : [Animation Clip]
-Temple_Model : Map/Temple.fbx : [Mesh] [Material]
-Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]
-//Sample_Terrain : Terrain : [1, 300, 300, 2.0, 50.0, Map/TerrainHeight.png]
-Terrain_MainTex : Map/Grass.png : [Texture]
-VM : Map/VM/VahMedoh_Body.fbx : [Mesh] [Material]

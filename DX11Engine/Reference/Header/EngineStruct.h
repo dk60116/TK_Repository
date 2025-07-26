@@ -1348,6 +1348,11 @@ namespace Engine
     };
 #pragma endregion
 
+    inline _float Lerp(_float a, _float b, _float t)
+    {
+        return a + (b - a) * t;
+    }
+
 #pragma region FBXResources
     enum MeshBundleHex { FILTER_MESHBUFFER = 0x000001, FILTER_MATERIAL = 0x000010, FILTER_TEXTURE = 0x000100, FILTER_BONE = 0x001000 };
 
