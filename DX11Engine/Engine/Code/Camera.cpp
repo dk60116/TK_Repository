@@ -179,11 +179,17 @@ void CCamera::RenderUI()
 		0.f, 1.f
 	);
 
+	if (m_vUIList.size() <= 0)
+		return;
+
 	for (TRAVERSAL_ITER(m_vUIList, it))
 	{
 		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
 		{
-			(*it)->Bind_Camrea(inverseMat, projMat);
+			if (auto img = dynamic_cast<CImage*>(*it))
+				img->Bind_UIMaterial();
+			(*it)->Bind_Matrix();
+			(*it)->Bind_Camera(inverseMat, projMat);
 			(*it)->Bind_Mesh();
 		}
 	}

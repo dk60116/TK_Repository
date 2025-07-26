@@ -53,6 +53,8 @@ public:
 
 	const _float GetFillAmount() const;
 	void SetFillAmount(_float _fill);
+
+	void Bind_UIMaterial();
 	
 public:
 	void SetTexture(CTexture* _texture);

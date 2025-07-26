@@ -120,7 +120,10 @@ void CMainScene::Update()
 	__super::Update();
 
 	if (CInput::GetInstance().GetKeyDown(Alpha1))
-		CSceneManager::GetInstance().LoadScene(L"Main Scene");
+	{
+		CGameManager::GetInstance().Set_NexScene(L"Main Scene");
+		CSceneManager::GetInstance().LoadScene(L"Loading Scene");
+	}
 
 	_float fill = m_pImage2->GetFillAmount();
 

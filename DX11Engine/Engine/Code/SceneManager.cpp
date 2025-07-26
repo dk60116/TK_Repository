@@ -111,6 +111,8 @@ void CSceneManager::LoadScene(CScene* _scene)
 
 void CSceneManager::LoadComplete()
 {
+	Sleep(100);
+
 	m_pCrtScene = nullptr;
 	m_pCrtScene = m_pTempScene;
 	m_pTempScene = nullptr;

@@ -9,6 +9,8 @@ CSceneLoader::CSceneLoader()
 	, m_mReadyFiles_Format({})
 	, m_bRunning(false)
 	, m_bLoading(true)
+	, m_iTootalFile(0)
+	, m_iLoadedFile(0)
 {
 }
 
@@ -50,6 +52,11 @@ const _bool CSceneLoader::Is_Loading() const
 	return m_bLoading;
 }
 
+const _float CSceneLoader::Get_LoadingProgress() const
+{
+	return static_cast<float>(m_iLoadedFile) / m_iTootalFile;
+}
+
 void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList)
 {
 	EnterCriticalSection(&m_pCriticalSection);
@@ -57,6 +64,9 @@ void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _file
 	m_mReadyFiles_Name = _nameList;
 	m_mReadyFiles_Path = _fileList;
 	m_mReadyFiles_Format = _formatList;
+
+	m_iTootalFile = static_cast<_uint>(_fileList.size());
+	m_iLoadedFile = 0;
 
 	m_bLoading = true;
 
@@ -156,6 +166,8 @@ void CSceneLoader::ThreadLoadingLoop()
 				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
 				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
 			}
+
+			++m_iLoadedFile;
 		}
 		else
 		{

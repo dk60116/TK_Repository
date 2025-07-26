@@ -60,7 +60,7 @@ float4 PSMain(VSOut input) : SV_TARGET
     if (resultColor.a < 0.01f)
         discard;
    
-    if (input.uv.x < gFillAmount.x)
+    if (input.uv.x >= gFillAmount)
         discard;
     
     return resultColor;

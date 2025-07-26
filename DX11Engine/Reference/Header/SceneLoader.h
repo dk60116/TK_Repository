@@ -17,6 +17,7 @@ public:
 
 public:
 	const _bool Is_Loading() const;
+	const _float Get_LoadingProgress() const;
 
 public:
 	void StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList);
@@ -36,6 +37,9 @@ private:
 
 	_bool m_bRunning;
 	_bool m_bLoading;
+
+	_uint m_iTootalFile;
+	_uint m_iLoadedFile;
 };
 
 NS_END

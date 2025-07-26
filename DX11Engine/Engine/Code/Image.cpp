@@ -3,6 +3,9 @@
 
 CImage::CImage()
 	: m_pTexture(nullptr)
+	, m_pImageBuffer(nullptr)
+	, m_eFillMethod(FillMethod::None)
+	, m_fFillAmount(1.f)
 {
 	m_strName = L"Image";
 }
@@ -67,9 +70,6 @@ void CImage::Render_Editor()
 
 void CImage::Render()
 {
-	ImageCB imageValue = { _float4(m_fFillAmount, 0, 0, 0) };
-	m_pContext->UpdateSubresource(m_pImageBuffer, 0, nullptr, &imageValue, 0, 0);
-	m_pContext->PSSetConstantBuffers(3, 1, &m_pImageBuffer);
 }
 
 void CImage::OnDestroy()
@@ -102,6 +102,13 @@ void CImage::SetFillAmount(_float _fill)
 	_fill = clamp(_fill, 0.f, 1.f);
 
 	m_fFillAmount = _fill;
+}
+
+void CImage::Bind_UIMaterial()
+{
+	ImageCB imageValue = { _float4(m_fFillAmount, 0, 0, 0) };
+	m_pContext->UpdateSubresource(m_pImageBuffer, 0, nullptr, &imageValue, 0, 0);
+	m_pContext->PSSetConstantBuffers(3, 1, &m_pImageBuffer);
 }
 
 void CImage::SetTexture(CTexture* _texture)

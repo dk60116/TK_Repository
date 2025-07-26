@@ -5,6 +5,7 @@ CLoadingScene::CLoadingScene()
 	: m_pMainCamera(nullptr)
 	, m_pCanvas(nullptr)
 	, m_pLogoImage(nullptr)
+	, m_fLoadGauge(0.f)
 {
 }
 
@@ -42,16 +43,28 @@ HRESULT CLoadingScene::Initialize()
 	m_pLogoImage = logoObj->AddComponent<CImage>();
 	m_pLogoImage->Get_Transform()->SetParent(backLogoImage->Get_Transform());
 	m_pLogoImage->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Logo (Texture)"));
+	m_pLogoImage->Set_FillMethod(CImage::FillMethod::Horizontal);
 
 	return S_OK;
+}
+
+void CLoadingScene::Awake()
+{
+	const wstring next = CGameManager::GetInstance().Get_NextScene();
+
+	if (next != L"")
+	{
+		CSceneManager::GetInstance().LoadScene(CGameManager::GetInstance().Get_NextScene());
+		CGameManager::GetInstance().Set_NexScene(L"");
+	}
 }
 
 void CLoadingScene::Update()
 {
 	__super::Update();
 
-	if (CInput::GetInstance().GetKey_Editor(M))
-	{
-		m_pLogoImage->Get_Transform()->Set_LocalEulerAnglesZ(40.f);
-	}
+	m_fLoadGauge = CSceneLoader::GetInstance().Get_LoadingProgress();
+
+	m_fLoadGauge = std::clamp(m_fLoadGauge, 0.f, 1.f);
+	m_pLogoImage->SetFillAmount(m_fLoadGauge);
 }

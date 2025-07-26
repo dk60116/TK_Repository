@@ -99,9 +99,13 @@ void CUI::Bind_Mesh()
 	m_pRectMesh->Render();
 }
 
-void CUI::Bind_Camrea(const _fmatrix _view, const _cmatrix _projection)
+void CUI::Bind_Matrix()
 {
 	m_pMaterial->Bind_Matrix(Get_Transform()->Get_WorldMatrix());
+}
+
+void CUI::Bind_Camera(const _fmatrix _view, const _cmatrix _projection)
+{
 	m_pMaterial->Bind_Camera(_float3(), _view, _projection);
 }
 

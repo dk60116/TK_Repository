@@ -16,6 +16,9 @@
     <Filter Include="Scripts\Scene">
       <UniqueIdentifier>{f86f4b3c-77f8-417b-a472-cd7c4aae6129}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Managers">
+      <UniqueIdentifier>{7e77c92c-b5f8-4953-8818-db81040e9151}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -39,6 +42,9 @@
     <ClInclude Include="..\Header\LoadingScene.h">
       <Filter>Scripts\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\GameManager.h">
+      <Filter>Scripts\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -55,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\LoadingScene.cpp">
       <Filter>Scripts\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\GameManager.cpp">
+      <Filter>Scripts\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
