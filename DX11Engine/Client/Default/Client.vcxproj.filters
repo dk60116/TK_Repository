@@ -48,6 +48,9 @@
     <ClInclude Include="..\Header\GameScene.h">
       <Filter>Scripts\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\PlayerCamera.h">
+      <Filter>Scripts\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -70,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\GameScene.cpp">
       <Filter>Scripts\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerCamera.cpp">
+      <Filter>Scripts\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

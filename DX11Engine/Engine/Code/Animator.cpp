@@ -74,7 +74,7 @@ void CAnimator::Update()
 
 		// 현재/다음 애니메이션 각각 샘플링
 		unordered_map<wstring, CAnimationClip::BoneTransform> sampledNext;
-		m_pNextAnimation->Sample(m_fCurrentTime, sampledNext);
+		m_pNextAnimation->Sample(0.f, sampledNext);
 
 		const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
 		for (uint32_t i = 0; i < boneCount; ++i)
@@ -210,11 +210,8 @@ void CAnimator::Pause()
 
 void CAnimator::Stop()
 {
-	m_fCurrentTime = 0.f;
-
-	Update();
-
 	m_bIsPlaying = false;
+	m_fCurrentTime = 0.f;
 }
 
 void CAnimator::SetLoop(const _bool _loop)

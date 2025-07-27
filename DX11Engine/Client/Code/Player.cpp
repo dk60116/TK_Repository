@@ -83,10 +83,10 @@ void CPlayer::Update()
 	if (CInput::GetInstance().GetKeyDown_Editor(V))
 	{
 		if (m_pAnimator)
-			m_pAnimator->Play(L"AttackCombo");
+			m_pAnimator->Play(L"AttackCombo", 0.1f);
 	}
 
-	if (CInput::GetInstance().GetKeyDown(X))
+	if (CInput::GetInstance().GetKeyDown_Editor(X))
 	{
 		if (m_pAnimator)
 			m_pAnimator->Stop();
