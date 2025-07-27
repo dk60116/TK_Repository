@@ -29,7 +29,9 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
 	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Run (Animation)"));
-	m_pAnimator->Add_Animation(L"Link_SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
+	m_pAnimator->Add_Animation(L"CombatIdle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatIdle (Animation)"));
+	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
+	m_pAnimator->Add_Animation(L"AttackCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 
 	m_pAnimator->SetLoop(true);
 
@@ -66,10 +68,22 @@ void CPlayer::Update()
 			m_pAnimator->Play(L"Run", 0.1f);
 	}
 
+	if (CInput::GetInstance().GetKeyDown_Editor(C))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"CombatIdle", 0.1f);
+	}
+
 	if (CInput::GetInstance().GetKeyDown_Editor(B))
 	{
 		if (m_pAnimator)
 			m_pAnimator->Play(L"Link_SwordAttack1", 0.1f);
+	}
+
+	if (CInput::GetInstance().GetKeyDown_Editor(V))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"AttackCombo");
 	}
 
 	if (CInput::GetInstance().GetKeyDown(X))
