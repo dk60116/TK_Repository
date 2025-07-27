@@ -19,6 +19,12 @@
     <Filter Include="Scripts\Managers">
       <UniqueIdentifier>{7e77c92c-b5f8-4953-8818-db81040e9151}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Weapons">
+      <UniqueIdentifier>{785d7feb-a664-4502-9e6e-d3e416fa3a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Weapons\Swords">
+      <UniqueIdentifier>{4875964f-b372-481b-85e5-a697977c75c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -51,6 +57,12 @@
     <ClInclude Include="..\Header\PlayerCamera.h">
       <Filter>Scripts\Object</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Weapon.h">
+      <Filter>Scripts\Object\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\WoodenSword.h">
+      <Filter>Scripts\Object\Weapons\Swords</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -76,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\PlayerCamera.cpp">
       <Filter>Scripts\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Weapon.cpp">
+      <Filter>Scripts\Object\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\WoodenSword.cpp">
+      <Filter>Scripts\Object\Weapons\Swords</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

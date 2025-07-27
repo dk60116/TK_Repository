@@ -148,6 +148,8 @@
     <ClInclude Include="..\Header\MainScene.h" />
     <ClInclude Include="..\Header\Player.h" />
     <ClInclude Include="..\Header\PlayerCamera.h" />
+    <ClInclude Include="..\Header\Weapon.h" />
+    <ClInclude Include="..\Header\WoodenSword.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="cpch.h" />
     <ClInclude Include="Resource.h" />
@@ -160,6 +162,8 @@
     <ClCompile Include="..\Code\MainScene.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
+    <ClCompile Include="..\Code\Weapon.cpp" />
+    <ClCompile Include="..\Code\WoodenSword.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="cpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -402,7 +402,11 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 
 	CTransform* rootBone = nullptr;
 	for (auto& b : _bonesInfo)
-		if (b.parentId == -1) { rootBone = nameMap[b.name]; break; }
+		if (b.parentId == -1) 
+		{ 
+			rootBone = nameMap[b.name];
+			break; 
+		}
 
 	for (auto* r : renderers)
 	{
@@ -412,7 +416,8 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 		{
 			const wstring& bn = r->Get_SkinnedMeshBuffer()->Get_BoneName(i);
 			auto it = nameMap.find(bn);
-			if (it != nameMap.end()) bones[i] = it->second;
+			if (it != nameMap.end())
+				bones[i] = it->second;
 		}
 
 		r->Set_Bones(bones, rootBone);

@@ -20,5 +20,7 @@ public:
 private:
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
 	CAnimator* m_pAnimator;
+
+	class CWeapon* m_pEquipWeapon;
 };
 

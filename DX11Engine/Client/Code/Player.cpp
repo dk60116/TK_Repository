@@ -4,6 +4,7 @@
 CPlayer::CPlayer()
 	: m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
+	, m_pEquipWeapon(nullptr)
 {
 	m_strName = L"Player";
 }
@@ -34,6 +35,11 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"AttackCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 
 	m_pAnimator->SetLoop(true);
+
+	CGameObject* swordObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Sword");
+	swordObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"WoodenSword (MeshBuffer)"));
+
+	swordObj->Get_Transform()->SetParent(Get_Transform()->Find_ChildRecursive(L"RightHand"));
 
 	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
 	//Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
