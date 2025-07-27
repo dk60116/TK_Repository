@@ -29,13 +29,14 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
 	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Run (Animation)"));
+	m_pAnimator->Add_Animation(L"Link_SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
 
 	m_pAnimator->SetLoop(true);
 
-	Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
-	Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
-	Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
-	Get_Transform()->Get_Child(1)->Set_LocalEulerAnglesY(180.f);
+	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
+	//Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
+	//Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
+	//Get_Transform()->Get_Child(1)->Set_LocalEulerAnglesY(180.f);
 
 	//m_pAnimator->Set_PlaybackSpeed(0.1f);
 	//m_pAnimator->Play(L"Run");
@@ -63,6 +64,12 @@ void CPlayer::Update()
 	{
 		if (m_pAnimator)
 			m_pAnimator->Play(L"Run", 0.1f);
+	}
+
+	if (CInput::GetInstance().GetKeyDown_Editor(B))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"Link_SwordAttack1", 0.1f);
 	}
 
 	if (CInput::GetInstance().GetKeyDown(X))

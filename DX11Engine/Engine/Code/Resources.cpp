@@ -21,6 +21,17 @@ CResources& CResources::GetInstance()
 
 HRESULT CResources::Initialize()
 {
+	if (!fs::exists("BinaryAssets"))
+		fs::create_directories("BinaryAssets");
+	if (!fs::exists("BinaryAssets/SceneData"))
+		fs::create_directories("BinaryAssets/Scene");
+	if (!fs::exists("BinaryAssets/MeshData"))
+		fs::create_directories("BinaryAssets/MeshData");
+	if (!fs::create_directory("BinaryAssets/SkinnedMeshData"))
+		fs::create_directories("BinaryAssets/SkinnedMeshData");
+	if (!fs::exists("BinaryAssets/AnimationClipData"))
+		fs::create_directories("BinaryAssets/AnimationClipData");
+
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Line (Mesh Buffer)", L"Line"));
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Rect (Mesh Buffer)", L"Rect"));
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"LineRect (Mesh Buffer)", L"LineRect"));
@@ -221,7 +232,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 
 	wstring saveName = fileFolder + L"_" + pureName;
 
-	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/" + saveName + L".meshdata", bufferInfoList)))
+	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/MeshData/" + saveName + L".meshdata", bufferInfoList)))
 	{
 		CDebug::LogError(L"Failed ceate mesh Data - can not save: " + _filePath);
 		return E_FAIL;
@@ -423,7 +434,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 
 	wstring saveName = fileFolder + L"_" + pureName;
 
-	if (FAILED(SaveSkinnedBufferInfos(L"BinaryAssets/" + saveName + L".skinneddata", bufferInfoList, skeletalHierachy)))
+	if (FAILED(SaveSkinnedBufferInfos(L"BinaryAssets/SkinnedMeshData/" + saveName + L".skinneddata", bufferInfoList, skeletalHierachy)))
 	{
 		CDebug::LogError(L"Failed ceate skinned mesh Data - can not save: " + _filePath);
 		return E_FAIL;
@@ -540,7 +551,7 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 
 	wstring saveName = fileFolder + L"_" + pureName;
 
-	if (FAILED(SaveAnimationClipBufferInfos(L"BinaryAssets/" + saveName + L".animdata", animationInfoList)))
+	if (FAILED(SaveAnimationClipBufferInfos(L"BinaryAssets/AnimationClipData/" + saveName + L".animdata", animationInfoList)))
 	{
 		CDebug::LogError(L"Failed ceate animation clip Data - can not save: " + _filePath);
 		return E_FAIL;
@@ -603,7 +614,7 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 
 	vector<CScene::ObjectsTransformInfo> resultInfo = {};
 
-	ifstream in(L"BinaryAssets/Scene/" + _binFileName, ios::binary);
+	ifstream in(L"BinaryAssets/SceneData/" + _binFileName, ios::binary);
 
 	if (!in.is_open())
 		return {};
@@ -705,10 +716,13 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 	using namespace std;
 
-	ifstream in(L"BinaryAssets/" + _binFileName, ios::binary);
+	ifstream in(L"BinaryAssets/MeshData/" + _binFileName, ios::binary);
 
 	if (!in.is_open())
+	{
+		CDebug::LogError(L"ReadMeshBufferInfos failed - can not open: " + _binFileName);
 		return {};
+	}
 
 	_uint count = 0;
 	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
@@ -745,7 +759,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 		_uint diffuseTexPathCount = 0;
 		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
-		if (indexCount > 0)
+		if (diffuseTexPathCount > 0)
 		{
 			info.diffuseMapPath.resize(diffuseTexPathCount);
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
@@ -858,10 +872,13 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 
 	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
 
-	ifstream in(L"BinaryAssets/" + _binFileName, ios::binary);
+	ifstream in(L"BinaryAssets/SkinnedMeshData/" + _binFileName, ios::binary);
 
 	if (!in.is_open())
+	{
+		CDebug::LogError(L"ReadSkinnedBufferInfos failed - can not open: " + _binFileName);
 		return {};
+	}
 
 	_uint count = 0;
 	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
@@ -1047,10 +1064,10 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 	using namespace std;
 	vector<CAnimationClip::AnimationClipInitInfo> clips;
 
-	ifstream in(L"BinaryAssets/" + _binFileName, ios::binary);
+	ifstream in(L"BinaryAssets/AnimationClipData/" + _binFileName, ios::binary);
 	if (!in.is_open())
 	{
-		CDebug::LogError(L"Failed to open anim file: " + _binFileName);
+		CDebug::LogError(L"ReadAnimationClipBufferInfos failed - can not open: " + _binFileName);
 		return {};
 	}
 	_uint clipCount = 0;

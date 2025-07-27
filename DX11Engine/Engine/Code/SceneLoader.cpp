@@ -130,6 +130,10 @@ void CSceneLoader::ThreadLoadingLoop()
 				{
 					_int filter = FILTER_MESHBUFFER;
 
+					if (CEngineString::Contains(wFormat, L"[Material]"))
+						filter |= FILTER_MATERIAL;
+					if (CEngineString::Contains(wFormat, L"[Texture]"))
+						filter |= FILTER_TEXTURE;
 					if (CEngineString::Contains(wFormat, L"[Bone]"))
 						filter |= FILTER_BONE;
 
@@ -156,6 +160,7 @@ void CSceneLoader::ThreadLoadingLoop()
 					auto animaitonInfoList = CResources::GetInstance().ReadAnimationClipBufferInfos(animationdataPath);
 
 					CAnimationClip* newClip = CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true);
+					CResources::LoadResourceComplete_Scene(newClip);
 
 					if (animaitonInfoList.size() > 0)
 						newClip->Initiailize_Custom(animaitonInfoList[0], nullptr);

@@ -318,6 +318,12 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 {
 	CTransform* parentTransform = Get_Transform();
 
+	if (_meshInfos.empty())
+	{
+		CDebug::LogError(L"Failed create Mesh hierachy - empty mesh info: " + parentTransform->Get_GameObject()->Get_ObjectNameID());
+		return;
+	}
+
 	for (_uint i = 0; i < _meshInfos.size(); ++i)
 	{
 		if (!_meshInfos[i].meshBuffer)
@@ -340,10 +346,14 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
 {
-	if (_skinnedInfos.empty())
-		return;
-
 	CTransform* rootTf = Get_Transform();
+
+	if (_skinnedInfos.empty())
+	{
+		CDebug::LogError(L"Failed create Mesh hierachy - empty skinned info: " + rootTf->Get_GameObject()->Get_ObjectNameID());
+		return;
+	}
+
 	vector<CSkinnedMeshRenderer*> renderers;
 	renderers.reserve(_skinnedInfos.size());
 

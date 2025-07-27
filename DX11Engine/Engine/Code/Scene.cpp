@@ -118,7 +118,7 @@ void CScene::Update_Editor()
 	{
 		if (CInput::GetInstance().GetKeyDown_Editor(S))
 		{
-			wstring path = L"BinaryAssets/Scene/" + m_strSceneName + L".scenedata";
+			wstring path = L"BinaryAssets/SceneData/" + m_strSceneName + L".scenedata";
 			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());
 		}
 	}
