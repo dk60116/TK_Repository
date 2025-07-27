@@ -114,40 +114,44 @@ void CScene::Update_Editor()
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		(*it)->Update_Editor();
 
+	CPhysics::RAYCASTHIT firstHit = {};
+
+	if (CInput::GetInstance().GetMouseButtonDown_Editor(0))
+	{
+		const vector2Int point = CInput::GetInstance().GetMousePos_Editor();
+		CPhysics::Ray ray = m_pEditorCamera->ScreenPointToRay_Editor(point);
+
+		auto hits = CPhysics::GetInstance().Raycast(ray);
+
+		if (hits.size() <= 0)
+			return;
+
+		firstHit = hits[0];
+
+		CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
+
+		CDebug::LogError("Ray Origin & Dir");
+		CDebug::LogError(ray.origin);
+		CDebug::LogError(ray.dir);
+		CDebug::LogError("HitPos");
+		CDebug::LogError(firstHit.hitPos);
+		CDebug::LogError(firstHit.object->Get_ObjectName());
+
+		if (CInput::GetInstance().GetKey_Editor(CONTROL))
+		{
+			CGameObject* newObj = Add_GameObject(L"AddObj");
+			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
+			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
+		}
+	}
+
 	if (CInput::GetInstance().GetKey_Editor(CONTROL))
 	{
 		if (CInput::GetInstance().GetKeyDown_Editor(S))
 		{
 			wstring path = L"BinaryAssets/SceneData/" + m_strSceneName + L".scenedata";
 			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());
-		}
-	}
-
-	if (CInput::GetInstance().GetKey_Editor(CONTROL))
-	{
-		if (CInput::GetInstance().GetMouseButtonDown_Editor(0))
-		{
-			const vector2Int point = CInput::GetInstance().GetMousePos_Editor();
-			CPhysics::Ray ray = m_pEditorCamera->ScreenPointToRay_Editor(point);
-
-			auto hits = CPhysics::GetInstance().Raycast(ray);
-
-			if (hits.size() <= 0)
-				return;
-
-			auto firstHit = hits[0];
-
-			CDebug::LogError("Ray Origin & Dir");
-			CDebug::LogError(ray.origin);
-			CDebug::LogError(ray.dir);
-			CDebug::LogError("HitPos");
-			CDebug::LogError(firstHit.hitPos);
-			CDebug::LogError(firstHit.object->Get_ObjectName());
-
-			CGameObject* newObj = Add_GameObject(L"AddObj");
-			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
-			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
-			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
 		}
 	}
 }
