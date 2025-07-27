@@ -357,7 +357,8 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 		auto* r = g->AddComponent<CSkinnedMeshRenderer>();
 		r->Set_MeshBuffer(si.meshBuffer);
 		r->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
-		if (si.texture) r->Get_Material()->Set_Texture(si.texture, 0);
+		if (si.texture) 
+			r->Get_Material()->Set_Texture(si.texture, 0);
 		renderers.push_back(r);
 	}
 
