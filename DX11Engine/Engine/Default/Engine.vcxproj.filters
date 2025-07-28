@@ -103,9 +103,6 @@
     <ClInclude Include="..\Header\Renderer.h">
       <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\MeshRenderer.h">
-      <Filter>Components\Render\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h">
       <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
@@ -159,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\ProjectBox.h">
       <Filter>Editor\EditorBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MeshRenderer.h">
+      <Filter>Components\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

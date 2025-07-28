@@ -587,6 +587,11 @@ CGameObject* CScene::Add_GameObject(wstring _name)
 	return newObj;
 }
 
+list<CGameObject*>& CScene::Get_ObjectList()
+{
+	return m_lObjectList;
+}
+
 vector<CGameObject*> CScene::Get_RootObjects()
 {
 	vector<CGameObject*> result = {};

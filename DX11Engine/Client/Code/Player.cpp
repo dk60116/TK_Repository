@@ -17,6 +17,9 @@ CPlayer::CPlayer()
 	, m_bLockOnMode(false)
 	, m_bIsCombatMode(false)
 	, m_bPrevLockOnMode(false)
+	, m_bIsAttack(false)
+	, m_bIsPrevAttack(false)
+	, m_bSwordActionDuring(false)
 {
 	m_strName = L"Player";
 }
@@ -50,7 +53,7 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"CombatRun", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatRun (Animation)"));
 	m_pAnimator->Add_Animation(L"CombatIdle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatIdle (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
-	m_pAnimator->Add_Animation(L"AttackCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
+	m_pAnimator->Add_Animation(L"SwordCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 
 	m_pAnimator->SetLoop(true);
 
@@ -104,10 +107,10 @@ void CPlayer::Update()
 			m_pAnimator->Play(L"Link_SwordAttack1", 0.1f);
 	}
 
-	if (CInput::GetInstance().GetKeyDown_Editor(V))
+	if (CInput::GetInstance().GetKeyDown(V))
 	{
 		if (m_pAnimator)
-			m_pAnimator->Play(L"AttackCombo", 0.1f);
+			m_pAnimator->Play(L"SwordCombo", 0.1f);
 	}
 
 	if (CInput::GetInstance().GetKeyDown_Editor(H))
@@ -144,6 +147,14 @@ void CPlayer::OnDestroy()
 void CPlayer::PlayerControle()
 {
 	m_bLockOnMode = CInput::GetInstance().GetKey(SHIFT);
+	m_bIsAttack = CInput::GetInstance().GetMouseButtonDown(0);
+
+	if (m_bIsAttack && !m_bIsPrevAttack)
+	{
+		PlaySwordAnimation(0);
+		m_bSwordActionDuring = true;
+		return;
+	}
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
 	{
@@ -151,7 +162,7 @@ void CPlayer::PlayerControle()
 			PlayIdleAnimation();
 		if (m_vMoveDirection.z > 0)
 			PlayRunAnimation();
-		if (m_vMoveDirection.z < 0)
+		else if (m_vMoveDirection.z < 0)
 			PlayBackWalkAnimation();
 	}
 
@@ -167,16 +178,15 @@ void CPlayer::PlayerControle()
 		m_vMoveDirection += vector3::back();
 	}
 
-	if ((m_vMoveDirection != m_vPrevMoveDirectoin && m_vMoveDirection != vector3::zero()))
+	if ((m_vMoveDirection.z != m_vPrevMoveDirectoin.z && m_vMoveDirection != vector3::zero()))
 	{
-		if (m_pAnimator)
+		if (m_vMoveDirection.z > 0)
 		{
-			if (m_vMoveDirection.z > 0)
-				PlayRunAnimation();
-			else
-				PlayBackWalkAnimation();
-			m_pAnimator->Pause();
+			PlayRunAnimation();
 		}
+		else
+			PlayBackWalkAnimation();
+		m_pAnimator->Pause();
 	}
 
 	if (!m_bLockOnMode)
@@ -186,10 +196,7 @@ void CPlayer::PlayerControle()
 
 	if (m_vMoveDirection != m_vPrevMoveDirectoin && m_vMoveDirection == vector3::zero())
 	{
-		if (m_pAnimator)
-		{
-			PlayIdleAnimation();
-		}
+		PlayIdleAnimation();
 	}
 
 	m_bBackMove = m_vMoveDirection.z < 0.f;
@@ -199,12 +206,21 @@ void CPlayer::PlayerControle()
 	else
 		m_fCrtMoveSpeed = m_sPlayerStatus.moveSpeed;
 
+	if (m_bSwordActionDuring)
+		m_fCrtMoveSpeed = m_sPlayerStatus.moveSpeed * 0.3f;
+
 	if (CInput::GetInstance().GetKeyUp(W) || CInput::GetInstance().GetKeyUp(S))
 	{
 		if (m_fRotateDirection != 0.f)
+			PlayWalkAnimation();
+	}
+
+	if (m_bLockOnMode != m_bPrevLockOnMode)
+	{
+		if (!CInput::GetInstance().GetKey(SHIFT))
 		{
-			if (m_pAnimator)
-				m_pAnimator->Play(L"Walk", 0.1f);
+			if (m_fRotateDirection != 0.f)
+				PlayWalkAnimation();
 		}
 	}
 
@@ -282,16 +298,19 @@ void CPlayer::PlayerControle_LockOn()
 
 	if (m_vMoveDirection.x != m_vPrevMoveDirectoin.x)
 	{
-		if (m_vMoveDirection.x < 0.f)
+		if (m_vMoveDirection.z <= 0.f)
 		{
-			m_pAnimator->Play(L"LeftWalk", 0.1f);
-			CDebug::LogError("Left");
+			if (m_vMoveDirection.x < 0.f)
+			{
+				m_pAnimator->Play(L"LeftWalk", 0.1f);
+			}
+			else if (m_vMoveDirection.x > 0.f)
+			{
+				m_pAnimator->Play(L"RightWalk", 0.1f);
+			}
 		}
-		else if (m_vMoveDirection.x > 0.f)
-		{
-			m_pAnimator->Play(L"RightWalk", 0.1f);
-			CDebug::LogError("Right");
-		}
+
+		CDebug::Log("SideWalk");
 	}
 }
 
@@ -304,6 +323,18 @@ void CPlayer::PlayIdleAnimation()
 		else
 			m_pAnimator->Play(L"CombatIdle", 0.1f);
 	}
+
+	CDebug::Log("Idle");
+}
+
+void CPlayer::PlayWalkAnimation()
+{
+	if (m_pAnimator)
+	{
+		m_pAnimator->Play(L"Walk", 0.1f);
+	}
+
+	CDebug::Log("Walk");
 }
 
 void CPlayer::PlayRunAnimation()
@@ -315,6 +346,8 @@ void CPlayer::PlayRunAnimation()
 		else
 			m_pAnimator->Play(L"CombatRun", 0.1f);
 	}
+
+	CDebug::Log("CombatRun");
 }
 
 void CPlayer::PlayBackWalkAnimation()
@@ -325,5 +358,15 @@ void CPlayer::PlayBackWalkAnimation()
 			m_pAnimator->Play(L"BackWalk", 0.1f);
 		else
 			m_pAnimator->Play(L"CombatBackWalk", 0.1f);
+	}
+
+	CDebug::Log("CombatBackWalk");
+}
+
+void CPlayer::PlaySwordAnimation(_uint _index)
+{
+	if (m_pAnimator)
+	{
+		m_pAnimator->Play(L"SwordCombo", 0.1f);
 	}
 }

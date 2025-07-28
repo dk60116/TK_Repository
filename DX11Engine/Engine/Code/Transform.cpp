@@ -700,10 +700,12 @@ void CTransform::LookAt(const vector3& _target)
 {
     vector3 upAxis = vector3(0, 1, 0);
     vector3 fwd = (_target - m_vWorldPosition).normalized();
-    if (fabsf(fwd.dot(upAxis)) > 0.999f)    upAxis = vector3(0, 0, 1);
 
-    vector3 right = fwd.cross(upAxis).normalized();   // LH
-    vector3 up = right.cross(fwd);
+    if (fabsf(fwd.dot(upAxis)) > 0.999f)
+        upAxis = vector3(0, 0, 1);
+
+    vector3 right = upAxis.cross(fwd).normalized();
+    vector3 up = fwd.cross(right);
 
     _matrix rot =
     {
@@ -714,11 +716,14 @@ void CTransform::LookAt(const vector3& _target)
     };
 
     _vector q = XMQuaternionRotationMatrix(rot);
-    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), XMQuaternionNormalize(q));
+    q = XMQuaternionNormalize(q);
 
     if (m_pParent)
     {
-        _vector parentInv = XMQuaternionInverse(XMLoadFloat4(reinterpret_cast<const _float4*>(&m_pParent->m_vQuaternion)));
-        _vector localQ = XMQuaternionMultiply(parentInv, q);
+        _float4 parentQ = m_pParent->m_vQuaternion.toFloat4();
+        _vector invParentQ = XMQuaternionInverse(XMLoadFloat4(&parentQ));
+        q = XMQuaternionMultiply(invParentQ, q);
     }
+
+    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), q);
 }

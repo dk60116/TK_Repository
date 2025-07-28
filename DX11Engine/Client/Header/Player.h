@@ -37,8 +37,11 @@ private:
 	void PlayerControle_LockOn();
 
 	void PlayIdleAnimation();
+	void PlayWalkAnimation();
 	void PlayRunAnimation();
 	void PlayBackWalkAnimation();
+	
+	void PlaySwordAnimation(_uint _index);
 
 private:
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
@@ -57,5 +60,7 @@ private:
 	_bool m_bNotMoveTurning, m_bBackMove;
 	_bool m_bLockOnMode, m_bIsCombatMode;
 	_bool m_bPrevLockOnMode;
+	_bool m_bIsAttack, m_bIsPrevAttack;
+	_bool m_bSwordActionDuring;
 };
 

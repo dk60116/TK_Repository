@@ -1,9 +1,10 @@
 #include "cpch.h"
 #include "GameScene.h"
 #include "Player.h"
+#include "PlayerCamera.h"
 
 CGameScene::CGameScene()
-	: m_pMainCamera(nullptr)
+	: m_pPlayerCamera(nullptr)
 	, m_pDirLight(nullptr)
 	, m_pCanvas(nullptr)
 	, m_pPlayer(nullptr)
@@ -19,8 +20,8 @@ HRESULT CGameScene::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	CGameObject* cameraObject = Add_GameObject(L"Main Camera");
-	m_pMainCamera = cameraObject->AddComponent<CCamera>();
+	CGameObject* cameraObject = Add_GameObject(L"Player Camera");
+	m_pPlayerCamera = cameraObject->AddComponent<CPlayerCamera>();
 
 	CGameObject* lightObject = Add_GameObject(L"Directional Light");
 	m_pDirLight = lightObject->AddComponent<CLight>();
@@ -35,9 +36,6 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
-
-	m_pMainCamera->Get_Transform()->Set_Position(0.f, 5.f, -5.f);
-	m_pMainCamera->Get_Transform()->Set_EulerAnglesX(20.f);
 
 	//CGameObject* templeObj = Add_GameObject(L"Temple");
 	//	CMeshRenderer* templeRenderer = templeObj->AddComponent<CMeshRenderer>();

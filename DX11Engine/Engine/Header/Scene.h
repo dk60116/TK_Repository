@@ -78,6 +78,7 @@ public:
     void Add_TempSkinnedMeshBone(const wstring& _name, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _resource);
     class CEngineResource* Add_CloneResourece(CEngineResource* _resource);
     class CGameObject* Add_GameObject(wstring _name);
+    list<CGameObject*>& Get_ObjectList();
     vector<CGameObject*> Get_RootObjects();
     vector<CRenderer*> Get_MeshObjects();
 

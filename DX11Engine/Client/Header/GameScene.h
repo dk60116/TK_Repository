@@ -14,7 +14,7 @@ public:
 	void Update() override;
 
 private:
-	CCamera* m_pMainCamera;
+	class CPlayerCamera* m_pPlayerCamera;
 	CLight* m_pDirLight;
 	CCanvas* m_pCanvas;
 	class CPlayer* m_pPlayer;

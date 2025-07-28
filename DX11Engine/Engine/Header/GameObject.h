@@ -93,6 +93,13 @@ public:
 	void Set_Scene(CScene* _scene);
 	CScene* Get_Scene();
 
+public:
+	template<typename T>
+	static T* FindObjectOfType();
+
+	template<typename T>
+	static vector<T*> FindObjectsOfType();
+
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
@@ -156,4 +163,31 @@ inline T* CGameObject::GetComponent()
 	}
 
 	return nullptr;
+}
+
+template<typename T>
+inline T* CGameObject::FindObjectOfType()
+{
+	for (CGameObject* obj : CSceneManager::GetInstance().Get_CrtScene()->Get_ObjectList())
+	{
+		if (T* t = obj->GetComponent<T>())
+			return t;
+	}
+	return nullptr;
+}
+
+template<typename T>
+inline vector<T*> CGameObject::FindObjectsOfType()
+{
+	vector<T*> result;
+
+	CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
+
+	for (CGameObject* obj : scene->Get_ObjectList())
+	{
+		if (T* t = obj->GetComponent<T>())
+			result.push_back(t);
+	}
+
+	return result;
 }
