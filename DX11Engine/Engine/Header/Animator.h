@@ -25,6 +25,7 @@ public:
     void Add_Animation(const wstring& _animName, CAnimationClip* _anim);
     void Set_PlaybackSpeed(const _float _value);
 
+    void Play();
     void Play(const wstring& _animName, const _float _blendDuration = 0.f);
     void Pause();
     void Stop();

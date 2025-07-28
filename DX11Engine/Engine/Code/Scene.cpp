@@ -128,7 +128,7 @@ void CScene::Update_Editor()
 
 		firstHit = hits[0];
 
-		CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
+		//CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
 
 		CDebug::LogError("Ray Origin & Dir");
 		CDebug::LogError(ray.origin);

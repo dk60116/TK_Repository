@@ -5,6 +5,14 @@ CPlayer::CPlayer()
 	: m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pEquipWeapon(nullptr)
+	, m_sPlayerStatus({})
+	, m_eAnimationStatus(Idle)
+	, m_vMoveDirection({})
+	, m_vPrevMoveDirectoin({})
+	, m_fRotateDirection(0.f)
+	, m_fPrevRotateDirection(0.f)
+	, m_bNotMoveTurning(false)
+	, m_bIsCombatMode(false)
 {
 	m_strName = L"Player";
 }
@@ -33,6 +41,7 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"CombatIdle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatIdle (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
 	m_pAnimator->Add_Animation(L"AttackCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
+	m_pAnimator->Add_Animation(L"Walk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Walk (Animation)"));
 
 	m_pAnimator->SetLoop(true);
 
@@ -98,24 +107,103 @@ void CPlayer::Update()
 			m_pAnimator->Stop();
 	}
 
-	if (CInput::GetInstance().GetKey(W))
+	if (CInput::GetInstance().GetKeyDown_Editor(Z))
 	{
-		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().forward * DELTA_TIME);
+		if (m_pAnimator)
+			m_pAnimator->Pause();
 	}
-	if (CInput::GetInstance().GetKey(S))
+
+	if (CInput::GetInstance().GetKeyDown_Editor(G))
 	{
-		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().back * DELTA_TIME);
+		if (m_pAnimator)
+			m_pAnimator->Play();
 	}
-	if (CInput::GetInstance().GetKey(A))
-	{
-		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().left * DELTA_TIME);
-	}
-	if (CInput::GetInstance().GetKey(D))
-	{
-		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().right * DELTA_TIME);
-	}
+
+	PlayerControle();
 }
 
 void CPlayer::OnDestroy()
 {
+}
+
+void CPlayer::PlayerControle()
+{
+	m_vMoveDirection = vector3::zero();
+	m_fRotateDirection = 0.f;
+
+	if (CInput::GetInstance().GetKey(W))
+	{
+		m_vMoveDirection += vector3::forward();
+	}
+	if (CInput::GetInstance().GetKey(S))
+	{
+		m_vMoveDirection += vector3::back();
+	}
+	if (CInput::GetInstance().GetKey(A))
+	{
+		m_fRotateDirection -= 1.f;
+	}
+	if (CInput::GetInstance().GetKey(D))
+	{
+		m_fRotateDirection += 1.f;
+	}
+
+	if ((m_vMoveDirection != m_vPrevMoveDirectoin && m_vMoveDirection != vector3::zero()))
+	{
+		if (m_pAnimator)
+		{
+			m_pAnimator->Play(L"Run", 0.1f);
+			m_pAnimator->Pause();
+		}
+	}
+
+	if (m_fRotateDirection != m_fPrevRotateDirection && m_vMoveDirection == vector3::zero())
+	{
+		if (m_fRotateDirection != 0.f)
+		{
+			if (m_pAnimator)
+			{
+				m_pAnimator->Play(L"Walk", 0.1f);
+				m_pAnimator->Pause();
+				m_bNotMoveTurning = true;
+			}
+			else
+				m_bNotMoveTurning = false;
+		}
+		else
+			m_bNotMoveTurning = false;
+	}
+	else
+		m_bNotMoveTurning = false;
+
+	if (m_vMoveDirection != m_vPrevMoveDirectoin && m_vMoveDirection == vector3::zero())
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"Idle", 0.1f);
+	}
+
+	if (CInput::GetInstance().GetKeyUp(A))
+	{
+		if (m_pAnimator)
+			m_pAnimator->Play(L"Idle", 0.1f);
+	}
+
+	if (m_vMoveDirection != vector3::zero() || m_fRotateDirection != 0.f)
+	{
+		CDebug::Log(m_vMoveDirection);
+
+		m_vMoveDirection = m_vMoveDirection.normalized();
+		Get_Transform()->Add_Position(Get_Transform()->Get_Directions().forward * m_vMoveDirection.z * m_sPlayerStatus.moveSpeed * DELTA_TIME);
+
+		if (m_fRotateDirection != 0.f)
+		{
+			Get_Transform()->Add_EulerAnglesY(m_fRotateDirection * 90.f * DELTA_TIME);
+		}
+
+		if (m_pAnimator)
+			m_pAnimator->Play();
+	}
+
+	m_vPrevMoveDirectoin = m_vMoveDirection;
+	m_fPrevRotateDirection = m_fRotateDirection;
 }

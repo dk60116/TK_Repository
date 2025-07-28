@@ -167,6 +167,12 @@ void CAnimator::Set_PlaybackSpeed(const _float _value)
 	m_fPlaybackSpeed = _value;
 }
 
+void CAnimator::Play()
+{
+	if (m_pCrtAnimation)
+		m_bIsPlaying = true;
+}
+
 void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 {
 	auto iter = m_mAnimationList.find(_animName);
@@ -210,8 +216,9 @@ void CAnimator::Pause()
 
 void CAnimator::Stop()
 {
-	m_bIsPlaying = false;
 	m_fCurrentTime = 0.f;
+	Update();
+	m_bIsPlaying = false;
 }
 
 void CAnimator::SetLoop(const _bool _loop)
