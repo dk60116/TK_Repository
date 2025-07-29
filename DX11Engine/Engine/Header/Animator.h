@@ -8,6 +8,13 @@ class ENGINE_DLL CAnimator final : public CComponent
 {
     friend class CGameObject;
 
+public:
+    struct AnimatorStateInfo
+    {
+        _float length;
+        _float normalizeTime;
+    };
+
 protected:
  	explicit CAnimator();
     ~CAnimator();
@@ -35,6 +42,7 @@ public:
 
 public:
     CAnimationClip* Get_CurrentAnimation();
+    AnimatorStateInfo& Get_StateInfo();
 
 private:
     class CSkinnedMeshRenderer* m_pSkinnedRenderer;
@@ -44,6 +52,7 @@ private:
     _float m_fCurrentTime, m_fBlendTime, m_fBlendDuration;
     _float m_fPlaybackSpeed;
     vector<_matrix> m_vFinalBoneMatrix;
+	AnimatorStateInfo m_sStateInfo;
 
     unordered_map<wstring, CAnimationClip::BoneTransform> m_mBlendStartPose;
 

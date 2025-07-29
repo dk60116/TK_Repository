@@ -3,6 +3,7 @@
 
 CWoodenSword::CWoodenSword()
 {
+	m_strName = L"WoodenSword";
 }
 
 CWoodenSword::~CWoodenSword()

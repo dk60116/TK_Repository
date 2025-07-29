@@ -54,7 +54,8 @@ public:
 public:
 	void Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const;
 	const _bool IsLoop() const;
-	_float Get_Duration() const;
+	const _float Get_Duration() const;
+	const _float Get_TickPerSecons() const;
 
 private:
 	vector<NodeTrack> m_vBoneAnimation;

@@ -20,6 +20,7 @@ CPlayer::CPlayer()
 	, m_bIsAttack(false)
 	, m_bIsPrevAttack(false)
 	, m_bSwordActionDuring(false)
+	, m_fSwordActionEndFrames()
 {
 	m_strName = L"Player";
 }
@@ -61,6 +62,10 @@ HRESULT CPlayer::Initialize()
 	swordObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"WoodenSword (MeshBuffer)"));
 
 	swordObj->Get_Transform()->SetParent(Get_Transform()->Find_ChildRecursive(L"RightHand"));
+	
+	m_fSwordActionEndFrames[0] = 0.33f;
+	m_fSwordActionEndFrames[1] = 0.66f;
+	m_fSwordActionEndFrames[2] = 1.f;
 
 	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
 	//Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
@@ -83,60 +88,6 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
-	if (CInput::GetInstance().GetKeyDown_Editor(N))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play(L"Idle", 0.2f);
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(M))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play(L"Run", 0.1f);
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(C))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play(L"CombatIdle", 0.1f);
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(B))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play(L"Link_SwordAttack1", 0.1f);
-	}
-
-	if (CInput::GetInstance().GetKeyDown(V))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play(L"SwordCombo", 0.1f);
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(H))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play(L"BackWalk", 0.1f);
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(X))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Stop();
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(Z))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Pause();
-	}
-
-	if (CInput::GetInstance().GetKeyDown_Editor(G))
-	{
-		if (m_pAnimator)
-			m_pAnimator->Play();
-	}
-
 	PlayerControle();
 }
 
@@ -155,6 +106,9 @@ void CPlayer::PlayerControle()
 		m_bSwordActionDuring = true;
 		return;
 	}
+
+	if (m_bSwordActionDuring)
+		PlayerControle_AttackCombo();
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
 	{
@@ -314,6 +268,24 @@ void CPlayer::PlayerControle_LockOn()
 	}
 }
 
+void CPlayer::PlayerControle_AttackCombo()
+{
+	const _float nt = m_pAnimator->Get_StateInfo().normalizeTime;
+
+	CDebug::LogError(nt);
+
+	if (nt > m_fSwordActionEndFrames[2] * 0.9f)
+	{
+		m_bSwordActionDuring = false;
+		m_pAnimator->SetLoop(true);
+
+		if (m_vMoveDirection == vector3::zero())
+			PlayIdleAnimation();
+		else
+			PlayRunAnimation();
+	}
+}
+
 void CPlayer::PlayIdleAnimation()
 {
 	if (m_pAnimator)
@@ -367,6 +339,7 @@ void CPlayer::PlaySwordAnimation(_uint _index)
 {
 	if (m_pAnimator)
 	{
+		m_pAnimator->SetLoop(true);
 		m_pAnimator->Play(L"SwordCombo", 0.1f);
 	}
 }

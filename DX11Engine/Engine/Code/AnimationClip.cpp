@@ -92,7 +92,12 @@ const _bool CAnimationClip::IsLoop() const
 	return m_bLoopTime;
 }
 
-_float CAnimationClip::Get_Duration() const
+const _float CAnimationClip::Get_Duration() const
 {
-	return m_fDuration;
+	return m_fDuration / m_fTicksPerSecond;
+}
+
+const _float CAnimationClip::Get_TickPerSecons() const
+{
+	return m_fTicksPerSecond;
 }

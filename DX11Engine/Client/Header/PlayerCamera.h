@@ -11,6 +11,8 @@ public:
 		_float lookHeightOffset = 3.f;
 		_float zoomMin = 2.f;
 		_float zoomMax = 10.f;
+		_float trackingSpeed = 2.f;
+		_float firstZoomSensor = 4.f;
 	};
 
 protected:

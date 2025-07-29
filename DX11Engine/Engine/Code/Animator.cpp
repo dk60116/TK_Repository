@@ -16,6 +16,7 @@ CAnimator::CAnimator()
 	, m_fPlaybackSpeed(1.f)
 	, m_vFinalBoneMatrix({})
 	, m_mBlendStartPose({})
+	, m_sStateInfo({})
 {
 	m_strName = L"Animator";
 }
@@ -107,6 +108,7 @@ void CAnimator::Update()
 	}
 
 	const _float duration = m_pCrtAnimation->Get_Duration();
+	m_sStateInfo.length = duration;
 
 	if (m_bLoop)
 		m_fCurrentTime = fmodf(m_fCurrentTime, duration);
@@ -139,6 +141,8 @@ void CAnimator::Update()
 		bone->Set_LocalQuaternion(bt.rot);
 		bone->Set_LocalScale(bt.scale);
 	}
+
+	m_sStateInfo.normalizeTime = m_fCurrentTime / duration;
 }
 
 void CAnimator::OnDestroy()
@@ -234,4 +238,9 @@ void CAnimator::SetSpeed(const _float _value)
 CAnimationClip* CAnimator::Get_CurrentAnimation()
 {
 	return m_pCrtAnimation;
+}
+
+CAnimator:: AnimatorStateInfo& CAnimator::Get_StateInfo()
+{
+	return m_sStateInfo;
 }

@@ -12,7 +12,7 @@ public:
 	{
 		_uint maxHp = 3;
 		_uint crtHp = 0;
-		_float moveSpeed = 3.f;
+		_float moveSpeed = 4.f;
 		_float backWalkRatio = 0.7f;
 		_float turnSpeed = 120.f;
 		_uint attackPower = 1;
@@ -35,6 +35,7 @@ private:
 	void PlayerControle();
 	void PlayerControle_NoneLockOn();
 	void PlayerControle_LockOn();
+	void PlayerControle_AttackCombo();
 
 	void PlayIdleAnimation();
 	void PlayWalkAnimation();
@@ -62,5 +63,7 @@ private:
 	_bool m_bPrevLockOnMode;
 	_bool m_bIsAttack, m_bIsPrevAttack;
 	_bool m_bSwordActionDuring;
+
+	_float m_fSwordActionEndFrames[3];
 };
 
