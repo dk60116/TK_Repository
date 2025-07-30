@@ -339,43 +339,54 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateCube()
 
     const _float length = 0.5f;
 
+    const _float offset = 0.001f;
+
+    const _float f000 = 0.f;
+    const _float f025 = 0.25f + offset;
+    const _float f050 = 0.5f - offset;
+    const _float f075 = 0.75f;
+    const _float f100 = 1.0f;
+
+    const _float f033 = 1.f / 3.f + offset;
+    const _float f066 = 2.f / 3.f - offset;
+
     VertexTexNormalTangentBuffer cubeVertices[24] =
     {
             // 앞(-Z)
-            {{-length, -length, -length}, { 0,  0, -1}, {1.0000f, 0.6666f}, {1, 0, 0}},
-            {{ length, -length, -length}, { 0,  0, -1}, {0.7500f, 0.6666f}, {1, 0, 0}},
-            {{ length,  length, -length}, { 0,  0, -1}, {0.7500f, 0.3333f}, {1, 0, 0}},
-            {{-length,  length, -length}, { 0,  0, -1}, {1.0000f, 0.3333f}, {1, 0, 0}},
+            {{-length, -length, -length}, { 0,  0, -1}, {f100, f066}, {1, 0, 0}},
+            {{ length, -length, -length}, { 0,  0, -1}, {f075, f066}, {1, 0, 0}},
+            {{ length,  length, -length}, { 0,  0, -1}, {f075, f033}, {1, 0, 0}},
+            {{-length,  length, -length}, { 0,  0, -1}, {f100, f033}, {1, 0, 0}},
 
             // 뒤(+Z)                                   
-            {{ length, -length,  length}, { 0,  0,  1}, {0.5000f, 0.6666f}, {-1 ,0 ,0}},
-            {{-length, -length,  length}, { 0,  0,  1}, {0.2500f, 0.6666f}, {-1 ,0 ,0}},
-            {{-length,  length,  length}, { 0,  0,  1}, {0.2500f, 0.3333f}, {-1 ,0 ,0}},
-            {{ length,  length,  length}, { 0,  0,  1}, {0.5000f, 0.3333f}, {-1 ,0 ,0}},
+            {{ length, -length,  length}, { 0,  0,  1}, {f050, f066}, {-1 ,0 ,0}},
+            {{-length, -length,  length}, { 0,  0,  1}, {f025, f066}, {-1 ,0 ,0}},
+            {{-length,  length,  length}, { 0,  0,  1}, {f025, f033}, {-1 ,0 ,0}},
+            {{ length,  length,  length}, { 0,  0,  1}, {f050, f033}, {-1 ,0 ,0}},
 
             // 왼쪽(-X)                                   
-            {{-length, -length,  length}, {-1,  0,  0}, {0.2500f, 0.6666f}, {0, 0, -1}},
-            {{-length, -length, -length}, {-1,  0,  0}, {0.0000f, 0.6666f}, {0, 0, -1}},
-            {{-length,  length, -length}, {-1,  0,  0}, {0.0000f, 0.3333f}, {0, 0, -1}},
-            {{-length,  length,  length}, {-1,  0,  0}, {0.2500f, 0.3333f}, {0, 0, -1}},
+            {{-length, -length,  length}, {-1,  0,  0}, {f025, f066}, {0, 0, -1}},
+            {{-length, -length, -length}, {-1,  0,  0}, {f000, f066}, {0, 0, -1}},
+            {{-length,  length, -length}, {-1,  0,  0}, {f000, f033}, {0, 0, -1}},
+            {{-length,  length,  length}, {-1,  0,  0}, {f025, f033}, {0, 0, -1}},
 
             // 오른쪽(+X)                                   
-            {{ length, -length, -length}, { 1,  0,  0}, {0.7500f, 0.6666f}, {0, 0, 1}},
-            {{ length, -length,  length}, { 1,  0,  0}, {0.5000f, 0.6666f}, {0, 0, 1}},
-            {{ length,  length,  length}, { 1,  0,  0}, {0.5000f, 0.3333f}, {0, 0, 1}},
-            {{ length,  length, -length}, { 1,  0,  0}, {0.5000f, 0.3333f}, {0, 0, 1}},
+            {{ length, -length, -length}, { 1,  0,  0}, {f075, f066}, {0, 0, 1}},
+            {{ length, -length,  length}, { 1,  0,  0}, {f050, f066}, {0, 0, 1}},
+            {{ length,  length,  length}, { 1,  0,  0}, {f050, f033}, {0, 0, 1}},
+            {{ length,  length, -length}, { 1,  0,  0}, {f075, f033}, {0, 0, 1}},
 
             // 위(+Y)                    
-            {{-length,  length, -length}, { 0,  1,  0}, {0.2500f, 0.0000f}, {1, 0, 0}},
-            {{ length,  length, -length}, { 0,  1,  0}, {0.5000f, 0.0000f}, {1, 0, 0}},
-            {{ length,  length,  length}, { 0,  1,  0}, {0.5000f, 0.3333f}, {1, 0, 0}},
-            {{-length,  length,  length}, { 0,  1,  0}, {0.2500f, 0.3333f}, {1, 0, 0}},
+            {{-length,  length, -length}, { 0,  1,  0}, {f025, f000}, {1, 0, 0}},
+            {{ length,  length, -length}, { 0,  1,  0}, {f050, f000}, {1, 0, 0}},
+            {{ length,  length,  length}, { 0,  1,  0}, {f050, f033}, {1, 0, 0}},
+            {{-length,  length,  length}, { 0,  1,  0}, {f025, f033}, {1, 0, 0}},
 
             // 아래(-Y)                      
-            {{-length, -length,  length}, { 0, -1,  0}, {0.2500f, 0.6666f}, {1, 0, 0}},
-            {{ length, -length,  length}, { 0, -1,  0}, {0.5000f, 0.6666f}, {1, 0, 0}},
-            {{ length, -length, -length}, { 0, -1,  0}, {0.5000f, 1.0000f}, {1, 0, 0}},
-            {{-length, -length, -length}, { 0, -1,  0}, {0.2500f, 1.0000f}, {1, 0, 0}},
+            {{-length, -length,  length}, { 0, -1,  0}, {f025, f066}, {1, 0, 0}},
+            {{ length, -length,  length}, { 0, -1,  0}, {f050, f066}, {1, 0, 0}},
+            {{ length, -length, -length}, { 0, -1,  0}, {f050, f100}, {1, 0, 0}},
+            {{-length, -length, -length}, { 0, -1,  0}, {f025, f100}, {1, 0, 0}},
     };
 
     static _uint cubeIndices[36] =
