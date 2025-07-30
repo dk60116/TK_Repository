@@ -28,6 +28,10 @@ public:
 	void Bind_Camera(const _fmatrix _view, const _cmatrix _projection);
 	CRectTransform* Get_RectTransform() const;
 
+public:
+	void SetColor(ColorValue _color);
+	void SetAlpha(const _float _value);
+
 private:
 	const _bool Is_Canvas() const;
 	CCanvas* Get_Canvas() const;
@@ -44,6 +48,9 @@ protected:
 protected:
 	CMeshBuffer* m_pRectGizmoMesh;
 	CMaterial* m_pLineMat;
+
+protected:
+	ColorValue m_vColor;
 };
 
 NS_END

@@ -50,6 +50,7 @@ private:
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
+	SpriteBatch* m_pSpriteBatch;
 
 	IDXGISwapChain* m_pSwapChain = { nullptr };
 

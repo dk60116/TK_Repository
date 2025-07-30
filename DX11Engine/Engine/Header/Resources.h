@@ -31,6 +31,8 @@ public:
     HRESULT ConvertFBXToSkinnedBufferData(const wstring _filePath);
     HRESULT ConvertFBXToAnimationClipData(const wstring _filePath);
 
+    HRESULT ConvertOTFTTFToSpriteFont(const wstring _filePath);
+
 public:
     HRESULT SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList);
     vector<CScene::ObjectsTransformInfo> ReadSceneObjectTransformInfos(const wstring _binFileName);
@@ -72,6 +74,7 @@ public:
     unordered_map<wstring, CEngineResource*> m_mGameResourceList;
 
 private:
+    void Ready_GameResources();
     void TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList);
 
 private:

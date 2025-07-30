@@ -163,6 +163,12 @@
     <ClInclude Include="..\Header\Terrain.h">
       <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Text.h">
+      <Filter>Components\UI\UIContents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Font.h">
+      <Filter>Resource\Font</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -263,6 +269,9 @@
     </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{51d2a266-3de0-4dcf-8589-2d5d539001c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Font">
+      <UniqueIdentifier>{ef41f489-6b55-4d53-8ed8-0f6bdce52f19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -436,6 +445,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Terrain.cpp">
       <Filter>Resource\MeshBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Text.cpp">
+      <Filter>Components\UI\UIContents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Font.cpp">
+      <Filter>Resource\Font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -170,6 +170,14 @@ void CProjectBox::RenderDirectoryRecursive(const fs::path& _dirPath)
 							CResources::GetInstance().ConvertFBXToAnimationClipData(path);
 					}
 
+					if (extension == "ttf" || extension == "otf")
+					{
+						wstring path = entry.path().wstring();
+
+						if (ImGui::Selectable("Create Font Data"))
+							CResources::GetInstance().ConvertOTFTTFToSpriteFont(path);
+					}
+
 					if (ImGui::Selectable("Delete"))
 					{
 						m_strPendingDeletePath = entry.path().string();

@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTK_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Reference/Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -147,7 +147,7 @@ call copy.bat</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTK_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Reference/Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -168,6 +168,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\EngineDebug.h" />
     <ClInclude Include="..\Header\EngineFunction.h" />
     <ClInclude Include="..\Header\EngineString.h" />
+    <ClInclude Include="..\Header\Font.h" />
     <ClInclude Include="..\Header\HierachyBox.h" />
     <ClInclude Include="..\Header\Image.h" />
     <ClInclude Include="..\Header\InspectorBox.h" />
@@ -201,6 +202,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h" />
     <ClInclude Include="..\Header\SkyBox.h" />
     <ClInclude Include="..\Header\Terrain.h" />
+    <ClInclude Include="..\Header\Text.h" />
     <ClInclude Include="..\Header\Texture.h" />
     <ClInclude Include="..\Header\Timer.h" />
     <ClInclude Include="..\Header\TopToolBar.h" />
@@ -226,6 +228,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\EngineString.cpp" />
+    <ClCompile Include="..\Code\Font.cpp" />
     <ClCompile Include="..\Code\HierachyBox.cpp" />
     <ClCompile Include="..\Code\Image.cpp" />
     <ClCompile Include="..\Code\ImGuizmo.cpp">
@@ -301,6 +304,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="..\Code\SkyBox.cpp" />
     <ClCompile Include="..\Code\Terrain.cpp" />
+    <ClCompile Include="..\Code\Text.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Timer.cpp" />
     <ClCompile Include="..\Code\TopToolBar.cpp" />

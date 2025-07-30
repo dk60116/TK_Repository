@@ -71,6 +71,8 @@ HRESULT CGraphicDevice::Initialize()
 			return E_FAIL;
 	}
 
+	m_pSpriteBatch = new SpriteBatch(m_pContext);
+
 	return S_OK;
 }
 
@@ -83,6 +85,12 @@ void CGraphicDevice::Destroy()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDepthStencilNoWrite);
 	Safe_Release(m_pRasterizerCullFront);
+
+	if (m_pSpriteBatch)
+	{
+		delete m_pSpriteBatch;
+		m_pSpriteBatch = nullptr;
+	}
 
 	CoUninitialize();
 }

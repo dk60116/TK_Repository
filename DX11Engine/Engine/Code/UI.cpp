@@ -9,6 +9,7 @@ CUI::CUI()
 	, m_pRectMesh(nullptr)
 	, m_pMaterial(nullptr)
 	, m_bIsCanvas(false)
+	, m_vColor(ColorValue::white())
 {
 }
 
@@ -135,4 +136,16 @@ void CUI::Set_Canvas(CCanvas* _canvas)
 CRectTransform* CUI::Get_RectTransform() const
 {
 	return m_pRectTransform;
+}
+
+void CUI::SetColor(ColorValue _color)
+{
+	m_vColor = _color;
+	m_pMaterial->Set_BaseColor(m_vColor.f4Color());
+}
+
+void CUI::SetAlpha(const _float _value)
+{
+	m_vColor.a = static_cast<BYTE>(_value * 255);
+	SetColor(m_vColor);
 }

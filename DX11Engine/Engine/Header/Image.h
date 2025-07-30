@@ -45,9 +45,6 @@ public:
 	void OnDestroy() override;
 
 public:
-	void SetColor(ColorValue _color);
-	void SetAlpha(const _float _value);
-
 	const FillMethod Get_FillMethod() const;
 	void Set_FillMethod(FillMethod _fillMethod);
 

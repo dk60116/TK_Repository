@@ -4,6 +4,7 @@
 // Windows 헤더 파일
 #include <windows.h>
 #include <process.h>
+#include <sstream>
 
 // DirectX 헤더 파일
 #include <d3d11.h>
@@ -13,6 +14,8 @@
 #include <DirectXCollision.h>
 #include <wrl/client.h>
 #include <WICTextureLoader.h>
+#include <SpriteFont.h>
+#include <SpriteBatch.h>
 #pragma comment(lib, "d3dcompiler.lib")
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
