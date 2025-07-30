@@ -1,71 +1,63 @@
-// ───────────── 상수 버퍼
 cbuffer PerObject : register(b0)
 {
-    float4x4 world;
-};
+    float4x4 gWorld;
+}
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos;
-    float4x4 view;
-    float4x4 proj;
+    float3 gPos;
+    float4x4 gView;
+    float4x4 gProj;
     float cpadding;
-};
+}
 
 cbuffer PerMaterial : register(b2)
 {
-    float4 baseColor;
+    float4 gBaseColor;
     uint useTexture;
-    float mpadding;
-};
+    uint boneCount;
+    float2 padding;
+}
 
-// ───────────── 텍스처 및 샘플러
-Texture2D gTexture : register(t0);
-SamplerState gSampler : register(s0);
-// ───────────── 버텍스 입력
+cbuffer PerFillAmount : register(b3)
+{
+    float gFillAmount;
+}
 
+// ───── 버텍스 구조
 struct VSIn
 {
     float3 posL : POSITION;
-    float2 uv   : TEXCOORD0;
+    float3 normalL : NORMAL;
+    float2 uv : TEXCOORD0;
+    float3 tangentL : TANGENT;
 };
 
-// ───────────── 버텍스 출력
 struct VSOut
 {
     float4 posH : SV_POSITION;
     float2 uv : TEXCOORD0;
 };
 
-// ───────────── 버텍스 셰이더
-VSOut VSMain(VSIn v)
+Texture2D gTexture : register(t0);
+SamplerState gSampler : register(s0);
+
+// ───── Vertex Shader
+VSOut VSMain(VSIn input)
 {
-    VSOut o;
+    VSOut output;
 
-    float4 pos = float4(v.posL, 1.0f);
+    float4 worldPos = mul(float4(input.posL, 1.0f), gWorld);
+    float4 viewPos = mul(worldPos, gView);
+    output.posH = mul(viewPos, gProj);
+    output.uv = input.uv;
 
-    float4x4 viewNoTrans = view;
-    viewNoTrans._41 = 0;
-    viewNoTrans._42 = 0;
-    viewNoTrans._43 = 0;
-
-    float4 posV = mul(pos, viewNoTrans);
-    float4 posP = mul(posV, proj);
-
-    o.posH = posP; // 반드시 설정 필요
-    o.uv = v.uv;
-
-    return o;
+    return output;
 }
 
-// ───────────── 픽셀 셰이더
 float4 PSMain(VSOut input) : SV_TARGET
 {
-    if (useTexture != 0)
-    {
-        float4 texColor = gTexture.Sample(gSampler, input.uv);
-        return texColor * baseColor; 
-    }
-    else
-        return baseColor;
+    float4 resultColor = (useTexture != 0) ? gTexture.Sample(gSampler, input.uv) * gBaseColor : gBaseColor;
+    
+    return resultColor;
 }
