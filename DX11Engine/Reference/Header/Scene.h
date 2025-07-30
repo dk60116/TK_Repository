@@ -35,7 +35,8 @@ public:
 public:
     struct LightSettings
     {
-        float ambient = 0.1f;
+        wstring skyBox = L"DefaultSky (SkyBox)";
+        _float ambient = 0.1f;
     };
 
 protected:
@@ -54,6 +55,9 @@ public:
     virtual void Render_Editor();
     virtual void Render_Game();
     virtual void SceneRelease();
+
+protected:
+    void RenderSkyBox(CCamera* _camera);
 
 public:
     void Set_SceneName(const wstring _name);
@@ -116,6 +120,7 @@ protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
     LightSettings m_sLightSettings;
+    class CSkyBox* m_pSkyBox;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;
     list <CLight*> m_lLightList;
@@ -132,7 +137,8 @@ protected:
 protected:
     _uint m_iUniqueObjectCount;
 
-    ID3D11DepthStencilState* m_pMeshDepthStencilState,* m_pUIDepthStencilState;
+    ID3D11DepthStencilState* m_pSkyBoxDepthStencillState, * m_pMeshDepthStencilState,* m_pUIDepthStencilState;
+    ID3D11RasterizerState* m_pSkyBoxResterizerState, * m_pMeshResterizerState, * m_pUIResterizerState;
 };
 
 NS_END

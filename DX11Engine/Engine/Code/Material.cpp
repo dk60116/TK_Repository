@@ -398,16 +398,16 @@ void CMaterial::Bind_Texture() const
 
 	if (!gSamplerState)
 	{
-		D3D11_SAMPLER_DESC sampDesc = {};
-		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		sampDesc.MinLOD = 0;
-		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		D3D11_SAMPLER_DESC sampleDesc = {};
+		sampleDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampleDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		sampleDesc.MinLOD = 0;
+		sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-		if (FAILED(CGraphicDevice::GetInstance().Get_Device()->CreateSamplerState(&sampDesc, &gSamplerState)))
+		if (FAILED(CGraphicDevice::GetInstance().Get_Device()->CreateSamplerState(&sampleDesc, &gSamplerState)))
 		{
 			CDebug::LogError(L"Create failed SamplerState in Material");
 			return;

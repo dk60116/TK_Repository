@@ -213,11 +213,8 @@ void CPlayer::PlayerControle_NoneLockOn()
 	{
 		if (m_fRotateDirection != 0.f)
 		{
-			if (m_pAnimator)
-			{
-				m_pAnimator->Play(L"Walk", 0.1f);
-				m_bNotMoveTurning = true;
-			}
+			PlayWalkAnimation();
+			m_bNotMoveTurning = true;
 		}
 		else
 			m_bNotMoveTurning = false;
@@ -254,14 +251,7 @@ void CPlayer::PlayerControle_LockOn()
 	{
 		if (m_vMoveDirection.z <= 0.f)
 		{
-			if (m_vMoveDirection.x < 0.f)
-			{
-				m_pAnimator->Play(L"LeftWalk", 0.1f);
-			}
-			else if (m_vMoveDirection.x > 0.f)
-			{
-				m_pAnimator->Play(L"RightWalk", 0.1f);
-			}
+			PlaySideWalkAimation();
 		}
 
 		CDebug::Log("SideWalk");
@@ -271,8 +261,6 @@ void CPlayer::PlayerControle_LockOn()
 void CPlayer::PlayerControle_AttackCombo()
 {
 	const _float nt = m_pAnimator->Get_StateInfo().normalizeTime;
-
-	CDebug::LogError(nt);
 
 	if (nt > m_fSwordActionEndFrames[2] * 0.9f)
 	{
@@ -288,6 +276,9 @@ void CPlayer::PlayerControle_AttackCombo()
 
 void CPlayer::PlayIdleAnimation()
 {
+	if (m_bSwordActionDuring)
+		return;
+
 	if (m_pAnimator)
 	{
 		if (!m_bLockOnMode)
@@ -301,6 +292,9 @@ void CPlayer::PlayIdleAnimation()
 
 void CPlayer::PlayWalkAnimation()
 {
+	if (m_bSwordActionDuring)
+		return;
+
 	if (m_pAnimator)
 	{
 		m_pAnimator->Play(L"Walk", 0.1f);
@@ -309,8 +303,29 @@ void CPlayer::PlayWalkAnimation()
 	CDebug::Log("Walk");
 }
 
+void CPlayer::PlaySideWalkAimation()
+{
+	if (m_bSwordActionDuring)
+		return;
+
+	if (m_pAnimator)
+	{
+		if (m_vMoveDirection.x < 0.f)
+		{
+			m_pAnimator->Play(L"LeftWalk", 0.1f);
+		}
+		else if (m_vMoveDirection.x > 0.f)
+		{
+			m_pAnimator->Play(L"RightWalk", 0.1f);
+		}
+	}
+}
+
 void CPlayer::PlayRunAnimation()
 {
+	if (m_bSwordActionDuring)
+		return;
+
 	if (m_pAnimator)
 	{
 		if (!m_bLockOnMode)
@@ -324,6 +339,9 @@ void CPlayer::PlayRunAnimation()
 
 void CPlayer::PlayBackWalkAnimation()
 {
+	if (m_bSwordActionDuring)
+		return;
+
 	if (m_pAnimator)
 	{
 		if (!m_bLockOnMode)
@@ -337,6 +355,9 @@ void CPlayer::PlayBackWalkAnimation()
 
 void CPlayer::PlaySwordAnimation(_uint _index)
 {
+	if (m_bSwordActionDuring)
+		return;
+
 	if (m_pAnimator)
 	{
 		m_pAnimator->SetLoop(true);

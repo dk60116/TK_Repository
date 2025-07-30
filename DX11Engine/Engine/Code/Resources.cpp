@@ -4,6 +4,7 @@
 CResources::CResources()
 	: m_strDefaultAssetPath(L"../Assets/")
 	, m_strEngineFilePath(L"../EngineResource/")
+	, m_mEditorResourceList({})
 	, m_mGameResourceList({})
 {
 }
@@ -24,7 +25,7 @@ HRESULT CResources::Initialize()
 	if (!fs::exists("BinaryAssets"))
 		fs::create_directories("BinaryAssets");
 	if (!fs::exists("BinaryAssets/SceneData"))
-		fs::create_directories("BinaryAssets/Scene");
+		fs::create_directories("BinaryAssets/SceneData");
 	if (!fs::exists("BinaryAssets/MeshData"))
 		fs::create_directories("BinaryAssets/MeshData");
 	if (!fs::create_directory("BinaryAssets/SkinnedMeshData"))
@@ -38,6 +39,8 @@ HRESULT CResources::Initialize()
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (Mesh Buffer)", L"Cube"));
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (Mesh Buffer)", L"Quad"));
 
+	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
+
 	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexColorSkinnedBuffer::numElements, VertexColorSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
 
@@ -47,6 +50,16 @@ HRESULT CResources::Initialize()
 
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
+
+	CShader::SHADERDESC skyBoxShaderDesc = { L"../EngineResources/Shader/Skybox.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"SkyBox (Shader)", L"", &skyBoxShaderDesc));
+
+	CShader* skyBoxShader = LoadOnGame<CShader>(L"SkyBox (Shader)");
+	CMaterial::MATERIALDESC skyMatDesc = { skyBoxShader, false };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"SkyBoxMaterial (Material)", L"", &skyMatDesc));
+
+	CSkyBox::SKYBOXBUFFERDESC dskyDesk = { L"DefaultSky (Texture)" };
+	LoadResourceComplete_Game(CreateGameResource<CSkyBox>(L"DefaultSky (SkyBox)", L"", &dskyDesk));
 
 	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
 	CMaterial::MATERIALDESC litMatDesc = { litShader, true };

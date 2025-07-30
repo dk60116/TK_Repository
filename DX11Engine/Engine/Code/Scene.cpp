@@ -18,10 +18,15 @@ CScene::CScene()
 	, m_lObjectList({})
 	, m_lCameraList({})
 	, m_lCanvasList({})
+	, m_pSkyBox(nullptr)
 	, m_pEditorCamera(nullptr)
 	, m_iUniqueObjectCount(0)
+	, m_pSkyBoxDepthStencillState(nullptr)
 	, m_pMeshDepthStencilState(nullptr)
 	, m_pUIDepthStencilState(nullptr)
+	, m_pSkyBoxResterizerState(nullptr)
+	, m_pMeshResterizerState(nullptr)
+	, m_pUIResterizerState(nullptr)
 {
 	m_strName = L"Scene";
 
@@ -43,6 +48,24 @@ HRESULT CScene::Initialize()
 
 	m_iUniqueObjectCount = 0;
 
+	if (m_sLightSettings.skyBox != L"")
+	{
+		if (!m_pSkyBox)
+		{
+			m_pSkyBox = CResources::GetInstance().LoadOnGame<CSkyBox>(m_sLightSettings.skyBox);
+
+			if (!m_pSkyBox)
+				m_pSkyBox = CResources::GetInstance().LoadOnScene<CSkyBox>(m_sLightSettings.skyBox);
+
+			if (m_pSkyBox)
+			{
+				m_pSkyBox->AddRef();
+
+				m_pSkyBox->Initialize_Scene();
+			}
+		}
+	}
+
 	m_mResourceList = m_mTempResourceList;
 	m_mMeshBundleList = m_mTempMeshBundleList;
 	m_mSkinnedBundleList = m_mTempSkinnedBundleList;
@@ -60,23 +83,57 @@ HRESULT CScene::Initialize()
 	m_mTempSkinnedBundleList.clear();
 	m_mTempSkinnedBoneList.clear();
 
-	D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
-	depthDefaultDesc.DepthEnable = TRUE;
-	depthDefaultDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthDefaultDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	depthDefaultDesc.StencilEnable = FALSE;
+	// Sky Box
+	{
+		D3D11_RASTERIZER_DESC resterSkyDesc = {};
+		resterSkyDesc.FillMode = D3D11_FILL_SOLID;
+		resterSkyDesc.CullMode = D3D11_CULL_FRONT;
+		resterSkyDesc.FrontCounterClockwise = FALSE;
+		resterSkyDesc.DepthClipEnable = TRUE;
 
-	if (FAILED(m_pDevice->CreateDepthStencilState(&depthDefaultDesc, &m_pMeshDepthStencilState)))
-		return E_FAIL;
+		D3D11_DEPTH_STENCIL_DESC depthSkyDesc = {};
+		depthSkyDesc.DepthEnable = FALSE;
+		depthSkyDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		depthSkyDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		depthSkyDesc.StencilEnable = FALSE;
 
-	D3D11_DEPTH_STENCIL_DESC depthDisabledDesc = {};
-	depthDisabledDesc.DepthEnable = FALSE;
-	depthDisabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthDisabledDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-	depthDisabledDesc.StencilEnable = FALSE;
+		if (FAILED(m_pDevice->CreateRasterizerState(&resterSkyDesc, &m_pSkyBoxResterizerState)))
+			return E_FAIL;
+		if (FAILED(m_pDevice->CreateDepthStencilState(&depthSkyDesc, &m_pSkyBoxDepthStencillState)))
+			return E_FAIL;
+	}
 
-	if (FAILED(m_pDevice->CreateDepthStencilState(&depthDisabledDesc, &m_pUIDepthStencilState)))
-		return E_FAIL;
+	// Default
+	{
+		D3D11_RASTERIZER_DESC resterDefaultDesc = {};
+		resterDefaultDesc.FillMode = D3D11_FILL_SOLID;
+		resterDefaultDesc.CullMode = D3D11_CULL_BACK;
+		resterDefaultDesc.FrontCounterClockwise = FALSE;
+		resterDefaultDesc.DepthClipEnable = TRUE;
+
+		D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
+		depthDefaultDesc.DepthEnable = TRUE;
+		depthDefaultDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthDefaultDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthDefaultDesc.StencilEnable = FALSE;
+
+		if (FAILED(m_pDevice->CreateRasterizerState(&resterDefaultDesc, &m_pMeshResterizerState)))
+			return E_FAIL;
+		if (FAILED(m_pDevice->CreateDepthStencilState(&depthDefaultDesc, &m_pMeshDepthStencilState)))
+			return E_FAIL;
+	}
+
+	// UI
+	{
+		D3D11_DEPTH_STENCIL_DESC depthDisabledDesc = {};
+		depthDisabledDesc.DepthEnable = FALSE;
+		depthDisabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthDisabledDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+		depthDisabledDesc.StencilEnable = FALSE;
+
+		if (FAILED(m_pDevice->CreateDepthStencilState(&depthDisabledDesc, &m_pUIDepthStencilState)))
+			return E_FAIL;
+	}
 
 	CDebug::Log(CDebug::MemoryUseLog());
 
@@ -223,6 +280,14 @@ void CScene::Render_Game()
 	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
 
+	if (m_pSkyBox)
+	{
+		m_pContext->RSSetState(m_pSkyBoxResterizerState);
+		m_pContext->OMSetDepthStencilState(m_pSkyBoxDepthStencillState, 0);
+
+		RenderSkyBox(m_lCameraList.back());
+	}
+
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if ((*it)->IsActive())
@@ -234,6 +299,7 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		(*it)->OnPreRender();
 
+	m_pContext->RSSetState(m_pMeshResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
@@ -259,6 +325,9 @@ void CScene::Render_Game()
 
 void CScene::SceneRelease()
 {
+	Safe_Release(m_pSkyBox);
+	m_pSkyBox = nullptr;
+
 	m_lCameraList.clear();
 	m_lLightList.clear();
 	m_lCanvasList.clear();
@@ -303,6 +372,12 @@ void CScene::SceneRelease()
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+}
+
+void CScene::RenderSkyBox(CCamera* _camera)
+{
+	if (m_pSkyBox)
+		m_pSkyBox->RenderSky(_camera);
 }
 
 void CScene::Set_SceneName(const wstring _name)

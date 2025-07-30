@@ -2,6 +2,7 @@
 
 #include "epch.h"
 #include "MeshBuffer.h"
+#include "SkyBox.h"
 
 NS_BEGIN(Engine)
 
@@ -27,6 +28,7 @@ private:
 	void Shutdown();
 
 private:
+	CSkyBox::SKYBOXBUFFERDESC FormatToSkyBoxDesc(wstring _name, wstring _format) const;
 	CMeshBuffer::TERRAINBUFFERDESC FormatToTerrainDesc(wstring _name, wstring _format) const;
 
 private:

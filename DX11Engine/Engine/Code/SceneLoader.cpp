@@ -166,6 +166,11 @@ void CSceneLoader::ThreadLoadingLoop()
 						newClip->Initiailize_Custom(animaitonInfoList[0], nullptr);
 				}
 			}
+			else if (wFile == L"SkyBox")
+			{
+				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
+				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
+			}
 			else if (wFile == L"Terrain")
 			{
 				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
@@ -190,6 +195,20 @@ void CSceneLoader::Shutdown()
 	WaitForSingleObject(m_hThread, INFINITE);
 	CloseHandle(m_hThread);
 	DeleteCriticalSection(&m_pCriticalSection);
+}
+
+CSkyBox::SKYBOXBUFFERDESC CSceneLoader::FormatToSkyBoxDesc(wstring _name, wstring _format) const
+{
+	CSkyBox::SKYBOXBUFFERDESC terrainDesc = {};
+
+	wstring texturePath = CEngineString::Erase(_format, L"[");
+	texturePath = CEngineString::Erase(texturePath, L"]");
+
+	CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", texturePath, nullptr, true));
+
+	terrainDesc.texture = _name + L" - Terrain Height map (Texture)";
+
+	return terrainDesc;
 }
 
 CMeshBuffer::TERRAINBUFFERDESC CSceneLoader::FormatToTerrainDesc(wstring _name, wstring _format) const

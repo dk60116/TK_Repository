@@ -39,6 +39,7 @@ private:
 
 	void PlayIdleAnimation();
 	void PlayWalkAnimation();
+	void PlaySideWalkAimation();
 	void PlayRunAnimation();
 	void PlayBackWalkAnimation();
 	

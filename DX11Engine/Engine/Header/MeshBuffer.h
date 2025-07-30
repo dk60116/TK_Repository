@@ -28,7 +28,7 @@ public:
 		wstring diffuseMapPath = L"";
 	};
 
-	typedef struct TerainMeshBufferDesctiption
+	typedef struct TerrainMeshBufferDesctiption
 	{
 		_bool isHeightMapBase = false;
 		_uint landscape = 100;

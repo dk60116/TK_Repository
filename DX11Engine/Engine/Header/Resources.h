@@ -142,8 +142,9 @@ inline T* CResources::CloneOnGame(const wstring& _name)
     T* proto = LoadOnGame<T>(_name);
 
     T* clone = T::Clone(*proto);
-
-    CSceneManager::GetInstance().Get_CrtScene()->Add_CloneResourece(clone);
+    
+    if (CSceneManager::GetInstance().Get_CrtScene())
+        CSceneManager::GetInstance().Get_CrtScene()->Add_CloneResourece(clone);
 
     return clone;
 }

@@ -34,6 +34,7 @@
 #include "SkinnedMeshRenderer.h"
 #include "Physics.h"
 #include "Animator.h"
+#include "SkyBox.h"
 #include "UIManager.h"
 #include "UI.h"
 #include "Canvas.h"
