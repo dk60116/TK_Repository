@@ -37,13 +37,14 @@ private:
 	void PlayerControle_LockOn();
 	void PlayerControle_AttackCombo();
 
-	void PlayIdleAnimation();
+	void PlayIdleAnimation(const _float _blending = 0.1f);
 	void PlayWalkAnimation();
-	void PlaySideWalkAimation();
-	void PlayRunAnimation();
+	void PlaySideWalkAimation(const _float _blending = 0.1f);
+	void PlayRunAnimation(const _float _blending = 0.1f);
 	void PlayBackWalkAnimation();
+	void PlayJumpAnimation(const _float _blending = 0.1f);
 	
-	void PlaySwordAnimation(_uint _index);
+	void PlaySwordAnimation();
 
 private:
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
@@ -66,5 +67,10 @@ private:
 	_bool m_bSwordActionDuring;
 
 	_float m_fSwordActionEndFrames[3];
+
+	_float m_fAttackComboNT;
+	_uint m_iAttackComboDest;
+
+	_bool m_bIsJump, m_bIsPrevJump;
 };
 

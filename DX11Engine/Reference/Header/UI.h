@@ -28,12 +28,12 @@ public:
 	CRectTransform* Get_RectTransform() const;
 
 public:
+	CCanvas* Get_Canvas() const;
 	void SetColor(ColorValue _color);
 	void SetAlpha(const _float _value);
 
 private:
 	const _bool Is_Canvas() const;
-	CCanvas* Get_Canvas() const;
 	void Set_Canvas(class CCanvas* _canvas);
 
 protected:

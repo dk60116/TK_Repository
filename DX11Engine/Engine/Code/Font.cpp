@@ -24,11 +24,17 @@ HRESULT CFont::Initialize(const wstring& _name, const wstring& _filePath, void* 
     ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
     ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 
-    m_pSpriteFont = new SpriteFont(device, _filePath.c_str());
+    wstring* path = nullptr;
+
+    if (_desc)
+        path = static_cast<wstring*>(_desc);
+
+    if (path)
+        m_pSpriteFont = new SpriteFont(device, (*path).c_str());
 
     if (!m_pSpriteFont)
     {
-        CDebug::LogError(L"Initialize Font Failed: " + _filePath);
+        CDebug::LogError(L"Initialize Font Failed: " + (*path));
         return E_FAIL;
     }
 

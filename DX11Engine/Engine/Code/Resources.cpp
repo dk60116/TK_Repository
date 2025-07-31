@@ -1403,7 +1403,9 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC duiMatDesc = { duiShader, false };
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc));
 
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"Sans (Font)", L"BinaryAssets/FontData/LiberationSans.spritefont", &duiMatDesc));
+	wstring dfPath = L"BinaryAssets/FontData/LiberationSans.spritefont";
+	CFont* defaultFont = CreateGameResource<CFont>(L"Sans (Font)", L"", &dfPath);
+	LoadResourceComplete_Game(defaultFont);
 }
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)

@@ -18,17 +18,19 @@ private:
 public:
 	HRESULT Initialize() override;
 	void Render_Editor() override;
-	void Render() override;
+	void RenderText();
 	void OnDestroy() override;
 
 public:
 	void Set_Font(class CFont* _font);
+	void Set_FontSize(const _float _size);
 	void Set_Text(wstring _text);
 	void Set_Text(string _text);
 
 private:
 	CFont* m_pFont;
 	wstring m_strText;
+	_float m_fFontSize;
 };
 
 NS_END

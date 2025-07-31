@@ -40,10 +40,19 @@ HRESULT CMainScene::Initialize()
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
 
-	CGameObject* textObject = Add_GameObject(L"Text");
-	CText* text = textObject->AddComponent<CText>();
-	text->Get_Transform()->SetParent(canvasObj->Get_Transform());
-	text->Set_Text(L"Hellow world!");
+	CGameObject* gameStartTextObject = Add_GameObject(L"Text");
+	CText* gameStartText = gameStartTextObject->AddComponent<CText>();
+	gameStartText->Get_Transform()->SetParent(canvasObj->Get_Transform());
+	gameStartText->Set_FontSize(6.f);
+	gameStartText->SetColor(ColorValue::white());
+	gameStartText->Set_Text(L"Start Game");
+
+	CGameObject* exitTextObject = Add_GameObject(L"Text");
+	CText* exitText = exitTextObject->AddComponent<CText>();
+	exitText->Get_Transform()->SetParent(canvasObj->Get_Transform());
+	exitText->Set_FontSize(5.f);
+	exitText->SetColor(ColorValue::white());
+	exitText->Set_Text(L"Exit");
 
 	return S_OK;
 }

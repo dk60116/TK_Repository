@@ -304,6 +304,19 @@ void CRectTransform::Set_AnchoredPosition(const _float _x, const _float _y)
     Set_AnchoredPosition(vector2(_x, _y));
 }
 
+const vector2 CRectTransform::Get_ScreenPosition() const
+{
+    CCanvas* canvas = m_pUI->Get_Canvas();
+
+    if (!canvas)
+        return vector2::zero();
+
+    const vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y) * 100.f;
+    const vector2 pivotPos = vector2(canvasSize.x * m_vPivot.x, canvasSize.y * m_vPivot.y) + m_vAnchoredPosition;
+
+    return pivotPos;
+}
+
 const _float CRectTransform::Get_Width() const
 {
     return m_fWidth;

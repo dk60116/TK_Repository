@@ -186,11 +186,17 @@ void CCamera::RenderUI()
 	{
 		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
 		{
-			if (auto img = dynamic_cast<CImage*>(*it))
+			if (CImage* img = dynamic_cast<CImage*>(*it))
+			{
 				img->Bind_UIMaterial();
-			(*it)->Bind_Matrix();
-			(*it)->Bind_Camera(inverseMat, projMat);
-			(*it)->Bind_Mesh();
+				(*it)->Bind_Matrix();
+				(*it)->Bind_Camera(inverseMat, projMat);
+				(*it)->Bind_Mesh();
+			}
+			else if (CText* txt = dynamic_cast<CText*>(*it))
+			{
+				txt->RenderText();
+			}
 		}
 	}
 
