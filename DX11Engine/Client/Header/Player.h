@@ -38,10 +38,7 @@ private:
 	void PlayerControle_AttackCombo();
 
 	void PlayIdleAnimation(const _float _blending = 0.1f);
-	void PlayWalkAnimation();
-	void PlaySideWalkAimation(const _float _blending = 0.1f);
-	void PlayRunAnimation(const _float _blending = 0.1f);
-	void PlayBackWalkAnimation();
+	void PlayMoveAnimation(const _float _blending = 0.1f);
 	void PlayJumpAnimation(const _float _blending = 0.1f);
 	
 	void PlaySwordAnimation();

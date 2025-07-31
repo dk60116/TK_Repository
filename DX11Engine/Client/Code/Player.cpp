@@ -126,10 +126,8 @@ void CPlayer::PlayerControle()
 	{
 		if (m_vMoveDirection == vector3::zero())
 			PlayIdleAnimation();
-		if (m_vMoveDirection.z > 0)
-			PlayRunAnimation();
-		else if (m_vMoveDirection.z < 0)
-			PlayBackWalkAnimation();
+		if (m_vMoveDirection.z != 0)
+			PlayMoveAnimation();
 	}
 
 	m_vMoveDirection = vector3::zero();
@@ -146,12 +144,7 @@ void CPlayer::PlayerControle()
 
 	if ((m_vMoveDirection.z != m_vPrevMoveDirectoin.z && m_vMoveDirection != vector3::zero()))
 	{
-		if (m_vMoveDirection.z > 0)
-		{
-			PlayRunAnimation();
-		}
-		else
-			PlayBackWalkAnimation();
+		PlayMoveAnimation();
 		m_pAnimator->Pause();
 	}
 
@@ -178,7 +171,7 @@ void CPlayer::PlayerControle()
 	if (CInput::GetInstance().GetKeyUp(W) || CInput::GetInstance().GetKeyUp(S))
 	{
 		if (m_fRotateDirection != 0.f)
-			PlayWalkAnimation();
+			PlayMoveAnimation();
 	}
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
@@ -186,7 +179,7 @@ void CPlayer::PlayerControle()
 		if (!CInput::GetInstance().GetKey(SHIFT))
 		{
 			if (m_fRotateDirection != 0.f)
-				PlayWalkAnimation();
+				PlayMoveAnimation();
 		}
 	}
 
@@ -226,7 +219,7 @@ void CPlayer::PlayerControle_NoneLockOn()
 	{
 		if (m_fRotateDirection != 0.f)
 		{
-			PlayWalkAnimation();
+			PlayMoveAnimation();
 			m_bNotMoveTurning = true;
 		}
 		else
@@ -264,10 +257,7 @@ void CPlayer::PlayerControle_LockOn()
 	{
 		if (m_vMoveDirection.z <= 0.f)
 		{
-			if (m_vMoveDirection.x == 0.f)
-				PlayBackWalkAnimation();
-			else
-				PlaySideWalkAimation();
+			PlayMoveAnimation();
 		}
 	}
 }
@@ -288,14 +278,9 @@ void CPlayer::PlayerControle_AttackCombo()
 		m_bSwordActionDuring = false;
 
 		if (m_vMoveDirection == vector3::zero())
-		{
 			PlayIdleAnimation(0.25f);
-		}
 		else
-		{
-			if (m_vMoveDirection.z > 0.f)
-				PlayRunAnimation(0.25f);
-		}
+			PlayMoveAnimation(0.25f);
 	}
 }
 
@@ -315,22 +300,7 @@ void CPlayer::PlayIdleAnimation(const _float _blending)
 	CDebug::Log("Idle");
 }
 
-void CPlayer::PlayWalkAnimation()
-{
-	if (m_bIsJump || m_bSwordActionDuring)
-		return;
-
-	if (m_pAnimator)
-	{
-		m_pAnimator->Play(L"Walk", 0.1f);
-	}
-
-	CDebug::Log("Walk");
-}
-
-
-
-void CPlayer::PlayRunAnimation(const _float _blending)
+void CPlayer::PlayMoveAnimation(const _float _blending)
 {
 	if (m_bIsJump || m_bSwordActionDuring)
 		return;
@@ -340,28 +310,31 @@ void CPlayer::PlayRunAnimation(const _float _blending)
 		m_pAnimator->SetLoop(true);
 
 		if (!m_bLockOnMode)
-			m_pAnimator->Play(L"Run", _blending);
+		{
+			if (m_vMoveDirection.z > 0.f)
+				m_pAnimator->Play(L"Run", _blending);
+			else if (m_vMoveDirection.z < 0.f)
+				m_pAnimator->Play(L"BackWalk", _blending);
+			else
+				m_pAnimator->Play(L"Walk", _blending);
+		}
 		else
-			m_pAnimator->Play(L"CombatRun", _blending);
+		{
+			if (m_vMoveDirection.z > 0.f)
+				m_pAnimator->Play(L"CombatRun", _blending);
+			else
+			{
+				if (m_vMoveDirection.x < 0.f)
+					m_pAnimator->Play(L"LeftWalk", _blending);
+				else if (m_vMoveDirection.x > 0.f)
+					m_pAnimator->Play(L"RightWalk", _blending);
+				else
+					m_pAnimator->Play(L"CombatBackWalk", _blending);
+			}
+		}
 	}
 
 	CDebug::Log("CombatRun");
-}
-
-void CPlayer::PlayBackWalkAnimation()
-{
-	if (m_bIsJump || m_bSwordActionDuring)
-		return;
-
-	if (m_pAnimator)
-	{
-		if (!m_bLockOnMode)
-			m_pAnimator->Play(L"BackWalk", 0.1f);
-		else
-			m_pAnimator->Play(L"CombatBackWalk", 0.1f);
-	}
-
-	CDebug::Log("CombatBackWalk");
 }
 
 void CPlayer::PlayJumpAnimation(const _float _blending)
