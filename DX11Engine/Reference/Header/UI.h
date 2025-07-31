@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component.h"
-
 #include "UIManager.h"
 
 NS_BEGIN(Engine)

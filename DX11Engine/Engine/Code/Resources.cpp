@@ -529,60 +529,69 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 
 HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 {
-	fs::path toolPath = fs::absolute(L"../../Engine/Tools/MakeSpriteFont.exe");
-	fs::path inputPath = fs::absolute(_filePath);
-	wstring fileName = inputPath.stem().wstring();
+	wchar_t absPath[MAX_PATH];
+	GetFullPathNameW(_filePath.c_str(), MAX_PATH, absPath, nullptr);
+	wstring fullInputPath(absPath);
+	wstring outputPath = fullInputPath.substr(0, fullInputPath.find_last_of(L'.')) + L".spritefont";
 
-	fs::path outputDir = L"BinaryAssets/FontData";
-	fs::create_directories(outputDir);
-	fs::path outPath = outputDir / (fileName + L".spritefont");
+	replace(fullInputPath.begin(), fullInputPath.end(), L'/', L'\\');
+	CDebug::Log(L"Try make Sprite font: " + fullInputPath);
 
-	// 유니코드 대응을 위한 임시 ASCII 경로
-	fs::path tempDir = fs::temp_directory_path() / L"SpriteFontTmp";
-	fs::create_directories(tempDir);
-	fs::path asciiInput = tempDir / (fileName + inputPath.extension().wstring());
+	// 경로 유효성 검사
+	if (fullInputPath.empty())
+		return E_INVALIDARG;
 
-	// 임시 경로로 폰트 복사
-	try {
-		fs::copy_file(inputPath, asciiInput, fs::copy_options::overwrite_existing);
-	}
-	catch (std::exception& e) {
-		CDebug::LogError("Failed to copy font to ASCII temp path: " + std::string(e.what()));
+	// 입력 파일 확장자 검사
+	std::wstring ext = fullInputPath.substr(fullInputPath.find_last_of(L'.') + 1);
+	if (ext != L"ttf" && ext != L"otf")
+		return E_FAIL;
+
+	// 출력 파일 경로 설정
+	outputPath = fullInputPath.substr(0, fullInputPath.find_last_of(L'.')) + L".spritefont";
+
+	// MakeSpriteFont.exe 실행 파일 경로
+	wstring toolPath = L"../../Engine/Tools/MakeSpriteFont.exe"; // 절대 경로로 수정 가능
+
+	// 명령줄 인수 설정
+	std::wstring cmdLine = L"\"" + toolPath + L"\" \"" + fullInputPath + L"\" \"" + outputPath + L"\" /FontSize:24 /CharacterRegion:32-126 /TextureFormat:Auto";
+
+	// 프로세스 실행
+	STARTUPINFOW si = {};
+	PROCESS_INFORMATION pi = {};
+	si.cb = sizeof(si);
+
+	BOOL success = CreateProcessW
+	(
+		nullptr,
+		&cmdLine[0],
+		nullptr,
+		nullptr,
+		FALSE,
+		CREATE_NO_WINDOW,
+		nullptr,
+		nullptr,
+		&si,
+		&pi
+	);
+
+	if (!success)
+	{
+		CDebug::LogError(L"Failed run process for MakeSpriteFont.exe: " + _filePath);
 		return E_FAIL;
 	}
 
-	// 툴 실행 커맨드 생성
-	wstring command = L"\"" + toolPath.wstring() + L"\" "
-		L"\"" + asciiInput.wstring() + L"\" "
-		L"\"" + fs::absolute(outPath).wstring() + L"\" "
-		L"/FontSize:32 /CharacterRegion:0x20-0x7E";
+	// 프로세스 종료 대기
+	WaitForSingleObject(pi.hProcess, INFINITE);
 
-	STARTUPINFOW si = { sizeof(si) };
-	PROCESS_INFORMATION pi;
+	DWORD exitCode = 0;
+	GetExitCodeProcess(pi.hProcess, &exitCode);
 
-	if (CreateProcessW(nullptr, &command[0], nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi))
-	{
-		WaitForSingleObject(pi.hProcess, INFINITE);
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 
-		if (fs::exists(outPath))
-		{
-			CDebug::Log("MakeSpriteFont success: " + CEngineString::WStringToString(outPath.wstring()));
-		}
-		else
-		{
-			CDebug::LogError("MakeSpriteFont executed but output file not found: " + CEngineString::WStringToString(outPath.wstring()));
-			return E_FAIL;
-		}
-	}
-	else
-	{
-		CDebug::LogError(L"Failed to launch MakeSpriteFont: " + _filePath);
-		return E_FAIL;
-	}
+	HRESULT hr = exitCode == 0 ? S_OK : E_FAIL;
 
-	return S_OK;
+	return hr;
 }
 
 HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
