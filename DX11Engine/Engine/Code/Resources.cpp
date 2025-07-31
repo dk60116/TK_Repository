@@ -1,6 +1,12 @@
 #include "epch.h"
 #include "Resources.h"
 
+#include <shlobj.h> 
+#include <shlwapi.h> 
+#include <tchar.h>
+
+#pragma comment(lib, "Shlwapi.lib")
+
 CResources::CResources()
 	: m_strDefaultAssetPath(L"../Assets/")
 	, m_strEngineFilePath(L"../EngineResource/")
@@ -529,69 +535,104 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 
 HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 {
-	wchar_t absPath[MAX_PATH];
-	GetFullPathNameW(_filePath.c_str(), MAX_PATH, absPath, nullptr);
-	wstring fullInputPath(absPath);
-	wstring outputPath = fullInputPath.substr(0, fullInputPath.find_last_of(L'.')) + L".spritefont";
+	// 1. 실행파일 위치 얻기
+	wchar_t exeDir[MAX_PATH] = {};
+	GetModuleFileNameW(NULL, exeDir, MAX_PATH);
+	PathRemoveFileSpecW(exeDir);
 
-	replace(fullInputPath.begin(), fullInputPath.end(), L'/', L'\\');
-	CDebug::Log(L"Try make Sprite font: " + fullInputPath);
+	// 2. 상대경로를 절대경로로 변환
+	wchar_t fullFontPath[MAX_PATH] = {};
+	wcscpy_s(fullFontPath, exeDir);
+	PathAppendW(fullFontPath, _filePath.c_str());
 
-	// 경로 유효성 검사
-	if (fullInputPath.empty())
-		return E_INVALIDARG;
-
-	// 입력 파일 확장자 검사
-	std::wstring ext = fullInputPath.substr(fullInputPath.find_last_of(L'.') + 1);
-	if (ext != L"ttf" && ext != L"otf")
-		return E_FAIL;
-
-	// 출력 파일 경로 설정
-	outputPath = fullInputPath.substr(0, fullInputPath.find_last_of(L'.')) + L".spritefont";
-
-	// MakeSpriteFont.exe 실행 파일 경로
-	wstring toolPath = L"../../Engine/Tools/MakeSpriteFont.exe"; // 절대 경로로 수정 가능
-
-	// 명령줄 인수 설정
-	std::wstring cmdLine = L"\"" + toolPath + L"\" \"" + fullInputPath + L"\" \"" + outputPath + L"\" /FontSize:24 /CharacterRegion:32-126 /TextureFormat:Auto";
-
-	// 프로세스 실행
-	STARTUPINFOW si = {};
-	PROCESS_INFORMATION pi = {};
-	si.cb = sizeof(si);
-
-	BOOL success = CreateProcessW
-	(
-		nullptr,
-		&cmdLine[0],
-		nullptr,
-		nullptr,
-		FALSE,
-		CREATE_NO_WINDOW,
-		nullptr,
-		nullptr,
-		&si,
-		&pi
-	);
-
-	if (!success)
+	wchar_t absoluteFontPath[MAX_PATH] = {};
+	if (!GetFullPathNameW(fullFontPath, MAX_PATH, absoluteFontPath, nullptr))
 	{
-		CDebug::LogError(L"Failed run process for MakeSpriteFont.exe: " + _filePath);
+		std::wcerr << L"GetFullPathName failed.\n";
 		return E_FAIL;
 	}
 
-	// 프로세스 종료 대기
-	WaitForSingleObject(pi.hProcess, INFINITE);
+	// 3. %WINDIR%\Fonts 폴더로 복사
+	wchar_t fontsDir[MAX_PATH] = {};
+	GetWindowsDirectoryW(fontsDir, MAX_PATH);
+	PathAppendW(fontsDir, L"Fonts");
 
+	const wchar_t* fontFileName = PathFindFileNameW(absoluteFontPath);
+	wchar_t installedFontPath[MAX_PATH] = {};
+	PathCombineW(installedFontPath, fontsDir, fontFileName);
+
+	if (!CopyFileW(absoluteFontPath, installedFontPath, FALSE))
+	{
+		std::wcerr << L"Failed to copy to Fonts folder. Error: " << GetLastError() << std::endl;
+		return E_FAIL;
+	}
+
+	// 4. 폰트 등록
+	if (AddFontResourceExW(installedFontPath, FR_NOT_ENUM, 0) == 0)
+	{
+		std::wcerr << L"AddFontResourceExW failed\n";
+		return E_FAIL;
+	}
+	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+
+	wstring fixPath = CEngineString::Replace(_filePath, L"/", L"\\");
+	auto splitPath = CEngineString::Split(_filePath, L"\\");
+	wstring onlyFileName = CEngineString::Split(splitPath[splitPath.size() - 1], L".")[0];
+
+	wstring outfilePath = L"BinaryAssets/FontData/" + onlyFileName + L".spritefont";
+	outfilePath = CEngineString::Replace(outfilePath, L"/", L"\\");
+
+	CDebug::Log(L"OutFilePath: " + outfilePath);
+
+	// 5. 출력 파일 경로 (예시로 동일 위치에 저장)
+	wchar_t spriteOutput[MAX_PATH] = {};
+	wcscpy_s(spriteOutput, exeDir);
+	PathAppendW(spriteOutput, outfilePath.c_str());
+
+	wchar_t outputFullPath[MAX_PATH] = {};
+	GetFullPathNameW(spriteOutput, MAX_PATH, outputFullPath, nullptr);
+
+	// 6. MakeSpriteFont.exe 실행 (폰트 이름으로 호출해야 함)
+	std::wstring cmdLine = L"\"";
+	cmdLine += exeDir;
+	cmdLine += L"\\..\\..\\Engine\\Tools\\MakeSpriteFont.exe\" /FontSize:32 /FontStyle:Regular ";
+	cmdLine += L"\"Liberation Sans\" ";  // 실제 폰트 패밀리 이름
+	cmdLine += L"\"" + std::wstring(outputFullPath) + L"\"";
+
+	std::wcout << L"[RUNNING]: " << cmdLine << std::endl;
+
+	STARTUPINFOW si{ sizeof(si) };
+	PROCESS_INFORMATION pi{};
+	std::vector<wchar_t> cmdBuf(cmdLine.begin(), cmdLine.end());
+	cmdBuf.push_back(L'\0');
+
+	if (!CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, exeDir, &si, &pi))
+	{
+		std::wcerr << L"CreateProcess failed. Error: " << GetLastError() << std::endl;
+		RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
+		DeleteFileW(installedFontPath);
+		return E_FAIL;
+	}
+
+	WaitForSingleObject(pi.hProcess, INFINITE);
 	DWORD exitCode = 0;
 	GetExitCodeProcess(pi.hProcess, &exitCode);
-
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
 
-	HRESULT hr = exitCode == 0 ? S_OK : E_FAIL;
+	// 7. 폰트 제거 및 파일 삭제
+	RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
+	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+	DeleteFileW(installedFontPath);
 
-	return hr;
+	if (exitCode != 0)
+	{
+		std::wcerr << L"MakeSpriteFont.exe failed with exit code: " << exitCode << std::endl;
+		return E_FAIL;
+	}
+
+	std::wcout << L"SpriteFont successfully created at: " << outputFullPath << std::endl;
+	return S_OK;
 }
 
 HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
@@ -1362,7 +1403,7 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC duiMatDesc = { duiShader, false };
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc));
 
-	//LoadResourceComplete_Game(CreateGameResource());
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"Sans (Font)", L"BinaryAssets/FontData/LiberationSans.spritefont", &duiMatDesc));
 }
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)

@@ -39,4 +39,5 @@
 #include "UI.h"
 #include "Canvas.h"
 #include "Image.h"
+#include "Text.h"
 #include "Font.h"

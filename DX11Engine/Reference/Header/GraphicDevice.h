@@ -33,6 +33,7 @@ public:
 public:
 	ID3D11Device* Get_Device() const;
 	ID3D11DeviceContext* Get_Context() const;
+	SpriteBatch* Get_SpriteBatch() const;
 
 	HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin = vector2Int::zero(), vector2Int _offsetMax = vector2Int::zero());
 

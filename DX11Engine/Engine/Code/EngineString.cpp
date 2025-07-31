@@ -148,29 +148,29 @@ wstring CEngineString::Erase(const wstring& _wstr, const wstring& _target)
     return result;
 }
 
-string CEngineString::Replace(const string& _str, const string& dest, const string& target)
+string CEngineString::Replace(const string& _str, const string& _dest, const string& _target)
 {
     std::string result = _str;
     size_t pos = 0;
 
-    while ((pos = result.find(dest, pos)) != std::string::npos)
+    while ((pos = result.find(_dest, pos)) != std::string::npos)
     {
-        result.replace(pos, dest.length(), target);
-        pos += target.length();
+        result.replace(pos, _dest.length(), _target);
+        pos += _target.length();
     }
 
     return result;
 }
 
-wstring CEngineString::Replace(const wstring& _wstr, const wstring& dest, const wstring& target)
+wstring CEngineString::Replace(const wstring& _wstr, const wstring& _dest, const wstring& _target)
 {
     wstring result = _wstr;
     size_t pos = 0;
 
-    while ((pos = result.find(dest, pos)) != std::wstring::npos)
+    while ((pos = result.find(_dest, pos)) != std::wstring::npos)
     {
-        result.replace(pos, dest.length(), target);
-        pos += target.length();
+        result.replace(pos, _dest.length(), _target);
+        pos += _target.length();
     }
 
     return result;

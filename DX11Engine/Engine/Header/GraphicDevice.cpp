@@ -186,6 +186,11 @@ ID3D11DeviceContext* CGraphicDevice::Get_Context() const
 	return m_pContext;
 }
 
+SpriteBatch* CGraphicDevice::Get_SpriteBatch() const
+{
+	return m_pSpriteBatch;
+}
+
 HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin, vector2Int _offsetMax)
 {
 	SwapChainSet sc{};

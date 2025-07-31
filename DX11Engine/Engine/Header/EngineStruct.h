@@ -1144,6 +1144,11 @@ namespace Engine
             return _float4(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
         }
 
+        const _vector toXMVector() const
+        {
+            return XMVectorSet(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
+        }
+
         //COLORREF rColor() const
         //{
         //    return RGB(r, g, b); 

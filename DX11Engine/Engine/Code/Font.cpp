@@ -2,12 +2,18 @@
 #include "Font.h"
 
 CFont::CFont()
+    : m_pSpriteFont(nullptr)
 {
 }
 
 CFont::~CFont()
 {
     OnDestroy();
+}
+
+CFont* CFont::Create()
+{
+    return new CFont();
 }
 
 HRESULT CFont::Initialize(const wstring& _name, const wstring& _filePath, void* _desc)
@@ -20,6 +26,12 @@ HRESULT CFont::Initialize(const wstring& _name, const wstring& _filePath, void* 
 
     m_pSpriteFont = new SpriteFont(device, _filePath.c_str());
 
+    if (!m_pSpriteFont)
+    {
+        CDebug::LogError(L"Initialize Font Failed: " + _filePath);
+        return E_FAIL;
+    }
+
     return S_OK;
 }
 
@@ -30,4 +42,9 @@ void CFont::OnDestroy()
         delete m_pSpriteFont;
         m_pSpriteFont = nullptr;
     }
+}
+
+SpriteFont* CFont::Get_SpriteFont() const
+{
+    return m_pSpriteFont;
 }

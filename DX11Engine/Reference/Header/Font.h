@@ -16,6 +16,13 @@ protected:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 
+public:
+	void Render();
+
+public:
+	SpriteFont* Get_SpriteFont() const;
+
+private:
 	SpriteFont* m_pSpriteFont;
 };
 

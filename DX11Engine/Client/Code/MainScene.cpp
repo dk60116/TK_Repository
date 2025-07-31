@@ -40,6 +40,11 @@ HRESULT CMainScene::Initialize()
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
 
+	CGameObject* textObject = Add_GameObject(L"Text");
+	CText* text = textObject->AddComponent<CText>();
+	text->Get_Transform()->SetParent(canvasObj->Get_Transform());
+	text->Set_Text(L"Hellow world!");
+
 	return S_OK;
 }
 
