@@ -42,7 +42,7 @@ void CAnimator::Awake()
 {
 	if (!m_pSkinnedRenderer)
 	{
-		m_pSkinnedRenderer = m_pGameObject->Get_Transform()->Get_Child(0)->Get_GameObject()->GetComponent<CSkinnedMeshRenderer>();
+		//m_pSkinnedRenderer = m_pGameObject->Get_Transform()->Get_Child(0)->Get_GameObject()->GetComponent<CSkinnedMeshRenderer>();
 
 		if (m_pSkinnedRenderer)
 			m_pSkinnedRenderer->AddRef();
