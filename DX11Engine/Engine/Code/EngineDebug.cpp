@@ -108,7 +108,7 @@ void CDebug::Log(const string format, ...)
     fflush(stdout);
 }
 
-void CDebug::Log(const wstring format, ...)
+void CDebug::Log(const wstring& format, ...)
 {
     Log(CEngineString::WStringToString(format));
 }
@@ -119,6 +119,16 @@ void CDebug::Log(const _bool format, ...)
 }
 
 void CDebug::Log(const _int format, ...)
+{
+    Log(to_string(format));
+}
+
+void CDebug::Log(const _uint format, ...)
+{
+    Log(to_string(format));
+}
+
+void CDebug::Log(const size_t format, ...)
 {
     Log(to_string(format));
 }
@@ -236,7 +246,7 @@ void CDebug::LogError(const string format, ...)
     SetConsoleTextAttribute(hConsole, saved_attributes);
 }
 
-void CDebug::LogError(const wstring format, ...)
+void CDebug::LogError(const wstring& format, ...)
 {
     LogError(CEngineString::WStringToString(format));
 }
@@ -247,6 +257,16 @@ void CDebug::LogError(const _bool format, ...)
 }
 
 void CDebug::LogError(const _int format, ...)
+{
+    LogError(to_string(format));
+}
+
+void CDebug::LogError(const _uint format, ...)
+{
+    LogError(to_string(format));
+}
+
+void CDebug::LogError(const size_t format, ...)
 {
     LogError(to_string(format));
 }
@@ -318,7 +338,7 @@ void CDebug::LogWarnning(const string format, ...)
     SetConsoleTextAttribute(hConsole, saved_attributes);
 }
 
-void CDebug::LogWarnning(const wstring format, ...)
+void CDebug::LogWarnning(const wstring& format, ...)
 {
     LogWarnning(CEngineString::WStringToString(format));
 }
@@ -329,6 +349,16 @@ void CDebug::LogWarnning(const _bool format, ...)
 }
 
 void CDebug::LogWarnning(const _int format, ...)
+{
+    LogWarnning(to_string(format));
+}
+
+void CDebug::LogWarnning(const _uint format, ...)
+{
+    LogWarnning(to_string(format));
+}
+
+void CDebug::LogWarnning(const size_t format, ...)
 {
     LogWarnning(to_string(format));
 }

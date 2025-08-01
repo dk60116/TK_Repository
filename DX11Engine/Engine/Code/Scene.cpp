@@ -187,15 +187,16 @@ void CScene::Update_Editor()
 
 		//CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
 
-		CDebug::LogError("Ray Origin & Dir");
-		CDebug::LogError(ray.origin);
-		CDebug::LogError(ray.dir);
-		CDebug::LogError("HitPos");
-		CDebug::LogError(firstHit.hitPos);
-		CDebug::LogError(firstHit.object->Get_ObjectName());
 
 		if (CInput::GetInstance().GetKey_Editor(CONTROL))
 		{
+			CDebug::LogError("Ray Origin & Dir");
+			CDebug::LogError(ray.origin);
+			CDebug::LogError(ray.dir);
+			CDebug::LogError("HitPos");
+			CDebug::LogError(firstHit.hitPos);
+			CDebug::LogError(firstHit.object->Get_ObjectName());
+
 			CGameObject* newObj = Add_GameObject(L"AddObj");
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
 			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));

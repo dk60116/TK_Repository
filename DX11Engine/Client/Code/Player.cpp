@@ -294,7 +294,7 @@ void CPlayer::PlayIdleAnimation(const _float _blending)
 			m_pAnimator->Play(L"CombatIdle", _blending);
 	}
 
-	CDebug::Log("Idle");
+	//CDebug::Log("Idle");
 }
 
 void CPlayer::PlayMoveAnimation(const _float _blending)
@@ -333,7 +333,7 @@ void CPlayer::PlayMoveAnimation(const _float _blending)
 		}
 	}
 
-	CDebug::Log("CombatRun");
+	//CDebug::Log("CombatRun");
 }
 
 void CPlayer::PlayJumpAnimation(const _float _blending)
@@ -347,7 +347,7 @@ void CPlayer::PlayJumpAnimation(const _float _blending)
 		m_pAnimator->Play(L"Jump", _blending);
 	}
 
-	CDebug::Log("Jump");
+	//CDebug::Log("Jump");
 }
 
 void CPlayer::PlaySwordAnimation()
@@ -361,5 +361,5 @@ void CPlayer::PlaySwordAnimation()
 		m_pAnimator->Play(L"SwordCombo", 0.1f);
 	}
 
-	CDebug::Log("SwordCombo");
+	//CDebug::Log("SwordCombo");
 }

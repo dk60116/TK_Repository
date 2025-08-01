@@ -25,6 +25,12 @@
     <Filter Include="Scripts\Object\Weapons\Swords">
       <UniqueIdentifier>{4875964f-b372-481b-85e5-a697977c75c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Monsters">
+      <UniqueIdentifier>{b429eb31-5b1a-4116-925e-90de21a678c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Monsters\Woolf">
+      <UniqueIdentifier>{b607f882-87d4-4497-9fb1-8ffd9ac63b8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -63,6 +69,12 @@
     <ClInclude Include="..\Header\WoodenSword.h">
       <Filter>Scripts\Object\Weapons\Swords</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Monster.h">
+      <Filter>Scripts\Object\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Wolf.h">
+      <Filter>Scripts\Object\Monsters\Woolf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -94,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\WoodenSword.cpp">
       <Filter>Scripts\Object\Weapons\Swords</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Monster.cpp">
+      <Filter>Scripts\Object\Monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Wolf.cpp">
+      <Filter>Scripts\Object\Monsters\Woolf</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

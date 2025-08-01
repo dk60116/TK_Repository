@@ -2,12 +2,14 @@
 #include "GameScene.h"
 #include "Player.h"
 #include "PlayerCamera.h"
+#include "Wolf.h"
 
 CGameScene::CGameScene()
 	: m_pPlayerCamera(nullptr)
 	, m_pDirLight(nullptr)
 	, m_pCanvas(nullptr)
 	, m_pPlayer(nullptr)
+	, m_vMonsters({})
 {
 }
 
@@ -47,6 +49,10 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
 	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"));
+
+	CGameObject* woolfObject = Add_GameObject(L"Wolf");
+	CWolf* woolf = woolfObject->AddComponent<CWolf>();
+
 
 	return S_OK;
 }

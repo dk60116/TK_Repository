@@ -18,5 +18,7 @@ private:
 	CLight* m_pDirLight;
 	CCanvas* m_pCanvas;
 	class CPlayer* m_pPlayer;
+
+	vector <class CMonster*> m_vMonsters;
 };
 

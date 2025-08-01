@@ -40,14 +40,14 @@ HRESULT CMainScene::Initialize()
 
 	ImageObject2->Get_Transform()->SetParent(image->Get_Transform());
 
-	CGameObject* gameStartTextObject = Add_GameObject(L"Text");
+	CGameObject* gameStartTextObject = Add_GameObject(L"Game Start Text");
 	CText* gameStartText = gameStartTextObject->AddComponent<CText>();
 	gameStartText->Get_Transform()->SetParent(canvasObj->Get_Transform());
 	gameStartText->Set_FontSize(6.f);
 	gameStartText->SetColor(ColorValue::white());
 	gameStartText->Set_Text(L"Start Game");
 
-	CGameObject* exitTextObject = Add_GameObject(L"Text");
+	CGameObject* exitTextObject = Add_GameObject(L"Exit Text");
 	CText* exitText = exitTextObject->AddComponent<CText>();
 	exitText->Get_Transform()->SetParent(canvasObj->Get_Transform());
 	exitText->Set_FontSize(5.f);
