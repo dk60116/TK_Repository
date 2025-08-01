@@ -169,6 +169,9 @@
     <ClInclude Include="..\Header\Font.h">
       <Filter>Resource\Font</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\NaviMesh.h">
+      <Filter>Resource\MeshBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -451,6 +454,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Font.cpp">
       <Filter>Resource\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\NaviMesh.cpp">
+      <Filter>Resource\MeshBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

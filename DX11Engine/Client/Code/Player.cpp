@@ -168,10 +168,9 @@ void CPlayer::PlayerControle()
 	if (m_bSwordActionDuring)
 		m_fCrtMoveSpeed = m_sPlayerStatus.moveSpeed * 0.3f;
 
-	if (CInput::GetInstance().GetKeyUp(W) || CInput::GetInstance().GetKeyUp(S))
+	if (m_vMoveDirection != m_vPrevMoveDirectoin)
 	{
-		if (m_fRotateDirection != 0.f)
-			PlayMoveAnimation();
+		PlayMoveAnimation();
 	}
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
@@ -266,8 +265,6 @@ void CPlayer::PlayerControle_AttackCombo()
 {
 	m_fAttackComboNT += DELTA_TIME;
 
-	CDebug::LogError(m_fAttackComboNT);
-
 	_float dest = 0.f;
 
 	dest = m_fSwordActionEndFrames[m_iAttackComboDest];
@@ -315,7 +312,7 @@ void CPlayer::PlayMoveAnimation(const _float _blending)
 				m_pAnimator->Play(L"Run", _blending);
 			else if (m_vMoveDirection.z < 0.f)
 				m_pAnimator->Play(L"BackWalk", _blending);
-			else
+			else if (m_fRotateDirection != 0)
 				m_pAnimator->Play(L"Walk", _blending);
 		}
 		else
@@ -328,8 +325,10 @@ void CPlayer::PlayMoveAnimation(const _float _blending)
 					m_pAnimator->Play(L"LeftWalk", _blending);
 				else if (m_vMoveDirection.x > 0.f)
 					m_pAnimator->Play(L"RightWalk", _blending);
-				else
+				else if (m_vMoveDirection.z < 0.f)
 					m_pAnimator->Play(L"CombatBackWalk", _blending);
+				else
+					m_pAnimator->Play(L"Idle", _blending);
 			}
 		}
 	}

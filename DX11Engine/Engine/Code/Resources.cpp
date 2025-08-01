@@ -548,7 +548,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	wchar_t absoluteFontPath[MAX_PATH] = {};
 	if (!GetFullPathNameW(fullFontPath, MAX_PATH, absoluteFontPath, nullptr))
 	{
-		std::wcerr << L"GetFullPathName failed.\n";
+		CDebug::LogError("GetFullPathName failed.");
 		return E_FAIL;
 	}
 
@@ -563,14 +563,14 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 
 	if (!CopyFileW(absoluteFontPath, installedFontPath, FALSE))
 	{
-		std::wcerr << L"Failed to copy to Fonts folder. Error: " << GetLastError() << std::endl;
+		CDebug::LogError(L"Failed to copy to Fonts folder. Error: " + GetLastError());
 		return E_FAIL;
 	}
 
 	// 4. 폰트 등록
 	if (AddFontResourceExW(installedFontPath, FR_NOT_ENUM, 0) == 0)
 	{
-		std::wcerr << L"AddFontResourceExW failed\n";
+		CDebug::LogError("AddFontResourceExW failed");
 		return E_FAIL;
 	}
 	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
@@ -593,22 +593,22 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	GetFullPathNameW(spriteOutput, MAX_PATH, outputFullPath, nullptr);
 
 	// 6. MakeSpriteFont.exe 실행 (폰트 이름으로 호출해야 함)
-	std::wstring cmdLine = L"\"";
+	wstring cmdLine = L"\"";
 	cmdLine += exeDir;
 	cmdLine += L"\\..\\..\\Engine\\Tools\\MakeSpriteFont.exe\" /FontSize:32 /FontStyle:Regular ";
 	cmdLine += L"\"Liberation Sans\" ";  // 실제 폰트 패밀리 이름
-	cmdLine += L"\"" + std::wstring(outputFullPath) + L"\"";
+	cmdLine += L"\"" + wstring(outputFullPath) + L"\"";
 
-	std::wcout << L"[RUNNING]: " << cmdLine << std::endl;
+	CDebug::Log(L"[RUNNING]: " + cmdLine);
 
 	STARTUPINFOW si{ sizeof(si) };
 	PROCESS_INFORMATION pi{};
-	std::vector<wchar_t> cmdBuf(cmdLine.begin(), cmdLine.end());
+	vector<wchar_t> cmdBuf(cmdLine.begin(), cmdLine.end());
 	cmdBuf.push_back(L'\0');
 
 	if (!CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, exeDir, &si, &pi))
 	{
-		std::wcerr << L"CreateProcess failed. Error: " << GetLastError() << std::endl;
+		CDebug::LogError(L"CreateProcess failed. Error: " + GetLastError());
 		RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
 		DeleteFileW(installedFontPath);
 		return E_FAIL;
@@ -627,11 +627,12 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 
 	if (exitCode != 0)
 	{
-		std::wcerr << L"MakeSpriteFont.exe failed with exit code: " << exitCode << std::endl;
+		CDebug::LogError("MakeSpriteFont.exe failed with exit code: " + exitCode);
 		return E_FAIL;
 	}
 
-	std::wcout << L"SpriteFont successfully created at: " << outputFullPath << std::endl;
+	CDebug::Log(L"SpriteFont successfully created at: " + wstring(outputFullPath));
+	
 	return S_OK;
 }
 
