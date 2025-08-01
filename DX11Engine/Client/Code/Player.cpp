@@ -126,7 +126,7 @@ void CPlayer::PlayerControle()
 	{
 		if (m_vMoveDirection == vector3::zero())
 			PlayIdleAnimation();
-		if (m_vMoveDirection.z != 0)
+		else
 			PlayMoveAnimation();
 	}
 
