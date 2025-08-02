@@ -15,6 +15,7 @@ protected:
 
 private:
 	static CMeshFilter* Create();
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;

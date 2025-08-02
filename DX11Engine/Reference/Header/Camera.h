@@ -18,6 +18,7 @@ protected:
 
 private:
 	static CCamera* Create();
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;
@@ -62,6 +63,9 @@ protected:
 
 	vector<CRenderer*> m_vMeshList;
 	vector<CUI*> m_vUIList;
+
+private:
+	static const ColorValue s_vDefaultCameraColor;
 };
 
 NS_END

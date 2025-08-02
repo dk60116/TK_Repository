@@ -1,11 +1,13 @@
 #include "epch.h"
 #include "Camera.h"
 
+const ColorValue CCamera::s_vDefaultCameraColor = ColorValue(49, 77, 121, 255);
+
 CCamera::CCamera()
 	: m_eCamViewMode()
 	, m_vViewMatrix()
 	, m_vProjMatrix()
-	, m_vBackgroundColor(ColorValue(49, 77, 121, 255))
+	, m_vBackgroundColor(s_vDefaultCameraColor)
 	, m_fAspect(1.f)
 	, m_fNear(0.1f)
 	, m_fFar(600.f)
@@ -24,6 +26,21 @@ CCamera::~CCamera()
 CCamera* CCamera::Create()
 {
 	return new CCamera();
+}
+
+CComponent* CCamera::Clone() const
+{
+	CCamera* clone = new CCamera();
+
+	clone->m_eCamViewMode = this->m_eCamViewMode;
+	clone->m_vBackgroundColor = s_vDefaultCameraColor;
+	clone->m_fAspect = this->m_fAspect;
+	clone->m_fNear = this->m_fNear;
+	clone->m_fFar = this->m_fFar;
+	clone->m_fFieldOfView = this->m_fFieldOfView;
+	clone->m_fSize = this->m_fSize;
+
+	return clone;
 }
 
 HRESULT CCamera::Initialize()

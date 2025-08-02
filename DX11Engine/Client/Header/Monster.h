@@ -19,6 +19,8 @@ public:
 
 protected:
 	wstring m_strSkinnedMeshBufferName;
+	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
+	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;
 };
 

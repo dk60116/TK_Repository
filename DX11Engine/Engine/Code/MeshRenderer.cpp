@@ -17,6 +17,13 @@ CMeshRenderer* CMeshRenderer::Create()
 	return new CMeshRenderer();
 }
 
+CComponent* CMeshRenderer::Clone() const
+{
+	CMeshRenderer* clone = new CMeshRenderer();
+
+	return clone;
+}
+
 HRESULT CMeshRenderer::Initialize()
 {
 	if (FAILED(__super::Initialize()))

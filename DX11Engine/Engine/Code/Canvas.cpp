@@ -19,6 +19,15 @@ CCanvas* CCanvas::Create()
 	return newCanvas;
 }
 
+CComponent* CCanvas::Clone() const
+{
+	CCanvas* clone = new CCanvas();
+
+	clone->m_eRenderMode = this->m_eRenderMode;
+
+	return clone;
+}
+
 HRESULT CCanvas::Initialize()
 {
 	if (FAILED(__super::Initialize()))

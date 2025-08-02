@@ -12,6 +12,9 @@ protected:
 	CComponent();
 	~CComponent();
 
+protected:
+	virtual CComponent* Clone() const PURE;
+
 public:
 	virtual HRESULT Initialize();
 	void ComponentRelease();

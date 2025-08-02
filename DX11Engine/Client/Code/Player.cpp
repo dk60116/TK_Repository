@@ -38,6 +38,13 @@ CPlayer* CPlayer::Create()
 	return new CPlayer();
 }
 
+CComponent* CPlayer::Clone() const
+{
+	CPlayer* clone = new CPlayer();
+
+	return clone;
+}
+
 HRESULT CPlayer::Initialize()
 {
 	if (FAILED(__super::Initialize()))
@@ -289,9 +296,16 @@ void CPlayer::PlayIdleAnimation(const _float _blending)
 	if (m_pAnimator)
 	{
 		if (!m_bLockOnMode)
+		{
 			m_pAnimator->Play(L"Idle", _blending);
+			CDebug::Log("Idle");
+		}
 		else
+		{
 			m_pAnimator->Play(L"CombatIdle", _blending);
+
+			CDebug::Log("Combat Idle");
+		}
 	}
 
 	//CDebug::Log("Idle");
@@ -328,7 +342,7 @@ void CPlayer::PlayMoveAnimation(const _float _blending)
 				else if (m_vMoveDirection.z < 0.f)
 					m_pAnimator->Play(L"CombatBackWalk", _blending);
 				else
-					m_pAnimator->Play(L"Idle", _blending);
+					PlayIdleAnimation(_blending);
 			}
 		}
 	}

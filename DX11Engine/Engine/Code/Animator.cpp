@@ -23,11 +23,33 @@ CAnimator::CAnimator()
 
 CAnimator::~CAnimator()
 {
+
 }
 
 CAnimator* CAnimator::Create()
 {
 	return new CAnimator();
+}
+
+CComponent* CAnimator::Clone() const
+{
+	CAnimator* clone = new CAnimator();
+
+	clone->m_pCrtAnimation = this->m_pCrtAnimation;
+	clone->m_pNextAnimation = this->m_pNextAnimation;
+	clone->m_bIsPlaying = this->m_bIsPlaying;
+	clone->m_fCurrentTime = this->m_fCurrentTime;
+	clone->m_fBlendTime = this->m_fBlendTime;
+	clone->m_fBlendDuration = this->m_fBlendDuration;
+	clone->m_fPlaybackSpeed = this->m_fPlaybackSpeed;
+	clone->m_vFinalBoneMatrix = this->m_vFinalBoneMatrix;
+	clone->m_mBlendStartPose = this->m_mBlendStartPose;
+	clone->m_sStateInfo = this->m_sStateInfo;
+
+	for (TRAVERSAL_ITER(this->m_mAnimationList, it))
+		clone->Add_Animation((*it).first, (*it).second);
+
+	return clone;
 }
 
 HRESULT CAnimator::Initialize()
@@ -42,7 +64,7 @@ void CAnimator::Awake()
 {
 	if (!m_pSkinnedRenderer)
 	{
-		//m_pSkinnedRenderer = m_pGameObject->Get_Transform()->Get_Child(0)->Get_GameObject()->GetComponent<CSkinnedMeshRenderer>();
+		m_pSkinnedRenderer = m_pGameObject->Get_Transform()->Get_Child(0)->Get_GameObject()->GetComponent<CSkinnedMeshRenderer>();
 
 		if (m_pSkinnedRenderer)
 			m_pSkinnedRenderer->AddRef();
@@ -173,6 +195,12 @@ void CAnimator::Set_PlaybackSpeed(const _float _value)
 
 void CAnimator::Play()
 {
+	if (!m_pSkinnedRenderer)
+	{
+		CDebug::LogError(L"Animator play failed - Skinned renderer is nullptr: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
 	if (m_pCrtAnimation)
 		m_bIsPlaying = true;
 }
@@ -180,6 +208,12 @@ void CAnimator::Play()
 void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 {
 	auto iter = m_mAnimationList.find(_animName);
+
+	if (!m_pSkinnedRenderer)
+	{
+		CDebug::LogError(L"Animator play failed - Skinned renderer is nullptr: " + _animName + L" - " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
 
 	if (iter == m_mAnimationList.end())
 	{

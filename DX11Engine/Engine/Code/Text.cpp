@@ -19,6 +19,19 @@ CText* CText::Create()
     return new CText();
 }
 
+CComponent* CText::Clone() const
+{
+    CText* clone = new CText();
+
+    clone->m_strText = this->m_strText;
+    clone->m_fFontSize = this->m_fFontSize;
+
+    if (this->m_pFont)
+        clone->Set_Font(this->m_pFont);
+
+    return clone;
+}
+
 HRESULT CText::Initialize()
 {
 	if (FAILED(__super::Initialize()))

@@ -84,133 +84,121 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 		aiProcess_FlipUVs
 	);
 
-	if (!aiScene)
+	if (!aiScene || !aiScene->HasMeshes())
 	{
-		CDebug::LogError(L"Failed create mesh buffer - Can not create AIScene: " + _filePath);
-		return E_FAIL;
-	};
-
-	if (!aiScene->HasMeshes())
-	{
-		CDebug::LogError(L"Failed create mesh buffer - AIScene not has meshes: " + _filePath);
+		CDebug::LogError(L"Failed create mesh buffer - Invalid scene: " + _filePath);
 		return E_FAIL;
 	}
 
 	using VTX = VertexTexNormalTangentBuffer;
+	const bool hasMaterial = aiScene->HasMaterials();
 
-	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList = {};
+	vector<aiMatrix4x4> meshGlobalMats(aiScene->mNumMeshes, aiMatrix4x4());
 
-	if (!aiScene)
+	function<void(aiNode*, const aiMatrix4x4&)> BuildMeshTransforms =
+		[&](aiNode* node, const aiMatrix4x4& parent)
+		{
+			aiMatrix4x4 current = parent * node->mTransformation;
+			for (_uint m = 0; m < node->mNumMeshes; ++m)
+				meshGlobalMats[node->mMeshes[m]] = current;
+
+			for (_uint c = 0; c < node->mNumChildren; ++c)
+				BuildMeshTransforms(node->mChildren[c], current);
+		};
+	BuildMeshTransforms(aiScene->mRootNode, aiMatrix4x4());
+
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
+
+	for (_uint mi = 0; mi < aiScene->mNumMeshes; ++mi)
 	{
-		OutputDebugStringA("Assimp load failed or mesh index out of bounds.\n");
-		return E_FAIL;
-	}
+		const aiMesh* mesh = aiScene->mMeshes[mi];
+		const aiMatrix4x4& gMat = meshGlobalMats[mi];
+		aiMatrix3x3        gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
 
-	const _bool hasMaterial = aiScene->HasMaterials();
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
+		info.meshName = CMeshBuffer::FindMeshName(aiScene, mi);
 
-	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
-	{
-		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
-
-		const aiMesh* mesh = aiScene->mMeshes[i];
-
-		info.meshName = CMeshBuffer::FindMeshName(aiScene, i);
-
-		vector<VTX> vertices;
+		vector<VTX>      vertices;
 		vector<_uint> indices;
 
-		// 정점 복사
-		for (_uint j = 0; j < mesh->mNumVertices; ++j)
+		vertices.reserve(mesh->mNumVertices);
+		for (_uint v = 0; v < mesh->mNumVertices; ++v)
 		{
-			VTX v{};
-			v.position = 
-			{
-				mesh->mVertices[j].x,
-				mesh->mVertices[j].y,
-				mesh->mVertices[j].z
-			};
+			aiVector3D p = gMat * mesh->mVertices[v];
+			aiVector3D n = mesh->HasNormals()
+				? gMat3 * mesh->mNormals[v]
+				: aiVector3D(0, 0, 0);
+			aiVector3D t = mesh->HasTangentsAndBitangents()
+				? gMat3 * mesh->mTangents[v]
+				: aiVector3D(0, 0, 0);
 
-			v.normal = mesh->HasNormals() ?
-				_float3{ mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z } :
-				_float3{ 0, 0, 0 };
+			VTX vert{};
+			vert.position = { p.x, p.y, p.z };
+			vert.normal = { n.x, n.y, n.z };
+			vert.tangent = { t.x, t.y, t.z };
+			vert.uv = mesh->HasTextureCoords(0)
+				? _float2{ mesh->mTextureCoords[0][v].x,
+						   mesh->mTextureCoords[0][v].y }
+			: _float2{ 0, 0 };
 
-			v.uv = mesh->HasTextureCoords(0) ?
-				_float2{ mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y } :
-				_float2{ 0, 0 };
-
-			v.tangent = mesh->HasTangentsAndBitangents() ?
-				_float3{ mesh->mTangents[j].x, mesh->mTangents[j].y, mesh->mTangents[j].z } :
-				_float3{ 0, 0, 0 };
-
-			vertices.emplace_back(v);
+			vertices.emplace_back(vert);
 		}
 
-		// 인덱스 복사
 		for (_uint f = 0; f < mesh->mNumFaces; ++f)
 		{
 			const aiFace& face = mesh->mFaces[f];
-			if (face.mNumIndices != 3) continue;
-			indices.push_back(face.mIndices[0]);
-			indices.push_back(face.mIndices[1]);
-			indices.push_back(face.mIndices[2]);
+			if (face.mNumIndices == 3)     
+			{
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
 		}
 
-		// 버퍼 정보 세팅
+		/* 3-3. 버퍼 desc + 데이터 저장 */
 		CMeshBuffer::MESHBUFFERDESC desc{};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
 		desc.vertextCount = static_cast<_uint>(vertices.size());
 		desc.indexCount = static_cast<_uint>(indices.size());
 
-		info.buffer.assign
-		(
-			reinterpret_cast<const uint8_t*>(vertices.data()),
-			reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size()
-		);
-
+		info.buffer.assign(reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) +
+			vertices.size() * sizeof(VTX));
 		info.indices.assign(indices.begin(), indices.end());
 		info.desc = desc;
 
-		if (hasMaterial)
+		/* 3-4. 머티리얼(옵션) */
+		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
 		{
-			aiMaterial* newMat = aiScene->mMaterials[i];
-
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
 			aiString texPath;
-			if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
 			{
-				string path = texPath.C_Str();
-
 				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
-				filesystem::path texRelPath = filesystem::u8path(path);
-
-				filesystem::path fullPath = fbxDir / texRelPath;
-
-				wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
-
-				info.diffuseMapPath = lastPath;
+				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+				filesystem::path fullPath = fbxDir / relPath;
+				info.diffuseMapPath = m_strDefaultAssetPath + fullPath.wstring();
 			}
 		}
 
-		bufferInfoList.push_back(info);
+		bufferInfoList.push_back(move(info));
 	}
 
-	auto splitPath = CEngineString::Split(_filePath, L"/");
+	auto split = CEngineString::Split(_filePath, L"/");
+	wstring folder = split[split.size() - 2];
+	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
+	wstring saveName = folder + L"_" + fileNoExt;
 
-	wstring fileFolder = splitPath[splitPath.size() - 2];
-	wstring fileNameExt = splitPath[splitPath.size() - 1];
-	
-	auto pureName = CEngineString::Split(fileNameExt, L".")[0];
-
-	wstring saveName = fileFolder + L"_" + pureName;
-
-	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/MeshData/" + saveName + L".meshdata", bufferInfoList)))
+	if (FAILED(SaveMeshBufferInfos(
+		L"BinaryAssets/MeshData/" + saveName + L".meshdata",
+		bufferInfoList)))
 	{
-		CDebug::LogError(L"Failed ceate mesh Data - can not save: " + _filePath);
+		CDebug::LogError(L"Failed create mesh Data - can not save: " + _filePath);
 		return E_FAIL;
 	}
 
-	CDebug::Log(L"Complete ceate mesh Data: " + _filePath);
-
+	CDebug::Log(L"Complete create mesh Data: " + _filePath);
 	return S_OK;
 }
 
@@ -228,191 +216,169 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 		aiProcess_FlipUVs
 	);
 
-	if (!aiScene)
+	if (!aiScene || !aiScene->HasMeshes())
 	{
-		CDebug::LogError(L"Failed create skinned buffer - Can not create AIScene: " + _filePath);
+		CDebug::LogError(L"Failed create skinned buffer - Invalid scene: " + _filePath);
 		return E_FAIL;
 	}
 
-	if (!aiScene->HasMeshes())
-	{
-		CDebug::LogError(L"Failed create skinned buffer - AIScene has not meshes: " + _filePath);
-		return E_FAIL;
-	}
-
-	_bool hasBones = false;
-
+	bool hasBones = false;
 	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
-	{
-		if (aiScene->mMeshes[i]->HasBones())
-			hasBones = true;
-	}
+		hasBones |= aiScene->mMeshes[i]->HasBones();
 
 	if (!hasBones)
 	{
-		CDebug::LogError(L"Failed create skinned buffer - AIMesh has not bones: " + _filePath);
+		CDebug::LogError(L"Failed create skinned buffer - No bones: " + _filePath);
 		return E_FAIL;
 	}
 
-	const _bool hasMaterial = aiScene->HasMaterials();
-
+	const bool hasMaterial = aiScene->HasMaterials();
 	using VTX = VertexSkinnedBuffer;
 
-	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> bufferInfoList = {};
+	vector<aiMatrix4x4> meshGlobalMats(aiScene->mNumMeshes, aiMatrix4x4());
+
+	function<void(aiNode*, const aiMatrix4x4&)> BuildMeshTransforms =
+		[&](aiNode* node, const aiMatrix4x4& parentTrafo)
+		{
+			aiMatrix4x4 current = parentTrafo * node->mTransformation;
+			for (_uint mi = 0; mi < node->mNumMeshes; ++mi)
+				meshGlobalMats[node->mMeshes[mi]] = current;
+
+			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
+				BuildMeshTransforms(node->mChildren[ci], current);
+		};
+	BuildMeshTransforms(aiScene->mRootNode, aiMatrix4x4());
+
+	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> bufferInfoList;
 
 	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
 	{
-		CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo info = {};
-
 		const aiMesh* mesh = aiScene->mMeshes[i];
+		const aiMatrix4x4& gMat = meshGlobalMats[i];
+		aiMatrix3x3         gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
 
+		CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo info{};
 		info.meshName = CMeshBuffer::FindMeshName(aiScene, i);
 
-		vector<VTX> vertices;
+		vector<VTX>   vertices;
 		vector<_uint> indices;
 
-		// 정점 복사
-		for (_uint j = 0; j < mesh->mNumVertices; ++j)
+		vertices.reserve(mesh->mNumVertices);
+		for (_uint v = 0; v < mesh->mNumVertices; ++v)
 		{
-			VTX v{};
-			v.position =
-			{
-				mesh->mVertices[j].x,
-				mesh->mVertices[j].y,
-				mesh->mVertices[j].z
-			};
+			aiVector3D pos = gMat * mesh->mVertices[v];
 
-			v.normal = mesh->HasNormals() ?
-				_float3{ mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z } :
-				_float3{ 0, 0, 0 };
+			aiVector3D nor(0, 0, 0), tan(0, 0, 0);
+			if (mesh->HasNormals())              nor = gMat3 * mesh->mNormals[v];
+			if (mesh->HasTangentsAndBitangents()) tan = gMat3 * mesh->mTangents[v];
 
-			v.uv = mesh->HasTextureCoords(0) ?
-				_float2{ mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y } :
-				_float2{ 0, 0 };
+			VTX vert{};
+			vert.position = { pos.x, pos.y, pos.z };
+			vert.normal = { nor.x, nor.y, nor.z };
+			vert.tangent = { tan.x, tan.y, tan.z };
+			vert.uv = mesh->HasTextureCoords(0) ? _float2{ mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y } : _float2{ 0, 0 };
 
-			v.tangent = mesh->HasTangentsAndBitangents() ?
-				_float3{ mesh->mTangents[j].x, mesh->mTangents[j].y, mesh->mTangents[j].z } :
-				_float3{ 0, 0, 0 };
-
-			vertices.emplace_back(v);
+			vertices.emplace_back(vert);
 		}
 
 		unordered_map<string, _uint> boneNameToIndex;
-		_uint boneIndexCounter = 0;
+		_uint boneIdxCounter = 0;
 
 		for (_uint b = 0; b < mesh->mNumBones; ++b)
 		{
-			if (!mesh->HasBones())
-				continue;
-
 			aiBone* bone = mesh->mBones[b];
 			string boneName = bone->mName.C_Str();
 
-			if (boneNameToIndex.find(boneName) == boneNameToIndex.end())
-				boneNameToIndex[boneName] = boneIndexCounter++;
-
-			_uint boneIndex = boneNameToIndex[boneName];
+			_uint boneIdx = 0;
+			auto it = boneNameToIndex.find(boneName);
+			if (it == boneNameToIndex.end())
+			{
+				boneIdx = boneIdxCounter++;
+				boneNameToIndex.insert({ boneName, boneIdx });
+			}
+			else boneIdx = it->second;
 
 			for (_uint w = 0; w < bone->mNumWeights; ++w)
 			{
-				const aiVertexWeight& weight = bone->mWeights[w];
-
-				_uint vertexId = weight.mVertexId;
-				_float boneWeight = weight.mWeight;
-
-				if (vertexId < vertices.size())
-					CSkinnedMeshBuffer::FillBoneWeights(vertices[vertexId], boneIndex, boneWeight);
+				_uint vid = bone->mWeights[w].mVertexId;
+				float     bw = bone->mWeights[w].mWeight;
+				if (vid < vertices.size())
+					CSkinnedMeshBuffer::FillBoneWeights(vertices[vid], boneIdx, bw);
 			}
 		}
 
-		// 인덱스 복사
 		for (_uint f = 0; f < mesh->mNumFaces; ++f)
 		{
 			const aiFace& face = mesh->mFaces[f];
-			if (face.mNumIndices != 3) continue;
-			indices.push_back(face.mIndices[0]);
-			indices.push_back(face.mIndices[1]);
-			indices.push_back(face.mIndices[2]);
+			if (face.mNumIndices == 3)  
+			{
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
 		}
 
-		// 버퍼 정보 세팅
 		CMeshBuffer::MESHBUFFERDESC desc{};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
 		desc.vertextCount = static_cast<_uint>(vertices.size());
 		desc.indexCount = static_cast<_uint>(indices.size());
 
-		info.buffer.assign
-		(
-			reinterpret_cast<const uint8_t*>(vertices.data()),
-			reinterpret_cast<const uint8_t*>(vertices.data()) + sizeof(VTX) * vertices.size()
-		);
-
+		info.buffer.assign(reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) +
+			vertices.size() * sizeof(VTX));
 		info.indices.assign(indices.begin(), indices.end());
 		info.desc = desc;
 
 		if (hasMaterial)
 		{
-			aiMaterial* newMat = aiScene->mMaterials[i];
-
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
 			aiString texPath;
-			if (newMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
 			{
-				string path = texPath.C_Str();
-
 				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
-				filesystem::path texRelPath = filesystem::u8path(path);
-
-				filesystem::path fullPath = fbxDir / texRelPath;
-
-				wstring lastPath = m_strDefaultAssetPath + fullPath.wstring();
-
-				info.diffuseMapPath = lastPath;
+				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+				filesystem::path fullPath = fbxDir / relPath;
+				info.diffuseMapPath = m_strDefaultAssetPath + fullPath.wstring();
 			}
 		}
 
-		for (_uint i = 0; i < mesh->mNumBones; ++i)
+		for (_uint b = 0; b < mesh->mNumBones; ++b)
 		{
-			string boneName = mesh->mBones[i]->mName.C_Str();
-			info.boneNames.push_back(CEngineString::StringToWString(boneName));
+			aiBone* bone = mesh->mBones[b];
+			info.boneNames.push_back(CEngineString::StringToWString(bone->mName.C_Str()));
 
-			auto aiMat = mesh->mBones[i]->mOffsetMatrix;
-
-			_float4x4 float44 = _float4x4
-			(
-				aiMat.a1, aiMat.b1, aiMat.c1, aiMat.d1,
-				aiMat.a2, aiMat.b2, aiMat.c2, aiMat.d2,
-				aiMat.a3, aiMat.b3, aiMat.c3, aiMat.d3,
-				aiMat.a4, aiMat.b4, aiMat.c4, aiMat.d4
-			);
-
-			info.boneOffsetMatrices.push_back(float44);
+			const aiMatrix4x4& m = bone->mOffsetMatrix;
+			_float4x4 o = _float4x4(
+				m.a1, m.b1, m.c1, m.d1,
+				m.a2, m.b2, m.c2, m.d2,
+				m.a3, m.b3, m.c3, m.d3,
+				m.a4, m.b4, m.c4, m.d4);
+			info.boneOffsetMatrices.push_back(o);
 		}
 
-		bufferInfoList.push_back(info);
+		bufferInfoList.push_back(move(info));
 	}
 
-	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierachy = {};
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierarchy;
 	unordered_map<aiNode*, _uint> nodeToIdMap;
-	TraverseSkeleton(aiScene->mRootNode, -1, skeletalHierachy);
+	TraverseSkeleton(aiScene->mRootNode, -1, skeletalHierarchy);
 
-	auto splitPath = CEngineString::Split(_filePath, L"/");
+	auto split = CEngineString::Split(_filePath, L"/");
+	wstring folder = split[split.size() - 2];
+	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
+	wstring saveName = folder + L"_" + fileNoExt;
 
-	wstring fileFolder = splitPath[splitPath.size() - 2];
-	wstring fileNameExt = splitPath[splitPath.size() - 1];
-
-	auto pureName = CEngineString::Split(fileNameExt, L".")[0];
-
-	wstring saveName = fileFolder + L"_" + pureName;
-
-	if (FAILED(SaveSkinnedBufferInfos(L"BinaryAssets/SkinnedMeshData/" + saveName + L".skinneddata", bufferInfoList, skeletalHierachy)))
+	if (FAILED(SaveSkinnedBufferInfos(
+		L"BinaryAssets/SkinnedMeshData/" + saveName + L".skinneddata",
+		bufferInfoList, skeletalHierarchy)))
 	{
-		CDebug::LogError(L"Failed ceate skinned mesh Data - can not save: " + _filePath);
+		CDebug::LogError(L"Failed create skinned mesh Data - can not save: " + _filePath);
 		return E_FAIL;
 	}
 
-	CDebug::Log(L"Complete ceate skinned mesh Data: " + _filePath);
-
+	CDebug::Log(L"Complete create skinned mesh Data: " + _filePath);
 	return S_OK;
 }
 

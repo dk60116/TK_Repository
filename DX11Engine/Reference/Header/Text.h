@@ -14,6 +14,7 @@ private:
 
 private:
 	static CText* Create();
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;

@@ -19,6 +19,19 @@ CImage* CImage::Create()
 	return new CImage();
 }
 
+CComponent* CImage::Clone() const
+{
+	CImage* clone = new CImage;
+
+	clone->m_eFillMethod = this->m_eFillMethod;
+	clone->m_fFillAmount = this->m_fFillAmount;
+
+	if (this->m_pTexture)
+		clone->SetTexture(this->m_pTexture);
+
+	return clone;
+}
+
 HRESULT CImage::Initialize()
 {
 	if (FAILED(__super::Initialize()))

@@ -21,6 +21,21 @@ CLight* CLight::Create()
 	return new CLight();
 }
 
+CComponent* CLight::Clone() const
+{
+	CLight* clone = new CLight;
+
+	clone->m_eType = this->m_eType;
+	clone->m_fIntensity = this->m_fIntensity;
+	clone->m_fRange = this->m_fRange;
+	clone->m_fSpotAngle = this->m_fSpotAngle;
+	clone->m_fAttenuation = this->m_fAttenuation;
+	clone->m_vDiffuseColor = this->m_vDiffuseColor;
+	clone->m_vSpecularColor = this->m_vSpecularColor;
+
+	return clone;
+}
+
 HRESULT CLight::Initialize()
 {
 	if (FAILED(__super::Initialize()))

@@ -17,6 +17,7 @@ protected:
 
 private:
 	static CLight* Create();
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;

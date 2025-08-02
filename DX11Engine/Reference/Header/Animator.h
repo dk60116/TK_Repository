@@ -21,6 +21,7 @@ protected:
 
 private:
     static CAnimator* Create();
+    CComponent* Clone() const override;
 
 public:
     HRESULT Initialize() override;

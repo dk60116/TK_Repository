@@ -21,6 +21,9 @@ protected:
 
 public:
 	static CPlayerCamera* Create();
+	CComponent* Clone() const override;
+
+public:
 	HRESULT Initialize() override;
 
 	void Awake() override;

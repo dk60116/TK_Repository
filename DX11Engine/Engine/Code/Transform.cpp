@@ -27,6 +27,23 @@ CTransform* CTransform::Create()
     return new CTransform();
 }
 
+CComponent* CTransform::Clone() const
+{
+    CTransform* clone = new CTransform();
+
+    clone->m_bIsRootParent = this->m_bIsRootParent;
+    clone->m_vPosition = this->m_vPosition;
+    clone->m_vQuaternion = this->m_vQuaternion;
+    clone->m_vScale = this->m_vScale;
+
+    if (this->m_pParent)
+        clone->SetParent(this->m_pParent);
+
+    clone->Update();
+
+    return clone;
+}
+
 HRESULT CTransform::Initialize()
 {
     if (FAILED(__super::Initialize()))

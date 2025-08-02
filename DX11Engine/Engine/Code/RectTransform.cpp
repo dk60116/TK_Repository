@@ -25,6 +25,22 @@ CRectTransform* CRectTransform::Create()
     return new CRectTransform();
 }
 
+CComponent* CRectTransform::Clone() const
+{
+    CRectTransform* clone = new CRectTransform();
+
+    clone->m_vPosition = this->m_vPosition;
+    clone->m_vQuaternion = this->m_vQuaternion;
+    clone->m_vScale = this->m_vScale;
+    clone->m_sAnchors = this->m_sAnchors;
+    clone->m_vPivot = this->m_vPivot;
+
+    if (this->m_pParent)
+        clone->SetParent(this->m_pParent);
+
+    return clone;
+}
+
 HRESULT CRectTransform::Initialize()
 {
     if (FAILED(__super::Initialize()))

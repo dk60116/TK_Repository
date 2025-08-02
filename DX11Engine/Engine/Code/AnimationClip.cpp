@@ -76,12 +76,9 @@ void CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransfor
 		XMStoreFloat3(&bt.pos,
 			XMVectorLerp(XMLoadFloat3(&keys[i1].position), XMLoadFloat3(&keys[i2].position), t));
 
-		XMStoreFloat4(&bt.rot,
-			XMQuaternionNormalize(
-				XMQuaternionSlerp(XMLoadFloat4(&keys[i1].rotation), XMLoadFloat4(&keys[i2].rotation), t)));
+		XMStoreFloat4(&bt.rot, XMQuaternionNormalize(XMQuaternionSlerp(XMLoadFloat4(&keys[i1].rotation), XMLoadFloat4(&keys[i2].rotation), t)));
 
-		XMStoreFloat3(&bt.scale,
-			XMVectorLerp(XMLoadFloat3(&keys[i1].scaling), XMLoadFloat3(&keys[i2].scaling), t));
+		XMStoreFloat3(&bt.scale, XMVectorLerp(XMLoadFloat3(&keys[i1].scaling), XMLoadFloat3(&keys[i2].scaling), t));
 
 		_out.emplace(ba.nodeName, bt);
 	}

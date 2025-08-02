@@ -97,7 +97,7 @@ void CSceneLoader::ThreadLoadingLoop()
 			wstring wFile = CEngineString::StringToWString(file);
 			wstring wFormat = CEngineString::StringToWString(format);
 
-			if (CEngineString::Contains(wFile, L".png"))
+			if (CEngineString::Contains(wFile, L".png") || CEngineString::Contains(wFile, L".jpg") || CEngineString::Contains(wFile, L".tga"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Texture]"))
 					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));

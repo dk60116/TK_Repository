@@ -28,6 +28,12 @@ CEditorCamera* CEditorCamera::Create()
 	return new CEditorCamera();
 }
 
+CComponent* CEditorCamera::Clone() const
+{
+	CDebug::LogError(L"This component cannot be cloned." + m_strName);
+	return nullptr;
+}
+
 HRESULT CEditorCamera::Initialize()
 {
 	if (FAILED(__super::Initialize()))

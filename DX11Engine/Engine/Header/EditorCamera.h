@@ -4,8 +4,10 @@
 
 NS_BEGIN(Engine)
 
-class CEditorCamera : public CCamera
+class CEditorCamera final : public CCamera
 {
+    friend class CGameObject;
+
 public:
     struct EditorCameraOption
     {
@@ -26,7 +28,9 @@ public:
 	void Update() override;
     void OnDestroy() override;
 
+private:
 	static CEditorCamera* Create();
+    CComponent* Clone() const override;
 
     EditorCameraOption m_sOptions;
     _bool m_bRMouseDowned;

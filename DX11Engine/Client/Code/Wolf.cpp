@@ -15,6 +15,13 @@ CWolf* CWolf::Create()
 	return new CWolf();
 }
 
+CComponent* CWolf::Clone() const
+{
+	CWolf* clone = new CWolf();
+
+	return clone;
+}
+
 HRESULT CWolf::Initialize()
 {
 	m_strSkinnedMeshBufferName = L"Wolf_Model (MeshBuffer)";
@@ -45,7 +52,10 @@ void CWolf::Update()
 	__super::Update();
 
 	if (CInput::GetInstance().GetKeyDown(K))
+	{
 		m_pAnimator->Play(L"Idle");
+		int a = 0;
+	}
 }
 
 void CWolf::OnDestroy()

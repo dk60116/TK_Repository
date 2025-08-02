@@ -21,6 +21,15 @@ CMeshFilter* CMeshFilter::Create()
 	return new CMeshFilter();
 }
 
+CComponent* CMeshFilter::Clone() const
+{
+	CMeshFilter* clone = new CMeshFilter();
+
+	clone->Set_MeshBuffer(this->m_pMeshBuffer);
+
+	return clone;
+}
+
 HRESULT CMeshFilter::Initialize()
 {
 	if (FAILED(__super::Initialize()))

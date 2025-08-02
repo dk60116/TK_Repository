@@ -18,11 +18,11 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 
 CGameObject::CGameObject(const CGameObject& _rhs)
 	: m_iUniqueID(999999)
-	, m_strGameObjectName(_rhs.m_strGameObjectName)
+	, m_strGameObjectName(_rhs.m_strGameObjectName + L" (Clone)")
 	, m_bActive(_rhs.m_bActive)
-	, m_lComponentList(_rhs.m_lComponentList)
+	, m_lComponentList({})
 	, m_pScene(_rhs.m_pScene)
-	, m_pTransform(_rhs.m_pTransform)
+	, m_pTransform(nullptr)
 	, m_pDevice(_rhs.m_pDevice)
 	, m_pContext(_rhs.m_pContext)
 {
@@ -314,15 +314,17 @@ void CGameObject::Set_Transform(CTransform* _transform)
 	}
 }
 
-void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
+vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 {
 	CTransform* parentTransform = Get_Transform();
 
 	if (_meshInfos.empty())
 	{
 		CDebug::LogError(L"Failed create Mesh hierachy - empty mesh info: " + parentTransform->Get_GameObject()->Get_ObjectNameID());
-		return;
+		return {};
 	}
+
+	vector<CMeshRenderer*> renderers = {};
 
 	for (_uint i = 0; i < _meshInfos.size(); ++i)
 	{
@@ -334,6 +336,8 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 		CMeshRenderer* ren = child->AddComponent<CMeshRenderer>();
 
+		renderers.push_back(ren);
+
 		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
 		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 
@@ -342,19 +346,21 @@ void CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos)
 
 		ren->Get_Material()->Set_Texture(_meshInfos[i].texture, 0);
 	}
+
+	return renderers;
 }
 
-void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
+vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
 {
 	CTransform* rootTf = Get_Transform();
 
 	if (_skinnedInfos.empty())
 	{
 		CDebug::LogError(L"Failed create Mesh hierachy - empty skinned info: " + rootTf->Get_GameObject()->Get_ObjectNameID());
-		return;
+		return {};
 	}
 
-	vector<CSkinnedMeshRenderer*> renderers;
+	vector<CSkinnedMeshRenderer*> renderers = {};
 	renderers.reserve(_skinnedInfos.size());
 
 	for (auto& si : _skinnedInfos)
@@ -422,6 +428,8 @@ void CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedIn
 
 		r->Set_Bones(bones, rootBone);
 	}
+
+	return renderers;
 }
 
 const _uint CGameObject::Get_UniqueID() const

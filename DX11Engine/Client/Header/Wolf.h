@@ -10,6 +10,9 @@ protected:
 
 public:
 	static CWolf* Create();
+	CComponent* Clone() const override;
+
+public:
 	HRESULT Initialize() override;
 
 	void Awake() override;

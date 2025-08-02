@@ -20,6 +20,13 @@ CPlayerCamera* CPlayerCamera::Create()
 	return new CPlayerCamera();
 }
 
+CComponent* CPlayerCamera::Clone() const
+{
+	CPlayerCamera* clone = new CPlayerCamera();
+
+	return clone;
+}
+
 HRESULT CPlayerCamera::Initialize()
 {
 	if (FAILED(__super::Initialize()))

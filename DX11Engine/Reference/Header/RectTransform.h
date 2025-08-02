@@ -22,6 +22,7 @@ protected:
 
 private:
 	static CRectTransform* Create();
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;

@@ -16,6 +16,7 @@ private:
 
 private:
 	static CSkinnedMeshRenderer* Create();
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;
@@ -49,7 +50,7 @@ private:
 	vector<CTransform*> m_vBones;
 	CTransform* m_pRootBone;
 
-	ID3D11Buffer* m_pBoneMatrixBuffer = nullptr;
+	ID3D11Buffer* m_pBoneMatrixBuffer;
 };
 
 NS_END

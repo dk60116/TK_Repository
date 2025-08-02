@@ -21,6 +21,21 @@ CSkinnedMeshRenderer* CSkinnedMeshRenderer::Create()
 	return new CSkinnedMeshRenderer();
 }
 
+CComponent* CSkinnedMeshRenderer::Clone() const
+{
+	CSkinnedMeshRenderer* clone = new CSkinnedMeshRenderer();
+
+	clone->m_pMeshBuffer = this->m_pMeshBuffer;
+	clone->m_vBones = this->m_vBones;
+	clone->m_pRootBone = nullptr;
+	clone->m_pBoneMatrixBuffer = clone->m_pBoneMatrixBuffer;
+
+	if (clone->m_pBoneMatrixBuffer)
+		clone->m_pBoneMatrixBuffer->AddRef();
+
+	return clone;
+}
+
 HRESULT CSkinnedMeshRenderer::Initialize()
 {
 	if (FAILED(__super::Initialize()))
