@@ -50,18 +50,20 @@ HRESULT CGameScene::Initialize()
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
 	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"));
 
-	CGameObject* woolfObject = Add_GameObject(L"Wolf");
-	CWolf* woolf = woolfObject->AddComponent<CWolf>();
+	CGameObject* wolfObject = Add_GameObject(L"Wolf");
+	CWolf* woolf = wolfObject->AddComponent<CWolf>();
 	m_vMonsters.push_back(woolf);
 
-	if (woolfObject)
+	if (wolfObject)
 	{
 		for (_uint i = 0; i < 2; ++i)
 		{
-			CGameObject* cloneWolf = CGameObject::Instantiate(woolfObject);
+			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
 			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
 		}
 	}
+
+	m_pPlayer->Set_Focus(wolfObject->Get_Transform());
 
 	return S_OK;
 }
@@ -90,5 +92,5 @@ void CGameScene::SceneRelease()
 {
 	__super::SceneRelease();
 
-	m_vMonsters.clear();
+	m_vMonsters.clear(); 
 }

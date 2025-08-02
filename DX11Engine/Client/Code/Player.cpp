@@ -25,6 +25,7 @@ CPlayer::CPlayer()
 	, m_iAttackComboDest(0)
 	, m_bIsJump(false)
 	, m_bIsPrevJump(false)
+	, m_pFocusTransform(nullptr)
 {
 	m_strName = L"Player";
 }
@@ -52,7 +53,7 @@ HRESULT CPlayer::Initialize()
 
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 
-	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::GetInstance().LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"));
+	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::GetInstance().LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
@@ -105,6 +106,11 @@ void CPlayer::Update()
 
 void CPlayer::OnDestroy()
 {
+}
+
+void CPlayer::Set_Focus(CTransform* _transform)
+{
+	m_pFocusTransform = _transform;
 }
 
 void CPlayer::PlayerControle()
@@ -217,7 +223,7 @@ void CPlayer::PlayerControle_NoneLockOn()
 
 	if (m_fRotateDirection != 0.f)
 	{
-		if (m_fRotateDirection != 0.f)
+		if (m_fRotateDirection != 0.f) 
 			Get_Transform()->Add_EulerAnglesY(m_fRotateDirection * m_sPlayerStatus.turnSpeed * DELTA_TIME);
 	}
 
@@ -250,6 +256,14 @@ void CPlayer::PlayerControle_NoneLockOn()
 
 void CPlayer::PlayerControle_LockOn()
 {
+	if (m_pFocusTransform)
+	{
+		CDebug::LogError(vector3::Distance(m_pFocusTransform->Get_Position(), Get_Transform()->Get_Position()));
+
+		if (vector3::Distance(m_pFocusTransform->Get_Position(), Get_Transform()->Get_Position()) > 3.f)
+			Get_Transform()->LookAt(m_pFocusTransform->Get_Position(), CTransform::X | CTransform::Z);
+	}
+
 	if (CInput::GetInstance().GetKey(A))
 	{
 		m_vMoveDirection.x -= 1.f;

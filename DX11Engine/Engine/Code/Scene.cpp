@@ -473,7 +473,7 @@ vector<CScene::SCENETRANSFORMINFO> CScene::Convert_ObjectsTransformInfo() const
 			info.rectInfo = rectInfo;
 		}
 
-		if (i > 0)
+		if (i > 0 && !(*it)->m_bIsBoneTransform)
 			result.push_back(info);
 
 		++i;

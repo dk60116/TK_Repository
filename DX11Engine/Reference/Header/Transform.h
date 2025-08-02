@@ -8,6 +8,7 @@ class ENGINE_DLL CTransform : public CComponent
 {
 	friend class CGameObject;
 
+public:
 	typedef struct TransformDirections
 	{
 		vector3 forward = vector3::zero();
@@ -17,6 +18,8 @@ class ENGINE_DLL CTransform : public CComponent
 		vector3 up = vector3::zero();
 		vector3 down = vector3::zero();
 	}DIRECTIONS;
+
+	enum LookAtFilter { X = 0x001, Y = 0x010, Z = 0x100 };
 
 protected:
 	explicit CTransform();
@@ -119,7 +122,7 @@ public:
 
 	void SetTransformForMatrix(_matrix _matWorld);
 
-	void LookAt(const vector3& _target);
+	void LookAt(const vector3& _target, const _uint _rockRotationFilter = 0x000);
 
 private:
 	void Bind_Matrix();

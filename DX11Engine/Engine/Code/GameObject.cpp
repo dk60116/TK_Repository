@@ -25,6 +25,7 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_pTransform(nullptr)
 	, m_pDevice(_rhs.m_pDevice)
 	, m_pContext(_rhs.m_pContext)
+	, m_bIsBoneTransform()
 {
 	m_iUniqueID = CSceneManager::GetInstance().Get_CrtScene()->Get_UniqueObjectCount();
 }
@@ -350,7 +351,7 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 	return renderers;
 }
 
-vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo)
+vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo, const _float _scaleFactor, const vector3 _rotationFactor)
 {
 	CTransform* rootTf = Get_Transform();
 
@@ -378,11 +379,17 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 		renderers.push_back(r);
 	}
 
+	CTransform* rootBone = nullptr;
+
 	vector<CTransform*> boneTfs(_bonesInfo.size(), nullptr);
 	for (size_t i = 0; i < _bonesInfo.size(); ++i)
 	{
 		CGameObject* g = m_pScene->Add_GameObject(_bonesInfo[i].name);
 		boneTfs[i] = g->Get_Transform();
+		g->m_bIsBoneTransform = true;
+
+		if (_bonesInfo[i].parentId == -1)
+			rootBone = g->Get_Transform()->Get_Transform();
 	}
 
 	for (size_t i = 0; i < _bonesInfo.size(); ++i)
@@ -401,16 +408,20 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 		boneTfs[i]->Set_LocalPosition(T);
 	}
 
+	rootBone->Set_LocalScale(_scaleFactor);
+	rootBone->Set_LocalEulerAngles(_rotationFactor);
+
 	unordered_map<wstring, CTransform*> nameMap;
 	nameMap.reserve(_bonesInfo.size());
 	for (size_t i = 0; i < _bonesInfo.size(); ++i)
 		nameMap[_bonesInfo[i].name] = boneTfs[i];
 
-	CTransform* rootBone = nullptr;
+	CTransform* baseTransform = nullptr;
+
 	for (auto& b : _bonesInfo)
 		if (b.parentId == -1) 
 		{ 
-			rootBone = nameMap[b.name];
+			baseTransform = nameMap[b.name];
 			break; 
 		}
 
@@ -426,7 +437,7 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 				bones[i] = it->second;
 		}
 
-		r->Set_Bones(bones, rootBone);
+		r->Set_Bones(bones, baseTransform);
 	}
 
 	return renderers;
@@ -460,6 +471,11 @@ void CGameObject::Set_Scene(CScene* _scene)
 CScene* CGameObject::Get_Scene()
 {
 	return m_pScene;
+}
+
+const _bool CGameObject::IsBoneTransform() const
+{
+	return m_bIsBoneTransform;
 }
 
 CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)

@@ -71,9 +71,10 @@ void CPlayerCamera::LateUpdate()
 		CTransform* tf = Get_Transform();
 		CTransform* playerTf = m_pPlayer->Get_Transform();
 		const vector3 playerPos = playerTf->Get_Position();
-		const vector3 targetPos = playerPos + playerTf->Get_Directions().back * m_fBackOffset + vector3::up() * m_sOptions.HeightOffset;
+		const vector3 forwardOffset = playerTf->Get_Directions().forward * 1.f;
+		const vector3 targetPos = playerPos + playerTf->Get_Directions().back * m_fBackOffset + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset)));
 		tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
-		tf->LookAt(playerPos + vector3::up() * m_sOptions.lookHeightOffset);
+		tf->LookAt(playerPos + vector3::up() * m_sOptions.lookHeightOffset + forwardOffset + vector3::down() * (1.f / (m_fBackOffset * 5.f)) + vector3::down() * (2.5f / m_fBackOffset));
 	}
 }
 

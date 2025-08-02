@@ -34,6 +34,9 @@ public:
 	void Update() override;
 	void OnDestroy() override;
 
+public:
+	void Set_Focus(CTransform* _transform);
+
 private:
 	void PlayerControle();
 	void PlayerControle_NoneLockOn();
@@ -72,5 +75,7 @@ private:
 	_uint m_iAttackComboDest;
 
 	_bool m_bIsJump, m_bIsPrevJump;
+
+	CTransform* m_pFocusTransform;
 };
 

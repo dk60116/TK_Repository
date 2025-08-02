@@ -22,6 +22,7 @@ public:
 
 protected:
 	wstring m_strSkinnedMeshBufferName;
+	_float m_fSkinnedMeshScaleFactor;
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;

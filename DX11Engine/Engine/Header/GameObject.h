@@ -83,7 +83,7 @@ public:
 	void Set_Transform(CTransform* _transform);
 
 	vector<class CMeshRenderer*> CreateMeshHierachy(vector<MeshBundle> _meshInfos);
-	vector<class CSkinnedMeshRenderer*> CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo);
+	vector<class CSkinnedMeshRenderer*> CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo, const _float _scaleFactor = 1.f, const vector3 _rotationFactor = vector3::zero());
 
 	const _uint Get_UniqueID() const;
 	wstring Get_ObjectName() const;
@@ -92,6 +92,8 @@ public:
 
 	void Set_Scene(CScene* _scene);
 	CScene* Get_Scene();
+
+	const _bool IsBoneTransform() const;
 
 public:
 	static CGameObject* Instantiate(const CGameObject* _rhs);
@@ -115,6 +117,8 @@ private:
 
 	CScene* m_pScene;
 	class CTransform* m_pTransform;
+
+	_bool m_bIsBoneTransform;
 };
 
 NS_END

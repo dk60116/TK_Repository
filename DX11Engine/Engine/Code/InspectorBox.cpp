@@ -98,6 +98,8 @@ void CInspectorBox::Render()
 
         Toggle_End();
 
+        ImGui::Text(selectedObj->IsBoneTransform() ? "Bone" : "");
+
         if (!selectedObj->GetComponent<CRectTransform>())
             ShowTransform(selectedObj);
         else

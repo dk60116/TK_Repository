@@ -713,7 +713,7 @@ void CTransform::SetTransformForMatrix(_matrix _matWorld)
     Bind_Direction();
 }
 
-void CTransform::LookAt(const vector3& _target)
+void CTransform::LookAt(const vector3& _target, const _uint _lockRotationFilter)
 {
     vector3 upAxis = vector3(0, 1, 0);
     vector3 fwd = (_target - m_vWorldPosition).normalized();
@@ -735,12 +735,31 @@ void CTransform::LookAt(const vector3& _target)
     _vector q = XMQuaternionRotationMatrix(rot);
     q = XMQuaternionNormalize(q);
 
+    // 부모 공간으로 변환
     if (m_pParent)
     {
-        _float4 parentQ = m_pParent->m_vQuaternion.toFloat4();
-        _vector invParentQ = XMQuaternionInverse(XMLoadFloat4(&parentQ));
+        _vector parentQ = m_pParent->m_vQuaternion.toXMVector();
+        _vector invParentQ = XMQuaternionInverse(parentQ);
         q = XMQuaternionMultiply(invParentQ, q);
     }
 
-    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), q);
+    // 회전 필터 적용
+    if (_rockRotationFilter)
+    {
+        quaternion qNew(q);                       // 목표 회전
+        quaternion qCur = m_vQuaternion;          // 현재 회전
+
+        vector3 eulerNew = qNew.to_euler();
+        vector3 eulerCur = qCur.to_euler();
+
+        if (_rockRotationFilter & 0x001) eulerNew.x = eulerCur.x;
+        if (_rockRotationFilter & 0x010) eulerNew.y = eulerCur.y;
+        if (_rockRotationFilter & 0x100) eulerNew.z = eulerCur.z;
+
+        q = eulerNew.to_quaternion().toXMVector();
+    }
+
+    XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), XMQuaternionNormalize(q));
+
+    m_vEulerAngles = m_vQuaternion.to_euler();
 }

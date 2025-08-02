@@ -3,6 +3,7 @@
 
 CMonster::CMonster()
 	: m_strSkinnedMeshBufferName(L"")
+	, m_fSkinnedMeshScaleFactor(0.01f)
 	, m_vMeshRenderers({})
 	, m_pBaseMap(nullptr)
 	, m_pAnimator(nullptr)
@@ -19,7 +20,7 @@ HRESULT CMonster::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(m_strSkinnedMeshBufferName), CResources::GetInstance().LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName));
+	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(m_strSkinnedMeshBufferName), CResources::GetInstance().LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 
 	m_pBaseMap = CResources::GetInstance().LoadOnScene<CTexture>(m_strName + L"_BaseMap (Texture)");
