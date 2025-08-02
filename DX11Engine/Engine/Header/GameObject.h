@@ -94,6 +94,8 @@ public:
 	CScene* Get_Scene();
 
 public:
+	static CGameObject* Instantiate(const CGameObject* _rhs);
+
 	template<typename T>
 	static T* FindObjectOfType();
 

@@ -172,6 +172,8 @@ void CAnimator::OnDestroy()
 	for (TRAVERSAL_ITER(m_mAnimationList, it))
 		Safe_Release((*it).second);
 
+	m_mAnimationList.clear();
+
 	Safe_Release(m_pSkinnedRenderer);
 }
 

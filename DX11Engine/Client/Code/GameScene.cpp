@@ -52,7 +52,16 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* woolfObject = Add_GameObject(L"Wolf");
 	CWolf* woolf = woolfObject->AddComponent<CWolf>();
+	m_vMonsters.push_back(woolf);
 
+	if (woolfObject)
+	{
+		for (_uint i = 0; i < 2; ++i)
+		{
+			CGameObject* cloneWolf = CGameObject::Instantiate(woolfObject);
+			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
+		}
+	}
 
 	return S_OK;
 }
@@ -70,4 +79,16 @@ void CGameScene::Update()
 	{
 		CSceneManager::GetInstance().LoadScene(L"Main Scene");
 	}
+
+	if (CInput::GetInstance().GetKeyDown(K))
+	{
+		m_vMonsters[0]->Get_Animator()->Play(L"Idle");
+	}
+}
+
+void CGameScene::SceneRelease()
+{
+	__super::SceneRelease();
+
+	m_vMonsters.clear();
 }

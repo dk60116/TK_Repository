@@ -17,6 +17,9 @@ public:
 	void Update() override;
 	void OnDestroy() override;
 
+public:
+	CAnimator* Get_Animator();
+
 protected:
 	wstring m_strSkinnedMeshBufferName;
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;

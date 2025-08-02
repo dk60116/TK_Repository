@@ -47,3 +47,8 @@ void CMonster::OnDestroy()
 {
 	Safe_Release(m_pBaseMap);
 }
+
+CAnimator* CMonster::Get_Animator()
+{
+	return m_pAnimator;
+}

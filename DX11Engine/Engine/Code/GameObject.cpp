@@ -461,3 +461,24 @@ CScene* CGameObject::Get_Scene()
 {
 	return m_pScene;
 }
+
+CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
+{
+	CGameObject* newGameObj = CSceneManager::GetInstance().Get_CrtScene()->Add_GameObject(_rhs->Get_ObjectName() + L" (Clone)");
+
+	for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
+	{
+		if ((*it))
+		{
+			newGameObj->m_lComponentList.push_back((*it)->Clone());
+			newGameObj->m_lComponentList.back()->Set_Object(newGameObj);
+			newGameObj->m_lComponentList.back()->AddRef();
+
+			newGameObj->m_lComponentList.back()->Initialize();
+		}
+	}
+
+	newGameObj->Get_Transform()->SetTransformForMatrix(_rhs->Get_Transform()->Get_WorldMatrix());
+
+	return newGameObj;
+}

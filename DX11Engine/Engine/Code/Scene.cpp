@@ -27,6 +27,8 @@ CScene::CScene()
 	, m_pSkyBoxResterizerState(nullptr)
 	, m_pMeshResterizerState(nullptr)
 	, m_pUIResterizerState(nullptr)
+	, m_pBlendingState(nullptr)
+	, m_pNoneBlendingState(nullptr)
 {
 	m_strName = L"Scene";
 
@@ -125,13 +127,55 @@ HRESULT CScene::Initialize()
 
 	// UI
 	{
-		D3D11_DEPTH_STENCIL_DESC depthDisabledDesc = {};
-		depthDisabledDesc.DepthEnable = FALSE;
-		depthDisabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthDisabledDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-		depthDisabledDesc.StencilEnable = FALSE;
+		D3D11_RASTERIZER_DESC resterUIDesc = {};
+		resterUIDesc.FillMode = D3D11_FILL_SOLID;
+		resterUIDesc.CullMode = D3D11_CULL_BACK;
+		resterUIDesc.FrontCounterClockwise = FALSE;
+		resterUIDesc.DepthClipEnable = FALSE;
 
-		if (FAILED(m_pDevice->CreateDepthStencilState(&depthDisabledDesc, &m_pUIDepthStencilState)))
+		D3D11_DEPTH_STENCIL_DESC depthUIDesc = {};
+		depthUIDesc.DepthEnable = FALSE;
+		depthUIDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		depthUIDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+		depthUIDesc.StencilEnable = FALSE;
+
+		if (FAILED(m_pDevice->CreateRasterizerState(&resterUIDesc, &m_pUIResterizerState)))
+			return E_FAIL;
+		if (FAILED(m_pDevice->CreateDepthStencilState(&depthUIDesc, &m_pUIDepthStencilState)))
+			return E_FAIL;
+	}
+
+	// Blending
+	{
+		D3D11_BLEND_DESC noneBlendingDesc = {};
+		noneBlendingDesc.AlphaToCoverageEnable = FALSE;
+		noneBlendingDesc.IndependentBlendEnable = FALSE;
+
+		D3D11_RENDER_TARGET_BLEND_DESC& rtbd = noneBlendingDesc.RenderTarget[0];
+		rtbd.BlendEnable = FALSE;
+		rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		if (FAILED(m_pDevice->CreateBlendState(&noneBlendingDesc, &m_pBlendingState)))
+			return E_FAIL;
+	}
+
+	// None Blending
+	{
+		D3D11_BLEND_DESC noneBlendingDesc = {};
+		noneBlendingDesc.AlphaToCoverageEnable = FALSE;
+		noneBlendingDesc.IndependentBlendEnable = FALSE;
+
+		D3D11_RENDER_TARGET_BLEND_DESC& rtbd = noneBlendingDesc.RenderTarget[0];
+		rtbd.BlendEnable = TRUE;
+		rtbd.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		rtbd.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+		rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+		rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+		rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		if (FAILED(m_pDevice->CreateBlendState(&noneBlendingDesc, &m_pNoneBlendingState)))
 			return E_FAIL;
 	}
 
@@ -309,6 +353,7 @@ void CScene::Render_Game()
 			(*it)->RenderMesh();
 	}
 
+	m_pContext->RSSetState(m_pUIResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
@@ -798,16 +843,6 @@ CCanvas* CScene::Add_Canvas(CCanvas* _canvas)
 	m_lCanvasList.back()->AddRef();
 
 	return m_lCanvasList.back();
-}
-
-CGameObject* CScene::Instantiate(CGameObject* _gameObject)
-{
-	CGameObject* newObj = new CGameObject(*_gameObject);
-	newObj->AddRef();
-
-	m_lObjectList.push_back(newObj);
-
-	return newObj;
 }
 
 HRESULT CScene::SaveScene(const wstring& _filePath)

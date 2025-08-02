@@ -23,7 +23,7 @@ private:
 	HWND m_hGameWindow;
 	HWND m_hEditorWindow;
 	_bool m_bIsFullScreen;
-	UINT m_iWidth, m_iHeight;
+	_uint m_iWidth, m_iHeight;
 };
 
 NS_END

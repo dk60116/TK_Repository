@@ -32,7 +32,6 @@ HRESULT CWolf::Initialize()
 	CDebug::Log(CResources::GetInstance().LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName).size());
 
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Wolf_Idle (Animation)"));
-	m_pAnimator->SetLoop(true);
 
 	return S_OK;
 }
@@ -50,12 +49,6 @@ void CWolf::Start()
 void CWolf::Update()
 {
 	__super::Update();
-
-	if (CInput::GetInstance().GetKeyDown(K))
-	{
-		m_pAnimator->Play(L"Idle");
-		int a = 0;
-	}
 }
 
 void CWolf::OnDestroy()

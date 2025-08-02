@@ -12,6 +12,7 @@ public:
 	HRESULT Initialize() override;
 	void Awake() override;
 	void Update() override;
+	void SceneRelease() override;
 
 private:
 	class CPlayerCamera* m_pPlayerCamera;
