@@ -5,11 +5,14 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 	: m_iUniqueID(999999)
 	, m_strGameObjectName(L"")
 	, m_bActive(true)
+	, m_bPrevActive(true)
+	, m_bRecursiveActive(true)
 	, m_lComponentList({})
 	, m_pScene(nullptr)
 	, m_pTransform(nullptr)
 	, m_pDevice(_pDevice)
 	, m_pContext(_pContext)
+	, m_bIsBoneTransform(false)
 {
 	m_strName = L"Game Object";
 	m_pDevice->AddRef();
@@ -20,12 +23,14 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	: m_iUniqueID(999999)
 	, m_strGameObjectName(_rhs.m_strGameObjectName + L" (Clone)")
 	, m_bActive(_rhs.m_bActive)
+	, m_bPrevActive(_rhs.m_bPrevActive)
+	, m_bRecursiveActive(_rhs.m_bRecursiveActive)
 	, m_lComponentList({})
 	, m_pScene(_rhs.m_pScene)
 	, m_pTransform(nullptr)
 	, m_pDevice(_rhs.m_pDevice)
 	, m_pContext(_rhs.m_pContext)
-	, m_bIsBoneTransform()
+	, m_bIsBoneTransform(_rhs.m_bIsBoneTransform)
 {
 	m_iUniqueID = CSceneManager::GetInstance().Get_CrtScene()->Get_UniqueObjectCount();
 }
@@ -77,9 +82,6 @@ void CGameObject::Update()
 		if ((*it)->Get_Enable())
 			(*it)->Update();
 	}
-
-	if (GetComponent<CRectTransform>())
-		int a = 0;
 }
 
 void CGameObject::FixedUpdate()
@@ -498,4 +500,25 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 	newGameObj->Get_Transform()->SetTransformForMatrix(_rhs->Get_Transform()->Get_WorldMatrix());
 
 	return newGameObj;
+}
+
+const _bool CGameObject::IsParentRecursiveActive()
+{
+	return m_bRecursiveActive;
+}
+
+void CGameObject::Set_RecursiveActive(const _bool _active)
+{
+	m_bRecursiveActive = _active;
+
+	if (m_pTransform)
+	{
+		const auto& children = m_pTransform->Get_ChldList();
+		
+		for (auto child : children)
+		{
+			if (child && child->Get_GameObject())
+				child->Get_GameObject()->Set_RecursiveActive(_active);
+		}
+	}
 }

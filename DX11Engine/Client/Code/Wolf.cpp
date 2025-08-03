@@ -29,10 +29,6 @@ HRESULT CWolf::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	CDebug::Log(CResources::GetInstance().LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName).size());
-
-	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Wolf_Idle (Animation)"));
-
 	return S_OK;
 }
 

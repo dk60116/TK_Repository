@@ -12,6 +12,7 @@ class ENGINE_DLL CGameObject final : public UObject
 {
 	friend class CSceneManager;
 	friend class CScene;
+	friend class CTransform;
 
 private:
 	explicit CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
@@ -104,6 +105,11 @@ public:
 	template<typename T>
 	static vector<T*> FindObjectsOfType();
 
+	const _bool IsParentRecursiveActive();
+
+private:
+	void Set_RecursiveActive(const _bool _active);
+
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
@@ -111,7 +117,7 @@ private:
 private:
 	_uint m_iUniqueID;
 	wstring m_strGameObjectName;
-	_bool m_bActive;
+	_bool m_bActive, m_bPrevActive, m_bRecursiveActive;
 
 	list<CComponent*> m_lComponentList;
 

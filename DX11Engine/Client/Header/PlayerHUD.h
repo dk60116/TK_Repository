@@ -27,6 +27,9 @@ public:
 	void Update() override;
 	void OnDestroy() override;
 
+public:
+	void Update_Heart(const _uint _current, const _uint _max);
+
 private:
 	CPlayer* m_pPlayer;
 	CCanvas* m_pCanvas;

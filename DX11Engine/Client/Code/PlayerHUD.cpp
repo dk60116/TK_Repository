@@ -35,20 +35,26 @@ HRESULT CPlayerHUD::Initialize()
 	m_pHeartContainer = heartContainerObj->AddComponent<CUI>()->Get_RectTransform();
 	m_pHeartContainer->SetParent(m_pCanvas->Get_RectTransform());
 
+	CTexture* heartTex = CResources::GetInstance().LoadOnScene<CTexture>(L"HeartBar (Texture)");
+
 	for (_uint i = 0; i < CPlayer::StaticPlayerStatus::HPMAX; ++i)
 	{
 		const wstring bowlName = wstring(L"Heart bowl ") + L"(" + to_wstring(i) + L")";
 		CGameObject* heartBowlObj = crtScene->Add_GameObject(bowlName);
 		m_vHeartBowlList.push_back(heartBowlObj->AddComponent<CImage>());
 		m_vHeartBowlList.back()->Get_RectTransform()->SetParent(m_pHeartContainer);
-		m_vHeartBowlList.back()->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"HeartBar (Texture)"));
-		m_vHeartBowlList.back()->SetColor(ColorValue::black());
+		m_vHeartBowlList.back()->SetTexture(heartTex);
+		m_vHeartBowlList.back()->SetColor(ColorValue::gray(0.5f));
 
 		const wstring heartName = wstring(L"Heart") + L"(" + to_wstring(i) + L")";
 		CGameObject* heartObj = crtScene->Add_GameObject(heartName);
 		m_vHeartImageList.push_back(heartObj->AddComponent<CImage>());
 		m_vHeartImageList.back()->Get_RectTransform()->SetParent(m_vHeartBowlList.back()->Get_RectTransform());
+		m_vHeartImageList.back()->SetTexture(heartTex);
+		m_vHeartImageList.back()->SetColor(ColorValue::red());
 	}
+
+	CGameManager::GetInstance().Set_PlayerHUD(this);
 
 	return S_OK;
 }
@@ -84,5 +90,9 @@ void CPlayerHUD::Update()
 }
 
 void CPlayerHUD::OnDestroy()
+{
+}
+
+void CPlayerHUD::Update_Heart(const _uint _current, const _uint _max)
 {
 }

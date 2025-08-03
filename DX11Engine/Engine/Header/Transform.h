@@ -150,7 +150,7 @@ inline T* CTransform::Find_ComponentParentRecursive()
 
 	while (tempParent)
 	{
-		if (T* com = tempParent->Get_GameObject()->GetComponent<T>())
+		if (T* com = tempParent->m_pGameObject->GetComponent<T>())
 			return com;
 
 		tempParent = tempParent->m_pParent;

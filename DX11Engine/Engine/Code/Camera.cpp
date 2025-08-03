@@ -168,7 +168,7 @@ void CCamera::RenderMesh()
 {
 	for (TRAVERSAL_ITER(m_vMeshList, it))
 	{
-		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+		if ((*it)->Get_GameObject()->IsParentRecursiveActive() && (*it)->Get_Enable())
 			(*it)->Render_WithCamera(this);
 	}
 
@@ -201,7 +201,7 @@ void CCamera::RenderUI()
 
 	for (TRAVERSAL_ITER(m_vUIList, it))
 	{
-		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+		if ((*it)->Get_GameObject()->IsParentRecursiveActive() && (*it)->Get_Enable())
 		{
 			if (CImage* img = dynamic_cast<CImage*>(*it))
 			{

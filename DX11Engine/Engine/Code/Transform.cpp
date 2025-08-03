@@ -198,6 +198,7 @@ void CTransform::SetParent(CTransform* _parent)
 
     if (m_pParent)
     {
+        m_pGameObject->Set_RecursiveActive(m_pParent->m_pGameObject->m_bRecursiveActive);
         m_pParent->m_lChildList.push_back(this);
         m_pParent->AddRef();
 
@@ -254,7 +255,7 @@ CTransform* CTransform::Find_Child(wstring _name)
 
 CTransform* CTransform::Find_ChildRecursive(wstring _name)
 {
-    if (Get_GameObject()->Get_ObjectName() == _name)
+    if (m_pGameObject->Get_ObjectName() == _name)
         return this;
 
     for (TRAVERSAL_ITER(m_lChildList, it))

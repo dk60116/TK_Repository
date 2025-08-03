@@ -5,6 +5,7 @@
 CGameManager::CGameManager()
 	: m_strNextScene(L"")
 	, m_pPlayer(nullptr)
+	, m_pPlayerHUD(nullptr)
 {
 }
 
@@ -36,4 +37,14 @@ void CGameManager::Set_Player(CPlayer* _player)
 CPlayer* CGameManager::Get_Player()
 {
 	return m_pPlayer;
+}
+
+void CGameManager::Set_PlayerHUD(CPlayerHUD* _hud)
+{
+	m_pPlayerHUD = _hud;
+}
+
+CPlayerHUD* CGameManager::Get_PlayerHUD()
+{
+	return m_pPlayerHUD;
 }

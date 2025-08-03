@@ -262,8 +262,22 @@ void CScene::Update()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->IsParentRecursiveActive())
 			(*it)->Update();
+
+		if ((*it)->m_bActive && !(*it)->m_bPrevActive)
+		{
+			(*it)->OnEnable();
+			(*it)->Set_RecursiveActive(true);
+		}
+
+		if (!(*it)->m_bActive && (*it)->m_bPrevActive)
+		{
+			(*it)->OnDisable();
+			(*it)->Set_RecursiveActive(false);
+		}
+
+		(*it)->m_bPrevActive = (*it)->m_bActive;
 	}
 }
 
@@ -303,7 +317,7 @@ void CScene::Render_Editor()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->IsParentRecursiveActive())
 		{
 			(*it)->OnPreCull_Editor();
 			(*it)->OnPreRender_Editor();

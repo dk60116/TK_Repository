@@ -54,21 +54,22 @@ void CRectTransform::Update()
     __super::Update();
 
     CCanvas* canvas = m_pUI->Get_Canvas();
-
+    
     if (!canvas)
         return;
 
-    const vector2 canvasSize = vector2(canvas->Get_Transform()->Get_LocalScale().x, canvas->Get_Transform()->Get_LocalScale().y);
+    vector2 canvasSize(canvas->Get_Transform()->Get_LocalScale().x,
+        canvas->Get_Transform()->Get_LocalScale().y);
 
     if (!m_pParentRect)
     {
         m_fWidth = canvasSize.x * 100.f * m_vScale.x;
         m_fHeight = canvasSize.y * 100.f * m_vScale.y;
 
-        m_vAnchoredPosition.x = canvasSize.x * 100.f * m_vPosition.x + (m_fWidth * (m_vPivot.x - 0.5f));
+        m_vAnchoredPosition.x = canvasSize.x * 100.f * m_vPosition.x + m_fWidth * (m_vPivot.x - 0.5f);
         m_vAnchoredPosition.x += canvasSize.x * 100.f * (0.5f - m_sAnchors.min.x);
 
-        m_vAnchoredPosition.y = canvasSize.y * 100.f * m_vPosition.y + (m_fHeight * (m_vPivot.y - 0.5f));
+        m_vAnchoredPosition.y = canvasSize.y * 100.f * m_vPosition.y + m_fHeight * (m_vPivot.y - 0.5f);
         m_vAnchoredPosition.y += canvasSize.y * 100.f * (0.5f - m_sAnchors.min.y);
     }
     else
@@ -76,13 +77,10 @@ void CRectTransform::Update()
         m_fWidth = m_pParentRect->m_fWidth * m_vScale.x;
         m_fHeight = m_pParentRect->m_fHeight * m_vScale.y;
 
-        m_vScale.x = (m_vStaticWH.x / m_pParentRect->m_vScale.x) * (1.f / (canvasSize.x * 100.f));
-        m_vScale.y = (m_vStaticWH.y / m_pParentRect->m_vScale.y) * (1.f / (canvasSize.y * 100.f));
-
-        m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + (m_fWidth * (m_vPivot.x - 0.5f));
+        m_vAnchoredPosition.x = m_pParentRect->m_fWidth * m_vPosition.x + m_fWidth * (m_vPivot.x - 0.5f);
         m_vAnchoredPosition.x += m_pParentRect->m_fWidth * (0.5f - m_sAnchors.min.x);
 
-        m_vAnchoredPosition.y = m_pParentRect->m_fHeight * m_vPosition.y + (m_fHeight * (m_vPivot.y - 0.5f));
+        m_vAnchoredPosition.y = m_pParentRect->m_fHeight * m_vPosition.y + m_fHeight * (m_vPivot.y - 0.5f);
         m_vAnchoredPosition.y += m_pParentRect->m_fHeight * (0.5f - m_sAnchors.min.y);
     }
 
