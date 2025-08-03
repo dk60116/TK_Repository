@@ -506,7 +506,7 @@ namespace Engine
             return !(*this == rhs);
         }
 
-        static const _float Distance(const vector3& _a, const vector3& _b)
+        static const float Distance(const vector3& _a, const vector3& _b)
         {
             return vector3(_b.x - _a.x, _b.y - _a.y, _b.z - _a.z).length();
         }

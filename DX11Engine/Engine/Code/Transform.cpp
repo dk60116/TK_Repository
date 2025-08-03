@@ -744,7 +744,7 @@ void CTransform::LookAt(const vector3& _target, const _uint _lockRotationFilter)
     }
 
     // 회전 필터 적용
-    if (_rockRotationFilter)
+    if (_lockRotationFilter)
     {
         quaternion qNew(q);                       // 목표 회전
         quaternion qCur = m_vQuaternion;          // 현재 회전
@@ -752,9 +752,9 @@ void CTransform::LookAt(const vector3& _target, const _uint _lockRotationFilter)
         vector3 eulerNew = qNew.to_euler();
         vector3 eulerCur = qCur.to_euler();
 
-        if (_rockRotationFilter & 0x001) eulerNew.x = eulerCur.x;
-        if (_rockRotationFilter & 0x010) eulerNew.y = eulerCur.y;
-        if (_rockRotationFilter & 0x100) eulerNew.z = eulerCur.z;
+        if (_lockRotationFilter & 0x001) eulerNew.x = eulerCur.x;
+        if (_lockRotationFilter & 0x010) eulerNew.y = eulerCur.y;
+        if (_lockRotationFilter & 0x100) eulerNew.z = eulerCur.z;
 
         q = eulerNew.to_quaternion().toXMVector();
     }
@@ -762,4 +762,98 @@ void CTransform::LookAt(const vector3& _target, const _uint _lockRotationFilter)
     XMStoreFloat4(reinterpret_cast<_float4*>(&m_vQuaternion), XMQuaternionNormalize(q));
 
     m_vEulerAngles = m_vQuaternion.to_euler();
+}
+
+const vector3 CTransform::LookRotation(const vector3& _target, const _uint _lockRotationFilter)
+{
+    vector3 forward = (_target - m_vWorldPosition).normalized();
+    
+    if (forward.lengthSq() < 1e-6f)     
+        return m_vQuaternion.to_euler();   
+
+    vector3 upAxis(0.f, 1.f, 0.f);
+
+    if (fabsf(forward.dot(upAxis)) > 0.999f)
+        upAxis = vector3(0.f, 0.f, 1.f);
+
+    vector3 right = upAxis.cross(forward).normalized();
+    upAxis = forward.cross(right);    
+
+    _matrix rotM =
+    {
+        right.x,    right.y,    right.z,    0.f,
+        upAxis.x,   upAxis.y,   upAxis.z,   0.f,
+        forward.x,  forward.y,  forward.z,  0.f,
+        0.f,        0.f,        0.f,        1.f
+    };
+
+    _vector q = XMQuaternionRotationMatrix(rotM);
+    q = XMQuaternionNormalize(q);
+
+    if (m_pParent)
+    {
+        _vector parentQ = m_pParent->m_vQuaternion.toXMVector();
+        _vector invParentQ = XMQuaternionInverse(parentQ);
+        q = XMQuaternionMultiply(invParentQ, q);
+    }
+
+    if (_lockRotationFilter)
+    {
+        quaternion newQ;  XMStoreFloat4(reinterpret_cast<_float4*>(&newQ), q);
+        vector3    eNew = newQ.to_euler();     
+        vector3    eCur = m_vQuaternion.to_euler();
+
+        if (_lockRotationFilter & 0x001) eNew.x = eCur.x;
+        if (_lockRotationFilter & 0x010) eNew.y = eCur.y;
+        if (_lockRotationFilter & 0x100) eNew.z = eCur.z;
+
+        return eNew;   
+    }
+
+    quaternion finalQ;  XMStoreFloat4(reinterpret_cast<_float4*>(&finalQ), q);
+    return finalQ.to_euler();  
+}
+
+const quaternion CTransform::LookQuaternion(const vector3& _target, const _uint _lockRotationFilter)
+{
+    vector3 forward = (_target - m_vWorldPosition).normalized();
+
+    if (forward.lengthSq() < 1e-6f)
+        return m_vQuaternion;
+
+    vector3 upAxis(0.f, 1.f, 0.f);
+
+    if (fabsf(forward.dot(upAxis)) > 0.999f)
+        upAxis = vector3(0.f, 0.f, 1.f);
+
+    vector3 right = upAxis.cross(forward).normalized();
+    upAxis = forward.cross(right);
+
+    _matrix rotM =
+    {
+        right.x,    right.y,    right.z,    0.f,
+        upAxis.x,   upAxis.y,   upAxis.z,   0.f,
+        forward.x,  forward.y,  forward.z,  0.f,
+        0.f,        0.f,        0.f,        1.f
+    };
+
+    _vector q = XMQuaternionRotationMatrix(rotM);
+    q = XMQuaternionNormalize(q);
+
+    if (m_pParent)
+    {
+        _vector parentQ = m_pParent->m_vQuaternion.toXMVector();
+        _vector invParentQ = XMQuaternionInverse(parentQ);
+        q = XMQuaternionMultiply(invParentQ, q);
+    }
+
+    if (_lockRotationFilter)
+    {
+        quaternion newQ;  XMStoreFloat4(reinterpret_cast<_float4*>(&newQ), q);
+
+        return newQ;
+    }
+
+    quaternion finalQ;  XMStoreFloat4(reinterpret_cast<_float4*>(&finalQ), q);
+    return finalQ;
 }

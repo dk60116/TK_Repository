@@ -14,7 +14,8 @@ public:
 		_uint crtHp = 0;
 		_float moveSpeed = 4.f;
 		_float backWalkRatio = 0.7f;
-		_float turnSpeed = 120.f;
+		_float turnSpeed = 180.f;
+		_float focusTurnRatio = 8.f;
 		_uint attackPower = 1;
 	};
 

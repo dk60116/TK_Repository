@@ -25,7 +25,6 @@ private:
 
 public:
     HRESULT Initialize() override;
-    void Awake() override;
     void Update() override;
     void OnDestroy() override;
 

@@ -34,6 +34,8 @@ HRESULT CMonster::Initialize()
 
 void CMonster::Awake()
 {
+	m_pAnimator->SetLoop(true);
+	m_pAnimator->Play(L"Idle");
 }
 
 void CMonster::Start()

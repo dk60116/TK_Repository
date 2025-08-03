@@ -25,3 +25,5 @@ Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]
 Terrain_MainTex : Map/Grass.png : [Texture]
 VahMedoh : Map/VahMedoh/VahMedoh_Body.fbx : [Mesh] [Material]
 WoodenSword : Weapons/WoodenSword.fbx : [Mesh] [Material]
+// UI
+HeartBar : UI/HUDUI/HeartBar.png : [Texture]

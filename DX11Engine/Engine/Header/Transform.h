@@ -123,6 +123,8 @@ public:
 	void SetTransformForMatrix(_matrix _matWorld);
 
 	void LookAt(const vector3& _target, const _uint _lockRotationFilter = 0x000);
+	const vector3 LookRotation(const vector3& _target, const _uint _lockRotationFilter = 0x000);
+	const quaternion LookQuaternion(const vector3& _target, const _uint _lockRotationFilter = 0x000);
 
 private:
 	void Bind_Matrix();

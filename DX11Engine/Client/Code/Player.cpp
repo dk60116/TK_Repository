@@ -258,10 +258,11 @@ void CPlayer::PlayerControle_LockOn()
 {
 	if (m_pFocusTransform)
 	{
-		CDebug::LogError(vector3::Distance(m_pFocusTransform->Get_Position(), Get_Transform()->Get_Position()));
-
-		if (vector3::Distance(m_pFocusTransform->Get_Position(), Get_Transform()->Get_Position()) > 3.f)
-			Get_Transform()->LookAt(m_pFocusTransform->Get_Position(), CTransform::X | CTransform::Z);
+		if (vector3::Distance(m_pFocusTransform->Get_Position(), Get_Transform()->Get_Position()) > 1.5f)
+		{
+			quaternion targetQ = Get_Transform()->LookQuaternion(m_pFocusTransform->Get_Position(), CTransform::X | CTransform::Z);
+			Get_Transform()->Set_Quaternion(targetQ.Slerp(Get_Transform()->Get_Quaternion(), targetQ, DELTA_TIME * m_sPlayerStatus.focusTurnRatio));
+		}
 	}
 
 	if (CInput::GetInstance().GetKey(A))
@@ -312,13 +313,10 @@ void CPlayer::PlayIdleAnimation(const _float _blending)
 		if (!m_bLockOnMode)
 		{
 			m_pAnimator->Play(L"Idle", _blending);
-			CDebug::Log("Idle");
 		}
 		else
 		{
 			m_pAnimator->Play(L"CombatIdle", _blending);
-
-			CDebug::Log("Combat Idle");
 		}
 	}
 
