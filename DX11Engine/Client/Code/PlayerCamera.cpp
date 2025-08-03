@@ -1,6 +1,5 @@
 #include "cpch.h"
 #include "PlayerCamera.h"
-#include "Player.h"
 
 CPlayerCamera::CPlayerCamera()
 	: m_pPlayer(nullptr)
@@ -41,7 +40,7 @@ HRESULT CPlayerCamera::Initialize()
 
 void CPlayerCamera::Awake()
 {
-	m_pPlayer = CGameObject::FindObjectOfType<CPlayer>();
+	m_pPlayer = CGameManager::GetInstance().Get_Player();
 }
 
 void CPlayerCamera::Start()

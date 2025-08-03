@@ -149,6 +149,7 @@
     <ClInclude Include="..\Header\Monster.h" />
     <ClInclude Include="..\Header\Player.h" />
     <ClInclude Include="..\Header\PlayerCamera.h" />
+    <ClInclude Include="..\Header\PlayerHUD.h" />
     <ClInclude Include="..\Header\Weapon.h" />
     <ClInclude Include="..\Header\Wolf.h" />
     <ClInclude Include="..\Header\WoodenSword.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="..\Code\Monster.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
+    <ClCompile Include="..\Code\PlayerHUD.cpp" />
     <ClCompile Include="..\Code\Weapon.cpp" />
     <ClCompile Include="..\Code\Wolf.cpp" />
     <ClCompile Include="..\Code\WoodenSword.cpp" />

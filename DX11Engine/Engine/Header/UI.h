@@ -5,8 +5,9 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CUI abstract : public CComponent
+class ENGINE_DLL CUI : public CComponent
 {
+	friend class CGameObject;
 	friend class CRectTransform;
 
 protected:
@@ -16,6 +17,10 @@ protected:
 public:
 	HRESULT Initialize() override;
 	void OnDestroy();
+
+private:
+	static CUI* Create();
+	CComponent* Clone() const override;
 
 public:
 	void Set_Mesh(CMeshBuffer* _mesh);

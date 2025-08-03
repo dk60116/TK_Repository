@@ -18,6 +18,19 @@ CUI::~CUI()
 	OnDestroy();
 }
 
+CUI* CUI::Create()
+{
+	CUI* newCanvas = new CUI();
+	return newCanvas;
+}
+
+CComponent* CUI::Clone() const
+{
+	CUI* clone = new CUI();
+
+	return clone;
+}
+
 HRESULT CUI::Initialize()
 {
 	if (FAILED(__super::Initialize()))

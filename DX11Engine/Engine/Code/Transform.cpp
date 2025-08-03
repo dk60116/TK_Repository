@@ -612,12 +612,18 @@ void CTransform::Bind_Matrix()
     _matrix matRotation = XMMatrixRotationQuaternion(m_vQuaternion);
     _matrix matTranslation = XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z);
 
-    _matrix matWorldF = matScale * matRotation * matTranslation;
+    _matrix matWorldF = XMMatrixIdentity();
+    
+    matWorldF *= matScale;
+    matWorldF *= matRotation;
+    matWorldF *= matTranslation;
 
     _matrix worldMat = {};
 
     if (m_pParent)
+    {
         worldMat = matWorldF * XMLoadFloat4x4(&m_pParent->m_vMatWorld);
+    }
     else
         worldMat = matWorldF;
 

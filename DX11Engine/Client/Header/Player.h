@@ -8,6 +8,11 @@ public:
 	enum PlayerAnimationStatus { Idle, Run, CombatIdle };
 
 public:
+	struct StaticPlayerStatus
+	{
+		const static _uint HPMAX = 12;
+	};
+
 	struct PlayerStatus
 	{
 		_uint maxHp = 3;

@@ -31,6 +31,12 @@
     <Filter Include="Scripts\Object\Monsters\Woolf">
       <UniqueIdentifier>{b607f882-87d4-4497-9fb1-8ffd9ac63b8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Player">
+      <UniqueIdentifier>{12fd9748-fc20-4537-829c-7897701f5c7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\UI">
+      <UniqueIdentifier>{ae3f04d2-af05-4951-98b8-0cf5b06cd86a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -48,9 +54,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\Player.h">
-      <Filter>Scripts\Object</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\LoadingScene.h">
       <Filter>Scripts\Scene</Filter>
     </ClInclude>
@@ -59,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\GameScene.h">
       <Filter>Scripts\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\PlayerCamera.h">
-      <Filter>Scripts\Object</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Weapon.h">
       <Filter>Scripts\Object\Weapons</Filter>
@@ -75,6 +75,15 @@
     <ClInclude Include="..\Header\Wolf.h">
       <Filter>Scripts\Object\Monsters\Woolf</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Player.h">
+      <Filter>Scripts\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\PlayerHUD.h">
+      <Filter>Scripts\Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\PlayerCamera.h">
+      <Filter>Scripts\Object\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -86,9 +95,6 @@
     <ClCompile Include="cpch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Player.cpp">
-      <Filter>Scripts\Object</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\LoadingScene.cpp">
       <Filter>Scripts\Scene</Filter>
     </ClCompile>
@@ -97,9 +103,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\GameScene.cpp">
       <Filter>Scripts\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\PlayerCamera.cpp">
-      <Filter>Scripts\Object</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Weapon.cpp">
       <Filter>Scripts\Object\Weapons</Filter>
@@ -112,6 +115,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\Wolf.cpp">
       <Filter>Scripts\Object\Monsters\Woolf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerCamera.cpp">
+      <Filter>Scripts\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Player.cpp">
+      <Filter>Scripts\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerHUD.cpp">
+      <Filter>Scripts\Object\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

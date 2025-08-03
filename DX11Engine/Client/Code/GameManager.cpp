@@ -1,8 +1,10 @@
 #include "cpch.h"
 #include "GameManager.h"
+#include "Player.h"
 
 CGameManager::CGameManager()
 	: m_strNextScene(L"")
+	, m_pPlayer(nullptr)
 {
 }
 
@@ -24,4 +26,14 @@ void CGameManager::Set_NexScene(const wstring _scneName)
 const wstring& CGameManager::Get_NextScene() const
 {
 	return m_strNextScene;
+}
+
+void CGameManager::Set_Player(CPlayer* _player)
+{
+	m_pPlayer = _player;
+}
+
+CPlayer* CGameManager::Get_Player()
+{
+	return m_pPlayer;
 }

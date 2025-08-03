@@ -2,13 +2,14 @@
 #include "GameScene.h"
 #include "Player.h"
 #include "PlayerCamera.h"
+#include "PlayerHUD.h"
 #include "Wolf.h"
 
 CGameScene::CGameScene()
 	: m_pPlayerCamera(nullptr)
 	, m_pDirLight(nullptr)
-	, m_pCanvas(nullptr)
 	, m_pPlayer(nullptr)
+	, m_pHUD(nullptr)
 	, m_vMonsters({})
 {
 }
@@ -27,28 +28,19 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* lightObject = Add_GameObject(L"Directional Light");
 	m_pDirLight = lightObject->AddComponent<CLight>();
-	lightObject->Get_Transform()->Set_EulerAnglesX(90.f);
 
 	CGameObject* lightObject2 = Add_GameObject(L"Point Light");
 	CLight* pointLight = lightObject2->AddComponent<CLight>();
 	pointLight->Set_Type(CLight::Type::point);
 
-	CGameObject* canvasObj = Add_GameObject(L"Canvas");
-	m_pCanvas = canvasObj->AddComponent<CCanvas>();
+	CGameObject* hudObject = Add_GameObject(L"Player HUD");
+	m_pHUD = hudObject->AddComponent<CPlayerHUD>();
 
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	//CGameObject* templeObj = Add_GameObject(L"Temple");
-	//	CMeshRenderer* templeRenderer = templeObj->AddComponent<CMeshRenderer>();
-	//
-	//templeObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"Temple_Model (MeshBuffer)"));
-
-	//CGameObject* castleObj = Add_GameObject(L"Castle");
-	//castleObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"Castle_Model (MeshBuffer)"));
-
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
-	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"));
+	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f);
 
 	CGameObject* wolfObject = Add_GameObject(L"Wolf");
 	CWolf* woolf = wolfObject->AddComponent<CWolf>();

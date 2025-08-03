@@ -4,6 +4,13 @@
 
 class CPlayerHUD final : public CComponent
 {
+public:
+	struct PlayerHUDOptions
+	{
+		_float heartSize = 30.f;
+		_float heartSpacing = 5.f;
+	};
+
 private:
 	CPlayerHUD();
 	~CPlayerHUD();
@@ -19,5 +26,12 @@ public:
 	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
+
+private:
+	CPlayer* m_pPlayer;
+	CCanvas* m_pCanvas;
+	PlayerHUDOptions m_sOptions;
+	CRectTransform* m_pHeartContainer;
+	vector<CImage*> m_vHeartBowlList, m_vHeartImageList;
 };
 

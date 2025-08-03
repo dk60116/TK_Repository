@@ -110,7 +110,7 @@ void CDebug::Log(const string format, ...)
 
 void CDebug::Log(const wstring& format, ...)
 {
-    Log(CEngineString::WStringToString(format));
+    Log(CEngineString::WStringToString(wstring(format)));
 }
 
 void CDebug::Log(const _bool format, ...)
@@ -248,7 +248,7 @@ void CDebug::LogError(const string format, ...)
 
 void CDebug::LogError(const wstring& format, ...)
 {
-    LogError(CEngineString::WStringToString(format));
+    LogError(CEngineString::WStringToString(wstring(format)));
 }
 
 void CDebug::LogError(const _bool format, ...)
@@ -340,7 +340,7 @@ void CDebug::LogWarnning(const string format, ...)
 
 void CDebug::LogWarnning(const wstring& format, ...)
 {
-    LogWarnning(CEngineString::WStringToString(format));
+    LogWarnning(CEngineString::WStringToString(wstring(format)));
 }
 
 void CDebug::LogWarnning(const _bool format, ...)
