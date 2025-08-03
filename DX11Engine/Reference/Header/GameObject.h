@@ -105,7 +105,7 @@ public:
 	template<typename T>
 	static vector<T*> FindObjectsOfType();
 
-	const _bool IsParentRecursiveActive();
+	const _bool IsRecursiveActive();
 
 private:
 	void Set_RecursiveActive(const _bool _active);

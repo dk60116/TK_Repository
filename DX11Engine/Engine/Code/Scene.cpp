@@ -205,7 +205,7 @@ void CScene::Start()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->IsRecursiveActive())
 			(*it)->Start();
 	}
 }
@@ -262,7 +262,7 @@ void CScene::Update()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsParentRecursiveActive())
+		if ((*it)->IsRecursiveActive())
 			(*it)->Update();
 
 		if ((*it)->m_bActive && !(*it)->m_bPrevActive)
@@ -317,7 +317,7 @@ void CScene::Render_Editor()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsParentRecursiveActive())
+		if ((*it)->IsRecursiveActive())
 		{
 			(*it)->OnPreCull_Editor();
 			(*it)->OnPreRender_Editor();
@@ -363,7 +363,7 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
-		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderMesh();
 	}
 
@@ -372,13 +372,13 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
-		if ((*it)->Get_GameObject()->IsActive() && (*it)->Get_Enable())
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderUI();
 	}
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->IsRecursiveActive())
 			(*it)->OnPostRender();
 	}
 }

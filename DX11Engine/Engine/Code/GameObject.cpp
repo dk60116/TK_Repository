@@ -502,7 +502,7 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 	return newGameObj;
 }
 
-const _bool CGameObject::IsParentRecursiveActive()
+const _bool CGameObject::IsRecursiveActive()
 {
 	return m_bRecursiveActive;
 }

@@ -15,7 +15,7 @@ public:
 
 	struct PlayerStatus
 	{
-		_uint maxHp = 3;
+		_uint maxHp = 6;
 		_uint crtHp = 0;
 		_float moveSpeed = 4.f;
 		_float backWalkRatio = 0.7f;
@@ -42,6 +42,8 @@ public:
 
 public:
 	void Set_Focus(CTransform* _transform);
+	void RecoverHp(const _uint _value);
+	void GetDamage(const _uint _damage);
 
 private:
 	void PlayerControle();

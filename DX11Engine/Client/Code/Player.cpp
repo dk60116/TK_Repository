@@ -95,15 +95,27 @@ HRESULT CPlayer::Initialize()
 
 void CPlayer::Awake()
 {
+	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 }
 
 void CPlayer::Start()
 {
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 
 void CPlayer::Update()
 {
 	PlayerControle();
+
+	if (CInput::GetInstance().GetKeyDown(P))
+	{
+		RecoverHp(1);
+	}
+
+	if (CInput::GetInstance().GetKeyDown(O))
+	{
+		GetDamage(1);
+	}
 }
 
 void CPlayer::OnDestroy()
@@ -113,6 +125,18 @@ void CPlayer::OnDestroy()
 void CPlayer::Set_Focus(CTransform* _transform)
 {
 	m_pFocusTransform = _transform;
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
+}
+
+void CPlayer::RecoverHp(const _uint _value)
+{
+	m_sPlayerStatus.crtHp += _value;
+}
+
+void CPlayer::GetDamage(const _uint _damage)
+{
+	m_sPlayerStatus.crtHp -= _damage;
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 
 void CPlayer::PlayerControle()

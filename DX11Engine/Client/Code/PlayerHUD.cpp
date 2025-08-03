@@ -95,4 +95,15 @@ void CPlayerHUD::OnDestroy()
 
 void CPlayerHUD::Update_Heart(const _uint _current, const _uint _max)
 {
+	for (size_t i = 0; i < m_vHeartBowlList.size(); ++i)
+	{
+		m_vHeartBowlList[i]->Get_GameObject()->SetActive(i < static_cast<_uint>(_max * 0.5f));
+		
+		_uint targetHp = _current / 2;
+		_float other = _current % 2;
+
+		CDebug::LogError(targetHp);
+
+		m_vHeartImageList[i]->Get_GameObject()->SetActive(i < targetHp);
+	}
 }
