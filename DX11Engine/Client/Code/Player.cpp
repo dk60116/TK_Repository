@@ -125,17 +125,19 @@ void CPlayer::OnDestroy()
 void CPlayer::Set_Focus(CTransform* _transform)
 {
 	m_pFocusTransform = _transform;
-	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 
 void CPlayer::RecoverHp(const _uint _value)
 {
 	m_sPlayerStatus.crtHp += _value;
+	m_sPlayerStatus.crtHp = min(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 
 void CPlayer::GetDamage(const _uint _damage)
 {
 	m_sPlayerStatus.crtHp -= _damage;
+	m_sPlayerStatus.crtHp = max(m_sPlayerStatus.crtHp, 0);
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 

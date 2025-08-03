@@ -15,13 +15,13 @@ public:
 
 	struct PlayerStatus
 	{
-		_uint maxHp = 6;
-		_uint crtHp = 0;
+		_int maxHp = 6;
+		_int crtHp = 0;
 		_float moveSpeed = 4.f;
 		_float backWalkRatio = 0.7f;
 		_float turnSpeed = 180.f;
 		_float focusTurnRatio = 8.f;
-		_uint attackPower = 1;
+		_int attackPower = 1;
 	};
 
 protected:

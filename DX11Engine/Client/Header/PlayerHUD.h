@@ -28,7 +28,7 @@ public:
 	void OnDestroy() override;
 
 public:
-	void Update_Heart(const _uint _current, const _uint _max);
+	void Update_Heart(const _int _current, const _int _max);
 
 private:
 	CPlayer* m_pPlayer;

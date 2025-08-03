@@ -93,17 +93,20 @@ void CPlayerHUD::OnDestroy()
 {
 }
 
-void CPlayerHUD::Update_Heart(const _uint _current, const _uint _max)
+void CPlayerHUD::Update_Heart(const _int _current, const _int _max)
 {
-	for (size_t i = 0; i < m_vHeartBowlList.size(); ++i)
+	if (_current < 0)
+		return;
+
+	_float targetHp = _current / 2.f;
+	_int other = static_cast<_int>(_current) % 2;
+
+	for (_int i = 0; i < static_cast<_uint>(m_vHeartBowlList.size()); ++i)
 	{
-		m_vHeartBowlList[i]->Get_GameObject()->SetActive(i < static_cast<_uint>(_max * 0.5f));
-		
-		_uint targetHp = _current / 2;
-		_float other = _current % 2;
-
-		CDebug::LogError(targetHp);
-
+		m_vHeartBowlList[i]->Get_GameObject()->SetActive(i < static_cast<_int>(_max * 0.5f));
 		m_vHeartImageList[i]->Get_GameObject()->SetActive(i < targetHp);
+		m_vHeartImageList[i]->SetFillAmount(1.f);
 	}
+
+	m_vHeartImageList[static_cast<_int>(targetHp)]->SetFillAmount(other > 0.f ? 0.5f : 0.f);
 }
