@@ -80,6 +80,8 @@ void CGameScene::Update()
 		m_vMonsters[2]->Get_Animator()->Play(L"Run", 0.1f);
 	if (CInput::GetInstance().GetKeyDown(J))
 		m_vMonsters[2]->Get_Animator()->Play(L"Attack01", 0.1f);
+	if (CInput::GetInstance().GetKeyDown(H))
+		m_vMonsters[2]->Get_Animator()->Play(L"Find", 0.1f);
 }
 
 void CGameScene::SceneRelease()

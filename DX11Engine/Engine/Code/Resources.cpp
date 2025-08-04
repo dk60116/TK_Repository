@@ -1165,6 +1165,14 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 		}
 
 		clips.emplace_back(move(clip));
+
+		for (auto& tr : clip.tracks)
+			if (tr.nodeName == L"FantasyWolf_")
+				for (auto& k : tr.keyframes)
+					printf("k.t=%.2f p=(%.2f,%.2f,%.2f)\n",
+						k.timeStamp, k.position.x, k.position.y, k.position.z);
+
+		int a = 0;
 	}
 
 	in.close();

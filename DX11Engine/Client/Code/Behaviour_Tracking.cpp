@@ -22,7 +22,7 @@ void CBehaviour_Tracking::Enter()
 	__super::Enter();
 
 	m_pMonster->Get_Animator()->SetLoop(true);
-	m_pMonster->Get_Animator()->Play(L"Run", 0.1f);
+	m_pMonster->Get_Animator()->Play(L"Run", 0.25f);
 }
 
 void CBehaviour_Tracking::During()
@@ -36,6 +36,10 @@ void CBehaviour_Tracking::During()
 	CTransform* myTf = m_pMonster->Get_Transform();
 	const vector3 myPos = myTf->Get_Position();
 	const vector3 myAngle = myTf->Get_EulerAngles();
+
+	 quaternion rotQ = myTf->LookQuaternion(playerPos, CTransform::X | CTransform::Z);
+	 
+	 //myTf->Set_Quaternion(quaternion::Slerp(myTf->Get_Quaternion(), rotQ, DELTA_TIME * m_pMonster->Get_Status().rotateSpeed));
 
 	if (vector3::Distance(myPos, playerPos) < m_pMonster->Get_Status().attackRange)
 	{

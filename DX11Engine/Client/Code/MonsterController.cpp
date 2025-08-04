@@ -65,8 +65,7 @@ void CMonsterController::Awake()
 
 	if (m_pMonster)
 	{
-		m_pCrtBehaviour = m_mBehaviourList[Idle];
-		m_pCrtBehaviour->Enter();
+		//ChangeState(Idle);
 	}
 }
 

@@ -29,7 +29,7 @@ void CBehaviour_Find::During()
 {
 	__super::During();
 
-	if (m_fPassedTime >= 1.5f)
+	if (m_pMonster->Get_Animator()->Get_StateInfo().normalizeTime >= 0.9f)
 	{
 		m_pMonster->Change_State(CMonsterController::Tracking);
 	}

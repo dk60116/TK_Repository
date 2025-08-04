@@ -11,8 +11,10 @@ public:
 	{
 		_int maxHp = 3;
 		_int crtHp = 0;
-		_float detectionRange = 5.f;
-		_float attackRange = 2.5f;
+		_float moveSpeed = 3.f;
+		_float rotateSpeed = 5.f;
+		_float detectionRange = 10.f;
+		_float attackRange = 3.f;
 	};
 
 protected:
