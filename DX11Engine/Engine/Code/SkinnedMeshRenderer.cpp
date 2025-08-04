@@ -8,6 +8,7 @@ CSkinnedMeshRenderer::CSkinnedMeshRenderer()
 	, m_vBones({})
 	, m_pRootBone(nullptr)
 	, m_pBoneMatrixBuffer(nullptr)
+	, m_bApplyRootMotion(false)
 {
 	m_strName = L"Skinned Mesh Renderer";
 }
@@ -332,4 +333,14 @@ void CSkinnedMeshRenderer::Set_Bones(const vector<CTransform*>& _bones, CTransfo
 
 	if (_rootBone)
 		m_pRootBone = _rootBone;
+}
+
+const wstring CSkinnedMeshRenderer::Get_RootBoneName() const
+{
+	return m_pRootBone->Get_GameObject()->Get_ObjectName();
+}
+
+void CSkinnedMeshRenderer::Set_ApplyRootMotion(const _bool _value)
+{
+	m_bApplyRootMotion = _value;
 }

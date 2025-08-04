@@ -1247,7 +1247,7 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 		if (_filter & FILTER_MESHBUFFER)
 		{
 			CSkinnedMeshBuffer* newBuffer = CSkinnedMeshBuffer::Create();
-			newBuffer->Initiailize_Custom(_infoList[i], _desc);
+			newBuffer->Initiailize_Custom(_infoList[i], _skelList, _desc);
 
 			newBundle.meshBuffer = newBuffer;
 		}

@@ -27,72 +27,88 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
     return S_OK;
 }
 
-HRESULT CSkinnedMeshBuffer::Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, void* _desc)
+HRESULT CSkinnedMeshBuffer::Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, vector<SKINNEDSKELETAL> _bonesInfo, void* _desc)
 {
-    if (!(_info.buffer.size() > 0))
+    if (_info.buffer.empty() ||
+        _info.desc.vertexSize == 0 ||
+        _info.desc.vertextCount == 0)
         return E_FAIL;
 
-    if (_info.desc.vertexSize == 0 || _info.desc.vertextCount == 0)
-        return E_FAIL;
-
-    m_sInfo = {};
     m_sInfo = _info.desc;
-
     m_strResourceName = _info.meshName;
 
-    size_t size = _info.desc.vertexSize * _info.desc.vertextCount;
+    const size_t vtxBytes = _info.desc.vertexSize *
+        _info.desc.vertextCount;
 
-    m_pVertexSysMem = malloc(size);
-    memcpy(m_pVertexSysMem, _info.buffer.data(), size);
+    m_pVertexSysMem = std::malloc(vtxBytes);
+    std::memcpy(m_pVertexSysMem, _info.buffer.data(), vtxBytes);
 
-    if (_info.desc.indexCount > 0 && !_info.indices.empty())
+    if (_info.desc.indexCount &&
+        !_info.indices.empty())
     {
-        size_t indexSize = sizeof(_uint) * _info.desc.indexCount;
-        m_pIndexSysMem = malloc(indexSize);
-        memcpy(m_pIndexSysMem, _info.indices.data(), indexSize);
+        const size_t idxBytes = sizeof(_uint) *
+            _info.desc.indexCount;
+        m_pIndexSysMem = std::malloc(idxBytes);
+        std::memcpy(m_pIndexSysMem,
+            _info.indices.data(),
+            idxBytes);
     }
 
     ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
-
-    // VertexBuffer 생성
-    D3D11_BUFFER_DESC vbDesc = {};
-    vbDesc.ByteWidth = static_cast<_uint>(_info.desc.vertexSize * _info.desc.vertextCount);
-    vbDesc.Usage = D3D11_USAGE_DEFAULT;
-    vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-    D3D11_SUBRESOURCE_DATA vbData = {};
-    vbData.pSysMem = _info.buffer.data();
-
     HRESULT hr = S_OK;
 
-    hr = device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer);
-
-    // IndexBuffer 생성
-    if (_info.desc.indexCount > 0 && _info.indices.size() > 0)
     {
-        D3D11_BUFFER_DESC ibDesc = {};
-        ibDesc.ByteWidth = sizeof(_uint) * _info.desc.indexCount;
-        ibDesc.Usage = D3D11_USAGE_DEFAULT;
-        ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-        D3D11_SUBRESOURCE_DATA ibData = {};
-        ibData.pSysMem = _info.indices.data();
-
-        hr = device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer);
+        D3D11_BUFFER_DESC   bd{};
+        D3D11_SUBRESOURCE_DATA sd{};
+        bd.ByteWidth = static_cast<_uint>(vtxBytes);
+        bd.Usage = D3D11_USAGE_DEFAULT;
+        bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        sd.pSysMem = _info.buffer.data();
+        hr = device->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
+        if (FAILED(hr)) goto BufferFail;
     }
 
-    if (FAILED(hr))
+    if (_info.desc.indexCount &&
+        !_info.indices.empty())
     {
-        CDebug::LogError(L"SkinnedBuffer load failed(Custom): " + m_strFilePath);
-        return E_FAIL;
+        D3D11_BUFFER_DESC   bd{};
+        D3D11_SUBRESOURCE_DATA sd{};
+        bd.ByteWidth = sizeof(_uint) * _info.desc.indexCount;
+        bd.Usage = D3D11_USAGE_DEFAULT;
+        bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        sd.pSysMem = _info.indices.data();
+        hr = device->CreateBuffer(&bd, &sd, &m_pIndexBuffer);
+        if (FAILED(hr)) goto BufferFail;
     }
 
-    if (_info.boneNames.size() > 0)
-        m_vBoneNames = _info.boneNames;
+    m_vBoneNames = _info.boneNames;      
+    m_vBoneOffsetMatrices = _info.boneOffsetMatrices; // 스킨 본 offset
 
-    if (_info.boneOffsetMatrices.size() > 0)
-        m_vBoneOffsetMatrices = _info.boneOffsetMatrices;
+    XMFLOAT4X4 identity;
+    XMStoreFloat4x4(&identity,
+        DirectX::XMMatrixIdentity());
 
+    for (const auto& node : _bonesInfo)
+    {
+        const auto& name = node.name;
+
+        // 이미 존재하면 패스
+        if (find(m_vBoneNames.begin(),
+            m_vBoneNames.end(),
+            name) != m_vBoneNames.end())
+            continue;
+
+        // 이름 추가
+        m_vBoneNames.push_back(name);
+
+        // 오프셋 행렬:
+        //  - 스킨 가중치 없는 본이므로 단위행렬이면 충분
+        m_vBoneOffsetMatrices.push_back(identity);
+    }
+    return S_OK;
+
+BufferFail:
+    CDebug::LogError(L"SkinnedBuffer load failed(Custom): " + m_strFilePath);
     return hr;
 }
 
