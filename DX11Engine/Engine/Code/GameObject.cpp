@@ -422,11 +422,13 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 	CTransform* baseTransform = nullptr;
 
 	for (auto& b : _bonesInfo)
-		if (b.parentId == -1) 
-		{ 
+	{
+		if (b.parentId == -1)
+		{
 			baseTransform = nameMap[b.name];
-			break; 
+			break;
 		}
+	}
 
 	for (auto* r : renderers)
 	{

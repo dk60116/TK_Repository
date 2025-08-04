@@ -48,7 +48,7 @@ private:
 
 protected:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
-	HRESULT Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, void* _desc);
+	HRESULT Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, vector<SKINNEDSKELETAL> _skeletonInfo, void* _desc);
 	void Render();
 	void OnDestroy() override;
 

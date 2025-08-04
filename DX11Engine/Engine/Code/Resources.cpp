@@ -379,6 +379,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 	}
 
 	CDebug::Log(L"Complete create skinned mesh Data: " + _filePath);
+	
 	return S_OK;
 }
 
@@ -412,71 +413,58 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 
 	for (_uint i = 0; i < aiScene->mNumAnimations; i++)
 	{
-		CAnimationClip::AnimationClipInitInfo animInfo = {};
+		const aiAnimation* aiAnim = aiScene->mAnimations[i];
+		CAnimationClip::AnimationClipInitInfo clip{};
 
-		const aiAnimation* anim = aiScene->mAnimations[i];
+		clip.name = aiAnim->mName.length > 0 ?
+			CEngineString::StringToWString(aiAnim->mName.C_Str()) :
+			L"Anim_" + to_wstring(i);
 
-		animInfo.name = CEngineString::StringToWString(anim->mName.C_Str());
-		animInfo.duration = static_cast<_float>(anim->mDuration);
-		animInfo.ticksPerSecond = (anim->mTicksPerSecond != 0.0) ? static_cast<_float>(anim->mTicksPerSecond) : 30.f;
+		clip.duration = static_cast<_float>(aiAnim->mDuration);
+		clip.ticksPerSecond = aiAnim->mTicksPerSecond != 0.0 ?
+			static_cast<_float>(aiAnim->mTicksPerSecond) : 30.f;
 
-		for (_uint j = 0; j < anim->mNumChannels; ++j)
+		for (_uint c = 0; c < aiAnim->mNumChannels; ++c)
 		{
-			aiNodeAnim* nodeAnim = anim->mChannels[j];
+			const aiNodeAnim* channel = aiAnim->mChannels[c];
+			CAnimationClip::NodeTrack track{};
+			track.nodeName = CEngineString::StringToWString(channel->mNodeName.C_Str());
 
-			CAnimationClip::NodeTrack track = {};
-
-			track.nodeName = CEngineString::StringToWString(nodeAnim->mNodeName.C_Str());
-
-			_uint maxKeyCount = max
+			_uint maxKeys = max
 			(
-				nodeAnim->mNumPositionKeys,
-				max(nodeAnim->mNumRotationKeys, nodeAnim->mNumScalingKeys)
+				channel->mNumPositionKeys,
+				max(channel->mNumRotationKeys, channel->mNumScalingKeys)
 			);
 
-			for (_uint k = 0; k < maxKeyCount; ++k)
+			for (_uint k = 0; k < maxKeys; ++k)
 			{
-				CAnimationClip::Keyframe key = {};
-
-				if (k < nodeAnim->mNumPositionKeys)
+				CAnimationClip::Keyframe keyframe{};
+				if (k < channel->mNumPositionKeys)
 				{
-					key.timeStamp = static_cast<_float>(nodeAnim->mPositionKeys[k].mTime);
-					key.position = vector3
-					(
-						nodeAnim->mPositionKeys[k].mValue.x,
-						nodeAnim->mPositionKeys[k].mValue.y,
-						nodeAnim->mPositionKeys[k].mValue.z
-					);
+					keyframe.timeStamp = channel->mPositionKeys[k].mTime;
+					aiVector3D p = channel->mPositionKeys[k].mValue;
+					keyframe.position = { p.x, p.y, p.z };
 				}
 
-				if (k < nodeAnim->mNumRotationKeys)
+				if (k < channel->mNumRotationKeys)
 				{
-					key.rotation = _float4
-					(
-						nodeAnim->mRotationKeys[k].mValue.x,
-						nodeAnim->mRotationKeys[k].mValue.y,
-						nodeAnim->mRotationKeys[k].mValue.z,
-						nodeAnim->mRotationKeys[k].mValue.w
-					);
+					aiQuaternion q = channel->mRotationKeys[k].mValue;
+					keyframe.rotation = { q.x, q.y, q.z, q.w };
 				}
 
-				if (k < nodeAnim->mNumScalingKeys)
+				if (k < channel->mNumScalingKeys)
 				{
-					key.scaling = vector3
-					(
-						nodeAnim->mScalingKeys[k].mValue.x,
-						nodeAnim->mScalingKeys[k].mValue.y,
-						nodeAnim->mScalingKeys[k].mValue.z
-					);
+					aiVector3D s = channel->mScalingKeys[k].mValue;
+					keyframe.scaling = { s.x, s.y, s.z };
 				}
 
-				track.keyframes.push_back(key);
+				track.keyframes.push_back(keyframe);
 			}
 
-			animInfo.tracks.push_back(track);
+			clip.tracks.push_back(move(track));
 		}
 
-		animationInfoList.push_back(animInfo);
+		animationInfoList.push_back(move(clip));
 	}
 
 	auto splitPath = CEngineString::Split(_filePath, L"/");
@@ -1165,14 +1153,6 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 		}
 
 		clips.emplace_back(move(clip));
-
-		for (auto& tr : clip.tracks)
-			if (tr.nodeName == L"FantasyWolf_")
-				for (auto& k : tr.keyframes)
-					printf("k.t=%.2f p=(%.2f,%.2f,%.2f)\n",
-						k.timeStamp, k.position.x, k.position.y, k.position.z);
-
-		int a = 0;
 	}
 
 	in.close();
@@ -1247,7 +1227,7 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 		if (_filter & FILTER_MESHBUFFER)
 		{
 			CSkinnedMeshBuffer* newBuffer = CSkinnedMeshBuffer::Create();
-			newBuffer->Initiailize_Custom(_infoList[i], _desc);
+			newBuffer->Initiailize_Custom(_infoList[i], _skelList, _desc);
 
 			newBundle.meshBuffer = newBuffer;
 		}

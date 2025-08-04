@@ -27,7 +27,7 @@ HRESULT CSkinnedMeshBuffer::Initialize(const wstring& _name, const wstring& _fil
     return S_OK;
 }
 
-HRESULT CSkinnedMeshBuffer::Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, void* _desc)
+HRESULT CSkinnedMeshBuffer::Initiailize_Custom(SkinnedBufferInitiaizeInfo _info, vector<SKINNEDSKELETAL> _skeletonInfo, void* _desc)
 {
     if (!(_info.buffer.size() > 0))
         return E_FAIL;
@@ -87,11 +87,17 @@ HRESULT CSkinnedMeshBuffer::Initiailize_Custom(SkinnedBufferInitiaizeInfo _info,
         return E_FAIL;
     }
 
-    if (_info.boneNames.size() > 0)
-        m_vBoneNames = _info.boneNames;
+    for (size_t i = 0; i < _skeletonInfo.size(); ++i)
+    {
+        const wstring name = _skeletonInfo[i].name;
 
-    if (_info.boneOffsetMatrices.size() > 0)
-        m_vBoneOffsetMatrices = _info.boneOffsetMatrices;
+        if (!CEngineString::Contains(name, L"$AssimpFbx$"))
+            m_vBoneNames.push_back(name);
+    }
+
+    m_vBoneOffsetMatrices = _info.boneOffsetMatrices;
+
+    auto a = m_vBoneOffsetMatrices;
 
     return hr;
 }

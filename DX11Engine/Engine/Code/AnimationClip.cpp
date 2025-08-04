@@ -62,23 +62,31 @@ void CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransfor
 	for (const auto& ba : m_vBoneAnimation)
 	{
 		const auto& keys = ba.keyframes;
-		if (keys.empty()) continue;
+		if (keys.empty())
+			continue;
 
 		size_t i1 = 0, i2 = 0;
 		while (i2 < keys.size() && time >= keys[i2].timeStamp) { i1 = i2++; }
 
 		if (i2 >= keys.size()) { i2 = i1; }          // 끝 구간
-		float span = float(keys[i2].timeStamp - keys[i1].timeStamp);
-		float  t = span > 0.f ? float((time - keys[i1].timeStamp) / span) : 0.f;
+		_float span = float(keys[i2].timeStamp - keys[i1].timeStamp);
+		_float  t = span > 0.f ? float((time - keys[i1].timeStamp) / span) : 0.f;
 
 		// 보간
 		BoneTransform bt;
-		XMStoreFloat3(&bt.pos,
-			XMVectorLerp(XMLoadFloat3(&keys[i1].position), XMLoadFloat3(&keys[i2].position), t));
+		XMStoreFloat3
+		(
+			&bt.pos,
+			XMVectorLerp(XMLoadFloat3(&keys[i1].position), 
+			XMLoadFloat3(&keys[i2].position), t)
+		);
 
 		XMStoreFloat4(&bt.rot, XMQuaternionNormalize(XMQuaternionSlerp(XMLoadFloat4(&keys[i1].rotation), XMLoadFloat4(&keys[i2].rotation), t)));
 
 		XMStoreFloat3(&bt.scale, XMVectorLerp(XMLoadFloat3(&keys[i1].scaling), XMLoadFloat3(&keys[i2].scaling), t));
+
+		if (ba.nodeName == L"FantasyWolf_")
+			int a = 0;
 
 		_out.emplace(ba.nodeName, bt);
 	}

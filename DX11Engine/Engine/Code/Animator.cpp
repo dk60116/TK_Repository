@@ -96,8 +96,9 @@ void CAnimator::Update()
 		unordered_map<wstring, CAnimationClip::BoneTransform> sampledNext;
 		m_pNextAnimation->Sample(0.f, sampledNext);
 
-		const uint32_t boneCount = m_pSkinnedRenderer->Get_BoneCount();
-		for (uint32_t i = 0; i < boneCount; ++i)
+		const _uint boneCount = m_pSkinnedRenderer->Get_BoneCount();
+		
+		for (_uint i = 0; i < boneCount; ++i)
 		{
 			CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
 			if (!bone)
@@ -123,6 +124,7 @@ void CAnimator::Update()
 				bone->Set_LocalScale(scale);
 			}
 		}
+
 		return;
 	}
 
@@ -147,12 +149,17 @@ void CAnimator::Update()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
-		if (!bone) continue;
+		
+		if (!bone)
+			continue;
 
 		const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 
+		CDebug::LogError(m_pSkinnedRenderer->Get_BoneName(i));
+
 		auto it = sampled.find(name);
-		if (it == sampled.end()) continue;
+		if (it == sampled.end())
+			continue;
 
 		const auto& bt = it->second;
 

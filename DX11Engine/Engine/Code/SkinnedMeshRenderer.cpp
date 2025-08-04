@@ -177,7 +177,12 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	// m_pMeshBuffer->m_vBoneOffsetMatrices: 역 바인드포즈 행렬
 	_matrix boneMatrices[128] = {};
 
-	for (_uint i = 0; i < m_vBones.size(); ++i)
+	for (_uint i = 0; i < static_cast<_uint>(m_vBones.size()); ++i)
+	{
+		CDebug::LogError(m_vBones[i]->Get_GameObject()->Get_ObjectName());
+	}
+
+	for (_uint i = 0; i < static_cast<_uint>(m_vBones.size()); ++i)
 	{
 		if (m_vBones[i])
 		{
