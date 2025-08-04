@@ -172,6 +172,9 @@
     <ClInclude Include="..\Header\MeshRenderer.h">
       <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Random.h">
+      <Filter>System\Random</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -275,6 +278,9 @@
     </Filter>
     <Filter Include="Resource\Font">
       <UniqueIdentifier>{ef41f489-6b55-4d53-8ed8-0f6bdce52f19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Random">
+      <UniqueIdentifier>{71d9ef5a-ecf0-4d3a-8ff6-8bae57cf54fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -457,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\NaviMesh.cpp">
       <Filter>Resource\MeshBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Random.cpp">
+      <Filter>System\Random</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

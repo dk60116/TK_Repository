@@ -12,6 +12,7 @@
 #include "Editor.h"
 #include "EngineDebug.h"
 #include "EngineString.h"
+#include "Random.h"
 #include "GraphicDevice.h"
 #include "EngineTime.h"
 #include "Input.h"

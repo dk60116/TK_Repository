@@ -4,6 +4,17 @@
 
 class CMonster abstract : public CComponent
 {
+	friend class CMonsterController;
+
+public:
+	struct MonsterStatus
+	{
+		_int maxHp = 3;
+		_int crtHp = 0;
+		_float detectionRange = 5.f;
+		_float attackRange = 2.5f;
+	};
+
 protected:
 	CMonster();
 	~CMonster();
@@ -19,6 +30,8 @@ public:
 
 public:
 	CAnimator* Get_Animator();
+	void Change_State(const _uint _state);
+	const MonsterStatus& Get_Status();
 
 protected:
 	CAnimationClip* Add_Animation(const wstring _name);
@@ -29,5 +42,8 @@ protected:
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;
+	CMonsterController* m_pController;
+
+	MonsterStatus m_sStatus;
 };
 

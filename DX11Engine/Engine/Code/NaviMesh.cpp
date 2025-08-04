@@ -11,6 +11,11 @@ CNaviMesh::~CNaviMesh()
 {
 }
 
+HRESULT CNaviMesh::BuildFromMesh(CMeshBuffer* _sourceMesh, vector<CMeshBuffer*> _obstacleMeshes)
+{
+	return S_OK;
+}
+
 CNaviMesh* CNaviMesh::Create()
 {
 	return new CNaviMesh();
