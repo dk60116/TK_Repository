@@ -101,7 +101,7 @@ void CPlayerHUD::Update_Heart(const _int _current, const _int _max)
 	_float targetHp = _current / 2.f;
 	_int other = static_cast<_int>(_current) % 2;
 
-	for (_int i = 0; i < static_cast<_uint>(m_vHeartBowlList.size()); ++i)
+	for (_int i = 0; i < static_cast<_int>(m_vHeartBowlList.size()); ++i)
 	{
 		m_vHeartBowlList[i]->Get_GameObject()->SetActive(i < static_cast<_int>(_max * 0.5f));
 		m_vHeartImageList[i]->Get_GameObject()->SetActive(i < targetHp);
