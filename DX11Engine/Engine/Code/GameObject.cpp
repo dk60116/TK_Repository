@@ -453,12 +453,12 @@ const _uint CGameObject::Get_UniqueID() const
 	return m_iUniqueID;
 }
 
-wstring CGameObject::Get_ObjectName() const
+const wstring CGameObject::Get_ObjectName() const
 {
 	return m_strGameObjectName;
 }
 
-wstring CGameObject::Get_ObjectNameID() const
+const wstring CGameObject::Get_ObjectNameID() const
 {
 	return m_strGameObjectName + L"[" + to_wstring(m_iUniqueID) + L"]";
 }

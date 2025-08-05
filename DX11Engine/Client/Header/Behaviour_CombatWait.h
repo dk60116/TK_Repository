@@ -2,13 +2,13 @@
 
 #include "MonsterBehaviour.h"
 
-class CBehaviour_Combat final : public CMonsterBehaviour
+class CBehaviour_CombatWait final : public CMonsterBehaviour
 {
 	friend class CMonsterController;
 
 private:
-	CBehaviour_Combat();
-	~CBehaviour_Combat();
+	CBehaviour_CombatWait();
+	~CBehaviour_CombatWait();
 
 public:
 	HRESULT Initialize(class CMonster* _monster) override;
@@ -16,8 +16,5 @@ public:
 	void Enter() override;
 	void During() override;
 	void Exit() override;
-
-private:
-	_float m_fChangeRandomTime;
 };
 

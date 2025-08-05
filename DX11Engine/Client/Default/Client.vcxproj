@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Behaviour_Combat.h" />
+    <ClInclude Include="..\Header\Behaviour_CombatWait.h" />
     <ClInclude Include="..\Header\Behaviour_Find.h" />
     <ClInclude Include="..\Header\Behaviour_Idle.h" />
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Behaviour_Combat.cpp" />
+    <ClCompile Include="..\Code\Behaviour_CombatWait.cpp" />
     <ClCompile Include="..\Code\Behaviour_Find.cpp" />
     <ClCompile Include="..\Code\Behaviour_Idle.cpp" />
     <ClCompile Include="..\Code\Behaviour_Patrole.cpp" />

@@ -87,8 +87,8 @@ public:
 	vector<class CSkinnedMeshRenderer*> CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo, const _float _scaleFactor = 1.f, const vector3 _rotationFactor = vector3::zero());
 
 	const _uint Get_UniqueID() const;
-	wstring Get_ObjectName() const;
-	wstring Get_ObjectNameID() const;
+	const wstring Get_ObjectName() const;
+	const wstring Get_ObjectNameID() const;
 	void Set_ObjectName(wstring& _name);
 
 	void Set_Scene(CScene* _scene);

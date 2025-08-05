@@ -220,7 +220,7 @@ CTransform* CTransform::Get_Child()
 {
     if (m_lChildList.size() <= 0)
     {
-        CDebug::LogWarnning(L"Out of index - Get_Child: " + m_pGameObject->Get_ObjectNameID());
+        CDebug::LogWarning(L"Out of index - Get_Child: " + m_pGameObject->Get_ObjectNameID());
         return nullptr;
     }
 

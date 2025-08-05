@@ -97,14 +97,19 @@ void CAnimator::Update()
 		m_pNextAnimation->Sample(0.f, sampledNext);
 
 		const _uint boneCount = m_pSkinnedRenderer->Get_BoneCount();
-		
 		for (_uint i = 0; i < boneCount; ++i)
 		{
 			CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
+			const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
+
 			if (!bone)
 				continue;
 
-			const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
+			if (!m_pSkinnedRenderer->m_bApplyRootMotion && name == m_pSkinnedRenderer->Get_RootBoneName())
+				continue;
+
+			if (bone->Get_GameObject()->Get_ObjectName() == L"root")
+				continue;
 
 			const auto& startIt = m_mBlendStartPose.find(name);
 			const auto& nextIt = sampledNext.find(name);
@@ -124,7 +129,6 @@ void CAnimator::Update()
 				bone->Set_LocalScale(scale);
 			}
 		}
-
 		return;
 	}
 
@@ -149,15 +153,19 @@ void CAnimator::Update()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
-		
 		if (!bone)
 			continue;
 
 		const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 
-		CDebug::LogError(m_pSkinnedRenderer->Get_BoneName(i));
+		if (!m_pSkinnedRenderer->m_bApplyRootMotion && name == m_pSkinnedRenderer->Get_RootBoneName())
+			continue;
+
+		if (bone->Get_GameObject()->Get_ObjectName() == L"root")
+			continue;
 
 		auto it = sampled.find(name);
+		
 		if (it == sampled.end())
 			continue;
 

@@ -2,6 +2,7 @@
 #include "Behaviour_Combat.h"
 
 CBehaviour_Combat::CBehaviour_Combat()
+	: m_fChangeRandomTime(0.f)
 {
 }
 
@@ -28,6 +29,24 @@ void CBehaviour_Combat::Enter()
 void CBehaviour_Combat::During()
 {
 	__super::During();
+
+	CTransform* playerTf = CGameManager::GetInstance().Get_Player()->Get_Transform();
+	const vector3 playerPos = playerTf->Get_Position();
+	const vector3 playerAngle = playerTf->Get_EulerAngles();
+
+	CTransform* myTf = m_pMonster->Get_Transform();
+	const vector3 myPos = myTf->Get_Position();
+	const vector3 myAngle = myTf->Get_EulerAngles();
+
+	if (m_fPassedTime >= 1.f)
+	{
+		if (vector3::Distance(myPos, playerPos) <= m_pMonster->Get_Status().attackRange)
+		{
+			m_pMonster->Change_State(CMonsterController::CombatWait);
+		}
+
+		m_fPassedTime = 0.f;
+	}
 }
 
 void CBehaviour_Combat::Exit()

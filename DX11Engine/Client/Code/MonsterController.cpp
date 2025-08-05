@@ -6,6 +6,7 @@
 #include "Behaviour_Tracking.h"
 #include "Behaviour_Combat.h"
 #include "Behaviour_Find.h"
+#include "Behaviour_CombatWait.h"
 
 CMonsterController::CMonsterController()
 	: m_pMonster(nullptr)
@@ -48,6 +49,11 @@ void CMonsterController::Awake()
 	patrole->AddRef();
 	m_mBehaviourList.emplace(Patrole, patrole);
 
+	CBehaviour_Find* find = new CBehaviour_Find();
+	find->Initialize(m_pMonster);
+	find->AddRef();
+	m_mBehaviourList.emplace(Find, find);
+
 	CBehaviour_Tracking* tracking = new CBehaviour_Tracking();
 	tracking->Initialize(m_pMonster);
 	tracking->AddRef();
@@ -58,14 +64,14 @@ void CMonsterController::Awake()
 	combat->AddRef();
 	m_mBehaviourList.emplace(Combat, combat);
 
-	CBehaviour_Find* find = new CBehaviour_Find();
-	find->Initialize(m_pMonster);
-	find->AddRef();
-	m_mBehaviourList.emplace(Find, find);
+	CBehaviour_CombatWait* combatWait = new CBehaviour_CombatWait();
+	combatWait->Initialize(m_pMonster);
+	combatWait->AddRef();
+	m_mBehaviourList.emplace(CombatWait, combatWait);
 
 	if (m_pMonster)
 	{
-		//ChangeState(Idle);
+		ChangeState(Idle);
 	}
 }
 
