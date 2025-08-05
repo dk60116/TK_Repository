@@ -5,7 +5,7 @@
 class CMonsterController final : public CComponent
 {
 public:
-	enum MonsterState { Idle, Patrole, Find, Tracking, Combat };
+	enum MonsterState { Idle, Patrole, Find, Tracking, Combat, CombatWait };
 
 protected:
 	CMonsterController();

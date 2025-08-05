@@ -14,7 +14,10 @@ public:
 		_float moveSpeed = 3.f;
 		_float rotateSpeed = 5.f;
 		_float detectionRange = 10.f;
+		_float attackWait = 3.f;
 		_float attackRange = 3.f;
+		_float walkSpeed = 2.f;
+		_float runSpeed = 3.5f;
 	};
 
 protected:
