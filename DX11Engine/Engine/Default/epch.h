@@ -42,3 +42,4 @@
 #include "Image.h"
 #include "Text.h"
 #include "Font.h"
+#include "NaviMesh.h"

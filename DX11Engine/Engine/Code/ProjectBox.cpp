@@ -69,7 +69,7 @@ void CProjectBox::Render()
 	if (m_bRequestDelete)
 	{
 		ImGui::OpenPopup("ConfirmDeletePopup");
-		m_bRequestDelete = false; // 한 번만 요청
+		m_bRequestDelete = false;
 	}
 
 	if (ImGui::BeginPopupModal("ConfirmDeletePopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))

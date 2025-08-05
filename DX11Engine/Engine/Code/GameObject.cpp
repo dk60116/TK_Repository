@@ -13,6 +13,7 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 	, m_pDevice(_pDevice)
 	, m_pContext(_pContext)
 	, m_bIsBoneTransform(false)
+	, m_iStaticMathod(0)
 {
 	m_strName = L"Game Object";
 	m_pDevice->AddRef();
@@ -507,6 +508,24 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 const _bool CGameObject::IsRecursiveActive()
 {
 	return m_bRecursiveActive;
+}
+
+const _uint CGameObject::Get_Static() const
+{
+	return m_iStaticMathod;
+}
+
+void CGameObject::Set_Static(const StaticObjectFlag _type, const _bool _value)
+{
+	if (_value)
+		m_iStaticMathod |= _type;
+	else
+		m_iStaticMathod &= ~_type;
+}
+
+void CGameObject::Set_Static(const _uint _flags)
+{
+	m_iStaticMathod = _flags;
 }
 
 void CGameObject::Set_RecursiveActive(const _bool _active)

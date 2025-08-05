@@ -7,6 +7,7 @@ CScene::CScene()
 	, m_pDevice(nullptr)
 	, m_pContext(nullptr)
 	, m_strSceneName(L"")
+	, m_bSceneStarted(false)
 	, m_mResourceList({})
 	, m_mTempResourceList({})
 	, m_vCloneResourceList({})
@@ -191,6 +192,8 @@ HRESULT CScene::Initialize()
 #endif
 
 	CDebug::Log(L"Load scene Complete: " + m_strSceneName);
+
+	m_bSceneStarted = true;
 
 	return S_OK;
 }
@@ -385,6 +388,8 @@ void CScene::Render_Game()
 
 void CScene::SceneRelease()
 {
+	m_bSceneStarted = false;
+
 	Safe_Release(m_pSkyBox);
 	m_pSkyBox = nullptr;
 
@@ -448,6 +453,11 @@ void CScene::Set_SceneName(const wstring _name)
 const wstring& CScene::Get_SceneName() const
 {
 	return m_strSceneName;
+}
+
+const _bool CScene::IsStarted() const
+{
+	return m_bSceneStarted;
 }
 
 vector<CScene::SCENETRANSFORMINFO> CScene::Convert_ObjectsTransformInfo() const
@@ -527,6 +537,19 @@ void CScene::Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList)
 			}
 		}
 	}
+}
+
+vector<CGameObject*> CScene::Get_NavigationStaticObjects()
+{
+	vector<CGameObject*> result = {};
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->Get_Static() & CGameObject::navigationStatic)
+			result.push_back((*it));
+	}
+
+	return result;
 }
 
 CEngineResource* CScene::Add_Resource(const wstring& _name, CEngineResource* _resource)

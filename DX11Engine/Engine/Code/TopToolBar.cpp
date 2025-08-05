@@ -1,6 +1,8 @@
 #include "epch.h"
 #include "TopToolBar.h"
 
+using namespace EngineAI;
+
 CTopToolBar::CTopToolBar()
 {
 }
@@ -63,6 +65,7 @@ void CTopToolBar::Render()
 
 	ShowSelectSceneButton();
 	Show2DButton();
+	ShowAIButton();
 	ShowFPS();
 
 	ImGui::End();
@@ -108,6 +111,55 @@ void CTopToolBar::Show2DButton()
 		editorCam->Get_Transform()->Set_PositionZ(-999999.f);
 		editorCam->Get_Transform()->Set_EulerAngles(vector3::zero());
 		editorCam->Set_ViewMode(CCamera::ViewMode::ORTHOGRAPHIC);
+	}
+}
+
+void CTopToolBar::ShowAIButton()
+{
+	ImGui::SameLine();
+
+	if (ImGui::Button("AI"))
+	{
+		ImGui::OpenPopup("AIPopup");
+	}
+
+	CGameObject* isSelectedObj = CEditor::GetInstance().Get_SelectedGameObject();
+
+	if (ImGui::BeginPopup("AIPopup"))
+	{
+		_bool isMesh = false;
+		CMeshRenderer* mesh = nullptr;
+
+		ImGui::Text("AI");
+
+		_bool shouldDisable = false;
+
+		if (shouldDisable)
+			ImGui::BeginDisabled();
+
+		if (ImGui::Button("Create NavMesh"))
+		{
+			vector<CMeshBuffer*> navBuffers = {};
+
+			vector<CGameObject*> navObjs = CSceneManager::GetInstance().Get_CrtScene()->Get_NavigationStaticObjects();
+
+			for (TRAVERSAL_ITER(navObjs, it))
+			{
+				CMeshRenderer* mesh = (*it)->GetComponent<CMeshRenderer>();
+				
+				if (mesh)
+					navBuffers.push_back(mesh->Get_MeshBuffer());
+			}
+
+			CResources::GetInstance().BakeNaviMesh(navBuffers);
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		if (shouldDisable)
+			ImGui::EndDisabled();
+
+		ImGui::EndPopup();
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "SkinnedMeshBuffer.h"
 #include "AnimationClip.h"
+#include "NaviMesh.h"
 
 #include <filesystem>
 namespace fs = filesystem;
@@ -33,6 +34,8 @@ public:
 
     HRESULT ConvertOTFTTFToSpriteFont(const wstring _filePath);
 
+    HRESULT BakeNaviMesh(vector<CMeshBuffer*> _buffers);
+
 public:
     HRESULT SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList);
     vector<CScene::ObjectsTransformInfo> ReadSceneObjectTransformInfos(const wstring _binFileName);
@@ -41,6 +44,8 @@ public:
     vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
     HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);
     CSkinnedMeshBuffer::SkinnedBuffer ReadSkinnedBufferInfos(const wstring _binFileName);
+    HRESULT SaveNaviMeshBufferInfos(const wstring _filePath, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
+    EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo ReadNaviBufferInfos(const wstring _binFileName);
     HRESULT SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList);
     vector<CAnimationClip::AnimationClipInitInfo> ReadAnimationClipBufferInfos(const wstring _binFileName);
 

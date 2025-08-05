@@ -7,6 +7,8 @@
 
 #pragma comment(lib, "Shlwapi.lib")
 
+using namespace EngineAI;
+
 CResources::CResources()
 	: m_strDefaultAssetPath(L"../Assets/")
 	, m_strEngineFilePath(L"../EngineResource/")
@@ -35,6 +37,8 @@ HRESULT CResources::Initialize()
 	if (!fs::exists("BinaryAssets/MeshData"))
 		fs::create_directories("BinaryAssets/MeshData");
 	if (!fs::create_directory("BinaryAssets/SkinnedMeshData"))
+		if (!fs::exists("BinaryAssets/NaviMeshData"))
+			fs::create_directories("BinaryAssets/NaviMeshData");
 		fs::create_directories("BinaryAssets/SkinnedMeshData");
 	if (!fs::exists("BinaryAssets/AnimationClipData"))
 		fs::create_directories("BinaryAssets/AnimationClipData");
@@ -590,6 +594,16 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	return S_OK;
 }
 
+HRESULT CResources::BakeNaviMesh(vector<CMeshBuffer*> _buffers)
+{
+	CNaviMesh::NaviMeshBufferInitiaizeInfo meshInfo = CNaviMesh::BuildFromMesh(_buffers, {});
+
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".navmeshdata", meshInfo)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
 {
 	using namespace std;
@@ -1033,6 +1047,188 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 	in.close();
 
 	return resultBuffer;
+}
+
+HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::NaviMeshBufferInitiaizeInfo _info)
+{
+	namespace fs = filesystem;
+
+	// (2) 이진(ofstream)으로 파일 열기
+	ofstream ofs(_filePath, ios::binary);
+
+	if (!ofs.is_open())
+		return E_FAIL;
+
+	auto write = [&](const void* data, size_t sz)
+		{
+			ofs.write(reinterpret_cast<const char*>(data), sz);
+		};
+
+	//---------------- 헤더 -----------------
+	const uint32_t kMagic = 'MVAN'; // "NAVM" little-endian
+	const uint32_t kVersion = 1;
+	write(&kMagic, sizeof(kMagic));
+	write(&kVersion, sizeof(kVersion));
+
+	//---------------- Mesh 이름 ----------
+	uint32_t nameLen = static_cast<uint32_t>(_info.meshName.size());
+	write(&nameLen, sizeof(nameLen));
+	if (nameLen)
+		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar 그대로 기록
+
+	//---------------- MeshBufferDesc -----
+	write(&_info.desc, sizeof(_info.desc));
+
+	//---------------- Vertex Buffer ------
+	uint32_t vbSize = static_cast<uint32_t>(_info.buffer.size());
+	write(&vbSize, sizeof(vbSize));
+	if (vbSize)
+		write(_info.buffer.data(), vbSize);
+
+	//---------------- Index Buffer -------
+	uint32_t idxCount = static_cast<uint32_t>(_info.indices.size());
+	write(&idxCount, sizeof(idxCount));
+	if (idxCount)
+		write(_info.indices.data(), idxCount * sizeof(_uint));
+
+	//---------------- Polygon 목록 -------
+	uint32_t polyCount = static_cast<uint32_t>(_info.polygons.size());
+	write(&polyCount, sizeof(polyCount));
+
+	for (const auto& poly : _info.polygons)
+	{
+		// (a) 인덱스
+		write(&poly.index, sizeof(poly.index));
+
+		// (b) 정점들
+		uint32_t vCnt = static_cast<uint32_t>(poly.vertices.size());
+		write(&vCnt, sizeof(vCnt));
+		if (vCnt)
+			write(poly.vertices.data(), vCnt * sizeof(vector3));
+
+		// (c) 이웃들
+		uint32_t nCnt = static_cast<uint32_t>(poly.neighbors.size());
+		write(&nCnt, sizeof(nCnt));
+		if (nCnt)
+			write(poly.neighbors.data(), nCnt * sizeof(_uint));
+	}
+
+	ofs.close();
+	CDebug::Log(L"[SaveNaviMeshBufferInfos] save Complete: " + _filePath);
+	return S_OK;
+}
+
+CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring _binFileName)
+{
+	CNaviMesh::NaviMeshBufferInitiaizeInfo info{};
+
+	wstring filePath = L"BinaryAssets/NaviMeshData/" + _binFileName + L".navmeshdata";
+
+	ifstream ifs(filePath, ios::binary);
+
+	if (!ifs.is_open())
+	{
+		CDebug::LogError(L"[ReadNaviBufferInfos] not found file: " + _binFileName);
+		return info;
+	}
+
+	auto read = [&](void* dst, size_t sz) -> bool
+		{
+			ifs.read(reinterpret_cast<char*>(dst), sz);
+			return ifs && (ifs.gcount() == static_cast<std::streamsize>(sz));
+		};
+
+	//---------------- 1) 헤더 -----------------------------------------------
+	uint32_t magic = 0, version = 0;
+	if (!read(&magic, sizeof(magic)) ||
+		!read(&version, sizeof(version)) ||
+		magic != 'MVAN' || version != 1)
+	{
+		CDebug::LogError(L"[ReadNaviBufferInfos] failed heder parsing");
+		return {};
+	}
+
+	//---------------- 2) Mesh 이름 ------------------------------------------
+	uint32_t nameLen = 0;
+	if (!read(&nameLen, sizeof(nameLen)))
+		return {};
+	if (nameLen)
+	{
+		info.meshName.resize(nameLen, L'\0');
+		if (!read(info.meshName.data(), nameLen * sizeof(wchar_t)))
+			return {};
+	}
+
+	//---------------- 3) MeshBufferDesc -------------------------------------
+	if (!read(&info.desc, sizeof(info.desc)))
+		return {};
+
+	//---------------- 4) Vertex Buffer --------------------------------------
+	uint32_t vbSize = 0;
+	if (!read(&vbSize, sizeof(vbSize)))
+		return {};
+	if (vbSize)
+	{
+		info.buffer.resize(vbSize);
+		if (!read(info.buffer.data(), vbSize))
+			return {};
+	}
+
+	//---------------- 5) Index Buffer ---------------------------------------
+	uint32_t idxCount = 0;
+	if (!read(&idxCount, sizeof(idxCount)))
+		return {};
+	if (idxCount)
+	{
+		info.indices.resize(idxCount);
+		if (!read(info.indices.data(), idxCount * sizeof(_uint)))
+			return {};
+	}
+
+	//---------------- 6) Polygon 리스트 --------------------------------------
+	uint32_t polyCount = 0;
+	if (!read(&polyCount, sizeof(polyCount)))
+		return {};
+	if (polyCount)
+		info.polygons.resize(polyCount);
+
+	for (uint32_t i = 0; i < polyCount; ++i)
+	{
+		auto& poly = info.polygons[i];
+
+		// 6-1) 인덱스
+		if (!read(&poly.index, sizeof(poly.index)))
+			return {};
+
+		// 6-2) Vertex들
+		uint32_t vCnt = 0;
+		if (!read(&vCnt, sizeof(vCnt)))
+			return {};
+		if (vCnt)
+		{
+			poly.vertices.resize(vCnt);
+			if (!read(poly.vertices.data(), vCnt * sizeof(vector3)))
+				return {};
+		}
+
+		// 6-3) Neighbor들
+		uint32_t nCnt = 0;
+		if (!read(&nCnt, sizeof(nCnt)))
+			return {};
+		if (nCnt)
+		{
+			poly.neighbors.resize(nCnt);
+			if (!read(poly.neighbors.data(), nCnt * sizeof(_uint)))
+				return {};
+		}
+	}
+
+	CDebug::Log(L"[ReadNaviBufferInfos] 로드 완료 : " + _binFileName +
+		L" | Poly " + to_wstring(polyCount) +
+		L", Vertex " + to_wstring(info.desc.vertextCount) +
+		L", Index " + to_wstring(info.desc.indexCount));
+
+	return info;
 }
 
 HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
