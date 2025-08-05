@@ -98,7 +98,11 @@ void CInspectorBox::Render()
 
         Toggle_End();
 
-        ImGui::Text(selectedObj->IsBoneTransform() ? "Bone" : "");
+        ImGui::Text(selectedObj->IsBoneTransform() ? "Bone" : "    ");
+
+        ImGui::SameLine();
+
+        ShowStaticObject(selectedObj);
 
         if (!selectedObj->GetComponent<CRectTransform>())
             ShowTransform(selectedObj);
@@ -468,5 +472,41 @@ void CInspectorBox::ShowRectTransform(CGameObject* _obj)
         prevX = 0.f;
         prevY = 0.f;
         prevZ = 0.f;
+    }
+}
+
+void CInspectorBox::ShowStaticObject(CGameObject* _obj)
+{
+    const char* combo_label = "Static Options";
+    _uint current_static_flags = _obj->Get_Static();
+
+    // 체크 상태를 비트 연산으로 추출
+    _bool transform_flag = (current_static_flags & CGameObject::transformStatic) != 0;
+    _bool navigation_flag = (current_static_flags & CGameObject::navigationStatic) != 0;
+
+    if (ImGui::BeginCombo("##StaticCombo", combo_label))
+    {
+        // Transform 토글
+        if (ImGui::Checkbox("Transform", &transform_flag))
+        {
+            if (transform_flag)
+                current_static_flags |= CGameObject::transformStatic;
+            else
+                current_static_flags &= ~CGameObject::transformStatic;
+        }
+
+        // Navigation 토글
+        if (ImGui::Checkbox("Navigation", &navigation_flag))
+        {
+            if (navigation_flag)
+                current_static_flags |= CGameObject::navigationStatic;
+            else
+                current_static_flags &= ~CGameObject::navigationStatic;
+        }
+
+        ImGui::EndCombo();
+
+        // 업데이트된 상태 저장
+        _obj->Set_Static(current_static_flags);
     }
 }

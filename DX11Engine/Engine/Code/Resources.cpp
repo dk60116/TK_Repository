@@ -7,6 +7,8 @@
 
 #pragma comment(lib, "Shlwapi.lib")
 
+using namespace EngineAI;
+
 CResources::CResources()
 	: m_strDefaultAssetPath(L"../Assets/")
 	, m_strEngineFilePath(L"../EngineResource/")
@@ -35,6 +37,8 @@ HRESULT CResources::Initialize()
 	if (!fs::exists("BinaryAssets/MeshData"))
 		fs::create_directories("BinaryAssets/MeshData");
 	if (!fs::create_directory("BinaryAssets/SkinnedMeshData"))
+		if (!fs::exists("BinaryAssets/NaviMeshData"))
+			fs::create_directories("BinaryAssets/NaviMeshData");
 		fs::create_directories("BinaryAssets/SkinnedMeshData");
 	if (!fs::exists("BinaryAssets/AnimationClipData"))
 		fs::create_directories("BinaryAssets/AnimationClipData");
@@ -602,6 +606,16 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	return S_OK;
 }
 
+HRESULT CResources::BakeNaviMesh(vector<CMeshBuffer*> _buffers)
+{
+	CNaviMesh::NaviMeshBufferInitiaizeInfo meshInfo = CNaviMesh::BuildFromMesh(_buffers, {});
+
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".navmeshdata", meshInfo)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
 {
 	using namespace std;
@@ -1045,6 +1059,16 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 	in.close();
 
 	return resultBuffer;
+}
+
+HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::NaviMeshBufferInitiaizeInfo _infoList)
+{
+	return S_OK;
+}
+
+CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring _binFileName)
+{
+	return CNaviMesh::NaviMeshBufferInitiaizeInfo();
 }
 
 HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)

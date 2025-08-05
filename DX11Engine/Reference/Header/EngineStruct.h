@@ -1224,6 +1224,21 @@ namespace Engine
         };
     };
 
+    struct VertexNormalColorBuffer
+    {
+        _float3 position;
+        _float3 normal;
+        _float4 color = { 1, 1, 1, 1 };
+
+        static const _uint numElements = 3;
+        static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+        };
+    };
+
     struct VertexTexNormalBuffer
     {
         _float3 position;

@@ -14,6 +14,9 @@ class ENGINE_DLL CGameObject final : public UObject
 	friend class CScene;
 	friend class CTransform;
 
+public:
+	enum StaticObjectFlag { transformStatic = 0x000001, navigationStatic = 0x000002};
+
 private:
 	explicit CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
 	explicit CGameObject(const CGameObject& _rhs);
@@ -107,6 +110,10 @@ public:
 
 	const _bool IsRecursiveActive();
 
+	const _uint Get_Static() const;
+	void Set_Static(const StaticObjectFlag _type, const _bool _value);
+	void Set_Static(const _uint _flags);
+
 private:
 	void Set_RecursiveActive(const _bool _active);
 
@@ -125,6 +132,8 @@ private:
 	class CTransform* m_pTransform;
 
 	_bool m_bIsBoneTransform;
+
+	_uint m_iStaticMathod;
 };
 
 NS_END

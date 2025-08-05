@@ -21,6 +21,7 @@ public:
 private:
 	void ShowSelectSceneButton();
 	void Show2DButton();
+	void ShowAIButton();
 	void ShowFPS();
 };
 

@@ -62,10 +62,12 @@ protected:
 public:
     void Set_SceneName(const wstring _name);
     const wstring& Get_SceneName() const;
+    const _bool IsStarted() const;
 
 public:
     vector<SCENETRANSFORMINFO> Convert_ObjectsTransformInfo() const;
     void Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList);
+    vector<CGameObject*> Get_NavigationStaticObjects();
 
 public:
     class CEngineResource* Add_Resource(const wstring& _name, CEngineResource* _resource);
@@ -118,6 +120,7 @@ protected:
 protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
+    _bool m_bSceneStarted;
     LightSettings m_sLightSettings;
     class CSkyBox* m_pSkyBox;
     list <CGameObject*> m_lObjectList;
