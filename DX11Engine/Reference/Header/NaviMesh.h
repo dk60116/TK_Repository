@@ -85,8 +85,8 @@ private:
 	static void BuildWalkableTriangleList(
 		const vector<VertexNormalColorBuffer>& _verts,
 		const vector<_uint>& _indices,
-		_float _maxSlopeDeg,
-		_float _maxStepHeight,
+		const _float _maxSlopeDeg,
+		const _float _maxStepHeight,
 		vector<array<_uint, 3>>& _outWalkables);
 
 	static CNaviMesh::EdgeKey MakeEdge(_uint _a, _uint _b);

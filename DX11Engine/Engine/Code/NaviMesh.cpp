@@ -16,11 +16,22 @@ CNaviMesh* CNaviMesh::Create()
     return new CNaviMesh();
 }
 
-CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CMeshBuffer*> _sourceMeshes, NavBakeOptions _bakeOption)
+CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption)
 {
-    NaviMeshBufferInitiaizeInfo info{};               // 반환 값 기본 NULL
+    vector<CMeshBuffer*> sourceMeshes = {};
 
-    if (_sourceMeshes.empty())
+    for (TRAVERSAL_ITER(_sourceObjs, it))
+    {
+        if (CMeshRenderer* render = (*it)->GetComponent<CMeshRenderer>())
+        {
+            if (render)
+                sourceMeshes.push_back(render->Get_MeshBuffer());
+        }
+    }
+
+    NaviMeshBufferInitiaizeInfo info = {};               // 반환 값 기본 NULL
+
+    if (sourceMeshes.empty())
     {
         CDebug::LogError("BuildFromMesh failed: source meshs is empty.");
         return info;
@@ -30,27 +41,39 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CMeshBuff
 
     vector<VERT>  vertsMerged;
     vector<_uint> idxMerged;
-    vertsMerged.reserve(1024);           
+    vertsMerged.reserve(1024);
     idxMerged.reserve(2048);
 
     _uint vertOffset = 0;
 
-    for (const CMeshBuffer* m : _sourceMeshes)
+    for (size_t i = 0; i < sourceMeshes.size(); ++i)
     {
-        if (!m)
+        if (!sourceMeshes[i])
             continue;
 
-        auto verts = m->Get_VertexBuffer();
-        auto indices = m->Get_IndexBuffer();
-        if (verts.empty() || indices.empty()) 
+        auto verts = sourceMeshes[i]->Get_VertexBuffer();
+        auto indices = sourceMeshes[i]->Get_IndexBuffer();
+
+        if (verts.empty() || indices.empty())
             continue;
+
+        const _matrix bufferWorld = _sourceObjs[i]->Get_Transform()->Get_WorldMatrix();
 
         for (const auto& src : verts)
         {
             VertexNormalColorBuffer dst;
-            dst.position = src.position;
-            dst.normal = src.normal;
-            dst.color = { 1, 1, 1, 1 }; 
+
+            const _vector localPos = XMLoadFloat3(&src.position);
+            const _vector worldPos = XMVector3TransformCoord(localPos, bufferWorld);
+
+            XMStoreFloat3(&dst.position, worldPos);
+
+            // 노멀도 회전만 적용 (w = 0, 정규화)
+            const _vector localNormal = XMLoadFloat3(&src.normal);
+            const _vector worldNormal = XMVector3Normalize(XMVector3TransformNormal(localNormal, bufferWorld));
+            XMStoreFloat3(&dst.normal, worldNormal);
+
+            dst.color = { 1.f, 1.f, 1.f, 1.f };
 
             vertsMerged.push_back(dst);
         }
@@ -68,12 +91,11 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CMeshBuff
     }
 
     vector<array<_uint, 3>> walkables;
-    BuildWalkableTriangleList(vertsMerged, idxMerged,
-        _bakeOption.walkableSlopeDeg, walkables);
+    BuildWalkableTriangleList(vertsMerged, idxMerged, _bakeOption.walkableSlopeDeg, _bakeOption.walkableMaxHeight, walkables);
 
     if (walkables.empty())
     {
-        CDebug::LogError("BuildFromMesh: Walkable 삼각형이 없습니다");
+        CDebug::LogError("BuildFromMesh failuare: no triangles");
         return info;
     }
 
@@ -89,9 +111,12 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CMeshBuff
         p.neighs.resize(3, UINT_MAX);
 
         const _vector c =
-            XMVectorScale(
-                XMVectorAdd(
-                    XMVectorAdd(
+            XMVectorScale
+            (
+                XMVectorAdd
+                (
+                    XMVectorAdd
+                    (
                         XMLoadFloat3(&vertsMerged[tri[0]].position),
                         XMLoadFloat3(&vertsMerged[tri[1]].position)
                     ),
@@ -102,7 +127,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CMeshBuff
 
         XMStoreFloat3(reinterpret_cast<_float3*>(&p.center), c);
 
-        for (int e = 0; e < 3; ++e)
+        for (_int e = 0; e < 3; ++e)
         {
             EdgeKey k = MakeEdge(p.verts[e], p.verts[(e + 1) % 3]);
             auto it = edgeOwner.find(k);
@@ -132,7 +157,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CMeshBuff
         np.neighbors.assign(p.neighs.begin(), p.neighs.end());
         for (_uint vi : p.verts)
             np.vertices.push_back(reinterpret_cast<const vector3&>(vertsMerged[vi].position));
-        info.polygons.push_back(std::move(np));
+        info.polygons.push_back(move(np));
     }
 
     info.meshName = L"NaviMesh_Merged";
@@ -159,14 +184,15 @@ void CNaviMesh::Render_Editor()
 {
 }
 
-void CNaviMesh::BuildWalkableTriangleList(const vector<VertexNormalColorBuffer>& _verts, const vector<_uint>& _indices, _float _maxSlopeDeg, vector<array<_uint, 3>>& _outWalkables)
+void CNaviMesh::BuildWalkableTriangleList(const vector<VertexNormalColorBuffer>& _verts, const vector<_uint>& _indices, const _float _maxSlopeDeg, const _float _maxStepHeight, vector<array<_uint, 3>>& _outWalkables)
 {
     _outWalkables.clear();
+
     if (_verts.empty() || _indices.empty() || (_indices.size() % 3))
         return;
 
     const _vector UP = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    const float    cosLimit = cosf(XMConvertToRadians(_maxSlopeDeg));
+    const _float  cosLimit = cosf(XMConvertToRadians(_maxSlopeDeg));
 
     for (size_t i = 0; i < _indices.size(); i += 3)
     {
