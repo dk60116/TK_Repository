@@ -26,6 +26,8 @@ void CBehaviour_Patrole::Enter()
 	m_fChangeRandomTime = CRandom::GetInstance().Range(5.f, 7.f);
 	m_pMonster->Get_Animator()->SetLoop(true);
 	m_pMonster->Get_Animator()->Play(L"Walk", 0.1f);
+
+	CDebug::Log("Patrol Enter");
 }
 
 void CBehaviour_Patrole::During()

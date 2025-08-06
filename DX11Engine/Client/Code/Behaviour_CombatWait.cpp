@@ -23,6 +23,8 @@ void CBehaviour_CombatWait::Enter()
 
     m_pMonster->Get_Animator()->SetLoop(true);
     m_pMonster->Get_Animator()->Play(L"Walk", 0.1f);
+
+    CDebug::Log("Wait Enter");
 }
 
 void CBehaviour_CombatWait::During()
@@ -36,6 +38,7 @@ void CBehaviour_CombatWait::During()
     CTransform* myTf = m_pMonster->Get_Transform();
     const vector3 myPos = myTf->Get_Position();
     const vector3 myAngle = myTf->Get_EulerAngles();
+    const _float distance = vector3::Distance(myPos, playerPos);
 
     quaternion rotQ = myTf->LookQuaternion(playerPos, CTransform::X | CTransform::Z);
 
@@ -43,7 +46,7 @@ void CBehaviour_CombatWait::During()
 
     if (m_fPassedTime > m_pMonster->Get_Status().attackWait)
     {
-        if (vector3::Distance(myPos, playerPos) > m_pMonster->Get_Status().attackRange)
+        if (distance > m_pMonster->Get_Status().attackRange)
         {
             m_pMonster->Change_State(CMonsterController::Tracking);
         }
@@ -51,6 +54,8 @@ void CBehaviour_CombatWait::During()
         {
             m_pMonster->Change_State(CMonsterController::Combat);
         }
+
+        m_fPassedTime = 0.f;
     }
 }
 

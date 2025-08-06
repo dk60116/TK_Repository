@@ -23,6 +23,8 @@ void CBehaviour_Find::Enter()
 
 	m_pMonster->Get_Animator()->SetLoop(false);
 	m_pMonster->Get_Animator()->Play(L"Find", 0.1f);
+
+	CDebug::Log("Find Enter");
 }
 
 void CBehaviour_Find::During()
