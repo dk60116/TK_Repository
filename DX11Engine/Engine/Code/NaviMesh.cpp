@@ -18,164 +18,169 @@ CNaviMesh* CNaviMesh::Create()
 
 CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption)
 {
-    vector<CMeshBuffer*> sourceMeshes = {};
-
-    for (TRAVERSAL_ITER(_sourceObjs, it))
-    {
-        if (CMeshRenderer* render = (*it)->GetComponent<CMeshRenderer>())
-        {
-            if (render)
-                sourceMeshes.push_back(render->Get_MeshBuffer());
-        }
+    /*──────────────────────────────────────────────────────────
+      0) MeshBuffer & GameObject 쌍 수집
+    ──────────────────────────────────────────────────────────*/
+    struct Src { CMeshBuffer* buf; CGameObject* obj; };
+    vector<Src> sources;
+    for (auto* go : _sourceObjs) {
+        if (!go) continue;
+        if (auto* rnd = go->GetComponent<CMeshRenderer>())
+            sources.push_back({ rnd->Get_MeshBuffer(), go });
     }
 
-    NaviMeshBufferInitiaizeInfo info = {};               // 반환 값 기본 NULL
-
-    if (sourceMeshes.empty())
-    {
-        CDebug::LogError("BuildFromMesh failed: source meshs is empty.");
+    NaviMeshBufferInitiaizeInfo info{};
+    if (sources.empty()) {
+        CDebug::LogError("BuildFromMesh failed: no source meshes");
         return info;
     }
 
-    using VERT = VertexNormalColorBuffer;
-
-    vector<VERT>  vertsMerged;
+    /*──────────────────────────────────────────────────────────
+      1) 병합 정점·인덱스 (월드 좌표 변환 포함)
+    ──────────────────────────────────────────────────────────*/
+    using VTX = VertexNormalColorBuffer;
+    vector<VTX>  vertsMerged;
     vector<_uint> idxMerged;
-    vertsMerged.reserve(1024);
-    idxMerged.reserve(2048);
-
     _uint vertOffset = 0;
 
-    for (size_t i = 0; i < sourceMeshes.size(); ++i)
+    for (const auto& s : sources) 
     {
-        if (!sourceMeshes[i])
+        if (!s.buf)
             continue;
 
-        auto verts = sourceMeshes[i]->Get_VertexBuffer();
-        auto indices = sourceMeshes[i]->Get_IndexBuffer();
+        const auto& vBuf = s.buf->Get_VertexBuffer();
+        const auto& iBuf = s.buf->Get_IndexBuffer();
+        if (vBuf.empty() || iBuf.empty()) continue;
 
-        if (verts.empty() || indices.empty())
-            continue;
+        const _matrix world = s.obj->Get_Transform()->Get_WorldMatrix();
+        const _matrix nMat = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
 
-        const _matrix bufferWorld = _sourceObjs[i]->Get_Transform()->Get_WorldMatrix();
-
-        for (const auto& src : verts)
-        {
-            VertexNormalColorBuffer dst;
-
-            const _vector localPos = XMLoadFloat3(&src.position);
-            const _vector worldPos = XMVector3TransformCoord(localPos, bufferWorld);
-
-            XMStoreFloat3(&dst.position, worldPos);
-
-            // 노멀도 회전만 적용 (w = 0, 정규화)
-            const _vector localNormal = XMLoadFloat3(&src.normal);
-            const _vector worldNormal = XMVector3Normalize(XMVector3TransformNormal(localNormal, bufferWorld));
-            XMStoreFloat3(&dst.normal, worldNormal);
-
-            dst.color = { 1.f, 1.f, 1.f, 1.f };
-
-            vertsMerged.push_back(dst);
+        for (const auto& vin : vBuf) {
+            VTX vout;
+            // position
+            XMStoreFloat3(&vout.position,
+                XMVector3TransformCoord(XMLoadFloat3(&vin.position), world));
+            // normal
+            XMStoreFloat3(&vout.normal,
+                XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&vin.normal), nMat)));
+            vout.color = { 1,1,1,1 };
+            vertsMerged.push_back(vout);
         }
-
-        for (_uint idx : indices)
+        for (_uint idx : iBuf)
             idxMerged.push_back(idx + vertOffset);
 
-        vertOffset += static_cast<_uint>(verts.size());
+        vertOffset += static_cast<_uint>(vBuf.size());
     }
 
-    if (vertsMerged.empty() || idxMerged.empty())
-    {
-        CDebug::LogError("BuildFromMesh failed: merge output is empty");
+    if (vertsMerged.empty() || idxMerged.empty()) {
+        CDebug::LogError("BuildFromMesh failed: merged data empty");
         return info;
     }
 
+    /*──────────────────────────────────────────────────────────
+      2) Walkable 삼각형 필터
+    ──────────────────────────────────────────────────────────*/
     vector<array<_uint, 3>> walkables;
-    BuildWalkableTriangleList(vertsMerged, idxMerged, _bakeOption.walkableSlopeDeg, _bakeOption.walkableMaxHeight, walkables);
+    BuildWalkableTriangleList
+    (
+        vertsMerged, idxMerged,
+        _bakeOption.walkableSlopeDeg,
+        _bakeOption.walkableMaxHeight,
+        walkables
+    );
 
-    if (walkables.empty())
+    if (walkables.empty()) 
     {
-        CDebug::LogError("BuildFromMesh failuare: no triangles");
+        CDebug::LogError("BuildFromMesh failure: no walkable tris");
         return info;
     }
 
+    /*──────────────────────────────────────────────────────────
+      3) EdgeKey → 폴리그래프
+    ──────────────────────────────────────────────────────────*/
     unordered_map<EdgeKey, _uint, EdgeKeyHash> edgeOwner;
-    vector<Poly> polys;
-    polys.reserve(walkables.size());
+    vector<Poly> polys; polys.reserve(walkables.size());
 
-    for (const auto& tri : walkables)
-    {
+    for (auto& tri : walkables) {
         Poly p;
-        p.index = static_cast<_uint>(polys.size());
-        p.verts = { tri[0], tri[1], tri[2] };
+        p.index = (_uint)polys.size();
+        p.verts = { tri[0],tri[1],tri[2] };
         p.neighs.resize(3, UINT_MAX);
 
-        const _vector c =
-            XMVectorScale
-            (
-                XMVectorAdd
-                (
-                    XMVectorAdd
-                    (
-                        XMLoadFloat3(&vertsMerged[tri[0]].position),
-                        XMLoadFloat3(&vertsMerged[tri[1]].position)
-                    ),
-                    XMLoadFloat3(&vertsMerged[tri[2]].position)
-                ),
-                1.f / 3.f
-            );
-
+        // center
+        _vector c = XMVectorScale(
+            XMVectorAdd(XMVectorAdd(
+                XMLoadFloat3(&vertsMerged[tri[0]].position),
+                XMLoadFloat3(&vertsMerged[tri[1]].position)),
+                XMLoadFloat3(&vertsMerged[tri[2]].position)),
+            1.f / 3.f);
         XMStoreFloat3(reinterpret_cast<_float3*>(&p.center), c);
 
-        for (_int e = 0; e < 3; ++e)
-        {
+        // edge map
+        for (int e = 0; e < 3; ++e) {
             EdgeKey k = MakeEdge(p.verts[e], p.verts[(e + 1) % 3]);
             auto it = edgeOwner.find(k);
-
-            if (it == edgeOwner.end())
-                edgeOwner[k] = p.index;                    // 최초 등록
-            else
-            {                                             // 공유 에지 → 인접
-                const _uint other = it->second;
-                p.neighs[e] = other;
-                // other 폴리의 대응 edge 찾아 채우기
-                auto& neigh = polys[other].neighs;
-                for (auto& idx : neigh)
-                    if (idx == UINT_MAX) { idx = p.index; break; }
+            if (it == edgeOwner.end()) edgeOwner[k] = p.index;
+            else {
+                const _uint o = it->second;
+                p.neighs[e] = o;
+                auto& neigh = polys[o].neighs;
+                for (auto& nx : neigh) if (nx == UINT_MAX) { nx = p.index; break; }
             }
         }
         polys.push_back(move(p));
     }
 
-    info.polygons.clear();
-    info.polygons.reserve(polys.size());
+    /*──────────────────────────────────────────────────────────
+      4) Walkable 전용 버퍼 재구성 (정점 압축 + 인덱스 리맵)
+    ──────────────────────────────────────────────────────────*/
+    vector<VTX>   navVerts;  navVerts.reserve(walkables.size() * 3);
+    vector<_uint> navIdx;    navIdx.reserve(walkables.size() * 3);
+    unordered_map<_uint, _uint> remap;
 
-    for (const Poly& p : polys)
-    {
+    auto Remap = [&](_uint old)->_uint {
+        auto [it, ins] = remap.try_emplace(old, (_uint)navVerts.size());
+        if (ins) navVerts.push_back(vertsMerged[old]);
+        return it->second;
+        };
+
+    for (auto& tri : walkables) {
+        navIdx.push_back(Remap(tri[0]));
+        navIdx.push_back(Remap(tri[1]));
+        navIdx.push_back(Remap(tri[2]));
+    }
+
+    /*──────────────────────────────────────────────────────────
+      5) info 채우기 & 반환
+    ──────────────────────────────────────────────────────────*/
+    info.meshName = L"NaviMesh_Walkable";
+
+    info.buffer.assign(
+        reinterpret_cast<const uint8_t*>(navVerts.data()),
+        reinterpret_cast<const uint8_t*>(navVerts.data()) + sizeof(VTX) * navVerts.size());
+
+    info.indices.swap(navIdx);
+
+    info.desc.vertexSize = sizeof(VTX);
+    info.desc.vertextCount = (_uint)navVerts.size();
+    info.desc.indexCount = (_uint)info.indices.size();
+    info.desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+    /* 폴리 리스트 저장 (info.polygons) */
+    info.polygons.clear(); info.polygons.reserve(polys.size());
+    for (const auto& p : polys) {
         NaviPolygon np;
         np.index = p.index;
-        np.neighbors.assign(p.neighs.begin(), p.neighs.end());
-        for (_uint vi : p.verts)
-            np.vertices.push_back(reinterpret_cast<const vector3&>(vertsMerged[vi].position));
+        np.neighbors = p.neighs;
+        for (_uint vi : p.verts) {
+            const auto& pos = vertsMerged[vi].position;
+            np.vertices.emplace_back(pos.x, pos.y, pos.z);
+        }
         info.polygons.push_back(move(np));
     }
 
-    info.meshName = L"NaviMesh_Merged";
-
-    info.buffer.assign(reinterpret_cast<const uint8_t*>(vertsMerged.data()),
-        reinterpret_cast<const uint8_t*>(vertsMerged.data()) +
-        vertsMerged.size() * sizeof(VERT));
-
-    info.indices.assign(idxMerged.begin(), idxMerged.end());
-
-    info.desc.vertexSize = sizeof(VERT);
-    info.desc.vertextCount = static_cast<_uint>(vertsMerged.size());
-    info.desc.indexCount = static_cast<_uint>(idxMerged.size());
-    info.desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-    CDebug::Log(L"BuildFromMesh Complete: Poly " + to_wstring(polys.size()) +
-        L", vertex " + to_wstring(info.desc.vertextCount) +
-        L", index " + to_wstring(info.desc.indexCount));
+    CDebug::Log(L"NavMesh Bake Poly:" + to_wstring(polys.size()) +
+        L", Vert:" + to_wstring(info.desc.vertextCount));
 
     return info;
 }
@@ -187,32 +192,40 @@ void CNaviMesh::Render_Editor()
 void CNaviMesh::BuildWalkableTriangleList(const vector<VertexNormalColorBuffer>& _verts, const vector<_uint>& _indices, const _float _maxSlopeDeg, const _float _maxStepHeight, vector<array<_uint, 3>>& _outWalkables)
 {
     _outWalkables.clear();
+    if (_verts.empty() || _indices.empty() || _indices.size() % 3) return;
 
-    if (_verts.empty() || _indices.empty() || (_indices.size() % 3))
-        return;
-
-    const _vector UP = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    const _float  cosLimit = cosf(XMConvertToRadians(_maxSlopeDeg));
+    const _vector UP = XMVectorSet(0, 1, 0, 0);
+    const float   cosLimit = cosf(XMConvertToRadians(_maxSlopeDeg));
+    const float   EPS = 1e-4f;
 
     for (size_t i = 0; i < _indices.size(); i += 3)
     {
-        _uint i0 = _indices[i + 0];
-        _uint i1 = _indices[i + 1];
-        _uint i2 = _indices[i + 2];
+        _uint i0 = _indices[i], i1 = _indices[i + 1], i2 = _indices[i + 2];
 
         const _vector p0 = XMLoadFloat3(&_verts[i0].position);
         const _vector p1 = XMLoadFloat3(&_verts[i1].position);
         const _vector p2 = XMLoadFloat3(&_verts[i2].position);
 
-        _vector n = XMVector3Cross(XMVectorSubtract(p1, p0),
-            XMVectorSubtract(p2, p0));
-        if (XMVector3Equal(n, XMVectorZero())) 
-            continue;
+        /* 1. 노멀·천장 필터 */
+        _vector n = XMVector3Cross(XMVectorSubtract(p1, p0), XMVectorSubtract(p2, p0));
+        if (XMVectorGetX(XMVector3LengthSq(n)) < 1e-8f)        continue;
         n = XMVector3Normalize(n);
 
-        const _float dotUp = fabsf(XMVectorGetX(XMVector3Dot(n, UP)));
-        if (dotUp >= cosLimit)
-            _outWalkables.push_back({ i0, i1, i2 });
+        const float dotUp = XMVectorGetX(XMVector3Dot(n, UP));
+        if (dotUp <= 0.f)                                      continue; // 천장
+
+        /* 2. 기울기 계산 */
+        bool passSlope = (dotUp + EPS >= cosLimit);  // 경사 OK?
+
+        /* 3. ΔY 계산 (작은 턱 허용) */
+        const _float y0 = _verts[i0].position.y,
+            y1 = _verts[i1].position.y,
+            y2 = _verts[i2].position.y;
+        const _float deltaY = max(max(y0, y1), y2) - min(min(y0, y1), y2);
+        _bool passStep = (deltaY <= _maxStepHeight);
+
+        if (passSlope || passStep)
+            _outWalkables.push_back({ i0,i1,i2 });
     }
 }
 

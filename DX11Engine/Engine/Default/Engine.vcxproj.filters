@@ -175,6 +175,9 @@
     <ClInclude Include="..\Header\Random.h">
       <Filter>System\Random</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\NavMeshAgent.h">
+      <Filter>Components\Navigation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -281,6 +284,9 @@
     </Filter>
     <Filter Include="System\Random">
       <UniqueIdentifier>{71d9ef5a-ecf0-4d3a-8ff6-8bae57cf54fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Navigation">
+      <UniqueIdentifier>{3c6f5cc5-a1e2-49c7-ba19-efd475ae7534}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -466,6 +472,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Random.cpp">
       <Filter>System\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\NavMeshAgent.cpp">
+      <Filter>Components\Navigation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

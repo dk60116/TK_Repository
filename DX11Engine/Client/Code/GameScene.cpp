@@ -24,7 +24,10 @@ HRESULT CGameScene::Initialize()
 		return E_FAIL;
 
 	CGameObject* naviMeshObj = Add_GameObject(L"NaviMesh");
-	naviMeshObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"NaviMesh"), 1.f);
+	auto nm = naviMeshObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"NaviMesh"));
+
+	nm[0]->Set_Material(CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+	nm[0]->Get_Material()->Set_BaseColor(ColorValue(29, 166, 212, 255).f4Color());
 
 	CGameObject* cameraObject = Add_GameObject(L"Player Camera");
 	m_pPlayerCamera = cameraObject->AddComponent<CPlayerCamera>();

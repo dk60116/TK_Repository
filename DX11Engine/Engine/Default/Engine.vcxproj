@@ -174,6 +174,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\InspectorBox.h" />
     <ClInclude Include="..\Header\Light.h" />
     <ClInclude Include="..\Header\NaviMesh.h" />
+    <ClInclude Include="..\Header\NavMeshAgent.h" />
     <ClInclude Include="..\Header\Physics.h" />
     <ClInclude Include="..\Header\ProjectBox.h" />
     <ClInclude Include="..\Header\Random.h" />
@@ -244,6 +245,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\InspectorBox.cpp" />
     <ClCompile Include="..\Code\Light.cpp" />
     <ClCompile Include="..\Code\NaviMesh.cpp" />
+    <ClCompile Include="..\Code\NavMeshAgent.cpp" />
     <ClCompile Include="..\Code\Physics.cpp" />
     <ClCompile Include="..\Code\ProjectBox.cpp" />
     <ClCompile Include="..\Code\Random.cpp" />

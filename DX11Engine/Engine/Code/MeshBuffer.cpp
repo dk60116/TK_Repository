@@ -216,6 +216,9 @@ void CMeshBuffer::OnDestroy()
 		free(m_pIndexSysMem);
 		m_pIndexSysMem = nullptr;
 	}
+
+    Safe_Release(m_pVertexBuffer);
+    Safe_Release(m_pIndexBuffer);
 }
 
 void CMeshBuffer::Render()
@@ -645,66 +648,32 @@ const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 	return m_sInfo;
 }
 
-void CMeshBuffer::Set_Scalefactor(const _float _value)
+_bool CMeshBuffer::PointInTri(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c)
 {
-    //OnDestroy();
+    vector3 v0 = _b - _a;
+    vector3 v1 = _c - _a;
+    vector3 v2 = _p - _a;
 
-    //// 새 MeshBuffer 정보 생성
-    //MeshBufferInitiaizeInfo info = CreateObjectMesh
-    //(
-    //    CEngineString::WStringToString(m_strFilePath),
-    //    0,
-    //    _value
-    //);
+    _float d00 = v0.dot(v0);
+    _float d01 = v0.dot(v1);
+    _float d11 = v1.dot(v1);
+    _float d20 = v2.dot(v0);
+    _float d21 = v2.dot(v1);
+    _float denom = d00 * d11 - d01 * d01;
+    _float v = (d11 * d20 - d01 * d21) / denom;
+    _float w = (d00 * d21 - d01 * d20) / denom;
+    _float u = 1.f - v - w;
 
-    //if (info.buffer.empty() || info.desc.vertexSize == 0 || info.desc.vertextCount == 0)
-    //    return;
+    return (u >= 0 && v >= 0 && w >= 0);
+}
 
-    //// 정보 저장
-    //m_sInfo = info.desc;
-
-    //size_t size = info.desc.vertexSize * info.desc.vertextCount;
-
-    //// CPU 메모리 복사
-    //m_pVertexSysMem = malloc(size);
-    //memcpy(m_pVertexSysMem, info.buffer.data(), size);
-
-    //if (info.desc.indexCount > 0 && !info.indices.empty())
-    //{
-    //    size_t indexSize = sizeof(_uint) * info.desc.indexCount;
-    //    m_pIndexSysMem = malloc(indexSize);
-    //    memcpy(m_pIndexSysMem, info.indices.data(), indexSize);
-    //}
-
-    //// GPU 버퍼 생성
-    //ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
-
-    //// Vertex Buffer
-    //D3D11_BUFFER_DESC vbDesc = {};
-    //vbDesc.ByteWidth = static_cast<_uint>(size);
-    //vbDesc.Usage = D3D11_USAGE_DEFAULT;
-    //vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-    //D3D11_SUBRESOURCE_DATA vbData = {};
-    //vbData.pSysMem = info.buffer.data();
-
-    //if (FAILED(device->CreateBuffer(&vbDesc, &vbData, &m_pVertexBuffer)))
-    //    return;
-
-    //// Index Buffer
-    //if (info.desc.indexCount > 0 && !info.indices.empty())
-    //{
-    //    D3D11_BUFFER_DESC ibDesc = {};
-    //    ibDesc.ByteWidth = sizeof(_uint) * info.desc.indexCount;
-    //    ibDesc.Usage = D3D11_USAGE_DEFAULT;
-    //    ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-    //    D3D11_SUBRESOURCE_DATA ibData = {};
-    //    ibData.pSysMem = info.indices.data();
-
-    //    if (FAILED(device->CreateBuffer(&ibDesc, &ibData, &m_pIndexBuffer)))
-    //        return;
-    //}
+vector3 CMeshBuffer::ClosestPointOnSegment(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c)
+{
+    vector3 ab = _b - _a;
+    _float t = (_p - _a).dot(ab) / ab.dot(ab);
+    t = clamp(t, 0.f, 1.f);
+    
+    return _a + ab * t;
 }
 
 vector<VertexTexNormalTangentBuffer> CMeshBuffer::Get_VertexBuffer() const
