@@ -14,12 +14,12 @@ public:
 	struct NavBakeOptions
 	{
 		_float walkableSlopeDeg = 45.f;   // 최대 기울기
+		_float walkableMaxHeight = 0.1f;
 		_float agentRadius = 0.3f;   // 반경
 		_float agentHeight = 1.8f;   // 높이
 		_float cellSize = 0.2f;   // 샘플 그리드 간격
 		_float cellHeight = 0.2f;
 		_bool  keepTriangles = false;
-		_float slopDeg = 45.f;
 	};
 
 	struct EdgeKey
@@ -75,7 +75,7 @@ private:
 	static CNaviMesh* Create();
 
 public:
-	static NaviMeshBufferInitiaizeInfo BuildFromMesh(vector<CMeshBuffer*> _sourceMeshes, NavBakeOptions _bakeOption);
+	static NaviMeshBufferInitiaizeInfo BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption);
 	_bool FindPath(const vector3& _start, const vector3& _end, vector<vector3>& _outPath);
 	_int FindContainingPolygon(const vector3& _position);
 
@@ -86,6 +86,7 @@ private:
 		const vector<VertexNormalColorBuffer>& _verts,
 		const vector<_uint>& _indices,
 		_float _maxSlopeDeg,
+		_float _maxStepHeight,
 		vector<array<_uint, 3>>& _outWalkables);
 
 	static CNaviMesh::EdgeKey MakeEdge(_uint _a, _uint _b);

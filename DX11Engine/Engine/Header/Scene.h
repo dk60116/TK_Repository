@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Renderer.h"
 #include "SkinnedMeshBuffer.h"
+#include "NaviMesh.h"
 
 NS_BEGIN(Engine)
 
@@ -135,6 +136,8 @@ protected:
     unordered_map<wstring, vector<SkinnedMeshBundle>> m_mSkinnedBundleList, m_mTempSkinnedBundleList;
     unordered_map<wstring, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>> m_mSkinnedBoneList, m_mTempSkinnedBoneList;
     vector<CEngineResource*> m_vCloneResourceList;
+
+    vector<EngineAI::CNaviMesh*> m_vSceneNaviMeshList;
 
 protected:
     _uint m_iUniqueObjectCount;

@@ -1,4 +1,5 @@
 SceneName : Game Scene
+using NaviMesh : 1
 Main_BG : MainMenu/Main_Backgrouond.png : [Texture]
 Main_Logo : MainMenu/Zelda_Logo.png : [Texture]
 // Link

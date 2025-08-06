@@ -11,6 +11,7 @@ CScene::CScene()
 	, m_mResourceList({})
 	, m_mTempResourceList({})
 	, m_vCloneResourceList({})
+	, m_vSceneNaviMeshList({})
 	, m_mMeshBundleList({})
 	, m_mTempMeshBundleList({})
 	, m_mSkinnedBundleList({})
@@ -925,6 +926,12 @@ HRESULT CScene::PreLoadResources()
 
 			if (split.size() >= 3)
 				format = split[2];
+
+			if (split[0] == "using NaviMesh" && (split[1] == "1" || split[1] == "true" || split[1] == "True" || split[1] == "TRUE"))
+			{
+				name = "NaviMesh";
+				filepath = CEngineString::WStringToString(m_strSceneName);
+			}
 
 			if (!CResources::FileExists(filepath))
 			{

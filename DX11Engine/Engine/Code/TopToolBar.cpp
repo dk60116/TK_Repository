@@ -139,19 +139,9 @@ void CTopToolBar::ShowAIButton()
 
 		if (ImGui::Button("Create NavMesh"))
 		{
-			vector<CMeshBuffer*> navBuffers = {};
-
 			vector<CGameObject*> navObjs = CSceneManager::GetInstance().Get_CrtScene()->Get_NavigationStaticObjects();
 
-			for (TRAVERSAL_ITER(navObjs, it))
-			{
-				CMeshRenderer* mesh = (*it)->GetComponent<CMeshRenderer>();
-				
-				if (mesh)
-					navBuffers.push_back(mesh->Get_MeshBuffer());
-			}
-
-			CResources::GetInstance().BakeNaviMesh(navBuffers);
+			CResources::GetInstance().BakeNaviMesh(navObjs);
 
 			ImGui::CloseCurrentPopup();
 		}

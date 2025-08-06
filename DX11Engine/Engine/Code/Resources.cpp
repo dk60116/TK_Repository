@@ -259,7 +259,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 	{
 		const aiMesh* mesh = aiScene->mMeshes[i];
 		const aiMatrix4x4& gMat = meshGlobalMats[i];
-		aiMatrix3x3         gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
+		aiMatrix3x3 gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
 
 		CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo info{};
 		info.meshName = CMeshBuffer::FindMeshName(aiScene, i);
@@ -594,9 +594,9 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	return S_OK;
 }
 
-HRESULT CResources::BakeNaviMesh(vector<CMeshBuffer*> _buffers)
+HRESULT CResources::BakeNaviMesh(vector<CGameObject*> _naviObjs)
 {
-	CNaviMesh::NaviMeshBufferInitiaizeInfo meshInfo = CNaviMesh::BuildFromMesh(_buffers, {});
+	CNaviMesh::NaviMeshBufferInitiaizeInfo meshInfo = CNaviMesh::BuildFromMesh(_naviObjs, {});
 
 	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".navmeshdata", meshInfo)))
 		return E_FAIL;
@@ -1223,7 +1223,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 		}
 	}
 
-	CDebug::Log(L"[ReadNaviBufferInfos] 로드 완료 : " + _binFileName +
+	CDebug::Log(L"[ReadNaviBufferInfos] Load complete : " + _binFileName +
 		L" | Poly " + to_wstring(polyCount) +
 		L", Vertex " + to_wstring(info.desc.vertextCount) +
 		L", Index " + to_wstring(info.desc.indexCount));

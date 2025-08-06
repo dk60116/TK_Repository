@@ -318,7 +318,7 @@ void CGameObject::Set_Transform(CTransform* _transform)
 	}
 }
 
-vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos, const _float _scaleFactor)
+vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos, const _float _scaleFactor, const _uint _autoStatic)
 {
 	CTransform* parentTransform = Get_Transform();
 
@@ -338,6 +338,9 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 		CGameObject* child = m_pScene->Add_GameObject(_meshInfos[i].meshBuffer->Get_ResourceName());
 		child->Get_Transform()->SetParent(parentTransform);
 		child->Get_Transform()->Set_LocalScale(_scaleFactor);
+		child->Get_Transform()->Update();
+
+		child->Set_Static(_autoStatic);
 
 		CMeshRenderer* ren = child->AddComponent<CMeshRenderer>();
 

@@ -34,7 +34,7 @@ public:
 
     HRESULT ConvertOTFTTFToSpriteFont(const wstring _filePath);
 
-    HRESULT BakeNaviMesh(vector<CMeshBuffer*> _buffers);
+    HRESULT BakeNaviMesh(vector<CGameObject*> _naviObjs);
 
 public:
     HRESULT SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList);

@@ -97,6 +97,18 @@ void CSceneLoader::ThreadLoadingLoop()
 			wstring wFile = CEngineString::StringToWString(file);
 			wstring wFormat = CEngineString::StringToWString(format);
 
+			if (wName == L"NaviMesh")
+			{
+				EngineAI::CNaviMesh::MeshBufferInitiaizeInfo navInfo = CResources::GetInstance().ReadNaviBufferInfos(wFile);
+				CMeshBuffer::MeshBufferInitiaizeInfo meshInfo = {};
+				meshInfo.meshName = navInfo.meshName;
+				meshInfo.buffer = navInfo.buffer;
+				meshInfo.indices = navInfo.indices;
+				meshInfo.desc = navInfo.desc;
+
+				vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = { meshInfo };
+				CResources::GetInstance().CreateSceneMeshBundle(L"NaviMesh", infoList, FILTER_MESHBUFFER, nullptr, true);
+			}
 			if (CEngineString::Contains(wFile, L".png") || CEngineString::Contains(wFile, L".jpg") || CEngineString::Contains(wFile, L".tga"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Texture]"))

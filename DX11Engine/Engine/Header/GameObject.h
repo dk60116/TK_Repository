@@ -15,7 +15,7 @@ class ENGINE_DLL CGameObject final : public UObject
 	friend class CTransform;
 
 public:
-	enum StaticObjectFlag { transformStatic = 0x000001, navigationStatic = 0x000002};
+	enum StaticObjectFlag { defaultStatic = 0x00000, transformStatic = 0x000001, navigationStatic = 0x000002};
 
 private:
 	explicit CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);
@@ -86,7 +86,7 @@ public:
 	class CTransform* Get_Transform() const;
 	void Set_Transform(CTransform* _transform);
 
-	vector<class CMeshRenderer*> CreateMeshHierachy(vector<MeshBundle> _meshInfos, const _float _scaleFactor = 1.f);
+	vector<class CMeshRenderer*> CreateMeshHierachy(vector<MeshBundle> _meshInfos, const _float _scaleFactor = 1.f, const _uint _autoStatic = 0x000000);
 	vector<class CSkinnedMeshRenderer*> CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo, const _float _scaleFactor = 1.f, const vector3 _rotationFactor = vector3::zero());
 
 	const _uint Get_UniqueID() const;

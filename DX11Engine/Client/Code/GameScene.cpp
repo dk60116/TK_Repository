@@ -23,6 +23,9 @@ HRESULT CGameScene::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	CGameObject* naviMeshObj = Add_GameObject(L"NaviMesh");
+	naviMeshObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"NaviMesh"), 1.f);
+
 	CGameObject* cameraObject = Add_GameObject(L"Player Camera");
 	m_pPlayerCamera = cameraObject->AddComponent<CPlayerCamera>();
 
@@ -40,7 +43,7 @@ HRESULT CGameScene::Initialize()
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
-	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f);
+	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
 
 	CGameObject* wolfObject = Add_GameObject(L"Wolf");
 	CWolf* woolf = wolfObject->AddComponent<CWolf>();
