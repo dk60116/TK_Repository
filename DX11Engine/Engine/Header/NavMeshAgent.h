@@ -21,10 +21,6 @@ public:
 	void Update() override;
 	void Render() override;
 	void OnDestroy() override;
-
-public:
-	static _bool PointInTri(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c);
-	static vector3 ClosestPointOnSegment(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c);
 };
 
 NS_END

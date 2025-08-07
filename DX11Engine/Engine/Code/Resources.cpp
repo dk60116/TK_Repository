@@ -1458,6 +1458,22 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 	return resultList;
 }
 
+CNaviMesh* CResources::CreateNaviMesh(const wstring& _name, CNaviMesh::NaviMeshBufferInitiaizeInfo _info)
+{
+	CNaviMesh* naviMesh = CNaviMesh::Create();
+	
+	if (FAILED(naviMesh->Initailize_Custom(_info, nullptr)))
+	{
+		CDebug::LogError(L"CreateNaviMesh failure - Navimesh Initaize failed: " + _name);
+		Safe_Release(naviMesh);
+		return nullptr;
+	}
+
+	CSceneManager::GetInstance().Get_TempScene()->Add_TempResource(_name, naviMesh);
+
+	return naviMesh;
+}
+
 vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
 {
 	vector<MeshBundle> r = {};

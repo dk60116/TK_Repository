@@ -99,15 +99,11 @@ void CSceneLoader::ThreadLoadingLoop()
 
 			if (wName == L"NaviMesh")
 			{
-				EngineAI::CNaviMesh::MeshBufferInitiaizeInfo navInfo = CResources::GetInstance().ReadNaviBufferInfos(wFile);
-				CMeshBuffer::MeshBufferInitiaizeInfo meshInfo = {};
-				meshInfo.meshName = navInfo.meshName;
-				meshInfo.buffer = navInfo.buffer;
-				meshInfo.indices = navInfo.indices;
-				meshInfo.desc = navInfo.desc;
+				using namespace EngineAI;
 
-				vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = { meshInfo };
-				CResources::GetInstance().CreateSceneMeshBundle(L"NaviMesh", infoList, FILTER_MESHBUFFER, nullptr, true);
+				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo = CResources::GetInstance().ReadNaviBufferInfos(wFile);
+
+				CResources::GetInstance().CreateNaviMesh(L"NaviMesh", navInfo);
 			}
 			if (CEngineString::Contains(wFile, L".png") || CEngineString::Contains(wFile, L".jpg") || CEngineString::Contains(wFile, L".tga"))
 			{

@@ -119,7 +119,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
     return hr;
 }
 
-HRESULT CMeshBuffer::Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc)
+HRESULT CMeshBuffer::Initailize_Custom(const MeshBufferInitiaizeInfo _info, void* _desc)
 {
     if (!(_info.buffer.size() > 0))
         return E_FAIL;
@@ -667,7 +667,7 @@ _bool CMeshBuffer::PointInTri(const vector3& _p, const vector3& _a, const vector
     return (u >= 0 && v >= 0 && w >= 0);
 }
 
-vector3 CMeshBuffer::ClosestPointOnSegment(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c)
+vector3 CMeshBuffer::ClosestPointOnSegment(const vector3& _p, const vector3& _a, const vector3& _b)
 {
     vector3 ab = _b - _a;
     _float t = (_p - _a).dot(ab) / ab.dot(ab);

@@ -50,7 +50,7 @@ protected:
 	void OnDestroy();
 
 public:
-	HRESULT Initailize_Custom(MeshBufferInitiaizeInfo _info, void* _desc);
+	HRESULT Initailize_Custom(const MeshBufferInitiaizeInfo _info, void* _desc);
 
 public:
 	static wstring FindMeshName(const aiScene* scene, _uint meshIndex, aiNode* node = nullptr);
@@ -71,10 +71,13 @@ public:
 	void Render();
 
 public:
-	virtual void Set_Scalefactor(const _float _value);
 	vector<VertexTexNormalTangentBuffer> Get_VertexBuffer() const;
 	vector<_uint> Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
+
+public:
+	static _bool PointInTri(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c);
+	static vector3 ClosestPointOnSegment(const vector3& _p, const vector3& _a, const vector3& _b);
 
 protected:
 	ID3D11Buffer* m_pVertexBuffer;

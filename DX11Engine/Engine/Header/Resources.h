@@ -58,6 +58,7 @@ public:
 
     vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
     vector<SkinnedMeshBundle> CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    class EngineAI::CNaviMesh* CreateNaviMesh(const wstring& _name, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
 
     template<typename T>
     T* LoadOnGame(const wstring& _name);

@@ -4,6 +4,7 @@
 using namespace EngineAI;
 
 CNaviMesh::CNaviMesh()
+    : m_vPolygons({})
 {
 }
 
@@ -16,11 +17,18 @@ CNaviMesh* CNaviMesh::Create()
     return new CNaviMesh();
 }
 
+HRESULT CNaviMesh::Initailize_Custom(const NaviMeshBufferInitiaizeInfo _info, void* _desc)
+{
+    if (FAILED(__super::Initailize_Custom(_info, _desc)))
+        return E_FAIL;
+
+    m_vPolygons = _info.polygons;
+
+    return S_OK;
+}
+
 CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption)
 {
-    /*式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
-      0) MeshBuffer & GameObject 誰 熱餵
-    式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式*/
     struct Src { CMeshBuffer* buf; CGameObject* obj; };
     vector<Src> sources;
     for (auto* go : _sourceObjs) {
@@ -185,8 +193,33 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObje
     return info;
 }
 
-void CNaviMesh::Render_Editor()
+const vector3 CNaviMesh::ProjectPointToPoly(const vector3& _p, const _uint _index) const
 {
+    const auto& poly = m_vPolygons[_index];
+    const auto& v0 = poly.vertices[0];
+    const auto& v1 = poly.vertices[1];
+    const auto& v2 = poly.vertices[2];
+
+    if (PointInTri(_p, v0, v1, v2))
+        return _p;                               
+
+    vector3 best = ClosestPointOnSegment(_p, v0, v1);
+    _float   bestD = (_p - best).lengthSq();
+
+    auto testEdge = [&](const vector3& a, const vector3& b)
+        {
+            vector3 q = ClosestPointOnSegment(_p, a, b);
+            _float d = (_p - q).lengthSq();
+            if (d < bestD) 
+            { 
+                best = q; 
+                bestD = d;
+            }
+        };
+
+    testEdge(v1, v2);
+    testEdge(v2, v0);
+    return best;
 }
 
 void CNaviMesh::BuildWalkableTriangleList(const vector<VertexNormalColorBuffer>& _verts, const vector<_uint>& _indices, const _float _maxSlopeDeg, const _float _maxStepHeight, vector<array<_uint, 3>>& _outWalkables)
