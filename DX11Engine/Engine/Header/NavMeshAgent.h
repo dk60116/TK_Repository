@@ -21,11 +21,18 @@ private:
 public:
 	HRESULT Initialize() override;
 	void Update() override;
+	void LateUpdate() override;
 	void Render() override;
 	void OnDestroy() override;
 
 private:
+	void RayUpdate_Floor();
+	void RayUpdate_Direction();
+
+private:
 	_float m_fRadius;
+	vector3 m_vPrevPosition;
+	vector3 m_vMoveDirection;
 };
 
 NS_END

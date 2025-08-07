@@ -45,7 +45,7 @@ public:
     HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);
     CSkinnedMeshBuffer::SkinnedBuffer ReadSkinnedBufferInfos(const wstring _binFileName);
     HRESULT SaveNaviMeshBufferInfos(const wstring _filePath, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
-    EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo ReadNaviBufferInfos(const wstring _binFileName);
+    EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo ReadNaviBufferInfos(const wstring _binFileName, const _bool _walkable);
     HRESULT SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList);
     vector<CAnimationClip::AnimationClipInitInfo> ReadAnimationClipBufferInfos(const wstring _binFileName);
 

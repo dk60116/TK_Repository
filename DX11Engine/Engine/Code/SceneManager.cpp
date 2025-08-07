@@ -28,9 +28,10 @@ HRESULT CSceneManager::Initialize()
 	m_vLayerFlags.reserve(32);
 	m_vLayerFlags.resize(32);
 
-	m_vLayerFlags[0] = { 1u << 1, L"Default" };
-	m_vLayerFlags[31] = { 1u << 31, L"NaviMesh" };
-
+	Add_Layer(0, L"Default");
+	Add_Layer(30, L"NaviMesh_Walkable");
+	Add_Layer(31, L"NaviMesh_WalkUnable");
+	
 	return S_OK;
 }
 

@@ -82,9 +82,6 @@ void CGameScene::Update()
 		m_vMonsters[2]->Get_Animator()->Play(L"Attack01", 0.1f);
 	if (CInput::GetInstance().GetKeyDown_Editor(H))
 		m_vMonsters[2]->Get_Animator()->Play(L"Find", 0.1f);
-
-	if (CInput::GetInstance().GetKeyDown(N))
-		CResources::GetInstance().ReadNaviBufferInfos(L"Game Scene");
 }
 
 void CGameScene::SceneRelease()

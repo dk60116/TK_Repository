@@ -624,6 +624,11 @@ namespace Engine
             return XMVectorSet(x, y, z, 0.f);
         }
 
+        static _vector ToXM(const vector3& v)
+        {
+            return XMVectorSet(v.x, v.y, v.z, 0.f);
+        }
+
         operator _float3() const
         {
             return _float3(x, y, z);

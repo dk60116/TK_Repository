@@ -75,8 +75,8 @@ private:
 	static CNaviMesh* Create();
 
 public:
-	HRESULT Initailize_Custom(const NaviMeshBufferInitiaizeInfo _info, void* _desc);
-	static NaviMeshBufferInitiaizeInfo BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption);
+	HRESULT Initialize_Custom(const NaviMeshBufferInitiaizeInfo _info, void* _desc);
+	static vector<NaviMeshBufferInitiaizeInfo> BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption);
 	_bool FindPath(const vector3& _start, const vector3& _end, vector<vector3>& _outPath);
 	_int FindContainingPolygon(const vector3& _position);
 
@@ -90,7 +90,8 @@ private:
 		const vector<_uint>& _indices,
 		const _float _maxSlopeDeg,
 		const _float _maxStepHeight,
-		vector<array<_uint, 3>>& _outWalkables
+		vector<array<_uint, 3>>& _outWalkables,
+		vector<array<_uint, 3>>& _outWalkUnables
 	);
 
 	static CNaviMesh::EdgeKey MakeEdge(_uint _a, _uint _b);

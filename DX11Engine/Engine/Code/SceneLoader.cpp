@@ -97,13 +97,17 @@ void CSceneLoader::ThreadLoadingLoop()
 			wstring wFile = CEngineString::StringToWString(file);
 			wstring wFormat = CEngineString::StringToWString(format);
 
-			if (wName == L"NaviMesh")
+			using namespace EngineAI;
+
+			if (wName == L"NaviMesh_Walkable")
 			{
-				using namespace EngineAI;
-
-				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo = CResources::GetInstance().ReadNaviBufferInfos(wFile);
-
-				CResources::GetInstance().CreateNaviMesh(L"NaviMesh", navInfo);
+				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo_able = CResources::GetInstance().ReadNaviBufferInfos(wFile, true);
+				CResources::GetInstance().CreateNaviMesh(L"NaviMesh_Walkable", navInfo_able);
+			}
+			if (wName == L"NaviMesh_WalkUnable")
+			{
+				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo_unable = CResources::GetInstance().ReadNaviBufferInfos(wFile, false);
+				CResources::GetInstance().CreateNaviMesh(L"NaviMesh_WalkUnable", navInfo_unable);
 			}
 			if (CEngineString::Contains(wFile, L".png") || CEngineString::Contains(wFile, L".jpg") || CEngineString::Contains(wFile, L".tga"))
 			{

@@ -119,7 +119,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
     return hr;
 }
 
-HRESULT CMeshBuffer::Initailize_Custom(const MeshBufferInitiaizeInfo _info, void* _desc)
+HRESULT CMeshBuffer::Initialize_Custom(const MeshBufferInitiaizeInfo _info, void* _desc)
 {
     if (!(_info.buffer.size() > 0))
         return E_FAIL;

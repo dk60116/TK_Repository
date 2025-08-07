@@ -98,15 +98,16 @@ void CInspectorBox::Render()
 
         Toggle_End();
 
+        ShowStaticObject(selectedObj);
+
+        string layer = "Layer: ";
         string objLayerName = CEngineString::WStringToString(CSceneManager::LayerToName(selectedObj->GetLayer()));
 
+        ImGui::Text(layer.c_str());
+        ImGui::SameLine();
         ImGui::Text(objLayerName.c_str());
         ImGui::SameLine();
         ImGui::Text(selectedObj->IsBoneTransform() ? "Bone" : "    ");
-
-        ImGui::SameLine();
-
-        ShowStaticObject(selectedObj);
 
         if (!selectedObj->GetComponent<CRectTransform>())
             ShowTransform(selectedObj);

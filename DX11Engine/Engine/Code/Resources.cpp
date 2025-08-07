@@ -596,9 +596,11 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 
 HRESULT CResources::BakeNaviMesh(vector<CGameObject*> _naviObjs)
 {
-	CNaviMesh::NaviMeshBufferInitiaizeInfo meshInfo = CNaviMesh::BuildFromMesh(_naviObjs, {});
+	vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> meshInfos = CNaviMesh::BuildFromMesh(_naviObjs, {});
 
-	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".navmeshdata", meshInfo)))
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".wanavmeshdata", meshInfos[0])))
+		return E_FAIL;
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".wuanavmeshdata", meshInfos[1])))
 		return E_FAIL;
 
 	return S_OK;
@@ -1053,7 +1055,6 @@ HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::
 {
 	namespace fs = filesystem;
 
-	// (2) 이진(ofstream)으로 파일 열기
 	ofstream ofs(_filePath, ios::binary);
 
 	if (!ofs.is_open())
@@ -1064,49 +1065,40 @@ HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::
 			ofs.write(reinterpret_cast<const char*>(data), sz);
 		};
 
-	//---------------- 헤더 -----------------
 	const uint32_t kMagic = 'MVAN'; // "NAVM" little-endian
 	const uint32_t kVersion = 1;
 	write(&kMagic, sizeof(kMagic));
 	write(&kVersion, sizeof(kVersion));
 
-	//---------------- Mesh 이름 ----------
 	uint32_t nameLen = static_cast<uint32_t>(_info.meshName.size());
 	write(&nameLen, sizeof(nameLen));
 	if (nameLen)
 		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar 그대로 기록
 
-	//---------------- MeshBufferDesc -----
 	write(&_info.desc, sizeof(_info.desc));
 
-	//---------------- Vertex Buffer ------
 	uint32_t vbSize = static_cast<uint32_t>(_info.buffer.size());
 	write(&vbSize, sizeof(vbSize));
 	if (vbSize)
 		write(_info.buffer.data(), vbSize);
 
-	//---------------- Index Buffer -------
 	uint32_t idxCount = static_cast<uint32_t>(_info.indices.size());
 	write(&idxCount, sizeof(idxCount));
 	if (idxCount)
 		write(_info.indices.data(), idxCount * sizeof(_uint));
 
-	//---------------- Polygon 목록 -------
 	uint32_t polyCount = static_cast<uint32_t>(_info.polygons.size());
 	write(&polyCount, sizeof(polyCount));
 
 	for (const auto& poly : _info.polygons)
 	{
-		// (a) 인덱스
 		write(&poly.index, sizeof(poly.index));
 
-		// (b) 정점들
 		uint32_t vCnt = static_cast<uint32_t>(poly.vertices.size());
 		write(&vCnt, sizeof(vCnt));
 		if (vCnt)
 			write(poly.vertices.data(), vCnt * sizeof(vector3));
 
-		// (c) 이웃들
 		uint32_t nCnt = static_cast<uint32_t>(poly.neighbors.size());
 		write(&nCnt, sizeof(nCnt));
 		if (nCnt)
@@ -1118,11 +1110,11 @@ HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::
 	return S_OK;
 }
 
-CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring _binFileName)
+CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring _binFileName, const _bool _walkable)
 {
 	CNaviMesh::NaviMeshBufferInitiaizeInfo info{};
 
-	wstring filePath = L"BinaryAssets/NaviMeshData/" + _binFileName + L".navmeshdata";
+	wstring filePath = L"BinaryAssets/NaviMeshData/" + _binFileName + (_walkable ? L".wanavmeshdata" : L".wuanavmeshdata");
 
 	ifstream ifs(filePath, ios::binary);
 
@@ -1372,7 +1364,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 		if (_filter & FILTER_MESHBUFFER)
 		{
 			CMeshBuffer* newBuffer = CMeshBuffer::Create();
-			newBuffer->Initailize_Custom(_infoList[i], _desc);
+			newBuffer->Initialize_Custom(_infoList[i], _desc);
 
 			newBundle.meshBuffer = newBuffer;
 		}
@@ -1462,7 +1454,7 @@ CNaviMesh* CResources::CreateNaviMesh(const wstring& _name, CNaviMesh::NaviMeshB
 {
 	CNaviMesh* naviMesh = CNaviMesh::Create();
 	
-	if (FAILED(naviMesh->Initailize_Custom(_info, nullptr)))
+	if (FAILED(naviMesh->Initialize_Custom(_info, nullptr)))
 	{
 		CDebug::LogError(L"CreateNaviMesh failure - Navimesh Initaize failed: " + _name);
 		Safe_Release(naviMesh);

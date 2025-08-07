@@ -195,13 +195,21 @@ HRESULT CScene::Initialize()
 
 	if (m_bUseNavi)
 	{
-		CGameObject* naviMeshObj = Add_GameObject(L"NaviMesh");
-		naviMeshObj->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh");
-		CMeshRenderer* nm = naviMeshObj->AddComponent<CMeshRenderer>();
+		CGameObject* naviMeshObj_WA = Add_GameObject(L"NaviMesh_Walkable");
+		naviMeshObj_WA->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh_Walkable");
+		CMeshRenderer* wanm = naviMeshObj_WA->AddComponent<CMeshRenderer>();
 
-		nm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh"));
-		nm->Set_Material(CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)"));
-		nm->Get_Material()->Set_BaseColor(ColorValue(29, 166, 212, 255).f4Color());
+		wanm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_Walkable"));
+		wanm->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+		wanm->Get_Material()->Set_BaseColor(ColorValue(29, 166, 212, 255).f4Color());
+
+		CGameObject* naviMeshObj_WUA = Add_GameObject(L"NaviMesh_WalkUnable");
+		naviMeshObj_WUA->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh_WalkUnable");
+		CMeshRenderer* wuanm = naviMeshObj_WUA->AddComponent<CMeshRenderer>();
+
+		wuanm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_WalkUnable"));
+		wuanm->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+		wuanm->Get_Material()->Set_BaseColor(ColorValue(166, 29, 212, 255).f4Color());
 	}
 
 	CDebug::Log(L"Load scene Complete: " + m_strSceneName);
@@ -949,8 +957,14 @@ HRESULT CScene::PreLoadResources()
 			if (split[0] == "using NaviMesh" && (split[1] == "1" || split[1] == "true" || split[1] == "True" || split[1] == "TRUE"))
 			{
 				m_bUseNavi = true;
-				name = "NaviMesh";
-				filepath = CEngineString::WStringToString(m_strSceneName);
+
+				nameList.push_back("NaviMesh_Walkable");
+				fileList.push_back(CEngineString::WStringToString(m_strSceneName));
+				formatList.push_back("");
+
+				nameList.push_back("NaviMesh_WalkUnable");
+				fileList.push_back(CEngineString::WStringToString(m_strSceneName));
+				formatList.push_back("");
 			}
 
 			if (!CResources::FileExists(filepath))
