@@ -10,6 +10,13 @@ class ENGINE_DLL CSceneManager final
 	SINGLETONCLASS(CSceneManager);
 
 public:
+	struct LayerFlag
+	{
+		_uint index = 0;
+		wstring name = L"";
+	};
+
+public:
 	HRESULT Initialize();
 	void Release();
 
@@ -24,6 +31,8 @@ public:
 	void LoadScene(CScene* _scene);
 	void LoadComplete();
 
+	void Add_Layer(const _uint _index, const wstring _name);
+
 public:
 	class CCamera* Get_EditorCamera();
 
@@ -36,6 +45,8 @@ private:
 
 	class CGameObject* m_pEditorCamObj;
 	class CEditorCamera* m_pEditorCamera;
+
+	vector<LayerFlag> m_vLayerFlags;
 };
 
 NS_END

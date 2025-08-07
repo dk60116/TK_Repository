@@ -115,6 +115,8 @@ public:
 	void Set_Static(const _uint _flags);
 
 private:
+	void SetLayer(const _uint _layerFlag);
+	void SetLayer(const wstring _layerName);
 	void Set_RecursiveActive(const _bool _active);
 
 private:
@@ -123,6 +125,7 @@ private:
 
 private:
 	_uint m_iUniqueID;
+	_uint m_iLayer;
 	wstring m_strGameObjectName;
 	_bool m_bActive, m_bPrevActive, m_bRecursiveActive;
 

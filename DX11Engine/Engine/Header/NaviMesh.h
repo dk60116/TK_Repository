@@ -14,7 +14,7 @@ public:
 	struct NavBakeOptions
 	{
 		_float walkableSlopeDeg = 45.f;   // 최대 기울기
-		_float walkableMaxHeight = 0.2f;
+		_float walkableMaxHeight = 0.25f;
 		_float agentRadius = 0.3f;   // 반경
 		_float agentHeight = 1.8f;   // 높이
 		_float cellSize = 0.2f;   // 샘플 그리드 간격

@@ -21,6 +21,9 @@ public:
 	void Update() override;
 	void Render() override;
 	void OnDestroy() override;
+
+private:
+	_float m_fRadius;
 };
 
 NS_END

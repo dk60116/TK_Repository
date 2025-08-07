@@ -8,6 +8,7 @@ CSceneManager::CSceneManager()
 	, m_bLoading(false)
 	, m_pEditorCamObj(nullptr)
 	, m_pEditorCamera(nullptr)
+	, m_vLayerFlags({})
 {
 }
 
@@ -24,6 +25,12 @@ CSceneManager& CSceneManager::GetInstance()
 
 HRESULT CSceneManager::Initialize()
 {
+	m_vLayerFlags.reserve(32);
+	m_vLayerFlags.resize(32);
+
+	m_vLayerFlags[0] = { 0, L"Default" };
+	m_vLayerFlags[31] = { 31, L"NaviMesh" };
+
 	return S_OK;
 }
 
@@ -140,6 +147,11 @@ void CSceneManager::LoadComplete()
 	m_pCrtScene->Bind_ObjectsTransform(sceneTransformInfo);
 	m_pCrtScene->Awake();
 	m_pCrtScene->Start();
+}
+
+void CSceneManager::Add_Layer(const _uint _index, const wstring _name)
+{
+
 }
 
 CCamera* CSceneManager::Get_EditorCamera()

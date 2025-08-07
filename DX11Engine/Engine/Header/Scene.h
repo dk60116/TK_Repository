@@ -141,6 +141,7 @@ protected:
 
 protected:
     _uint m_iUniqueObjectCount;
+    _bool m_bUseNavi;
 
     ID3D11DepthStencilState* m_pSkyBoxDepthStencillState, * m_pMeshDepthStencilState,* m_pUIDepthStencilState;
     ID3D11RasterizerState* m_pSkyBoxResterizerState, * m_pMeshResterizerState, * m_pUIResterizerState;

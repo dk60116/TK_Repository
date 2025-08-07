@@ -23,6 +23,7 @@ CScene::CScene()
 	, m_pSkyBox(nullptr)
 	, m_pEditorCamera(nullptr)
 	, m_iUniqueObjectCount(0)
+	, m_bUseNavi(false)
 	, m_pSkyBoxDepthStencillState(nullptr)
 	, m_pMeshDepthStencilState(nullptr)
 	, m_pUIDepthStencilState(nullptr)
@@ -192,6 +193,16 @@ HRESULT CScene::Initialize()
 	m_pEditorCamera->Get_Transform()->Set_Quaternion(CEditor::GetInstance().Get_EditorCamQuaternion());
 #endif
 
+	if (m_bUseNavi)
+	{
+		CGameObject* naviMeshObj = Add_GameObject(L"NaviMesh");
+		CMeshRenderer* nm = naviMeshObj->AddComponent<CMeshRenderer>();
+
+		nm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh"));
+		nm->Set_Material(CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+		nm->Get_Material()->Set_BaseColor(ColorValue(29, 166, 212, 255).f4Color());
+	}
+
 	CDebug::Log(L"Load scene Complete: " + m_strSceneName);
 
 	m_bSceneStarted = true;
@@ -234,7 +245,6 @@ void CScene::Update_Editor()
 		firstHit = hits[0];
 
 		//CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
-
 
 		if (CInput::GetInstance().GetKey_Editor(CONTROL))
 		{
@@ -897,6 +907,7 @@ HRESULT CScene::PreLoadResources()
 {
 	string path = "../Assets/Scenes/" + CEngineString::WStringToString(m_strSceneName) + ".scene";
 	ifstream file(path);
+
 	if (!file)
 	{
 		CDebug::LogError("Can not Open file");
@@ -929,6 +940,7 @@ HRESULT CScene::PreLoadResources()
 
 			if (split[0] == "using NaviMesh" && (split[1] == "1" || split[1] == "true" || split[1] == "True" || split[1] == "TRUE"))
 			{
+				m_bUseNavi = true;
 				name = "NaviMesh";
 				filepath = CEngineString::WStringToString(m_strSceneName);
 			}

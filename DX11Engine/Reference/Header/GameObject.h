@@ -123,6 +123,7 @@ private:
 
 private:
 	_uint m_iUniqueID;
+	_uint m_iLayer;
 	wstring m_strGameObjectName;
 	_bool m_bActive, m_bPrevActive, m_bRecursiveActive;
 
