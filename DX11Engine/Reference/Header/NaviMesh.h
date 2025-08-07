@@ -86,7 +86,7 @@ public:
 private:
 	static void BuildWalkableTriangleList
 	(
-		const vector<VertexNormalColorBuffer>& _verts,
+		const vector<VertexTexNormalTangentBuffer>& _verts,
 		const vector<_uint>& _indices,
 		const _float _maxSlopeDeg,
 		const _float _maxStepHeight,

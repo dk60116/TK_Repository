@@ -4,6 +4,8 @@
 
 NS_BEGIN(Engine)
 
+NS_BEGIN(EngineAI)
+
 class ENGINE_DLL CNavMeshAgent : public CComponent
 {
 	friend class CGameObject;
@@ -25,6 +27,8 @@ public:
 private:
 	_float m_fRadius;
 };
+
+NS_END
 
 NS_END
 

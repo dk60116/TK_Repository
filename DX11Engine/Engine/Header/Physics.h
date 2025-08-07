@@ -20,19 +20,23 @@ public:
 		vector3 hitPos = {};
 		vector3 hitNormal = {};
 		_float distance = 0.f;
-		CGameObject* object = nullptr;
+		class CGameObject* object = nullptr;
 	}RAYCASTHIT;
 
 	SINGLETONCLASS(CPhysics);
 
 public:
-	vector<RAYCASTHIT> Raycast(const Ray& _ray);
+	vector<RAYCASTHIT> Raycast(const Ray& _ray, _uint _layerMask = 0xFFFFFFFF);
 
 private:
-	_bool IntersectRayTriangle(
-		const vector3& rayOrigin, const vector3& rayDir,
-		const vector3& v0, const vector3& v1, const vector3& v2,
-		_float& t, vector3& hitNormal);
+	_bool IntersectRayTriangle
+	(
+		const vector3& rayOrigin, 
+		const vector3& rayDir,
+		const vector3& v0, const vector3& v1, 
+		const vector3& v2,
+		_float& t, vector3& hitNormal
+	);
 };
 
 NS_END

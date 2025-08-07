@@ -30,23 +30,26 @@ HRESULT CNaviMesh::Initailize_Custom(const NaviMeshBufferInitiaizeInfo _info, vo
 CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption)
 {
     struct Src { CMeshBuffer* buf; CGameObject* obj; };
+
     vector<Src> sources;
-    for (auto* go : _sourceObjs) {
+
+    for (auto* go : _sourceObjs)
+    {
         if (!go) continue;
         if (auto* rnd = go->GetComponent<CMeshRenderer>())
             sources.push_back({ rnd->Get_MeshBuffer(), go });
     }
 
-    NaviMeshBufferInitiaizeInfo info{};
-    if (sources.empty()) {
+    NaviMeshBufferInitiaizeInfo info = {};
+    if (sources.empty()) 
+    {
         CDebug::LogError("BuildFromMesh failed: no source meshes");
         return info;
     }
 
-    /*──────────────────────────────────────────────────────────
-      1) 병합 정점·인덱스 (월드 좌표 변환 포함)
-    ──────────────────────────────────────────────────────────*/
-    using VTX = VertexNormalColorBuffer;
+   
+    // 병합 정점·인덱스 (월드 좌표 변환 포함)
+    using VTX = VertexTexNormalTangentBuffer;
     vector<VTX>  vertsMerged;
     vector<_uint> idxMerged;
     _uint vertOffset = 0;
@@ -71,7 +74,6 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObje
             // normal
             XMStoreFloat3(&vout.normal,
                 XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&vin.normal), nMat)));
-            vout.color = { 1,1,1,1 };
             vertsMerged.push_back(vout);
         }
         for (_uint idx : iBuf)
@@ -84,11 +86,10 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObje
         CDebug::LogError("BuildFromMesh failed: merged data empty");
         return info;
     }
-
-    /*──────────────────────────────────────────────────────────
-      2) Walkable 삼각형 필터
-    ──────────────────────────────────────────────────────────*/
+    
+    //Walkable 삼각형 필터
     vector<array<_uint, 3>> walkables;
+
     BuildWalkableTriangleList
     (
         vertsMerged, idxMerged,
@@ -109,63 +110,77 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObje
     unordered_map<EdgeKey, _uint, EdgeKeyHash> edgeOwner;
     vector<Poly> polys; polys.reserve(walkables.size());
 
-    for (auto& tri : walkables) {
+    for (auto& tri : walkables) 
+    {
         Poly p;
         p.index = (_uint)polys.size();
         p.verts = { tri[0],tri[1],tri[2] };
         p.neighs.resize(3, UINT_MAX);
 
         // center
-        _vector c = XMVectorScale(
-            XMVectorAdd(XMVectorAdd(
+        _vector c = XMVectorScale
+        (
+            XMVectorAdd(XMVectorAdd
+            (
                 XMLoadFloat3(&vertsMerged[tri[0]].position),
                 XMLoadFloat3(&vertsMerged[tri[1]].position)),
-                XMLoadFloat3(&vertsMerged[tri[2]].position)),
-            1.f / 3.f);
+                XMLoadFloat3(&vertsMerged[tri[2]].position)
+            ),
+            1.f / 3.f
+        );
         XMStoreFloat3(reinterpret_cast<_float3*>(&p.center), c);
 
         // edge map
-        for (int e = 0; e < 3; ++e) {
+        for (int e = 0; e < 3; ++e) 
+        {
             EdgeKey k = MakeEdge(p.verts[e], p.verts[(e + 1) % 3]);
             auto it = edgeOwner.find(k);
-            if (it == edgeOwner.end()) edgeOwner[k] = p.index;
-            else {
+            if (it == edgeOwner.end()) 
+                edgeOwner[k] = p.index;
+            else 
+            {
                 const _uint o = it->second;
                 p.neighs[e] = o;
                 auto& neigh = polys[o].neighs;
                 for (auto& nx : neigh) if (nx == UINT_MAX) { nx = p.index; break; }
             }
         }
+
         polys.push_back(move(p));
     }
 
-    /*──────────────────────────────────────────────────────────
-      4) Walkable 전용 버퍼 재구성 (정점 압축 + 인덱스 리맵)
-    ──────────────────────────────────────────────────────────*/
-    vector<VTX>   navVerts;  navVerts.reserve(walkables.size() * 3);
-    vector<_uint> navIdx;    navIdx.reserve(walkables.size() * 3);
+   
+    //Walkable 전용 버퍼 재구성
+    vector<VTX>   navVerts;
+    navVerts.reserve(walkables.size() * 3);
+    vector<_uint> navIdx;
+    navIdx.reserve(walkables.size() * 3);
     unordered_map<_uint, _uint> remap;
 
-    auto Remap = [&](_uint old)->_uint {
-        auto [it, ins] = remap.try_emplace(old, (_uint)navVerts.size());
-        if (ins) navVerts.push_back(vertsMerged[old]);
-        return it->second;
+    auto Remap = [&](_uint old)->_uint
+        {
+            auto [it, ins] = remap.try_emplace(old, (_uint)navVerts.size());
+            if (ins)
+                navVerts.push_back(vertsMerged[old]);
+            return it->second;
         };
 
-    for (auto& tri : walkables) {
+    for (auto& tri : walkables) 
+    {
         navIdx.push_back(Remap(tri[0]));
         navIdx.push_back(Remap(tri[1]));
         navIdx.push_back(Remap(tri[2]));
     }
 
-    /*──────────────────────────────────────────────────────────
-      5) info 채우기 & 반환
-    ──────────────────────────────────────────────────────────*/
+    
+    //info 채우기 & 반환
     info.meshName = L"NaviMesh_Walkable";
 
-    info.buffer.assign(
+    info.buffer.assign
+    (
         reinterpret_cast<const uint8_t*>(navVerts.data()),
-        reinterpret_cast<const uint8_t*>(navVerts.data()) + sizeof(VTX) * navVerts.size());
+        reinterpret_cast<const uint8_t*>(navVerts.data()) + sizeof(VTX) * navVerts.size()
+    );
 
     info.indices.swap(navIdx);
 
@@ -176,11 +191,13 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CNaviMesh::BuildFromMesh(vector<CGameObje
 
     /* 폴리 리스트 저장 (info.polygons) */
     info.polygons.clear(); info.polygons.reserve(polys.size());
-    for (const auto& p : polys) {
+    for (const auto& p : polys) 
+    {
         NaviPolygon np;
         np.index = p.index;
         np.neighbors = p.neighs;
-        for (_uint vi : p.verts) {
+        for (_uint vi : p.verts)
+        {
             const auto& pos = vertsMerged[vi].position;
             np.vertices.emplace_back(pos.x, pos.y, pos.z);
         }
@@ -222,7 +239,7 @@ const vector3 CNaviMesh::ProjectPointToPoly(const vector3& _p, const _uint _inde
     return best;
 }
 
-void CNaviMesh::BuildWalkableTriangleList(const vector<VertexNormalColorBuffer>& _verts, const vector<_uint>& _indices, const _float _maxSlopeDeg, const _float _maxStepHeight, vector<array<_uint, 3>>& _outWalkables)
+void CNaviMesh::BuildWalkableTriangleList(const vector<VertexTexNormalTangentBuffer>& _verts, const vector<_uint>& _indices, const _float _maxSlopeDeg, const _float _maxStepHeight, vector<array<_uint, 3>>& _outWalkables)
 {
     _outWalkables.clear();
     if (_verts.empty() || _indices.empty() || _indices.size() % 3) return;

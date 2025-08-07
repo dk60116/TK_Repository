@@ -85,5 +85,7 @@ private:
 	_bool m_bIsJump, m_bIsPrevJump;
 
 	CTransform* m_pFocusTransform;
+
+	EngineAI::CNavMeshAgent* m_pNavAgent;
 };
 

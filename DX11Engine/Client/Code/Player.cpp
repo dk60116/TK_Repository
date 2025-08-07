@@ -26,6 +26,7 @@ CPlayer::CPlayer()
 	, m_bIsJump(false)
 	, m_bIsPrevJump(false)
 	, m_pFocusTransform(nullptr)
+	, m_pNavAgent(nullptr)
 {
 	m_strName = L"Player";
 }
@@ -81,6 +82,8 @@ HRESULT CPlayer::Initialize()
 	m_fSwordActionEndFrames[2] = 3.f;
 
 	CGameManager::GetInstance().Set_Player(this);
+
+	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
 
 	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
 	//Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
@@ -290,6 +293,8 @@ void CPlayer::PlayerControle_LockOn()
 		{
 			quaternion targetQ = Get_Transform()->LookQuaternion(m_pFocusTransform->Get_Position(), CTransform::X | CTransform::Z);
 			Get_Transform()->Set_Quaternion(targetQ.Slerp(Get_Transform()->Get_Quaternion(), targetQ, DELTA_TIME * m_sPlayerStatus.focusTurnRatio));
+			Get_Transform()->Set_EulerAnglesX(0.f);
+			Get_Transform()->Set_EulerAnglesZ(0.f);
 		}
 	}
 

@@ -34,6 +34,11 @@ public:
 	void Add_Layer(const _uint _index, const wstring _name);
 
 public:
+	static _uint NameToLayer(const wstring _name);
+	static wstring LayerToName(const _uint _layer);
+	static _bool LayerMaskResult(const _uint _source, const _uint _mask);
+
+public:
 	class CCamera* Get_EditorCamera();
 
 private:

@@ -43,3 +43,4 @@
 #include "Text.h"
 #include "Font.h"
 #include "NaviMesh.h"
+#include "NavMeshAgent.h"

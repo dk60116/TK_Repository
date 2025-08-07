@@ -98,6 +98,10 @@ void CInspectorBox::Render()
 
         Toggle_End();
 
+        string objLayerName = CEngineString::WStringToString(CSceneManager::LayerToName(selectedObj->GetLayer()));
+
+        ImGui::Text(objLayerName.c_str());
+        ImGui::SameLine();
         ImGui::Text(selectedObj->IsBoneTransform() ? "Bone" : "    ");
 
         ImGui::SameLine();

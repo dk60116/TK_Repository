@@ -310,12 +310,12 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateRect()
 
     const _float length = 0.5f;
 
-    VertexTexColorBuffer quadVertices[4] =
+    VertexTexNormalTangentBuffer quadVertices[4] =
     {
-            {{-length, -length, 0}, {0, 1}},
-            {{ length, -length, 0}, {1, 1}},
-            {{ length,  length, 0}, {1, 0}},
-            {{-length,  length, 0}, {0, 0}}
+        {{-length, -length, 0}, {0, 1, 0}},
+        {{ length, -length, 0}, {1, 1, 0}},
+        {{ length,  length, 0}, {1, 0, 0}},
+        {{-length,  length, 0}, {0, 0, 0}}
     };
 
     static _uint quadIndices[6] =
@@ -325,7 +325,7 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateRect()
 
     CMeshBuffer::MESHBUFFERDESC desc{};
     desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    desc.vertexSize = sizeof(VertexTexColorBuffer);
+    desc.vertexSize = sizeof(VertexTexNormalTangentBuffer);
     desc.vertextCount = _countof(quadVertices);
     desc.indexCount = _countof(quadIndices);
 
@@ -679,6 +679,7 @@ vector3 CMeshBuffer::ClosestPointOnSegment(const vector3& _p, const vector3& _a,
 vector<VertexTexNormalTangentBuffer> CMeshBuffer::Get_VertexBuffer() const
 {
     vector<VertexTexNormalTangentBuffer> result;
+
     if (!m_pVertexSysMem || m_sInfo.vertexSize != sizeof(VertexTexNormalTangentBuffer))
         return result;
 

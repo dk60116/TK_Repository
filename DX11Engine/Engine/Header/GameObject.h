@@ -114,9 +114,12 @@ public:
 	void Set_Static(const StaticObjectFlag _type, const _bool _value);
 	void Set_Static(const _uint _flags);
 
-private:
+public:
+	const _uint GetLayer() const;
 	void SetLayer(const _uint _layerFlag);
 	void SetLayer(const wstring _layerName);
+
+private:
 	void Set_RecursiveActive(const _bool _active);
 
 private:

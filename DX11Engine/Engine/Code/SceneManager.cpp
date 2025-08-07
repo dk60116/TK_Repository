@@ -28,8 +28,8 @@ HRESULT CSceneManager::Initialize()
 	m_vLayerFlags.reserve(32);
 	m_vLayerFlags.resize(32);
 
-	m_vLayerFlags[0] = { 0, L"Default" };
-	m_vLayerFlags[31] = { 31, L"NaviMesh" };
+	m_vLayerFlags[0] = { 1u << 1, L"Default" };
+	m_vLayerFlags[31] = { 1u << 31, L"NaviMesh" };
 
 	return S_OK;
 }
@@ -151,7 +151,43 @@ void CSceneManager::LoadComplete()
 
 void CSceneManager::Add_Layer(const _uint _index, const wstring _name)
 {
+	m_vLayerFlags[_index] = { 1u << _index, _name };
+}
 
+_uint CSceneManager::NameToLayer(const wstring _name)
+{
+	for (LayerFlag layer : GetInstance().m_vLayerFlags)
+	{
+		if (layer.name == _name)
+			return layer.index;
+	} 
+
+	return 0;
+}
+
+wstring CSceneManager::LayerToName(const _uint _layer)
+{
+	if (_layer == 0)
+		return L"";
+
+	_uint index = 0;
+	_uint mask = _layer;
+
+	while ((mask & 1) == 0)
+	{
+		mask >>= 1;
+		++index;
+	}
+
+	if (index >= GetInstance().m_vLayerFlags.size())
+		return L"";
+
+	return GetInstance().m_vLayerFlags[index].name;
+}
+
+_bool CSceneManager::LayerMaskResult(const _uint _source, const _uint _mask)
+{
+	return _mask & _source;
 }
 
 CCamera* CSceneManager::Get_EditorCamera()

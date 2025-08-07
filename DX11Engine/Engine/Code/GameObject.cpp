@@ -3,7 +3,7 @@
 
 CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
 	: m_iUniqueID(999999)
-	, m_iLayer(0)
+	, m_iLayer(1)
 	, m_strGameObjectName(L"")
 	, m_bActive(true)
 	, m_bPrevActive(true)
@@ -530,6 +530,11 @@ void CGameObject::Set_Static(const StaticObjectFlag _type, const _bool _value)
 void CGameObject::Set_Static(const _uint _flags)
 {
 	m_iStaticMathod = _flags;
+}
+
+const _uint CGameObject::GetLayer() const
+{
+	return m_iLayer;
 }
 
 void CGameObject::SetLayer(const _uint _layerFlag)

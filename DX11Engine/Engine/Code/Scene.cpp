@@ -196,6 +196,7 @@ HRESULT CScene::Initialize()
 	if (m_bUseNavi)
 	{
 		CGameObject* naviMeshObj = Add_GameObject(L"NaviMesh");
+		naviMeshObj->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh");
 		CMeshRenderer* nm = naviMeshObj->AddComponent<CMeshRenderer>();
 
 		nm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh"));
@@ -257,6 +258,7 @@ void CScene::Update_Editor()
 
 			CGameObject* newObj = Add_GameObject(L"AddObj");
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
+			newObj->Get_Transform()->Set_LocalScale(3.f);
 			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
 		}
@@ -777,16 +779,22 @@ vector<CGameObject*> CScene::Get_RootObjects()
 	return result;
 }
 
-vector<CRenderer*> CScene::Get_MeshObjects()
+vector<CRenderer*> CScene::Get_MeshObjects(const _uint _layerMask)
 {
 	vector<CRenderer*> result = {};
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if (CRenderer* ren = (*it)->GetComponent<CRenderer>())
+		if ((*it)->m_bActive)
 		{
-			if ((*it)->m_iUniqueID != 0)
-				result.push_back(ren);
+			if (CSceneManager::LayerMaskResult((*it)->GetLayer(), _layerMask))
+			{
+				if (CRenderer* ren = (*it)->GetComponent<CRenderer>())
+				{
+					if ((*it)->m_iUniqueID != 0)
+						result.push_back(ren);
+				}
+			}
 		}
 	}
 

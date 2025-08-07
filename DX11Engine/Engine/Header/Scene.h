@@ -87,7 +87,7 @@ public:
     class CGameObject* Add_GameObject(wstring _name);
     list<CGameObject*>& Get_ObjectList();
     vector<CGameObject*> Get_RootObjects();
-    vector<CRenderer*> Get_MeshObjects();
+    vector<CRenderer*> Get_MeshObjects(const _uint _layerMask = 0xFFFFFFFF);
 
     const LightSettings& Get_LightSetting();
 
