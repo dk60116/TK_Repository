@@ -37,6 +37,8 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CUIManager::GetInstance().Initialize()))
         return E_FAIL;
+    if (FAILED(CCollisionManager::GetInstance().Initialize()))
+        return E_FAIL;
 
 #ifndef _CLIENT_BUILD
     CEditor::EDITORWINOPTION sOption = CEditor::GetInstance().Get_Options();
@@ -88,6 +90,7 @@ void CMainProcess::Update_MainApp()
         scene->Update_Editor();
         scene->Update();
         scene->LateUpdate();
+        scene->FixedUpdate();
 
 #ifndef _CLIENT_BUILD
         graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());

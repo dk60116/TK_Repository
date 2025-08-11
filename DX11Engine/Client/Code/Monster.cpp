@@ -9,6 +9,7 @@ CMonster::CMonster()
 	, m_pBaseMap(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pController(nullptr)
+	, m_pCollider(nullptr)
 {
 	m_strName = L"Wolf";
 }
@@ -46,6 +47,8 @@ HRESULT CMonster::Initialize()
 
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
+
+	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
 
 	return S_OK;
 }

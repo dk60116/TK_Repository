@@ -42,10 +42,10 @@ public:
 
 	struct Poly  
 	{
-		_uint index;              // NaviPolygon.index ¿Í µ¿ÀÏ
-		vector<_uint> verts;      // Á¤Á¡ ÀÎµ¦½º
-		vector<_uint> neighs;     // ÀÎÁ¢ Poly index
-		_vector center;           // Áß¾Ó°ª(ÈÞ¸®½ºÆ½¿ë)
+		_uint index;         
+		vector<_uint> verts;  
+		vector<_uint> neighs;   
+		_vector center;    
 	};
 
 	struct NaviPolygon
@@ -68,7 +68,7 @@ public:
 	};
 
 private:
-	CNaviMesh();
+	explicit CNaviMesh();
 	~CNaviMesh();
 
 private:
@@ -79,6 +79,7 @@ public:
 	static vector<NaviMeshBufferInitiaizeInfo> BuildFromMesh(vector<CGameObject*> _sourceObjs, NavBakeOptions _bakeOption);
 	_bool FindPath(const vector3& _start, const vector3& _end, vector<vector3>& _outPath);
 	_int FindContainingPolygon(const vector3& _position);
+	const vector<NaviPolygon>& Get_Polygons() const;
 
 public:
 	const vector3 ProjectPointToPoly(const vector3& _p, const _uint _index) const;

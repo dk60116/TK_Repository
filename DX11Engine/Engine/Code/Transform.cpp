@@ -10,15 +10,23 @@ CTransform::CTransform()
     , m_vEulerAngles({})
     , m_vQuaternion(quaternion::identity())
     , m_vWorldQuaternion(quaternion::identity())
+    , m_vPrevQuaternion(quaternion::identity())
+    , m_vPrevLocalQuat(quaternion::identity())
     , m_vMatWorld()
     , m_vMatLocal()
     , m_vMatLocalRotation()
+    , m_vPrevPosition({})
+    , m_vPrevEulerAngles({})
+    , m_vPrevLoclaPos({})
+    , m_vPrevLocalEuler({})
+    , m_vPrevLocalScale({})
     , m_sDirections({})
+    , m_sPrevDirections({})
 {
     m_strName = L"Transform";
 }
 
-CTransform::~CTransform()
+    CTransform::~CTransform()
 {
 }
 
@@ -57,11 +65,24 @@ HRESULT CTransform::Initialize()
 
 void CTransform::Update()
 {
-    if (CSceneManager::GetInstance().Get_CrtScene()->IsStarted() && m_pGameObject && m_pGameObject->Get_Static() > 0)
+    if (CSceneManager::GetInstance().Get_CrtScene()->IsStarted() &&
+        m_pGameObject && m_pGameObject->Get_Static() & CGameObject::transformStatic)
         return;
 
     Bind_Matrix();
     Bind_Direction();
+}
+
+void CTransform::LateUpdate()
+{
+    m_vPrevPosition = m_vWorldPosition;
+    m_vPrevEulerAngles = m_vWorldEulerAngles;
+    m_vPrevLoclaPos = m_vPosition;
+    m_vPrevLocalEuler = m_vEulerAngles;
+    m_vPrevQuaternion = m_vWorldQuaternion;
+    m_vPrevLocalQuat = m_vQuaternion;
+    m_vPrevLocalScale = m_vScale;
+    m_sPrevDirections = m_sDirections;
 }
 
 void CTransform::Render_Gizmo()
@@ -177,41 +198,72 @@ void CTransform::SetParent(CTransform* _parent)
     if (_parent == m_pParent)
         return;
 
-    vector3 tempPos = m_vWorldPosition;
-    Get_EulerAngles();
-    quaternion tempQ = m_vWorldQuaternion;
+    // 1) 기존 월드 행렬/월드 위치 저장
+    _matrix W_old = XMLoadFloat4x4(&m_vMatWorld);
 
-    _matrix tempMatrix = XMMatrixIdentity();
-    XMStoreFloat4x4(&m_vMatWorld, tempMatrix);
-
-    if (m_pParent)
-    {
+    // 2) 기존 부모 링크만 정리
+    if (m_pParent) {
         m_pParent->m_lChildList.remove(this);
         Safe_Release(m_pParent);
-
-        if (_parent == nullptr)
-        {
-            m_pParent = nullptr;
-            m_vPosition = tempPos;
-            m_vQuaternion = tempQ;
-        }
     }
 
+    // 3) 새 부모 연결
     m_pParent = _parent;
-
-    if (m_pParent)
-    {
+    if (m_pParent) {
         m_pGameObject->Set_RecursiveActive(m_pParent->m_pGameObject->m_bRecursiveActive);
         m_pParent->m_lChildList.push_back(this);
         m_pParent->AddRef();
-
-        m_pParent->Bind_Matrix();
-        Bind_Matrix();
-
-        SetTransformForMatrix(tempMatrix);
     }
 
-    m_bIsRootParent = !m_pParent;
+    // 4) 부모 월드 최신화(루트까지) 후 부모 월드/역행렬 확보
+    RecalcWorldUpChain(m_pParent);
+
+    _matrix P = XMMatrixIdentity();
+    if (m_pParent) P = XMLoadFloat4x4(&m_pParent->m_vMatWorld);
+    _matrix invP = XMMatrixInverse(nullptr, P);
+
+    // 5) 부모/자신 월드에서 S/R/T 분해
+    XMVECTOR sW, rW, tW;
+    XMVECTOR sP, rP, tP;
+    bool okW = XMMatrixDecompose(&sW, &rW, &tW, W_old);
+    bool okP = XMMatrixDecompose(&sP, &rP, &tP, P);
+
+    // 6) 로컬 S/R/T 계산 (관계식)
+    //    S_local = S_world / S_parent  (성분별)
+    auto safeDiv = [](float a, float b) { return (fabsf(b) < 1e-8f) ? 0.f : (a / b); };
+
+    XMFLOAT3 SW, SP;
+    XMStoreFloat3(&SW, sW);
+    XMStoreFloat3(&SP, sP);
+
+    vector3 S_local(safeDiv(SW.x, SP.x),
+        safeDiv(SW.y, SP.y),
+        safeDiv(SW.z, SP.z));
+
+    //    R_local = inverse(R_parent) * R_world
+    XMVECTOR rLocal = XMQuaternionMultiply(XMQuaternionInverse(rP), rW);
+    rLocal = XMQuaternionNormalize(rLocal);
+
+    //    T_local = TransformCoord(worldPos, invParent)
+    vector3 T_local;
+    {
+        // worldPos를 invP로 좌표변환
+        vector3 worldPos = vector3(m_vMatWorld._41, m_vMatWorld._42, m_vMatWorld._43);
+        XMVECTOR wp = XMVectorSet(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+        XMVECTOR lp = XMVector3TransformCoord(wp, invP);
+        T_local = vector3(XMVectorGetX(lp), XMVectorGetY(lp), XMVectorGetZ(lp));
+    }
+
+    // 7) 로컬에 반영
+    m_vScale = S_local;
+    XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&m_vQuaternion), rLocal);
+    m_vPosition = T_local;
+
+    // 8) 월드/방향 갱신
+    Bind_Matrix();
+    Bind_Direction();
+
+    m_bIsRootParent = (m_pParent == nullptr);
 }
 
 const _bool CTransform::Is_Root() const
@@ -303,12 +355,12 @@ const _matrix CTransform::Get_InverseWorldMatrix() const
     return XMMatrixInverse(nullptr, mat);
 }
 
-const vector3 CTransform::Get_Position()
+const vector3& CTransform::Get_Position()
 {
     return m_vWorldPosition;
 }
 
-const vector3 CTransform::Get_LocalPosition()
+const vector3& CTransform::Get_LocalPosition()
 {
     return m_vPosition;
 }
@@ -316,7 +368,7 @@ const vector3 CTransform::Get_LocalPosition()
 const vector3 CTransform::Get_EulerAngles()
 {
     if (!m_pParent)
-        m_vQuaternion.to_euler();
+        return m_vQuaternion.to_euler();
     else
     {
         _matrix worldMatrix = XMLoadFloat4x4(&m_vMatWorld);
@@ -340,7 +392,7 @@ const vector3 CTransform::Get_LocalEulerAngles()
     return m_vQuaternion.to_euler();
 }
 
-vector3 CTransform::Get_LocalScale()
+vector3& CTransform::Get_LocalScale()
 {
     return m_vScale;
 }
@@ -357,19 +409,16 @@ const quaternion& CTransform::Get_LocalQuaternion() const
 
 void CTransform::Set_Position(const vector3& _pos)
 {
-    CTransform* tempParent = nullptr;
+    _matrix parentInv = XMMatrixIdentity();
+    if (m_pParent) 
+        parentInv = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_pParent->m_vMatWorld));
+    _matrix W = XMLoadFloat4x4(&m_vMatWorld);
 
-    if (m_pParent)
-    {
-        tempParent = m_pParent;
-        SetParent(static_cast<CTransform*>(nullptr));
-        Bind_Matrix();
-    }
+    _vector S, R, T; XMMatrixDecompose(&S, &R, &T, W);
+    W = XMMatrixScalingFromVector(S) * XMMatrixRotationQuaternion(R) * XMMatrixTranslation(_pos.x, _pos.y, _pos.z);
+    SetTransformForMatrix(W);
 
-    m_vPosition = _pos;
-
-    if (tempParent)
-        SetParent(tempParent);
+    Update();
 }
 
 void CTransform::Set_Position(const _float _x, const _float _y, const _float _z)
@@ -420,6 +469,7 @@ void CTransform::Set_LocalPositionZ(const _float _value)
 void CTransform::Add_Position(const vector3& _value)
 {
     m_vPosition += _value;
+    Bind_Matrix();
 }
 
 void CTransform::Add_Position(const _float _x, const _float _y, const _float _z)
@@ -531,6 +581,8 @@ void CTransform::Add_EulerAngles(const vector3& _rot)
 
     if (tempParent)
         SetParent(tempParent);
+
+    Update();
 }
 
 void CTransform::Add_EulerAngles(const _float _x, const _float _y, const _float _z)
@@ -642,9 +694,9 @@ void CTransform::Bind_Matrix()
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&worldQ), Q);
 
     vector3 eulerRad = worldQ.to_euler();
-    vector3 eulerDeg = eulerRad * XMConvertToDegrees(1.0f);
+    m_vWorldQuaternion = worldQ;
 
-    m_vWorldEulerAngles = eulerDeg;
+    m_vWorldEulerAngles = worldQ.to_euler();
 }
 
 void CTransform::Bind_Direction()
@@ -666,6 +718,15 @@ void CTransform::Bind_Direction()
     m_sDirections.left = -m_sDirections.right;
     m_sDirections.up = vector3(u.x, u.y, u.z).normalized();
     m_sDirections.down = -m_sDirections.up;
+}
+
+void CTransform::RecalcWorldUpChain(CTransform* _t)
+{
+    if (!_t) 
+        return;
+    if (_t->m_pParent) 
+        RecalcWorldUpChain(_t->m_pParent);
+    _t->Bind_Matrix();
 }
 
 void CTransform::Set_LocalScale(const vector3& _scale)
@@ -696,6 +757,36 @@ void CTransform::Set_LocalScaleY(const _float _value)
 void CTransform::Set_LocalScaleZ(const _float _value)
 {
     m_vScale.z = _value;
+}
+
+const vector3& CTransform::Get_PrevPosition()
+{
+    return m_vPrevPosition;
+}
+
+const vector3& CTransform::Get_PrevLocalPos()
+{
+    return m_vPrevLoclaPos;
+}
+
+const vector3& CTransform::Get_PrevEulerAngles()
+{
+    return m_vPrevEulerAngles;
+}
+
+const vector3& CTransform::Get_PrevLocalEuler()
+{
+    return m_vPrevLocalEuler;
+}
+
+const quaternion& CTransform::Get_PrevQuaternion()
+{
+    return m_vPrevQuaternion;
+}
+
+const quaternion& CTransform::Get_PrevLocalQuat()
+{
+    return m_vPrevLocalQuat;
 }
 
 void CTransform::SetTransformForMatrix(_matrix _matWorld)

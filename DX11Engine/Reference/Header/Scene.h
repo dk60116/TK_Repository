@@ -88,6 +88,7 @@ public:
     list<CGameObject*>& Get_ObjectList();
     vector<CGameObject*> Get_RootObjects();
     vector<CRenderer*> Get_MeshObjects(const _uint _layerMask = 0xFFFFFFFF);
+    vector<EngineAI::CNaviMesh*> Get_NavMeshes();
 
     const LightSettings& Get_LightSetting();
 
@@ -137,7 +138,7 @@ protected:
     unordered_map<wstring, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>> m_mSkinnedBoneList, m_mTempSkinnedBoneList;
     vector<CEngineResource*> m_vCloneResourceList;
 
-    vector<EngineAI::CNaviMesh*> m_vSceneNaviMeshList;
+    EngineAI::CNaviMesh* m_pSceneNaviMesh_Walkable, * m_pSceneNaviMesh_WalkUnable;
 
 protected:
     _uint m_iUniqueObjectCount;

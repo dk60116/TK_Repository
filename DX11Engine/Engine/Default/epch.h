@@ -44,3 +44,4 @@
 #include "Font.h"
 #include "NaviMesh.h"
 #include "NavMeshAgent.h"
+#include "CollisionManager.h"

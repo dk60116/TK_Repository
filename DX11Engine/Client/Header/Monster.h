@@ -47,7 +47,8 @@ protected:
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;
-	CMonsterController* m_pController;
+	class CMonsterController* m_pController;
+	CBoxCollider* m_pCollider;
 
 	MonsterStatus m_sStatus;
 };

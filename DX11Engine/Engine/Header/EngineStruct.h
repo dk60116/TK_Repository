@@ -408,6 +408,12 @@ namespace Engine
 #pragma endregion
 
 #pragma region vector3
+    struct vector3;
+    inline vector3 operator+(const vector3& lhs, const vector3& rhs);
+    inline vector3 operator-(const vector3& lhs, const vector3& rhs);
+    inline vector3 operator*(const vector3& vec, float scalar);
+    inline vector3 operator/(const vector3& vec, float scalar);
+
     struct ENGINE_DLL vector3
     {
         float x;
@@ -582,7 +588,15 @@ namespace Engine
             return vector3(XMVectorGetX(normal), XMVectorGetY(normal), XMVectorGetZ(normal));
         }
 
-        float dot(const vector3& other) const
+        vector3 cross(const vector3& other) const
+        {
+            _vector a = XMVectorSet(x, y, z, 0.f);
+            _vector b = XMVectorSet(other.x, other.y, other.z, 0.f);
+            _vector cross = XMVector3Cross(a, b);
+            return vector3(XMVectorGetX(cross), XMVectorGetY(cross), XMVectorGetZ(cross));
+        }
+
+        _float dot(const vector3& other) const
         {
             _vector a = XMVectorSet(x, y, z, 0.f);
             _vector b = XMVectorSet(other.x, other.y, other.z, 0.f);
@@ -596,14 +610,6 @@ namespace Engine
             _vector vb = XMVectorSet(b.x, b.y, b.z, 0.f);
             _vector dot = XMVector3Dot(va, vb);
             return XMVectorGetX(dot);
-        }
-
-        vector3 cross(const vector3& other) const
-        {
-            _vector a = XMVectorSet(x, y, z, 0.f);
-            _vector b = XMVectorSet(other.x, other.y, other.z, 0.f);
-            _vector cross = XMVector3Cross(a, b);
-            return vector3(XMVectorGetX(cross), XMVectorGetY(cross), XMVectorGetZ(cross));
         }
 
         static vector3 Cross(const vector3& a, const vector3& b)
@@ -632,6 +638,96 @@ namespace Engine
         operator _float3() const
         {
             return _float3(x, y, z);
+        }
+
+        static vector3 TriNormal(const vector3& a, const vector3& b, const vector3& c)
+        {
+            return (b - a).cross(c - a).normalized();
+        }
+
+        static vector3 TriCenter(const vector3& a, const vector3& b, const vector3& c)
+        {
+            return (a + b + c) * (1.f / 3.f);
+        }
+
+        static vector3 ProjectPointOnPlane(const vector3& p, const vector3& a, const vector3& b, const vector3& c, vector3* outN = nullptr)
+        {
+            vector3 n = (b - a).cross(c - a);
+            _float len2 = n.lengthSq();
+            if (len2 < 1e-10f) return p;
+            n = n / sqrtf(len2);
+            _float d = (p - a).dot(n);
+            if (outN)
+                *outN = n;
+            return p - n * d;
+        }
+
+        static _bool InsideTriAndViolation(const vector3& p, const vector3& a, const vector3& b, const vector3& c, _int& outViolatedEdge, _float eps = 1e-6f)
+        {
+            vector3 n = (b - a).cross(c - a);
+            _float nlen2 = n.lengthSq();
+
+            if (nlen2 < 1e-10f)
+            {
+                outViolatedEdge = -1;
+                return false;
+            }
+
+            n = n / sqrtf(nlen2);
+            _float d0 = ((b - a).cross(p - a)).dot(n);
+            _float d1 = ((c - b).cross(p - b)).dot(n);
+            _float d2 = ((a - c).cross(p - c)).dot(n);
+            _bool inside = (d0 >= -eps && d1 >= -eps && d2 >= -eps);
+
+            if (inside)
+            {
+                outViolatedEdge = -1;
+                return true;
+            }
+            _float ds[3] = { d0,d1,d2 };
+            _int idx = 0;
+            _float minv = ds[0];
+
+            for (_int i = 1; i < 3; ++i)
+            {
+                if (ds[i] < minv)
+                {
+                    minv = ds[i];
+                    idx = i;
+                }
+            }
+
+            outViolatedEdge = idx;
+            return false;
+        }
+
+        static _bool SegmentIntersect2DOnPlaneXZ(const vector3& P, const vector3& Q, const vector3& E0, const vector3& E1, float& tHit, float eps = 1e-6f)
+        {
+            _float x1 = P.x, z1 = P.z, x2 = Q.x, z2 = Q.z;
+            _float x3 = E0.x, z3 = E0.z, x4 = E1.x, z4 = E1.z;
+            _float den = (x1 - x2) * (z3 - z4) - (z1 - z2) * (x3 - x4);
+            if (fabsf(den) < eps)
+                return false;
+            _float numT = (x1 - x3) * (z3 - z4) - (z1 - z3) * (x3 - x4);
+            _float numU = (x1 - x3) * (z1 - z2) - (z1 - z3) * (x1 - x2);
+            _float t = numT / den;
+            _float u = numU / den;
+            if (t < -eps || t > 1.f + eps || u < -eps || u > 1.f + eps)
+                return false;
+            tHit = clamp(t, 0.f, 1.f);
+            return true;
+        }
+
+        static vector3 ClosestPointOnSegment(const vector3& p, const vector3& a, const vector3& b)
+        {
+            vector3 ab = b - a;
+            _float ab2 = ab.dot(ab);
+            if (ab2 < 1e-12f)
+                return a;
+            _float t = (p - a).dot(ab) / ab2;
+            t = clamp(t, 0.f, 1.f);
+
+            return a + ab * t;
         }
     };
 
@@ -674,6 +770,7 @@ namespace Engine
     {
         return vector3(-v.x, -v.y, -v.z);
     }
+
 #pragma endregion
 
 #pragma region vector3Int

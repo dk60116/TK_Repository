@@ -648,6 +648,18 @@ const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 	return m_sInfo;
 }
 
+_bool CMeshBuffer::PlaneFromTri(const vector3& _a, const vector3& _b, const vector3& _c, vector3& _n, _float& _d)
+{
+    _n = (_b - _a).cross(_c - _a);
+    const _float len2 = _n.lengthSq();
+    if (len2 < 1e-12f)
+        return false;
+    _n = _n * (1.0f / sqrtf(len2));
+    _d = -_n.dot(_a);
+    
+    return true;
+}
+
 _bool CMeshBuffer::PointInTri(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c)
 {
     vector3 v0 = _b - _a;
@@ -674,6 +686,14 @@ vector3 CMeshBuffer::ClosestPointOnSegment(const vector3& _p, const vector3& _a,
     t = clamp(t, 0.f, 1.f);
     
     return _a + ab * t;
+}
+
+_float CMeshBuffer::SolveYOnPlane(const vector3& _n, _float _d, _float _x, _float _z, _float _fallbackY)
+{
+    if (fabsf(_n.y) < 1e-6f)              
+        return _fallbackY;
+    
+    return (-_d - _n.x * _x - _n.z * _z) / _n.y;
 }
 
 vector<VertexTexNormalTangentBuffer> CMeshBuffer::Get_VertexBuffer() const

@@ -11,7 +11,6 @@ CScene::CScene()
 	, m_mResourceList({})
 	, m_mTempResourceList({})
 	, m_vCloneResourceList({})
-	, m_vSceneNaviMeshList({})
 	, m_mMeshBundleList({})
 	, m_mTempMeshBundleList({})
 	, m_mSkinnedBundleList({})
@@ -199,7 +198,8 @@ HRESULT CScene::Initialize()
 		naviMeshObj_WA->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh_Walkable");
 		CMeshRenderer* wanm = naviMeshObj_WA->AddComponent<CMeshRenderer>();
 
-		wanm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_Walkable"));
+		m_pSceneNaviMesh_Walkable = CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_Walkable");
+		wanm->Get_MeshFilter()->Set_MeshBuffer(m_pSceneNaviMesh_Walkable);
 		wanm->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
 		wanm->Get_Material()->Set_BaseColor(ColorValue(29, 166, 212, 255).f4Color());
 
@@ -207,7 +207,8 @@ HRESULT CScene::Initialize()
 		naviMeshObj_WUA->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh_WalkUnable");
 		CMeshRenderer* wuanm = naviMeshObj_WUA->AddComponent<CMeshRenderer>();
 
-		wuanm->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_WalkUnable"));
+		m_pSceneNaviMesh_WalkUnable = CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_WalkUnable");
+		wuanm->Get_MeshFilter()->Set_MeshBuffer(m_pSceneNaviMesh_WalkUnable);
 		wuanm->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
 		wuanm->Get_Material()->Set_BaseColor(ColorValue(166, 29, 212, 255).f4Color());
 	}
@@ -265,10 +266,12 @@ void CScene::Update_Editor()
 			CDebug::LogError(firstHit.object->Get_ObjectName());
 
 			CGameObject* newObj = Add_GameObject(L"AddObj");
+			newObj->Set_Static(CGameObject::navigationStatic);
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
 			newObj->Get_Transform()->Set_LocalScale(3.f);
 			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
-			newRen->Get_Transform()->Get_Transform()->Set_Position(firstHit.hitPos);
+			newRen->Get_Transform()->Set_Position(firstHit.hitPos);
+			newRen->Get_Transform()->Set_LocalScale(3.f, 0.1f, 3.f);
 		}
 	}
 
@@ -312,6 +315,8 @@ void CScene::FixedUpdate()
 		if ((*it)->IsActive())
 			(*it)->FixedUpdate();
 	}
+
+	CCollisionManager::GetInstance().UpdateCollision();
 }
 
 void CScene::LateUpdateEditor()
@@ -807,6 +812,11 @@ vector<CRenderer*> CScene::Get_MeshObjects(const _uint _layerMask)
 	}
 
 	return result;
+}
+
+vector<EngineAI::CNaviMesh*> CScene::Get_NavMeshes()
+{
+	return { m_pSceneNaviMesh_Walkable, m_pSceneNaviMesh_WalkUnable };
 }
 
 const CScene::LightSettings& CScene::Get_LightSetting()

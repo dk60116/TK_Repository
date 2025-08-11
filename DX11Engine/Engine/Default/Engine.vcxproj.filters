@@ -59,7 +59,7 @@
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Transform.h">
-      <Filter>Components\Transform</Filter>
+      <Filter>Components\Navigation\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshBuffer.h">
       <Filter>Resource\MeshBuffer</Filter>
@@ -80,10 +80,10 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\RectTransform.h">
-      <Filter>Components\Transform</Filter>
+      <Filter>Components\Navigation\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshFilter.h">
-      <Filter>Components\Render</Filter>
+      <Filter>Components\Navigation\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Editor.h">
       <Filter>Editor</Filter>
@@ -101,10 +101,10 @@
       <Filter>Resource\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Renderer.h">
-      <Filter>Components\Render\Renderer</Filter>
+      <Filter>Components\Navigation\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h">
-      <Filter>Components\Render\Renderer</Filter>
+      <Filter>Components\Navigation\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h">
       <Filter>Resource\MeshBuffer</Filter>
@@ -170,13 +170,22 @@
       <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshRenderer.h">
-      <Filter>Components\Render\Renderer</Filter>
+      <Filter>Components\Navigation\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Random.h">
       <Filter>System\Random</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\NavMeshAgent.h">
       <Filter>Components\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CollisionManager.h">
+      <Filter>Components\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\BoxCollider.h">
+      <Filter>Components\Collision\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Collider.h">
+      <Filter>Components\Collision\Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -249,15 +258,6 @@
     <Filter Include="Components">
       <UniqueIdentifier>{b26f12a9-4ef8-4c23-91d7-ed3c07bfae0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Transform">
-      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Render">
-      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Render\Renderer">
-      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\Camera">
       <UniqueIdentifier>{13c5e534-fed3-47c8-87a7-f04e0066d5f9}</UniqueIdentifier>
     </Filter>
@@ -288,6 +288,21 @@
     <Filter Include="Components\Navigation">
       <UniqueIdentifier>{3c6f5cc5-a1e2-49c7-ba19-efd475ae7534}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Navigation\Render">
+      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Navigation\Render\Renderer">
+      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Navigation\Transform">
+      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Collision">
+      <UniqueIdentifier>{aae29f6d-3291-40b8-8e8e-fa9f86908d3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Collision\Collider">
+      <UniqueIdentifier>{7fce18fa-1c1c-450e-b79b-34b4317f5394}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epch.cpp">
@@ -295,9 +310,6 @@
     </ClCompile>
     <ClCompile Include="..\Header\GraphicDevice.cpp">
       <Filter>Engine\DirectX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\Component.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Scene.cpp">
       <Filter>Management\Scene</Filter>
@@ -327,7 +339,7 @@
       <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Transform.cpp">
-      <Filter>Components\Transform</Filter>
+      <Filter>Components\Navigation\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshBuffer.cpp">
       <Filter>Resource\MeshBuffer</Filter>
@@ -345,10 +357,10 @@
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\RectTransform.cpp">
-      <Filter>Components\Transform</Filter>
+      <Filter>Components\Navigation\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshFilter.cpp">
-      <Filter>Components\Render</Filter>
+      <Filter>Components\Navigation\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp">
       <Filter>Engine\Headers</Filter>
@@ -393,13 +405,13 @@
       <Filter>Resource\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Renderer.cpp">
-      <Filter>Components\Render\Renderer</Filter>
+      <Filter>Components\Navigation\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshRenderer.cpp">
-      <Filter>Components\Render\Renderer</Filter>
+      <Filter>Components\Navigation\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp">
-      <Filter>Components\Render\Renderer</Filter>
+      <Filter>Components\Navigation\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp">
       <Filter>Resource\MeshBuffer</Filter>
@@ -475,6 +487,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\NavMeshAgent.cpp">
       <Filter>Components\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CollisionManager.cpp">
+      <Filter>Components\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\BoxCollider.cpp">
+      <Filter>Components\Collision\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Collider.cpp">
+      <Filter>Components\Collision\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Component.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

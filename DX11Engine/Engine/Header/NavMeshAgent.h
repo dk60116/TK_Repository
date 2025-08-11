@@ -10,8 +10,14 @@ class ENGINE_DLL CNavMeshAgent : public CComponent
 {
 	friend class CGameObject;
 
+	struct Tri
+	{
+		vector3 a, b, c;
+		_uint n0, n1, n2;
+	};
+
 private:
-	CNavMeshAgent();
+	explicit CNavMeshAgent();
 	~CNavMeshAgent();
 
 private:
@@ -20,19 +26,24 @@ private:
 
 public:
 	HRESULT Initialize() override;
+	void Awake() override;
 	void Update() override;
 	void LateUpdate() override;
 	void Render() override;
 	void OnDestroy() override;
 
-private:
-	void RayUpdate_Floor();
-	void RayUpdate_Direction();
+public:
+	void Set_NavMehsh(CNaviMesh* _walkable, CNaviMesh* _walkunable);
 
 private:
-	_float m_fRadius;
-	vector3 m_vPrevPosition;
-	vector3 m_vMoveDirection;
+	_bool IsInsideOrGetNeighbor(const vector3& posW, _int curPoly, _int& outNextPoly, vector3& outProj, _int* outViolatedEdge = nullptr) const;
+	vector3 ProjectToPolyPlane(const vector3& pW, const CNaviMesh::NaviPolygon& poly) const;
+	_bool TryAdvanceAcrossNeighbors(const vector3& posW, _int& ioPoly, vector3& ioProj) const;
+	void RollbackToPrevPosition();
+
+private:
+	CNaviMesh* m_pNavMeshWalkable, * m_pNavMeshWalkUnable;
+	_int m_iCurrentPoly;
 };
 
 NS_END

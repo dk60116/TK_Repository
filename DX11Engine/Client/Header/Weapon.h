@@ -7,14 +7,24 @@ class CWeapon abstract : public CComponent
 public:
 	enum class WeaponType { Swords, Bow, Bomb };
 
+	struct WeaponOptions
+	{
+		vector3 localPos = {};
+		vector3 localEuler = {};
+		_float localScale = 1.f;
+	};
+
 protected:
-	CWeapon();
+	explicit CWeapon();
 	~CWeapon();
 
 public:
 	HRESULT Initialize() override;
+	void Awake() override;
 
-private:
+protected:
+	wstring m_strWeaponName;
+	WeaponOptions m_sOptions;
 	CMeshRenderer* m_pRenderer;
 	CTransform* m_pTargetHand;
 };

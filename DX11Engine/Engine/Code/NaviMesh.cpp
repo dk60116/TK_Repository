@@ -59,7 +59,7 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
         }
     };
 
-    constexpr float POS_EPS = 1e-3f;
+    constexpr _float POS_EPS = 0.03f;
     auto quant = [](_float v)->int64_t { return llround(v / POS_EPS); };
 
     vector<VTX>                 vertsMerged;
@@ -77,10 +77,13 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
     /*──────────────────────────────────────── 2) 월드 변환 → 병합 */
     for (auto& s : sources)
     {
-        if (!s.buf) continue;
+        if (!s.buf) 
+            continue;
+
         const auto& vBuf = s.buf->Get_VertexBuffer();
         const auto& iBuf = s.buf->Get_IndexBuffer();
-        if (vBuf.empty() || iBuf.empty()) continue;
+        if (vBuf.empty() || iBuf.empty()) 
+            continue;
 
         _matrix W = s.obj->Get_Transform()->Get_WorldMatrix();
         _matrix nM = XMMatrixTranspose(XMMatrixInverse(nullptr, W));
@@ -103,18 +106,27 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
     }
 
     /*──────────────────────────────────────── 3) 앞·뒤 중복 삼각형 제거 */
-    struct TriKey {
+    struct TriKey 
+    {
         array<_uint, 3> v;
-        void Sort() { std::sort(v.begin(), v.end()); }
-        bool operator==(const TriKey& o) const { return v == o.v; }
+        void Sort() { sort(v.begin(), v.end()); }
+        _bool operator==(const TriKey& o) const
+        { 
+            return v == o.v;
+        }
     };
-    struct TriHash {
+    struct TriHash
+    {
         size_t operator()(const TriKey& k) const
         {
             return size_t(k.v[0]) * 73856093u ^ size_t(k.v[1]) * 19349669u ^ size_t(k.v[2]) * 83492791u;
         }
     };
-    struct TriInfo { _vector n; int vecIdx; };
+    struct TriInfo
+    {
+        _vector n; 
+        _int vecIdx;
+    };
 
     unordered_map<TriKey, TriInfo, TriHash> triTable;
     vector<array<_uint, 3>> triVec; triVec.reserve(idxMerged.size() / 3);
@@ -128,13 +140,12 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
         _vector p1 = vector3::ToXM(vertsMerged[i1].position);
         _vector p2 = vector3::ToXM(vertsMerged[i2].position);
 
-        _vector n = XMVector3Normalize(
-            XMVector3Cross(XMVectorSubtract(p1, p0), XMVectorSubtract(p2, p0)));
+        _vector n = XMVector3Normalize(XMVector3Cross(XMVectorSubtract(p1, p0), XMVectorSubtract(p2, p0)));
 
         auto it = triTable.find(key);
         if (it == triTable.end())
         {
-            int idx = (int)triVec.size();
+            _int idx = (_int)triVec.size();
             triTable[key] = { n, idx };
             triVec.push_back({ i0,i1,i2 });
         }
@@ -164,12 +175,15 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
 
     /*──────────────────────────────────────── 4) Walkable / Unwalkable 분류 */
     vector<array<_uint, 3>> walkables, unwalkables;
-    BuildWalkableTriangleList(
+
+    BuildWalkableTriangleList
+    (
         vertsMerged, idxFiltered,
         _bakeOption.walkableSlopeDeg,
         _bakeOption.walkableMaxHeight,
         walkables,
-        unwalkables);
+        unwalkables
+    );
 
     if (walkables.empty())
     {
@@ -178,8 +192,15 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
     }
 
     /*──────────────────────────────────────── 5) Walkable → NaviPolygon 그래프 */
-    unordered_map<EdgeKey, _uint, EdgeKeyHash> edgeOwner;
-    vector<Poly> polys; polys.reserve(walkables.size());
+    struct EdgeOwner
+    {
+        _uint polyIdx;
+        _uint edgeIdx;
+    };
+    unordered_map<EdgeKey, EdgeOwner, EdgeKeyHash> edgeOwner;   // ★ 루프 밖 단 한 번만
+
+    vector<Poly> polys;
+    polys.reserve(walkables.size());
 
     for (auto& tri : walkables)
     {
@@ -188,35 +209,45 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
         p.verts = { tri[0], tri[1], tri[2] };
         p.neighs.assign(3, UINT_MAX);
 
+        // center 계산
         _vector c = XMVectorScale(
-            XMVectorAdd(XMVectorAdd(vector3::ToXM(vertsMerged[tri[0]].position),
-                vector3::ToXM(vertsMerged[tri[1]].position)),
+            XMVectorAdd(
+                XMVectorAdd(vector3::ToXM(vertsMerged[tri[0]].position),
+                    vector3::ToXM(vertsMerged[tri[1]].position)),
                 vector3::ToXM(vertsMerged[tri[2]].position)),
-            1.f / 3.f);
+            1.f / 3.f
+        );
         XMStoreFloat3(reinterpret_cast<_float3*>(&p.center), c);
 
-        for (int e = 0; e < 3; ++e)
-        {
+        for (int e = 0; e < 3; ++e) {
             EdgeKey k = MakeEdge(p.verts[e], p.verts[(e + 1) % 3]);
             auto it = edgeOwner.find(k);
-            if (it == edgeOwner.end()) edgeOwner[k] = p.index;
-            else
-            {
-                _uint o = it->second;
-                p.neighs[e] = o;
-                for (auto& nx : polys[o].neighs)
-                    if (nx == UINT_MAX) { nx = p.index; break; }
+            if (it == edgeOwner.end()) {
+                // 첫 소유자 등록
+                edgeOwner.emplace(k, EdgeOwner{ p.index, (_uint)e });
+            }
+            else {
+                // 양방향 정확한 엣지 슬롯에 이웃 연결
+                const EdgeOwner o = it->second;
+                if (p.neighs[e] == UINT_MAX) p.neighs[e] = o.polyIdx;
+
+                if (polys[o.polyIdx].neighs[o.edgeIdx] == UINT_MAX)
+                {
+                    polys[o.polyIdx].neighs[o.edgeIdx] = p.index;
+                }
+                else 
+                {
+                    CDebug::LogWarning("[NavBake] Non-manifold edge detected.");
+                }   
             }
         }
-        polys.emplace_back(std::move(p));
+
+        polys.emplace_back(move(p));
     }
 
     /*──────────────────────────────────────── 6) 리맵 & 버퍼 빌드 (Walkable) */
-    auto BuildInfo = [&](const vector<array<_uint, 3>>& tris,
-        const wstring& name,
-        NaviMeshBufferInitiaizeInfo& outInfo,
-        bool buildPolys)->void
-        {
+    auto BuildInfo = [&](const vector<array<_uint, 3>>& tris, const wstring& name, NaviMeshBufferInitiaizeInfo& outInfo, bool buildPolys)->void
+    {
             vector<VTX> navVerts; navVerts.reserve(tris.size() * 3);
             vector<_uint> navIdx; navIdx.reserve(tris.size() * 3);
             unordered_map<_uint, _uint> r;
@@ -255,9 +286,9 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
                     const auto& pos = vertsMerged[vi].position;
                     np.vertices.emplace_back(pos.x, pos.y, pos.z);
                 }
-                outInfo.polygons.emplace_back(std::move(np));
+                outInfo.polygons.emplace_back(move(np));
             }
-        };
+    };
 
     NaviMeshBufferInitiaizeInfo infoWalk, infoUnwalk;
     BuildInfo(walkables, L"NaviMesh_Walkable", infoWalk, true);
@@ -267,7 +298,107 @@ vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> CNaviMesh::BuildFromMesh(vector<C
         L", Vert:" + to_wstring(infoWalk.desc.vertextCount));
     CDebug::Log(L"[NavBake] Unwalkable Tri:" + to_wstring(unwalkables.size()));
 
+    array<_int, 4> deg{};
+    for (auto& p : polys) 
+    {
+        _int c = 0; 
+
+        for (auto n : p.neighs)
+        {
+            if (n != UINT_MAX)
+                ++c;
+            if (c >= 0 && c <= 3)
+                deg[c]++;
+        }
+    }
+    CDebug::Log(L"[NavBake] neighbors 0/1/2/3 = "
+        + to_wstring(deg[0]) + L"/" + to_wstring(deg[1]) + L"/"
+        + to_wstring(deg[2]) + L"/" + to_wstring(deg[3]));
+
     return { infoWalk, infoUnwalk };
+}
+
+_int CNaviMesh::FindContainingPolygon(const vector3& _position)
+{
+    if (m_vPolygons.empty()) 
+        return -1;
+
+    const _float EPS_INSIDE = 1e-4f;
+
+    auto insideTri = [&](const vector3& P, const vector3& A, const vector3& B, const vector3& C)->bool
+        {
+            vector3 n = (B - A).cross(C - A);
+            _float nlen2 = n.lengthSq();
+            if (nlen2 < 1e-10f)
+                return false;
+            n = n / sqrtf(nlen2);
+
+            vector3 c0 = (B - A).cross(P - A);
+            vector3 c1 = (C - B).cross(P - B);
+            vector3 c2 = (A - C).cross(P - C);
+
+            _float d0 = c0.dot(n);
+            _float d1 = c1.dot(n);
+            _float d2 = c2.dot(n);
+
+            return (d0 >= -EPS_INSIDE) && (d1 >= -EPS_INSIDE) && (d2 >= -EPS_INSIDE);
+        };
+
+    _int   best = -1;
+    _float bestAbsDist = FLT_MAX;
+
+    for (size_t i = 0; i < m_vPolygons.size(); ++i)
+    {
+        const auto& poly = m_vPolygons[i];
+        const vector3& A = poly.vertices[0];
+        const vector3& B = poly.vertices[1];
+        const vector3& C = poly.vertices[2];
+
+        vector3 n = (B - A).cross(C - A);
+        _float nlen2 = n.lengthSq();
+        
+        if (nlen2 < 1e-10f) 
+            continue;
+        
+        n = n / sqrtf(nlen2);
+
+        _float dist = (_position - A).dot(n);
+        vector3 proj = _position - n * dist;
+
+        if (insideTri(proj, A, B, C))
+        {
+            _float ad = fabsf(dist);
+            if (ad < bestAbsDist)
+            {
+                bestAbsDist = ad;
+                best = (int)i;
+            }
+        }
+    }
+
+    if (best >= 0)
+        return best;
+
+    _float bestD2 = FLT_MAX;
+    _int   bestIdx = -1;
+
+    for (size_t i = 0; i < m_vPolygons.size(); ++i)
+    {
+        vector3 q = ProjectPointToPoly(_position, (_uint)i);
+        _float d2 = (q - _position).lengthSq();
+        if (d2 < bestD2)
+        {
+            bestD2 = d2;
+            bestIdx = (int)i;
+        }
+    }
+
+    return bestIdx;
+}
+
+const vector<CNaviMesh::NaviPolygon>& CNaviMesh::Get_Polygons() const
+{
+    return m_vPolygons;
 }
 
 const vector3 CNaviMesh::ProjectPointToPoly(const vector3& _p, const _uint _index) const
@@ -281,7 +412,7 @@ const vector3 CNaviMesh::ProjectPointToPoly(const vector3& _p, const _uint _inde
         return _p;                               
 
     vector3 best = ClosestPointOnSegment(_p, v0, v1);
-    _float   bestD = (_p - best).lengthSq();
+    _float bestD = (_p - best).lengthSq();
 
     auto testEdge = [&](const vector3& a, const vector3& b)
         {
@@ -320,14 +451,17 @@ void CNaviMesh::BuildWalkableTriangleList(const vector<VertexTexNormalTangentBuf
 
         /* 1. 노멀/천장 체크 */
         _vector n = XMVector3Cross(XMVectorSubtract(p1, p0), XMVectorSubtract(p2, p0));
-        if (XMVectorGetX(XMVector3LengthSq(n)) < 1e-8f) {         // 0면적 삼각형
+        if (XMVectorGetX(XMVector3LengthSq(n)) < 1e-8f) 
+        {         // 0면적 삼각형
             _outWalkUnables.push_back({ i0,i1,i2 });
             continue;
         }
         n = XMVector3Normalize(n);
 
         const _float dotUp = XMVectorGetX(XMVector3Dot(n, UP));
-        if (dotUp <= 0.f) {                                       // 천장
+
+        if (dotUp <= 0.f)
+        {                                       // 천장
             _outWalkUnables.push_back({ i0,i1,i2 });
             continue;
         }

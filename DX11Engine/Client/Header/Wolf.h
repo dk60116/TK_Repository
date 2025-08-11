@@ -19,5 +19,8 @@ public:
 	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
+
+	void OnCollisionEnter(class CCollider* _other) override;
+	void OnCollisionStay(class CCollider* _other) override;
 };
 

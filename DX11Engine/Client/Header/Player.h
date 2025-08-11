@@ -34,13 +34,17 @@ public:
 
 public:
 	HRESULT Initialize() override;
-
 	void Awake() override;
 	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
 
+	void OnCollisionEnter(class CCollider* _other) override;
+	void OnCollisionStay(class CCollider* _other) override;
+	void OnCollisionExit(class CCollider* _other) override;
+
 public:
+	CTransform* Get_Hand();
 	void Set_Focus(CTransform* _transform);
 	void RecoverHp(const _uint _value);
 	void GetDamage(const _uint _damage);
@@ -61,7 +65,10 @@ private:
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
 	CAnimator* m_pAnimator;
 
-	class CWeapon* m_pEquipWeapon;
+	CTransform* m_pHandTransform;
+
+	vector<class CWeapon*> m_vWeapons;
+	CWeapon* m_pEquipWeapon;
 
 	PlayerStatus m_sPlayerStatus;
 	PlayerAnimationStatus m_eAnimationStatus;
@@ -87,5 +94,6 @@ private:
 	CTransform* m_pFocusTransform;
 
 	EngineAI::CNavMeshAgent* m_pNavAgent;
+	CBoxCollider* m_pCollider;
 };
 

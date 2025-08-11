@@ -32,6 +32,7 @@ private:
 public:
 	HRESULT Initialize() override;
 	void Update() override;
+	void LateUpdate() override;
 	void Render_Gizmo() override;
 	void OnDestroy() override;
 
@@ -54,13 +55,13 @@ public:
 	T* Find_ComponentParentRecursive();
 
 public:
-	const vector3 Get_Position();
-	const vector3 Get_LocalPosition();
+	const vector3& Get_Position();
+	const vector3& Get_LocalPosition();
 
 	const vector3 Get_EulerAngles();
 	const vector3 Get_LocalEulerAngles();
 	
-	vector3 Get_LocalScale();
+	vector3& Get_LocalScale();
 
 	const quaternion Get_Quaternion() const;
 	const quaternion& Get_LocalQuaternion() const;
@@ -120,6 +121,13 @@ public:
 	void Set_LocalScaleY(const _float _value);
 	void Set_LocalScaleZ(const _float _value);
 
+	const vector3& Get_PrevPosition();
+	const vector3& Get_PrevLocalPos();
+	const vector3& Get_PrevEulerAngles();
+	const vector3& Get_PrevLocalEuler();
+	const quaternion& Get_PrevQuaternion();
+	const quaternion& Get_PrevLocalQuat();
+
 	void SetTransformForMatrix(_matrix _matWorld);
 
 	void LookAt(const vector3& _target, const _uint _lockRotationFilter = 0x000);
@@ -129,6 +137,7 @@ public:
 private:
 	void Bind_Matrix();
 	void Bind_Direction();
+	static void RecalcWorldUpChain(CTransform* _t);
 
 protected:
 	_bool m_bIsRootParent;
@@ -137,8 +146,11 @@ protected:
 	vector3 m_vPosition, m_vEulerAngles, m_vScale;
 	vector3 m_vWorldPosition, m_vWorldEulerAngles;
 	quaternion m_vQuaternion, m_vWorldQuaternion;
+	quaternion m_vPrevQuaternion, m_vPrevLocalQuat;
 	_float4x4 m_vMatWorld, m_vMatLocal, m_vMatLocalRotation;
-	DIRECTIONS m_sDirections;
+	vector3 m_vPrevPosition, m_vPrevEulerAngles;
+	vector3 m_vPrevLoclaPos, m_vPrevLocalEuler, m_vPrevLocalScale;
+	DIRECTIONS m_sDirections, m_sPrevDirections;
 };
 
 NS_END

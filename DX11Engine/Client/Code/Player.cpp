@@ -1,9 +1,11 @@
 #include "cpch.h"
 #include "Player.h"
+#include "WoodenSword.h"
 
 CPlayer::CPlayer()
 	: m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
+	, m_pHandTransform(nullptr)
 	, m_pEquipWeapon(nullptr)
 	, m_sPlayerStatus({})
 	, m_eAnimationStatus(Idle)
@@ -27,6 +29,7 @@ CPlayer::CPlayer()
 	, m_bIsPrevJump(false)
 	, m_pFocusTransform(nullptr)
 	, m_pNavAgent(nullptr)
+	, m_pCollider(nullptr)
 {
 	m_strName = L"Player";
 }
@@ -56,6 +59,8 @@ HRESULT CPlayer::Initialize()
 
 	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::GetInstance().LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
 
+	m_pHandTransform = m_pGameObject->Get_Transform()->Find_ChildRecursive(L"RightHand");
+
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
 	m_pAnimator->Add_Animation(L"Walk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Walk (Animation)"));
@@ -70,12 +75,8 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 
-	m_pAnimator->SetLoop(true);
-
 	CGameObject* swordObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Sword");
-	swordObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"WoodenSword (MeshBuffer)"), 150.f);
-
-	swordObj->Get_Transform()->SetParent(Get_Transform()->Find_ChildRecursive(L"RightHand"));
+	swordObj->AddComponent<CWoodenSword>();
 	
 	m_fSwordActionEndFrames[0] = 1.f;
 	m_fSwordActionEndFrames[1] = 2.f;
@@ -84,14 +85,9 @@ HRESULT CPlayer::Initialize()
 	CGameManager::GetInstance().Set_Player(this);
 
 	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-
-	//Get_Transform()->Get_Child(0)->Set_LocalScale(0.01f);
-	//Get_Transform()->Get_Child(1)->Set_LocalScale(0.01f);
-	//Get_Transform()->Get_Child(0)->Set_LocalEulerAnglesY(180.f);
-	//Get_Transform()->Get_Child(1)->Set_LocalEulerAnglesY(180.f);
-
-	//m_pAnimator->Set_PlaybackSpeed(0.1f);
-	//m_pAnimator->Play(L"Run");
+	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	m_pCollider->Set_Center(vector3(0.f, 0.85f, 0.2f));
+	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
 
 	return S_OK;
 }
@@ -123,6 +119,25 @@ void CPlayer::Update()
 
 void CPlayer::OnDestroy()
 {
+}
+
+void CPlayer::OnCollisionEnter(CCollider* _other)
+{
+	CDebug::Log("Enter");
+}
+
+void CPlayer::OnCollisionStay(CCollider* _other)
+{
+}
+
+void CPlayer::OnCollisionExit(CCollider* _other)
+{
+	CDebug::Log("Exit");
+}
+
+CTransform* CPlayer::Get_Hand()
+{
+	return m_pHandTransform;
 }
 
 void CPlayer::Set_Focus(CTransform* _transform)
