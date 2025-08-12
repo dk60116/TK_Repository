@@ -26,6 +26,9 @@ HRESULT CWolf::Initialize()
 {
 	m_strSkinnedMeshBufferName = L"Wolf_Model (MeshBuffer)";
 
+	m_sOptions.colliderCenter = vector3(0.f, 0.6f, 0.2f);
+	m_sOptions.colliderSize = vector3(0.5f, 1.f, 1.5f);
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -54,6 +57,7 @@ void CWolf::OnDestroy()
 
 void CWolf::OnCollisionEnter(CCollider* _other)
 {
+	CDebug::LogError("Enter");
 }
 
 void CWolf::OnCollisionStay(CCollider* _other)

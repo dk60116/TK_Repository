@@ -46,6 +46,10 @@ void CBehaviour_Combat::During()
 		{
 			m_pMonster->Change_State(CMonsterController::CombatWait);
 		}
+		else
+		{
+			m_pMonster->Change_State(CMonsterController::Tracking);
+		}
 
 		m_fPassedTime = 0.f;
 	}

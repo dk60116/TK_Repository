@@ -79,8 +79,6 @@ void CNavMeshAgent::Awake()
 
 void CNavMeshAgent::Update()
 {
-	return;
-
 	if (!m_pNavMeshWalkable) 
 		return;
 
@@ -265,7 +263,6 @@ _bool CNavMeshAgent::TryAdvanceAcrossNeighbors(const vector3& posW, _int& ioPoly
 
 void CNavMeshAgent::RollbackToPrevPosition()
 {
-	CDebug::Log("Roll");
 	auto* tr = m_pGameObject->Get_Transform();
 	tr->Set_Position(tr->Get_PrevPosition());
 }

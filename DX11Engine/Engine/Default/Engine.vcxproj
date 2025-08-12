@@ -199,6 +199,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\framework.h" />
     <ClInclude Include="..\Header\RectTransform.h" />
     <ClInclude Include="..\Header\EngineResource.h" />
+    <ClInclude Include="..\Header\RigidBody.h" />
     <ClInclude Include="..\Header\Scene.h" />
     <ClInclude Include="..\Header\SceneLoader.h" />
     <ClInclude Include="..\Header\SceneManager.h" />
@@ -330,6 +331,7 @@ call copy.bat</Command>
     </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp" />
     <ClCompile Include="..\Header\GraphicDevice.cpp" />
+    <ClCompile Include="..\Header\RigidBody.cpp" />
     <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp" />
     <ClCompile Include="epch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

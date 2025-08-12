@@ -3,6 +3,7 @@
 
 CCollisionManager::CCollisionManager()
 	: m_vColliderList({})
+	, m_mCollisionFilter({})
 {
 }
 
@@ -19,6 +20,12 @@ CCollisionManager& CCollisionManager::GetInstance()
 
 HRESULT CCollisionManager::Initialize()
 {
+	for (_uint i = 0; i < 32; ++i)
+	{
+		for (_uint j = 0; j < 32; ++j)
+			m_mCollisionFilter.emplace(make_pair(1u << i, 1u << j), true);
+	}
+
 	return S_OK;
 }
 
@@ -38,6 +45,14 @@ void CCollisionManager::UpdateCollision()
 	{
 		for (size_t j = i; j < m_vColliderList.size(); ++j)
 		{
+			_uint layerA = m_vColliderList[i]->Get_GameObject()->GetLayer();
+			_uint layerB = m_vColliderList[j]->Get_GameObject()->GetLayer();
+			
+			if (!m_mCollisionFilter[{layerA, layerB}])
+				continue;
+			if (!m_mCollisionFilter[{layerB, layerA}])
+				continue;
+
 			auto boxA = dynamic_cast<CBoxCollider*>(m_vColliderList[i]);
 			auto boxB = dynamic_cast<CBoxCollider*>(m_vColliderList[j]);
 
@@ -64,11 +79,26 @@ void CCollisionManager::UpdateCollision()
 
 const vector<CCollider*>& CCollisionManager::Get_ColliderList()
 {
-	return m_vColliderList;
+	return GetInstance().m_vColliderList;
 }
 
 CCollider* CCollisionManager::Add_Collider(CCollider* _collider)
 {
-	m_vColliderList.push_back(_collider);
-	return m_vColliderList.back();
+	GetInstance().m_vColliderList.push_back(_collider);
+	return GetInstance().m_vColliderList.back();
+}
+
+void CCollisionManager::Set_CollisionFilter(const _uint _layerA, const _uint _layerB, const _bool _isCollidable)
+{
+	GetInstance().m_mCollisionFilter[{_layerA, _layerB}] = _isCollidable;
+	GetInstance().m_mCollisionFilter[{_layerB, _layerA}] = _isCollidable;
+}
+
+void CCollisionManager::Set_CollisionFilter(const wstring _layerA, const wstring _layerB, const _bool _isCollidable)
+{
+	_uint layerA = CSceneManager::NameToLayer(_layerA);
+	_uint layerB = CSceneManager::NameToLayer(_layerB);
+
+	GetInstance().m_mCollisionFilter[{layerA, layerB}] = _isCollidable;
+	GetInstance().m_mCollisionFilter[{layerB, layerA}] = _isCollidable;
 }

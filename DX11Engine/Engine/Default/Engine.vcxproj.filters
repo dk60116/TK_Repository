@@ -178,14 +178,17 @@
     <ClInclude Include="..\Header\NavMeshAgent.h">
       <Filter>Components\Navigation</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CollisionManager.h">
-      <Filter>Components\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\BoxCollider.h">
       <Filter>Components\Collision\Collider</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Collider.h">
       <Filter>Components\Collision\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CollisionManager.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\RigidBody.h">
+      <Filter>Components\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +305,9 @@
     </Filter>
     <Filter Include="Components\Collision\Collider">
       <UniqueIdentifier>{7fce18fa-1c1c-450e-b79b-34b4317f5394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics">
+      <UniqueIdentifier>{41d5a9ca-5ef1-4cd8-a48e-718c2cc696d0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -488,9 +494,6 @@
     <ClCompile Include="..\Code\NavMeshAgent.cpp">
       <Filter>Components\Navigation</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CollisionManager.cpp">
-      <Filter>Components\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\BoxCollider.cpp">
       <Filter>Components\Collision\Collider</Filter>
     </ClCompile>
@@ -499,6 +502,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Component.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CollisionManager.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Header\RigidBody.cpp">
+      <Filter>Components\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

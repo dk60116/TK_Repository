@@ -137,6 +137,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    if (FAILED(CMainProcess::GetInstance().Initialize()))
        return FALSE;
 
+   if (FAILED(CGameManager::GetInstance().Initialize()))
+       return FALSE;
+
+
    CMainScene* mainScene = new CMainScene();
    CSceneManager::GetInstance().CreateScene(mainScene, L"Main Scene");
 

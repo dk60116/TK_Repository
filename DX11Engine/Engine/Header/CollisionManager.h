@@ -15,11 +15,17 @@ public:
 
 public:
 	void UpdateCollision();
-	const vector<CCollider*>& Get_ColliderList();
-	CCollider* Add_Collider(CCollider* _collider);
+
+public:
+	static const vector<CCollider*>& Get_ColliderList();
+	static CCollider* Add_Collider(CCollider* _collider);
+	static void Set_CollisionFilter(const _uint _layerA, const _uint _layerB, const _bool _isCollidable);
+	static void Set_CollisionFilter(const wstring _layerA, const wstring _layerB, const _bool _isCollidable);
 
 private:
 	vector<CCollider*> m_vColliderList;
+
+	map<pair<_uint, _uint>, _bool> m_mCollisionFilter;
 };
 
 NS_END

@@ -576,14 +576,24 @@ const _uint CGameObject::GetLayer() const
 	return m_iLayer;
 }
 
+const _uint CGameObject::GetTag() const
+{
+	return m_iTag;
+}
+
 void CGameObject::SetLayer(const _uint _layerFlag)
 {
 	m_iLayer = _layerFlag;
 }
 
-void CGameObject::SetLayer(const wstring _layerName)
+void CGameObject::SetLayer(const wstring& _layerName)
 {
-	
+	m_iLayer = CSceneManager::NameToLayer(_layerName);
+}
+
+const _bool CGameObject::CompareTag(const wstring& _tagName) const
+{
+	return CSceneManager::CompareTag(m_iTag, _tagName);
 }
 
 void CGameObject::Set_RecursiveActive(const _bool _active)

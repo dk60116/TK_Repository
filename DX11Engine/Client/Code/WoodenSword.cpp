@@ -30,7 +30,7 @@ HRESULT CWoodenSword::Initialize()
 		return E_FAIL;
 
 	m_sOptions.localPos = vector3(1.614f, 8.730f, -12.002f);
-	m_sOptions.localQuat = quaternion(0.321369f, 0.504944f, 0.568568, 0.564344f);
+	m_sOptions.localQuat = quaternion(0.321369f, 0.504944f, 0.568568f, 0.564344f);
 	m_sOptions.localScale = 1.5f;
 
 	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();

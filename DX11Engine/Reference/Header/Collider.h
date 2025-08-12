@@ -27,6 +27,7 @@ public:
 
 protected:
 	_uint m_iColliderID;
+	_bool m_bIsTrigger;
 	map<_uint, CCollider*> m_mEnteredColliders;
 };
 

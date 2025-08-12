@@ -9,6 +9,7 @@ class CGameManager final
 	SINGLETONCLASS(CGameManager);
 
 public:
+	HRESULT Initialize();
 	void Set_NexScene(const wstring _scneName);
 	const wstring& Get_NextScene() const;
 

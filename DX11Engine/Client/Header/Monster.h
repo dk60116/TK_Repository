@@ -7,6 +7,12 @@ class CMonster abstract : public CComponent
 	friend class CMonsterController;
 
 public:
+	struct MonsterOptions
+	{
+		vector3 colliderCenter = {};
+		vector3 colliderSize = vector3::one();
+	};
+
 	struct MonsterStatus
 	{
 		_int maxHp = 3;
@@ -25,7 +31,6 @@ protected:
 	~CMonster();
 
 public:
-	static CMonster* Create();
 	HRESULT Initialize() override;
 
 	void Awake() override;
@@ -48,8 +53,10 @@ protected:
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;
 	class CMonsterController* m_pController;
+	EngineAI::CNavMeshAgent* m_pNavAgent;
 	CBoxCollider* m_pCollider;
 
+	MonsterOptions m_sOptions;
 	MonsterStatus m_sStatus;
 };
 

@@ -21,9 +21,6 @@ CBoxCollider* CBoxCollider::Clone() const
 {
 	CBoxCollider* clone = new CBoxCollider();
 
-    clone->m_sLocal = this->m_sLocal;
-    clone->m_sWorld = this->m_sWorld;
-
 	return clone;
 }
 
@@ -34,6 +31,8 @@ HRESULT CBoxCollider::Initialize()
     m_sLocal.axis[0] = vector3::right();
     m_sLocal.axis[1] = vector3::up();
     m_sLocal.axis[2] = vector3::forward();
+
+    CDebug::LogError("InitBox");
 
 	return S_OK;
 }

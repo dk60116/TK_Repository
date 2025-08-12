@@ -101,13 +101,24 @@ void CInspectorBox::Render()
         ShowStaticObject(selectedObj);
 
         string layer = "Layer: ";
-        string objLayerName = CEngineString::WStringToString(CSceneManager::LayerToName(selectedObj->GetLayer()));
+        string layerName = CEngineString::WStringToString(CSceneManager::LayerToName(selectedObj->GetLayer()));
+		string layerNum = to_string(CSceneManager::GetInstance().LayerToIndex(selectedObj->GetLayer()));
+        string layerLast = layerName + '(' + layerNum + ')';
+
+        string tag = "Tag: ";
+        string tagName = CEngineString::WStringToString(CSceneManager::TagToName(selectedObj->GetTag()));
+        string tagNum = to_string(selectedObj->GetTag());
+        string tagLast = tagName + '(' + tagNum + ')';
 
         ImGui::Text(layer.c_str());
         ImGui::SameLine();
-        ImGui::Text(objLayerName.c_str());
+        ImGui::Text(layerLast.c_str());
         ImGui::SameLine();
         ImGui::Text(selectedObj->IsBoneTransform() ? "Bone" : "    ");
+
+        ImGui::Text(tag.c_str());
+        ImGui::SameLine();
+        ImGui::Text(tagLast.c_str());
 
         if (!selectedObj->GetComponent<CRectTransform>())
             ShowTransform(selectedObj);

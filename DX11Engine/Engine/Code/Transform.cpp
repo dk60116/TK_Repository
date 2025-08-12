@@ -509,6 +509,8 @@ void CTransform::Set_Quaternion(const quaternion& _value)
         SetParent(tempParent);
 
     m_vEulerAngles = m_vQuaternion.to_euler();
+
+    Update();
 }
 
 void CTransform::Set_LocalQuaternion(const quaternion& _value)

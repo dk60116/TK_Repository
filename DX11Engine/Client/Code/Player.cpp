@@ -6,6 +6,7 @@ CPlayer::CPlayer()
 	: m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pHandTransform(nullptr)
+	, m_mWeapons({})
 	, m_pEquipWeapon(nullptr)
 	, m_sPlayerStatus({})
 	, m_eAnimationStatus(Idle)
@@ -55,6 +56,8 @@ HRESULT CPlayer::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	m_pGameObject->SetLayer(L"Player");
+
 	CTexture* tex = CResources::GetInstance().LoadOnScene<CTexture>(L"Link_Texture (Texture)");
 
 	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::GetInstance().LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
@@ -76,7 +79,10 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"SwordCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 
 	CGameObject* swordObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Sword");
-	swordObj->AddComponent<CWoodenSword>();
+	m_mWeapons.emplace(L"Sword", swordObj->AddComponent<CWoodenSword>());
+
+	for (TRAVERSAL_ITER(m_mWeapons, it))
+		(*it).second->Get_GameObject()->SetActive(false);
 	
 	m_fSwordActionEndFrames[0] = 1.f;
 	m_fSwordActionEndFrames[1] = 2.f;
@@ -84,17 +90,19 @@ HRESULT CPlayer::Initialize()
 
 	CGameManager::GetInstance().Set_Player(this);
 
-	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
-	m_pCollider->Set_Center(vector3(0.f, 0.85f, 0.2f));
-	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
-
 	return S_OK;
 }
 
 void CPlayer::Awake()
 {
+	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
+	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	m_pCollider->Set_Center(vector3(0.f, 0.85f, 0.2f));
+	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
+
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
+
+	ChanageWeapon(L"Sword");
 }
 
 void CPlayer::Start()
@@ -123,7 +131,7 @@ void CPlayer::OnDestroy()
 
 void CPlayer::OnCollisionEnter(CCollider* _other)
 {
-	CDebug::Log("Enter");
+	//CDebug::Log("Enter");
 }
 
 void CPlayer::OnCollisionStay(CCollider* _other)
@@ -132,7 +140,7 @@ void CPlayer::OnCollisionStay(CCollider* _other)
 
 void CPlayer::OnCollisionExit(CCollider* _other)
 {
-	CDebug::Log("Exit");
+	//CDebug::Log("Exit");
 }
 
 CTransform* CPlayer::Get_Hand()
@@ -157,6 +165,18 @@ void CPlayer::GetDamage(const _uint _damage)
 	m_sPlayerStatus.crtHp -= _damage;
 	m_sPlayerStatus.crtHp = max(m_sPlayerStatus.crtHp, 0);
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
+}
+
+CWeapon* CPlayer::ChanageWeapon(const wstring _name)
+{
+	if (m_pEquipWeapon)
+		m_pEquipWeapon->Get_GameObject();
+
+	m_pEquipWeapon = m_mWeapons[_name];
+
+	m_pEquipWeapon->Get_GameObject()->SetActive(true);
+
+	return m_pEquipWeapon;
 }
 
 void CPlayer::PlayerControle()

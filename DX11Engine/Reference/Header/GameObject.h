@@ -116,8 +116,11 @@ public:
 
 public:
 	const _uint GetLayer() const;
+	const _uint GetTag() const;
 	void SetLayer(const _uint _layerFlag);
-	void SetLayer(const wstring _layerName);
+	void SetLayer(const wstring& _layerName);
+
+	const _bool CompareTag(const wstring& _tagName) const;
 
 private:
 	void Set_RecursiveActive(const _bool _active);
@@ -128,7 +131,7 @@ private:
 
 private:
 	_uint m_iUniqueID;
-	_uint m_iLayer;
+	_uint m_iLayer, m_iTag;
 	wstring m_strGameObjectName;
 	_bool m_bActive, m_bPrevActive, m_bRecursiveActive;
 

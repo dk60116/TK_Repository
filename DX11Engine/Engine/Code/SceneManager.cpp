@@ -9,6 +9,7 @@ CSceneManager::CSceneManager()
 	, m_pEditorCamObj(nullptr)
 	, m_pEditorCamera(nullptr)
 	, m_vLayerFlags({})
+	, m_mTagFlags({})
 {
 }
 
@@ -31,6 +32,8 @@ HRESULT CSceneManager::Initialize()
 	Add_Layer(0, L"Default");
 	Add_Layer(30, L"NaviMesh_Walkable");
 	Add_Layer(31, L"NaviMesh_WalkUnable");
+
+	Add_Tag(0, L"Untagged");
 	
 	return S_OK;
 }
@@ -150,17 +153,22 @@ void CSceneManager::LoadComplete()
 	m_pCrtScene->Start();
 }
 
-void CSceneManager::Add_Layer(const _uint _index, const wstring _name)
+void CSceneManager::Add_Layer(const _uint _index, const wstring& _name)
 {
-	m_vLayerFlags[_index] = { 1u << _index, _name };
+	GetInstance().m_vLayerFlags[_index] = { _index, 1u << _index, _name };
 }
 
-_uint CSceneManager::NameToLayer(const wstring _name)
+void CSceneManager::Add_Tag(const _uint _index, const wstring& _name)
+{
+	GetInstance().m_mTagFlags.emplace(_index, _name);
+}
+
+_uint CSceneManager::NameToLayer(const wstring& _name)
 {
 	for (LayerFlag layer : GetInstance().m_vLayerFlags)
 	{
 		if (layer.name == _name)
-			return layer.index;
+			return layer.value;
 	} 
 
 	return 0;
@@ -186,9 +194,41 @@ wstring CSceneManager::LayerToName(const _uint _layer)
 	return GetInstance().m_vLayerFlags[index].name;
 }
 
+_uint CSceneManager::LayerToIndex(const _uint _layer)
+{
+	for (TRAVERSAL_ITER(GetInstance().m_vLayerFlags, it))
+	{
+		if ((*it).value == _layer)
+			return (*it).index;
+	}
+
+	return 0;
+}
+
+_uint CSceneManager::NameToIndex(const wstring& _name)
+{
+	for (TRAVERSAL_ITER(GetInstance().m_vLayerFlags, it))
+	{
+		if ((*it).name == _name)
+			return (*it).value;
+	}
+
+	return 0;
+}
+
+wstring CSceneManager::TagToName(const _uint _tag)
+{
+	return GetInstance().m_mTagFlags[_tag];
+}
+
 _bool CSceneManager::LayerMaskResult(const _uint _source, const _uint _mask)
 {
 	return _mask & _source;
+}
+
+_bool CSceneManager::CompareTag(const _uint _tag, const wstring& _tagName)
+{
+	return _tagName == GetInstance().m_mTagFlags[_tag];
 }
 
 CCamera* CSceneManager::Get_EditorCamera()

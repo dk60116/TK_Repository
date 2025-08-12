@@ -48,6 +48,7 @@ public:
 	void Set_Focus(CTransform* _transform);
 	void RecoverHp(const _uint _value);
 	void GetDamage(const _uint _damage);
+	class CWeapon* ChanageWeapon(const wstring _name);
 
 private:
 	void PlayerControle();
@@ -67,7 +68,7 @@ private:
 
 	CTransform* m_pHandTransform;
 
-	vector<class CWeapon*> m_vWeapons;
+	map<wstring, CWeapon*> m_mWeapons;
 	CWeapon* m_pEquipWeapon;
 
 	PlayerStatus m_sPlayerStatus;

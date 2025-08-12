@@ -19,6 +19,17 @@ CGameManager& CGameManager::GetInstance()
 	return instance;
 }
 
+HRESULT CGameManager::Initialize()
+{
+	CSceneManager::GetInstance().Add_Layer(3, L"Player");
+	CSceneManager::GetInstance().Add_Layer(4, L"PlayerWeapon");
+	CSceneManager::GetInstance().Add_Layer(5, L"Monster");
+
+	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
+
+	return S_OK;
+}
+
 void CGameManager::Set_NexScene(const wstring _scneName)
 {
 	m_strNextScene = _scneName;

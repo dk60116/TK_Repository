@@ -4,6 +4,7 @@
 CCollider::CCollider()
 	: m_iColliderID(0)
 	, m_mEnteredColliders({})
+	, m_bIsTrigger(false)
 {
 }
 
@@ -30,7 +31,7 @@ void CCollider::FixedUpdate()
 	if (!m_pGameObject->IsActive() || !m_bEnable)
 		return;
 
-	CCollisionManager::GetInstance().Add_Collider(this);
+	CCollisionManager::Add_Collider(this);
 }
 
 void CCollider::Render()

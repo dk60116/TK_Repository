@@ -9,7 +9,10 @@ CMonster::CMonster()
 	, m_pBaseMap(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pController(nullptr)
+	, m_pNavAgent(nullptr)
 	, m_pCollider(nullptr)
+	, m_sOptions({})
+	, m_sStatus({})
 {
 	m_strName = L"Wolf";
 }
@@ -48,13 +51,18 @@ HRESULT CMonster::Initialize()
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
 
-	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
-
 	return S_OK;
 }
 
 void CMonster::Awake()
 {
+	//m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
+	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+
+	CDebug::LogError("Add Collider");
+
+	m_pCollider->Set_Center(m_sOptions.colliderCenter);
+	m_pCollider->Set_Size(m_sOptions.colliderSize);
 }
 
 void CMonster::Start()
