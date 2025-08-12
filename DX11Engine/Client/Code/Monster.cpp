@@ -35,10 +35,10 @@ HRESULT CMonster::Initialize()
 		m_pController->Set_Monster(this);
 	}
 
-	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(m_strSkinnedMeshBufferName), CResources::GetInstance().LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
+	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strSkinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 
-	m_pBaseMap = CResources::GetInstance().LoadOnScene<CTexture>(m_strName + L"_BaseMap (Texture)");
+	m_pBaseMap = CResources::LoadOnScene<CTexture>(m_strName + L"_BaseMap (Texture)");
 	m_pBaseMap->AddRef();
 
 	Add_Animation(L"Idle");
@@ -96,7 +96,7 @@ const CMonster::MonsterStatus& CMonster::Get_Status()
 
 CAnimationClip* CMonster::Add_Animation(const wstring _name)
 {
-	CAnimationClip* anim = CResources::GetInstance().LoadOnScene<CAnimationClip>(m_strName + L"_" + _name + L" (Animation)");
+	CAnimationClip* anim = CResources::LoadOnScene<CAnimationClip>(m_strName + L"_" + _name + L" (Animation)");
 	m_pAnimator->Add_Animation(_name, anim);
 	return anim;
 }

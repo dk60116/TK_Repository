@@ -48,7 +48,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
 
         if (terrainDesc.isHeightMapBase)
         {
-            CTexture* heightMap = CResources::GetInstance().LoadOnScene<CTexture>(terrainDesc.heightMap);
+            CTexture* heightMap = CResources::LoadOnScene<CTexture>(terrainDesc.heightMap);
 
             if (heightMap)
                 info = CreateTerrain(terrainDesc.landscape, terrainDesc.portrait, terrainDesc.size, terrainDesc.heightWeight, heightMap->Get_Texture());

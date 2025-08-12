@@ -20,10 +20,10 @@ CUIManager& CUIManager::GetInstance()
 HRESULT CUIManager::Initialize()
 {
 #ifndef _CLIENT_BUILD
-	if (!m_pUIGizmoMaterial)
+	if (!GetInstance().m_pUIGizmoMaterial)
 	{
-		m_pUIGizmoMaterial = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
-		m_pUIGizmoMaterial->AddRef();
+		GetInstance().m_pUIGizmoMaterial = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
+		GetInstance().m_pUIGizmoMaterial->AddRef();
 	}
 #endif
 
@@ -32,7 +32,7 @@ HRESULT CUIManager::Initialize()
 
 void CUIManager::Release()
 {
-	Safe_Release(m_pUIGizmoMaterial);
+	Safe_Release(GetInstance().m_pUIGizmoMaterial);
 }
 
 CMaterial* CUIManager::Get_UIGizmoMaterial() const

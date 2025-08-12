@@ -50,13 +50,13 @@ void CMeshRenderer::OnPreRender()
 
 void CMeshRenderer::Render_Editor()
 {
-	m_pContext->OMSetDepthStencilState(CSceneManager::GetInstance().Get_CrtScene()->Get_MeshStencillState(), 0);
-	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
+	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
+	Render_WithCamera(CSceneManager::Get_CrtScene()->Get_EditorCamera());
 }
 
 void CMeshRenderer::Render()
 {
-	CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+	CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
 }
 
 void CMeshRenderer::OnPostRender()
@@ -110,7 +110,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	if (m_pMaterial->IsUseLight())
 	{
-		list<CLight*> lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightList();
+		list<CLight*> lights = CSceneManager::Get_CrtScene()->Get_LightList();
 		const _uint lightCount = static_cast<_uint>(lights.size());
 
 		vector<_matrix> vLightInfos = {};

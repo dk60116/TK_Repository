@@ -28,37 +28,37 @@ HRESULT CDisplay::Initialize(HINSTANCE _hInst, HWND _hGameWnd, HWND _hEditorWnd)
 	if (!_hGameWnd)
 		return E_FAIL;
 
-	m_hInst = _hInst;
-	m_hGameWindow = _hGameWnd;
-	m_hEditorWindow = _hEditorWnd;
+	GetInstance().m_hInst = _hInst;
+	GetInstance().m_hGameWindow = _hGameWnd;
+	GetInstance().m_hEditorWindow = _hEditorWnd;
 
 	RECT rc;
-	GetClientRect(m_hGameWindow, &rc);
+	GetClientRect(GetInstance().m_hGameWindow, &rc);
 
 	return S_OK;
 }
 
-HINSTANCE CDisplay::Get_HInstance() const
+HINSTANCE CDisplay::Get_HInstance()
 {
-	return m_hInst;
+	return GetInstance().m_hInst;
 }
 
-HWND CDisplay::Get_GameWindow() const
+HWND CDisplay::Get_GameWindow()
 {
-	return m_hGameWindow;
+	return GetInstance().m_hGameWindow;
 }
 
-HWND CDisplay::Get_EditorWindow() const
+HWND CDisplay::Get_EditorWindow()
 {
-	return m_hEditorWindow;
+	return GetInstance().m_hEditorWindow;
 }
 
-const vector2Int CDisplay::Get_ScreenResolution() const
+vector2Int CDisplay::Get_ScreenResolution()
 {
-	return vector2Int(m_iWidth, m_iHeight);
+	return vector2Int(GetInstance().m_iWidth, GetInstance().m_iHeight);
 }
 
-const _float CDisplay::Get_Aspect() const
+_float CDisplay::Get_Aspect()
 {
-	return static_cast<_float>(m_iWidth) / static_cast<_float>(m_iHeight);
+	return static_cast<_float>(GetInstance().m_iWidth) / static_cast<_float>(GetInstance().m_iHeight);
 }

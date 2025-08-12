@@ -24,7 +24,7 @@ HRESULT CRenderer::Initialize()
 
 	if (!m_pMaterial)
 	{
-		Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		Set_Material(CResources::CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 	}
 
 	if (!m_pOutlineMat)
@@ -35,7 +35,7 @@ HRESULT CRenderer::Initialize()
 	if (m_pOutlineMat)
 		m_pOutlineMat->AddRef();
 
-	CShader* outShader = CResources::GetInstance().LoadOnGame<CShader>(L"Outline (Shader)");
+	CShader* outShader = CResources::LoadOnGame<CShader>(L"Outline (Shader)");
 
 	if (!outShader)
 	{

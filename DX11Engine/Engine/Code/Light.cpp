@@ -106,7 +106,7 @@ const _float4x4 CLight::To_LightInfo()
 	result._31 = color.x;
 	result._32 = color.y;
 	result._33 = color.z;
-	result._34 = CSceneManager::GetInstance().Get_CrtScene()->Get_LightSetting().ambient;
+	result._34 = CSceneManager::Get_CrtScene()->Get_LightSetting().ambient;
 
 	result._41 = static_cast<float>(m_eType);
 	result._42 = m_fAttenuation;

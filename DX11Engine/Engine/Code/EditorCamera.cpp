@@ -154,7 +154,7 @@ void CEditorCamera::Update_Editor()
 
 void CEditorCamera::Update()
 {
-	m_fAspect = static_cast<_float>(CEditor::GetInstance().Get_ScreenResolution().x) / (CEditor::GetInstance().Get_ScreenResolution().y);
+	m_fAspect = static_cast<_float>(CEditor::Get_ScreenResolution().x) / (CEditor::Get_ScreenResolution().y);
 
 	Bind_ViewMatrix();
 	Bind_ProjectionMatrix();

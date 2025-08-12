@@ -20,7 +20,7 @@ vector<CPhysics::RAYCASTHIT> CPhysics::Raycast(const Ray& _ray, _uint _layerMask
 {
     vector<RAYCASTHIT> hits;
 
-    vector<CRenderer*> renders = CSceneManager::GetInstance().Get_CrtScene()->Get_MeshObjects(_layerMask);
+    vector<CRenderer*> renders = CSceneManager::Get_CrtScene()->Get_MeshObjects(_layerMask);
 
 	for (auto ren : renders)
 	{

@@ -46,9 +46,9 @@ HRESULT CEditor::Initialize()
 	ImGuiContext* newCtx = ImGui::CreateContext();
 	ImGui::SetCurrentContext(newCtx);
 
-	m_hEditorWindow = CreateEditorWindow();
+	GetInstance().m_hEditorWindow = CreateEditorWindow();
 
-	ImGui_ImplWin32_Init(m_hEditorWindow);
+	ImGui_ImplWin32_Init(GetInstance().m_hEditorWindow);
 	ImGui_ImplDX11_Init(CGraphicDevice::GetInstance().Get_Device(), CGraphicDevice::GetInstance().Get_Context());
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -57,28 +57,28 @@ HRESULT CEditor::Initialize()
 	CTopToolBar* toolbar = CTopToolBar::Create();
 	if (toolbar)
 	{
-		m_mBoxList.emplace(L"TopTool", toolbar);
+		GetInstance().m_mBoxList.emplace(L"TopTool", toolbar);
 		toolbar->AddRef();
 	}
 
 	CProjectBox* projectBox = CProjectBox::Create();
 	if (projectBox)
 	{
-		m_mBoxList.emplace(L"Project", projectBox);
+		GetInstance().m_mBoxList.emplace(L"Project", projectBox);
 		projectBox->AddRef();
 	}
 
 	CHierachyBox* hierachyBox = CHierachyBox::Create();
 	if (hierachyBox)
 	{
-		m_mBoxList.emplace(L"Hierachy", hierachyBox);
+		GetInstance().m_mBoxList.emplace(L"Hierachy", hierachyBox);
 		hierachyBox->AddRef();
 	}
 
 	CInspectorBox* inspectorBox = CInspectorBox::Create();
 	if (inspectorBox)
 	{
-		m_mBoxList.emplace(L"Inspector", inspectorBox);
+		GetInstance().m_mBoxList.emplace(L"Inspector", inspectorBox);
 		inspectorBox->AddRef();
 	}
 
@@ -95,15 +95,15 @@ void CEditor::Release()
 	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
 
-	for (TRAVERSAL_ITER(m_mBoxList, it))
+	for (TRAVERSAL_ITER(GetInstance().m_mBoxList, it))
 		Safe_Release((*it).second);
 
-	m_mBoxList.clear();
+	GetInstance().m_mBoxList.clear();
 }
 
 HWND CEditor::Get_EditorWindow()
 {
-	return m_hEditorWindow;
+	return GetInstance().m_hEditorWindow;
 }
 
 void CEditor::Editor_Update_Begin()
@@ -114,7 +114,7 @@ void CEditor::Editor_Update_Begin()
 	ImGui::NewFrame();
 
 	// 2. Hierarchy/Inspector ¹Ú½º ·»´õ
-	for (TRAVERSAL_ITER(m_mBoxList, it))
+	for (TRAVERSAL_ITER(GetInstance().m_mBoxList, it))
 		(*it).second->Render();
 }
 
@@ -122,23 +122,23 @@ void CEditor::Editor_Update_During()
 {
 	ChangeControleTool();
 
-	if (m_bIsMovingCamera)
+	if (GetInstance().m_bIsMovingCamera)
 	{
-		const float dt = CTime::GetInstance().Get_DeltaTime();
-		m_fCameraMoveProgress += dt / m_fCameraMoveDuration;
+		const _float dt = DELTA_TIME;
+		GetInstance().m_fCameraMoveProgress += dt / GetInstance().m_fCameraMoveDuration;
 
-		if (m_fCameraMoveProgress >= 1.f)
+		if (GetInstance().m_fCameraMoveProgress >= 1.f)
 		{
-			m_fCameraMoveProgress = 1.f;
-			m_bIsMovingCamera = false;
+			GetInstance().m_fCameraMoveProgress = 1.f;
+			GetInstance().m_bIsMovingCamera = false;
 		}
 
-		float t = m_fCameraMoveProgress;
+		float t = GetInstance().m_fCameraMoveProgress;
 		t = t * t * (3.f - 2.f * t);
 
-		vector3 interpPos = vector3::Lerp(m_vCameraMoveStartPos, m_vCameraMoveTargetPos, t);
+		vector3 interpPos = vector3::Lerp(GetInstance().m_vCameraMoveStartPos, GetInstance().m_vCameraMoveTargetPos, t);
 
-		CTransform* camTransform = CSceneManager::GetInstance().Get_EditorCamera()->Get_Transform();
+		CTransform* camTransform = CSceneManager::Get_EditorCamera()->Get_Transform();
 		camTransform->Set_Position(interpPos);
 	}
 }
@@ -153,15 +153,15 @@ HWND CEditor::CreateEditorWindow()
 {
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = EditorWndProc;
-	wc.hInstance = CDisplay::GetInstance().Get_HInstance();
+	wc.hInstance = CDisplay::Get_HInstance();
 	wc.lpszClassName = "Editor";
 
 	RegisterClass(&wc);
 
-	RECT rc = { 0, 0, static_cast<LONG>(m_sOptions.windowWidth), static_cast<LONG>(m_sOptions.windowHeight) };
+	RECT rc = { 0, 0, static_cast<LONG>(GetInstance().m_sOptions.windowWidth), static_cast<LONG>(GetInstance().m_sOptions.windowHeight) };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-	m_hEditorWindowIcon_Default = (HICON)LoadImageW
+	GetInstance().m_hEditorWindowIcon_Default = (HICON)LoadImageW
 	(
 		NULL,
 		L"../EngineResources/Icon/Engine_Icon.ico",
@@ -170,7 +170,7 @@ HWND CEditor::CreateEditorWindow()
 		LR_LOADFROMFILE | LR_DEFAULTSIZE
 	);
 
-	m_hEditorWindoIcon_Small = (HICON)LoadImageW
+	GetInstance().m_hEditorWindoIcon_Small = (HICON)LoadImageW
 	(
 		NULL,
 		L"../EngineResources/Icon/Engine_Icon.ico",
@@ -189,11 +189,11 @@ HWND CEditor::CreateEditorWindow()
 		rc.right - rc.left, rc.bottom - rc.top,
 		nullptr,
 		nullptr,
-		CDisplay::GetInstance().Get_HInstance(),
+		CDisplay::Get_HInstance(),
 		nullptr
 	);
 
-	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)m_hEditorWindoIcon_Small);
+	SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)GetInstance().m_hEditorWindoIcon_Small);
 
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
@@ -243,60 +243,60 @@ void CEditor::ChangeControleTool()
 	}
 }
 
-CEditor::EDITORWINOPTION CEditor::Get_Options() const
+CEditor::EDITORWINOPTION CEditor::Get_Options()
 {
-	return m_sOptions;
+	return GetInstance().m_sOptions;
 }
 
-const vector2Int CEditor::Get_WindowResolution() const
+vector2Int CEditor::Get_WindowResolution()
 {
-	return vector2Int(m_sOptions.windowWidth, m_sOptions.windowHeight);
+	return vector2Int(GetInstance().m_sOptions.windowWidth, GetInstance().m_sOptions.windowHeight);
 }
 
-const vector2Int CEditor::Get_ScreenResolution() const
+vector2Int CEditor::Get_ScreenResolution()
 {
-	_int width = _int(m_sOptions.windowWidth - (m_sOptions.projectWidth + m_sOptions.hierachyWidth + m_sOptions.inspectorWidth));
-	_int height = _int(m_sOptions.windowHeight - (m_sOptions.topBarHeight));
+	_int width = _int(GetInstance().m_sOptions.windowWidth - (GetInstance().m_sOptions.projectWidth + GetInstance().m_sOptions.hierachyWidth + GetInstance().m_sOptions.inspectorWidth));
+	_int height = _int(GetInstance().m_sOptions.windowHeight - (GetInstance().m_sOptions.topBarHeight));
 
 	return vector2Int(width, height);
 }
 
-const CEditor::TransformControleTool CEditor::Get_ControleTool() const
+CEditor::TransformControleTool CEditor::Get_ControleTool()
 {
-	return m_eControleTool;
+	return GetInstance().m_eControleTool;
 }
 
 void CEditor::Change_ControleTool(const TransformControleTool _tool)
 {
-	m_eControleTool = _tool;
+	GetInstance().m_eControleTool = _tool;
 }
 
-const vector3 CEditor::Get_EditorCamPositon() const
+vector3 CEditor::Get_EditorCamPositon()
 {
-	return m_vCameraPos;
+	return GetInstance().m_vCameraPos;
 }
 
-const quaternion CEditor::Get_EditorCamQuaternion() const
+quaternion CEditor::Get_EditorCamQuaternion()
 {
-	return m_vCameraQuat;
+	return GetInstance().m_vCameraQuat;
 }
 
 void CEditor::Set_EditorCamTransform(CTransform* _transform)
 {
-	m_vCameraPos = _transform->Get_Position();
-	m_vCameraQuat = _transform->Get_Quaternion();
+	GetInstance().m_vCameraPos = _transform->Get_Position();
+	GetInstance().m_vCameraQuat = _transform->Get_Quaternion();
 }
 
 void CEditor::Set_SelectedGameObject(CGameObject* _target)
 {
-	if (_target == m_pSelectedGameObject)
+	if (_target == GetInstance().m_pSelectedGameObject)
 		return;
 
-	m_pSelectedGameObject = _target;
+	GetInstance().m_pSelectedGameObject = _target;
 
-	if (m_pSelectedGameObject)
+	if (GetInstance().m_pSelectedGameObject)
 	{
-		m_pSelectedGameObject = _target;
+		GetInstance().m_pSelectedGameObject = _target;
 	}
 }
 
@@ -304,30 +304,30 @@ void CEditor::MoveTo_SelectedGameObject(CGameObject* _target)
 {
 	if (!_target)
 	{
-		m_pMoveTargetGameObject = nullptr;
+		GetInstance().m_pMoveTargetGameObject = nullptr;
 		return;
 	}
 
-	if (_target == m_pMoveTargetGameObject)
-		m_bDoubleClicked = !m_bDoubleClicked;
+	if (_target == GetInstance().m_pMoveTargetGameObject)
+		GetInstance().m_bDoubleClicked = !GetInstance().m_bDoubleClicked;
 	else
-		m_bDoubleClicked = false;
+		GetInstance().m_bDoubleClicked = false;
 
-	_float distance = m_bDoubleClicked ? 6.f : 3.f;
+	_float distance = GetInstance().m_bDoubleClicked ? 6.f : 3.f;
 
-	m_pMoveTargetGameObject = _target;
+	GetInstance().m_pMoveTargetGameObject = _target;
 
 	_float3 targetPos = _target->Get_Transform()->Get_Position();
-	CTransform& ect = *CSceneManager::GetInstance().Get_EditorCamera()->Get_Transform();
+	CTransform& ect = *CSceneManager::Get_EditorCamera()->Get_Transform();
 
-	m_vCameraMoveStartPos = ect.Get_Position();
-	m_vCameraMoveTargetPos = targetPos + ect.Get_Directions().forward * -distance;
+	GetInstance().m_vCameraMoveStartPos = ect.Get_Position();
+	GetInstance().m_vCameraMoveTargetPos = targetPos + ect.Get_Directions().forward * -distance;
 
-	m_fCameraMoveProgress = 0.f;
-	m_bIsMovingCamera = true;
+	GetInstance().m_fCameraMoveProgress = 0.f;
+	GetInstance().m_bIsMovingCamera = true;
 }
 
-CGameObject* CEditor::Get_SelectedGameObject() const
+CGameObject* CEditor::Get_SelectedGameObject()
 {
-	return m_pSelectedGameObject;
+	return GetInstance().m_pSelectedGameObject;
 }

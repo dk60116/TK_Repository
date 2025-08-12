@@ -52,7 +52,7 @@ void CBoxCollider::Render()
 
 void CBoxCollider::Render_Editor()
 {
-    CCamera* editorCam = CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera();
+    CCamera* editorCam = CSceneManager::Get_CrtScene()->Get_EditorCamera();
 
     if (!editorCam)
         return;

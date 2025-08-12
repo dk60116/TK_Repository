@@ -154,9 +154,9 @@ vector2Int CInput::GetMousePos_Editor()
     POINT ptMouse;
     GetCursorPos(&ptMouse);
 
-    ScreenToClient(CEditor::GetInstance().Get_EditorWindow(), &ptMouse);
+    ScreenToClient(CEditor::Get_EditorWindow(), &ptMouse);
 
-    ptMouse.y -= CEditor::GetInstance().Get_Options().topBarHeight;
+    ptMouse.y -= CEditor::Get_Options().topBarHeight;
 
     return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }
@@ -165,7 +165,7 @@ vector2Int CInput::GetMousePos()
 {
     POINT ptMouse;
     GetCursorPos(&ptMouse);
-    ScreenToClient(CDisplay::GetInstance().Get_GameWindow(), &ptMouse);
+    ScreenToClient(CDisplay::Get_GameWindow(), &ptMouse);
 
     return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }
@@ -328,5 +328,5 @@ _bool CInput::IsEditor()
     return false;
 #endif
 
-    return GetForegroundWindow() == CEditor::GetInstance().Get_EditorWindow();
+    return GetForegroundWindow() == CEditor::Get_EditorWindow();
 }

@@ -52,10 +52,10 @@ HRESULT CResources::Initialize()
 
 void CResources::Release()
 {
-	for (TRAVERSAL_ITER(m_mGameResourceList, it))
+	for (TRAVERSAL_ITER(GetInstance().m_mGameResourceList, it))
 		Safe_Release((*it).second);
 
-	m_mGameResourceList.clear();
+	GetInstance().m_mGameResourceList.clear();
 }
 
 void CResources::LoadResourceComplete_Game(const CEngineResource* _ptr)
@@ -74,12 +74,12 @@ void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
 		CDebug::LogError("Failed create Scene resource");
 }
 
-HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
+HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* aiScene = importer.ReadFile
 	(
-		CEngineString::WStringToString(m_strDefaultAssetPath + _filePath),
+		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_GenNormals |
@@ -182,7 +182,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
 				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
 				filesystem::path fullPath = fbxDir / relPath;
-				info.diffuseMapPath = m_strDefaultAssetPath + fullPath.wstring();
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
 			}
 		}
 
@@ -206,12 +206,12 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 	return S_OK;
 }
 
-HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
+HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* aiScene = importer.ReadFile
 	(
-		CEngineString::WStringToString(m_strDefaultAssetPath + _filePath),
+		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_GenNormals |
@@ -344,7 +344,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
 				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
 				filesystem::path fullPath = fbxDir / relPath;
-				info.diffuseMapPath = m_strDefaultAssetPath + fullPath.wstring();
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
 			}
 		}
 
@@ -387,12 +387,12 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring _filePath)
 	return S_OK;
 }
 
-HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
+HRESULT CResources::ConvertFBXToAnimationClipData(const wstring& _filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* aiScene = importer.ReadFile
 	(
-		CEngineString::WStringToString(m_strDefaultAssetPath + _filePath),
+		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_GenNormals |
@@ -491,7 +491,7 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 	return S_OK;
 }
 
-HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
+HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 {
 	// 1. 실행파일 위치 얻기
 	wchar_t exeDir[MAX_PATH] = {};
@@ -598,15 +598,15 @@ HRESULT CResources::BakeNaviMesh(vector<CGameObject*> _naviObjs)
 {
 	vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> meshInfos = CNaviMesh::BuildFromMesh(_naviObjs, {});
 
-	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".wanavmeshdata", meshInfos[0])))
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::Get_CrtScene()->Get_SceneName() + L".wanavmeshdata", meshInfos[0])))
 		return E_FAIL;
-	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::GetInstance().Get_CrtScene()->Get_SceneName() + L".wuanavmeshdata", meshInfos[1])))
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::Get_CrtScene()->Get_SceneName() + L".wuanavmeshdata", meshInfos[1])))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
+HRESULT CResources::SaveSceneObjectTransformInfos(const wstring& _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
 {
 	using namespace std;
 
@@ -652,7 +652,7 @@ HRESULT CResources::SaveSceneObjectTransformInfos(const wstring _filePath, vecto
 	return S_OK;
 }
 
-vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(const wstring _binFileName)
+vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(const wstring& _binFileName)
 {
 	using namespace std;
 
@@ -710,7 +710,7 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 	return resultInfo;
 }
 
-HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
+HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
 	using namespace std;
 
@@ -754,7 +754,7 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuf
 	return S_OK;
 }
 
-vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring _binFileName)
+vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring& _binFileName)
 {
 	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = {};
 
@@ -817,7 +817,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	return infoList;
 }
 
-HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo)
+HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo)
 {
 	using namespace std;
 
@@ -908,7 +908,7 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkin
 	return S_OK;
 }
 
-CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstring _binFileName)
+CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstring& _binFileName)
 {
 	using namespace std;
 
@@ -1051,7 +1051,7 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 	return resultBuffer;
 }
 
-HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::NaviMeshBufferInitiaizeInfo _info)
+HRESULT CResources::SaveNaviMeshBufferInfos(const wstring& _filePath, CNaviMesh::NaviMeshBufferInitiaizeInfo _info)
 {
 	namespace fs = filesystem;
 
@@ -1110,7 +1110,7 @@ HRESULT CResources::SaveNaviMeshBufferInfos(const wstring _filePath, CNaviMesh::
 	return S_OK;
 }
 
-CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring _binFileName, const _bool _walkable)
+CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring& _binFileName, const _bool _walkable)
 {
 	CNaviMesh::NaviMeshBufferInitiaizeInfo info{};
 
@@ -1223,7 +1223,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 	return info;
 }
 
-HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
+HRESULT CResources::SaveAnimationClipBufferInfos(const wstring& _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
 {
 	using namespace std;
 
@@ -1275,7 +1275,7 @@ HRESULT CResources::SaveAnimationClipBufferInfos(const wstring _filePath, vector
 	return S_OK;
 }
 
-vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBufferInfos(const wstring _binFileName)
+vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBufferInfos(const wstring& _binFileName)
 {
 	using namespace std;
 	vector<CAnimationClip::AnimationClipInitInfo> clips;
@@ -1380,8 +1380,8 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 		resultList.push_back(newBundle);
 	}
 
-	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
-		CSceneManager::GetInstance().Get_CrtScene();
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
+		CSceneManager::Get_CrtScene();
 
 	if (!_tempScene)
 		targetScene->Add_MeshBundle(_name, resultList);
@@ -1431,8 +1431,8 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 		resultList.push_back(newBundle);
 	}
 
-	CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
-		CSceneManager::GetInstance().Get_CrtScene();
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
+		CSceneManager::Get_CrtScene();
 
 	if (!_tempScene)
 	{
@@ -1461,7 +1461,7 @@ CNaviMesh* CResources::CreateNaviMesh(const wstring& _name, CNaviMesh::NaviMeshB
 		return nullptr;
 	}
 
-	CSceneManager::GetInstance().Get_TempScene()->Add_TempResource(_name, naviMesh);
+	CSceneManager::Get_TempScene()->Add_TempResource(_name, naviMesh);
 
 	return naviMesh;
 }
@@ -1470,8 +1470,8 @@ vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
 {
 	vector<MeshBundle> r = {};
 
-	if (CSceneManager::GetInstance().Get_CrtScene())
-		r = CSceneManager::GetInstance().Get_CrtScene()->Find_MeshInfoResource(_name);
+	if (CSceneManager::Get_CrtScene())
+		r = CSceneManager::Get_CrtScene()->Find_MeshInfoResource(_name);
 
 	return r;
 }
@@ -1480,8 +1480,8 @@ vector<SkinnedMeshBundle> CResources::LoadSkinnedMeshBuffersOnScene(const wstrin
 {
 	vector<SkinnedMeshBundle> r = {};
 
-	if (CSceneManager::GetInstance().Get_CrtScene())
-		r = CSceneManager::GetInstance().Get_CrtScene()->Find_SkinnedMeshInfoResource(_name);
+	if (CSceneManager::Get_CrtScene())
+		r = CSceneManager::Get_CrtScene()->Find_SkinnedMeshInfoResource(_name);
 
 	return r;
 }
@@ -1490,8 +1490,8 @@ vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> CResources::LoadSkinnedBonesOnScene(
 {
 	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> r = {};
 
-	if (CSceneManager::GetInstance().Get_CrtScene())
-		r = CSceneManager::GetInstance().Get_CrtScene()->Find_SkinnedBonesResource(_name);
+	if (CSceneManager::Get_CrtScene())
+		r = CSceneManager::Get_CrtScene()->Find_SkinnedBonesResource(_name);
 
 	return r;
 }

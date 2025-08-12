@@ -18,72 +18,72 @@ class ENGINE_DLL CResources final
     SINGLETONCLASS(CResources);
 
 public:
-    HRESULT Initialize();
+    static HRESULT Initialize();
 
 private:
-    void Release();
+    static void Release();
 
 public:
     static void LoadResourceComplete_Game(const class CEngineResource* _ptr);
     static void LoadResourceComplete_Scene(const class CEngineResource* _ptr);
 
 public:
-    HRESULT ConvertFBXToMeshBufferData(const wstring _filePath);
-    HRESULT ConvertFBXToSkinnedBufferData(const wstring _filePath);
-    HRESULT ConvertFBXToAnimationClipData(const wstring _filePath);
+    static HRESULT ConvertFBXToMeshBufferData(const wstring& _filePath);
+    static HRESULT ConvertFBXToSkinnedBufferData(const wstring& _filePath);
+    static HRESULT ConvertFBXToAnimationClipData(const wstring& _filePath);
 
-    HRESULT ConvertOTFTTFToSpriteFont(const wstring _filePath);
+    static HRESULT ConvertOTFTTFToSpriteFont(const wstring& _filePath);
 
-    HRESULT BakeNaviMesh(vector<CGameObject*> _naviObjs);
-
-public:
-    HRESULT SaveSceneObjectTransformInfos(const wstring _filePath, vector<CScene::ObjectsTransformInfo> _infoList);
-    vector<CScene::ObjectsTransformInfo> ReadSceneObjectTransformInfos(const wstring _binFileName);
-
-    HRESULT SaveMeshBufferInfos(const wstring _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
-    vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring _binFileName);
-    HRESULT SaveSkinnedBufferInfos(const wstring _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);
-    CSkinnedMeshBuffer::SkinnedBuffer ReadSkinnedBufferInfos(const wstring _binFileName);
-    HRESULT SaveNaviMeshBufferInfos(const wstring _filePath, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
-    EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo ReadNaviBufferInfos(const wstring _binFileName, const _bool _walkable);
-    HRESULT SaveAnimationClipBufferInfos(const wstring _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList);
-    vector<CAnimationClip::AnimationClipInitInfo> ReadAnimationClipBufferInfos(const wstring _binFileName);
+    static HRESULT BakeNaviMesh(vector<CGameObject*> _naviObjs);
 
 public:
+    static HRESULT SaveSceneObjectTransformInfos(const wstring& _filePath, vector<CScene::ObjectsTransformInfo> _infoList);
+    static vector<CScene::ObjectsTransformInfo> ReadSceneObjectTransformInfos(const wstring& _binFileName);
+
+    static HRESULT SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList);
+    static vector<CMeshBuffer::MeshBufferInitiaizeInfo> ReadMeshBufferInfos(const wstring& _binFileName);
+    static HRESULT SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo);
+    static CSkinnedMeshBuffer::SkinnedBuffer ReadSkinnedBufferInfos(const wstring& _binFileName);
+    static HRESULT SaveNaviMeshBufferInfos(const wstring& _filePath, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
+    static EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo ReadNaviBufferInfos(const wstring& _binFileName, const _bool _walkable);
+    static HRESULT SaveAnimationClipBufferInfos(const wstring& _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList);
+    static vector<CAnimationClip::AnimationClipInitInfo> ReadAnimationClipBufferInfos(const wstring& _binFileName);
+
+public:
     template<typename T>
-    T* CreateGameResource(const wstring& _name, const wstring& _path, void* _desc = nullptr);
+    static T* CreateGameResource(const wstring& _name, const wstring& _path, void* _desc = nullptr);
 
     template<typename T>
-    T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
+    static T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
 
-    vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
-    vector<SkinnedMeshBundle> CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
-    class EngineAI::CNaviMesh* CreateNaviMesh(const wstring& _name, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
-
-    template<typename T>
-    T* LoadOnGame(const wstring& _name);
+    static vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    static vector<SkinnedMeshBundle> CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    static class EngineAI::CNaviMesh* CreateNaviMesh(const wstring& _name, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
 
     template<typename T>
-    T* CloneOnGame(const wstring& _name);
+    static T* LoadOnGame(const wstring& _name);
 
     template<typename T>
-    T* LoadOnScene(const wstring& _name);
+    static T* CloneOnGame(const wstring& _name);
 
-    vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
-    vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
-    vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> LoadSkinnedBonesOnScene(const wstring& _name);
+    template<typename T>
+    static T* LoadOnScene(const wstring& _name);
+
+    static vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
+    static vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
+    static vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> LoadSkinnedBonesOnScene(const wstring& _name);
 
     static _bool FileExists(const wstring& _path);
     static _bool FileExists(const string& _path);
 
+private:
+    static void Ready_GameResources();
+    static void TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList);
+
+private:
     unordered_map<wstring, CEngineResource*> m_mEditorResourceList;
     unordered_map<wstring, CEngineResource*> m_mGameResourceList;
 
-private:
-    void Ready_GameResources();
-    void TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList);
-
-private:
     wstring m_strDefaultAssetPath;
     wstring m_strEngineFilePath;
 };
@@ -98,13 +98,13 @@ inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _p
     if (!newResource)
         return nullptr;
 
-    if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
+    if (FAILED(newResource->Initialize(_name, GetInstance().m_strDefaultAssetPath + _path, _desc)))
     {
         delete newResource;
         return nullptr;
     }
 
-    m_mGameResourceList.emplace(_name, newResource);
+    GetInstance().m_mGameResourceList.emplace(_name, newResource);
     newResource->AddRef();
 
     return newResource;
@@ -115,14 +115,14 @@ inline T* CResources::CreateSceneResource(const wstring& _name, const wstring& _
 {
     T* newResource = T::Create();
 
-    if (FAILED(newResource->Initialize(_name, m_strDefaultAssetPath + _path, _desc)))
+    if (FAILED(newResource->Initialize(_name, GetInstance().m_strDefaultAssetPath + _path, _desc)))
     {
         delete newResource;
         return nullptr;
     }
 
-    CScene* targetScene = _tempScene ? CSceneManager::GetInstance().Get_TempScene() :
-        CSceneManager::GetInstance().Get_CrtScene();
+    CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
+        CSceneManager::Get_CrtScene();
 
     if (!_tempScene)
         targetScene->Add_Resource(_name, newResource);
@@ -135,9 +135,9 @@ inline T* CResources::CreateSceneResource(const wstring& _name, const wstring& _
 template<typename T>
 inline T* CResources::LoadOnGame(const wstring& _name)
 {
-    auto iter = m_mGameResourceList.find(_name);
+    auto iter = GetInstance().m_mGameResourceList.find(_name);
 
-    if (iter == m_mGameResourceList.end())
+    if (iter == GetInstance().m_mGameResourceList.end())
         return nullptr;
 
     T* resultResource = dynamic_cast<T*>(iter->second);
@@ -152,8 +152,8 @@ inline T* CResources::CloneOnGame(const wstring& _name)
 
     T* clone = T::Clone(*proto);
     
-    if (CSceneManager::GetInstance().Get_CrtScene())
-        CSceneManager::GetInstance().Get_CrtScene()->Add_CloneResourece(clone);
+    if (CSceneManager::Get_CrtScene())
+        CSceneManager::Get_CrtScene()->Add_CloneResourece(clone);
 
     return clone;
 }
@@ -163,17 +163,17 @@ inline T* CResources::LoadOnScene(const wstring& _name)
 {
     CEngineResource* r = nullptr;
 
-    if (CSceneManager::GetInstance().Get_CrtScene())
-        r = CSceneManager::GetInstance().Get_CrtScene()->Find_Resource(_name);
+    if (CSceneManager::Get_CrtScene())
+        r = CSceneManager::Get_CrtScene()->Find_Resource(_name);
 
     T* resultResource = dynamic_cast<T*>(r);
 
     if (!r)
     {
-        if (!CSceneManager::GetInstance().Get_TempScene())
+        if (!CSceneManager::Get_TempScene())
             return nullptr;
 
-        CEngineResource* r = CSceneManager::GetInstance().Get_TempScene()->Find_Resource(_name);
+        CEngineResource* r = CSceneManager::Get_TempScene()->Find_Resource(_name);
 
         resultResource = dynamic_cast<T*>(r);
     }

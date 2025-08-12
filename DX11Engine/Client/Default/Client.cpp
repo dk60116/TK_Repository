@@ -63,10 +63,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             }
         }
         else
-            CMainProcess::GetInstance().Update_MainApp();
+            CMainProcess::Update_MainApp();
     }
 
-    CMainProcess::GetInstance().Release_MainApp();
+    CMainProcess::Release_MainApp();
 
     return (int) msg.wParam;
 }
@@ -111,7 +111,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance;
 
-   const vector2Int resolution = CDisplay::GetInstance().Get_ScreenResolution();
+   const vector2Int resolution = CDisplay::Get_ScreenResolution();
 
    RECT rc = { 0, 0, resolution.x, resolution.y };
    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
@@ -131,10 +131,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   if (FAILED(CDisplay::GetInstance().Initialize(hInstance, hWnd, nullptr)))
+   if (FAILED(CDisplay::Initialize(hInstance, hWnd, nullptr)))
        return FALSE;
 
-   if (FAILED(CMainProcess::GetInstance().Initialize()))
+   if (FAILED(CMainProcess::Initialize()))
        return FALSE;
 
    if (FAILED(CGameManager::GetInstance().Initialize()))
@@ -142,15 +142,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 
    CMainScene* mainScene = new CMainScene();
-   CSceneManager::GetInstance().CreateScene(mainScene, L"Main Scene");
+   CSceneManager::CreateScene(mainScene, L"Main Scene");
 
    CLoadingScene* loadingScene = new CLoadingScene();
-   CSceneManager::GetInstance().CreateScene(loadingScene, L"Loading Scene");
+   CSceneManager::CreateScene(loadingScene, L"Loading Scene");
 
    CGameScene* gameScene = new CGameScene();
-   CSceneManager::GetInstance().CreateScene(gameScene, L"Game Scene");
+   CSceneManager::CreateScene(gameScene, L"Game Scene");
 
-   CSceneManager::GetInstance().LoadScene(L"Main Scene");
+   CSceneManager::LoadScene(L"Main Scene");
 
    return TRUE;
 }

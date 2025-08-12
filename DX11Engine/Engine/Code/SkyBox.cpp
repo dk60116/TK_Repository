@@ -25,15 +25,15 @@ HRESULT CSkyBox::Initialize(const wstring& _name, const wstring& _filePath, void
 
 HRESULT CSkyBox::Initialize_Scene()
 {
-	m_pMaterial = CResources::GetInstance().CloneOnGame<CMaterial>(L"SkyBoxMaterial (Material)");
+	m_pMaterial = CResources::CloneOnGame<CMaterial>(L"SkyBoxMaterial (Material)");
 
 	if (!m_pMaterial)
 		return E_FAIL;
 
-	m_pMaterial->Set_Texture(CResources::GetInstance().LoadOnGame<CTexture>(m_sSaveDesc.texture));
+	m_pMaterial->Set_Texture(CResources::LoadOnGame<CTexture>(m_sSaveDesc.texture));
 
 	if (!m_pMaterial->Get_Texture(0))
-		m_pMaterial->Set_Texture(CResources::GetInstance().LoadOnScene<CTexture>(m_sSaveDesc.texture));
+		m_pMaterial->Set_Texture(CResources::LoadOnScene<CTexture>(m_sSaveDesc.texture));
 
 	return S_OK;
 }

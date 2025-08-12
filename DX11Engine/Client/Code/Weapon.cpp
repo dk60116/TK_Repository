@@ -21,7 +21,7 @@ HRESULT CWeapon::Initialize()
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"PlayerWeapon");
-	m_pGameObject->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(m_strName + L" (MeshBuffer)"));
+	m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strName + L" (MeshBuffer)"));
 
 	return S_OK;
 }

@@ -23,38 +23,38 @@ public:
 	SINGLETONCLASS(CEditor);
 
 public:
-	HRESULT Initialize();
-	void Release();
+	static HRESULT Initialize();
+	static void Release();
 
 public:
-	HWND Get_EditorWindow();
-	void Editor_Update_Begin();
-	void Editor_Update_During();
-	void Editor_Update_End();
+	static HWND Get_EditorWindow();
+	static void Editor_Update_Begin();
+	static void Editor_Update_During();
+	static void Editor_Update_End();
 
 public:
-	EDITORWINOPTION Get_Options() const;
-	const vector2Int Get_WindowResolution() const;
-	const vector2Int Get_ScreenResolution() const;
+	static EDITORWINOPTION Get_Options();
+	static vector2Int Get_WindowResolution();
+	static vector2Int Get_ScreenResolution();
 
 public:
-	const TransformControleTool Get_ControleTool() const;
-	void Change_ControleTool(const TransformControleTool _tool);
-	const vector3 Get_EditorCamPositon() const;
-	const quaternion Get_EditorCamQuaternion() const;
-	void Set_EditorCamTransform(class CTransform* _transform);
-	void Set_SelectedGameObject(class CGameObject* _target);
-	void MoveTo_SelectedGameObject(class CGameObject* _target);
-	CGameObject* Get_SelectedGameObject() const;
+	static TransformControleTool Get_ControleTool();
+	static void Change_ControleTool(const TransformControleTool _tool);
+	static vector3 Get_EditorCamPositon();
+	static quaternion Get_EditorCamQuaternion();
+	static void Set_EditorCamTransform(class CTransform* _transform);
+	static void Set_SelectedGameObject(class CGameObject* _target);
+	static void MoveTo_SelectedGameObject(class CGameObject* _target);
+	static CGameObject* Get_SelectedGameObject();
+
+private:
+	static HWND CreateEditorWindow();
+	static LRESULT CALLBACK EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	static void ChangeControleTool();
 
 private:
 	HWND m_hEditorWindow;
-
-private:
-	HWND CreateEditorWindow();
-	static LRESULT CALLBACK EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-	void ChangeControleTool();
 
 	_bool m_bDoubleClicked;
 

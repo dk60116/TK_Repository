@@ -10,7 +10,7 @@ class ENGINE_DLL CDebug final
 
 public:
     static HRESULT Initialize();
-    void Release();
+    static void Release();
 
 public:
     static void Log(const char* format, ...);

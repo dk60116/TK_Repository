@@ -26,8 +26,8 @@ CSceneManager& CSceneManager::GetInstance()
 
 HRESULT CSceneManager::Initialize()
 {
-	m_vLayerFlags.reserve(32);
-	m_vLayerFlags.resize(32);
+	GetInstance().m_vLayerFlags.reserve(32);
+	GetInstance().m_vLayerFlags.resize(32);
 
 	Add_Layer(0, L"Default");
 	Add_Layer(30, L"NaviMesh_Walkable");
@@ -40,15 +40,15 @@ HRESULT CSceneManager::Initialize()
 
 void CSceneManager::Release()
 {
-	m_pCrtScene = nullptr;
+	GetInstance().m_pCrtScene = nullptr;
 
-	for (TRAVERSAL_ITER(m_mSceneList, it))
+	for (TRAVERSAL_ITER(GetInstance().m_mSceneList, it))
 	{
 		(*it).second->SceneRelease();
 		Safe_Release((*it).second);
 	}
 
-	m_mSceneList.clear();
+	GetInstance().m_mSceneList.clear();
 }
 
 CScene* CSceneManager::CreateScene(CScene* _newScene, wstring _name)
@@ -56,7 +56,7 @@ CScene* CSceneManager::CreateScene(CScene* _newScene, wstring _name)
 	CScene* newScene = dynamic_cast<CScene*>(_newScene);
 	newScene->Set_SceneName(_name);
 
-	m_mSceneList.emplace(_name, newScene);
+	GetInstance().m_mSceneList.emplace(_name, newScene);
 
 	newScene->AddRef();
 
@@ -78,35 +78,35 @@ CScene* CSceneManager::CreateScene(CScene* _newScene, wstring _name)
 
 CScene* CSceneManager::Get_CrtScene()
 {
-	return m_pCrtScene;
+	return GetInstance().m_pCrtScene;
 }
 
 CScene* CSceneManager::Get_TempScene()
 {
-	return m_pTempScene;
+	return GetInstance().m_pTempScene;
 }
 
-const map<wstring, CScene*>& CSceneManager::Get_SceneList()
+map<wstring, CScene*>& CSceneManager::Get_SceneList()
 {
-	return m_mSceneList;
+	return GetInstance().m_mSceneList;
 }
 
-const _bool CSceneManager::Is_Loading() const
+const _bool CSceneManager::Is_Loading()
 {
-	return m_bLoading;
+	return GetInstance().m_bLoading;
 }
 
 void CSceneManager::LoadScene(wstring _scene)
 {
-	if (m_bLoading)
+	if (GetInstance().m_bLoading)
 	{
 		CDebug::LogError("Load Scene Fail: Already loading Scene.");
 		return;
 	}
 
-	auto iter = m_mSceneList.find(_scene);
+	auto iter = GetInstance().m_mSceneList.find(_scene);
 
-	if (iter == m_mSceneList.end())
+	if (iter == GetInstance().m_mSceneList.end())
 	{
 		CDebug::LogError(L"Load Scene Fail: Not found Scene: " + _scene);
 		return;
@@ -115,16 +115,16 @@ void CSceneManager::LoadScene(wstring _scene)
 		CDebug::Log(L"Load scene start: " + _scene);
 
 #ifndef  _CLIENT_BUILD
-	if (m_pCrtScene)
-		CEditor::GetInstance().Set_EditorCamTransform(Get_EditorCamera()->Get_Transform());
+	if (GetInstance().m_pCrtScene)
+		CEditor::Set_EditorCamTransform(Get_EditorCamera()->Get_Transform());
 #endif
 
-	m_pTempScene = iter->second;
+	GetInstance().m_pTempScene = iter->second;
 
-	if (m_pTempScene)
+	if (GetInstance().m_pTempScene)
 	{
-		m_pTempScene->PreLoadResources();
-		m_bLoading = true;
+		GetInstance().m_pTempScene->PreLoadResources();
+		GetInstance().m_bLoading = true;
 	}
 }
 
@@ -135,22 +135,22 @@ void CSceneManager::LoadScene(CScene* _scene)
 
 void CSceneManager::LoadComplete()
 {
-	m_pCrtScene = nullptr;
-	m_pCrtScene = m_pTempScene;
-	m_pTempScene = nullptr;
+	GetInstance().m_pCrtScene = nullptr;
+	GetInstance().m_pCrtScene = GetInstance().m_pTempScene;
+	GetInstance().m_pTempScene = nullptr;
 
-	if (m_pCrtScene)
+	if (GetInstance().m_pCrtScene)
 	{
-		m_pCrtScene->Initialize();
-		m_bLoading = false;
+		GetInstance().m_pCrtScene->Initialize();
+		GetInstance().m_bLoading = false;
 	}
 
-	wstring file = m_pCrtScene->Get_SceneName() + L".scenedata";
-	auto sceneTransformInfo = CResources::GetInstance().ReadSceneObjectTransformInfos(file);
+	wstring file = GetInstance().m_pCrtScene->Get_SceneName() + L".scenedata";
+	auto sceneTransformInfo = CResources::ReadSceneObjectTransformInfos(file);
 
-	m_pCrtScene->Bind_ObjectsTransform(sceneTransformInfo);
-	m_pCrtScene->Awake();
-	m_pCrtScene->Start();
+	GetInstance().m_pCrtScene->Bind_ObjectsTransform(sceneTransformInfo);
+	GetInstance().m_pCrtScene->Awake();
+	GetInstance().m_pCrtScene->Start();
 }
 
 void CSceneManager::Add_Layer(const _uint _index, const wstring& _name)
@@ -221,17 +221,17 @@ wstring CSceneManager::TagToName(const _uint _tag)
 	return GetInstance().m_mTagFlags[_tag];
 }
 
-_bool CSceneManager::LayerMaskResult(const _uint _source, const _uint _mask)
+const _bool CSceneManager::LayerMaskResult(const _uint _source, const _uint _mask)
 {
 	return _mask & _source;
 }
 
-_bool CSceneManager::CompareTag(const _uint _tag, const wstring& _tagName)
+const _bool CSceneManager::CompareTag(const _uint _tag, const wstring& _tagName)
 {
 	return _tagName == GetInstance().m_mTagFlags[_tag];
 }
 
 CCamera* CSceneManager::Get_EditorCamera()
 {
-	return m_pCrtScene->Get_EditorCamera();
+	return GetInstance().m_pCrtScene->Get_EditorCamera();
 }

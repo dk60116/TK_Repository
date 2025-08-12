@@ -30,7 +30,7 @@ void CHierachyBox::Render()
 {
 	CEditor& editor = CEditor::GetInstance();
 	const CEditor::EDITORWINOPTION& editorOption = editor.Get_Options();
-	CScene* currentScene = CSceneManager::GetInstance().Get_CrtScene();
+	CScene* currentScene = CSceneManager::Get_CrtScene();
 
 	_float width = static_cast<_float>(editorOption.hierachyWidth);
 
@@ -98,7 +98,7 @@ void CHierachyBox::RenderObjectHierarchy(CGameObject* _obj)
 		editor.Set_SelectedGameObject(_obj);
 
 	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-		CEditor::GetInstance().MoveTo_SelectedGameObject(_obj);
+		CEditor::MoveTo_SelectedGameObject(_obj);
 
 	if (hasChildren && nodeOpen)
 	{

@@ -14,22 +14,22 @@ private:
 	static unsigned __stdcall ThreadMain(void* pParam);
 
 public:
-	HRESULT Initialize();
+	static HRESULT Initialize();
 
 public:
-	const _bool Is_Loading() const;
-	const _float Get_LoadingProgress() const;
+	static const _bool Is_Loading();
+	static const _float Get_LoadingProgress();
 
 public:
-	void StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList);
+	static void StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList);
 
 private:
-	void ThreadLoadingLoop();
-	void Shutdown();
+	static void ThreadLoadingLoop();
+	static void Shutdown();
 
 private:
-	CSkyBox::SKYBOXBUFFERDESC FormatToSkyBoxDesc(wstring _name, wstring _format) const;
-	CMeshBuffer::TERRAINBUFFERDESC FormatToTerrainDesc(wstring _name, wstring _format) const;
+	static CSkyBox::SKYBOXBUFFERDESC FormatToSkyBoxDesc(wstring _name, wstring _format);
+	static CMeshBuffer::TERRAINBUFFERDESC FormatToTerrainDesc(wstring _name, wstring _format);
 
 private:
 	HANDLE m_hThread;

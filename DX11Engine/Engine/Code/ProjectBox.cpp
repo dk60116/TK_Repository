@@ -33,7 +33,7 @@ void CProjectBox::Render()
 {
 	CEditor& editor = CEditor::GetInstance();
 	const CEditor::EDITORWINOPTION& editorOption = editor.Get_Options();
-	CScene* currentScene = CSceneManager::GetInstance().Get_CrtScene();
+	CScene* currentScene = CSceneManager::Get_CrtScene();
 
 	_float width = static_cast<_float>(editorOption.projectWidth);
 
@@ -161,13 +161,13 @@ void CProjectBox::RenderDirectoryRecursive(const fs::path& _dirPath)
 						path = CEngineString::Replace(path, L"\\", L"/");
 
 						if (ImGui::Selectable("Create Mesh Data"))
-							CResources::GetInstance().ConvertFBXToMeshBufferData(path);
+							CResources::ConvertFBXToMeshBufferData(path);
 
 						if (ImGui::Selectable("Create Skinned Data"))
-							CResources::GetInstance().ConvertFBXToSkinnedBufferData(path);
+							CResources::ConvertFBXToSkinnedBufferData(path);
 
 						if (ImGui::Selectable("Create Animation Data"))
-							CResources::GetInstance().ConvertFBXToAnimationClipData(path);
+							CResources::ConvertFBXToAnimationClipData(path);
 					}
 
 					if (extension == "ttf" || extension == "otf")
@@ -175,7 +175,7 @@ void CProjectBox::RenderDirectoryRecursive(const fs::path& _dirPath)
 						wstring path = entry.path().wstring();
 
 						if (ImGui::Selectable("Create Font Data"))
-							CResources::GetInstance().ConvertOTFTTFToSpriteFont(path);
+							CResources::ConvertOTFTTFToSpriteFont(path);
 					}
 
 					if (ImGui::Selectable("Delete"))

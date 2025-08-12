@@ -23,7 +23,7 @@ HRESULT CCollisionManager::Initialize()
 	for (_uint i = 0; i < 32; ++i)
 	{
 		for (_uint j = 0; j < 32; ++j)
-			m_mCollisionFilter.emplace(make_pair(1u << i, 1u << j), true);
+			GetInstance().m_mCollisionFilter.emplace(make_pair(1u << i, 1u << j), true);
 	}
 
 	return S_OK;
@@ -31,30 +31,30 @@ HRESULT CCollisionManager::Initialize()
 
 void CCollisionManager::Release()
 {
-	m_vColliderList.clear();
+	GetInstance().m_vColliderList.clear();
 }
 
 void CCollisionManager::UpdateCollision()
 {
-	const size_t n = m_vColliderList.size();
+	const size_t n = GetInstance().m_vColliderList.size();
 	
 	if (n < 2) 
 		return;
 
-	for (size_t i = 0; i < m_vColliderList.size(); ++i)
+	for (size_t i = 0; i < GetInstance().m_vColliderList.size(); ++i)
 	{
-		for (size_t j = i; j < m_vColliderList.size(); ++j)
+		for (size_t j = i; j < GetInstance().m_vColliderList.size(); ++j)
 		{
-			_uint layerA = m_vColliderList[i]->Get_GameObject()->GetLayer();
-			_uint layerB = m_vColliderList[j]->Get_GameObject()->GetLayer();
+			_uint layerA = GetInstance().m_vColliderList[i]->Get_GameObject()->GetLayer();
+			_uint layerB = GetInstance().m_vColliderList[j]->Get_GameObject()->GetLayer();
 			
-			if (!m_mCollisionFilter[{layerA, layerB}])
+			if (!GetInstance().m_mCollisionFilter[{layerA, layerB}])
 				continue;
-			if (!m_mCollisionFilter[{layerB, layerA}])
+			if (!GetInstance().m_mCollisionFilter[{layerB, layerA}])
 				continue;
 
-			auto boxA = dynamic_cast<CBoxCollider*>(m_vColliderList[i]);
-			auto boxB = dynamic_cast<CBoxCollider*>(m_vColliderList[j]);
+			auto boxA = dynamic_cast<CBoxCollider*>(GetInstance().m_vColliderList[i]);
+			auto boxB = dynamic_cast<CBoxCollider*>(GetInstance().m_vColliderList[j]);
 
 			if (boxA && boxB)
 			{
@@ -74,7 +74,7 @@ void CCollisionManager::UpdateCollision()
 		}
 	}
 
-	m_vColliderList.clear();
+	GetInstance().m_vColliderList.clear();
 }
 
 const vector<CCollider*>& CCollisionManager::Get_ColliderList()

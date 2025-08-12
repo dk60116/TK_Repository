@@ -28,11 +28,11 @@ HRESULT CMainScene::Initialize()
 	CGameObject* ImageObject = Add_GameObject(L"Background");
 	CImage* image = ImageObject->AddComponent<CImage>();
 
-	image->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_BG (Texture)"));
+	image->SetTexture(CResources::LoadOnScene<CTexture>(L"Main_BG (Texture)"));
 
 	CGameObject* ImageObject2 = Add_GameObject(L"Logo");
 	m_pLogoImage = ImageObject2->AddComponent<CImage>();
-	m_pLogoImage->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Main_Logo (Texture)"));
+	m_pLogoImage->SetTexture(CResources::LoadOnScene<CTexture>(L"Main_Logo (Texture)"));
 
 	m_pLogoImage->SetFillAmount(1.f);
 
@@ -64,6 +64,6 @@ void CMainScene::Update()
 	if (CInput::GetKeyDown(Alpha1))
 	{
 		CGameManager::GetInstance().Set_NexScene(L"Game Scene");
-		CSceneManager::GetInstance().LoadScene(L"Loading Scene");
+		CSceneManager::LoadScene(L"Loading Scene");
 	}
 }

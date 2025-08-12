@@ -9,14 +9,14 @@ class ENGINE_DLL CDisplay final
 	SINGLETONCLASS(CDisplay);
 
 public:
-	HRESULT Initialize(HINSTANCE _hInst, HWND _hGameWnd, HWND _hEditorWnd);
+	static HRESULT Initialize(HINSTANCE _hInst, HWND _hGameWnd, HWND _hEditorWnd);
 
 public:
-	HINSTANCE Get_HInstance() const;
-	HWND Get_GameWindow() const;
-	HWND Get_EditorWindow() const;
-	const vector2Int Get_ScreenResolution() const;
-	const _float Get_Aspect() const;
+	static HINSTANCE Get_HInstance();
+	static HWND Get_GameWindow();
+	static HWND Get_EditorWindow();
+	static vector2Int Get_ScreenResolution();
+	static _float Get_Aspect();
 
 private:
 	HINSTANCE m_hInst;

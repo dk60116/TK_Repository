@@ -33,7 +33,7 @@ void CInspectorBox::Render()
 {
 	CEditor& editor = CEditor::GetInstance();
 	const CEditor::EDITORWINOPTION& editorOption = editor.Get_Options();
-	CScene* currentScene = CSceneManager::GetInstance().Get_CrtScene();
+	CScene* currentScene = CSceneManager::Get_CrtScene();
 
 	_float width = static_cast<_float>(editorOption.inspectorWidth);
 
@@ -102,7 +102,7 @@ void CInspectorBox::Render()
 
         string layer = "Layer: ";
         string layerName = CEngineString::WStringToString(CSceneManager::LayerToName(selectedObj->GetLayer()));
-		string layerNum = to_string(CSceneManager::GetInstance().LayerToIndex(selectedObj->GetLayer()));
+		string layerNum = to_string(CSceneManager::LayerToIndex(selectedObj->GetLayer()));
         string layerLast = layerName + '(' + layerNum + ')';
 
         string tag = "Tag: ";

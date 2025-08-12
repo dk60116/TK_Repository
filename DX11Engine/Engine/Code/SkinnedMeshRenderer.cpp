@@ -67,14 +67,14 @@ void CSkinnedMeshRenderer::OnPreRender()
 
 void CSkinnedMeshRenderer::Render_Editor()
 {
-	m_pContext->OMSetDepthStencilState(CSceneManager::GetInstance().Get_CrtScene()->Get_MeshStencillState(), 0);
-	Render_WithCamera(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
-	Render_Outline(CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera());
+	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
+	Render_WithCamera(CSceneManager::Get_CrtScene()->Get_EditorCamera());
+	Render_Outline(CSceneManager::Get_CrtScene()->Get_EditorCamera());
 }
 
 void CSkinnedMeshRenderer::Render()
 {
-	CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+	CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
 }
 
 void CSkinnedMeshRenderer::OnPostRender()

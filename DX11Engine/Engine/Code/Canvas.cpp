@@ -33,7 +33,7 @@ HRESULT CCanvas::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	vector2 resolution = vector2(CDisplay::GetInstance().Get_ScreenResolution().x, CDisplay::GetInstance().Get_ScreenResolution().y);
+	vector2 resolution = vector2(CDisplay::Get_ScreenResolution().x, CDisplay::Get_ScreenResolution().y);
 
 	if (m_eRenderMode == RenderMode::ScreenSpace_Overlay)
 	{
@@ -50,7 +50,7 @@ void CCanvas::OnPreRender_Editor()
 	if (!m_pRectGizmoMesh)
 		return;
 
-	vector2 resolution = vector2(CDisplay::GetInstance().Get_ScreenResolution().x, CDisplay::GetInstance().Get_ScreenResolution().y);
+	vector2 resolution = vector2(CDisplay::Get_ScreenResolution().x, CDisplay::Get_ScreenResolution().y);
 	
 	if (m_eRenderMode == RenderMode::ScreenSpace_Overlay)
 	{
@@ -62,7 +62,7 @@ void CCanvas::OnPreRender_Editor()
 
 void CCanvas::Render_Editor()
 {
-	CCamera* cam = CSceneManager::GetInstance().Get_EditorCamera();
+	CCamera* cam = CSceneManager::Get_EditorCamera();
 
 	vector3 cPos = cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();
@@ -88,7 +88,7 @@ void CCanvas::Render()
 {
 	for (TRAVERSAL_ITER(m_lUIObjectList, it))
 	{
-		CSceneManager::GetInstance().Get_CrtScene()->Get_Camera()->Add_RenderTarget_UI(*it);
+		CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_UI(*it);
 	}
 }
 

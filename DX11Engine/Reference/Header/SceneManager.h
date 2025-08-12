@@ -18,19 +18,19 @@ public:
 	};
 
 public:
-	HRESULT Initialize();
-	void Release();
+	static HRESULT Initialize();
+	static void Release();
 
 public:
-	CScene* CreateScene(CScene* _newScene, wstring _name);
-	CScene* Get_CrtScene();
-	CScene* Get_TempScene();
-	const map<wstring, CScene*>& Get_SceneList();
-	const _bool Is_Loading() const;
+	static CScene* CreateScene(CScene* _newScene, wstring _name);
+	static CScene* Get_CrtScene();
+	static CScene* Get_TempScene();
+	static map<wstring, CScene*>& Get_SceneList();
+	static const _bool Is_Loading();
 
-	void LoadScene(wstring _scene);
-	void LoadScene(CScene* _scene);
-	void LoadComplete();
+	static void LoadScene(wstring _scene);
+	static void LoadScene(CScene* _scene);
+	static void LoadComplete();
 
 public:
 	static void Add_Layer(const _uint _index, const wstring& _name);
@@ -40,11 +40,11 @@ public:
 	static _uint LayerToIndex(const _uint _layer);
 	static _uint NameToIndex(const wstring& _name);
 	static wstring TagToName(const _uint _tag);
-	static _bool LayerMaskResult(const _uint _source, const _uint _mask);
-	static _bool CompareTag(const _uint _tag, const wstring& _tagName);
+	static const _bool LayerMaskResult(const _uint _source, const _uint _mask);
+	static const _bool CompareTag(const _uint _tag, const wstring& _tagName);
 
 public:
-	class CCamera* Get_EditorCamera();
+	static class CCamera* Get_EditorCamera();
 
 private:
 	CScene* m_pCrtScene;

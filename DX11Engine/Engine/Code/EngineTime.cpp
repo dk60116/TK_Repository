@@ -28,17 +28,17 @@ HRESULT CTime::Initialize()
 
 HRESULT CTime::Ready_Time()
 {
-	m_pTimer = new CTimer();
+	GetInstance().m_pTimer = new CTimer();
 
-	if (!m_pTimer)
+	if (!GetInstance().m_pTimer)
 		return E_FAIL;
 
-	m_pTimer->AddRef();
+	GetInstance().m_pTimer->AddRef();
 
-	if (FAILED(m_pTimer->Ready_Timer()))
+	if (FAILED(GetInstance().m_pTimer->Ready_Timer()))
 	{
-		delete m_pTimer;
-		m_pTimer = nullptr;
+		delete GetInstance().m_pTimer;
+		GetInstance().m_pTimer = nullptr;
 		E_FAIL;
 	}
 
@@ -47,33 +47,33 @@ HRESULT CTime::Ready_Time()
 
 void CTime::Update()
 {
-	if (!m_pTimer)
+	if (!GetInstance().m_pTimer)
 		return;
 
-	m_pTimer->Update();
+	GetInstance().m_pTimer->Update();
 }
 
-const _int CTime::Get_FPS() const
+_int CTime::Get_FPS()
 {
-	return m_pTimer->Get_FPS();
+	return GetInstance().m_pTimer->Get_FPS();
 }
 
-const _float CTime::Get_DeltaTime() const
+_float CTime::Get_DeltaTime()
 {
-	return m_pTimer->Get_TimeDelta();
+	return GetInstance().m_pTimer->Get_TimeDelta();
 }
 
-const _float CTime::Get_ElaspedTime() const
+_float CTime::Get_ElaspedTime()
 {
-	return m_pTimer->Get_ElapsedTime();
+	return GetInstance().m_pTimer->Get_ElapsedTime();
 }
 
 void CTime::SetTimeScale(const _float _value)
 {
-	m_fTimeScale = _value;
+	GetInstance().m_fTimeScale = _value;
 }
 
 void CTime::Release()
 {
-	Safe_Release(m_pTimer);
+	Safe_Release(GetInstance().m_pTimer);
 }

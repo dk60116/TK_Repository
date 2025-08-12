@@ -34,7 +34,7 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_pContext(_rhs.m_pContext)
 	, m_bIsBoneTransform(_rhs.m_bIsBoneTransform)
 {
-	m_iUniqueID = CSceneManager::GetInstance().Get_CrtScene()->Get_UniqueObjectCount();
+	m_iUniqueID = CSceneManager::Get_CrtScene()->Get_UniqueObjectCount();
 }
 
 CGameObject::~CGameObject()
@@ -387,7 +387,7 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 		renderers.push_back(ren);
 
 		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
-		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		ren->Set_Material(CResources::CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 
 		if (!_meshInfos[i].texture)
 			continue;
@@ -420,7 +420,7 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 		g->Get_Transform()->SetParent(rootTf);
 		auto* r = g->AddComponent<CSkinnedMeshRenderer>();
 		r->Set_MeshBuffer(si.meshBuffer);
-		r->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		r->Set_Material(CResources::CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 		if (si.texture) 
 			r->Get_Material()->Set_Texture(si.texture, 0);
 		renderers.push_back(r);
@@ -529,7 +529,7 @@ const _bool CGameObject::IsBoneTransform() const
 
 CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 {
-	CGameObject* newGameObj = CSceneManager::GetInstance().Get_CrtScene()->Add_GameObject(_rhs->Get_ObjectName() + L" (Clone)");
+	CGameObject* newGameObj = CSceneManager::Get_CrtScene()->Add_GameObject(_rhs->Get_ObjectName() + L" (Clone)");
 
 	for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
 	{

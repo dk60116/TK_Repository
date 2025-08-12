@@ -17,52 +17,52 @@ CMainProcess& CMainProcess::GetInstance()
 
 HRESULT CMainProcess::Initialize()
 {
-    if (FAILED(CTime::GetInstance().Initialize()))
+    if (FAILED(CTime::Initialize()))
         return E_FAIL;
-    if (FAILED(CDebug::GetInstance().Initialize()))
+    if (FAILED(CDebug::Initialize()))
         return E_FAIL;
-    if (FAILED(CGraphicDevice::GetInstance().Initialize()))
+    if (FAILED(CGraphicDevice::Initialize()))
         return E_FAIL;
-    if (FAILED(CRandom::GetInstance().Initialize()))
+    if (FAILED(CRandom::Initialize()))
         return E_FAIL;
-    if (FAILED(CEditor::GetInstance().Initialize()))
+    if (FAILED(CEditor::Initialize()))
         return E_FAIL;
-    if (FAILED(CResources::GetInstance().Initialize()))
+    if (FAILED(CResources::Initialize()))
         return E_FAIL;
-    if (FAILED(CSceneManager::GetInstance().Initialize()))
+    if (FAILED(CSceneManager::Initialize()))
         return E_FAIL;
-    if (FAILED(CSceneLoader::GetInstance().Initialize()))
+    if (FAILED(CSceneLoader::Initialize()))
         return E_FAIL;
     if (FAILED(CInput::Initialize()))
         return E_FAIL;
-    if (FAILED(CUIManager::GetInstance().Initialize()))
+    if (FAILED(CUIManager::Initialize()))
         return E_FAIL;
-    if (FAILED(CCollisionManager::GetInstance().Initialize()))
+    if (FAILED(CCollisionManager::Initialize()))
         return E_FAIL;
 
 #ifndef _CLIENT_BUILD
-    CEditor::EDITORWINOPTION sOption = CEditor::GetInstance().Get_Options();
+    CEditor::EDITORWINOPTION sOption = CEditor::Get_Options();
 
     vector2Int offsetMin = vector2Int(0, (_int)sOption.topBarHeight);
     vector2Int offsetMax = vector2Int(_int(sOption.projectWidth + sOption.hierachyWidth + sOption.inspectorWidth), 0);
 
-    CGraphicDevice::GetInstance().Add_SwapChain
+    CGraphicDevice::Add_SwapChain
     (
-        CEditor::GetInstance().Get_EditorWindow(),
+        CEditor::Get_EditorWindow(),
         WINMODE::MODE_WINDOW,
-        CEditor::GetInstance().Get_WindowResolution().x,
-        CEditor::GetInstance().Get_WindowResolution().y,
+        CEditor::Get_WindowResolution().x,
+        CEditor::Get_WindowResolution().y,
         offsetMin,
         offsetMax
     );
 #endif
 
-    CGraphicDevice::GetInstance().Add_SwapChain
+    CGraphicDevice::Add_SwapChain
     (
-        CDisplay::GetInstance().Get_GameWindow(),
+        CDisplay::Get_GameWindow(),
         WINMODE::MODE_WINDOW,
-        CDisplay::GetInstance().Get_ScreenResolution().x,
-        CDisplay::GetInstance().Get_ScreenResolution().y
+        CDisplay::Get_ScreenResolution().x,
+        CDisplay::Get_ScreenResolution().y
     );
 
     MSG msg;
@@ -78,12 +78,10 @@ HRESULT CMainProcess::Initialize()
 
 void CMainProcess::Update_MainApp()
 {
-    CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
+    CScene* scene = CSceneManager::Get_CrtScene();
 
-    CTime::GetInstance().Update();
+    CTime::Update();
     CInput::Update();
-
-    CGraphicDevice& graphicDev = CGraphicDevice::GetInstance();
 
     if (scene)
     {
@@ -93,26 +91,26 @@ void CMainProcess::Update_MainApp()
         scene->FixedUpdate();
 
 #ifndef _CLIENT_BUILD
-        graphicDev.Set_RenderTarget(CEditor::GetInstance().Get_EditorWindow());
+        CGraphicDevice::Set_RenderTarget(CEditor::Get_EditorWindow());
 
-        CEditor::GetInstance().Editor_Update_Begin();
-        CEditor::GetInstance().Editor_Update_During();
+        CEditor::Editor_Update_Begin();
+        CEditor::Editor_Update_During();
         scene->Render_Editor();
-        CEditor::GetInstance().Editor_Update_End();
+        CEditor::Editor_Update_End();
 
-        graphicDev.Present();
+        CGraphicDevice::Present();
 #endif
 
-        graphicDev.Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
+        CGraphicDevice::Set_RenderTarget(CDisplay::Get_GameWindow());
         scene->Render_Game();
-        graphicDev.Present();
+        CGraphicDevice::Present();
     }
 
-    if (CSceneManager::GetInstance().Is_Loading() && !CSceneLoader::GetInstance().Is_Loading())
-        CSceneManager::GetInstance().LoadComplete();
+    if (CSceneManager::Is_Loading() && !CSceneLoader::Is_Loading())
+        CSceneManager::LoadComplete();
 }
 
 void CMainProcess::Release_MainApp()
 {
-    CDebug::GetInstance().Release();
+    CDebug::Release();
 }

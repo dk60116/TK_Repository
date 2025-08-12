@@ -36,13 +36,13 @@ HRESULT CLoadingScene::Initialize()
 	CGameObject* backLogoObj = Add_GameObject(L"Logo_Back");
 	CImage* backLogoImage = backLogoObj->AddComponent<CImage>();
 	backLogoImage->Get_Transform()->SetParent(m_pCanvas->Get_Transform());
-	backLogoImage->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Logo (Texture)"));
+	backLogoImage->SetTexture(CResources::LoadOnScene<CTexture>(L"Logo (Texture)"));
 	backLogoImage->SetColor(ColorValue::gray(0.5f));
 
 	CGameObject* logoObj = Add_GameObject(L"Logo");
 	m_pLogoImage = logoObj->AddComponent<CImage>();
 	m_pLogoImage->Get_Transform()->SetParent(backLogoImage->Get_Transform());
-	m_pLogoImage->SetTexture(CResources::GetInstance().LoadOnScene<CTexture>(L"Logo (Texture)"));
+	m_pLogoImage->SetTexture(CResources::LoadOnScene<CTexture>(L"Logo (Texture)"));
 	m_pLogoImage->Set_FillMethod(CImage::FillMethod::Horizontal);
 
 	return S_OK;
@@ -56,7 +56,7 @@ void CLoadingScene::Awake()
 
 	if (next != L"")
 	{
-		CSceneManager::GetInstance().LoadScene(CGameManager::GetInstance().Get_NextScene());
+		CSceneManager::LoadScene(CGameManager::GetInstance().Get_NextScene());
 		CGameManager::GetInstance().Set_NexScene(L"");
 	}
 }

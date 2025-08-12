@@ -50,9 +50,9 @@ HRESULT CImage::Initialize()
 
 void CImage::Render_Editor()
 {
-	m_pContext->OMSetDepthStencilState(CSceneManager::GetInstance().Get_CrtScene()->Get_UIStencillState(), 0);
+	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_UIStencillState(), 0);
 
-	CCamera* cam = CSceneManager::GetInstance().Get_EditorCamera();
+	CCamera* cam = CSceneManager::Get_EditorCamera();
 
 	_float3 camPos = _float3();
 	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
@@ -68,7 +68,7 @@ void CImage::Render_Editor()
 	if (m_pRectMesh)
 		m_pRectMesh->Render();
 
-	if (m_pGameObject != CEditor::GetInstance().Get_SelectedGameObject())
+	if (m_pGameObject != CEditor::Get_SelectedGameObject())
 		return;
 
 	if (m_pLineMat)

@@ -34,64 +34,64 @@ unsigned __stdcall CSceneLoader::ThreadMain(void* pParam)
 
 HRESULT CSceneLoader::Initialize()
 {
-	InitializeCriticalSection(&m_pCriticalSection);
+	InitializeCriticalSection(&GetInstance().m_pCriticalSection);
 
-	m_hThread = (HANDLE)_beginthreadex(
-		nullptr, 0, ThreadMain, this, 0, nullptr);
+	GetInstance().m_hThread = (HANDLE)_beginthreadex(
+		nullptr, 0, ThreadMain, &GetInstance(), 0, nullptr);
 
-	if (!m_hThread)
+	if (!GetInstance().m_hThread)
 		return E_FAIL;
 
-	m_bRunning = true;
+	GetInstance().m_bRunning = true;
 
 	return S_OK;
 }
 
-const _bool CSceneLoader::Is_Loading() const
+const _bool CSceneLoader::Is_Loading()
 {
-	return m_bLoading;
+	return GetInstance().m_bLoading;
 }
 
-const _float CSceneLoader::Get_LoadingProgress() const
+const _float CSceneLoader::Get_LoadingProgress()
 {
-	return static_cast<float>(m_iLoadedFile) / m_iTootalFile;
+	return static_cast<float>(GetInstance().m_iLoadedFile) / GetInstance().m_iTootalFile;
 }
 
 void CSceneLoader::StartLoading(vector<string>& _nameList, vector<string>& _fileList, vector<string>& _formatList)
 {
-	EnterCriticalSection(&m_pCriticalSection);
+	EnterCriticalSection(&GetInstance().m_pCriticalSection);
 
-	m_mReadyFiles_Name = _nameList;
-	m_mReadyFiles_Path = _fileList;
-	m_mReadyFiles_Format = _formatList;
+	GetInstance().m_mReadyFiles_Name = _nameList;
+	GetInstance().m_mReadyFiles_Path = _fileList;
+	GetInstance().m_mReadyFiles_Format = _formatList;
 
-	m_iTootalFile = static_cast<_uint>(_fileList.size());
-	m_iLoadedFile = 0;
+	GetInstance().m_iTootalFile = static_cast<_uint>(_fileList.size());
+	GetInstance().m_iLoadedFile = 0;
 
-	m_bLoading = true;
+	GetInstance().m_bLoading = true;
 
-	LeaveCriticalSection(&m_pCriticalSection);
+	LeaveCriticalSection(&GetInstance().m_pCriticalSection);
 }
 
 void CSceneLoader::ThreadLoadingLoop()
 {
-	while (m_bRunning)
+	while (GetInstance().m_bRunning)
 	{
-		EnterCriticalSection(&m_pCriticalSection);
+		EnterCriticalSection(&GetInstance().m_pCriticalSection);
 
-		if (!m_mReadyFiles_Name.empty())
+		if (!GetInstance().m_mReadyFiles_Name.empty())
 		{
-			m_bLoading = true;
+			GetInstance().m_bLoading = true;
 
-			string name = m_mReadyFiles_Name.back();
-			string file = m_mReadyFiles_Path.back();
-			string format = m_mReadyFiles_Format.back();
+			string name = GetInstance().m_mReadyFiles_Name.back();
+			string file = GetInstance().m_mReadyFiles_Path.back();
+			string format = GetInstance().m_mReadyFiles_Format.back();
 
-			m_mReadyFiles_Name.pop_back();
-			m_mReadyFiles_Path.pop_back();
-			m_mReadyFiles_Format.pop_back();
+			GetInstance().m_mReadyFiles_Name.pop_back();
+			GetInstance().m_mReadyFiles_Path.pop_back();
+			GetInstance().m_mReadyFiles_Format.pop_back();
 
-			LeaveCriticalSection(&m_pCriticalSection);
+			LeaveCriticalSection(&GetInstance().m_pCriticalSection);
 
 			wstring wName = CEngineString::StringToWString(name);
 			wstring wFile = CEngineString::StringToWString(file);
@@ -101,18 +101,18 @@ void CSceneLoader::ThreadLoadingLoop()
 
 			if (wName == L"NaviMesh_Walkable")
 			{
-				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo_able = CResources::GetInstance().ReadNaviBufferInfos(wFile, true);
-				CResources::GetInstance().CreateNaviMesh(L"NaviMesh_Walkable", navInfo_able);
+				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo_able = CResources::ReadNaviBufferInfos(wFile, true);
+				CResources::CreateNaviMesh(L"NaviMesh_Walkable", navInfo_able);
 			}
 			if (wName == L"NaviMesh_WalkUnable")
 			{
-				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo_unable = CResources::GetInstance().ReadNaviBufferInfos(wFile, false);
-				CResources::GetInstance().CreateNaviMesh(L"NaviMesh_WalkUnable", navInfo_unable);
+				CNaviMesh::NaviMeshBufferInitiaizeInfo navInfo_unable = CResources::ReadNaviBufferInfos(wFile, false);
+				CResources::CreateNaviMesh(L"NaviMesh_WalkUnable", navInfo_unable);
 			}
 			if (CEngineString::Contains(wFile, L".png") || CEngineString::Contains(wFile, L".jpg") || CEngineString::Contains(wFile, L".tga"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Texture]"))
-					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));
+					CResources::LoadResourceComplete_Scene(CResources::CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));
 			}
 			else if (CEngineString::Contains(wFile, L".fbx"))
 			{
@@ -134,9 +134,9 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					const wstring meshdataPath = meshDataFolder + L"_" + meshDataName + L".meshdata";
 
-					auto meshInfoList = CResources::GetInstance().ReadMeshBufferInfos(meshdataPath);
+					auto meshInfoList = CResources::ReadMeshBufferInfos(meshdataPath);
 
-					CResources::GetInstance().CreateSceneMeshBundle(wName + L" (MeshBuffer)", meshInfoList, filter, nullptr, true);
+					CResources::CreateSceneMeshBundle(wName + L" (MeshBuffer)", meshInfoList, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
 				{
@@ -156,9 +156,9 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					const wstring skinnedDataPath = skinnedDataFolder + L"_" + skinnedDataName + L".skinneddata";
 
-					auto skinnedInfoList = CResources::GetInstance().ReadSkinnedBufferInfos(skinnedDataPath);
+					auto skinnedInfoList = CResources::ReadSkinnedBufferInfos(skinnedDataPath);
 
-					CResources::GetInstance().CreateSceneSkinnedBundle(wName + L" (MeshBuffer)", skinnedInfoList.initList, skinnedInfoList.skeletalList, filter, nullptr, true);
+					CResources::CreateSceneSkinnedBundle(wName + L" (MeshBuffer)", skinnedInfoList.initList, skinnedInfoList.skeletalList, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))
 				{
@@ -169,9 +169,9 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					const wstring animationdataPath = animationDataFolder + L"_" + animationDataName + L".animdata";
 
-					auto animaitonInfoList = CResources::GetInstance().ReadAnimationClipBufferInfos(animationdataPath);
+					auto animaitonInfoList = CResources::ReadAnimationClipBufferInfos(animationdataPath);
 
-					CAnimationClip* newClip = CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true);
+					CAnimationClip* newClip = CResources::CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true);
 					CResources::LoadResourceComplete_Scene(newClip);
 
 					if (animaitonInfoList.size() > 0)
@@ -181,20 +181,20 @@ void CSceneLoader::ThreadLoadingLoop()
 			else if (wFile == L"SkyBox")
 			{
 				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
-				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
+				CResources::LoadResourceComplete_Scene(CResources::CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
 			}
 			else if (wFile == L"Terrain")
 			{
 				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
-				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
+				CResources::LoadResourceComplete_Scene(CResources::CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
 			}
 
-			++m_iLoadedFile;
+			++GetInstance().m_iLoadedFile;
 		}
 		else
 		{
-			m_bLoading = false;
-			LeaveCriticalSection(&m_pCriticalSection);
+			GetInstance().m_bLoading = false;
+			LeaveCriticalSection(&GetInstance().m_pCriticalSection);
 			Sleep(10);
 		}
 	}
@@ -202,28 +202,28 @@ void CSceneLoader::ThreadLoadingLoop()
 
 void CSceneLoader::Shutdown()
 {
-	m_bRunning = false;
+	GetInstance().m_bRunning = false;
 
-	WaitForSingleObject(m_hThread, INFINITE);
-	CloseHandle(m_hThread);
-	DeleteCriticalSection(&m_pCriticalSection);
+	WaitForSingleObject(GetInstance().m_hThread, INFINITE);
+	CloseHandle(GetInstance().m_hThread);
+	DeleteCriticalSection(&GetInstance().m_pCriticalSection);
 }
 
-CSkyBox::SKYBOXBUFFERDESC CSceneLoader::FormatToSkyBoxDesc(wstring _name, wstring _format) const
+CSkyBox::SKYBOXBUFFERDESC CSceneLoader::FormatToSkyBoxDesc(wstring _name, wstring _format)
 {
 	CSkyBox::SKYBOXBUFFERDESC terrainDesc = {};
 
 	wstring texturePath = CEngineString::Erase(_format, L"[");
 	texturePath = CEngineString::Erase(texturePath, L"]");
 
-	CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", texturePath, nullptr, true));
+	CResources::LoadResourceComplete_Scene(CResources::CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", texturePath, nullptr, true));
 
 	terrainDesc.texture = _name + L" - Terrain Height map (Texture)";
 
 	return terrainDesc;
 }
 
-CMeshBuffer::TERRAINBUFFERDESC CSceneLoader::FormatToTerrainDesc(wstring _name, wstring _format) const
+CMeshBuffer::TERRAINBUFFERDESC CSceneLoader::FormatToTerrainDesc(wstring _name, wstring _format)
 {
 	CMeshBuffer::TERRAINBUFFERDESC terrainDesc = {};
 
@@ -241,7 +241,7 @@ CMeshBuffer::TERRAINBUFFERDESC CSceneLoader::FormatToTerrainDesc(wstring _name, 
 	terrainDesc.portrait = static_cast<_uint>(values[2]);
 	terrainDesc.size = values[3];
 	terrainDesc.heightWeight = values[4];
-	CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", tokens[5], nullptr, true));
+	CResources::LoadResourceComplete_Scene(CResources::CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", tokens[5], nullptr, true));
 	terrainDesc.heightMap = _name + L" - Terrain Height map (Texture)";
 
 	return terrainDesc;

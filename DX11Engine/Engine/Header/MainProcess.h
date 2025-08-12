@@ -9,9 +9,9 @@ class ENGINE_DLL CMainProcess final
 	SINGLETONCLASS(CMainProcess);
 
 public:
-	HRESULT Initialize();
-	void Update_MainApp();
-	void Release_MainApp();
+	static HRESULT Initialize();
+	static void Update_MainApp();
+	static void Release_MainApp();
 };
 
 NS_END

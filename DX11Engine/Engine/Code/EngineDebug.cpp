@@ -420,7 +420,7 @@ string CDebug::MemoryUseLog()
 
 void CDebug::ShowElapsedTime()
 {
-    _float elaspedTime = CTime::GetInstance().Get_ElaspedTime();
+    _float elaspedTime = CTime::Get_ElaspedTime();
     cout << fixed << setprecision(2);
     cout << '[' << elaspedTime << ']' << ' ';
 }

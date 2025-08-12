@@ -35,7 +35,7 @@ HRESULT CPlayerHUD::Initialize()
 	m_pHeartContainer = heartContainerObj->AddComponent<CUI>()->Get_RectTransform();
 	m_pHeartContainer->SetParent(m_pCanvas->Get_RectTransform());
 
-	CTexture* heartTex = CResources::GetInstance().LoadOnScene<CTexture>(L"HeartBar (Texture)");
+	CTexture* heartTex = CResources::LoadOnScene<CTexture>(L"HeartBar (Texture)");
 
 	for (_uint i = 0; i < CPlayer::StaticPlayerStatus::HPMAX; ++i)
 	{

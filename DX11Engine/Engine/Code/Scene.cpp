@@ -11,6 +11,8 @@ CScene::CScene()
 	, m_mResourceList({})
 	, m_mTempResourceList({})
 	, m_vCloneResourceList({})
+	, m_pSceneNaviMesh_Walkable(nullptr)
+	, m_pSceneNaviMesh_WalkUnable(nullptr)
 	, m_mMeshBundleList({})
 	, m_mTempMeshBundleList({})
 	, m_mSkinnedBundleList({})
@@ -34,8 +36,8 @@ CScene::CScene()
 {
 	m_strName = L"Scene";
 
-	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
-	m_pContext = CGraphicDevice::GetInstance().Get_Context();
+	m_pDevice = CGraphicDevice::Get_Device();
+	m_pContext = CGraphicDevice::Get_Context();
 
 	m_pDevice->AddRef();
 	m_pContext->AddRef();
@@ -56,10 +58,10 @@ HRESULT CScene::Initialize()
 	{
 		if (!m_pSkyBox)
 		{
-			m_pSkyBox = CResources::GetInstance().LoadOnGame<CSkyBox>(m_sLightSettings.skyBox);
+			m_pSkyBox = CResources::LoadOnGame<CSkyBox>(m_sLightSettings.skyBox);
 
 			if (!m_pSkyBox)
-				m_pSkyBox = CResources::GetInstance().LoadOnScene<CSkyBox>(m_sLightSettings.skyBox);
+				m_pSkyBox = CResources::LoadOnScene<CSkyBox>(m_sLightSettings.skyBox);
 
 			if (m_pSkyBox)
 			{
@@ -184,12 +186,12 @@ HRESULT CScene::Initialize()
 	CDebug::Log(CDebug::MemoryUseLog());
 
 #ifndef _CLIENT_BUILD
-	CEditor::GetInstance().Set_SelectedGameObject(nullptr);
-	CEditor::GetInstance().MoveTo_SelectedGameObject(nullptr);
+	CEditor::Set_SelectedGameObject(nullptr);
+	CEditor::MoveTo_SelectedGameObject(nullptr);
 	CGameObject* ecObj = Add_GameObject(L"Editor Camera Object");
 	m_pEditorCamera = ecObj->AddComponent<CEditorCamera>();
-	m_pEditorCamera->Get_Transform()->Set_Position(CEditor::GetInstance().Get_EditorCamPositon());
-	m_pEditorCamera->Get_Transform()->Set_Quaternion(CEditor::GetInstance().Get_EditorCamQuaternion());
+	m_pEditorCamera->Get_Transform()->Set_Position(CEditor::Get_EditorCamPositon());
+	m_pEditorCamera->Get_Transform()->Set_Quaternion(CEditor::Get_EditorCamQuaternion());
 #endif
 
 	if (m_bUseNavi)
@@ -198,18 +200,18 @@ HRESULT CScene::Initialize()
 		naviMeshObj_WA->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh_Walkable");
 		CMeshRenderer* wanm = naviMeshObj_WA->AddComponent<CMeshRenderer>();
 
-		m_pSceneNaviMesh_Walkable = CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_Walkable");
+		m_pSceneNaviMesh_Walkable = CResources::LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_Walkable");
 		wanm->Get_MeshFilter()->Set_MeshBuffer(m_pSceneNaviMesh_Walkable);
-		wanm->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+		wanm->Set_Material(CResources::CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
 		wanm->Get_Material()->Set_BaseColor(ColorValue(29, 166, 212, 255).f4Color());
 
 		CGameObject* naviMeshObj_WUA = Add_GameObject(L"NaviMesh_WalkUnable");
 		naviMeshObj_WUA->m_iLayer = CSceneManager::NameToLayer(L"NaviMesh_WalkUnable");
 		CMeshRenderer* wuanm = naviMeshObj_WUA->AddComponent<CMeshRenderer>();
 
-		m_pSceneNaviMesh_WalkUnable = CResources::GetInstance().LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_WalkUnable");
+		m_pSceneNaviMesh_WalkUnable = CResources::LoadOnScene<EngineAI::CNaviMesh>(L"NaviMesh_WalkUnable");
 		wuanm->Get_MeshFilter()->Set_MeshBuffer(m_pSceneNaviMesh_WalkUnable);
-		wuanm->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+		wuanm->Set_Material(CResources::CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
 		wuanm->Get_Material()->Set_BaseColor(ColorValue(166, 29, 212, 255).f4Color());
 	}
 
@@ -254,7 +256,7 @@ void CScene::Update_Editor()
 
 		firstHit = hits[0];
 
-		//CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
+		//CEditor::Set_SelectedGameObject(firstHit.object);
 
 		if (CInput::GetKey_Editor(CONTROL))
 		{
@@ -269,7 +271,7 @@ void CScene::Update_Editor()
 			newObj->Set_Static(CGameObject::navigationStatic);
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
 			newObj->Get_Transform()->Set_LocalScale(3.f);
-			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
+			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
 			newRen->Get_Transform()->Set_Position(firstHit.hitPos);
 			newRen->Get_Transform()->Set_LocalScale(3.f, 0.1f, 3.f);
 		}
@@ -280,7 +282,7 @@ void CScene::Update_Editor()
 		if (CInput::GetKeyDown_Editor(S))
 		{
 			wstring path = L"BinaryAssets/SceneData/" + m_strSceneName + L".scenedata";
-			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());
+			CResources::SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());
 		}
 	}
 }
@@ -316,7 +318,7 @@ void CScene::FixedUpdate()
 			(*it)->FixedUpdate();
 	}
 
-	CCollisionManager::GetInstance().UpdateCollision();
+	CCollisionManager::UpdateCollision();
 }
 
 void CScene::LateUpdateEditor()
@@ -341,8 +343,8 @@ void CScene::Render_Editor()
 {
 	ColorValue backgroudColor = ColorValue::gray(0.3f);
 
-	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
-	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
+	CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
+	CGraphicDevice::Clear_DepthStencil_View();
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
@@ -365,8 +367,8 @@ void CScene::Render_Game()
 	if (Get_Camera())
 		backgroudColor = Get_Camera()->Get_BackgroundColor();
 
-	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
-	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
+	CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
+	CGraphicDevice::Clear_DepthStencil_View();
 
 	if (m_pSkyBox)
 	{

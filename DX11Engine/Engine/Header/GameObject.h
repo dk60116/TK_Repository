@@ -198,7 +198,7 @@ inline T* CGameObject::GetComponent()
 template<typename T>
 inline T* CGameObject::FindObjectOfType()
 {
-	for (CGameObject* obj : CSceneManager::GetInstance().Get_CrtScene()->Get_ObjectList())
+	for (CGameObject* obj : CSceneManager::Get_CrtScene()->Get_ObjectList())
 	{
 		if (T* t = obj->GetComponent<T>())
 			return t;
@@ -211,7 +211,7 @@ inline vector<T*> CGameObject::FindObjectsOfType()
 {
 	vector<T*> result;
 
-	CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
+	CScene* scene = CSceneManager::Get_CrtScene();
 
 	for (CGameObject* obj : scene->Get_ObjectList())
 	{

@@ -46,7 +46,7 @@ private: \
         return (value < min) ? min : (value > max ? max : value);
     }
 
-#define DELTA_TIME CTime::GetInstance().Get_DeltaTime()
+#define DELTA_TIME CTime::Get_DeltaTime()
 
 #define BEGIN_SERIALIZEFIELD \
 	public: \

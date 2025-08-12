@@ -28,16 +28,16 @@ HRESULT CGraphicDevice::Initialize()
 {
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
-	if (FAILED(Ready_GraphicDevice(CDisplay::GetInstance().Get_GameWindow(), CDisplay::GetInstance().Get_ScreenResolution())))
+	if (FAILED(Ready_GraphicDevice(CDisplay::Get_GameWindow(), CDisplay::Get_ScreenResolution())))
 		return E_FAIL;
 
-	vector2Int res = CDisplay::GetInstance().Get_ScreenResolution();
+	vector2Int res = CDisplay::Get_ScreenResolution();
 	if (FAILED(Ready_BackBufferRenderTargetView()))  
 		return E_FAIL;
 	if (FAILED(Ready_DepthStencilView(res.x, res.y))) 
 		return E_FAIL;
 
-	m_pContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
+	GetInstance().m_pContext->OMSetRenderTargets(1, &GetInstance().m_pBackBufferRTV, GetInstance().m_pDepthStencilView);
 
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0;
@@ -46,7 +46,7 @@ HRESULT CGraphicDevice::Initialize()
 	vp.Height = static_cast<float>(res.y);
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
-	m_pContext->RSSetViewports(1, &vp);
+	GetInstance().m_pContext->RSSetViewports(1, &vp);
 
 	{
 		D3D11_DEPTH_STENCIL_DESC dsDesc = {};
@@ -54,7 +54,7 @@ HRESULT CGraphicDevice::Initialize()
 		dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
-		HRESULT hr = m_pDevice->CreateDepthStencilState(&dsDesc, &m_pDepthStencilNoWrite);
+		HRESULT hr = GetInstance().m_pDevice->CreateDepthStencilState(&dsDesc, &GetInstance().m_pDepthStencilNoWrite);
 
 		if (FAILED(hr))
 			return E_FAIL;
@@ -66,30 +66,30 @@ HRESULT CGraphicDevice::Initialize()
 		rsDesc.CullMode = D3D11_CULL_FRONT;
 		rsDesc.DepthClipEnable = TRUE;
 
-		HRESULT hr = m_pDevice->CreateRasterizerState(&rsDesc, &m_pRasterizerCullFront);
+		HRESULT hr = GetInstance().m_pDevice->CreateRasterizerState(&rsDesc, &GetInstance().m_pRasterizerCullFront);
 		if (FAILED(hr))
 			return E_FAIL;
 	}
 
-	m_pSpriteBatch = new SpriteBatch(m_pContext);
+	GetInstance().m_pSpriteBatch = new SpriteBatch(GetInstance().m_pContext);
 
 	return S_OK;
 }
 
 void CGraphicDevice::Destroy()
 {
-	Safe_Release(m_pSwapChain);
-	Safe_Release(m_pDepthStencilView);
-	Safe_Release(m_pBackBufferRTV);
-	Safe_Release(m_pContext);
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pDepthStencilNoWrite);
-	Safe_Release(m_pRasterizerCullFront);
+	Safe_Release(GetInstance().m_pSwapChain);
+	Safe_Release(GetInstance().m_pDepthStencilView);
+	Safe_Release(GetInstance().m_pBackBufferRTV);
+	Safe_Release(GetInstance().m_pContext);
+	Safe_Release(GetInstance().m_pDevice);
+	Safe_Release(GetInstance().m_pDepthStencilNoWrite);
+	Safe_Release(GetInstance().m_pRasterizerCullFront);
 
-	if (m_pSpriteBatch)
+	if (GetInstance().m_pSpriteBatch)
 	{
-		delete m_pSpriteBatch;
-		m_pSpriteBatch = nullptr;
+		delete GetInstance().m_pSpriteBatch;
+		GetInstance().m_pSpriteBatch = nullptr;
 	}
 
 	CoUninitialize();
@@ -115,8 +115,8 @@ HRESULT CGraphicDevice::Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution)
 		nullptr, D3D_DRIVER_TYPE_HARDWARE,
 		nullptr, 0, nullptr, 0,
 		D3D11_SDK_VERSION,
-		&swapDesc, &m_pSwapChain,
-		&m_pDevice, nullptr, &m_pContext
+		&swapDesc, &GetInstance().m_pSwapChain,
+		&GetInstance().m_pDevice, nullptr, &GetInstance().m_pContext
 	);
 
 	if (FAILED(hr))
@@ -130,65 +130,65 @@ HRESULT CGraphicDevice::Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution)
 
 void CGraphicDevice::Set_RenderTarget(HWND _hWnd)
 {
-	auto it = m_mSwapChains.find(_hWnd);
+	auto it = GetInstance().m_mSwapChains.find(_hWnd);
 	
-	if (it == m_mSwapChains.end())
+	if (it == GetInstance().m_mSwapChains.end())
 		return;
 
 	const SwapChainSet& sc = it->second;
 
-	m_pContext->OMSetRenderTargets(1, sc.rtv.GetAddressOf(), sc.dsv.Get());
-	m_pContext->RSSetViewports(1, &sc.viewport);
+	GetInstance().m_pContext->OMSetRenderTargets(1, sc.rtv.GetAddressOf(), sc.dsv.Get());
+	GetInstance().m_pContext->RSSetViewports(1, &sc.viewport);
 
-	m_hCrtWndow = _hWnd;
+	GetInstance().m_hCrtWndow = _hWnd;
 }
 
 HRESULT CGraphicDevice::Clear_BackBuffer_View(const ColorValue* _clearColor)
 {
-	auto it = m_mSwapChains.find(m_hCrtWndow);
-	if (it == m_mSwapChains.end())
+	auto it = GetInstance().m_mSwapChains.find(GetInstance().m_hCrtWndow);
+	if (it == GetInstance().m_mSwapChains.end())
 		return E_FAIL;
 
 	const SwapChainSet& sc = it->second;
 	auto dvColor = _clearColor->dvColor();
 
-	m_pContext->ClearRenderTargetView(sc.rtv.Get(), reinterpret_cast<const _float*>(&dvColor));
+	GetInstance().m_pContext->ClearRenderTargetView(sc.rtv.Get(), reinterpret_cast<const _float*>(&dvColor));
 	return S_OK;
 }
 
 HRESULT CGraphicDevice::Clear_DepthStencil_View()
 {
-	auto it = m_mSwapChains.find(m_hCrtWndow);
-	if (it == m_mSwapChains.end())
+	auto it = GetInstance().m_mSwapChains.find(GetInstance().m_hCrtWndow);
+	if (it == GetInstance().m_mSwapChains.end())
 		return E_FAIL;
 
 	const SwapChainSet& sc = it->second;
-	m_pContext->ClearDepthStencilView(sc.dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	GetInstance().m_pContext->ClearDepthStencilView(sc.dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	return S_OK;
 }
 
 HRESULT CGraphicDevice::Present()
 {
-	auto it = m_mSwapChains.find(m_hCrtWndow);
-	if (it == m_mSwapChains.end())
+	auto it = GetInstance().m_mSwapChains.find(GetInstance().m_hCrtWndow);
+	if (it == GetInstance().m_mSwapChains.end())
 		return E_FAIL;
 
 	return it->second.swapChain->Present(0, 0);
 }
 
-ID3D11Device* CGraphicDevice::Get_Device() const
+ID3D11Device* CGraphicDevice::Get_Device()
 {
-	return m_pDevice;
+	return GetInstance().m_pDevice;
 }
 
-ID3D11DeviceContext* CGraphicDevice::Get_Context() const
+ID3D11DeviceContext* CGraphicDevice::Get_Context()
 {
-	return m_pContext;
+	return GetInstance().m_pContext;
 }
 
-SpriteBatch* CGraphicDevice::Get_SpriteBatch() const
+SpriteBatch* CGraphicDevice::Get_SpriteBatch()
 {
-	return m_pSpriteBatch;
+	return GetInstance().m_pSpriteBatch;
 }
 
 HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin, vector2Int _offsetMax)
@@ -198,7 +198,7 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 
 	// DXGI Factory 생성
 	ComPtr<IDXGIDevice> dxgiDevice;
-	m_pDevice->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
+	GetInstance().m_pDevice->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
 
 	ComPtr<IDXGIAdapter> adapter;
 	dxgiDevice->GetParent(IID_PPV_ARGS(&adapter));
@@ -220,7 +220,7 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 
 	ComPtr<IDXGISwapChain> swapChain;
 
-	if (FAILED(factory->CreateSwapChain(m_pDevice, &sd, &swapChain)))
+	if (FAILED(factory->CreateSwapChain(GetInstance().m_pDevice, &sd, &swapChain)))
 		return E_FAIL;
 
 	sc.swapChain = swapChain;
@@ -229,7 +229,7 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	ComPtr<ID3D11Texture2D> backBuffer;
 	swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
 
-	m_pDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, &sc.rtv);
+	GetInstance().m_pDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, &sc.rtv);
 
 	// DSV 생성
 	D3D11_TEXTURE2D_DESC depthDesc = {};
@@ -243,8 +243,8 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
 	ComPtr<ID3D11Texture2D> depthTex;
-	m_pDevice->CreateTexture2D(&depthDesc, nullptr, &depthTex);
-	m_pDevice->CreateDepthStencilView(depthTex.Get(), nullptr, &sc.dsv);
+	GetInstance().m_pDevice->CreateTexture2D(&depthDesc, nullptr, &depthTex);
+	GetInstance().m_pDevice->CreateDepthStencilView(depthTex.Get(), nullptr, &sc.dsv);
 
 	// 뷰포트 설정
 	sc.viewport.TopLeftX = static_cast<FLOAT>(_offsetMin.x);
@@ -254,16 +254,16 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	sc.viewport.MinDepth = 0.0f;
 	sc.viewport.MaxDepth = 1.0f;
 
-	m_mSwapChains[_hWnd] = move(sc);
+	GetInstance().m_mSwapChains[_hWnd] = move(sc);
 
 	return S_OK;
 }
 
 const D3D11_VIEWPORT* CGraphicDevice::Get_CurrentViewport()
 {
-	auto it = m_mSwapChains.find(m_hCrtWndow);
+	auto it = GetInstance().m_mSwapChains.find(GetInstance().m_hCrtWndow);
 
-	if (it == m_mSwapChains.end())
+	if (it == GetInstance().m_mSwapChains.end())
 		return nullptr;
 
 	return &it->second.viewport;
@@ -271,9 +271,9 @@ const D3D11_VIEWPORT* CGraphicDevice::Get_CurrentViewport()
 
 const D3D11_VIEWPORT* CGraphicDevice::Get_GameViewport()
 {
-	auto it = m_mSwapChains.find(CDisplay::GetInstance().Get_GameWindow());
+	auto it = GetInstance().m_mSwapChains.find(CDisplay::Get_GameWindow());
 
-	if (it == m_mSwapChains.end())
+	if (it == GetInstance().m_mSwapChains.end())
 		return nullptr;
 
 	return &it->second.viewport;
@@ -281,35 +281,35 @@ const D3D11_VIEWPORT* CGraphicDevice::Get_GameViewport()
 
 const D3D11_VIEWPORT* CGraphicDevice::Get_EditorViewport()
 {
-	auto it = m_mSwapChains.find(CDisplay::GetInstance().Get_EditorWindow());
+	auto it = GetInstance().m_mSwapChains.find(CDisplay::Get_EditorWindow());
 
-	if (it == m_mSwapChains.end())
+	if (it == GetInstance().m_mSwapChains.end())
 		return nullptr;
 
 	return &it->second.viewport;
 }
 
-ID3D11DepthStencilState* CGraphicDevice::Get_DepthStencil_NoWrite() const
+ID3D11DepthStencilState* CGraphicDevice::Get_DepthStencil_NoWrite()
 {
-	return m_pDepthStencilNoWrite;
+	return GetInstance().m_pDepthStencilNoWrite;
 }
 
-ID3D11RasterizerState* CGraphicDevice::Get_Rasterizer_CullFront() const
+ID3D11RasterizerState* CGraphicDevice::Get_Rasterizer_CullFront()
 {
-	return m_pRasterizerCullFront;
+	return GetInstance().m_pRasterizerCullFront;
 }
 
 HRESULT CGraphicDevice::Ready_BackBufferRenderTargetView()
 {
-	if (nullptr == m_pDevice)
+	if (nullptr == GetInstance().m_pDevice)
 		return E_FAIL;
 
 	ID3D11Texture2D* pBackBufferTexture = nullptr;
 
-	if (FAILED(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture)))
+	if (FAILED(GetInstance().m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture)))
 		return E_FAIL;
 
-	if (FAILED(m_pDevice->CreateRenderTargetView(pBackBufferTexture, nullptr, &m_pBackBufferRTV)))
+	if (FAILED(GetInstance().m_pDevice->CreateRenderTargetView(pBackBufferTexture, nullptr, &GetInstance().m_pBackBufferRTV)))
 		return E_FAIL;
 
 	Safe_Release(pBackBufferTexture);
@@ -319,7 +319,7 @@ HRESULT CGraphicDevice::Ready_BackBufferRenderTargetView()
 
 HRESULT CGraphicDevice::Ready_DepthStencilView(_uint _winWidth, _uint _winHeight)
 {
-	if (nullptr == m_pDevice)
+	if (nullptr == GetInstance().m_pDevice)
 		return E_FAIL;
 
 	ID3D11Texture2D* pDepthStencilTexture = nullptr;
@@ -346,14 +346,14 @@ HRESULT CGraphicDevice::Ready_DepthStencilView(_uint _winWidth, _uint _winHeight
 	TextureDesc.CPUAccessFlags = 0;
 	TextureDesc.MiscFlags = 0;
 
-	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+	if (FAILED(GetInstance().m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
 		return E_FAIL;
 
 	/* RenderTargetView */
 	/* ShaderResourceView */
 	/* DepthStencilView */
 
-	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDepthStencilView)))
+	if (FAILED(GetInstance().m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &GetInstance().m_pDepthStencilView)))
 		return E_FAIL;
 
 	Safe_Release(pDepthStencilTexture);

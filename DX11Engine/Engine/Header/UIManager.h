@@ -9,8 +9,8 @@ class ENGINE_DLL CUIManager final
 	SINGLETONCLASS(CUIManager);
 
 public:
-	HRESULT Initialize();
-	void Release();
+	static HRESULT Initialize();
+	static void Release();
 
 public:
 	CMaterial* Get_UIGizmoMaterial() const;

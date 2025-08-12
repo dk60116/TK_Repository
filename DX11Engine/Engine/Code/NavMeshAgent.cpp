@@ -35,7 +35,7 @@ HRESULT CNavMeshAgent::Initialize()
 
 void CNavMeshAgent::Awake()
 {
-	auto navs = CSceneManager::GetInstance().Get_CrtScene()->Get_NavMeshes();
+	auto navs = CSceneManager::Get_CrtScene()->Get_NavMeshes();
 	Set_NavMehsh(navs[0], navs[1]);
 
 	if (!m_pNavMeshWalkable)

@@ -39,13 +39,13 @@ HRESULT CUI::Initialize()
 #ifndef _CLIENT_BUILD
 	if (!m_pRectGizmoMesh)
 	{
-		m_pRectGizmoMesh = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"LineRect (Mesh Buffer)");
+		m_pRectGizmoMesh = CResources::LoadOnGame<CMeshBuffer>(L"LineRect (Mesh Buffer)");
 		m_pRectGizmoMesh->AddRef();
 	}
 
 	if (!m_pLineMat)
 	{
-		m_pLineMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
+		m_pLineMat = CResources::LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
 		m_pLineMat->AddRef();
 	}
 #endif
@@ -63,10 +63,10 @@ HRESULT CUI::Initialize()
 	}
 
 	if (!m_pRectMesh)
-		Set_Mesh(CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)"));
+		Set_Mesh(CResources::LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)"));
 
 	if (!m_pMaterial)
-		Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"DefaultUIMaterial (Material)"));
+		Set_Material(CResources::CloneOnGame<CMaterial>(L"DefaultUIMaterial (Material)"));
 
 	return S_OK;
 }

@@ -10,11 +10,11 @@ class ENGINE_DLL CCollisionManager final
 	SINGLETONCLASS(CCollisionManager);
 
 public:
-	HRESULT Initialize();
-	void Release();
+	static HRESULT Initialize();
+	static void Release();
 
 public:
-	void UpdateCollision();
+	static void UpdateCollision();
 
 public:
 	static const vector<CCollider*>& Get_ColliderList();

@@ -19,34 +19,34 @@ public:
 	SINGLETONCLASS(CGraphicDevice);
 
 public:
-	HRESULT Initialize();
-	void Destroy();
+	static HRESULT Initialize();
+	static void Destroy();
 
 public:
-	HRESULT Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution);
+	static HRESULT Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution);
 
-	void Set_RenderTarget(HWND _hWnd);
-	HRESULT Clear_BackBuffer_View(const ColorValue* _clearColor);
-	HRESULT Clear_DepthStencil_View();
-	HRESULT Present();
+	static void Set_RenderTarget(HWND _hWnd);
+	static HRESULT Clear_BackBuffer_View(const ColorValue* _clearColor);
+	static HRESULT Clear_DepthStencil_View();
+	static HRESULT Present();
 
 public:
-	ID3D11Device* Get_Device() const;
-	ID3D11DeviceContext* Get_Context() const;
-	SpriteBatch* Get_SpriteBatch() const;
+	static ID3D11Device* Get_Device();
+	static ID3D11DeviceContext* Get_Context();
+	static SpriteBatch* Get_SpriteBatch();
 
-	HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin = vector2Int::zero(), vector2Int _offsetMax = vector2Int::zero());
+	static HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin = vector2Int::zero(), vector2Int _offsetMax = vector2Int::zero());
 
-	const D3D11_VIEWPORT* Get_CurrentViewport();
-	const D3D11_VIEWPORT* Get_GameViewport();
-	const D3D11_VIEWPORT* Get_EditorViewport();
+	static const D3D11_VIEWPORT* Get_CurrentViewport();
+	static const D3D11_VIEWPORT* Get_GameViewport();
+	static const D3D11_VIEWPORT* Get_EditorViewport();
 
-	ID3D11DepthStencilState* Get_DepthStencil_NoWrite() const;
-	ID3D11RasterizerState* Get_Rasterizer_CullFront() const;
+	static ID3D11DepthStencilState* Get_DepthStencil_NoWrite();
+	static ID3D11RasterizerState* Get_Rasterizer_CullFront();
 
 private:
-	HRESULT Ready_BackBufferRenderTargetView();
-	HRESULT Ready_DepthStencilView(_uint _winWidth, _uint _winHeight);
+	static HRESULT Ready_BackBufferRenderTargetView();
+	static HRESULT Ready_DepthStencilView(_uint _winWidth, _uint _winHeight);
 
 private:
 	ID3D11Device* m_pDevice;

@@ -89,14 +89,14 @@ void CRectTransform::Update()
 
 void CRectTransform::Render_Gizmo()
 {
-    if (CEditor::GetInstance().Get_SelectedGameObject() != m_pGameObject)
+    if (CEditor::Get_SelectedGameObject() != m_pGameObject)
         return;
 
     CCanvas* canvas = m_pUI->Get_Canvas();
 
     vector2 canvasSize = {};
 
-    CCamera* editorCam = CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera();
+    CCamera* editorCam = CSceneManager::Get_CrtScene()->Get_EditorCamera();
 
     _matrix viewMatrix = editorCam->Get_ViewMatrix();
     _matrix projMatrix = editorCam->Get_ProjectionMatrix();

@@ -40,7 +40,7 @@ HRESULT CGameScene::Initialize()
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
-	vahMedoh_BodyObj->CreateMeshHierachy(CResources::GetInstance().LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
+	vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
 
 	CGameObject* wolfObject = Add_GameObject(L"Wolf");
 	CWolf* woolf = wolfObject->AddComponent<CWolf>();
@@ -71,7 +71,7 @@ void CGameScene::Update()
 
 	if (CInput::GetKeyDown(Alpha1))
 	{
-		CSceneManager::GetInstance().LoadScene(L"Main Scene");
+		CSceneManager::LoadScene(L"Main Scene");
 	}
 
 	if (CInput::GetKeyDown_Editor(L))

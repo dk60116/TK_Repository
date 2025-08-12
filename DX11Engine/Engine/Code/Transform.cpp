@@ -65,7 +65,7 @@ HRESULT CTransform::Initialize()
 
 void CTransform::Update()
 {
-    if (CSceneManager::GetInstance().Get_CrtScene()->IsStarted() &&
+    if (CSceneManager::Get_CrtScene()->IsStarted() &&
         m_pGameObject && m_pGameObject->Get_Static() & CGameObject::transformStatic)
         return;
 
@@ -87,10 +87,10 @@ void CTransform::LateUpdate()
 
 void CTransform::Render_Gizmo()
 {
-    if (CEditor::GetInstance().Get_SelectedGameObject() != m_pGameObject)
+    if (CEditor::Get_SelectedGameObject() != m_pGameObject)
         return;
 
-    CCamera* editorCam = CSceneManager::GetInstance().Get_CrtScene()->Get_EditorCamera();
+    CCamera* editorCam = CSceneManager::Get_CrtScene()->Get_EditorCamera();
 
     _matrix viewMatrix = editorCam->Get_ViewMatrix();
     _matrix projMatrix = editorCam->Get_ProjectionMatrix();

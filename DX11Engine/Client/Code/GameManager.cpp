@@ -21,9 +21,9 @@ CGameManager& CGameManager::GetInstance()
 
 HRESULT CGameManager::Initialize()
 {
-	CSceneManager::GetInstance().Add_Layer(3, L"Player");
-	CSceneManager::GetInstance().Add_Layer(4, L"PlayerWeapon");
-	CSceneManager::GetInstance().Add_Layer(5, L"Monster");
+	CSceneManager::Add_Layer(3, L"Player");
+	CSceneManager::Add_Layer(4, L"PlayerWeapon");
+	CSceneManager::Add_Layer(5, L"Monster");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 

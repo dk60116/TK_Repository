@@ -53,7 +53,7 @@ HRESULT CCamera::Initialize()
 
 void CCamera::Update()
 {
-	m_fAspect = static_cast<_float>(CDisplay::GetInstance().Get_ScreenResolution().x) / CDisplay::GetInstance().Get_ScreenResolution().y;
+	m_fAspect = static_cast<_float>(CDisplay::Get_ScreenResolution().x) / CDisplay::Get_ScreenResolution().y;
 
 	Bind_ViewMatrix();
 	Bind_ProjectionMatrix();
@@ -185,7 +185,7 @@ void CCamera::RenderUI()
 	_float4 camPosF4;
 	XMStoreFloat4(&camPosF4, inverseMat.r[3]);
 
-	const _float aspect = CDisplay::GetInstance().Get_Aspect();
+	const _float aspect = CDisplay::Get_Aspect();
 	const _float fHalfHeight = 7.2f * 0.5f;
 	const _float fHalfWidth = fHalfHeight * aspect;
 
@@ -222,7 +222,7 @@ void CCamera::RenderUI()
 
 CPhysics::Ray CCamera::ScreenPointToRay(const vector2Int& _pixel, _float _maxDist)
 {
-	auto res = CDisplay::GetInstance().Get_ScreenResolution();
+	auto res = CDisplay::Get_ScreenResolution();
 	_float w = static_cast<float>(res.x);
 	_float h = static_cast<float>(res.y);
 
@@ -263,9 +263,9 @@ CPhysics::Ray CCamera::ScreenPointToRay(const vector2Int& _pixel, _float _maxDis
 
 CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist)
 {
-	auto eo = CEditor::GetInstance().Get_Options();
+	auto eo = CEditor::Get_Options();
 
-	auto res = CEditor::GetInstance().Get_ScreenResolution();
+	auto res = CEditor::Get_ScreenResolution();
 	_float w = static_cast<_float>(res.x - 40);
 	_float h = static_cast<_float>(res.y + 20);
 
