@@ -61,7 +61,7 @@ void CMainScene::Update()
 {
 	__super::Update();
 
-	if (CInput::GetInstance().GetKeyDown(Alpha1))
+	if (CInput::GetKeyDown(Alpha1))
 	{
 		CGameManager::GetInstance().Set_NexScene(L"Game Scene");
 		CSceneManager::GetInstance().LoadScene(L"Loading Scene");

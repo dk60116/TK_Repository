@@ -33,7 +33,7 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CSceneLoader::GetInstance().Initialize()))
         return E_FAIL;
-    if (FAILED(CInput::GetInstance().Initialize()))
+    if (FAILED(CInput::Initialize()))
         return E_FAIL;
     if (FAILED(CUIManager::GetInstance().Initialize()))
         return E_FAIL;
@@ -81,7 +81,7 @@ void CMainProcess::Update_MainApp()
     CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
 
     CTime::GetInstance().Update();
-    CInput::GetInstance().Update();
+    CInput::Update();
 
     CGraphicDevice& graphicDev = CGraphicDevice::GetInstance();
 

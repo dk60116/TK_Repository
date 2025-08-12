@@ -69,18 +69,18 @@ void CGameScene::Update()
 {
 	__super::Update();
 
-	if (CInput::GetInstance().GetKeyDown(Alpha1))
+	if (CInput::GetKeyDown(Alpha1))
 	{
 		CSceneManager::GetInstance().LoadScene(L"Main Scene");
 	}
 
-	if (CInput::GetInstance().GetKeyDown_Editor(L))
+	if (CInput::GetKeyDown_Editor(L))
 		m_vMonsters[2]->Get_Animator()->Play(L"Idle", 0.1f);
-	if (CInput::GetInstance().GetKeyDown_Editor(K))
+	if (CInput::GetKeyDown_Editor(K))
 		m_vMonsters[2]->Get_Animator()->Play(L"Run", 0.1f);
-	if (CInput::GetInstance().GetKeyDown_Editor(J))
+	if (CInput::GetKeyDown_Editor(J))
 		m_vMonsters[2]->Get_Animator()->Play(L"Attack01", 0.1f);
-	if (CInput::GetInstance().GetKeyDown_Editor(H))
+	if (CInput::GetKeyDown_Editor(H))
 		m_vMonsters[2]->Get_Animator()->Play(L"Find", 0.1f);
 }
 

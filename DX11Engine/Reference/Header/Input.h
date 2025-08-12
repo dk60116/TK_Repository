@@ -17,46 +17,46 @@ public:
 	SINGLETONCLASS(CInput);
 
 public:
-    HRESULT Initialize();
-    void Release();
+    static HRESULT Initialize();
+    static void Release();
 
 public:
-    _bool GetKey_Editor(_int _iKey);
-    _bool GetKeyDown_Editor(_int _iKey);
-    _bool GetKeyUp_Editor(_int _iKey);
-    _bool GetMouseButton_Editor(_int _button);
-    _bool GetMouseButtonDown_Editor(_int _button);
-    _bool GetMouseButtonUp_Editor(_int _button);
+    static _bool GetKey_Editor(const _int _iKey);
+    static _bool GetKeyDown_Editor(_int _iKey);
+    static _bool GetKeyUp_Editor(_int _iKey);
+    static _bool GetMouseButton_Editor(_int _button);
+    static _bool GetMouseButtonDown_Editor(_int _button);
+    static _bool GetMouseButtonUp_Editor(_int _button);
 
-    _bool GetKey(_int _iKey);
-    _bool GetKeyDown(_int _iKey);
-    _bool GetKeyUp(_int _iKey);
-    _bool GetMouseButton(_int _button);
-    _bool GetMouseButtonDown(_int _button);
-    _bool GetMouseButtonUp(_int _button);
+    static _bool GetKey(_int _iKey);
+    static _bool GetKeyDown(_int _iKey);
+    static _bool GetKeyUp(_int _iKey);
+    static _bool GetMouseButton(_int _button);
+    static _bool GetMouseButtonDown(_int _button);
+    static _bool GetMouseButtonUp(_int _button);
 
-    const vector2Int GetMousePos_Editor();
-    const vector2Int GetMousePos();
+    static vector2Int GetMousePos_Editor();
+    static vector2Int GetMousePos();
 
-    const _float GetAxis_Editor(const wstring _axisName);
-    const _float GetAxisRaw_Editor(const wstring _axisName);
+    static _float GetAxis_Editor(const wstring _axisName);
+    static _float GetAxisRaw_Editor(const wstring _axisName);
 
-    const _float GetAxis(const wstring _axisName);
-    const _float GetAxisRaw(const wstring _axisName);
-
-public:
-    _float& Get_WheelAxisRaw();
+    static _float GetAxis(const wstring _axisName);
+    static float GetAxisRaw(const wstring _axisName);
 
 public:
-    void Reset();
-    void Update();
+    static _float& Get_WheelAxisRaw();
+
+public:
+    static void Reset();
+    static void Update();
 
 private:
     void InstallMouseHook();
     void UninstallMouseHook();
 
 private:
-    const _bool IsEditor() const;
+    static _bool IsEditor();
 
 private:
     map<int, bool> m_bKeyState;

@@ -47,8 +47,8 @@ HRESULT CEditorCamera::Initialize()
 
 void CEditorCamera::Update_Editor()
 {
-	const _bool isShift = CInput::GetInstance().GetKey_Editor(SHIFT);
-	const _bool isCtrl = CInput::GetInstance().GetKey_Editor(CONTROL);
+	const _bool isShift = CInput::GetKey_Editor(SHIFT);
+	const _bool isCtrl = CInput::GetKey_Editor(CONTROL);
 
 	CTransform& camTransform = *Get_Transform();
 
@@ -76,31 +76,31 @@ void CEditorCamera::Update_Editor()
 		else
 			m_sOptions.crtMoveSpeed = m_sOptions.moveSpeed;
 
-		const _bool isRightMouseDown = CInput::GetInstance().GetMouseButton_Editor(1);
-		const _bool isMiddleMouseDown = CInput::GetInstance().GetMouseButton_Editor(2);
+		const _bool isRightMouseDown = CInput::GetMouseButton_Editor(1);
+		const _bool isMiddleMouseDown = CInput::GetMouseButton_Editor(2);
 
 		if (isRightMouseDown || isMiddleMouseDown)
 		{
-			vector2Int currentMouse = CInput::GetInstance().GetMousePos_Editor();
+			vector2Int currentMouse = CInput::GetMousePos_Editor();
 
 			if (!m_bRMouseDowned)
 			{
-				m_v2PrevMosuePos = CInput::GetInstance().GetMousePos_Editor();
+				m_v2PrevMosuePos = CInput::GetMousePos_Editor();
 				m_bRMouseDowned = true;
 				return;
 			}
 
-			_float horizontal = CInput::GetInstance().GetAxis_Editor(L"Horizontal");
-			_float vertical = CInput::GetInstance().GetAxis_Editor(L"Vertical");
+			_float horizontal = CInput::GetAxis_Editor(L"Horizontal");
+			_float vertical = CInput::GetAxis_Editor(L"Vertical");
 
 			if (!isCtrl)
 			{
 				camTransform.Add_Position(camTransform.Get_Directions().right * horizontal * DELTA_TIME * m_sOptions.crtMoveSpeed);
 				camTransform.Add_Position(camTransform.Get_Directions().forward * vertical * DELTA_TIME * m_sOptions.crtMoveSpeed);
 
-				if (CInput::GetInstance().GetKey_Editor(Q))
+				if (CInput::GetKey_Editor(Q))
 					camTransform.Add_Position(camTransform.Get_Directions().down * DELTA_TIME * m_sOptions.crtMoveSpeed);
-				if (CInput::GetInstance().GetKey_Editor(E))
+				if (CInput::GetKey_Editor(E))
 					camTransform.Add_Position(camTransform.Get_Directions().up * DELTA_TIME * m_sOptions.crtMoveSpeed);
 
 				m_v2MouseDragDelta = (currentMouse - m_v2PrevMosuePos).to_vector2();
@@ -136,7 +136,7 @@ void CEditorCamera::Update_Editor()
 		}
 	}
 
-	const _float _wheel = CInput::GetInstance().GetAxis_Editor(L"Mouse ScrollWheel");
+	const _float _wheel = CInput::GetAxis_Editor(L"Mouse ScrollWheel");
 
 	if (_wheel != 0)
 	{

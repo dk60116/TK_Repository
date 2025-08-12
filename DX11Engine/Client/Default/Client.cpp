@@ -201,7 +201,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         short delta = GET_WHEEL_DELTA_WPARAM(wParam);
         _float normalized = static_cast<float>(delta) / WHEEL_DELTA;
 
-        CInput::GetInstance().Get_WheelAxisRaw() += normalized;
+        CInput::Get_WheelAxisRaw() += normalized;
 #endif
     }
     return 0;

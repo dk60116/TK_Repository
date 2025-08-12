@@ -51,7 +51,7 @@ void CWoodenSword::Start()
 
 void CWoodenSword::Update()
 {
-	if (CInput::GetInstance().GetKeyDown(V))
+	if (CInput::GetKeyDown(V))
 		CDebug::LogError(Get_Transform()->Get_LocalQuaternion());
 }
 

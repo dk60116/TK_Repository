@@ -215,7 +215,7 @@ LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		short delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		_float normalized = static_cast<float>(delta) / WHEEL_DELTA;
 
-		CInput::GetInstance().Get_WheelAxisRaw() += normalized;
+		CInput::Get_WheelAxisRaw() += normalized;
 #endif
 	}
 	return 0;
@@ -226,19 +226,19 @@ LRESULT CEditor::EditorWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 void CEditor::ChangeControleTool()
 {
-	if (!CInput::GetInstance().GetMouseButton_Editor(1))
+	if (!CInput::GetMouseButton_Editor(1))
 	{
-		if (CInput::GetInstance().GetKeyDown_Editor(Q))
+		if (CInput::GetKeyDown_Editor(Q))
 			Change_ControleTool(TransformControleTool::VIEW);
-		if (CInput::GetInstance().GetKeyDown_Editor(W))
+		if (CInput::GetKeyDown_Editor(W))
 			Change_ControleTool(TransformControleTool::MOVE);
-		if (CInput::GetInstance().GetKeyDown_Editor(E))
+		if (CInput::GetKeyDown_Editor(E))
 			Change_ControleTool(TransformControleTool::ROTATE);
-		if (CInput::GetInstance().GetKeyDown_Editor(R))
+		if (CInput::GetKeyDown_Editor(R))
 			Change_ControleTool(TransformControleTool::SCALE);
-		if (CInput::GetInstance().GetKeyDown_Editor(T))
+		if (CInput::GetKeyDown_Editor(T))
 			Change_ControleTool(TransformControleTool::RECT);
-		if (CInput::GetInstance().GetKeyDown_Editor(Y))
+		if (CInput::GetKeyDown_Editor(Y))
 			Change_ControleTool(TransformControleTool::TRANSFORM);
 	}
 }

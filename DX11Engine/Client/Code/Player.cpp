@@ -114,12 +114,12 @@ void CPlayer::Update()
 {
 	PlayerControle();
 
-	if (CInput::GetInstance().GetKeyDown(P))
+	if (CInput::GetKeyDown(P))
 	{
 		RecoverHp(1);
 	}
 
-	if (CInput::GetInstance().GetKeyDown(O))
+	if (CInput::GetKeyDown(O))
 	{
 		GetDamage(1);
 	}
@@ -181,9 +181,9 @@ CWeapon* CPlayer::ChanageWeapon(const wstring _name)
 
 void CPlayer::PlayerControle()
 {
-	m_bLockOnMode = CInput::GetInstance().GetKey(SHIFT);
-	m_bIsAttack = CInput::GetInstance().GetMouseButtonDown(0);
-	m_bIsJump = CInput::GetInstance().GetKeyDown(SPACE);
+	m_bLockOnMode = CInput::GetKey(SHIFT);
+	m_bIsAttack = CInput::GetMouseButtonDown(0);
+	m_bIsJump = CInput::GetKeyDown(SPACE);
 
 	if (m_bIsJump && !m_bIsPrevJump)
 	{
@@ -212,11 +212,11 @@ void CPlayer::PlayerControle()
 	m_vMoveDirection = vector3::zero();
 	m_fRotateDirection = 0.f;
 
-	if (CInput::GetInstance().GetKey(W))
+	if (CInput::GetKey(W))
 	{
 		m_vMoveDirection += vector3::forward();
 	}
-	if (CInput::GetInstance().GetKey(S))
+	if (CInput::GetKey(S))
 	{
 		m_vMoveDirection += vector3::back();
 	}
@@ -254,7 +254,7 @@ void CPlayer::PlayerControle()
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
 	{
-		if (!CInput::GetInstance().GetKey(SHIFT))
+		if (!CInput::GetKey(SHIFT))
 		{
 			if (m_fRotateDirection != 0.f)
 				PlayMoveAnimation();
@@ -278,11 +278,11 @@ void CPlayer::PlayerControle()
 
 void CPlayer::PlayerControle_NoneLockOn()
 {
-	if (CInput::GetInstance().GetKey(A))
+	if (CInput::GetKey(A))
 	{
 		m_fRotateDirection -= 1.f;
 	}
-	if (CInput::GetInstance().GetKey(D))
+	if (CInput::GetKey(D))
 	{
 		m_fRotateDirection += 1.f;
 	}
@@ -308,7 +308,7 @@ void CPlayer::PlayerControle_NoneLockOn()
 
 	if (m_fRotateDirection != m_fPrevRotateDirection && m_vMoveDirection == vector3::zero())
 	{
-		if (!CInput::GetInstance().GetKey(A) == !CInput::GetInstance().GetKey(D))
+		if (!CInput::GetKey(A) == !CInput::GetKey(D))
 		{
 			if (m_pAnimator)
 			{
@@ -333,11 +333,11 @@ void CPlayer::PlayerControle_LockOn()
 		}
 	}
 
-	if (CInput::GetInstance().GetKey(A))
+	if (CInput::GetKey(A))
 	{
 		m_vMoveDirection.x -= 1.f;
 	}
-	if (CInput::GetInstance().GetKey(D))
+	if (CInput::GetKey(D))
 	{
 		m_vMoveDirection.x += 1.f;
 	}

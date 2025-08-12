@@ -29,25 +29,25 @@ HRESULT CInput::Initialize()
 
 void CInput::Release()
 {
-    m_bKeyState.clear();
-    m_bPrevKeyState.clear();
+    GetInstance().m_bKeyState.clear();
+    GetInstance().m_bPrevKeyState.clear();
 
     //UninstallMouseHook();
 }
 
 _bool CInput::GetKey_Editor(_int _iKey)
 {
-    return m_bKeyState[_iKey] && IsEditor();
+    return GetInstance().m_bKeyState[_iKey] && GetInstance().IsEditor();
 }
 
 _bool CInput::GetKeyDown_Editor(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && IsEditor();
+    return GetInstance().m_bKeyState[_iKey] && !GetInstance().m_bPrevKeyState[_iKey] && GetInstance().IsEditor();
 }
 
 _bool CInput::GetKeyUp_Editor(_int _iKey)
 {
-    return !m_bKeyState[_iKey] && m_bPrevKeyState[_iKey] && IsEditor();
+    return !GetInstance().m_bKeyState[_iKey] && GetInstance().m_bPrevKeyState[_iKey] && GetInstance().IsEditor();
 }
 
 _bool CInput::GetMouseButton_Editor(_int _button)
@@ -61,7 +61,7 @@ _bool CInput::GetMouseButton_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && IsEditor();
+    return GetInstance().m_bKeyState[_button] && GetInstance().IsEditor();
 }
 
 _bool CInput::GetMouseButtonDown_Editor(_int _button)
@@ -75,7 +75,7 @@ _bool CInput::GetMouseButtonDown_Editor(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !m_bPrevKeyState[_button] && IsEditor();
+    return GetInstance().m_bKeyState[_button] && !GetInstance().m_bPrevKeyState[_button] && GetInstance().IsEditor();
 }
 
 _bool CInput::GetMouseButtonUp_Editor(_int _button)
@@ -89,22 +89,22 @@ _bool CInput::GetMouseButtonUp_Editor(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && IsEditor();
+    return !GetInstance().m_bKeyState[_button] && GetInstance().m_bPrevKeyState[_button] && GetInstance().IsEditor();
 }
 
 bool CInput::GetKey(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !IsEditor();
+    return GetInstance().m_bKeyState[_iKey] && !GetInstance().IsEditor();
 }
 
 bool CInput::GetKeyDown(_int _iKey)
 {
-    return m_bKeyState[_iKey] && !m_bPrevKeyState[_iKey] && !IsEditor();
+    return GetInstance().m_bKeyState[_iKey] && !GetInstance().m_bPrevKeyState[_iKey] && !GetInstance().IsEditor();
 }
 
 bool CInput::GetKeyUp(_int _iKey)
 {
-    return !m_bKeyState[_iKey] && m_bPrevKeyState[_iKey] && !IsEditor();
+    return !GetInstance().m_bKeyState[_iKey] && GetInstance().m_bPrevKeyState[_iKey] && !GetInstance().IsEditor();
 }
 
 bool CInput::GetMouseButton(_int _button)
@@ -118,7 +118,7 @@ bool CInput::GetMouseButton(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] && !IsEditor();
+    return GetInstance().m_bKeyState[_button] && !GetInstance().IsEditor();
 }
 
 bool CInput::GetMouseButtonDown(_int _button)
@@ -132,7 +132,7 @@ bool CInput::GetMouseButtonDown(_int _button)
     else
         return false;
 
-    return m_bKeyState[_button] &&!m_bPrevKeyState[_button] && !IsEditor();
+    return GetInstance().m_bKeyState[_button] &&!GetInstance().m_bPrevKeyState[_button] && !GetInstance().IsEditor();
 }
 
 bool CInput::GetMouseButtonUp(_int _button)
@@ -146,10 +146,10 @@ bool CInput::GetMouseButtonUp(_int _button)
     else
         return false;
 
-    return !m_bKeyState[_button] && m_bPrevKeyState[_button] && !IsEditor();
+    return !GetInstance().m_bKeyState[_button] && GetInstance().m_bPrevKeyState[_button] && !GetInstance().IsEditor();
 }
 
-const vector2Int CInput::GetMousePos_Editor()
+vector2Int CInput::GetMousePos_Editor()
 {
     POINT ptMouse;
     GetCursorPos(&ptMouse);
@@ -161,7 +161,7 @@ const vector2Int CInput::GetMousePos_Editor()
     return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }
 
-const vector2Int CInput::GetMousePos()
+vector2Int CInput::GetMousePos()
 {
     POINT ptMouse;
     GetCursorPos(&ptMouse);
@@ -170,7 +170,7 @@ const vector2Int CInput::GetMousePos()
     return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }
 
-const _float CInput::GetAxis_Editor(const wstring _axisName)
+_float CInput::GetAxis_Editor(const wstring _axisName)
 {
     if (!IsEditor())
         return 0.f;
@@ -200,7 +200,7 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
             result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
-        result = m_fWheelAxis;
+        result = GetInstance().m_fWheelAxis;
     else
         return 0.f;
 
@@ -209,7 +209,7 @@ const _float CInput::GetAxis_Editor(const wstring _axisName)
     return result;
 }
 
-const _float CInput::GetAxis(const wstring _axisName)
+_float CInput::GetAxis(const wstring _axisName)
 {
     if (IsEditor())
         return 0.f;
@@ -239,7 +239,7 @@ const _float CInput::GetAxis(const wstring _axisName)
             result += 1.f;
     }
     else if (_axisName == L"Mouse ScrollWheel")
-        result = m_fWheelAxis;
+        result = GetInstance().m_fWheelAxis;
     else
         return 0.f;
 
@@ -250,41 +250,41 @@ const _float CInput::GetAxis(const wstring _axisName)
 
 _float& CInput::Get_WheelAxisRaw()
 {
-    return m_fWheelRaw;
+    return GetInstance().m_fWheelRaw;
 }
 
 void CInput::Reset()
 {
-    for (auto& key : m_bKeyState)
+    for (auto& key : GetInstance().m_bKeyState)
     {
         key.second = false;
-        m_bPrevKeyState[key.first] = false;
+        GetInstance().m_bPrevKeyState[key.first] = false;
     }
 }
 
 void CInput::Update()
 {
-    for (auto& key : m_bKeyState)
+    for (auto& key : GetInstance().m_bKeyState)
     {
-        m_bPrevKeyState[key.first] = key.second;
+        GetInstance().m_bPrevKeyState[key.first] = key.second;
         key.second = (GetAsyncKeyState(key.first) & 0x8000) != 0;
     }
 
-    if (abs(m_fWheelRaw) > 0.f)
+    if (abs(GetInstance().m_fWheelRaw) > 0.f)
     {
-        m_fWheelAxis += m_fWheelRaw * m_sWheelOption.sensitivity;
-        m_fWheelRaw = 0.f;
+        GetInstance().m_fWheelAxis += GetInstance().m_fWheelRaw * GetInstance().m_sWheelOption.sensitivity;
+        GetInstance().m_fWheelRaw = 0.f;
     }
 
-    if (m_fWheelAxis > 0.f)
-        m_fWheelAxis = max(0.f, m_fWheelAxis - m_sWheelOption.gravity * DELTA_TIME);
-    else if (m_fWheelAxis < 0.f)
-        m_fWheelAxis = min(0.f, m_fWheelAxis + m_sWheelOption.gravity * DELTA_TIME);
+    if (GetInstance().m_fWheelAxis > 0.f)
+        GetInstance().m_fWheelAxis = max(0.f, GetInstance().m_fWheelAxis - GetInstance().m_sWheelOption.gravity * DELTA_TIME);
+    else if (GetInstance().m_fWheelAxis < 0.f)
+        GetInstance().m_fWheelAxis = min(0.f, GetInstance().m_fWheelAxis + GetInstance().m_sWheelOption.gravity * DELTA_TIME);
 
-    if (abs(m_fWheelAxis) < m_sWheelOption.dead)
-        m_fWheelAxis = 0.f;
+    if (abs(GetInstance().m_fWheelAxis) < GetInstance().m_sWheelOption.dead)
+        GetInstance().m_fWheelAxis = 0.f;
 
-    m_fWheelAxis = clamp(m_fWheelAxis, -1.f, 1.f);
+    GetInstance().m_fWheelAxis = clamp(GetInstance().m_fWheelAxis, -1.f, 1.f);
 }
 
 LRESULT MouseProc(_int nCode, WPARAM wParam, LPARAM lParam)
@@ -297,9 +297,9 @@ LRESULT MouseProc(_int nCode, WPARAM wParam, LPARAM lParam)
             if (pMouse)
             {
                 short delta = static_cast<short>(HIWORD(pMouse->mouseData));
-                float normalized = static_cast<float>(delta) / WHEEL_DELTA;
+                _float normalized = static_cast<_float>(delta) / WHEEL_DELTA;
 
-                CInput::GetInstance().Get_WheelAxisRaw() += normalized;
+                CInput::Get_WheelAxisRaw() += normalized;
             }
         }
     }
@@ -322,7 +322,7 @@ void CInput::UninstallMouseHook()
     }
 }
 
-const _bool CInput::IsEditor() const
+_bool CInput::IsEditor()
 {
 #ifdef _CLIENT_BUILD
     return false;

@@ -242,9 +242,9 @@ void CScene::Update_Editor()
 
 	CPhysics::RAYCASTHIT firstHit = {};
 
-	if (CInput::GetInstance().GetMouseButtonDown_Editor(0))
+	if (CInput::GetMouseButtonDown_Editor(0))
 	{
-		const vector2Int point = CInput::GetInstance().GetMousePos_Editor();
+		const vector2Int point = CInput::GetMousePos_Editor();
 		CPhysics::Ray ray = m_pEditorCamera->ScreenPointToRay_Editor(point);
 
 		auto hits = CPhysics::GetInstance().Raycast(ray);
@@ -256,7 +256,7 @@ void CScene::Update_Editor()
 
 		//CEditor::GetInstance().Set_SelectedGameObject(firstHit.object);
 
-		if (CInput::GetInstance().GetKey_Editor(CONTROL))
+		if (CInput::GetKey_Editor(CONTROL))
 		{
 			CDebug::LogError("Ray Origin & Dir");
 			CDebug::LogError(ray.origin);
@@ -275,9 +275,9 @@ void CScene::Update_Editor()
 		}
 	}
 
-	if (CInput::GetInstance().GetKey_Editor(CONTROL))
+	if (CInput::GetKey_Editor(CONTROL))
 	{
-		if (CInput::GetInstance().GetKeyDown_Editor(S))
+		if (CInput::GetKeyDown_Editor(S))
 		{
 			wstring path = L"BinaryAssets/SceneData/" + m_strSceneName + L".scenedata";
 			CResources::GetInstance().SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());

@@ -49,7 +49,7 @@ void CPlayerCamera::Start()
 
 void CPlayerCamera::Update()
 {
-	_float wheel = CInput::GetInstance().GetAxis(L"Mouse ScrollWheel");
+	_float wheel = CInput::GetAxis(L"Mouse ScrollWheel");
 
 	if (wheel < 0.f)
 	{
