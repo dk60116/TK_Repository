@@ -153,6 +153,11 @@ void CDebug::Log(const vector3 format, ...)
     Log("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
+void CDebug::Log(const quaternion format, ...)
+{
+    Log("quaternion(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ", " + to_string(format.w) + ')');
+}
+
 void CDebug::Log(const _float4x4 format, ...)
 {
     char buf[512];
@@ -291,6 +296,11 @@ void CDebug::LogError(const vector3 format, ...)
     LogError("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
 }
 
+void CDebug::LogError(const quaternion format, ...)
+{
+    LogError("quaternion(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ", " + to_string(format.w) + ')');
+}
+
 void CDebug::LogWarning(const char* format, ...)
 {
     ShowElapsedTime();
@@ -381,6 +391,11 @@ void CDebug::LogWarning(const vector2Int format, ...)
 void CDebug::LogWarning(const vector3 format, ...)
 {
     LogWarning("vector3(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ')');
+}
+
+void CDebug::LogWarning(const quaternion format, ...)
+{
+	LogWarning("quaternion(" + to_string(format.x) + ", " + to_string(format.y) + ", " + to_string(format.z) + ", " + to_string(format.w) + ')');
 }
 
 string CDebug::MemoryUseLog()

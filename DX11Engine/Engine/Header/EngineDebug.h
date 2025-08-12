@@ -24,6 +24,7 @@ public:
     static void Log(const vector2 format, ...);
     static void Log(const vector2Int format, ...);
     static void Log(const vector3 format, ...);
+    static void Log(const quaternion format, ...);
     static void Log(const _float4x4 format, ...);
     static void Log(const _matrix, ...);
 
@@ -38,6 +39,7 @@ public:
     static void LogError(const vector2 format, ...);
     static void LogError(const vector2Int format, ...);
     static void LogError(const vector3 format, ...);
+	static void LogError(const quaternion format, ...);
 
     static void LogWarning(const char* format, ...);
     static void LogWarning(const string format, ...);
@@ -50,6 +52,7 @@ public:
     static void LogWarning(const vector2 format, ...);
     static void LogWarning(const vector2Int format, ...);
     static void LogWarning(const vector3 format, ...);
+	static void LogWarning(const quaternion format, ...);
 
     static string MemoryUseLog();
 

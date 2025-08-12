@@ -29,9 +29,13 @@ HRESULT CWoodenSword::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	m_sOptions.localPos = vector3(5.55f, 9.54f, -10.82f);
-	m_sOptions.localEuler = vector3(-5.59f, 93.3f, 83.3f);
+	m_sOptions.localPos = vector3(1.614f, 8.730f, -12.002f);
+	m_sOptions.localQuat = quaternion(0.321369f, 0.504944f, 0.568568, 0.564344f);
 	m_sOptions.localScale = 1.5f;
+
+	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	m_pCollider->Set_Center(vector3::up() * 0.4f);
+	m_pCollider->Set_Size(vector3(0.1f, 0.75f, 0.05f));
 
 	return S_OK;
 }
@@ -47,6 +51,8 @@ void CWoodenSword::Start()
 
 void CWoodenSword::Update()
 {
+	if (CInput::GetInstance().GetKeyDown(V))
+		CDebug::LogError(Get_Transform()->Get_LocalQuaternion());
 }
 
 void CWoodenSword::OnDestroy()

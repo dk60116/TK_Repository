@@ -6,6 +6,7 @@ CWeapon::CWeapon()
 	, m_sOptions({})
 	, m_pRenderer(nullptr)
 	, m_pTargetHand(nullptr)
+	, m_pCollider(nullptr)
 {
 }
 
@@ -30,6 +31,6 @@ void CWeapon::Awake()
 
 	tf->SetParent(CGameManager::GetInstance().Get_Player()->Get_Hand());
 	tf->Set_LocalPosition(m_sOptions.localPos);
-	tf->Set_LocalEulerAngles(m_sOptions.localEuler);
+	tf->Set_LocalQuaternion(m_sOptions.localQuat);
 	tf->Set_LocalScale(tf->Get_LocalScale() * m_sOptions.localScale);
 }

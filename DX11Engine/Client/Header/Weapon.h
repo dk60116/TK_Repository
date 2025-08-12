@@ -10,7 +10,7 @@ public:
 	struct WeaponOptions
 	{
 		vector3 localPos = {};
-		vector3 localEuler = {};
+		quaternion localQuat = quaternion::identity();
 		_float localScale = 1.f;
 	};
 
@@ -27,5 +27,6 @@ protected:
 	WeaponOptions m_sOptions;
 	CMeshRenderer* m_pRenderer;
 	CTransform* m_pTargetHand;
+	CBoxCollider* m_pCollider;
 };
 
