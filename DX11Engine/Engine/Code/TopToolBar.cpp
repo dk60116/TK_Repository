@@ -66,7 +66,7 @@ void CTopToolBar::Render()
 	ShowSelectSceneButton();
 	Show2DButton();
 	ShowAIButton();
-	ShowGameStartButton();
+	ShowPlayButton();
 	ShowFPS();
 
 	ImGui::End();
@@ -154,7 +154,7 @@ void CTopToolBar::ShowAIButton()
 	}
 }
 
-void CTopToolBar::ShowGameStartButton()
+void CTopToolBar::ShowPlayButton()
 {
 	ImGui::SameLine();
 
