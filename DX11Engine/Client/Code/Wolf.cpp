@@ -32,6 +32,8 @@ HRESULT CWolf::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	m_pHeadTF = Get_Transform()->Find_ChildRecursive(L"FantasyWolf_ Head");
+
 	return S_OK;
 }
 

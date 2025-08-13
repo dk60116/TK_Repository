@@ -66,6 +66,7 @@ void CTopToolBar::Render()
 	ShowSelectSceneButton();
 	Show2DButton();
 	ShowAIButton();
+	ShowGameStartButton();
 	ShowFPS();
 
 	ImGui::End();
@@ -150,6 +151,21 @@ void CTopToolBar::ShowAIButton()
 			ImGui::EndDisabled();
 
 		ImGui::EndPopup();
+	}
+}
+
+void CTopToolBar::ShowGameStartButton()
+{
+	ImGui::SameLine();
+
+	_float btnWidth = 32.0f;
+	_float centerX = (ImGui::GetWindowWidth() * 0.5f) - (btnWidth * 0.5f);
+
+	ImGui::SetCursorPosX(centerX);
+
+	if (ImGui::Button(u8"¢º"))
+	{
+
 	}
 }
 

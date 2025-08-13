@@ -10,9 +10,11 @@ CMonster::CMonster()
 	, m_pAnimator(nullptr)
 	, m_pController(nullptr)
 	, m_pNavAgent(nullptr)
-	, m_pCollider(nullptr)
 	, m_sOptions({})
 	, m_sStatus({})
+	, m_pHeadTF(nullptr)
+	, m_pBodyCollider(nullptr)
+	, m_pHeadCollider(nullptr)
 {
 	m_strName = L"Wolf";
 }
@@ -57,12 +59,17 @@ HRESULT CMonster::Initialize()
 void CMonster::Awake()
 {
 	//m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
 
 	CDebug::LogError("Add Collider");
 
-	m_pCollider->Set_Center(m_sOptions.colliderCenter);
-	m_pCollider->Set_Size(m_sOptions.colliderSize);
+	m_pBodyCollider->Set_Center(m_sOptions.colliderCenter);
+	m_pBodyCollider->Set_Size(m_sOptions.colliderSize);
+
+	if (m_pHeadTF)
+	{
+		m_pHeadCollider = m_pHeadTF->Get_GameObject()->AddComponent<CSphereCollider>();
+	}
 }
 
 void CMonster::Start()

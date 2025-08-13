@@ -58,7 +58,7 @@ void CCollisionManager::UpdateCollision()
 
 			if (boxA && boxB)
 			{
-				_bool isContatc = CBoxCollider::Intersect(boxA->Get_WorldOBB(), boxB->Get_WorldOBB());
+				_bool isContatc = CBoxCollider::IntersectOBBtoOBB(boxA->Get_WorldOBB(), boxB->Get_WorldOBB());
 
 				if (isContatc)
 				{
@@ -69,6 +69,25 @@ void CCollisionManager::UpdateCollision()
 				{
 					boxA->ExitOther(boxB);
 					boxB->ExitOther(boxA);
+				}
+			}
+
+			auto sphereA = dynamic_cast<CSphereCollider*>(GetInstance().m_vColliderList[i]);
+			auto sphereB = dynamic_cast<CSphereCollider*>(GetInstance().m_vColliderList[j]);
+
+			if (sphereA && sphereB)
+			{
+				_bool isContatc = CSphereCollider::IntersectSPHEREToSPHERE(sphereA->Get_WorldSPHERE(), sphereB->Get_WorldSPHERE());
+
+				if (isContatc)
+				{
+					sphereA->EnterOther(sphereB);
+					sphereB->EnterOther(sphereA);
+				}
+				else
+				{
+					sphereA->ExitOther(sphereB);
+					sphereB->ExitOther(sphereA);
 				}
 			}
 		}

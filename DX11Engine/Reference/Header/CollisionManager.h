@@ -2,6 +2,7 @@
 
 #include "epch.h"
 #include "BoxCollider.h"
+#include "SphereCollider.h"
 
 NS_BEGIN(Engine)
 

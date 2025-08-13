@@ -54,9 +54,13 @@ protected:
 	CAnimator* m_pAnimator;
 	class CMonsterController* m_pController;
 	EngineAI::CNavMeshAgent* m_pNavAgent;
-	CBoxCollider* m_pCollider;
 
 	MonsterOptions m_sOptions;
 	MonsterStatus m_sStatus;
+
+	CTransform* m_pHeadTF;
+
+	CBoxCollider* m_pBodyCollider;
+	CSphereCollider* m_pHeadCollider;
 };
 

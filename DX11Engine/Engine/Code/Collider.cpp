@@ -17,25 +17,19 @@ HRESULT CCollider::Initialize()
 	return S_OK;
 }
 
-void CCollider::Awake()
-{
-	m_iColliderID = m_pGameObject->Get_UniqueID();
-}
-
 void CCollider::LateUpdate()
 {
 }
 
 void CCollider::FixedUpdate()
 {
+	if (m_iColliderID == 0)
+		m_iColliderID = m_pGameObject->Get_UniqueID();
+
 	if (!m_pGameObject->IsActive() || !m_bEnable)
 		return;
 
 	CCollisionManager::Add_Collider(this);
-}
-
-void CCollider::Render()
-{
 }
 
 void CCollider::OnDestroy()

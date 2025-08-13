@@ -8,6 +8,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 CEditor::CEditor()
 	: m_hEditorWindow(nullptr)
+	, m_bPlaying(false)
+	, m_bPrevPlaying(false)
 	, m_mBoxList({})
 	, m_sOptions({})
 	, m_eControleTool(TransformControleTool::MOVE)
@@ -99,6 +101,26 @@ void CEditor::Release()
 		Safe_Release((*it).second);
 
 	GetInstance().m_mBoxList.clear();
+}
+
+void CEditor::Play()
+{
+	GetInstance().m_bPlaying = true;
+}
+
+void CEditor::Stop()
+{
+	GetInstance().m_bPlaying = false;
+}
+
+void CEditor::Pause()
+{
+	GetInstance().m_bPlaying = false;
+}
+
+const _bool CEditor::IsPlaying()
+{
+	return GetInstance().m_bPlaying;
 }
 
 HWND CEditor::Get_EditorWindow()

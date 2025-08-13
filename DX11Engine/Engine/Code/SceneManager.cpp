@@ -149,8 +149,6 @@ void CSceneManager::LoadComplete()
 	auto sceneTransformInfo = CResources::ReadSceneObjectTransformInfos(file);
 
 	GetInstance().m_pCrtScene->Bind_ObjectsTransform(sceneTransformInfo);
-	GetInstance().m_pCrtScene->Awake();
-	GetInstance().m_pCrtScene->Start();
 }
 
 void CSceneManager::Add_Layer(const _uint _index, const wstring& _name)

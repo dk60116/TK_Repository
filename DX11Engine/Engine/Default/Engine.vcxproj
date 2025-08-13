@@ -208,6 +208,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h" />
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h" />
     <ClInclude Include="..\Header\SkyBox.h" />
+    <ClInclude Include="..\Header\SphereCollider.h" />
     <ClInclude Include="..\Header\Terrain.h" />
     <ClInclude Include="..\Header\Text.h" />
     <ClInclude Include="..\Header\Texture.h" />
@@ -316,6 +317,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Shader.cpp" />
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="..\Code\SkyBox.cpp" />
+    <ClCompile Include="..\Code\SphereCollider.cpp" />
     <ClCompile Include="..\Code\Terrain.cpp" />
     <ClCompile Include="..\Code\Text.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />

@@ -17,22 +17,22 @@ CBoxCollider* CBoxCollider::Create()
 	return new CBoxCollider();
 }
 
-CBoxCollider* CBoxCollider::Clone() const
+CComponent* CBoxCollider::Clone() const
 {
 	CBoxCollider* clone = new CBoxCollider();
+
+    clone->m_sLocal = this->m_sLocal;
 
 	return clone;
 }
 
 HRESULT CBoxCollider::Initialize()
 {
-    m_sLocal.center = vector3::zero();
-    m_sLocal.halfExtents = vector3(0.5f, 0.5f, 0.5f);
     m_sLocal.axis[0] = vector3::right();
     m_sLocal.axis[1] = vector3::up();
     m_sLocal.axis[2] = vector3::forward();
 
-    CDebug::LogError("InitBox");
+    Build_WorldOBB();
 
 	return S_OK;
 }
@@ -43,10 +43,6 @@ void CBoxCollider::Update()
 }
 
 void CBoxCollider::LateUpdate()
-{
-}
-
-void CBoxCollider::Render()
 {
 }
 
@@ -172,7 +168,7 @@ void CBoxCollider::Build_WorldOBB()
     m_sWorld.halfExtents = worldHE;
 }
 
-_bool CBoxCollider::Intersect(const OBB& _boxA, const OBB& _boxB, _float* _outPen, vector3* _outAxis)
+_bool CBoxCollider::IntersectOBBtoOBB(const OBB& _boxA, const OBB& _boxB, _float* _outPen, vector3* _outAxis)
 {
     const _float EPS = 1e-6f;
     const vector3 T = _boxB.center - _boxA.center; // A->B

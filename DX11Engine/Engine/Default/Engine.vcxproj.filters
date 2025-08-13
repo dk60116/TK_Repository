@@ -190,6 +190,9 @@
     <ClInclude Include="..\Header\RigidBody.h">
       <Filter>Components\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\SphereCollider.h">
+      <Filter>Components\Collision\Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -508,6 +511,9 @@
     </ClCompile>
     <ClCompile Include="..\Header\RigidBody.cpp">
       <Filter>Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SphereCollider.cpp">
+      <Filter>Components\Collision\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -46,8 +46,19 @@ HRESULT CGameScene::Initialize()
 	CWolf* woolf = wolfObject->AddComponent<CWolf>();
 	m_vMonsters.push_back(woolf);
 
-	if (wolfObject)
+	return S_OK;
+}
+
+void CGameScene::Awake()
+{
+	__super::Awake();
+
+	CGameObject* wolfObject = nullptr;
+
+	if (!m_vMonsters.empty() && m_vMonsters[0])
 	{
+		wolfObject = m_vMonsters[0]->Get_GameObject();
+
 		for (_uint i = 0; i < 2; ++i)
 		{
 			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
@@ -56,13 +67,6 @@ HRESULT CGameScene::Initialize()
 	}
 
 	m_pPlayer->Set_Focus(wolfObject->Get_Transform());
-
-	return S_OK;
-}
-
-void CGameScene::Awake()
-{
-	__super::Awake();
 }
 
 void CGameScene::Update()

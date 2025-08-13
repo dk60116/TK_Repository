@@ -10,9 +10,8 @@ class ENGINE_DLL CBoxCollider final : public CCollider
 	friend class CCollisionManager;
 
 public:
-	typedef struct OrientedBoundingBox
+	typedef struct OrientedBoundingBox : public COLLIDERTF
 	{
-		vector3 center = {};
 		vector3 halfExtents = vector3::one() * 0.5f; 
 		vector3 axis[3] = {};
 
@@ -24,13 +23,12 @@ private:
 
 private:
 	static CBoxCollider* Create();
-	CBoxCollider* Clone() const override;
+	CComponent* Clone() const override;
 
 public:
 	HRESULT Initialize() override;
 	void Update() override;
 	void LateUpdate() override;
-	void Render() override;
 	void Render_Editor() override;
 	void OnDestroy() override;
 
@@ -39,12 +37,12 @@ public:
 	void Set_Size(vector3 _size);
 
 public:
-	static _bool Raycast(CPhysics::Ray _ray, const OBB& box, _float& outT);
+	static _bool Raycast(CPhysics::Ray _ray, const OBB& _box, _float& _outT);
 	static void GetCorners(const OBB& _b, vector3 _outCorners[8]);
 
 private:
 	void Build_WorldOBB();
-	static _bool Intersect(const OBB& _boxA, const OBB& _boxB, _float* _outPen = nullptr, vector3* _outAxis = nullptr);
+	static _bool IntersectOBBtoOBB(const OBB& _boxA, const OBB& _boxB, _float* _outPen = nullptr, vector3* _outAxis = nullptr);
 	static _float ProjectionRadius(const OBB& _obb, const vector3& _n);
 
 public:

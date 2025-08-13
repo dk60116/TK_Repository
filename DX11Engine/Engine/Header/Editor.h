@@ -27,6 +27,13 @@ public:
 	static void Release();
 
 public:
+	static void Play();
+	static void Stop();
+	static void Pause();
+
+	static const _bool IsPlaying();
+
+public:
 	static HWND Get_EditorWindow();
 	static void Editor_Update_Begin();
 	static void Editor_Update_During();
@@ -67,6 +74,7 @@ private:
 	_float m_fCameraMoveDuration;
 
 private:
+	_bool m_bPlaying, m_bPrevPlaying;
 	map<wstring, class CEditorBox*> m_mBoxList;
 
 private:
