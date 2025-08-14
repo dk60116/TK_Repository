@@ -2,6 +2,10 @@
 #include "RigidBody.h"
 
 CRigidBody::CRigidBody()
+    : m_pCollider(nullptr)
+    , m_bUseGravity(true)
+    , m_bIsKinematic(false)
+    , m_vVelocity({})
 {
 }
 

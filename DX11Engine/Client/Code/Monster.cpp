@@ -61,7 +61,7 @@ HRESULT CMonster::Initialize()
 
 void CMonster::Awake()
 {
-	//m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
+	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
 	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
 	m_pRigid = m_pGameObject->AddComponent<CRigidBody>();
 

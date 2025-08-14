@@ -36,18 +36,22 @@ void CCollisionManager::Release()
 
 void CCollisionManager::UpdateCollision()
 {
-	const size_t n = GetInstance().m_vColliderList.size();
-	
+	auto& colliderList = GetInstance().m_vColliderList;
+	const size_t n = colliderList.size();
+
 	if (n < 2) 
 		return;
 
-	for (size_t i = 0; i < GetInstance().m_vColliderList.size(); ++i)
+	for (size_t i = 0; i < colliderList.size(); ++i)
 	{
-		for (size_t j = i + 1; j < GetInstance().m_vColliderList.size(); ++j)
+		for (size_t j = i + 1; j < colliderList.size(); ++j)
 		{
-			_uint layerA = GetInstance().m_vColliderList[i]->Get_GameObject()->GetLayer();
-			_uint layerB = GetInstance().m_vColliderList[j]->Get_GameObject()->GetLayer();
+			_uint layerA = colliderList[i]->Get_GameObject()->GetLayer();
+			_uint layerB = colliderList[j]->Get_GameObject()->GetLayer();
 			
+			if (colliderList[i]->m_iColliderID == colliderList[j]->m_iColliderID)
+				continue;
+
 			if (!GetInstance().m_mCollisionFilter[{layerA, layerB}])
 				continue;
 			if (!GetInstance().m_mCollisionFilter[{layerB, layerA}])
@@ -64,68 +68,32 @@ void CCollisionManager::UpdateCollision()
 			CCollider* colA = nullptr;
 			CCollider* colB = nullptr;
 
+			_float pen = 0.f;
+			vector3 axis = {};
+
 			if (boxA && boxB)
 			{
 				colA = boxA;
 				colB = boxB;
-				isContact = CBoxCollider::IntersectOBBtoOBB(boxA->Get_WorldOBB(), boxB->Get_WorldOBB());
-
-				if (isContact)
-				{
-					//boxA->EnterOther(boxB);
-					//boxB->EnterOther(boxA);
-
-					//if (!boxA->IsTrigger() && !boxB->IsTrigger())
-					//{
-					//	// (b) RigidBody 존재 여부 판단
-					//	// 실제 엔진에 맞게 교체:
-					//	// auto* rbA = dynamic_cast<CRigidBody*>(boxA->Get_GameObject()->Get_Component(L"RigidBody"));
-					//	// auto* rbB = dynamic_cast<CRigidBody*>(boxB->Get_GameObject()->Get_Component(L"RigidBody"));
-					//	CRigidBody* rbA = boxA->
-					//	auto* rbB = /* TODO: Get RB from boxB->Get_GameObject() */ nullptr;
-
-					//	if (rbA || rbB)
-					//	{
-					//		// 정규화된 분리 축이 들어오므로 pen * axis 로 이동량 계산
-					//		// axis 방향: B를 +axis로, A를 -axis로 밀면 분리되도록 위 Intersect 함수가 보장
-					//		const vector3 pushDir = axis;      // normalized
-					//		const _float  depth = pen;       // penetration depth
-
-					//		vector3 moveA = vector3::zero();
-					//		vector3 moveB = vector3::zero();
-
-					//		if (rbA && rbB) {
-					//			// 4) 둘 다 RB: 반반
-					//			moveA = -pushDir * (depth * 0.5f);
-					//			moveB = pushDir * (depth * 0.5f);
-					//		}
-					//		else if (rbA && !rbB) {
-					//			// 3) A만 RB: A만 전부 이동
-					//			moveA = -pushDir * depth;
-					//		}
-					//		else if (!rbA && rbB) {
-					//			// 3) B만 RB: B만 전부 이동
-					//			moveB = pushDir * depth;
-					//		}
-				}
+				isContact = CBoxCollider::IntersectOBBtoOBB(boxA->Get_WorldOBB(), boxB->Get_WorldOBB(), &pen, &axis);
 			}
 			else if (sphereA && sphereB)
 			{
 				colA = sphereA;
 				colB = sphereB;
-				isContact = CSphereCollider::IntersectSPHEREToSPHERE(sphereA->Get_WorldSPHERE(), sphereB->Get_WorldSPHERE());
+				isContact = CSphereCollider::IntersectSPHEREToSPHERE(sphereA->Get_WorldSPHERE(), sphereB->Get_WorldSPHERE(), &pen, &axis);
 			}
 			else if (boxA && sphereB)
 			{
 				colA = boxA;
 				colB = sphereB;
-				isContact = CBoxCollider::IntersectOBBtoSPHERE(boxA->Get_WorldOBB(), sphereB->Get_WorldSPHERE());
+				isContact = CBoxCollider::IntersectOBBtoSPHERE(boxA->Get_WorldOBB(), sphereB->Get_WorldSPHERE(), &pen, &axis);
 			}
 			else if (boxB && sphereA)
 			{
 				colA = boxB;
 				colB = sphereA;
-				isContact = CBoxCollider::IntersectOBBtoSPHERE(boxB->Get_WorldOBB(), sphereA->Get_WorldSPHERE());
+				isContact = CBoxCollider::IntersectOBBtoSPHERE(boxB->Get_WorldOBB(), sphereA->Get_WorldSPHERE(), &pen, &axis);
 			}
 
 			if (colA && colB)
@@ -134,6 +102,40 @@ void CCollisionManager::UpdateCollision()
 				{
 					colA->EnterOther(colB);
 					colB->EnterOther(colA);
+
+					if (isContact)
+					{
+						if (!colA->IsTrigger() && !colB->IsTrigger())
+						{
+							CRigidBody* rbA = colA->Get_RigidBody();
+							CRigidBody* rbB = colB->Get_RigidBody();
+
+							if (rbA || rbB)
+							{
+								vector3 moveA = {};
+								vector3 moveB = {};
+
+								if (rbA && rbB)
+								{
+									moveA = -axis * (pen * 0.5f);
+									moveB = axis * (pen * 0.5f);
+								}
+								else if (rbA && !rbB)
+								{
+									moveA = -axis * pen;
+								}
+								else if (!rbA && rbB)
+								{
+									moveB = axis * pen;
+								}
+
+								if (rbA)
+									rbA->Get_Transform()->Add_Position(moveA * DELTA_TIME * 10.f);
+								if (rbB)
+									rbB->Get_Transform()->Add_Position(moveB * DELTA_TIME * 10.f);
+							}
+						}
+					}
 				}
 				else
 				{
@@ -144,7 +146,7 @@ void CCollisionManager::UpdateCollision()
 		}
 	}
 
-	GetInstance().m_vColliderList.clear();
+	colliderList.clear();
 }
 
 const vector<CCollider*>& CCollisionManager::Get_ColliderList()

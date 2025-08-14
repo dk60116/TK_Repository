@@ -62,9 +62,6 @@ void CCollider::Set_RigidBody(CRigidBody* _rigid)
 
 void CCollider::EnterOther(CCollider* _other)
 {
-	if (!_other || _other->m_iColliderID == m_iColliderID)
-		return;
-
 	if (m_mEnteredColliders.find(_other->m_iColliderID) != m_mEnteredColliders.end())
 	{
 		if (!m_bIsTrigger)
@@ -84,9 +81,6 @@ void CCollider::EnterOther(CCollider* _other)
 
 void CCollider::ExitOther(CCollider* _other)
 {
-	if (!_other || _other->m_iColliderID == m_iColliderID)
-		return;
-
 	auto it = m_mEnteredColliders.find(_other->m_iColliderID);
 	
 	if (it != m_mEnteredColliders.end())

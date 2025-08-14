@@ -71,7 +71,7 @@ void CMonsterController::Awake()
 
 	if (m_pMonster)
 	{
-		//ChangeState(Idle);
+		ChangeState(Idle);
 	}
 }
 

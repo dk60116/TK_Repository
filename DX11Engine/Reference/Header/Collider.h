@@ -6,6 +6,8 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CCollider abstract : public CComponent
 {
+	friend class CCollisionManager;
+
 public:
 	typedef struct ColliderTransform
 	{
