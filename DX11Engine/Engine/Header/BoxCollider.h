@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Collider.h"
+#include "SphereCollider.h"
 
 NS_BEGIN(Engine)
 
@@ -43,6 +44,7 @@ public:
 private:
 	void Build_WorldOBB();
 	static _bool IntersectOBBtoOBB(const OBB& _boxA, const OBB& _boxB, _float* _outPen = nullptr, vector3* _outAxis = nullptr);
+	static _bool IntersectOBBtoSPHERE(const OBB& _box, const CSphereCollider::SPHERE& _sphere, _float* _outPen = nullptr, vector3* _outAxis = nullptr);
 	static _float ProjectionRadius(const OBB& _obb, const vector3& _n);
 
 public:

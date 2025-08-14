@@ -11,6 +11,8 @@ public:
 	{
 		vector3 colliderCenter = {};
 		vector3 colliderSize = vector3::one();
+		vector3 headColliderCenter = {};
+		_float headColliderSize = 50.f;
 	};
 
 	struct MonsterStatus

@@ -535,6 +535,9 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 	{
 		if ((*it))
 		{
+			if (dynamic_cast<CTransform*>(*it))
+				continue;
+
 			newGameObj->m_lComponentList.push_back((*it)->Clone());
 			newGameObj->m_lComponentList.back()->Set_Object(newGameObj);
 			newGameObj->m_lComponentList.back()->AddRef();
@@ -544,6 +547,7 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 	}
 
 	newGameObj->Get_Transform()->SetTransformForMatrix(_rhs->Get_Transform()->Get_WorldMatrix());
+	newGameObj->Awake();
 
 	return newGameObj;
 }

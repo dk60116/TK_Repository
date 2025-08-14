@@ -229,6 +229,64 @@ _bool CBoxCollider::IntersectOBBtoOBB(const OBB& _boxA, const OBB& _boxB, _float
     return true;
 }
 
+_bool CBoxCollider::IntersectOBBtoSPHERE(const OBB& _box, const CSphereCollider::SPHERE& _sphere, _float* _outPen, vector3* _outAxis)
+{
+    const _float EPS = 1e-6f; 
+    const vector3 d = _sphere.center - _box.center;
+    const _float t0 = vector3::dot(d, _box.axis[0]); 
+    const _float t1 = vector3::dot(d, _box.axis[1]);
+    const _float t2 = vector3::dot(d, _box.axis[2]);
+    auto clampf = [](_float v, _float lo, _float hi)->_float { return (v < lo) ? lo : (v > hi) ? hi : v; }; 
+    const _float c0 = clampf(t0, -_box.halfExtents.x, _box.halfExtents.x);
+    const _float c1 = clampf(t1, -_box.halfExtents.y, _box.halfExtents.y); 
+    const _float c2 = clampf(t2, -_box.halfExtents.z, _box.halfExtents.z);
+    const vector3 closest = _box.center + _box.axis[0] * c0 + _box.axis[1] * c1 + _box.axis[2] * c2; 
+    const vector3 delta = _sphere.center - closest; 
+    const _float distSq = delta.lengthSq(); 
+    const _float r = _sphere.radius;
+    if (distSq > r * r) 
+    {
+        if (_outPen)
+            *_outPen = 0.f;
+        if (_outAxis)
+            *_outAxis = vector3::zero();
+        return false;
+    }
+    
+    if (distSq > EPS * EPS) 
+    { 
+        const _float dist = sqrtf(distSq);
+        if (_outPen) 
+            *_outPen = r - dist; 
+        if (_outAxis)
+            *_outAxis = delta / dist;
+        return true;
+    } 
+    
+    const _float dx = _box.halfExtents.x - fabsf(t0);
+    const _float dy = _box.halfExtents.y - fabsf(t1);
+    const _float dz = _box.halfExtents.z - fabsf(t2);
+    _float minFace = dx;
+    vector3 axis = (t0 >= 0.f) ? _box.axis[0] : -_box.axis[0];
+    if (dy < minFace) 
+    {
+        minFace = dy; 
+        axis = (t1 >= 0.f) ? _box.axis[1] : -_box.axis[1];
+    } if (dz < minFace) 
+    {
+        minFace = dz;
+        axis = (t2 >= 0.f) ? _box.axis[2] : -_box.axis[2];
+    } 
+    if (_outAxis)
+        *_outAxis = axis;
+    if (_outPen) 
+    { 
+        const _float pen = (minFace >= r) ? (r + minFace) : (r - minFace); *_outPen = pen; 
+    }
+    
+    return true;
+}
+
 _float CBoxCollider::ProjectionRadius(const OBB& _obb, const vector3& _n)
 {
     const _float e0 = _obb.halfExtents.x;

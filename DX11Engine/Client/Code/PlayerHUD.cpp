@@ -83,6 +83,7 @@ void CPlayerHUD::Awake()
 
 void CPlayerHUD::Start()
 {
+	Update_Heart(3, 3);
 }
 
 void CPlayerHUD::Update()

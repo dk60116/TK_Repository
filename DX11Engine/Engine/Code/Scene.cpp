@@ -226,6 +226,8 @@ void CScene::Awake()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		(*it)->Awake();
+
+	Start();
 }
 
 void CScene::Start()
@@ -565,6 +567,8 @@ void CScene::Bind_ObjectsTransform(const vector<SCENETRANSFORMINFO> _infoList)
 			}
 		}
 	}
+
+	Awake();
 }
 
 vector<CGameObject*> CScene::Get_NavigationStaticObjects()

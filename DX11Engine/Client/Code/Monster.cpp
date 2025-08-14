@@ -69,6 +69,8 @@ void CMonster::Awake()
 	if (m_pHeadTF)
 	{
 		m_pHeadCollider = m_pHeadTF->Get_GameObject()->AddComponent<CSphereCollider>();
+		m_pHeadCollider->Set_Center(m_sOptions.colliderCenter);
+		m_pHeadCollider->Set_Size(m_sOptions.headColliderSize);
 	}
 }
 

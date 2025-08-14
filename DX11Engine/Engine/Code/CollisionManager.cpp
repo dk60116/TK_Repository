@@ -90,6 +90,40 @@ void CCollisionManager::UpdateCollision()
 					sphereB->ExitOther(sphereA);
 				}
 			}
+
+			if (boxA && sphereB)
+			{
+				_bool isContatc = CBoxCollider::IntersectOBBtoSPHERE(boxA->Get_WorldOBB(), sphereB->Get_WorldSPHERE());
+
+
+				if (isContatc)
+				{
+					boxA->EnterOther(sphereB);
+					sphereB->EnterOther(boxA);
+				}
+				else
+				{
+					boxA->ExitOther(sphereB);
+					sphereB->ExitOther(boxA);
+				}
+			}
+
+			if (boxB && sphereA)
+			{
+				_bool isContatc = CBoxCollider::IntersectOBBtoSPHERE(boxB->Get_WorldOBB(), sphereA->Get_WorldSPHERE());
+
+
+				if (isContatc)
+				{
+					boxB->EnterOther(sphereA);
+					sphereA->EnterOther(boxB);
+				}
+				else
+				{
+					boxB->ExitOther(sphereA);
+					sphereA->ExitOther(boxB);
+				}
+			}
 		}
 	}
 
