@@ -5,6 +5,7 @@ CCollider::CCollider()
 	: m_iColliderID(0)
 	, m_mEnteredColliders({})
 	, m_bIsTrigger(false)
+	, m_pRigid(nullptr)
 {
 }
 
@@ -36,6 +37,21 @@ void CCollider::OnDestroy()
 {
 }
 
+const _bool CCollider::IsTrigger() const
+{
+	return m_bIsTrigger;
+}
+
+void CCollider::SetTrigger(const _bool _value)
+{
+	m_bIsTrigger = _value;
+}
+
+void CCollider::Set_RigidBody(CRigidBody* _rigid)
+{
+	m_pRigid = _rigid;
+}
+
 void CCollider::EnterOther(CCollider* _other)
 {
 	if (!_other || _other->m_iColliderID == m_iColliderID)
@@ -43,12 +59,19 @@ void CCollider::EnterOther(CCollider* _other)
 
 	if (m_mEnteredColliders.find(_other->m_iColliderID) != m_mEnteredColliders.end())
 	{
-		m_pGameObject->OnCollisionStay(_other);
+		if (!m_bIsTrigger)
+			m_pGameObject->OnCollisionStay(_other);
+		else
+			m_pGameObject->OnTriggerStay(_other);
 		return;
 	}
 
 	m_mEnteredColliders.emplace(_other->m_iColliderID, _other);
-	m_pGameObject->OnCollisionEnter(_other);
+
+	if (!m_bIsTrigger)
+		m_pGameObject->OnCollisionEnter(_other);
+	else
+		m_pGameObject->OnTriggerEnter(_other);
 }
 
 void CCollider::ExitOther(CCollider* _other)
@@ -60,7 +83,10 @@ void CCollider::ExitOther(CCollider* _other)
 	
 	if (it != m_mEnteredColliders.end())
 	{
-		Get_GameObject()->OnCollisionExit(_other);
+		if (!m_bIsTrigger)
+			Get_GameObject()->OnCollisionExit(_other);
+		else
+			Get_GameObject()->OnTriggerExit(_other);
 		m_mEnteredColliders.erase(it);
 	}
 }

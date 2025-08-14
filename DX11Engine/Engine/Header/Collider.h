@@ -24,6 +24,9 @@ public:
 
 public:
 	virtual void Set_Center(const vector3 _center) PURE;
+	const _bool IsTrigger() const;
+	void SetTrigger(const _bool _value);
+	void Set_RigidBody(class CRigidBody* _rigid);
 
 public:
 	void EnterOther(CCollider* _other);
@@ -34,6 +37,7 @@ protected:
 	_bool m_bIsTrigger;
 	map<_uint, CCollider*> m_mEnteredColliders;
 
+	CRigidBody* m_pRigid;
 };
 
 NS_END
