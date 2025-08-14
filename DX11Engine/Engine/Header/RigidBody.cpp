@@ -26,16 +26,22 @@ HRESULT CRigidBody::Initialize()
     if (FAILED(__super::Initialize()))
         return E_FAIL;
 
+    if (CCollider* col = m_pGameObject->GetComponent<CCollider>())
+    {
+        m_pCollider = col;
+
+        if (m_pCollider)
+        {
+            m_pCollider->AddRef();
+            m_pCollider->Set_RigidBody(this);
+        }
+    }
+
     return S_OK;
 }
 
 void CRigidBody::Awake()
 {
-    if (auto col = m_pGameObject->GetComponent<CCollider>())
-    {
-        m_pCollider = col;
-        m_pCollider->AddRef();
-    }
 }
 
 void CRigidBody::Update()

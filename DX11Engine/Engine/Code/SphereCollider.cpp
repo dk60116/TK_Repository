@@ -108,6 +108,7 @@ void CSphereCollider::Render_Editor()
 
 void CSphereCollider::OnDestroy()
 {
+    __super::OnDestroy();
 }
 
 void CSphereCollider::Set_Center(const vector3 _center)

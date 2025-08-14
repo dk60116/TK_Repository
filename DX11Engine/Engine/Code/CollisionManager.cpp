@@ -43,7 +43,7 @@ void CCollisionManager::UpdateCollision()
 
 	for (size_t i = 0; i < GetInstance().m_vColliderList.size(); ++i)
 	{
-		for (size_t j = i; j < GetInstance().m_vColliderList.size(); ++j)
+		for (size_t j = i + 1; j < GetInstance().m_vColliderList.size(); ++j)
 		{
 			_uint layerA = GetInstance().m_vColliderList[i]->Get_GameObject()->GetLayer();
 			_uint layerB = GetInstance().m_vColliderList[j]->Get_GameObject()->GetLayer();
@@ -56,72 +56,89 @@ void CCollisionManager::UpdateCollision()
 			auto boxA = dynamic_cast<CBoxCollider*>(GetInstance().m_vColliderList[i]);
 			auto boxB = dynamic_cast<CBoxCollider*>(GetInstance().m_vColliderList[j]);
 
-			if (boxA && boxB)
-			{
-				_bool isContatc = CBoxCollider::IntersectOBBtoOBB(boxA->Get_WorldOBB(), boxB->Get_WorldOBB());
-
-				if (isContatc)
-				{
-					boxA->EnterOther(boxB);
-					boxB->EnterOther(boxA);
-				}
-				else
-				{
-					boxA->ExitOther(boxB);
-					boxB->ExitOther(boxA);
-				}
-			}
-
 			auto sphereA = dynamic_cast<CSphereCollider*>(GetInstance().m_vColliderList[i]);
 			auto sphereB = dynamic_cast<CSphereCollider*>(GetInstance().m_vColliderList[j]);
 
-			if (sphereA && sphereB)
-			{
-				_bool isContatc = CSphereCollider::IntersectSPHEREToSPHERE(sphereA->Get_WorldSPHERE(), sphereB->Get_WorldSPHERE());
+			_bool isContact = false;
 
-				if (isContatc)
+			CCollider* colA = nullptr;
+			CCollider* colB = nullptr;
+
+			if (boxA && boxB)
+			{
+				colA = boxA;
+				colB = boxB;
+				isContact = CBoxCollider::IntersectOBBtoOBB(boxA->Get_WorldOBB(), boxB->Get_WorldOBB());
+
+				if (isContact)
 				{
-					sphereA->EnterOther(sphereB);
-					sphereB->EnterOther(sphereA);
-				}
-				else
-				{
-					sphereA->ExitOther(sphereB);
-					sphereB->ExitOther(sphereA);
+					//boxA->EnterOther(boxB);
+					//boxB->EnterOther(boxA);
+
+					//if (!boxA->IsTrigger() && !boxB->IsTrigger())
+					//{
+					//	// (b) RigidBody 존재 여부 판단
+					//	// 실제 엔진에 맞게 교체:
+					//	// auto* rbA = dynamic_cast<CRigidBody*>(boxA->Get_GameObject()->Get_Component(L"RigidBody"));
+					//	// auto* rbB = dynamic_cast<CRigidBody*>(boxB->Get_GameObject()->Get_Component(L"RigidBody"));
+					//	CRigidBody* rbA = boxA->
+					//	auto* rbB = /* TODO: Get RB from boxB->Get_GameObject() */ nullptr;
+
+					//	if (rbA || rbB)
+					//	{
+					//		// 정규화된 분리 축이 들어오므로 pen * axis 로 이동량 계산
+					//		// axis 방향: B를 +axis로, A를 -axis로 밀면 분리되도록 위 Intersect 함수가 보장
+					//		const vector3 pushDir = axis;      // normalized
+					//		const _float  depth = pen;       // penetration depth
+
+					//		vector3 moveA = vector3::zero();
+					//		vector3 moveB = vector3::zero();
+
+					//		if (rbA && rbB) {
+					//			// 4) 둘 다 RB: 반반
+					//			moveA = -pushDir * (depth * 0.5f);
+					//			moveB = pushDir * (depth * 0.5f);
+					//		}
+					//		else if (rbA && !rbB) {
+					//			// 3) A만 RB: A만 전부 이동
+					//			moveA = -pushDir * depth;
+					//		}
+					//		else if (!rbA && rbB) {
+					//			// 3) B만 RB: B만 전부 이동
+					//			moveB = pushDir * depth;
+					//		}
 				}
 			}
-
-			if (boxA && sphereB)
+			else if (sphereA && sphereB)
 			{
-				_bool isContatc = CBoxCollider::IntersectOBBtoSPHERE(boxA->Get_WorldOBB(), sphereB->Get_WorldSPHERE());
-
-
-				if (isContatc)
-				{
-					boxA->EnterOther(sphereB);
-					sphereB->EnterOther(boxA);
-				}
-				else
-				{
-					boxA->ExitOther(sphereB);
-					sphereB->ExitOther(boxA);
-				}
+				colA = sphereA;
+				colB = sphereB;
+				isContact = CSphereCollider::IntersectSPHEREToSPHERE(sphereA->Get_WorldSPHERE(), sphereB->Get_WorldSPHERE());
+			}
+			else if (boxA && sphereB)
+			{
+				colA = boxA;
+				colB = sphereB;
+				isContact = CBoxCollider::IntersectOBBtoSPHERE(boxA->Get_WorldOBB(), sphereB->Get_WorldSPHERE());
+			}
+			else if (boxB && sphereA)
+			{
+				colA = boxB;
+				colB = sphereA;
+				isContact = CBoxCollider::IntersectOBBtoSPHERE(boxB->Get_WorldOBB(), sphereA->Get_WorldSPHERE());
 			}
 
-			if (boxB && sphereA)
+			if (colA && colB)
 			{
-				_bool isContatc = CBoxCollider::IntersectOBBtoSPHERE(boxB->Get_WorldOBB(), sphereA->Get_WorldSPHERE());
-
-
-				if (isContatc)
+				if (isContact)
 				{
-					boxB->EnterOther(sphereA);
-					sphereA->EnterOther(boxB);
+					colA->EnterOther(colB);
+					colB->EnterOther(colA);
 				}
 				else
 				{
-					boxB->ExitOther(sphereA);
-					sphereA->ExitOther(boxB);
+					colA->ExitOther(colB);
+					colB->ExitOther(colA);
 				}
 			}
 		}

@@ -179,10 +179,10 @@
       <Filter>Components\Navigation</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\BoxCollider.h">
-      <Filter>Components\Collision\Collider</Filter>
+      <Filter>Components\Physics\Collider</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Collider.h">
-      <Filter>Components\Collision\Collider</Filter>
+      <Filter>Components\Physics\Collider</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CollisionManager.h">
       <Filter>Physics</Filter>
@@ -191,7 +191,7 @@
       <Filter>Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SphereCollider.h">
-      <Filter>Components\Collision\Collider</Filter>
+      <Filter>Components\Physics\Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -303,14 +303,11 @@
     <Filter Include="Components\Navigation\Transform">
       <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Collision">
-      <UniqueIdentifier>{aae29f6d-3291-40b8-8e8e-fa9f86908d3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Collision\Collider">
-      <UniqueIdentifier>{7fce18fa-1c1c-450e-b79b-34b4317f5394}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\Physics">
       <UniqueIdentifier>{41d5a9ca-5ef1-4cd8-a48e-718c2cc696d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Physics\Collider">
+      <UniqueIdentifier>{7fce18fa-1c1c-450e-b79b-34b4317f5394}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -498,10 +495,10 @@
       <Filter>Components\Navigation</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\BoxCollider.cpp">
-      <Filter>Components\Collision\Collider</Filter>
+      <Filter>Components\Physics\Collider</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Collider.cpp">
-      <Filter>Components\Collision\Collider</Filter>
+      <Filter>Components\Physics\Collider</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Component.cpp">
       <Filter>Components</Filter>
@@ -513,7 +510,7 @@
       <Filter>Components\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\SphereCollider.cpp">
-      <Filter>Components\Collision\Collider</Filter>
+      <Filter>Components\Physics\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

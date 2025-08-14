@@ -15,6 +15,7 @@ CMonster::CMonster()
 	, m_pHeadTF(nullptr)
 	, m_pBodyCollider(nullptr)
 	, m_pHeadCollider(nullptr)
+	, m_pRigid(nullptr)
 {
 	m_strName = L"Wolf";
 }
@@ -62,6 +63,7 @@ void CMonster::Awake()
 {
 	//m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
 	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	m_pRigid = m_pGameObject->AddComponent<CRigidBody>();
 
 	CDebug::LogError("Add Collider");
 

@@ -6,6 +6,8 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CRigidBody final : public CComponent
 {
+	friend class CGameObject;
+
 protected:
 	explicit CRigidBody();
 	~CRigidBody();
@@ -24,7 +26,7 @@ public:
 	void OnDestroy() override;
 
 private:
-	CCollider* m_pCollider;
+	class CCollider* m_pCollider;
 };
 
 NS_END

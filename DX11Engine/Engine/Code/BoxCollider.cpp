@@ -120,6 +120,7 @@ void CBoxCollider::Render_Editor()
 
 void CBoxCollider::OnDestroy()
 {
+    __super::OnDestroy();
 }
 
 void CBoxCollider::Set_Center(vector3 _center)

@@ -26,7 +26,8 @@ public:
 	virtual void Set_Center(const vector3 _center) PURE;
 	const _bool IsTrigger() const;
 	void SetTrigger(const _bool _value);
-	void Set_RigidBody(class CRigidBody* _rigid);
+	class CRigidBody* Get_RigidBody();
+	void Set_RigidBody(CRigidBody* _rigid);
 
 public:
 	void EnterOther(CCollider* _other);

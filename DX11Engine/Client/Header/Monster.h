@@ -64,5 +64,6 @@ protected:
 
 	CBoxCollider* m_pBodyCollider;
 	CSphereCollider* m_pHeadCollider;
+	CRigidBody* m_pRigid;
 };
 
