@@ -595,6 +595,16 @@ void CGameObject::SetLayer(const wstring& _layerName)
 	m_iLayer = CSceneManager::NameToLayer(_layerName);
 }
 
+void CGameObject::SetTag(const _uint _tag)
+{
+	m_iTag = _tag;
+}
+
+void CGameObject::SetTag(const wstring _tagName)
+{
+	SetTag(CSceneManager::NameToTag(_tagName));
+}
+
 const _bool CGameObject::CompareTag(const wstring& _tagName) const
 {
 	return CSceneManager::CompareTag(m_iTag, _tagName);

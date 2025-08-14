@@ -40,6 +40,7 @@ public:
 	static _uint LayerToIndex(const _uint _layer);
 	static _uint NameToIndex(const wstring& _name);
 	static wstring TagToName(const _uint _tag);
+	static _uint NameToTag(const wstring _name);
 	static const _bool LayerMaskResult(const _uint _source, const _uint _mask);
 	static const _bool CompareTag(const _uint _tag, const wstring& _tagName);
 

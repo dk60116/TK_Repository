@@ -219,6 +219,17 @@ wstring CSceneManager::TagToName(const _uint _tag)
 	return GetInstance().m_mTagFlags[_tag];
 }
 
+_uint CSceneManager::NameToTag(const wstring _name)
+{
+	for (auto& kv : GetInstance().m_mTagFlags)
+	{
+		if (kv.second == _name)
+			return kv.first;
+	}
+
+	return 0;
+}
+
 const _bool CSceneManager::LayerMaskResult(const _uint _source, const _uint _mask)
 {
 	return _mask & _source;

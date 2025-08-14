@@ -119,6 +119,8 @@ public:
 	const _uint GetTag() const;
 	void SetLayer(const _uint _layerFlag);
 	void SetLayer(const wstring& _layerName);
+	void SetTag(const _uint _tag);
+	void SetTag(const wstring _tagName);
 
 	const _bool CompareTag(const wstring& _tagName) const;
 

@@ -28,6 +28,8 @@ HRESULT CMonster::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	m_pGameObject->SetLayer(L"Monster");
+
 	if (!m_pController)
 		m_pController = m_pGameObject->AddComponent<CMonsterController>();
 	
@@ -68,6 +70,7 @@ void CMonster::Awake()
 
 	if (m_pHeadTF)
 	{
+		m_pHeadTF->Get_GameObject()->SetLayer(L"MonsterHead");
 		m_pHeadCollider = m_pHeadTF->Get_GameObject()->AddComponent<CSphereCollider>();
 		m_pHeadCollider->Set_Center(m_sOptions.colliderCenter);
 		m_pHeadCollider->Set_Size(m_sOptions.headColliderSize);
