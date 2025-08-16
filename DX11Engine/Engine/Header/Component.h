@@ -67,8 +67,8 @@ public:
 	virtual void OnApplicationQuit();
 
 public:
-	const _bool Get_Enable() const;
-	void Set_Enable(const _bool _enable);
+	const _bool Get_Enabled() const;
+	void Set_Enabled(const _bool _enable);
 
 	CGameObject* Get_GameObject();
 	class CTransform* Get_Transform();
@@ -81,16 +81,16 @@ protected:
 	ID3D11DeviceContext* m_pContext;
 
 protected:
-	_bool m_bEnable;
+	_bool m_bEnabled;
 	class CGameObject* m_pGameObject;
 
 public:
 	virtual vector<FieldInfo> GetInspectorFields();
 
 protected:
-	inline FieldType DetectFieldType(bool&) { return FieldType::BOOL; }
-	inline FieldType DetectFieldType(int&) { return FieldType::INT; }
-	inline FieldType DetectFieldType(float&) { return FieldType::FLOAT; }
+	inline FieldType DetectFieldType(_bool&) { return FieldType::BOOL; }
+	inline FieldType DetectFieldType(_int&) { return FieldType::INT; }
+	inline FieldType DetectFieldType(_float&) { return FieldType::FLOAT; }
 	inline FieldType DetectFieldType(vector2&) { return FieldType::VECTOR2; }
 	inline FieldType DetectFieldType(vector2Int&) { return FieldType::VECTOR2INT; }
 	inline FieldType DetectFieldType(vector3&) { return FieldType::VECTOR3; }

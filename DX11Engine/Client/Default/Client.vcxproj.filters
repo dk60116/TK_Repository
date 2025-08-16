@@ -84,9 +84,6 @@
     <ClInclude Include="..\Header\Player.h">
       <Filter>Scripts\Object\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\PlayerHUD.h">
-      <Filter>Scripts\Object\UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\PlayerCamera.h">
       <Filter>Scripts\Object\Player</Filter>
     </ClInclude>
@@ -112,6 +109,15 @@
       <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Behaviour_CombatWait.h">
+      <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Behaviour_GetHit.h">
+      <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\PlayerHUD.h">
+      <Filter>Scripts\Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Behaviour_Death.h">
       <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
     </ClInclude>
   </ItemGroup>
@@ -177,6 +183,12 @@
       <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Behaviour_CombatWait.cpp">
+      <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Behaviour_GetHit.cpp">
+      <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Behaviour_Death.cpp">
       <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
     </ClCompile>
   </ItemGroup>

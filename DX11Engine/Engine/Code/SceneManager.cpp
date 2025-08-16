@@ -169,7 +169,7 @@ _uint CSceneManager::NameToLayer(const wstring& _name)
 			return layer.value;
 	} 
 
-	return 0;
+	return 99999;
 }
 
 wstring CSceneManager::LayerToName(const _uint _layer)

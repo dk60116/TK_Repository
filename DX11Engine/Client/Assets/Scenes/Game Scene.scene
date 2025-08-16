@@ -23,6 +23,8 @@ Wolf_LookAround : Monsters/Wolf/Wolf_LookAround.fbx : [Animation Clip]
 Wolf_Find : Monsters/Wolf/Wolf_Find.fbx : [Animation Clip]
 Wolf_Run : Monsters/Wolf/Wolf_Run.fbx : [Animation Clip]
 Wolf_Attack01 : Monsters/Wolf/Wolf_Attack01.fbx : [Animation Clip]
+Wolf_GetHit_Front : Monsters/Wolf/Wolf_GetHit_Front.fbx : [Animation Clip]
+Wolf_Death : Monsters/Wolf/Wolf_Death.fbx : [Animation Clip]
 // Space
 Temple_Model : Map/Temple.fbx : [Mesh] [Material]
 Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]

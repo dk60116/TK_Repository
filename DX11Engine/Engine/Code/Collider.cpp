@@ -27,7 +27,7 @@ void CCollider::FixedUpdate()
 	if (m_iColliderID == 0)
 		m_iColliderID = m_pGameObject->Get_UniqueID();
 
-	if (!m_pGameObject->IsActive() || !m_bEnable)
+	if (!m_pGameObject->IsActive() || !m_bEnabled)
 		return;
 
 	CCollisionManager::Add_Collider(this);

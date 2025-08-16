@@ -4,7 +4,7 @@
 CComponent::CComponent()
 	: m_pDevice(nullptr)
 	, m_pContext(nullptr)
-	, m_bEnable(true)
+	, m_bEnabled(true)
 	, m_pGameObject(nullptr)
 {
 }
@@ -155,14 +155,14 @@ void CComponent::OnApplicationQuit()
 {
 }
 
-const _bool CComponent::Get_Enable() const
+const _bool CComponent::Get_Enabled() const
 {
-	return m_bEnable;
+	return m_bEnabled;
 }
 
-void CComponent::Set_Enable(const _bool _enable)
+void CComponent::Set_Enabled(const _bool _enable)
 {
-	m_bEnable = _enable;
+	m_bEnabled = _enable;
 }
 
 

@@ -110,7 +110,7 @@ void CCollisionManager::UpdateCollision()
 							CRigidBody* rbA = colA->Get_RigidBody();
 							CRigidBody* rbB = colB->Get_RigidBody();
 
-							if (rbA || rbB)
+							if (rbA && !rbA->IsKinematic() || rbB && !rbB->IsKinematic())
 							{
 								vector3 moveA = {};
 								vector3 moveB = {};

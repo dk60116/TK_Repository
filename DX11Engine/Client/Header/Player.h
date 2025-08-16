@@ -25,7 +25,7 @@ public:
 	};
 
 protected:
-	CPlayer();
+	explicit CPlayer();
 	~CPlayer();
 
 public:

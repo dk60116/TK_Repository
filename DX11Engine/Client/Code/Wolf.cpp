@@ -56,12 +56,3 @@ void CWolf::OnDestroy()
 {
 	__super::OnDestroy();
 }
-
-void CWolf::OnCollisionEnter(CCollider* _other)
-{
-	CDebug::LogError("Enter");
-}
-
-void CWolf::OnCollisionStay(CCollider* _other)
-{
-}

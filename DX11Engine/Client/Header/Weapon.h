@@ -22,6 +22,9 @@ public:
 	HRESULT Initialize() override;
 	void Awake() override;
 
+public:
+	void OnOffCollider(const _bool _value);
+
 protected:
 	wstring m_strWeaponName;
 	WeaponOptions m_sOptions;

@@ -144,7 +144,9 @@
   <ItemGroup>
     <ClInclude Include="..\Header\Behaviour_Combat.h" />
     <ClInclude Include="..\Header\Behaviour_CombatWait.h" />
+    <ClInclude Include="..\Header\Behaviour_Death.h" />
     <ClInclude Include="..\Header\Behaviour_Find.h" />
+    <ClInclude Include="..\Header\Behaviour_GetHit.h" />
     <ClInclude Include="..\Header\Behaviour_Idle.h" />
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
@@ -169,7 +171,9 @@
   <ItemGroup>
     <ClCompile Include="..\Code\Behaviour_Combat.cpp" />
     <ClCompile Include="..\Code\Behaviour_CombatWait.cpp" />
+    <ClCompile Include="..\Code\Behaviour_Death.cpp" />
     <ClCompile Include="..\Code\Behaviour_Find.cpp" />
+    <ClCompile Include="..\Code\Behaviour_GetHit.cpp" />
     <ClCompile Include="..\Code\Behaviour_Idle.cpp" />
     <ClCompile Include="..\Code\Behaviour_Patrole.cpp" />
     <ClCompile Include="..\Code\Behaviour_Tracking.cpp" />

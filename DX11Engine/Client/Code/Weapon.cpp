@@ -34,4 +34,11 @@ void CWeapon::Awake()
 	tf->Set_LocalPosition(m_sOptions.localPos);
 	tf->Set_LocalQuaternion(m_sOptions.localQuat);
 	tf->Set_LocalScale(tf->Get_LocalScale() * m_sOptions.localScale);
+
+	m_pCollider->Set_Enabled(false);
+}
+
+void CWeapon::OnOffCollider(const _bool _value)
+{
+	m_pCollider->Set_Enabled(_value);
 }

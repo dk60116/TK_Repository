@@ -8,7 +8,7 @@ class CBehaviour_Patrole final : public CMonsterBehaviour
 	friend class CMonsterController;
 
 private:
-	CBehaviour_Patrole();
+	explicit CBehaviour_Patrole();
 	~CBehaviour_Patrole();
 
 public:

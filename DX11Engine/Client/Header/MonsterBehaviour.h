@@ -9,7 +9,7 @@ class CMonsterBehaviour abstract : public UObject
 	friend class CMonsterController;
 
 protected:
-	CMonsterBehaviour();
+	explicit CMonsterBehaviour();
 	~CMonsterBehaviour();
 
 public:
@@ -27,5 +27,7 @@ protected:
 
 protected:
 	_float m_fPassedTime;
+
+	_bool m_bAnyTime;
 };
 

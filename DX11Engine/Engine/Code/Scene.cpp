@@ -396,7 +396,7 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
 			(*it)->RenderMesh();
 	}
 
@@ -405,7 +405,7 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
 			(*it)->RenderUI();
 	}
 

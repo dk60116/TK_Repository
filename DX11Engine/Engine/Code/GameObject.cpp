@@ -54,7 +54,7 @@ void CGameObject::Awake()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->Awake();
 	}
 }
@@ -63,7 +63,7 @@ void CGameObject::Start()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->Start();
 	}
 }
@@ -72,7 +72,7 @@ void CGameObject::Update_Editor()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->Update_Editor();
 	}
 }
@@ -81,7 +81,7 @@ void CGameObject::Update()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->Update();
 	}
 }
@@ -90,7 +90,7 @@ void CGameObject::FixedUpdate()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->FixedUpdate();
 	}
 }
@@ -99,7 +99,7 @@ void CGameObject::LateUpdate()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->LateUpdate();
 	}
 }
@@ -108,7 +108,7 @@ void CGameObject::LateUpdate_Editor()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->LateUpdate_Editor();
 	}
 }
@@ -117,7 +117,7 @@ void CGameObject::OnMouseEnter()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnMouseEnter();
 	}
 }
@@ -126,7 +126,7 @@ void CGameObject::OnMouseOver()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnMouseOver();
 	}
 }
@@ -135,7 +135,7 @@ void CGameObject::OnMouseExit()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnMouseExit();
 	}
 }
@@ -144,7 +144,7 @@ void CGameObject::OnMouseDown()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnMouseDown();
 	}
 }
@@ -153,7 +153,7 @@ void CGameObject::OnMouseDrag()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnMouseDrag();
 	}
 }
@@ -162,7 +162,7 @@ void CGameObject::OnMouseUp()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnMouseUp();
 	}
 }
@@ -171,7 +171,7 @@ void CGameObject::OnCollisionEnter(CCollider* _other)
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnCollisionEnter(_other);
 	}
 }
@@ -180,7 +180,7 @@ void CGameObject::OnCollisionStay(CCollider* _other)
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnCollisionStay(_other);
 	}
 }
@@ -189,7 +189,7 @@ void CGameObject::OnCollisionExit(CCollider* _other)
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnCollisionExit(_other);
 	}
 }
@@ -210,7 +210,7 @@ void CGameObject::OnPreCull_Editor()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnPreCull_Editor();
 	}
 }
@@ -219,7 +219,7 @@ void CGameObject::OnPreRender_Editor()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnPreRender_Editor();
 	}
 }
@@ -228,7 +228,7 @@ void CGameObject::Render_Editor()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->Render_Editor();
 	}
 }
@@ -237,7 +237,7 @@ void CGameObject::OnPostRender_Editor()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnPostRender_Editor();
 	}
 }
@@ -246,7 +246,7 @@ void CGameObject::OnPreCull()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnPreCull();
 	}
 }
@@ -255,7 +255,7 @@ void CGameObject::OnPreRender()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnPreRender();
 	}
 }
@@ -264,7 +264,7 @@ void CGameObject::Render()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->Render();
 	}
 }
@@ -273,7 +273,7 @@ void CGameObject::OnPostRender()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnPostRender();
 	}
 }
@@ -288,7 +288,7 @@ void CGameObject::OnEnable()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnEnable();
 	}
 }
@@ -297,7 +297,7 @@ void CGameObject::OnDisable()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnDisable();
 	}
 }
@@ -317,7 +317,7 @@ void CGameObject::OnApplicationQuit()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))
 	{
-		if ((*it)->Get_Enable())
+		if ((*it)->Get_Enabled())
 			(*it)->OnApplicationQuit();
 	}
 }

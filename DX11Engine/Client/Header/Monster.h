@@ -29,7 +29,7 @@ public:
 	};
 
 protected:
-	CMonster();
+	explicit CMonster();
 	~CMonster();
 
 public:
@@ -38,12 +38,15 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnCollisionEnter(class CCollider* _other) override;
 	void OnDestroy() override;
 
 public:
 	CAnimator* Get_Animator();
+	CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();
+	void Get_Damage(_uint _damage);
 
 protected:
 	CAnimationClip* Add_Animation(const wstring _name);

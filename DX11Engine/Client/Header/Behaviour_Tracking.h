@@ -6,7 +6,7 @@ class CBehaviour_Tracking final : public CMonsterBehaviour
 	friend class CMonsterController;
 
 private:
-	CBehaviour_Tracking();
+	explicit CBehaviour_Tracking();
 	~CBehaviour_Tracking();
 
 public:

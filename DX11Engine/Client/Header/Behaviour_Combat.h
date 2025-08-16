@@ -7,7 +7,7 @@ class CBehaviour_Combat final : public CMonsterBehaviour
 	friend class CMonsterController;
 
 private:
-	CBehaviour_Combat();
+	explicit CBehaviour_Combat();
 	~CBehaviour_Combat();
 
 public:

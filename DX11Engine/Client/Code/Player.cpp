@@ -359,6 +359,11 @@ void CPlayer::PlayerControle_AttackCombo()
 
 	dest = m_fSwordActionEndFrames[m_iAttackComboDest];
 
+	if (m_fAttackComboNT > dest * 0.3f)
+	{
+		m_pEquipWeapon->OnOffCollider(true);
+	}
+
 	if (m_fAttackComboNT > dest)
 	{
 		m_fAttackComboNT = 0.f;
@@ -368,6 +373,8 @@ void CPlayer::PlayerControle_AttackCombo()
 			PlayIdleAnimation(0.25f);
 		else
 			PlayMoveAnimation(0.25f);
+
+		m_pEquipWeapon->OnOffCollider(false);
 	}
 }
 

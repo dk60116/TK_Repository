@@ -1,14 +1,13 @@
 #pragma once
-
 #include "MonsterBehaviour.h"
 
-class CBehaviour_Find final : public CMonsterBehaviour
+class CBehaviour_GetHit : public CMonsterBehaviour
 {
 	friend class CMonsterController;
 
 private:
-	explicit CBehaviour_Find();
-	~CBehaviour_Find();
+	explicit CBehaviour_GetHit();
+	~CBehaviour_GetHit();
 
 public:
 	HRESULT Initialize(class CMonster* _monster) override;
@@ -16,5 +15,8 @@ public:
 	void Enter() override;
 	void During() override;
 	void Exit() override;
+
+private:
+	_float m_fChangeTime;
 };
 

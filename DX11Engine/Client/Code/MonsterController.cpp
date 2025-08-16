@@ -7,12 +7,16 @@
 #include "Behaviour_Combat.h"
 #include "Behaviour_Find.h"
 #include "Behaviour_CombatWait.h"
+#include "Behaviour_GetHit.h"
+#include "Behaviour_Death.h"
 
 CMonsterController::CMonsterController()
 	: m_pMonster(nullptr)
 	, m_eCrtState(MonsterState::Idle)
 	, m_mBehaviourList({})
 	, m_pCrtBehaviour(nullptr)
+	, m_bDamaged(false)
+	, m_bDead(false)
 {
 }
 
@@ -39,6 +43,8 @@ HRESULT CMonsterController::Initialize()
 
 void CMonsterController::Awake()
 {
+	//Set_Monster(m_pGameObject->GetComponent<CMonster>());
+
 	CBehaviour_Idle* idle = new CBehaviour_Idle();
 	idle->Initialize(m_pMonster);
 	idle->AddRef();
@@ -68,6 +74,16 @@ void CMonsterController::Awake()
 	combatWait->Initialize(m_pMonster);
 	combatWait->AddRef();
 	m_mBehaviourList.emplace(CombatWait, combatWait);
+
+	CBehaviour_GetHit* getHit = new CBehaviour_GetHit();
+	getHit->Initialize(m_pMonster);
+	getHit->AddRef();
+	m_mBehaviourList.emplace(GetHit, getHit);
+
+	CBehaviour_Death* death = new CBehaviour_Death();
+	death->Initialize(m_pMonster);
+	death->AddRef();
+	m_mBehaviourList.emplace(Death, death);
 
 	if (m_pMonster)
 	{
@@ -130,8 +146,32 @@ void CMonsterController::UpdateControleState()
 
 void CMonsterController::ChangeState(MonsterState _state)
 {
+	if (m_bDead)
+		return;
+
 	if (m_pCrtBehaviour)
 		m_pCrtBehaviour->Exit();
+
 	m_pCrtBehaviour = m_mBehaviourList[_state];
 	m_pCrtBehaviour->Enter();
+}
+
+const _bool CMonsterController::IsDamaged() const
+{
+	return m_bDamaged;
+}
+
+void CMonsterController::SetDamaged(const _bool _value)
+{
+	m_bDamaged = _value;
+}
+
+const _bool CMonsterController::IsDead() const
+{
+	return m_bDead;
+}
+
+void CMonsterController::SetDead()
+{
+	m_bDead = true;
 }

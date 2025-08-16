@@ -31,15 +31,6 @@ HRESULT CMonster::Initialize()
 
 	m_pGameObject->SetLayer(L"Monster");
 
-	if (!m_pController)
-		m_pController = m_pGameObject->AddComponent<CMonsterController>();
-	
-	if (m_pController)
-	{
-		m_pController->AddRef();
-		m_pController->Set_Monster(this);
-	}
-
 	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strSkinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 
@@ -52,6 +43,8 @@ HRESULT CMonster::Initialize()
 	Add_Animation(L"Find");
 	Add_Animation(L"Run");
 	Add_Animation(L"Attack01");
+	Add_Animation(L"GetHit_Front");
+	Add_Animation(L"Death");
 
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
@@ -61,11 +54,18 @@ HRESULT CMonster::Initialize()
 
 void CMonster::Awake()
 {
+	if (!m_pController)
+		m_pController = m_pGameObject->AddComponent<CMonsterController>();
+
+	if (m_pController)
+	{
+		m_pController->AddRef();
+		m_pController->Set_Monster(this);
+	}
+
 	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
 	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
 	m_pRigid = m_pGameObject->AddComponent<CRigidBody>();
-
-	CDebug::LogError("Add Collider");
 
 	m_pBodyCollider->Set_Center(m_sOptions.colliderCenter);
 	m_pBodyCollider->Set_Size(m_sOptions.colliderSize);
@@ -77,6 +77,8 @@ void CMonster::Awake()
 		m_pHeadCollider->Set_Center(m_sOptions.colliderCenter);
 		m_pHeadCollider->Set_Size(m_sOptions.headColliderSize);
 	}
+
+	m_sStatus.crtHp = m_sStatus.maxHp;
 }
 
 void CMonster::Start()
@@ -85,6 +87,20 @@ void CMonster::Start()
 
 void CMonster::Update()
 {
+}
+
+void CMonster::OnCollisionEnter(CCollider* _other)
+{
+	_uint a = _other->Get_GameObject()->GetLayer();
+	_uint b = CSceneManager::NameToLayer(L"PlayerWeapon");
+
+	if (_other->Get_GameObject()->GetLayer() == CSceneManager::NameToLayer(L"PlayerWeapon"))
+	{
+		if (!m_pController->IsDamaged())
+		{
+			Get_Damage(1);
+		}
+	}
 }
 
 void CMonster::OnDestroy()
@@ -98,6 +114,11 @@ CAnimator* CMonster::Get_Animator()
 	return m_pAnimator;
 }
 
+CMonsterController* CMonster::Get_Controller()
+{
+	return m_pController;
+}
+
 void CMonster::Change_State(const _uint _state)
 {
 	m_pController->ChangeState(CMonsterController::MonsterState(_state));
@@ -106,6 +127,20 @@ void CMonster::Change_State(const _uint _state)
 const CMonster::MonsterStatus& CMonster::Get_Status()
 {
 	return m_sStatus;
+}
+
+void CMonster::Get_Damage(_uint _damage)
+{
+	m_sStatus.crtHp -= _damage;
+
+	if (m_sStatus.crtHp <= 0)
+	{
+		m_sStatus.crtHp = 0;
+		m_pController->ChangeState(CMonsterController::Death);
+		m_pController->SetDead();
+	}
+	else
+		m_pController->ChangeState(CMonsterController::GetHit);
 }
 
 CAnimationClip* CMonster::Add_Animation(const wstring _name)

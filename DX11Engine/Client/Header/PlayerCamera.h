@@ -16,7 +16,7 @@ public:
 	};
 
 protected:
-	CPlayerCamera();
+	explicit CPlayerCamera();
 	~CPlayerCamera();
 
 public:

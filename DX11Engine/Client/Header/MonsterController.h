@@ -5,10 +5,10 @@
 class CMonsterController final : public CComponent
 {
 public:
-	enum MonsterState { Idle, Patrole, Find, Tracking, Combat, CombatWait };
+	enum MonsterState { Idle, Patrole, Find, Tracking, Combat, CombatWait, GetHit, Death };
 
 protected:
-	CMonsterController();
+	explicit CMonsterController();
 	~CMonsterController();
 
 public:
@@ -29,6 +29,10 @@ public:
 
 public:
 	void ChangeState(const MonsterState _state);
+	const _bool IsDamaged() const;
+	void SetDamaged(const _bool _value);
+	const _bool IsDead() const;
+	void SetDead();
 
 private:
 	void UpdateControleState();
@@ -41,5 +45,7 @@ private:
 	CMonsterBehaviour* m_pCrtBehaviour;
 
 	unordered_map<_uint, _bool> m_mStateMap, m_mPrevStateMap;
+	
+	_bool m_bDamaged, m_bDead;
 };
 

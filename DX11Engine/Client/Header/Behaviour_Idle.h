@@ -5,7 +5,7 @@ class CBehaviour_Idle final : public CMonsterBehaviour
 	friend class CMonsterController;
 
 private:
-	CBehaviour_Idle();
+	explicit CBehaviour_Idle();
 	~CBehaviour_Idle();
 
 public:

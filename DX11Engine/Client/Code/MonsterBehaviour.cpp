@@ -5,6 +5,7 @@ CMonsterBehaviour::CMonsterBehaviour()
 	: m_pMonster(nullptr)
 	, m_strBehaviourName(L"")
 	, m_fPassedTime(0.f)
+	, m_bAnyTime(false)
 {
 }
 

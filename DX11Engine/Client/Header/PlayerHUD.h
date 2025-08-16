@@ -12,7 +12,7 @@ public:
 	};
 
 private:
-	CPlayerHUD();
+	explicit CPlayerHUD();
 	~CPlayerHUD();
 
 public:
