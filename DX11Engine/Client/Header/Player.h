@@ -6,6 +6,7 @@ class CPlayer : public CComponent
 {
 public:
 	enum PlayerAnimationStatus { Idle, Run, CombatIdle };
+	enum class HandType { Left, Right };
 
 public:
 	struct StaticPlayerStatus
@@ -44,29 +45,32 @@ public:
 	void OnCollisionExit(class CCollider* _other) override;
 
 public:
-	CTransform* Get_Hand();
+	CTransform* Get_Hand(HandType _hand);
 	void Set_Focus(CTransform* _transform);
 	void RecoverHp(const _uint _value);
 	void GetDamage(const _uint _damage);
-	class CWeapon* ChanageWeapon(const wstring _name);
+	class CWeapon* ChangeWeapon(const wstring _name);
 
 private:
 	void PlayerControle();
 	void PlayerControle_NoneLockOn();
 	void PlayerControle_LockOn();
 	void PlayerControle_AttackCombo();
+	void PlayerControle_BowAction();
 
 	void PlayIdleAnimation(const _float _blending = 0.1f);
 	void PlayMoveAnimation(const _float _blending = 0.1f);
 	void PlayJumpAnimation(const _float _blending = 0.1f);
 	
 	void PlaySwordAnimation();
+	void PlayBowLoadAnimatoin();
 
 private:
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
 	CAnimator* m_pAnimator;
 
-	CTransform* m_pHandTransform;
+	CTransform* m_pRootTransform;
+	CTransform* m_pRHandTransform, * m_pLHandTransform;
 
 	map<wstring, CWeapon*> m_mWeapons;
 	CWeapon* m_pEquipWeapon;
@@ -84,10 +88,11 @@ private:
 	_bool m_bPrevLockOnMode;
 	_bool m_bIsAttack, m_bIsPrevAttack;
 	_bool m_bSwordActionDuring;
+	_bool m_bBowLoadDuring;
 
 	_float m_fSwordActionEndFrames[3];
 
-	_float m_fAttackComboNT;
+	_float m_fAttackComboNT, m_fBowLoadingNT;
 	_uint m_iAttackComboDest;
 
 	_bool m_bIsJump, m_bIsPrevJump;

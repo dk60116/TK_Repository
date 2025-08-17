@@ -43,6 +43,9 @@
     <Filter Include="Scripts\Object\Monster\Controller\Behaviours">
       <UniqueIdentifier>{d175a37c-e52c-446d-ad25-93b13ecb8e90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Weapons\Bows">
+      <UniqueIdentifier>{71257ea8-b877-4ba5-b84d-4141d0ead9cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -120,6 +123,9 @@
     <ClInclude Include="..\Header\Behaviour_Death.h">
       <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\WoodenBow.h">
+      <Filter>Scripts\Object\Weapons\Bows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -190,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Behaviour_Death.cpp">
       <Filter>Scripts\Object\Monster\Controller\Behaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\WoodenBow.cpp">
+      <Filter>Scripts\Object\Weapons\Bows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

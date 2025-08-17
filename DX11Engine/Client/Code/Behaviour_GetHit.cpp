@@ -2,7 +2,7 @@
 #include "Behaviour_GetHit.h"
 
 CBehaviour_GetHit::CBehaviour_GetHit()
-	: m_fChangeTime(1.f)
+	: m_fChangeTime(0.5f)
 {
 	m_bAnyTime = true;
 }

@@ -162,6 +162,7 @@
     <ClInclude Include="..\Header\PlayerHUD.h" />
     <ClInclude Include="..\Header\Weapon.h" />
     <ClInclude Include="..\Header\Wolf.h" />
+    <ClInclude Include="..\Header\WoodenBow.h" />
     <ClInclude Include="..\Header\WoodenSword.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="cpch.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="..\Code\PlayerHUD.cpp" />
     <ClCompile Include="..\Code\Weapon.cpp" />
     <ClCompile Include="..\Code\Wolf.cpp" />
+    <ClCompile Include="..\Code\WoodenBow.cpp" />
     <ClCompile Include="..\Code\WoodenSword.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="cpch.cpp">

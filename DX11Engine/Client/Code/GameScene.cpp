@@ -58,13 +58,13 @@ void CGameScene::Awake()
 	if (!m_vMonsters.empty() && m_vMonsters[0])
 	{
 		wolfObject = m_vMonsters[0]->Get_GameObject();
-		wolfObject->Get_Transform()->Set_PositionX(-20.f);
+		m_vMonsters[0]->Get_Transform()->Set_PositionX(-20.f);
 
 		for (_uint i = 0; i < 2; ++i)
 		{
 			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
 			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
-			cloneWolf->Get_Transform()->Set_PositionX(-20.f + (i + 1) * 1.5f);
+			m_vMonsters.back()->Get_Transform()->Set_PositionX(-20.f + (i + 1) * 1.5f);
 		}
 	}
 
@@ -75,7 +75,7 @@ void CGameScene::Update()
 {
 	__super::Update();
 
-	if (CInput::GetKeyDown(Alpha1))
+	if (CInput::GetKeyDown(Alpha0))
 	{
 		CSceneManager::LoadScene(L"Main Scene");
 	}

@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "Monster.h"
 #include "MonsterController.h"
+#include "Weapon.h"
 
 CMonster::CMonster()
 	: m_strSkinnedMeshBufferName(L"")
@@ -49,6 +50,9 @@ HRESULT CMonster::Initialize()
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
 
+	if (!m_pNavAgent)
+		m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
+
 	return S_OK;
 }
 
@@ -63,7 +67,6 @@ void CMonster::Awake()
 		m_pController->Set_Monster(this);
 	}
 
-	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
 	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
 	m_pRigid = m_pGameObject->AddComponent<CRigidBody>();
 
@@ -91,14 +94,13 @@ void CMonster::Update()
 
 void CMonster::OnCollisionEnter(CCollider* _other)
 {
-	_uint a = _other->Get_GameObject()->GetLayer();
-	_uint b = CSceneManager::NameToLayer(L"PlayerWeapon");
-
 	if (_other->Get_GameObject()->GetLayer() == CSceneManager::NameToLayer(L"PlayerWeapon"))
 	{
+		CWeapon* wp = _other->Get_GameObject()->GetComponent<CWeapon>();
+
 		if (!m_pController->IsDamaged())
 		{
-			Get_Damage(1);
+			Get_Damage(wp);
 		}
 	}
 }
@@ -129,9 +131,14 @@ const CMonster::MonsterStatus& CMonster::Get_Status()
 	return m_sStatus;
 }
 
-void CMonster::Get_Damage(_uint _damage)
+void CMonster::Get_Damage(class CWeapon* _weapon)
 {
-	m_sStatus.crtHp -= _damage;
+	if (!_weapon)
+		return;
+
+	m_sStatus.crtHp -= _weapon->Get_Stat().attack;
+
+	m_pRigid->AddForce(Get_Transform()->Get_Directions().back * _weapon->Get_Stat().knockbackPower);
 
 	if (m_sStatus.crtHp <= 0)
 	{

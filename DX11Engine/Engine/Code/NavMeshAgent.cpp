@@ -35,8 +35,11 @@ HRESULT CNavMeshAgent::Initialize()
 
 void CNavMeshAgent::Awake()
 {
-	auto navs = CSceneManager::Get_CrtScene()->Get_NavMeshes();
-	Set_NavMehsh(navs[0], navs[1]);
+	if (!m_pNavMeshWalkable)
+	{
+		auto navs = CSceneManager::Get_CrtScene()->Get_NavMeshes();
+		Set_NavMehsh(navs[0], navs[1]);
+	}
 
 	if (!m_pNavMeshWalkable)
 		return;
@@ -79,17 +82,17 @@ void CNavMeshAgent::Awake()
 
 void CNavMeshAgent::Update()
 {
-	if (!m_pNavMeshWalkable) 
+	if (!m_pNavMeshWalkable)
 		return;
 
 	auto* tr = m_pGameObject->Get_Transform();
 	vector3 posW = tr->Get_Position();
 
 	// 1) 현재 폴리곤이 유효한가? (유효하지 않다면 빠르게 재탐색)
-	if (m_iCurrentPoly < 0) 
+	if (m_iCurrentPoly < 0)
 	{
 		m_iCurrentPoly = m_pNavMeshWalkable->FindContainingPolygon(posW);
-		if (m_iCurrentPoly < 0) 
+		if (m_iCurrentPoly < 0)
 		{
 			RollbackToPrevPosition();
 			return;
@@ -101,7 +104,7 @@ void CNavMeshAgent::Update()
 	_int poly = m_iCurrentPoly;
 	const _bool ok = TryAdvanceAcrossNeighbors(posW, poly, proj);
 
-	if (ok) 
+	if (ok)
 	{
 		// 성공: 현재 폴리곤 갱신 + (선택) Y 높이 보정
 		m_iCurrentPoly = poly;
@@ -117,7 +120,7 @@ void CNavMeshAgent::Update()
 		W = XMMatrixScalingFromVector(S) * XMMatrixRotationQuaternion(R) * XMMatrixTranslation(onPlane.x, onPlane.y, onPlane.z);
 		tr->SetTransformForMatrix(W);
 	}
-	else 
+	else
 	{
 		RollbackToPrevPosition();
 	}

@@ -5,7 +5,7 @@
 class CWeapon abstract : public CComponent
 {
 public:
-	enum class WeaponType { Swords, Bow, Bomb };
+	enum class WeaponType { None, Sword, Bow, Bomb };
 
 	struct WeaponOptions
 	{
@@ -13,6 +13,13 @@ public:
 		quaternion localQuat = quaternion::identity();
 		_float localScale = 1.f;
 	};
+
+	typedef struct WeaponStatus
+	{
+		WeaponType type = WeaponType::None;
+		_int attack = 1;
+		_float knockbackPower = 1.f;
+	}WEAPONSTAT;
 
 protected:
 	explicit CWeapon();
@@ -23,13 +30,18 @@ public:
 	void Awake() override;
 
 public:
+	const WeaponType Get_WeaponType() const;
+	const wstring& Get_WeaponName();
+	const WEAPONSTAT& Get_Stat();
 	void OnOffCollider(const _bool _value);
 
 protected:
 	wstring m_strWeaponName;
 	WeaponOptions m_sOptions;
+	WEAPONSTAT m_sStat;
 	CMeshRenderer* m_pRenderer;
 	CTransform* m_pTargetHand;
 	CBoxCollider* m_pCollider;
+	CPlayer::HandType m_eHandType;
 };
 

@@ -1,11 +1,14 @@
 #include "cpch.h"
 #include "Player.h"
 #include "WoodenSword.h"
+#include "WoodenBow.h"
 
 CPlayer::CPlayer()
 	: m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
-	, m_pHandTransform(nullptr)
+	, m_pRootTransform(nullptr)
+	, m_pRHandTransform(nullptr)
+	, m_pLHandTransform(nullptr)
 	, m_mWeapons({})
 	, m_pEquipWeapon(nullptr)
 	, m_sPlayerStatus({})
@@ -23,8 +26,10 @@ CPlayer::CPlayer()
 	, m_bIsAttack(false)
 	, m_bIsPrevAttack(false)
 	, m_bSwordActionDuring(false)
+	, m_bBowLoadDuring(false)
 	, m_fSwordActionEndFrames()
 	, m_fAttackComboNT(0.f)
+	, m_fBowLoadingNT(0.f)
 	, m_iAttackComboDest(0)
 	, m_bIsJump(false)
 	, m_bIsPrevJump(false)
@@ -62,7 +67,9 @@ HRESULT CPlayer::Initialize()
 
 	m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
 
-	m_pHandTransform = m_pGameObject->Get_Transform()->Find_ChildRecursive(L"RightHand");
+	m_pRootTransform = Get_Transform()->Get_Child(1);
+	m_pLHandTransform = Get_Transform()->Find_ChildRecursive(L"LeftHand");
+	m_pRHandTransform = Get_Transform()->Find_ChildRecursive(L"RightHand");
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
@@ -77,9 +84,14 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"Jump", CResources::LoadOnScene<CAnimationClip>(L"Link_Jump (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordCombo", CResources::LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
+	m_pAnimator->Add_Animation(L"BowLoad", CResources::LoadOnScene<CAnimationClip>(L"Link_BowLoad (Animation)"));
+	m_pAnimator->Add_Animation(L"BowAming", CResources::LoadOnScene<CAnimationClip>(L"Link_BowAming (Animation)"));
 
 	CGameObject* swordObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Sword");
 	m_mWeapons.emplace(L"Sword", swordObj->AddComponent<CWoodenSword>());
+
+	CGameObject* bowObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Bow");
+	m_mWeapons.emplace(L"Bow", bowObj->AddComponent<CWoodenBow>());
 
 	for (TRAVERSAL_ITER(m_mWeapons, it))
 		(*it).second->Get_GameObject()->SetActive(false);
@@ -102,7 +114,7 @@ void CPlayer::Awake()
 
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 
-	ChanageWeapon(L"Sword");
+	ChangeWeapon(L"Sword");
 }
 
 void CPlayer::Start()
@@ -113,6 +125,11 @@ void CPlayer::Start()
 void CPlayer::Update()
 {
 	PlayerControle();
+
+	if (CInput::GetKeyDown(Alpha1))
+		ChangeWeapon(L"Sword");
+	if (CInput::GetKeyDown(Alpha2))
+		ChangeWeapon(L"Bow");
 
 	if (CInput::GetKeyDown(P))
 	{
@@ -143,9 +160,17 @@ void CPlayer::OnCollisionExit(CCollider* _other)
 	//CDebug::Log("Exit");
 }
 
-CTransform* CPlayer::Get_Hand()
+CTransform* CPlayer::Get_Hand(HandType _hand)
 {
-	return m_pHandTransform;
+	switch (_hand)
+	{
+	case CPlayer::HandType::Left:
+		return m_pLHandTransform;
+	case CPlayer::HandType::Right:
+		return m_pRHandTransform;
+	}
+
+	return nullptr;
 }
 
 void CPlayer::Set_Focus(CTransform* _transform)
@@ -167,14 +192,17 @@ void CPlayer::GetDamage(const _uint _damage)
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 
-CWeapon* CPlayer::ChanageWeapon(const wstring _name)
+CWeapon* CPlayer::ChangeWeapon(const wstring _name)
 {
 	if (m_pEquipWeapon)
-		m_pEquipWeapon->Get_GameObject();
+		m_pEquipWeapon->Get_GameObject()->SetActive(false);
 
 	m_pEquipWeapon = m_mWeapons[_name];
 
 	m_pEquipWeapon->Get_GameObject()->SetActive(true);
+
+	m_bSwordActionDuring = false;
+	m_bBowLoadDuring = false;
 
 	return m_pEquipWeapon;
 }
@@ -190,16 +218,33 @@ void CPlayer::PlayerControle()
 		PlayJumpAnimation();
 	}
 
-	if (m_bIsAttack && !m_bIsPrevAttack)
+	if (m_pEquipWeapon->Get_WeaponType() == CWeapon::WeaponType::Sword)
 	{
-		PlaySwordAnimation();
-		m_bSwordActionDuring = true;
-		m_fAttackComboNT = 0.f;
-		return;
-	}
+		if (m_bIsAttack && !m_bIsPrevAttack)
+		{
+			PlaySwordAnimation();
+			m_bSwordActionDuring = true;
+			m_fAttackComboNT = 0.f;
+			return;
+		}
 
-	if (m_bSwordActionDuring)
-		PlayerControle_AttackCombo();
+		if (m_bSwordActionDuring)
+			PlayerControle_AttackCombo();
+	}
+	else if (m_pEquipWeapon->Get_WeaponType() == CWeapon::WeaponType::Bow)
+	{
+		if (m_bIsAttack && !m_bIsPrevAttack)
+		{
+			PlayBowLoadAnimatoin();
+			m_bBowLoadDuring = true;
+			m_fAttackComboNT = 0.f;
+			m_pRootTransform->Set_LocalEulerAnglesY(180.f);
+			return;
+		}
+
+		if (m_bBowLoadDuring)
+			PlayerControle_BowAction();
+	}
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
 	{
@@ -355,16 +400,14 @@ void CPlayer::PlayerControle_AttackCombo()
 {
 	m_fAttackComboNT += DELTA_TIME;
 
-	_float dest = 0.f;
-
-	dest = m_fSwordActionEndFrames[m_iAttackComboDest];
+	_float dest = m_fSwordActionEndFrames[m_iAttackComboDest];
 
 	if (m_fAttackComboNT > dest * 0.3f)
 	{
 		m_pEquipWeapon->OnOffCollider(true);
 	}
 
-	if (m_fAttackComboNT > dest)
+	if (m_fAttackComboNT >= dest)
 	{
 		m_fAttackComboNT = 0.f;
 		m_bSwordActionDuring = false;
@@ -375,6 +418,27 @@ void CPlayer::PlayerControle_AttackCombo()
 			PlayMoveAnimation(0.25f);
 
 		m_pEquipWeapon->OnOffCollider(false);
+	}
+}
+
+void CPlayer::PlayerControle_BowAction()
+{
+	m_fBowLoadingNT += DELTA_TIME;
+
+	_float dest = 2.5f;
+
+	if (m_fBowLoadingNT >= dest)
+	{
+		m_fBowLoadingNT = 0.f;
+		m_bBowLoadDuring = false;
+
+		m_pAnimator->SetLoop(true);
+		m_pAnimator->Play(L"BowAming", 0.2f);
+	}
+	else
+	{
+		_float lerpYValue = Lerp(m_pRootTransform->Get_LocalEulerAngles().y, -90.f, DELTA_TIME);
+		m_pRootTransform->Set_LocalEulerAnglesY(lerpYValue);
 	}
 }
 
@@ -461,6 +525,16 @@ void CPlayer::PlaySwordAnimation()
 		m_pAnimator->SetLoop(true);
 		m_pAnimator->Play(L"SwordCombo", 0.1f);
 	}
+}
 
-	//CDebug::Log("SwordCombo");
+void CPlayer::PlayBowLoadAnimatoin()
+{
+	if (m_bIsJump || m_bBowLoadDuring)
+		return;
+
+	if (m_pAnimator)
+	{
+		m_pAnimator->SetLoop(false);
+		m_pAnimator->Play(L"BowLoad", 0.1f);
+	}
 }

@@ -3,7 +3,6 @@
 
 CWoodenSword::CWoodenSword()
 {
-	m_strName = L"WoodenSword";
 }
 
 CWoodenSword::~CWoodenSword()
@@ -24,18 +23,22 @@ CComponent* CWoodenSword::Clone() const
 
 HRESULT CWoodenSword::Initialize()
 {
-	m_strName = L"WoodenSword";
+	m_sStat.type = WeaponType::Sword;
+	m_strWeaponName = L"WoodenSword";
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	m_sOptions.localPos = vector3(1.614f, 8.730f, -12.002f);
+	m_sOptions.localPos = vector3(1.614f, 8.73f, -12.f);
 	m_sOptions.localQuat = quaternion(0.321369f, 0.504944f, 0.568568f, 0.564344f);
 	m_sOptions.localScale = 1.5f;
 
+	m_sStat.attack = 1;
+	m_sStat.knockbackPower = 2.f;
+
 	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
 	m_pCollider->Set_Center(vector3::up() * 0.4f);
-	m_pCollider->Set_Size(vector3(0.1f, 0.75f, 0.05f));
+	m_pCollider->Set_Size(vector3(0.15f, 1.f, 0.1f));
 
 	return S_OK;
 }
@@ -47,12 +50,12 @@ void CWoodenSword::Awake()
 
 void CWoodenSword::Start()
 {
+	__super::Start();
 }
 
 void CWoodenSword::Update()
 {
-	if (CInput::GetKeyDown(V))
-		CDebug::LogError(Get_Transform()->Get_LocalQuaternion());
+	__super::Update();
 }
 
 void CWoodenSword::OnDestroy()

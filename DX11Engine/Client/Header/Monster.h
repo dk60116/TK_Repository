@@ -43,10 +43,10 @@ public:
 
 public:
 	CAnimator* Get_Animator();
-	CMonsterController* Get_Controller();
+	class CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();
-	void Get_Damage(_uint _damage);
+	void Get_Damage(class CWeapon* _weapon);
 
 protected:
 	CAnimationClip* Add_Animation(const wstring _name);

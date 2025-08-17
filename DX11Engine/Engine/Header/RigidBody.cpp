@@ -64,6 +64,8 @@ void CRigidBody::Update()
     CTransform* myTf = Get_Transform();
 
     myTf->Add_Position(m_vVelocity * DELTA_TIME);
+
+    m_vVelocity = vector3::Lerp(m_vVelocity, vector3::zero(), DELTA_TIME);
 }
 
 void CRigidBody::LateUpdate()
@@ -91,4 +93,14 @@ const _bool CRigidBody::UseGravity() const
 const _bool CRigidBody::IsKinematic() const
 {
     return m_bIsKinematic;
+}
+
+void CRigidBody::AddForce(const vector3 _value)
+{
+    m_vVelocity += _value;
+}
+
+void CRigidBody::ResetVelocity()
+{
+    m_vVelocity = vector3::zero();
 }

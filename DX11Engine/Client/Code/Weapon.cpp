@@ -4,10 +4,13 @@
 CWeapon::CWeapon()
 	: m_strWeaponName(L"")
 	, m_sOptions({})
+	, m_sStat({})
 	, m_pRenderer(nullptr)
 	, m_pTargetHand(nullptr)
 	, m_pCollider(nullptr)
+	, m_eHandType(CPlayer::HandType::Right)
 {
+	m_strName = L"Player Weapon";
 }
 
 CWeapon::~CWeapon()
@@ -21,7 +24,7 @@ HRESULT CWeapon::Initialize()
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"PlayerWeapon");
-	m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strName + L" (MeshBuffer)"));
+	m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strWeaponName + L" (MeshBuffer)"), 0.01f * m_sOptions.localScale);
 
 	return S_OK;
 }
@@ -30,12 +33,27 @@ void CWeapon::Awake()
 {
 	CTransform* tf = Get_Transform();
 
-	tf->SetParent(CGameManager::GetInstance().Get_Player()->Get_Hand());
+	tf->SetParent(CGameManager::GetInstance().Get_Player()->Get_Hand(m_eHandType));
 	tf->Set_LocalPosition(m_sOptions.localPos);
 	tf->Set_LocalQuaternion(m_sOptions.localQuat);
 	tf->Set_LocalScale(tf->Get_LocalScale() * m_sOptions.localScale);
 
 	m_pCollider->Set_Enabled(false);
+}
+
+const CWeapon::WeaponType CWeapon::Get_WeaponType() const
+{
+	return m_sStat.type;
+}
+
+const wstring& CWeapon::Get_WeaponName()
+{
+	return m_strWeaponName;
+}
+
+const CWeapon::WEAPONSTAT& CWeapon::Get_Stat()
+{
+	return m_sStat;
 }
 
 void CWeapon::OnOffCollider(const _bool _value)
