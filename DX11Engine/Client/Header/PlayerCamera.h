@@ -5,6 +5,8 @@
 class CPlayerCamera final : public CComponent
 {
 public:
+	enum class PlayerCamMode { Default, BowAiming };
+
 	struct PlayerCameraOptions
 	{
 		_float HeightOffset = 5.f;
@@ -32,9 +34,19 @@ public:
 	void LateUpdate() override;
 	void OnDestroy() override;
 
+public:
+	const PlayerCamMode GetMode() const;
+	void ChangeMode(PlayerCamMode _mode);
+
+private:
+	void Look_Default();
+	void Look_BowAiming();
+
 private:
 	class CPlayer* m_pPlayer;
 	PlayerCameraOptions m_sOptions;
 	_float m_fBackOffset, m_fZoomSensor;
+	PlayerCamMode m_eMode;
+
 };
 

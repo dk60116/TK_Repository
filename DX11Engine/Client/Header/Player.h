@@ -88,7 +88,7 @@ private:
 	_bool m_bPrevLockOnMode;
 	_bool m_bIsAttack, m_bIsPrevAttack;
 	_bool m_bSwordActionDuring;
-	_bool m_bBowLoadDuring;
+	_bool m_bBowLoadDuring, m_bPrevBowLoadDuring;
 
 	_float m_fSwordActionEndFrames[3];
 

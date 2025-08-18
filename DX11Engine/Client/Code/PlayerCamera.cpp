@@ -6,6 +6,7 @@ CPlayerCamera::CPlayerCamera()
 	, m_sOptions({})
 	, m_fBackOffset(6.f)
 	, m_fZoomSensor(0.f)
+	, m_eMode(PlayerCamMode::Default)
 {
 }
 
@@ -30,6 +31,8 @@ HRESULT CPlayerCamera::Initialize()
 {
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
+
+	CGameManager::GetInstance().Set_PlayerCamera(this);
 
 	m_pGameObject->AddComponent<CCamera>();
 
@@ -67,16 +70,52 @@ void CPlayerCamera::LateUpdate()
 {
 	if (m_pPlayer)
 	{
-		CTransform* tf = Get_Transform();
-		CTransform* playerTf = m_pPlayer->Get_Transform();
-		const vector3 playerPos = playerTf->Get_Position();
-		const vector3 forwardOffset = playerTf->Get_Directions().forward * 1.f;
-		const vector3 targetPos = playerPos + playerTf->Get_Directions().back * m_fBackOffset + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset)));
-		tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
-		tf->LookAt(playerPos + vector3::up() * m_sOptions.lookHeightOffset + forwardOffset + vector3::down() * (1.f / (m_fBackOffset * 5.f)) + vector3::down() * (2.5f / m_fBackOffset));
+		switch (m_eMode)
+		{
+		case CPlayerCamera::PlayerCamMode::Default:
+			Look_Default();
+			break;
+		case CPlayerCamera::PlayerCamMode::BowAiming:
+			Look_BowAiming();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 void CPlayerCamera::OnDestroy()
 {
+}
+
+const CPlayerCamera::PlayerCamMode CPlayerCamera::GetMode() const
+{
+	return m_eMode;
+}
+
+void CPlayerCamera::ChangeMode(PlayerCamMode _mode)
+{
+	m_eMode = _mode;
+}
+
+void CPlayerCamera::Look_Default()
+{
+	CTransform* tf = Get_Transform();
+	CTransform* playerTf = m_pPlayer->Get_Transform();
+	const vector3 playerPos = playerTf->Get_Position();
+	const vector3 forwardOffset = playerTf->Get_Directions().forward * 1.f;
+	const vector3 targetPos = playerPos + playerTf->Get_Directions().back * m_fBackOffset + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset)));
+	tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
+	tf->LookAt(playerPos + vector3::up() * m_sOptions.lookHeightOffset + forwardOffset + vector3::down() * (1.f / (m_fBackOffset * 5.f)) + vector3::down() * (2.5f / m_fBackOffset));
+}
+
+void CPlayerCamera::Look_BowAiming()
+{
+	CTransform* tf = Get_Transform();
+	CTransform* playerTf = m_pPlayer->Get_Transform();
+	const vector3 playerPos = playerTf->Get_Position();
+	const vector3 forwardOffset = playerTf->Get_Directions().forward * 1.f;
+	const vector3 targetPos = playerPos + playerTf->Get_Directions().back * 1.f + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset)));
+	tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
+	tf->LookAt(playerPos + vector3::up() * m_sOptions.lookHeightOffset + forwardOffset + vector3::down() * (1.f / (m_fBackOffset * 5.f)) + vector3::down() * (2.5f / m_fBackOffset));
 }

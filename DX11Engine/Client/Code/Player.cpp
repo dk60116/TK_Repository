@@ -27,6 +27,7 @@ CPlayer::CPlayer()
 	, m_bIsPrevAttack(false)
 	, m_bSwordActionDuring(false)
 	, m_bBowLoadDuring(false)
+	, m_bPrevBowLoadDuring(false)
 	, m_fSwordActionEndFrames()
 	, m_fAttackComboNT(0.f)
 	, m_fBowLoadingNT(0.f)
@@ -238,12 +239,24 @@ void CPlayer::PlayerControle()
 			PlayBowLoadAnimatoin();
 			m_bBowLoadDuring = true;
 			m_fAttackComboNT = 0.f;
-			m_pRootTransform->Set_LocalEulerAnglesY(180.f);
+			CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::BowAiming);
 			return;
+		}
+		
+		if (!m_bBowLoadDuring && m_bPrevBowLoadDuring)
+		{
+			PlayIdleAnimation(0.25f);
+			CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
+			CDebug::LogError("Default");
 		}
 
 		if (m_bBowLoadDuring)
 			PlayerControle_BowAction();
+		else
+		{
+			_float lerpValue = Lerp(m_pRootTransform->Get_LocalEulerAngles().y, -180.f, DELTA_TIME * 5.f);
+			m_pRootTransform->Set_LocalEulerAnglesY(lerpValue);
+		}
 	}
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
@@ -319,6 +332,7 @@ void CPlayer::PlayerControle()
 	m_vPrevMoveDirectoin = m_vMoveDirection;
 	m_bPrevLockOnMode = m_bLockOnMode;
 	m_bIsPrevJump = m_bIsJump;
+	m_bPrevBowLoadDuring = m_bBowLoadDuring;
 }
 
 void CPlayer::PlayerControle_NoneLockOn()
@@ -425,20 +439,26 @@ void CPlayer::PlayerControle_BowAction()
 {
 	m_fBowLoadingNT += DELTA_TIME;
 
-	_float dest = 2.5f;
+	_float dest = 1.f;
 
 	if (m_fBowLoadingNT >= dest)
 	{
 		m_fBowLoadingNT = 0.f;
-		m_bBowLoadDuring = false;
+		//m_bBowLoadDuring = false;
 
 		m_pAnimator->SetLoop(true);
 		m_pAnimator->Play(L"BowAming", 0.2f);
 	}
 	else
 	{
-		_float lerpYValue = Lerp(m_pRootTransform->Get_LocalEulerAngles().y, -90.f, DELTA_TIME);
+		_float lerpYValue = Lerp(m_pRootTransform->Get_LocalEulerAngles().y, -90.f, DELTA_TIME * 10.f);
 		m_pRootTransform->Set_LocalEulerAnglesY(lerpYValue);
+	}
+
+	if (CInput::GetMouseButtonUp(0))
+	{
+		m_fBowLoadingNT = 0.f;
+		m_bBowLoadDuring = false;
 	}
 }
 
