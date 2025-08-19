@@ -273,7 +273,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			aiVector3D pos = gMat * mesh->mVertices[v];
 
 			aiVector3D nor(0, 0, 0), tan(0, 0, 0);
-			if (mesh->HasNormals())              nor = gMat3 * mesh->mNormals[v];
+			if (mesh->HasNormals())               nor = gMat3 * mesh->mNormals[v];
 			if (mesh->HasTangentsAndBitangents()) tan = gMat3 * mesh->mTangents[v];
 
 			VTX vert{};
@@ -314,7 +314,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 		for (_uint f = 0; f < mesh->mNumFaces; ++f)
 		{
 			const aiFace& face = mesh->mFaces[f];
-			if (face.mNumIndices == 3)  
+			if (face.mNumIndices == 3)
 			{
 				indices.push_back(face.mIndices[0]);
 				indices.push_back(face.mIndices[1]);
@@ -367,6 +367,50 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 
 	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierarchy;
 	unordered_map<aiNode*, _uint> nodeToIdMap;
+
+	// 모든 노드에 대해 transformation/childsId/meshsId/numChild/numMeshes를 채우는 DFS
+	function<void(aiNode*, const _int, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>&)> TraverseSkeleton =
+		[&](aiNode* node, const _int parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& out)
+		{
+			CSkinnedMeshBuffer::SKINNEDSKELETAL n{};
+			n.nodeId = (_int)out.size();
+			n.parentId = parentId;
+			n.name = CEngineString::StringToWString(node->mName.C_Str());
+
+			// 로컬 트랜스폼 복사
+			const aiMatrix4x4& m = node->mTransformation;
+			_float4x4 t = _float4x4(
+				m.a1, m.b1, m.c1, m.d1,
+				m.a2, m.b2, m.c2, m.d2,
+				m.a3, m.b3, m.c3, m.d3,
+				m.a4, m.b4, m.c4, m.d4);
+			n.transformation = t;
+
+			// 이 노드에 연결된 메시 인덱스
+			n.numMeshes = (_uint)node->mNumMeshes;
+			n.meshsId.reserve(node->mNumMeshes);
+			for (_uint mi = 0; mi < node->mNumMeshes; ++mi)
+				n.meshsId.push_back(node->mMeshes[mi]);
+
+			// 우선 푸시한 뒤 자식 재귀
+			out.push_back(n);
+			nodeToIdMap[node] = (_uint)n.nodeId;
+
+			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
+				TraverseSkeleton(node->mChildren[ci], n.nodeId, out);
+
+			// 자식 id 목록/개수 채우기
+			out[n.nodeId].childsId.reserve(node->mNumChildren);
+			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
+			{
+				aiNode* ch = node->mChildren[ci];
+				auto it = nodeToIdMap.find(ch);
+				if (it != nodeToIdMap.end())
+					out[n.nodeId].childsId.push_back((_int)it->second);
+			}
+			out[n.nodeId].numChild = (_uint)out[n.nodeId].childsId.size();
+		};
+
 	TraverseSkeleton(aiScene->mRootNode, -1, skeletalHierarchy);
 
 	auto split = CEngineString::Split(_filePath, L"/");
@@ -383,7 +427,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 	}
 
 	CDebug::Log(L"Complete create skinned mesh Data: " + _filePath);
-	
+
 	return S_OK;
 }
 

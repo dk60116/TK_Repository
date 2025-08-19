@@ -421,7 +421,7 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 		auto* r = g->AddComponent<CSkinnedMeshRenderer>();
 		r->Set_MeshBuffer(si.meshBuffer);
 		r->Set_Material(CResources::CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
-		if (si.texture) 
+		if (si.texture)
 			r->Get_Material()->Set_Texture(si.texture, 0);
 		renderers.push_back(r);
 	}
@@ -449,11 +449,20 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 	{
 		_matrix m = XMLoadFloat4x4(&_bonesInfo[i].transformation);
 		_vector S, R, T;
-		XMMatrixDecompose(&S, &R, &T, m);
+		if (!XMMatrixDecompose(&S, &R, &T, m))
+		{
+			const _float4x4& M = _bonesInfo[i].transformation;
+			T = XMVectorSet(M._41, M._42, M._43, 0.f);
+			R = XMQuaternionIdentity();
+			S = XMVectorSet(1.f, 1.f, 1.f, 0.f);
+		}
 		boneTfs[i]->Set_LocalScale(S);
 		boneTfs[i]->Set_LocalQuaternion(R);
 		boneTfs[i]->Set_LocalPosition(T);
 	}
+
+	if (!rootBone)
+		rootBone = rootTf;
 
 	rootBone->Set_LocalScale(_scaleFactor);
 	rootBone->Set_LocalEulerAngles(_rotationFactor);

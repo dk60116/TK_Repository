@@ -135,13 +135,18 @@ void CAnimator::Update()
 	const _float duration = m_pCrtAnimation->Get_Duration();
 	m_sStateInfo.length = duration;
 
+	_float sampleTime = m_fCurrentTime;
+
 	if (m_bLoop)
 		m_fCurrentTime = fmodf(m_fCurrentTime, duration);
 	else if (m_fCurrentTime >= duration)
 	{
-		m_fCurrentTime = duration;
+		const _float eps = 1e-5f;
+		sampleTime = (duration > eps) ? (duration - eps) : 0.f;
 		m_bIsPlaying = false;
 	}
+
+	m_fCurrentTime = sampleTime;
 
 	// 현재 시각의 키프레임 샘플링
 	unordered_map<wstring, CAnimationClip::BoneTransform> sampled;
