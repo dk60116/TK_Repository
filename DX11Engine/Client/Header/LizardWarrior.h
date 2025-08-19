@@ -1,14 +1,14 @@
 #pragma once
 #include "Monster.h"
 
-class CWolf final : public CMonster
+class CLizardWarrior final : public CMonster
 {
 protected:
-	explicit CWolf();
-	~CWolf();
+	explicit CLizardWarrior();
+	~CLizardWarrior();
 
 public:
-	static CWolf* Create();
+	static CLizardWarrior* Create();
 	CComponent* Clone() const override;
 
 public:

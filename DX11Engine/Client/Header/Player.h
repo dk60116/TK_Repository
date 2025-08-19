@@ -75,7 +75,10 @@ private:
 	CTransform* m_pRHandTransform, * m_pLHandTransform;
 
 	map<wstring, CWeapon*> m_mWeapons;
-	vector<class CArrow*> m_vArrows;
+	CGameObject* m_pArrowProto;
+	queue<class CArrow*> m_qArrowPool;
+	vector<CArrow*> m_vUsedArrows;
+	CArrow* m_pEquipArrow;
 	CWeapon* m_pEquipWeapon;
 
 	PlayerStatus m_sPlayerStatus;
@@ -91,7 +94,7 @@ private:
 	_bool m_bPrevLockOnMode;
 	_bool m_bIsAttack, m_bIsPrevAttack;
 	_bool m_bSwordActionDuring;
-	_bool m_bBowLoadDuring, m_bPrevBowLoadDuring;
+	_bool m_bBowLoadDuring, m_bPrevBowLoadDuring, m_bShootReady;
 
 	_float m_fSwordActionEndFrames[3];
 

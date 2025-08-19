@@ -24,7 +24,7 @@ CComponent* CWolf::Clone() const
 
 HRESULT CWolf::Initialize()
 {
-	m_strSkinnedMeshBufferName = L"Wolf_Model (MeshBuffer)";
+	m_strMonsterName = L"Wolf";
 
 	m_sOptions.colliderCenter = vector3(0.f, 0.6f, 0.2f);
 	m_sOptions.colliderSize = vector3(0.5f, 1.f, 1.5f);

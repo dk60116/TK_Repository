@@ -42,6 +42,7 @@ public:
 	void OnDestroy() override;
 
 public:
+	const wstring& Get_MonsterName();
 	CAnimator* Get_Animator();
 	class CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
@@ -52,7 +53,7 @@ protected:
 	CAnimationClip* Add_Animation(const wstring _name);
 
 protected:
-	wstring m_strSkinnedMeshBufferName;
+	wstring m_strMonsterName;
 	_float m_fSkinnedMeshScaleFactor;
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;

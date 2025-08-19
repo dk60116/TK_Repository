@@ -322,7 +322,7 @@ void CGameObject::OnApplicationQuit()
 	}
 }
 
-const _bool CGameObject::IsActive() const
+const _bool CGameObject::ActiveSelf() const
 {
 	return m_bActive;
 }
@@ -427,8 +427,8 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 	}
 
 	CTransform* rootBone = nullptr;
-
 	vector<CTransform*> boneTfs(_bonesInfo.size(), nullptr);
+
 	for (size_t i = 0; i < _bonesInfo.size(); ++i)
 	{
 		CGameObject* g = m_pScene->Add_GameObject(_bonesInfo[i].name);
@@ -530,6 +530,9 @@ const _bool CGameObject::IsBoneTransform() const
 CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 {
 	CGameObject* newGameObj = CSceneManager::Get_CrtScene()->Add_GameObject(_rhs->Get_ObjectName() + L" (Clone)");
+	
+	newGameObj->SetActive(_rhs->ActiveSelf());
+	newGameObj->Get_Transform()->SetTransformForMatrix(_rhs->Get_Transform()->Get_WorldMatrix());
 
 	for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
 	{

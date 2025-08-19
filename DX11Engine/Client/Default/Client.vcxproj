@@ -154,6 +154,7 @@
     <ClInclude Include="..\Header\DefaultArrow.h" />
     <ClInclude Include="..\Header\GameManager.h" />
     <ClInclude Include="..\Header\GameScene.h" />
+    <ClInclude Include="..\Header\LizardWarrior.h" />
     <ClInclude Include="..\Header\LoadingScene.h" />
     <ClInclude Include="..\Header\MainScene.h" />
     <ClInclude Include="..\Header\Monster.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="..\Code\DefaultArrow.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />
     <ClCompile Include="..\Code\GameScene.cpp" />
+    <ClCompile Include="..\Code\LizardWarrior.cpp" />
     <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\MainScene.cpp" />
     <ClCompile Include="..\Code\Monster.cpp" />

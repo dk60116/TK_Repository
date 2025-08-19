@@ -29,6 +29,7 @@ public:
 
 public:
 	void Update_Heart(const _int _current, const _int _max);
+	void OnOffBowCrossHair(const _bool _on);
 
 private:
 	CPlayer* m_pPlayer;
@@ -36,5 +37,6 @@ private:
 	PlayerHUDOptions m_sOptions;
 	CRectTransform* m_pHeartContainer;
 	vector<CImage*> m_vHeartBowlList, m_vHeartImageList;
+	CImage* m_pArrowCrossHair;
 };
 

@@ -52,6 +52,9 @@
     <Filter Include="Scripts\Object\Weapons\Arrows">
       <UniqueIdentifier>{5c246582-1844-4d45-9744-ca14f6172eb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Monster\LizardWarrior">
+      <UniqueIdentifier>{e3ad4914-bc0c-484e-8819-8cba984fd6b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="..\Header\Arrow.h">
       <Filter>Scripts\Object\Weapons\Arrows</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\LizardWarrior.h">
+      <Filter>Scripts\Object\Monster\LizardWarrior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -217,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Arrow.cpp">
       <Filter>Scripts\Object\Weapons\Arrows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\LizardWarrior.cpp">
+      <Filter>Scripts\Object\Monster\LizardWarrior</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

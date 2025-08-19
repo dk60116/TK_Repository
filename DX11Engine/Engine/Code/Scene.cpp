@@ -295,6 +295,8 @@ void CScene::Update()
 	{
 		if ((*it)->IsRecursiveActive())
 			(*it)->Update();
+		else
+			(*it)->Get_Transform()->Update();
 
 		if ((*it)->m_bActive && !(*it)->m_bPrevActive)
 		{
@@ -316,7 +318,7 @@ void CScene::FixedUpdate()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->ActiveSelf())
 			(*it)->FixedUpdate();
 	}
 
@@ -327,7 +329,7 @@ void CScene::LateUpdateEditor()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->ActiveSelf())
 			(*it)->LateUpdate_Editor();
 	}
 }
@@ -336,7 +338,7 @@ void CScene::LateUpdate()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->ActiveSelf())
 			(*it)->LateUpdate();
 	}
 }
@@ -382,7 +384,7 @@ void CScene::Render_Game()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->IsActive())
+		if ((*it)->ActiveSelf())
 			(*it)->Render();
 	}
 

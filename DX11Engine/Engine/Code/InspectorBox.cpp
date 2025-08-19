@@ -63,7 +63,7 @@ void CInspectorBox::Render()
 
     if (selectedObj)
     {
-        _bool active = selectedObj->IsActive();
+        _bool active = selectedObj->ActiveSelf();
 
         _float baseY = ImGui::GetCursorPosY();
 

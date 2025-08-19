@@ -8,6 +8,7 @@ CPlayerHUD::CPlayerHUD()
 	, m_pHeartContainer(nullptr)
 	, m_vHeartBowlList({})
 	, m_vHeartImageList({})
+	, m_pArrowCrossHair(nullptr)
 {
 }
 
@@ -53,6 +54,13 @@ HRESULT CPlayerHUD::Initialize()
 		m_vHeartImageList.back()->SetTexture(heartTex);
 		m_vHeartImageList.back()->SetColor(ColorValue::red());
 	}
+
+	CGameObject* bcObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Bow Cross Hair");
+	m_pArrowCrossHair = bcObj->AddComponent<CImage>();
+	bcObj->Get_Transform()->SetParent(Get_Transform());
+	m_pArrowCrossHair->SetTexture(CResources::LoadOnScene<CTexture>(L"ArrowCrossHair (Texture)"));
+	m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(70, 70);
+	bcObj->SetActive(false);
 
 	CGameManager::GetInstance().Set_PlayerHUD(this);
 
@@ -110,4 +118,9 @@ void CPlayerHUD::Update_Heart(const _int _current, const _int _max)
 	}
 
 	m_vHeartImageList[static_cast<_int>(targetHp)]->SetFillAmount(other > 0.f ? 0.5f : 0.f);
+}
+
+void CPlayerHUD::OnOffBowCrossHair(const _bool _on)
+{
+	m_pArrowCrossHair->Get_GameObject()->SetActive(_on);
 }

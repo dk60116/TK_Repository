@@ -43,8 +43,6 @@ HRESULT CMonsterController::Initialize()
 
 void CMonsterController::Awake()
 {
-	//Set_Monster(m_pGameObject->GetComponent<CMonster>());
-
 	CBehaviour_Idle* idle = new CBehaviour_Idle();
 	idle->Initialize(m_pMonster);
 	idle->AddRef();

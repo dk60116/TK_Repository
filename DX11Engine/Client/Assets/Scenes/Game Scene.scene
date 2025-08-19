@@ -27,6 +27,9 @@ Wolf_Run : Monsters/Wolf/Wolf_Run.fbx : [Animation Clip]
 Wolf_Attack01 : Monsters/Wolf/Wolf_Attack01.fbx : [Animation Clip]
 Wolf_GetHit_Front : Monsters/Wolf/Wolf_GetHit_Front.fbx : [Animation Clip]
 Wolf_Death : Monsters/Wolf/Wolf_Death.fbx : [Animation Clip]
+// Lizard Warrior
+LizardWarrior_Model : Monsters/LizardWarrior/LizardWarrior.fbx : [Skinned Mesh]
+LizardWarrior_BaseMap : Monsters/LizardWarrior/BaseMap.png : [Texture] 
 // Space
 Temple_Model : Map/Temple.fbx : [Mesh] [Material]
 Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]
@@ -39,3 +42,4 @@ WoodenBow : Weapons/WoodenBow.fbx : [Mesh] [Material]
 DefaultArrow : Weapons/DefaultArrow.fbx : [Mesh] [Material]
 // UI
 HeartBar : UI/HUDUI/HeartBar.png : [Texture]
+ArrowCrossHair : UI/HUDUI/ArrowCrossHair.png : [Texture]

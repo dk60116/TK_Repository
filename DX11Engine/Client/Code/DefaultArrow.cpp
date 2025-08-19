@@ -34,17 +34,11 @@ HRESULT CDefaultArrow::Initialize()
 		return E_FAIL;
 
 	m_sOptions.localPos = vector3(1.345f, 0.43f, -0.427f);
-	m_sOptions.localQuat = quaternion(0.509174f, -0.309618f, -0.526722f, 0.606170f);
+	m_sOptions.localQuat = quaternion(0.146432f, -0.563549f, -0.047580f, 0.811608f);
 	m_sOptions.localScale = 0.1f;
 
 	m_sStat.attack = 1;
 	m_sStat.knockbackPower = 2.f;
-
-	m_pCollider = m_pGameObject->AddComponent<CSphereCollider>();
-	CSphereCollider* spCol = dynamic_cast<CSphereCollider*>(m_pCollider);
-
-	spCol->Set_Center(vector3::up() * 0.4f);
-	spCol->Set_Size(0.1f);
 
 	return S_OK;
 }

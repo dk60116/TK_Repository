@@ -40,6 +40,7 @@ public:
 	void ChangeMode(const PlayerCamMode _mode);
 	void ResetBowYValue();
 	void AddBowYValue(const _float _value);
+	const vector3& Get_FinalTargetPos();
 
 private:
 	void Look_Default();
@@ -50,5 +51,6 @@ private:
 	PlayerCameraOptions m_sOptions;
 	_float m_fBackOffset, m_fZoomSensor, m_fBowYValue;
 	PlayerCamMode m_eMode;
+	vector3 m_vFinalTargetPos;
 };
 

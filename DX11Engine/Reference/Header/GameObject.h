@@ -79,7 +79,7 @@ public:
 	template<typename T>
 	T* GetComponent();
 
-	const _bool IsActive() const;
+	const _bool ActiveSelf() const;
 	void SetActive(const _bool _active);
 
 	list<CComponent*>& Get_ComponentList();

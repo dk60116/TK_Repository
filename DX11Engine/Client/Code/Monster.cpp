@@ -4,7 +4,7 @@
 #include "Weapon.h"
 
 CMonster::CMonster()
-	: m_strSkinnedMeshBufferName(L"")
+	: m_strMonsterName(L"")
 	, m_fSkinnedMeshScaleFactor(0.01f)
 	, m_vMeshRenderers({})
 	, m_pBaseMap(nullptr)
@@ -18,7 +18,7 @@ CMonster::CMonster()
 	, m_pHeadCollider(nullptr)
 	, m_pRigid(nullptr)
 {
-	m_strName = L"Wolf";
+	m_strName = L"Monster";
 }
 
 CMonster::~CMonster()
@@ -32,10 +32,11 @@ HRESULT CMonster::Initialize()
 
 	m_pGameObject->SetLayer(L"Monster");
 
-	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strSkinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(m_strSkinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
+	wstring skinnedMeshBufferName = m_strMonsterName + L"_Model (MeshBuffer)";
+	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(skinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(skinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 
-	m_pBaseMap = CResources::LoadOnScene<CTexture>(m_strName + L"_BaseMap (Texture)");
+	m_pBaseMap = CResources::LoadOnScene<CTexture>(m_strMonsterName + L"_BaseMap (Texture)");
 	m_pBaseMap->AddRef();
 
 	Add_Animation(L"Idle");
@@ -111,6 +112,11 @@ void CMonster::OnDestroy()
 	Safe_Release(m_pController);
 }
 
+const wstring& CMonster::Get_MonsterName()
+{
+	return m_strMonsterName;
+}
+
 CAnimator* CMonster::Get_Animator()
 {
 	return m_pAnimator;
@@ -156,7 +162,7 @@ void CMonster::Get_Damage(CWeapon* _weapon)
 
 CAnimationClip* CMonster::Add_Animation(const wstring _name)
 {
-	CAnimationClip* anim = CResources::LoadOnScene<CAnimationClip>(m_strName + L"_" + _name + L" (Animation)");
+	CAnimationClip* anim = CResources::LoadOnScene<CAnimationClip>(m_strMonsterName + L"_" + _name + L" (Animation)");
 	m_pAnimator->Add_Animation(_name, anim);
 	return anim;
 }

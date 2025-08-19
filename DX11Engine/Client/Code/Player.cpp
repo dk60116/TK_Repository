@@ -11,7 +11,10 @@ CPlayer::CPlayer()
 	, m_pRHandTransform(nullptr)
 	, m_pLHandTransform(nullptr)
 	, m_mWeapons({})
-	, m_vArrows({})
+	, m_pArrowProto(nullptr)
+	, m_qArrowPool()
+	, m_vUsedArrows({})
+	, m_pEquipArrow(nullptr)
 	, m_pEquipWeapon(nullptr)
 	, m_sPlayerStatus({})
 	, m_eAnimationStatus(Idle)
@@ -33,6 +36,7 @@ CPlayer::CPlayer()
 	, m_fSwordActionEndFrames()
 	, m_fAttackComboNT(0.f)
 	, m_fBowLoadingNT(0.f)
+	, m_bShootReady(false)
 	, m_iAttackComboDest(0)
 	, m_bIsJump(false)
 	, m_bIsPrevJump(false)
@@ -107,13 +111,10 @@ HRESULT CPlayer::Initialize()
 
 	CGameManager::GetInstance().Set_Player(this);
 
-	CGameObject* defaultArrowObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Default Arrow");
-	CDefaultArrow* defaultArrow = defaultArrowObj->AddComponent<CDefaultArrow>();
+	m_pArrowProto = m_pGameObject->Get_Scene()->Add_GameObject(L"Default Arrow");
+	CDefaultArrow* defaultArrow = m_pArrowProto->AddComponent<CDefaultArrow>();
 
-	for (_uint i = 0; i < 4; ++i)
-	{
-
-	}
+	m_pArrowProto->SetActive(false);
 
 	return S_OK;
 }
@@ -126,6 +127,12 @@ void CPlayer::Awake()
 	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
 
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
+
+	for (_uint i = 0; i < 10; ++i)
+	{
+		CGameObject* arrowClone = CGameObject::Instantiate(m_pArrowProto);
+		m_qArrowPool.push(arrowClone->GetComponent<CArrow>());
+	}
 
 	ChangeWeapon(L"Sword");
 }
@@ -259,7 +266,12 @@ void CPlayer::PlayerControle()
 			PlayBowLoadAnimatoin();
 			m_bBowLoadDuring = true;
 			m_fAttackComboNT = 0.f;
+			m_bShootReady = false;
 			CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::BowAiming);
+			CGameManager::GetInstance().Get_PlayerHUD()->OnOffBowCrossHair(true);
+			m_pEquipArrow = m_qArrowPool.front();
+			m_qArrowPool.pop();
+			m_pEquipArrow->Pop();
 			return;
 		}
 
@@ -457,10 +469,9 @@ void CPlayer::PlayerControle_BowAction()
 	if (m_fBowLoadingNT >= dest)
 	{
 		m_fBowLoadingNT = 0.f;
-		//m_bBowLoadDuring = false;
-
 		m_pAnimator->SetLoop(true);
 		m_pAnimator->Play(L"BowAming", 0.2f);
+		m_bShootReady = true;
 	}
 	else
 	{
@@ -480,6 +491,13 @@ void CPlayer::PlayerControle_BowAction()
 
 		PlayIdleAnimation(0.25f);
 		CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
+		CGameManager::GetInstance().Get_PlayerHUD()->OnOffBowCrossHair(false);
+
+		if (m_bShootReady)
+		{
+			m_pEquipArrow->Shoot();
+			m_bShootReady = false;
+		}
 	}
 }
 

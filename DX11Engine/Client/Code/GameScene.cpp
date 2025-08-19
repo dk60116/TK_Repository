@@ -4,6 +4,7 @@
 #include "PlayerCamera.h"
 #include "PlayerHUD.h"
 #include "Wolf.h"
+#include "LizardWarrior.h"
 
 CGameScene::CGameScene()
 	: m_pPlayerCamera(nullptr)
@@ -42,9 +43,15 @@ HRESULT CGameScene::Initialize()
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
 	vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
 
+	CGameObject* lizardObject = Add_GameObject(L"Lizard Warrior");
+	CLizardWarrior* lizard = lizardObject->AddComponent<CLizardWarrior>();
+	m_vMonsters.push_back(lizard);
+	lizardObject->SetActive(false);
+
 	CGameObject* wolfObject = Add_GameObject(L"Wolf");
-	CWolf* woolf = wolfObject->AddComponent<CWolf>();
-	m_vMonsters.push_back(woolf);
+	CWolf* wolf = wolfObject->AddComponent<CWolf>();
+	m_vMonsters.push_back(wolf);
+	wolfObject->SetActive(false);
 
 	return S_OK;
 }
@@ -55,20 +62,20 @@ void CGameScene::Awake()
 
 	CGameObject* wolfObject = nullptr;
 
-	if (!m_vMonsters.empty() && m_vMonsters[0])
-	{
-		wolfObject = m_vMonsters[0]->Get_GameObject();
-		m_vMonsters[0]->Get_Transform()->Set_PositionX(-20.f);
+	//if (!m_vMonsters.empty() && m_vMonsters[0])
+	//{
+	//	wolfObject = m_vMonsters[0]->Get_GameObject();
 
-		for (_uint i = 0; i < 2; ++i)
-		{
-			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
-			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
-			m_vMonsters.back()->Get_Transform()->Set_PositionX(-20.f + (i + 1) * 1.5f);
-		}
-	}
+	//	for (_uint i = 0; i < 3; ++i)
+	//	{
+	//		CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
+	//		m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
+	//		m_vMonsters.back()->Get_GameObject()->SetActive(true);
+	//		m_vMonsters.back()->Get_Transform()->Set_PositionX(20.f + (i) * 1.5f);
+	//	}
+	//}
 
-	m_pPlayer->Set_Focus(wolfObject->Get_Transform());
+	//m_pPlayer->Set_Focus(wolfObject->Get_Transform());
 }
 
 void CGameScene::Update()
@@ -79,20 +86,11 @@ void CGameScene::Update()
 	{
 		CSceneManager::LoadScene(L"Main Scene");
 	}
-
-	if (CInput::GetKeyDown_Editor(L))
-		m_vMonsters[2]->Get_Animator()->Play(L"Idle", 0.1f);
-	if (CInput::GetKeyDown_Editor(K))
-		m_vMonsters[2]->Get_Animator()->Play(L"Run", 0.1f);
-	if (CInput::GetKeyDown_Editor(J))
-		m_vMonsters[2]->Get_Animator()->Play(L"Attack01", 0.1f);
-	if (CInput::GetKeyDown_Editor(H))
-		m_vMonsters[2]->Get_Animator()->Play(L"Find", 0.1f);
 }
 
 void CGameScene::SceneRelease()
 {
 	__super::SceneRelease();
 
-	m_vMonsters.clear(); 
+	m_vMonsters.clear();
 }

@@ -48,7 +48,7 @@ void CCollisionManager::UpdateCollision()
 		{
 			_uint layerA = colliderList[i]->Get_GameObject()->GetLayer();
 			_uint layerB = colliderList[j]->Get_GameObject()->GetLayer();
-			
+
 			if (colliderList[i]->m_iColliderID == colliderList[j]->m_iColliderID)
 				continue;
 

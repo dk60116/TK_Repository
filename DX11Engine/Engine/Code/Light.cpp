@@ -110,7 +110,7 @@ const _float4x4 CLight::To_LightInfo()
 
 	result._41 = static_cast<float>(m_eType);
 	result._42 = m_fAttenuation;
-	result._43 = (m_pGameObject->IsActive() && m_bEnabled) ? 1.f : 0.f;
+	result._43 = (m_pGameObject->ActiveSelf() && m_bEnabled) ? 1.f : 0.f;
 	result._44 = 0.f;
 
 	return result;
