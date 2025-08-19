@@ -7,6 +7,7 @@ CPlayerCamera::CPlayerCamera()
 	, m_fBackOffset(6.f)
 	, m_fZoomSensor(0.f)
 	, m_eMode(PlayerCamMode::Default)
+	, m_fBowYValue(0.f)
 {
 }
 
@@ -37,6 +38,7 @@ HRESULT CPlayerCamera::Initialize()
 	m_pGameObject->AddComponent<CCamera>();
 
 	m_fZoomSensor = m_sOptions.firstZoomSensor;
+	m_fBowYValue = m_sOptions.firsBowY;
 
 	return S_OK;
 }
@@ -62,6 +64,9 @@ void CPlayerCamera::Update()
 	{
 		m_fBackOffset -= m_fZoomSensor * DELTA_TIME;
 	}
+
+	if (CInput::GetKey(L))
+		m_fBowYValue += DELTA_TIME;
 
 	m_fBackOffset = std::clamp(m_fBackOffset, m_sOptions.zoomMin, m_sOptions.zoomMax);
 }
@@ -93,9 +98,30 @@ const CPlayerCamera::PlayerCamMode CPlayerCamera::GetMode() const
 	return m_eMode;
 }
 
-void CPlayerCamera::ChangeMode(PlayerCamMode _mode)
+void CPlayerCamera::ChangeMode(const PlayerCamMode _mode)
 {
 	m_eMode = _mode;
+
+	switch (m_eMode)
+	{
+	case CPlayerCamera::PlayerCamMode::Default:
+		ResetBowYValue();
+		break;
+	case CPlayerCamera::PlayerCamMode::BowAiming:
+		break;
+	default:
+		break;
+	}
+}
+
+void CPlayerCamera::ResetBowYValue()
+{
+	m_fBowYValue = m_sOptions.firsBowY;
+}
+
+void CPlayerCamera::AddBowYValue(const _float _value)
+{
+	m_fBowYValue += _value;
 }
 
 void CPlayerCamera::Look_Default()
@@ -114,8 +140,8 @@ void CPlayerCamera::Look_BowAiming()
 	CTransform* tf = Get_Transform();
 	CTransform* playerTf = m_pPlayer->Get_Transform();
 	const vector3 playerPos = playerTf->Get_Position();
-	const vector3 forwardOffset = playerTf->Get_Directions().forward * 1.f;
-	const vector3 targetPos = playerPos + playerTf->Get_Directions().back * 1.f + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset)));
+	const vector3 forwardOffset = playerTf->Get_Directions().forward * 2.f;
+	const vector3 targetPos = playerPos + playerTf->Get_Directions().back * 4.f + (vector3::up() * m_sOptions.lookHeightOffset) + (vector3::down() * (m_fBowYValue - m_sOptions.firsBowY));
 	tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
-	tf->LookAt(playerPos + vector3::up() * m_sOptions.lookHeightOffset + forwardOffset + vector3::down() * (1.f / (m_fBackOffset * 5.f)) + vector3::down() * (2.5f / m_fBackOffset));
+	tf->LookAt(playerPos + vector3::up() * m_fBowYValue + forwardOffset);
 }

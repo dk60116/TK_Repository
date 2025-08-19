@@ -46,6 +46,12 @@
     <Filter Include="Scripts\Object\Weapons\Bows">
       <UniqueIdentifier>{71257ea8-b877-4ba5-b84d-4141d0ead9cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Player\Bheaviour">
+      <UniqueIdentifier>{b1cc5614-8165-4043-a0e7-9acd720e361d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Weapons\Arrows">
+      <UniqueIdentifier>{5c246582-1844-4d45-9744-ca14f6172eb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -126,6 +132,12 @@
     <ClInclude Include="..\Header\WoodenBow.h">
       <Filter>Scripts\Object\Weapons\Bows</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\DefaultArrow.h">
+      <Filter>Scripts\Object\Weapons\Arrows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Arrow.h">
+      <Filter>Scripts\Object\Weapons\Arrows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -199,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\WoodenBow.cpp">
       <Filter>Scripts\Object\Weapons\Bows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DefaultArrow.cpp">
+      <Filter>Scripts\Object\Weapons\Arrows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Arrow.cpp">
+      <Filter>Scripts\Object\Weapons\Arrows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

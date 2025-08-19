@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "WoodenSword.h"
 #include "WoodenBow.h"
+#include "DefaultArrow.h"
 
 CPlayer::CPlayer()
 	: m_pSkinnedMeshRenderer(nullptr)
@@ -10,6 +11,7 @@ CPlayer::CPlayer()
 	, m_pRHandTransform(nullptr)
 	, m_pLHandTransform(nullptr)
 	, m_mWeapons({})
+	, m_vArrows({})
 	, m_pEquipWeapon(nullptr)
 	, m_sPlayerStatus({})
 	, m_eAnimationStatus(Idle)
@@ -37,6 +39,8 @@ CPlayer::CPlayer()
 	, m_pFocusTransform(nullptr)
 	, m_pNavAgent(nullptr)
 	, m_pCollider(nullptr)
+	, m_vPrevMousePos({})
+	, m_vMouseDragDelta({})
 {
 	m_strName = L"Player";
 }
@@ -103,6 +107,14 @@ HRESULT CPlayer::Initialize()
 
 	CGameManager::GetInstance().Set_Player(this);
 
+	CGameObject* defaultArrowObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Default Arrow");
+	CDefaultArrow* defaultArrow = defaultArrowObj->AddComponent<CDefaultArrow>();
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+
+	}
+
 	return S_OK;
 }
 
@@ -132,6 +144,9 @@ void CPlayer::Update()
 	if (CInput::GetKeyDown(Alpha2))
 		ChangeWeapon(L"Bow");
 
+	vector2Int currentMouse = CInput::GetMousePos();
+	m_vMouseDragDelta = (currentMouse - m_vPrevMousePos).to_vector2();
+
 	if (CInput::GetKeyDown(P))
 	{
 		RecoverHp(1);
@@ -141,6 +156,11 @@ void CPlayer::Update()
 	{
 		GetDamage(1);
 	}
+}
+
+void CPlayer::LateUpdate()
+{
+	m_vPrevMousePos = CInput::GetMousePos();
 }
 
 void CPlayer::OnDestroy()
@@ -241,13 +261,6 @@ void CPlayer::PlayerControle()
 			m_fAttackComboNT = 0.f;
 			CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::BowAiming);
 			return;
-		}
-		
-		if (!m_bBowLoadDuring && m_bPrevBowLoadDuring)
-		{
-			PlayIdleAnimation(0.25f);
-			CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
-			CDebug::LogError("Default");
 		}
 
 		if (m_bBowLoadDuring)
@@ -455,10 +468,18 @@ void CPlayer::PlayerControle_BowAction()
 		m_pRootTransform->Set_LocalEulerAnglesY(lerpYValue);
 	}
 
+	if (abs(m_vMouseDragDelta.x) > 0.f)
+		Get_Transform()->Add_EulerAnglesY(m_vMouseDragDelta.x * DELTA_TIME * m_sPlayerStatus.bowAimDragSpeed);
+	if (abs(m_vMouseDragDelta.y) > 0.f)
+		CGameManager::GetInstance().Get_PlayerCamera()->AddBowYValue(m_vMouseDragDelta.y * DELTA_TIME * -0.3f);
+
 	if (CInput::GetMouseButtonUp(0))
 	{
 		m_fBowLoadingNT = 0.f;
 		m_bBowLoadDuring = false;
+
+		PlayIdleAnimation(0.25f);
+		CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
 	}
 }
 

@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\Arrow.h" />
     <ClInclude Include="..\Header\Behaviour_Combat.h" />
     <ClInclude Include="..\Header\Behaviour_CombatWait.h" />
     <ClInclude Include="..\Header\Behaviour_Death.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="..\Header\Behaviour_Idle.h" />
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
+    <ClInclude Include="..\Header\DefaultArrow.h" />
     <ClInclude Include="..\Header\GameManager.h" />
     <ClInclude Include="..\Header\GameScene.h" />
     <ClInclude Include="..\Header\LoadingScene.h" />
@@ -170,6 +172,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\Arrow.cpp" />
     <ClCompile Include="..\Code\Behaviour_Combat.cpp" />
     <ClCompile Include="..\Code\Behaviour_CombatWait.cpp" />
     <ClCompile Include="..\Code\Behaviour_Death.cpp" />
@@ -178,6 +181,7 @@
     <ClCompile Include="..\Code\Behaviour_Idle.cpp" />
     <ClCompile Include="..\Code\Behaviour_Patrole.cpp" />
     <ClCompile Include="..\Code\Behaviour_Tracking.cpp" />
+    <ClCompile Include="..\Code\DefaultArrow.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />
     <ClCompile Include="..\Code\GameScene.cpp" />
     <ClCompile Include="..\Code\LoadingScene.cpp" />

@@ -38,8 +38,10 @@ HRESULT CWoodenBow::Initialize()
 	m_sStat.knockbackPower = 2.f;
 
 	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
-	m_pCollider->Set_Center(vector3::up() * 0.4f);
-	m_pCollider->Set_Size(vector3(0.15f, 1.f, 0.1f));
+	CBoxCollider* boxCol = dynamic_cast<CBoxCollider*>(m_pCollider);
+
+	boxCol->Set_Center(vector3::up() * 0.4f);
+	boxCol->Set_Size(vector3(0.15f, 1.f, 0.1f));
 
 	return S_OK;
 }
@@ -55,8 +57,6 @@ void CWoodenBow::Start()
 
 void CWoodenBow::Update()
 {
-	if (CInput::GetKeyDown(V))
-		CDebug::LogError(Get_Transform()->Get_LocalQuaternion());
 }
 
 void CWoodenBow::OnDestroy()

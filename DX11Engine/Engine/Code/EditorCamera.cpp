@@ -55,7 +55,7 @@ void CEditorCamera::Update_Editor()
 	if (m_bMoving)
 	{
 		m_fMoveTimeCur += DELTA_TIME;
-		float t = m_fMoveTimeCur / m_fMoveTimeTotal;
+		_float t = m_fMoveTimeCur / m_fMoveTimeTotal;
 		if (t > 1.f)
 		{
 			t = 1.f;
@@ -64,7 +64,7 @@ void CEditorCamera::Update_Editor()
 
 		_vector moveFrom = m_v3MoveFrom.toXMVector();
 		_vector moveTo = m_v3MoveTo.toXMVector();
-		float smoothT = t * t * (3.f - 2.f * t);
+		_float smoothT = t * t * (3.f - 2.f * t);
 
 		_vector newPos = XMVectorLerp(moveFrom, moveTo, smoothT);
 		Get_Transform()->Add_Position(vector3(newPos));

@@ -131,14 +131,18 @@ const CMonster::MonsterStatus& CMonster::Get_Status()
 	return m_sStatus;
 }
 
-void CMonster::Get_Damage(class CWeapon* _weapon)
+void CMonster::Get_Damage(CWeapon* _weapon)
 {
 	if (!_weapon)
 		return;
 
 	m_sStatus.crtHp -= _weapon->Get_Stat().attack;
 
-	m_pRigid->AddForce(Get_Transform()->Get_Directions().back * _weapon->Get_Stat().knockbackPower);
+	const vector3& myPos = Get_Transform()->Get_Position();
+	vector3 weaponPos = _weapon->Get_Transform()->Get_Position();
+	weaponPos.y = myPos.y;
+	vector3 knockbackDir = (myPos - weaponPos).normalized();
+	m_pRigid->AddForce(knockbackDir * _weapon->Get_Stat().knockbackPower);
 
 	if (m_sStatus.crtHp <= 0)
 	{

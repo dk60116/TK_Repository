@@ -15,6 +15,7 @@ public:
 		_float zoomMax = 10.f;
 		_float trackingSpeed = 2.f;
 		_float firstZoomSensor = 4.f;
+		_float firsBowY = 2.5f;
 	};
 
 protected:
@@ -36,7 +37,9 @@ public:
 
 public:
 	const PlayerCamMode GetMode() const;
-	void ChangeMode(PlayerCamMode _mode);
+	void ChangeMode(const PlayerCamMode _mode);
+	void ResetBowYValue();
+	void AddBowYValue(const _float _value);
 
 private:
 	void Look_Default();
@@ -45,8 +48,7 @@ private:
 private:
 	class CPlayer* m_pPlayer;
 	PlayerCameraOptions m_sOptions;
-	_float m_fBackOffset, m_fZoomSensor;
+	_float m_fBackOffset, m_fZoomSensor, m_fBowYValue;
 	PlayerCamMode m_eMode;
-
 };
 

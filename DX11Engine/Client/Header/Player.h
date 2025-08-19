@@ -23,6 +23,7 @@ public:
 		_float turnSpeed = 180.f;
 		_float focusTurnRatio = 8.f;
 		_int attackPower = 1;
+		_float bowAimDragSpeed = 5.f;
 	};
 
 protected:
@@ -38,6 +39,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void LateUpdate() override;
 	void OnDestroy() override;
 
 	void OnCollisionEnter(class CCollider* _other) override;
@@ -73,6 +75,7 @@ private:
 	CTransform* m_pRHandTransform, * m_pLHandTransform;
 
 	map<wstring, CWeapon*> m_mWeapons;
+	vector<class CArrow*> m_vArrows;
 	CWeapon* m_pEquipWeapon;
 
 	PlayerStatus m_sPlayerStatus;
@@ -101,5 +104,8 @@ private:
 
 	EngineAI::CNavMeshAgent* m_pNavAgent;
 	CBoxCollider* m_pCollider;
+
+	vector2Int m_vPrevMousePos;
+	vector2 m_vMouseDragDelta;
 };
 

@@ -5,7 +5,7 @@
 class CWeapon abstract : public CComponent
 {
 public:
-	enum class WeaponType { None, Sword, Bow, Bomb };
+	enum class WeaponType { None, Sword, Bow, Arrow, Bomb };
 
 	struct WeaponOptions
 	{
@@ -41,7 +41,7 @@ protected:
 	WEAPONSTAT m_sStat;
 	CMeshRenderer* m_pRenderer;
 	CTransform* m_pTargetHand;
-	CBoxCollider* m_pCollider;
+	CCollider *m_pCollider;
 	CPlayer::HandType m_eHandType;
 };
 
