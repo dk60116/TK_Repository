@@ -1,6 +1,7 @@
 #pragma once
 
 #include "epch.h"
+#include "MonsterController.h"
 
 class CMonster abstract : public CComponent
 {
@@ -38,16 +39,18 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnEnable() override;
 	void OnCollisionEnter(class CCollider* _other) override;
 	void OnDestroy() override;
 
 public:
 	const wstring& Get_MonsterName();
 	CAnimator* Get_Animator();
-	class CMonsterController* Get_Controller();
+	CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();
 	void Get_Damage(class CWeapon* _weapon);
+	void PlayTurn(const CMonsterController::TurnDir _dir);
 
 protected:
 	CAnimationClip* Add_Animation(const wstring _name);
@@ -58,7 +61,7 @@ protected:
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;
-	class CMonsterController* m_pController;
+	CMonsterController* m_pController;
 	EngineAI::CNavMeshAgent* m_pNavAgent;
 
 	MonsterOptions m_sOptions;

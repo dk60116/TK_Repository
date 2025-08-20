@@ -16,5 +16,8 @@ public:
 	void Enter() override;
 	void During() override;
 	void Exit() override;
+
+private:
+	CMonsterController::TurnDir m_eTurnDir, m_ePrevTurnDir;
 };
 

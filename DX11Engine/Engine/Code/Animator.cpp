@@ -158,15 +158,16 @@ void CAnimator::Update()
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		CTransform* bone = m_pSkinnedRenderer->Get_BoneTransform(i);
+		
 		if (!bone)
 			continue;
 
 		const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 
-		if (!m_pSkinnedRenderer->m_bApplyRootMotion && name == m_pSkinnedRenderer->Get_RootBoneName())
-			continue;
+		const _bool customRoot = name == L"root" || name == L"Root" || name == L"ROOT";
 
-		if (bone->Get_GameObject()->Get_ObjectName() == L"root")
+		if (!m_pSkinnedRenderer->m_bApplyRootMotion && 
+			name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot)
 			continue;
 
 		auto it = sampled.find(name);

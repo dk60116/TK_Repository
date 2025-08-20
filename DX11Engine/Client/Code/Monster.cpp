@@ -41,6 +41,8 @@ HRESULT CMonster::Initialize()
 
 	Add_Animation(L"Idle");
 	Add_Animation(L"Walk");
+	Add_Animation(L"WalkTurn_Left");
+	Add_Animation(L"WalkTurn_Right");
 	Add_Animation(L"LookAround");
 	Add_Animation(L"Find");
 	Add_Animation(L"Run");
@@ -91,6 +93,12 @@ void CMonster::Start()
 
 void CMonster::Update()
 {
+}
+
+void CMonster::OnEnable()
+{
+	m_pAnimator->SetLoop(true);
+	m_pAnimator->Play(L"Idle");
 }
 
 void CMonster::OnCollisionEnter(CCollider* _other)
@@ -158,6 +166,26 @@ void CMonster::Get_Damage(CWeapon* _weapon)
 	}
 	else
 		m_pController->ChangeState(CMonsterController::GetHit);
+}
+
+void CMonster::PlayTurn(const CMonsterController::TurnDir _dir)
+{
+	m_pAnimator->SetLoop(true);
+
+	CDebug::LogError((_uint)_dir);
+
+	switch (_dir)
+	{
+	case CMonsterController::TurnDir::None:
+		m_pAnimator->Play(L"Idle", 0.2f);
+		return;
+	case CMonsterController::TurnDir::Left:
+		m_pAnimator->Play(L"WalkTurn_Left", 0.1f);
+		return;
+	case CMonsterController::TurnDir::Right:
+		m_pAnimator->Play(L"WalkTurn_Right", 0.1f);
+		return;
+	}
 }
 
 CAnimationClip* CMonster::Add_Animation(const wstring _name)

@@ -6,6 +6,7 @@ class CMonsterController final : public CComponent
 {
 public:
 	enum MonsterState { Idle, Patrole, Find, Tracking, Combat, CombatWait, GetHit, Death };
+	enum class TurnDir { None, Left, Right };
 
 protected:
 	explicit CMonsterController();

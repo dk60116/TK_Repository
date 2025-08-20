@@ -945,7 +945,7 @@ const quaternion CTransform::LookQuaternion(const vector3& _target, const _uint 
 
     if (m_pParent)
     {
-        _vector parentQ = m_pParent->m_vQuaternion.toXMVector();
+        _vector parentQ = m_pParent->m_vWorldQuaternion.toXMVector();
         _vector invParentQ = XMQuaternionInverse(parentQ);
         q = XMQuaternionMultiply(invParentQ, q);
     }
@@ -953,8 +953,17 @@ const quaternion CTransform::LookQuaternion(const vector3& _target, const _uint 
     if (_lockRotationFilter)
     {
         quaternion newQ;  XMStoreFloat4(reinterpret_cast<_float4*>(&newQ), q);
+        vector3    eNew = newQ.to_euler();
+        vector3    eCur = m_vQuaternion.to_euler();
 
-        return newQ;
+        if (_lockRotationFilter & 0x001) 
+            eNew.x = eCur.x;
+        if (_lockRotationFilter & 0x010)
+            eNew.y = eCur.y;
+        if (_lockRotationFilter & 0x100) 
+            eNew.z = eCur.z;
+
+        return eNew.to_quaternion();
     }
 
     quaternion finalQ;  XMStoreFloat4(reinterpret_cast<_float4*>(&finalQ), q);
