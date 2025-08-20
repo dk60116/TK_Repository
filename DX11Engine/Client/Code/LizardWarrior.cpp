@@ -29,6 +29,8 @@ HRESULT CLizardWarrior::Initialize()
 	m_sOptions.colliderCenter = vector3(0.f, 0.6f, 0.2f);
 	m_sOptions.colliderSize = vector3(0.5f, 1.f, 1.5f);
 
+	m_sStatus.maxHp = 5;
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 

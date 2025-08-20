@@ -45,7 +45,7 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* lizardObject = Add_GameObject(L"Lizard Warrior");
 	CLizardWarrior* lizard = lizardObject->AddComponent<CLizardWarrior>();
-	m_vMonsters.push_back(lizard);
+	//m_vMonsters.push_back(lizard);
 	lizardObject->SetActive(false);
 
 	CGameObject* wolfObject = Add_GameObject(L"Wolf");
@@ -62,20 +62,20 @@ void CGameScene::Awake()
 
 	CGameObject* wolfObject = nullptr;
 
-	//if (!m_vMonsters.empty() && m_vMonsters[0])
-	//{
-	//	wolfObject = m_vMonsters[0]->Get_GameObject();
+	if (!m_vMonsters.empty() && m_vMonsters[0])
+	{
+		wolfObject = m_vMonsters[0]->Get_GameObject();
 
-	//	for (_uint i = 0; i < 3; ++i)
-	//	{
-	//		CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
-	//		m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
-	//		m_vMonsters.back()->Get_GameObject()->SetActive(true);
-	//		m_vMonsters.back()->Get_Transform()->Set_PositionX(20.f + (i) * 1.5f);
-	//	}
-	//}
+		for (_uint i = 0; i < 3; ++i)
+		{
+			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
+			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
+			m_vMonsters.back()->Get_GameObject()->SetActive(true);
+			m_vMonsters.back()->Get_Transform()->Set_PositionX(20.f + (i) * 1.5f);
+		}
+	}
 
-	//m_pPlayer->Set_Focus(wolfObject->Get_Transform());
+	m_pPlayer->Set_Focus(m_vMonsters[0]->Get_Transform());
 }
 
 void CGameScene::Update()

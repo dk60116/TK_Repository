@@ -40,7 +40,7 @@ HRESULT CWoodenSword::Initialize()
 	CBoxCollider* boxCol = dynamic_cast<CBoxCollider*>(m_pCollider);
 
 	boxCol->Set_Center(vector3::up() * 0.4f);
-	boxCol->Set_Size(vector3(0.15f, 1.f, 0.1f));
+	boxCol->Set_Size(vector3(0.25f, 1.f, 0.1f));
 
 	return S_OK;
 }
