@@ -6,9 +6,10 @@ CRigidBody::CRigidBody()
     , m_sOptions({})
     , m_sFreezePosition({})
     , m_sFreezeRotation({})
-    , m_bUseGravity(true)
+    , m_bUseGravity(false)
     , m_bIsKinematic(false)
     , m_vVelocity({})
+    , m_vGravityAcceleration({})
 {
     m_strName = L"RigidBody";
 }
@@ -65,6 +66,11 @@ void CRigidBody::Update()
 
     myTf->Add_Position(m_vVelocity * DELTA_TIME);
 
+    if (m_bUseGravity)
+    {
+        m_vVelocity += GRAVITY * DELTA_TIME;
+    }
+
     m_vVelocity = vector3::Lerp(m_vVelocity, vector3::zero(), DELTA_TIME);
 }
 
@@ -90,9 +96,19 @@ const _bool CRigidBody::UseGravity() const
     return m_bUseGravity;
 }
 
+void CRigidBody::SetUseGravity(const _bool _value)
+{
+    m_bUseGravity = _value;
+}
+
 const _bool CRigidBody::IsKinematic() const
 {
     return m_bIsKinematic;
+}
+
+void CRigidBody::SetKinematic(const _bool _value)
+{
+    m_bIsKinematic = _value;
 }
 
 void CRigidBody::AddForce(const vector3 _value)

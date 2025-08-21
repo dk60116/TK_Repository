@@ -39,7 +39,9 @@ public:
 
 public:
 	const _bool UseGravity() const;
+	void SetUseGravity(const _bool _value);
 	const _bool IsKinematic() const;
+	void SetKinematic(const _bool _value);
 
 	void AddForce(const vector3 _value);
 
@@ -57,7 +59,7 @@ private:
 	FreezeOption m_sFreezePosition;
 	FreezeOption m_sFreezeRotation;
 	_bool m_bUseGravity, m_bIsKinematic;
-	vector3 m_vVelocity;
+	vector3 m_vVelocity, m_vGravityAcceleration;
 };
 
 NS_END

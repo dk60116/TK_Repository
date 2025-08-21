@@ -115,6 +115,7 @@ void CArrow::Shoot()
 	CGameObject* t = m_pGameObject->Get_Scene()->Add_GameObject(L"Tests");
 	t->Get_Transform()->Set_Position(target);
 
+	m_pRigidBody->SetUseGravity(true);
 	m_pRigidBody->AddForce(dir * 30.f);
 }
 

@@ -482,7 +482,7 @@ void CPlayer::PlayerControle_BowAction()
 	if (abs(m_vMouseDragDelta.x) > 0.f)
 		Get_Transform()->Add_EulerAnglesY(m_vMouseDragDelta.x * DELTA_TIME * m_sPlayerStatus.bowAimDragSpeed);
 	if (abs(m_vMouseDragDelta.y) > 0.f)
-		CGameManager::GetInstance().Get_PlayerCamera()->AddBowYValue(m_vMouseDragDelta.y * DELTA_TIME * -0.3f);
+		CGameManager::GetInstance().Get_PlayerCamera()->AddBowYValue(m_vMouseDragDelta.y * DELTA_TIME * -0.5f);
 
 	if (CInput::GetMouseButtonUp(0))
 	{

@@ -28,6 +28,9 @@ public:
 public:
 	vector<RAYCASTHIT> Raycast(const Ray& _ray, _uint _layerMask = 0xFFFFFFFF);
 
+	static const vector3& Get_Gravity();
+	static void Set_GravityValue(const vector3 _value);
+
 private:
 	_bool IntersectRayTriangle
 	(
@@ -37,6 +40,8 @@ private:
 		const vector3& v2,
 		_float& t, vector3& hitNormal
 	);
+
+	vector3 m_vGravityVector;
 };
 
 NS_END

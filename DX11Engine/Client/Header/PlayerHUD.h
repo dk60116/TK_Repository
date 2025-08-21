@@ -38,5 +38,6 @@ private:
 	CRectTransform* m_pHeartContainer;
 	vector<CImage*> m_vHeartBowlList, m_vHeartImageList;
 	CImage* m_pArrowCrossHair;
+	_float m_fACHAlpha;
 };
 

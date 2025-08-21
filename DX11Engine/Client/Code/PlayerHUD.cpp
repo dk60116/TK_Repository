@@ -9,6 +9,7 @@ CPlayerHUD::CPlayerHUD()
 	, m_vHeartBowlList({})
 	, m_vHeartImageList({})
 	, m_pArrowCrossHair(nullptr)
+	, m_fACHAlpha(1.f)
 {
 }
 
@@ -96,6 +97,14 @@ void CPlayerHUD::Start()
 
 void CPlayerHUD::Update()
 {
+	if (m_pArrowCrossHair->Get_GameObject()->ActiveSelf())
+	{
+		m_fACHAlpha = Lerp(m_fACHAlpha, 1.f, DELTA_TIME);
+		m_pArrowCrossHair->SetAlpha(m_fACHAlpha);
+
+		_float size = 100.f - m_fACHAlpha * 30.f;
+		m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(size, size);
+	}
 }
 
 void CPlayerHUD::OnDestroy()
@@ -123,4 +132,6 @@ void CPlayerHUD::Update_Heart(const _int _current, const _int _max)
 void CPlayerHUD::OnOffBowCrossHair(const _bool _on)
 {
 	m_pArrowCrossHair->Get_GameObject()->SetActive(_on);
+
+	m_fACHAlpha = 0.f;
 }

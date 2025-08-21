@@ -47,6 +47,7 @@ private: \
     }
 
 #define DELTA_TIME CTime::Get_DeltaTime()
+#define GRAVITY CPhysics::Get_Gravity()
 
 #define BEGIN_SERIALIZEFIELD \
 	public: \

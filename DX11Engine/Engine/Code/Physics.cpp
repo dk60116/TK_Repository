@@ -2,6 +2,7 @@
 #include "Physics.h"
 
 CPhysics::CPhysics()
+	: m_vGravityVector(vector3(0.f, -9.81f, 0.f))
 {
 }
 
@@ -67,6 +68,16 @@ vector<CPhysics::RAYCASTHIT> CPhysics::Raycast(const Ray& _ray, _uint _layerMask
 	sort(hits.begin(), hits.end(), [](const RAYCASTHIT& a, const RAYCASTHIT& b) {return a.distance < b.distance; });
      
     return hits;
+}
+
+const vector3& CPhysics::Get_Gravity()
+{
+	return GetInstance().m_vGravityVector;
+}
+
+void CPhysics::Set_GravityValue(const vector3 _value)
+{
+	GetInstance().m_vGravityVector = _value;
 }
 
 _bool CPhysics::IntersectRayTriangle(const vector3& rayOrigin, const vector3& rayDir, const vector3& v0, const vector3& v1, const vector3& v2, _float& t, vector3& hitNormal)

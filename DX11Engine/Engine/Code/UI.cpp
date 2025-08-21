@@ -162,3 +162,8 @@ void CUI::SetAlpha(const _float _value)
 	m_vColor.a = static_cast<BYTE>(_value * 255);
 	SetColor(m_vColor);
 }
+
+const _float CUI::GetAlpha() const
+{
+	return m_vColor.a;
+}

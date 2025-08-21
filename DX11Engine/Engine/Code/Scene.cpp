@@ -393,6 +393,8 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		(*it)->OnPreRender();
 
+	_float blendFactor[4] = { 1.f,1.f,1.f,1.f };
+	m_pContext->OMSetBlendState(m_pNoneBlendingState, blendFactor, 0xFFFFFFFF);
 	m_pContext->RSSetState(m_pMeshResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
 

@@ -36,6 +36,7 @@ public:
 	CCanvas* Get_Canvas() const;
 	void SetColor(ColorValue _color);
 	void SetAlpha(const _float _value);
+	const _float GetAlpha() const;
 
 private:
 	const _bool Is_Canvas() const;
