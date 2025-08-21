@@ -30,6 +30,7 @@ HRESULT CLizardWarrior::Initialize()
 	m_sOptions.colliderSize = vector3(0.5f, 1.f, 1.5f);
 
 	m_sStatus.maxHp = 5;
+	m_sStatus.attackRange = 4.5f;
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;

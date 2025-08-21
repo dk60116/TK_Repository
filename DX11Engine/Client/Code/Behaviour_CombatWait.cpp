@@ -82,7 +82,6 @@ void CBehaviour_CombatWait::During()
 
     _float t = std::clamp(DELTA_TIME * turnSpeed, 0.f, 1.f);
 
-    // 로컬 쿼터니언으로 적용 (부모 떼기 방지)
     quaternion curLocal = myTf->Get_LocalQuaternion();
     quaternion blended = quaternion::Slerp(curLocal, rotQ, t);
     myTf->Set_LocalQuaternion(blended);
@@ -90,14 +89,7 @@ void CBehaviour_CombatWait::During()
     // 애니메이션 전환: 상태 변화가 있을 때만
     if (m_eTurnDir != m_ePrevTurnDir)
     {
-        if (m_eTurnDir == CMonsterController::TurnDir::None)
-        {
-            m_pMonster->Get_Animator()->Play(L"Idle", 0.2f);
-        }
-        else
-        {
-            m_pMonster->PlayTurn(m_eTurnDir);
-        }
+        m_pMonster->PlayTurn(m_eTurnDir);
     }
 
     // 공격/추적 전환

@@ -40,7 +40,7 @@ void CBehaviour_Combat::During()
 	const vector3 myPos = myTf->Get_Position();
 	const vector3 myAngle = myTf->Get_EulerAngles();
 
-	if (m_fPassedTime >= 1.f)
+	if (m_pMonster->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f)
 	{
 		if (vector3::Distance(myPos, playerPos) <= m_pMonster->Get_Status().attackRange)
 		{

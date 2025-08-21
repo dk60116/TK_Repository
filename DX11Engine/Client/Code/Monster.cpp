@@ -172,8 +172,6 @@ void CMonster::PlayTurn(const CMonsterController::TurnDir _dir)
 {
 	m_pAnimator->SetLoop(true);
 
-	CDebug::LogError((_uint)_dir);
-
 	switch (_dir)
 	{
 	case CMonsterController::TurnDir::None:
