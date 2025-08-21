@@ -489,15 +489,15 @@ void CPlayer::PlayerControle_BowAction()
 		m_fBowLoadingNT = 0.f;
 		m_bBowLoadDuring = false;
 
-		PlayIdleAnimation(0.25f);
-		CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
-		CGameManager::GetInstance().Get_PlayerHUD()->OnOffBowCrossHair(false);
-
 		if (m_bShootReady)
 		{
 			m_pEquipArrow->Shoot();
 			m_bShootReady = false;
 		}
+
+		PlayIdleAnimation(0.25f);
+		CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
+		CGameManager::GetInstance().Get_PlayerHUD()->OnOffBowCrossHair(false);
 	}
 }
 

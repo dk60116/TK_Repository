@@ -196,14 +196,29 @@ void CGameObject::OnCollisionExit(CCollider* _other)
 
 void CGameObject::OnTriggerEnter(CCollider* _other)
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enabled())
+			(*it)->OnTriggerEnter(_other);
+	}
 }
 
 void CGameObject::OnTriggerStay(CCollider* _other)
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enabled())
+			(*it)->OnTriggerStay(_other);
+	}
 }
 
 void CGameObject::OnTriggerExit(CCollider* _other)
 {
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enabled())
+			(*it)->OnTriggerExit(_other);
+	}
 }
 
 void CGameObject::OnPreCull_Editor()

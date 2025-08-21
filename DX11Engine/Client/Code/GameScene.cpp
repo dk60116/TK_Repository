@@ -4,7 +4,7 @@
 #include "PlayerCamera.h"
 #include "PlayerHUD.h"
 #include "Wolf.h"
-#include "LizardWarrior.h"
+#include "Troll.h"
 
 CGameScene::CGameScene()
 	: m_pPlayerCamera(nullptr)
@@ -43,10 +43,10 @@ HRESULT CGameScene::Initialize()
 	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
 	vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
 
-	CGameObject* lizardObject = Add_GameObject(L"Lizard Warrior");
-	CLizardWarrior* lizard = lizardObject->AddComponent<CLizardWarrior>();
+	CGameObject* trollObject = Add_GameObject(L"Troll");
+	CTroll* troll = trollObject->AddComponent<CTroll>();
 	//m_vMonsters.push_back(lizard);
-	lizardObject->SetActive(false);
+	trollObject->SetActive(false);
 
 	CGameObject* wolfObject = Add_GameObject(L"Wolf");
 	CWolf* wolf = wolfObject->AddComponent<CWolf>();

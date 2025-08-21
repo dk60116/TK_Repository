@@ -34,9 +34,6 @@
     <Filter Include="Scripts\Object\Monster">
       <UniqueIdentifier>{b429eb31-5b1a-4116-925e-90de21a678c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Monster\Woolf">
-      <UniqueIdentifier>{b607f882-87d4-4497-9fb1-8ffd9ac63b8b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts\Object\Monster\Controller">
       <UniqueIdentifier>{cb7a6411-3369-4889-8c97-5eade2d0e8ca}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,15 @@
     </Filter>
     <Filter Include="Scripts\Object\Monster\LizardWarrior">
       <UniqueIdentifier>{e3ad4914-bc0c-484e-8819-8cba984fd6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Monster\Troll">
+      <UniqueIdentifier>{33ce209c-14c8-40ed-9011-44abd205b361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Monster\Collider">
+      <UniqueIdentifier>{92045f3c-87d9-418d-b227-b06943c303ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Monster\Wolf">
+      <UniqueIdentifier>{b607f882-87d4-4497-9fb1-8ffd9ac63b8b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,9 +95,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\Monster.h">
       <Filter>Scripts\Object\Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\Wolf.h">
-      <Filter>Scripts\Object\Monster\Woolf</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Player.h">
       <Filter>Scripts\Object\Player</Filter>
@@ -144,6 +147,15 @@
     <ClInclude Include="..\Header\LizardWarrior.h">
       <Filter>Scripts\Object\Monster\LizardWarrior</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Troll.h">
+      <Filter>Scripts\Object\Monster\Troll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MonsterPartCollision.h">
+      <Filter>Scripts\Object\Monster\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Wolf.h">
+      <Filter>Scripts\Object\Monster\Wolf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -174,7 +186,7 @@
       <Filter>Scripts\Object\Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Wolf.cpp">
-      <Filter>Scripts\Object\Monster\Woolf</Filter>
+      <Filter>Scripts\Object\Monster\Wolf</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\PlayerCamera.cpp">
       <Filter>Scripts\Object\Player</Filter>
@@ -226,6 +238,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\LizardWarrior.cpp">
       <Filter>Scripts\Object\Monster\LizardWarrior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Troll.cpp">
+      <Filter>Scripts\Object\Monster\Troll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MonsterPartCollision.cpp">
+      <Filter>Scripts\Object\Monster\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

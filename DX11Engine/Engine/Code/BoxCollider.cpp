@@ -123,13 +123,13 @@ void CBoxCollider::OnDestroy()
     __super::OnDestroy();
 }
 
-void CBoxCollider::Set_Center(vector3 _center)
+void CBoxCollider::Set_Center(const vector3 _center)
 {
 	m_sLocal.center = _center;
 	Build_WorldOBB();
 }
 
-void CBoxCollider::Set_Size(vector3 _size)
+void CBoxCollider::Set_Size(const vector3 _size)
 {
 	m_sLocal.halfExtents = _size * 0.5f;
     Build_WorldOBB();

@@ -34,8 +34,8 @@ public:
 	void OnDestroy() override;
 
 public:
-	void Set_Center(vector3 _center) override;
-	void Set_Size(vector3 _size);
+	void Set_Center(const vector3 _center) override;
+	void Set_Size(const vector3 _size);
 
 public:
 	static _bool Raycast(CPhysics::Ray _ray, const OBB& _box, _float& _outT);

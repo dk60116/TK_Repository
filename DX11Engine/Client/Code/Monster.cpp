@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "Monster.h"
 #include "MonsterController.h"
+#include "MonsterPartCollision.h"
 #include "Weapon.h"
 
 CMonster::CMonster()
@@ -14,9 +15,10 @@ CMonster::CMonster()
 	, m_sOptions({})
 	, m_sStatus({})
 	, m_pHeadTF(nullptr)
+	, m_pBodyTF(nullptr)
 	, m_pBodyCollider(nullptr)
-	, m_pHeadCollider(nullptr)
 	, m_pRigid(nullptr)
+	, m_mPartColList({})
 {
 	m_strName = L"Monster";
 }
@@ -61,6 +63,24 @@ HRESULT CMonster::Initialize()
 
 void CMonster::Awake()
 {
+	if (m_pHeadTF)
+	{
+		CMonsterPartCollision* headCol = m_pHeadTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();
+		headCol->Set_Monster(this);
+		headCol->SetCenter(m_sOptions.headColliderCenter);
+		headCol->SetSize(m_sOptions.headColliderSize);
+		m_mPartColList.emplace(L"Head", headCol);
+	}
+
+	if (m_pBodyTF)
+	{
+		CMonsterPartCollision* bodyCol = m_pBodyTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();
+		bodyCol->Set_Monster(this);
+		bodyCol->SetCenter(m_sOptions.bodyColliderCenter);
+		bodyCol->SetSize(m_sOptions.bodyColliderSize);
+		m_mPartColList.emplace(L"Body", bodyCol);
+	}
+
 	if (!m_pController)
 		m_pController = m_pGameObject->AddComponent<CMonsterController>();
 
@@ -75,14 +95,6 @@ void CMonster::Awake()
 
 	m_pBodyCollider->Set_Center(m_sOptions.colliderCenter);
 	m_pBodyCollider->Set_Size(m_sOptions.colliderSize);
-
-	if (m_pHeadTF)
-	{
-		m_pHeadTF->Get_GameObject()->SetLayer(L"MonsterHead");
-		m_pHeadCollider = m_pHeadTF->Get_GameObject()->AddComponent<CSphereCollider>();
-		m_pHeadCollider->Set_Center(m_sOptions.colliderCenter);
-		m_pHeadCollider->Set_Size(m_sOptions.headColliderSize);
-	}
 
 	m_sStatus.crtHp = m_sStatus.maxHp;
 }
@@ -103,15 +115,6 @@ void CMonster::OnEnable()
 
 void CMonster::OnCollisionEnter(CCollider* _other)
 {
-	if (_other->Get_GameObject()->GetLayer() == CSceneManager::NameToLayer(L"PlayerWeapon"))
-	{
-		CWeapon* wp = _other->Get_GameObject()->GetComponent<CWeapon>();
-
-		if (!m_pController->IsDamaged())
-		{
-			Get_Damage(wp);
-		}
-	}
 }
 
 void CMonster::OnDestroy()
@@ -123,6 +126,11 @@ void CMonster::OnDestroy()
 const wstring& CMonster::Get_MonsterName()
 {
 	return m_strMonsterName;
+}
+
+const CMonster::MonsterOptions& CMonster::Get_Option() const
+{
+	return m_sOptions;
 }
 
 CAnimator* CMonster::Get_Animator()

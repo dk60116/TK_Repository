@@ -130,6 +130,11 @@ const vector3& CPlayerCamera::Get_FinalTargetPos()
 	return m_vFinalTargetPos;
 }
 
+const _float CPlayerCamera::Get_BowY() const
+{
+	return m_fBowYValue - m_sOptions.firsBowY;
+}
+
 void CPlayerCamera::Look_Default()
 {
 	CTransform* tf = Get_Transform();

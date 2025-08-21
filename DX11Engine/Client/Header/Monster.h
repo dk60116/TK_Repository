@@ -2,6 +2,7 @@
 
 #include "epch.h"
 #include "MonsterController.h"
+#include "MonsterPartCollision.h"
 
 class CMonster abstract : public CComponent
 {
@@ -13,7 +14,9 @@ public:
 		vector3 colliderCenter = {};
 		vector3 colliderSize = vector3::one();
 		vector3 headColliderCenter = {};
-		_float headColliderSize = 50.f;
+		vector3 headColliderSize = vector3::one();
+		vector3 bodyColliderCenter = {};
+		vector3 bodyColliderSize = vector3::one();
 	};
 
 	struct MonsterStatus
@@ -45,6 +48,7 @@ public:
 
 public:
 	const wstring& Get_MonsterName();
+	const MonsterOptions& Get_Option() const;
 	CAnimator* Get_Animator();
 	CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
@@ -67,10 +71,11 @@ protected:
 	MonsterOptions m_sOptions;
 	MonsterStatus m_sStatus;
 
-	CTransform* m_pHeadTF;
+	CTransform* m_pHeadTF, * m_pBodyTF;
 
 	CBoxCollider* m_pBodyCollider;
-	CSphereCollider* m_pHeadCollider;
 	CRigidBody* m_pRigid;
+
+	map<wstring, class CMonsterPartCollision*> m_mPartColList;
 };
 

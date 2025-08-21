@@ -94,10 +94,23 @@ void CArrow::Shoot()
 	Get_Transform()->SetParent(nullptr);
 	m_fPassedTime = 0.f;
 
-	vector3 pos = Get_Transform()->Get_Position();
-	vector3 target = CGameManager::GetInstance().Get_PlayerCamera()->Get_FinalTargetPos() + vector3::down() * 1.25f;
+	CTransform* playerTF = CGameManager::GetInstance().Get_Player()->Get_Transform();
+	CPlayerCamera* playerCam = CGameManager::GetInstance().Get_PlayerCamera();
 
-	vector3 dir = (target - pos).normalized();
+	_float posY = Get_Transform()->Get_Position().y;
+	vector3 target = playerTF->Get_Position() + playerTF->Get_Directions().forward * 2.f;
+	CDebug::LogError(playerCam->Get_BowY());
+	target.y = posY + playerCam->Get_BowY();
+
+	vector3 myPos = playerTF->Get_Position() + playerTF->Get_Directions().forward;
+	myPos.y = posY;
+
+	Get_Transform()->Set_Position(myPos);
+
+	vector3 dir = (target - myPos).normalized();
+
+	Get_Transform()->Set_Quaternion(playerCam->Get_Transform()->Get_Quaternion());
+	Get_Transform()->Add_LocalEulerAnglesX(90.f);
 
 	CGameObject* t = m_pGameObject->Get_Scene()->Add_GameObject(L"Tests");
 	t->Get_Transform()->Set_Position(target);

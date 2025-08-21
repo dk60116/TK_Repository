@@ -41,6 +41,7 @@ public:
 	void ResetBowYValue();
 	void AddBowYValue(const _float _value);
 	const vector3& Get_FinalTargetPos();
+	const _float Get_BowY() const;
 
 private:
 	void Look_Default();

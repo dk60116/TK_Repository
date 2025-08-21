@@ -160,9 +160,11 @@
     <ClInclude Include="..\Header\Monster.h" />
     <ClInclude Include="..\Header\MonsterBehaviour.h" />
     <ClInclude Include="..\Header\MonsterController.h" />
+    <ClInclude Include="..\Header\MonsterPartCollision.h" />
     <ClInclude Include="..\Header\Player.h" />
     <ClInclude Include="..\Header\PlayerCamera.h" />
     <ClInclude Include="..\Header\PlayerHUD.h" />
+    <ClInclude Include="..\Header\Troll.h" />
     <ClInclude Include="..\Header\Weapon.h" />
     <ClInclude Include="..\Header\Wolf.h" />
     <ClInclude Include="..\Header\WoodenBow.h" />
@@ -191,9 +193,11 @@
     <ClCompile Include="..\Code\Monster.cpp" />
     <ClCompile Include="..\Code\MonsterBehaviour.cpp" />
     <ClCompile Include="..\Code\MonsterController.cpp" />
+    <ClCompile Include="..\Code\MonsterPartCollision.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerHUD.cpp" />
+    <ClCompile Include="..\Code\Troll.cpp" />
     <ClCompile Include="..\Code\Weapon.cpp" />
     <ClCompile Include="..\Code\Wolf.cpp" />
     <ClCompile Include="..\Code\WoodenBow.cpp" />
