@@ -12,7 +12,7 @@ CPlayer::CPlayer()
 	, m_pLHandTransform(nullptr)
 	, m_mWeapons({})
 	, m_pArrowProto(nullptr)
-	, m_qArrowPool()
+	, m_mArrowPool()
 	, m_vUsedArrows({})
 	, m_pEquipArrow(nullptr)
 	, m_pEquipWeapon(nullptr)
@@ -128,13 +128,14 @@ void CPlayer::Awake()
 
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 
+	ChangeWeapon(L"Sword");
+	ChangeArrow(L"DefaultArrow");
+
 	for (_uint i = 0; i < 10; ++i)
 	{
 		CGameObject* arrowClone = CGameObject::Instantiate(m_pArrowProto);
-		m_qArrowPool.push(arrowClone->GetComponent<CArrow>());
+		m_mArrowPool[m_strCrtArrow].push(arrowClone->GetComponent<CArrow>());
 	}
-
-	ChangeWeapon(L"Sword");
 }
 
 void CPlayer::Start()
@@ -235,6 +236,16 @@ CWeapon* CPlayer::ChangeWeapon(const wstring _name)
 	return m_pEquipWeapon;
 }
 
+void CPlayer::ChangeArrow(const wstring _name)
+{
+	m_strCrtArrow = _name;
+}
+
+queue<CArrow*>& CPlayer::Get_ArrowContainer(const wstring _name)
+{
+	return m_mArrowPool[_name];
+}
+
 void CPlayer::PlayerControle()
 {
 	m_bLockOnMode = CInput::GetKey(SHIFT);
@@ -269,8 +280,8 @@ void CPlayer::PlayerControle()
 			m_bShootReady = false;
 			CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::BowAiming);
 			CGameManager::GetInstance().Get_PlayerHUD()->OnOffBowCrossHair(true);
-			m_pEquipArrow = m_qArrowPool.front();
-			m_qArrowPool.pop();
+			m_pEquipArrow = m_mArrowPool[m_strCrtArrow].front();
+			m_mArrowPool[m_strCrtArrow].pop();
 			m_pEquipArrow->Pop();
 			return;
 		}

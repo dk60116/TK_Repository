@@ -33,6 +33,6 @@ public:
 private:
 	CRigidBody* m_pRigidBody;
 	_bool m_bUsed;
-	_float m_fLiveTime, m_fPassedTime;
+	_float m_fLifeTime, m_fPassedTime;
 };
 

@@ -40,8 +40,11 @@ HRESULT CGameScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
-	vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
+	//CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
+	//vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
+	
+	CGameObject* vahMedoh_BodyObj = Add_GameObject(L"Blue Dugeon");
+	vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"BlueDungeon_Model (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
 
 	CGameObject* trollObject = Add_GameObject(L"Troll");
 	CTroll* troll = trollObject->AddComponent<CTroll>();

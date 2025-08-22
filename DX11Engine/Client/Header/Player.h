@@ -52,6 +52,8 @@ public:
 	void RecoverHp(const _uint _value);
 	void GetDamage(const _uint _damage);
 	class CWeapon* ChangeWeapon(const wstring _name);
+	void ChangeArrow(const wstring _name);
+	queue<class CArrow*>& Get_ArrowContainer(const wstring _name);
 
 private:
 	void PlayerControle();
@@ -76,7 +78,8 @@ private:
 
 	map<wstring, CWeapon*> m_mWeapons;
 	CGameObject* m_pArrowProto;
-	queue<class CArrow*> m_qArrowPool;
+	map<wstring, queue<class CArrow*>> m_mArrowPool;
+	wstring m_strCrtArrow;
 	vector<CArrow*> m_vUsedArrows;
 	CArrow* m_pEquipArrow;
 	CWeapon* m_pEquipWeapon;

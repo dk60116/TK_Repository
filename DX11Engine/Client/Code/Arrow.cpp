@@ -4,9 +4,10 @@
 CArrow::CArrow()
 	: m_pRigidBody(nullptr)
 	, m_bUsed(false)
-	, m_fLiveTime(10.f)
+	, m_fLifeTime(10.f)
 	, m_fPassedTime(0.f)
 {
+	m_strName = L"Arrow";
 }
 
 CArrow::~CArrow()
@@ -52,7 +53,7 @@ void CArrow::Update()
 	{
 		m_fPassedTime += DELTA_TIME;
 
-		if (m_fPassedTime >= m_fLiveTime)
+		if (m_fPassedTime >= m_fLifeTime)
 			Return();
 	}
 }
@@ -122,4 +123,12 @@ void CArrow::Shoot()
 void CArrow::Return()
 {
 	m_bUsed = false;
+	Get_Transform()->SetParent(CGameManager::GetInstance().Get_Player()->Get_Hand(CPlayer::HandType::Right));
+	Get_Transform()->Set_LocalPosition(m_sOptions.localPos);
+	Get_Transform()->Set_LocalQuaternion(m_sOptions.localQuat);
+	m_pGameObject->SetActive(false);
+
+	auto& container = CGameManager::GetInstance().Get_Player()->Get_ArrowContainer(m_strWeaponName);
+
+	container.push(this);
 }

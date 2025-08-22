@@ -1435,6 +1435,14 @@ namespace Engine
             { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
     };
+
+    struct MeshInstanceData
+    {
+        _float4 row0;
+        _float4 row1;
+        _float4 row2;
+        _float4 row3;
+    };
 #pragma endregion;
 
 #pragma region ShaderBuffer
