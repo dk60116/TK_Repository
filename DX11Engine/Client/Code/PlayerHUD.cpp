@@ -102,7 +102,7 @@ void CPlayerHUD::Update()
 		m_fACHAlpha = Lerp(m_fACHAlpha, 1.f, DELTA_TIME);
 		m_pArrowCrossHair->SetAlpha(m_fACHAlpha);
 
-		_float size = 100.f - m_fACHAlpha * 30.f;
+		_float size = m_sOptions.bowHairSize_Max - m_fACHAlpha * m_sOptions.bowHairSize_Min;
 		m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(size, size);
 	}
 }

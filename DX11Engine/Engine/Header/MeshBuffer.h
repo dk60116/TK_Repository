@@ -90,6 +90,10 @@ protected:
 	ID3D11Buffer* m_pVertexBuffer;
 	ID3D11Buffer* m_pIndexBuffer;
 
+	ID3D11Buffer* m_pInstanceBuffer;
+	_uint m_iInstanceStride;
+	_uint m_iInstanceCount;
+
 	MESHBUFFERDESC m_sInfo;
 
 protected:

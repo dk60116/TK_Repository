@@ -66,7 +66,7 @@ HRESULT CTransform::Initialize()
 void CTransform::Update()
 {
     if (CSceneManager::Get_CrtScene()->IsStarted() &&
-        m_pGameObject && m_pGameObject->Get_Static() & CGameObject::transformStatic)
+        m_pGameObject && m_pGameObject->Get_Static() & CGameObject::TransformStatic)
         return;
 
     Bind_Matrix();

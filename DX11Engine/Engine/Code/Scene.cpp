@@ -270,7 +270,7 @@ void CScene::Update_Editor()
 			CDebug::LogError(firstHit.object->Get_ObjectName());
 
 			CGameObject* newObj = Add_GameObject(L"AddObj");
-			newObj->Set_Static(CGameObject::navigationStatic);
+			newObj->Set_Static(CGameObject::NavigationStatic);
 			CMeshRenderer* newRen = newObj->AddComponent<CMeshRenderer>();
 			newObj->Get_Transform()->Set_LocalScale(3.f);
 			newRen->Get_MeshFilter()->Set_MeshBuffer(CResources::LoadOnGame<CMeshBuffer>(L"Cube (Mesh Buffer)"));
@@ -345,7 +345,7 @@ void CScene::LateUpdate()
 
 void CScene::Render_Editor()
 {
-	ColorValue backgroudColor = ColorValue::gray(0.3f);
+	ColorValue backgroudColor = ColorValue::gray(70);
 
 	CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::Clear_DepthStencil_View();
@@ -581,7 +581,7 @@ vector<CGameObject*> CScene::Get_NavigationStaticObjects()
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
-		if ((*it)->Get_Static() & CGameObject::navigationStatic)
+		if ((*it)->Get_Static() & CGameObject::NavigationStatic)
 			result.push_back((*it));
 	}
 

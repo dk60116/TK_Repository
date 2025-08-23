@@ -28,6 +28,7 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Layer(6, L"MonsterBodyPart");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
+	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"Monster", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"MonsterBodyPart", L"Default", false);
 	CCollisionManager::Set_CollisionFilter(L"MonsterBodyPart", L"MonsterBodyPart", false);

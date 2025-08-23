@@ -108,7 +108,14 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
 	// 셰이더 + 텍스처 + 상수 버퍼 바인딩
-	m_pMaterial->Bind_Matrix(matWorld);
+	if (m_bUseInstancing)
+	{
+		_matrix identity = XMMatrixIdentity();
+		m_pMaterial->Bind_Matrix(identity);
+	}
+	else
+		m_pMaterial->Bind_Matrix(matWorld);
+
 	m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
 
 	if (m_pMaterial->IsUseLight())
@@ -140,8 +147,16 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
 	}
 
-	//실제 메쉬 렌더링 (버퍼 바인딩 및 Draw)
-	pBuffer->Render();
+	if (m_bUseInstancing)
+	{
+		MeshInstanceData d = MatrixToInstanceData(matWorld);
+		const vector<MeshInstanceData> one = { d };
+
+		if (SUCCEEDED(pBuffer->UpdateInstanceBuffer(one, true))) 
+			pBuffer->RenderInstanced(1);
+	}
+	else
+		pBuffer->Render();
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)

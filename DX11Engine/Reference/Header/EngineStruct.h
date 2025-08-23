@@ -1301,7 +1301,8 @@ namespace Engine
         static ColorValue yellow() { return ColorValue(255, 255, 0, 255); }
         static ColorValue cyan() { return ColorValue(0, 255, 255, 255); }
         static ColorValue gray() { return ColorValue(128, 128, 128, 255); }
-        static ColorValue gray(float _value)
+        static ColorValue gray(_int _value) { return ColorValue((BYTE)_value, (BYTE)_value, (BYTE)_value, 255); }
+        static ColorValue gray(_float _value)
         {
             BYTE v = BYTE(255 * _value);
             return ColorValue(v, v, v, 255);
@@ -1435,6 +1436,29 @@ namespace Engine
             { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
     };
+
+    struct MeshInstanceData
+    {
+        _float4 row0;
+        _float4 row1;
+        _float4 row2;
+        _float4 row3;
+    };
+
+    inline static MeshInstanceData MatrixToInstanceData(const _matrix& _w)
+    {
+        _float4x4 f = {};
+        XMStoreFloat4x4(&f, _w);
+
+        MeshInstanceData result = {};
+
+        result.row0 = { f._11, f._12, f._13, f._14 };
+        result.row1 = { f._21, f._22, f._23, f._24 };
+        result.row2 = { f._31, f._32, f._33, f._34 };
+        result.row3 = { f._41, f._42, f._43, f._44 };
+        
+        return result;
+    }
 #pragma endregion;
 
 #pragma region ShaderBuffer

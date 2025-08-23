@@ -15,7 +15,7 @@ class ENGINE_DLL CGameObject final : public UObject
 	friend class CTransform;
 
 public:
-	enum StaticObjectFlag { defaultStatic = 0x00000, transformStatic = 0x000001, navigationStatic = 0x000002};
+	enum StaticObjectFlag { DefaultStatic = 0x00000, TransformStatic = 0x000001, NavigationStatic = 0x000002};
 
 private:
 	explicit CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext);

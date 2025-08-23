@@ -38,7 +38,7 @@ void CWeapon::Awake()
 	tf->Set_LocalQuaternion(m_sOptions.localQuat);
 	tf->Set_LocalScale(tf->Get_LocalScale() * m_sOptions.localScale);
 
-	m_pCollider->Set_Enabled(false);
+	m_pCollider->SetEnabled(false);
 }
 
 const CWeapon::WeaponType CWeapon::Get_WeaponType() const
@@ -58,5 +58,5 @@ const CWeapon::WEAPONSTAT& CWeapon::Get_Stat()
 
 void CWeapon::OnOffCollider(const _bool _value)
 {
-	m_pCollider->Set_Enabled(_value);
+	m_pCollider->SetEnabled(_value);
 }

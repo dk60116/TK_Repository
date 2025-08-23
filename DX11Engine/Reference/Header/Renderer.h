@@ -25,9 +25,14 @@ public:
 	void Set_Material(CMaterial* _material);
 	virtual CMeshBuffer* Get_MeshBuffer() PURE;
 
+	const _bool Is_UseInstancing() const;
+	void Set_UseInstancing(const _bool _value);
+
 protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
+
+	_bool m_bUseInstancing;
 };
 
 NS_END

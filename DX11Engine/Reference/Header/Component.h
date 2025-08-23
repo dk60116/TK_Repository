@@ -68,7 +68,7 @@ public:
 
 public:
 	const _bool Get_Enabled() const;
-	void Set_Enabled(const _bool _enable);
+	void SetEnabled(const _bool _enable);
 
 	CGameObject* Get_GameObject();
 	class CTransform* Get_Transform();

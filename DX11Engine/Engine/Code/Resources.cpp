@@ -97,106 +97,145 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	using VTX = VertexTexNormalTangentBuffer;
 	const bool hasMaterial = aiScene->HasMaterials();
 
-	vector<aiMatrix4x4> meshGlobalMats(aiScene->mNumMeshes, aiMatrix4x4());
+	// ─────────────────────────────────────────────────────────────
+	// 핵심: meshIndex -> 여러 인스턴스(노드 이름 + 글로벌 변환) 수집
+	// ─────────────────────────────────────────────────────────────
+	struct MeshRef
+	{
+		aiMatrix4x4 g;        // global transform
+		wstring     nodeName; // node name (for meshName 식별)
+	};
 
-	function<void(aiNode*, const aiMatrix4x4&)> BuildMeshTransforms =
+	std::vector<std::vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
+
+	std::function<void(aiNode*, const aiMatrix4x4&)> DFS =
 		[&](aiNode* node, const aiMatrix4x4& parent)
 		{
 			aiMatrix4x4 current = parent * node->mTransformation;
+
 			for (_uint m = 0; m < node->mNumMeshes; ++m)
-				meshGlobalMats[node->mMeshes[m]] = current;
+			{
+				const _uint mi = node->mMeshes[m];
+				MeshRef ref;
+				ref.g = current;
+				ref.nodeName = CEngineString::StringToWString(node->mName.C_Str());
+				meshRefs[mi].push_back(std::move(ref));
+			}
 
 			for (_uint c = 0; c < node->mNumChildren; ++c)
-				BuildMeshTransforms(node->mChildren[c], current);
+				DFS(node->mChildren[c], current);
 		};
-	BuildMeshTransforms(aiScene->mRootNode, aiMatrix4x4());
 
-	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
+	DFS(aiScene->mRootNode, aiMatrix4x4());
+
+	// ─────────────────────────────────────────────────────────────
+	// 인스턴스별로 실제 버퍼를 생성(지오메트리 복제)하여 누락 방지
+	// ─────────────────────────────────────────────────────────────
+	std::vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
 
 	for (_uint mi = 0; mi < aiScene->mNumMeshes; ++mi)
 	{
 		const aiMesh* mesh = aiScene->mMeshes[mi];
-		const aiMatrix4x4& gMat = meshGlobalMats[mi];
-		aiMatrix3x3        gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
 
-		CMeshBuffer::MeshBufferInitiaizeInfo info{};
-		info.meshName = CMeshBuffer::FindMeshName(aiScene, mi);
-
-		vector<VTX>      vertices;
-		vector<_uint> indices;
-
-		vertices.reserve(mesh->mNumVertices);
-		for (_uint v = 0; v < mesh->mNumVertices; ++v)
+		// 만약 이 mesh를 참조하는 노드가 하나도 없으면(이례적),
+		// identity 로 1개 추가
+		if (meshRefs[mi].empty())
 		{
-			aiVector3D p = gMat * mesh->mVertices[v];
-			aiVector3D n = mesh->HasNormals()
-				? gMat3 * mesh->mNormals[v]
-				: aiVector3D(0, 0, 0);
-			aiVector3D t = mesh->HasTangentsAndBitangents()
-				? gMat3 * mesh->mTangents[v]
-				: aiVector3D(0, 0, 0);
-
-			VTX vert{};
-			vert.position = { p.x, p.y, p.z };
-			vert.normal = { n.x, n.y, n.z };
-			vert.tangent = { t.x, t.y, t.z };
-			vert.uv = mesh->HasTextureCoords(0)
-				? _float2{ mesh->mTextureCoords[0][v].x,
-						   mesh->mTextureCoords[0][v].y }
-			: _float2{ 0, 0 };
-
-			vertices.emplace_back(vert);
+			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
+			meshRefs[mi].push_back(std::move(ref));
 		}
 
-		for (_uint f = 0; f < mesh->mNumFaces; ++f)
+		for (_uint inst = 0; inst < meshRefs[mi].size(); ++inst)
 		{
-			const aiFace& face = mesh->mFaces[f];
-			if (face.mNumIndices == 3)     
+			const aiMatrix4x4& gMat = meshRefs[mi][inst].g;
+			aiMatrix3x3        gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
+
+			CMeshBuffer::MeshBufferInitiaizeInfo info{};
+			// 이름: 노드명#인스턴스번호 (없으면 FindMeshName 또는 Mesh_{mi})
+			wstring baseName = meshRefs[mi][inst].nodeName;
+			if (baseName.empty())
+				baseName = CMeshBuffer::FindMeshName(aiScene, mi);
+			if (baseName.empty())
+				baseName = L"Mesh_" + std::to_wstring(mi);
+
+			info.meshName = baseName + L"#" + std::to_wstring(inst);
+
+			// ── Vertex 변환(포지션은 gMat, 노말/탄젠트는 gMat3)
+			std::vector<VTX>   vertices;
+			std::vector<_uint> indices;
+
+			vertices.reserve(mesh->mNumVertices);
+			for (_uint v = 0; v < mesh->mNumVertices; ++v)
 			{
-				indices.push_back(face.mIndices[0]);
-				indices.push_back(face.mIndices[1]);
-				indices.push_back(face.mIndices[2]);
+				aiVector3D p = gMat * mesh->mVertices[v];
+				aiVector3D n = mesh->HasNormals()
+					? gMat3 * mesh->mNormals[v]
+					: aiVector3D(0, 0, 0);
+				aiVector3D t = mesh->HasTangentsAndBitangents()
+					? gMat3 * mesh->mTangents[v]
+					: aiVector3D(0, 0, 0);
+
+				VTX vert{};
+				vert.position = { p.x, p.y, p.z };
+				vert.normal = { n.x, n.y, n.z };
+				vert.tangent = { t.x, t.y, t.z };
+				vert.uv = mesh->HasTextureCoords(0)
+					? _float2{ mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y }
+				: _float2{ 0, 0 };
+
+				vertices.emplace_back(vert);
 			}
-		}
 
-		/* 3-3. 버퍼 desc + 데이터 저장 */
-		CMeshBuffer::MESHBUFFERDESC desc{};
-		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		desc.vertexSize = sizeof(VTX);
-		desc.vertextCount = static_cast<_uint>(vertices.size());
-		desc.indexCount = static_cast<_uint>(indices.size());
-
-		info.buffer.assign(reinterpret_cast<const uint8_t*>(vertices.data()),
-			reinterpret_cast<const uint8_t*>(vertices.data()) +
-			vertices.size() * sizeof(VTX));
-		info.indices.assign(indices.begin(), indices.end());
-		info.desc = desc;
-
-		/* 3-4. 머티리얼(옵션) */
-		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
-		{
-			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
-			aiString texPath;
-			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			for (_uint f = 0; f < mesh->mNumFaces; ++f)
 			{
-				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
-				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
-				filesystem::path fullPath = fbxDir / relPath;
-				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
+				const aiFace& face = mesh->mFaces[f];
+				if (face.mNumIndices == 3)
+				{
+					indices.push_back(face.mIndices[0]);
+					indices.push_back(face.mIndices[1]);
+					indices.push_back(face.mIndices[2]);
+				}
 			}
-		}
 
-		bufferInfoList.push_back(move(info));
+			// ── Desc + 데이터
+			CMeshBuffer::MESHBUFFERDESC desc{};
+			desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			desc.vertexSize = sizeof(VTX);
+			desc.vertextCount = static_cast<_uint>(vertices.size());
+			desc.indexCount = static_cast<_uint>(indices.size());
+
+			info.buffer.assign(
+				reinterpret_cast<const uint8_t*>(vertices.data()),
+				reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX)
+			);
+			info.indices.assign(indices.begin(), indices.end());
+			info.desc = desc;
+
+			// ── 머티리얼(옵션)
+			if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
+			{
+				aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
+				aiString texPath;
+				if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+				{
+					filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+					filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+					filesystem::path fullPath = fbxDir / relPath;
+					info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
+				}
+			}
+
+			bufferInfoList.push_back(std::move(info));
+		}
 	}
 
+	// 파일명 구성
 	auto split = CEngineString::Split(_filePath, L"/");
 	wstring folder = split[split.size() - 2];
 	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
 	wstring saveName = folder + L"_" + fileNoExt;
 
-	if (FAILED(SaveMeshBufferInfos(
-		L"BinaryAssets/MeshData/" + saveName + L".meshdata",
-		bufferInfoList)))
+	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/MeshData/" + saveName + L".meshdata", bufferInfoList)))
 	{
 		CDebug::LogError(L"Failed create mesh Data - can not save: " + _filePath);
 		return E_FAIL;

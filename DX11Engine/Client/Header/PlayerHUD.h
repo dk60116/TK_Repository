@@ -9,6 +9,8 @@ public:
 	{
 		_float heartSize = 30.f;
 		_float heartSpacing = 5.f;
+		_float bowHairSize_Max = 100.f;
+		_float bowHairSize_Min = 50.f;
 	};
 
 private:

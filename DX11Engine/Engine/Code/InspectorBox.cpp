@@ -497,8 +497,8 @@ void CInspectorBox::ShowStaticObject(CGameObject* _obj)
     _uint current_static_flags = _obj->Get_Static();
 
     // 체크 상태를 비트 연산으로 추출
-    _bool transform_flag = (current_static_flags & CGameObject::transformStatic) != 0;
-    _bool navigation_flag = (current_static_flags & CGameObject::navigationStatic) != 0;
+    _bool transform_flag = (current_static_flags & CGameObject::TransformStatic) != 0;
+    _bool navigation_flag = (current_static_flags & CGameObject::NavigationStatic) != 0;
 
     if (ImGui::BeginCombo("##StaticCombo", combo_label))
     {
@@ -506,18 +506,18 @@ void CInspectorBox::ShowStaticObject(CGameObject* _obj)
         if (ImGui::Checkbox("Transform", &transform_flag))
         {
             if (transform_flag)
-                current_static_flags |= CGameObject::transformStatic;
+                current_static_flags |= CGameObject::TransformStatic;
             else
-                current_static_flags &= ~CGameObject::transformStatic;
+                current_static_flags &= ~CGameObject::TransformStatic;
         }
 
         // Navigation 토글
         if (ImGui::Checkbox("Navigation", &navigation_flag))
         {
             if (navigation_flag)
-                current_static_flags |= CGameObject::navigationStatic;
+                current_static_flags |= CGameObject::NavigationStatic;
             else
-                current_static_flags &= ~CGameObject::navigationStatic;
+                current_static_flags &= ~CGameObject::NavigationStatic;
         }
 
         ImGui::EndCombo();
