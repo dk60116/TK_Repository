@@ -160,6 +160,7 @@ void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _
 	camCB.proj = XMMatrixTranspose(_projection);
 	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &camCB, 0, 0);
 	context->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+	context->PSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 
 	// b2: PerMaterial
 	MaterialCB mat = {};
@@ -201,19 +202,19 @@ void CMaterial::Bind_CustomValues()
 	for (const auto& [key, value] : m_mFloatValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(_float));
 	}
 	for (const auto& [key, value] : m_mIntValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(int));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(_int));
 	}
 	for (const auto& [key, value] : m_mVector2Values)
 	{
 		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
 		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(float));
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(_float));
 	}
 	// TODO: Vector3, Vector4, Matrix 등도 추가 가능
 
@@ -268,9 +269,9 @@ void CMaterial::Set_FloatValue(const wstring _key, const _float _value)
 
 void CMaterial::Set_IntValue(const wstring _key, const _int _value)
 {
-	auto it = m_mFloatValues.find(_key);
+	auto it = m_mIntValues.find(_key);
 
-	if (it != m_mFloatValues.end())
+	if (it != m_mIntValues.end())
 		m_mIntValues[_key] = _value;
 	else
 		CDebug::LogError(L"Material - Set_IntValue Failed - Key not found: " + _key + L" - " + m_strResourceName);

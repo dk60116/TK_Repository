@@ -48,12 +48,12 @@ namespace Engine
         {
         }
 
-        const _float2& toFloat2()
+        _float2 toFloat2() const
         {
             return XMFLOAT2(x, y);;
         }
 
-        _vector& toXMVector()
+        _vector toXMVector() const
         {
             _vector result = XMVectorSet(x, y, 0.f, 0.f);
             return result;
@@ -111,7 +111,7 @@ namespace Engine
             return XMVectorGetX(len);
         }
 
-        float lengthSq() const
+        _float lengthSq() const
         {
             XMVECTOR v = XMVectorSet(x, y, 0.f, 0.f);
             XMVECTOR lenSq = XMVector2LengthSq(v);
@@ -125,7 +125,7 @@ namespace Engine
             return vector2(XMVectorGetX(result), XMVectorGetY(result));
         }
 
-        float dot(const vector2& other) const
+        _float dot(const vector2& other) const
         {
             XMFLOAT2 a(x, y);
             XMFLOAT2 b(other.x, other.y);
@@ -1314,16 +1314,24 @@ namespace Engine
 #pragma endregion
 
 #pragma region VertexBuffer
+#define INSTANCEBUFFERMACHRO \
+    { "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,  0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
+    { "INSTANCE", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
+    { "INSTANCE", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
+    { "INSTANCE", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+
     struct VertexTexColorBuffer
     {
         _float3 position;
         _float2 uv;
 
-        static const _uint numElements = 2;
+        static const _uint numElements = 6;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 
@@ -1333,12 +1341,14 @@ namespace Engine
         _float3 normal;
         _float4 color = { 1, 1, 1, 1 };
 
-        static const _uint numElements = 3;
+        static const _uint numElements = 7;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 
@@ -1348,12 +1358,14 @@ namespace Engine
         _float3 normal;
         _float2 uv;
 
-        static const _uint numElements = 3;
+        static const _uint numElements = 7;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 
@@ -1364,13 +1376,15 @@ namespace Engine
         _float2 uv;
         _float3 tangent;
 
-        static const _uint numElements = 4;
+        static const _uint numElements = 8;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 
@@ -1382,14 +1396,16 @@ namespace Engine
         UINT boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 5;
+        static const _uint numElements = 9;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 
@@ -1402,7 +1418,7 @@ namespace Engine
         UINT boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 6;
+        static const _uint numElements = 10;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1410,7 +1426,9 @@ namespace Engine
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 
@@ -1424,7 +1442,7 @@ namespace Engine
         _float boneWeights[4] = { 0,0,0,0 };
         _float lineWidth = 1.f;
 
-        static const _uint numElements = 7;
+        static const _uint numElements = 11;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1433,7 +1451,9 @@ namespace Engine
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
         };
     };
 

@@ -5,6 +5,7 @@ CRenderer::CRenderer()
 	: m_pMaterial(nullptr)
 	, m_pOutlineMat(nullptr)
 	, m_bUseInstancing(false)
+	, m_vInstanceWorlds({})
 {
 }
 
@@ -72,4 +73,24 @@ const _bool CRenderer::Is_UseInstancing() const
 void CRenderer::Set_UseInstancing(const _bool _value)
 {
 	m_bUseInstancing = _value;
+}
+
+void CRenderer::SetInstanceWorlds(const vector<_float4x4>& _worlds)
+{
+	m_vInstanceWorlds = _worlds;
+}
+
+void CRenderer::AddInstanceWorld(const _float4x4& _w)
+{
+	m_vInstanceWorlds.push_back(_w);
+}
+
+const size_t CRenderer::GetInstanceCount() const
+{
+	return m_vInstanceWorlds.size();
+}
+
+const _bool CRenderer::HasInstances() const
+{
+	return !m_vInstanceWorlds.empty();
 }

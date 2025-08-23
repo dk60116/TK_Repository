@@ -58,6 +58,11 @@ struct VSIn
     float3 tangentL : TANGENT;
     uint4 boneIndices : BLENDINDICES;
     float4 boneWeights : BLENDWEIGHT;
+    
+    float4 i0 : INSTANCE0;
+    float4 i1 : INSTANCE1;
+    float4 i2 : INSTANCE2;
+    float4 i3 : INSTANCE3;
 };
 
 struct VSOut
@@ -72,7 +77,12 @@ struct VSOut
 VSOut VSMain(VSIn v)
 {
     VSOut o;
-
+    
+    float4x4 iWorld = world;
+    
+    if (!(all(v.i0 == 0) && all(v.i1 == 0) && all(v.i2 == 0) && all(v.i3 == 0)))
+        iWorld *= float4x4(v.i0, v.i1, v.i2, v.i3);
+  
     // 스킨 포지션
     float4 skinnedPos = float4(v.posL, 1);
     if (boneCount)
@@ -102,8 +112,8 @@ VSOut VSMain(VSIn v)
     }
 
     // 월드 변환
-    float4 posW = mul(skinnedPos, world);
-    float3 normalW = normalize(mul((float3x3) world, skinnedN));
+    float4 posW = mul(skinnedPos, iWorld);
+    float3 normalW = normalize(mul((float3x3)iWorld, boneCount ? skinnedN : v.normalL));
 
     // MVP
     float4 posV = mul(posW, view);
