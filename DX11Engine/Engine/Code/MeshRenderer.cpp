@@ -102,18 +102,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
     _matrix matView = _cam->Get_ViewMatrix();
     _matrix matProj = _cam->Get_ProjectionMatrix();
 
-    // PerObject( b0 ), PerCamera( b1 ), PerMaterial( b2 )
-    if (m_bUseInstancing)
-    {
-        // 인스턴싱: 상수버퍼 world는 IDENTITY로 두고, 실제 월드변환은 인스턴스 버퍼로 보냄
-        _matrix identity = XMMatrixIdentity();
-        m_pMaterial->Bind_Matrix(identity);
-    }
-    else
-    {
-        // 일반 렌더: 상수버퍼에 월드 그대로
-        m_pMaterial->Bind_Matrix(matWorld);
-    }
+    m_pMaterial->Bind_Matrix(matWorld);
 
     // 카메라/머티리얼 바인딩 (PS에도 b1 세팅되도록 구현되어 있음)
     m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
