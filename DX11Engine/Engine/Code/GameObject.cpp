@@ -373,7 +373,7 @@ void CGameObject::Set_Transform(CTransform* _transform)
 	}
 }
 
-vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshInfos, const _float _scaleFactor, const _uint _autoStatic)
+vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<CMeshBuffer::MeshBundle> _meshInfos, const _float _scaleFactor, const _uint _autoStatic)
 {
 	CTransform* parentTransform = Get_Transform();
 
@@ -404,6 +404,26 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
 		ren->Set_Material(CResources::CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
 
+		ren->Set_UseInstancing(true);
+
+		vector<_float4x4> worlds = {};
+		worlds.reserve(_meshInfos[i].instancePack.instances.size());
+
+		for (const auto& inst : _meshInfos[i].instancePack.instances)
+		{
+			_float4x4 m = _float4x4
+			(
+				inst.row0.x, inst.row0.y, inst.row0.z, inst.row0.w,
+				inst.row1.x, inst.row1.y, inst.row1.z, inst.row1.w,
+				inst.row2.x, inst.row2.y, inst.row2.z, inst.row2.w,
+				inst.row3.x, inst.row3.y, inst.row3.z, inst.row3.w
+			);
+
+			worlds.push_back(m);
+		}
+
+		ren->SetInstanceWorlds(worlds);
+
 		if (!_meshInfos[i].texture)
 			continue;
 
@@ -413,7 +433,7 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 	return renderers;
 }
 
-vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo, const _float _scaleFactor, const vector3 _rotationFactor)
+vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<CMeshBuffer::SkinnedMeshBundle> _skinnedInfos, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _bonesInfo, const _float _scaleFactor, const vector3 _rotationFactor)
 {
 	CTransform* rootTf = Get_Transform();
 

@@ -622,7 +622,7 @@ CEngineResource* CScene::Find_Resource(const wstring& _name)
 	return nullptr;
 }
 
-vector<MeshBundle> CScene::Find_MeshInfoResource(const wstring& _name)
+vector<CMeshBuffer::MeshBundle> CScene::Find_MeshInfoResource(const wstring& _name)
 {
 	auto iter = m_mMeshBundleList.find(_name);
 
@@ -637,7 +637,7 @@ vector<MeshBundle> CScene::Find_MeshInfoResource(const wstring& _name)
 	return {};
 }
 
-vector<SkinnedMeshBundle> CScene::Find_SkinnedMeshInfoResource(const wstring& _name)
+vector<CMeshBuffer::SkinnedMeshBundle> CScene::Find_SkinnedMeshInfoResource(const wstring& _name)
 {
 	auto iter = m_mSkinnedBundleList.find(_name);
 
@@ -678,7 +678,7 @@ CEngineResource* CScene::Add_TempResource(const wstring& _name, CEngineResource*
 	return _resource;
 }
 
-void CScene::Add_MeshBundle(const wstring& _name, vector<MeshBundle> _resource)
+void CScene::Add_MeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBundle> _resource)
 {
 	for (TRAVERSAL_ITER(_resource, it))
 	{
@@ -693,7 +693,7 @@ void CScene::Add_MeshBundle(const wstring& _name, vector<MeshBundle> _resource)
 	m_mMeshBundleList.emplace(_name, _resource);
 }
 
-void CScene::Add_SkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _resource)
+void CScene::Add_SkinnedBundle(const wstring& _name, vector<CMeshBuffer::SkinnedMeshBundle> _resource)
 {
 	for (TRAVERSAL_ITER(_resource, it))
 	{
@@ -708,7 +708,7 @@ void CScene::Add_SkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _
 	m_mSkinnedBundleList.emplace(_name, _resource);
 }
 
-void CScene::Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resource)
+void CScene::Add_TempMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBundle> _resource)
 {
 	for (TRAVERSAL_ITER(_resource, it))
 	{
@@ -723,7 +723,7 @@ void CScene::Add_TempMeshBundle(const wstring& _name, vector<MeshBundle> _resour
 	m_mTempMeshBundleList.emplace(_name, _resource);
 }
 
-void CScene::Add_TempSkinnedBundle(const wstring& _name, vector<SkinnedMeshBundle> _resource)
+void CScene::Add_TempSkinnedBundle(const wstring& _name, vector<CMeshBuffer::SkinnedMeshBundle> _resource)
 {
 	for (TRAVERSAL_ITER(_resource, it))
 	{

@@ -31,9 +31,6 @@
     <ClInclude Include="..\Header\Component.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\Scene.h">
-      <Filter>Management\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\SceneManager.h">
       <Filter>Management\Scene</Filter>
     </ClInclude>
@@ -192,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\SphereCollider.h">
       <Filter>Components\Physics\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Scene.h">
+      <Filter>Management\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

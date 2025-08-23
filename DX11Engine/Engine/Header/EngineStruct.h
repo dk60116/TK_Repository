@@ -1465,6 +1465,17 @@ namespace Engine
         _float4 row3;
     };
 
+    inline static _matrix AIMatrixToXMMatrix(const aiMatrix4x4& _m)
+    {
+        return _matrix
+        (
+            _m.a1, _m.b1, _m.c1, _m.d1,
+            _m.a2, _m.b2, _m.c2, _m.d2,
+            _m.a3, _m.b3, _m.c3, _m.d3,
+            _m.a4, _m.b4, _m.c4, _m.d4
+        );
+    }
+
     inline static MeshInstanceData MatrixToInstanceData(const _matrix& _w)
     {
         _float4x4 f = {};
@@ -1521,20 +1532,6 @@ namespace Engine
 
 #pragma region FBXResources
     enum MeshBundleHex { FILTER_MESHBUFFER = 0x000001, FILTER_MATERIAL = 0x000010, FILTER_TEXTURE = 0x000100, FILTER_BONE = 0x001000 };
-
-    struct MeshBundle
-    {
-        class CMeshBuffer* meshBuffer = nullptr;
-        CMaterial* material = nullptr;
-        CTexture* texture = nullptr;
-    };
-
-    struct SkinnedMeshBundle
-    {
-        class CSkinnedMeshBuffer* meshBuffer = nullptr;
-        CMaterial* material = nullptr;
-        CTexture* texture = nullptr;
-    };
 #pragma endregion;
 
     typedef struct tagIndex16

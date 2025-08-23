@@ -77,6 +77,7 @@ void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
 HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 {
 	Assimp::Importer importer;
+
 	const aiScene* aiScene = importer.ReadFile
 	(
 		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
@@ -95,153 +96,149 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	}
 
 	using VTX = VertexTexNormalTangentBuffer;
-	const bool hasMaterial = aiScene->HasMaterials();
+	const _bool hasMaterial = aiScene->HasMaterials();
 
-	// ─────────────────────────────────────────────────────────────
-	// 핵심: meshIndex -> 여러 인스턴스(노드 이름 + 글로벌 변환) 수집
-	// ─────────────────────────────────────────────────────────────
-	struct MeshRef
-	{
-		aiMatrix4x4 g;        // global transform
-		wstring     nodeName; // node name (for meshName 식별)
+	struct MeshRef 
+	{ 
+		aiMatrix4x4 g; 
+		wstring nodeName; 
 	};
 
-	std::vector<std::vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
+	vector<vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
 
-	std::function<void(aiNode*, const aiMatrix4x4&)> DFS =
+	function<void(aiNode*, const aiMatrix4x4&)> DFS =
 		[&](aiNode* node, const aiMatrix4x4& parent)
 		{
 			aiMatrix4x4 current = parent * node->mTransformation;
 
-			for (_uint m = 0; m < node->mNumMeshes; ++m)
+			for (unsigned m = 0; m < node->mNumMeshes; ++m)
 			{
-				const _uint mi = node->mMeshes[m];
-				MeshRef ref;
-				ref.g = current;
-				ref.nodeName = CEngineString::StringToWString(node->mName.C_Str());
-				meshRefs[mi].push_back(std::move(ref));
+				const unsigned mi = node->mMeshes[m];
+				meshRefs[mi].push_back({ current, CEngineString::StringToWString(node->mName.C_Str()) });
 			}
-
-			for (_uint c = 0; c < node->mNumChildren; ++c)
+			for (unsigned c = 0; c < node->mNumChildren; ++c)
 				DFS(node->mChildren[c], current);
 		};
-
 	DFS(aiScene->mRootNode, aiMatrix4x4());
 
-	// ─────────────────────────────────────────────────────────────
-	// 인스턴스별로 실제 버퍼를 생성(지오메트리 복제)하여 누락 방지
-	// ─────────────────────────────────────────────────────────────
-	std::vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> geoInfos;
+	geoInfos.reserve(aiScene->mNumMeshes);
 
-	for (_uint mi = 0; mi < aiScene->mNumMeshes; ++mi)
+	for (unsigned mi = 0; mi < aiScene->mNumMeshes; ++mi)
 	{
 		const aiMesh* mesh = aiScene->mMeshes[mi];
 
-		// 만약 이 mesh를 참조하는 노드가 하나도 없으면(이례적),
-		// identity 로 1개 추가
-		if (meshRefs[mi].empty())
+		wstring meshName = CMeshBuffer::FindMeshName(aiScene, mi);
+		if (meshName.empty())
+			meshName = L"Mesh_" + to_wstring(mi);
+
+		// ─── 지오메트리(로컬) 작성 ───
+		vector<VTX> vertices;
+		vector<_uint> indices;
+		vertices.reserve(mesh->mNumVertices);
+
+		for (unsigned v = 0; v < mesh->mNumVertices; ++v)
 		{
-			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
-			meshRefs[mi].push_back(std::move(ref));
-		}
+			VTX vert{};
+			const aiVector3D& p = mesh->mVertices[v];
+			vert.position = { p.x, p.y, p.z };
 
-		for (_uint inst = 0; inst < meshRefs[mi].size(); ++inst)
-		{
-			const aiMatrix4x4& gMat = meshRefs[mi][inst].g;
-			aiMatrix3x3        gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
-
-			CMeshBuffer::MeshBufferInitiaizeInfo info{};
-			// 이름: 노드명#인스턴스번호 (없으면 FindMeshName 또는 Mesh_{mi})
-			wstring baseName = meshRefs[mi][inst].nodeName;
-			if (baseName.empty())
-				baseName = CMeshBuffer::FindMeshName(aiScene, mi);
-			if (baseName.empty())
-				baseName = L"Mesh_" + std::to_wstring(mi);
-
-			info.meshName = baseName + L"#" + std::to_wstring(inst);
-
-			// ── Vertex 변환(포지션은 gMat, 노말/탄젠트는 gMat3)
-			std::vector<VTX>   vertices;
-			std::vector<_uint> indices;
-
-			vertices.reserve(mesh->mNumVertices);
-			for (_uint v = 0; v < mesh->mNumVertices; ++v)
+			if (mesh->HasNormals())
 			{
-				aiVector3D p = gMat * mesh->mVertices[v];
-				aiVector3D n = mesh->HasNormals()
-					? gMat3 * mesh->mNormals[v]
-					: aiVector3D(0, 0, 0);
-				aiVector3D t = mesh->HasTangentsAndBitangents()
-					? gMat3 * mesh->mTangents[v]
-					: aiVector3D(0, 0, 0);
-
-				VTX vert{};
-				vert.position = { p.x, p.y, p.z };
+				const aiVector3D& n = mesh->mNormals[v];
 				vert.normal = { n.x, n.y, n.z };
+			}
+			else vert.normal = { 0,0,0 };
+
+			if (mesh->HasTangentsAndBitangents())
+			{
+				const aiVector3D& t = mesh->mTangents[v];
 				vert.tangent = { t.x, t.y, t.z };
-				vert.uv = mesh->HasTextureCoords(0)
-					? _float2{ mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y }
-				: _float2{ 0, 0 };
-
-				vertices.emplace_back(vert);
 			}
+			else vert.tangent = { 1,0,0 };
 
-			for (_uint f = 0; f < mesh->mNumFaces; ++f)
-			{
-				const aiFace& face = mesh->mFaces[f];
-				if (face.mNumIndices == 3)
-				{
-					indices.push_back(face.mIndices[0]);
-					indices.push_back(face.mIndices[1]);
-					indices.push_back(face.mIndices[2]);
-				}
-			}
+			if (mesh->HasTextureCoords(0))
+				vert.uv = { mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y };
+			else
+				vert.uv = { 0,0 };
 
-			// ── Desc + 데이터
-			CMeshBuffer::MESHBUFFERDESC desc{};
-			desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			desc.vertexSize = sizeof(VTX);
-			desc.vertextCount = static_cast<_uint>(vertices.size());
-			desc.indexCount = static_cast<_uint>(indices.size());
-
-			info.buffer.assign(
-				reinterpret_cast<const uint8_t*>(vertices.data()),
-				reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX)
-			);
-			info.indices.assign(indices.begin(), indices.end());
-			info.desc = desc;
-
-			// ── 머티리얼(옵션)
-			if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
-			{
-				aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
-				aiString texPath;
-				if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
-				{
-					filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
-					filesystem::path relPath = filesystem::u8path(texPath.C_Str());
-					filesystem::path fullPath = fbxDir / relPath;
-					info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
-				}
-			}
-
-			bufferInfoList.push_back(std::move(info));
+			vertices.emplace_back(vert);
 		}
+
+		for (unsigned f = 0; f < mesh->mNumFaces; ++f)
+		{
+			const aiFace& face = mesh->mFaces[f];
+			if (face.mNumIndices == 3)
+			{
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
+		}
+
+		CMeshBuffer::MESHBUFFERDESC desc{};
+		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		desc.vertexSize = sizeof(VTX);
+		desc.vertextCount = static_cast<_uint>(vertices.size());
+		desc.indexCount = static_cast<_uint>(indices.size());
+
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
+		info.meshName = meshName;
+		info.buffer.assign(
+			reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX));
+		info.indices.assign(indices.begin(), indices.end());
+		info.desc = desc;
+
+		// (선택) 머티리얼 텍스처 경로
+		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
+		{
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
+			aiString texPath;
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			{
+				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+				filesystem::path rel = filesystem::u8path(texPath.C_Str());
+				filesystem::path full = fbxDir / rel;
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + full.wstring();
+			}
+		}
+
+		// ─── 인스턴스 팩(같은 info 안에 저장) ───
+		CMeshBuffer::MeshInstancePack pack;
+		pack.meshName = meshName;
+
+		auto& refs = meshRefs[mi];
+		if (refs.empty())
+		{
+			aiMatrix4x4 I; // identity
+			pack.instances.push_back(MatrixToInstanceData(AIMatrixToXMMatrix(I)));
+		}
+		else
+		{
+			pack.instances.reserve(refs.size());
+			for (auto& r : refs)
+				pack.instances.push_back(MatrixToInstanceData(AIMatrixToXMMatrix(r.g)));
+		}
+
+		info.instancePack = move(pack);
+		geoInfos.push_back(move(info));
 	}
 
-	// 파일명 구성
+	// 저장 파일명
 	auto split = CEngineString::Split(_filePath, L"/");
 	wstring folder = split[split.size() - 2];
 	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
-	wstring saveName = folder + L"_" + fileNoExt;
+	wstring baseName = folder + L"_" + fileNoExt;
 
-	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/MeshData/" + saveName + L".meshdata", bufferInfoList)))
+	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/MeshData/" + baseName + L".meshdata", geoInfos)))
 	{
-		CDebug::LogError(L"Failed create mesh Data - can not save: " + _filePath);
+		CDebug::LogError(L"Failed create mesh Data - cannot save: " + _filePath);
 		return E_FAIL;
 	}
 
-	CDebug::Log(L"Complete create mesh Data: " + _filePath);
+	CDebug::Log(L"Complete create mesh + instancing Data: " + _filePath);
+
 	return S_OK;
 }
 
@@ -393,11 +390,13 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			info.boneNames.push_back(CEngineString::StringToWString(bone->mName.C_Str()));
 
 			const aiMatrix4x4& m = bone->mOffsetMatrix;
-			_float4x4 o = _float4x4(
+			_float4x4 o = _float4x4
+			(
 				m.a1, m.b1, m.c1, m.d1,
 				m.a2, m.b2, m.c2, m.d2,
 				m.a3, m.b3, m.c3, m.d3,
-				m.a4, m.b4, m.c4, m.d4);
+				m.a4, m.b4, m.c4, m.d4
+			);
 			info.boneOffsetMatrices.push_back(o);
 		}
 
@@ -418,11 +417,13 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 
 			// 로컬 트랜스폼 복사
 			const aiMatrix4x4& m = node->mTransformation;
-			_float4x4 t = _float4x4(
+			_float4x4 t = _float4x4
+			(
 				m.a1, m.b1, m.c1, m.d1,
 				m.a2, m.b2, m.c2, m.d2,
 				m.a3, m.b3, m.c3, m.d3,
-				m.a4, m.b4, m.c4, m.d4);
+				m.a4, m.b4, m.c4, m.d4
+			);
 			n.transformation = t;
 
 			// 이 노드에 연결된 메시 인덱스
@@ -457,7 +458,8 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
 	wstring saveName = folder + L"_" + fileNoExt;
 
-	if (FAILED(SaveSkinnedBufferInfos(
+	if (FAILED(SaveSkinnedBufferInfos
+	(
 		L"BinaryAssets/SkinnedMeshData/" + saveName + L".skinneddata",
 		bufferInfoList, skeletalHierarchy)))
 	{
@@ -691,8 +693,6 @@ HRESULT CResources::BakeNaviMesh(vector<CGameObject*> _naviObjs)
 
 HRESULT CResources::SaveSceneObjectTransformInfos(const wstring& _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
 
 	if (!out.is_open())
@@ -737,8 +737,6 @@ HRESULT CResources::SaveSceneObjectTransformInfos(const wstring& _filePath, vect
 
 vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(const wstring& _binFileName)
 {
-	using namespace std;
-
 	vector<CScene::ObjectsTransformInfo> resultInfo = {};
 
 	ifstream in(L"BinaryAssets/SceneData/" + _binFileName, ios::binary);
@@ -795,115 +793,207 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 
 HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
-
 	if (!out.is_open())
 		return E_FAIL;
 
+	// ── Header (NEW: v2) ─────────────────────────────────────────
+	const uint32_t kMagic = 0x4D445446;
+	const uint32_t kVersion = 2u;         // 포맷 버전
+	out.write(reinterpret_cast<const char*>(&kMagic), sizeof(kMagic));
+	out.write(reinterpret_cast<const char*>(&kVersion), sizeof(kVersion));
+
+	// ── Mesh count ───────────────────────────────────────────────
 	_uint count = static_cast<_uint>(_infoList.size());
 	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
 
 	for (const auto& info : _infoList)
 	{
+		// meshName
 		_uint nameSize = static_cast<_uint>(info.meshName.size());
-		out.write(reinterpret_cast<char*>(&nameSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&nameSize), sizeof(_uint));
 		if (nameSize > 0)
-			out.write(reinterpret_cast<const char*>(info.meshName.data()), sizeof(wchar_t) * nameSize);
+			out.write(reinterpret_cast<const char*>(info.meshName.data()),
+				sizeof(wchar_t) * nameSize);
 
+		// vertex buffer (raw bytes)
 		_uint bufferSize = static_cast<_uint>(info.buffer.size());
-		out.write(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&bufferSize), sizeof(_uint));
 		if (bufferSize > 0)
 			out.write(reinterpret_cast<const char*>(info.buffer.data()), bufferSize);
 
+		// indices (uint32)
 		_uint indicesSize = static_cast<_uint>(info.indices.size());
-		out.write(reinterpret_cast<char*>(&indicesSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&indicesSize), sizeof(_uint));
 		if (indicesSize > 0)
-			out.write(reinterpret_cast<const char*>(info.indices.data()), sizeof(_uint) * indicesSize);
+			out.write(reinterpret_cast<const char*>(info.indices.data()),
+				sizeof(_uint) * indicesSize);
 
-		out.write(reinterpret_cast<const char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+		// desc
+		out.write(reinterpret_cast<const char*>(&info.desc),
+			sizeof(CMeshBuffer::MESHBUFFERDESC));
 
+		// diffuse map path
 		_uint diffuseTexPathSize = static_cast<_uint>(info.diffuseMapPath.size());
-		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&diffuseTexPathSize), sizeof(_uint));
 		if (diffuseTexPathSize > 0)
-			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathSize);
+			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()),
+				sizeof(wchar_t) * diffuseTexPathSize);
+
+		const auto& insts = info.instancePack.instances;
+		_uint instanceCount = static_cast<_uint>(insts.size());
+		out.write(reinterpret_cast<const char*>(&instanceCount), sizeof(_uint));
+
+		if (instanceCount > 0)
+		{
+			// MeshInstanceData = float4 row0,row1,row2,row3 (총 16 floats)
+			for (const auto& m : insts)
+			{
+				out.write(reinterpret_cast<const char*>(&m.row0), sizeof(m.row0));
+				out.write(reinterpret_cast<const char*>(&m.row1), sizeof(m.row1));
+				out.write(reinterpret_cast<const char*>(&m.row2), sizeof(m.row2));
+				out.write(reinterpret_cast<const char*>(&m.row3), sizeof(m.row3));
+			}
+		}
 	}
 
 	out.close();
-
-	CDebug::Log(L"Save complete meshdata: " + _filePath);
-
+	CDebug::Log(L"Save complete meshdata(v2): " + _filePath);
 	return S_OK;
 }
 
 vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring& _binFileName)
 {
-	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = {};
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList;
 
-	using namespace std;
-
-	ifstream in(L"BinaryAssets/MeshData/" + _binFileName, ios::binary);
-
+	const wstring fullPath = L"BinaryAssets/MeshData/" + _binFileName;
+	ifstream in(fullPath, ios::binary);
 	if (!in.is_open())
 	{
 		CDebug::LogError(L"ReadMeshBufferInfos failed - can not open: " + _binFileName);
 		return {};
 	}
 
+	// 공통 유틸(문자열/버퍼/인덱스 읽기)
+	auto read_wstring = [&](wstring& outStr)
+		{
+			_uint len = 0;
+			in.read(reinterpret_cast<char*>(&len), sizeof(_uint));
+			if (len > 0)
+			{
+				outStr.resize(len);
+				in.read(reinterpret_cast<char*>(outStr.data()), sizeof(wchar_t) * len);
+			}
+			else outStr.clear();
+		};
+	auto read_bytes = [&](vector<uint8_t>& outBuf)
+		{
+			_uint sz = 0;
+			in.read(reinterpret_cast<char*>(&sz), sizeof(_uint));
+			if (sz > 0)
+			{
+				outBuf.resize(sz);
+				in.read(reinterpret_cast<char*>(outBuf.data()), sz);
+			}
+			else outBuf.clear();
+		};
+	auto read_indices = [&](vector<_uint>& outIdx)
+		{
+			_uint cnt = 0;
+			in.read(reinterpret_cast<char*>(&cnt), sizeof(_uint));
+			if (cnt > 0)
+			{
+				outIdx.resize(cnt);
+				in.read(reinterpret_cast<char*>(outIdx.data()), sizeof(_uint) * cnt);
+			}
+			else outIdx.clear();
+		};
+
+	const uint32_t kMagic = 0x4D445446; // 저장쪽과 동일값 사용(MDTF)
+	uint32_t magic = 0, version = 0;
+
+	// 먼저 헤더 시도
+	in.read(reinterpret_cast<char*>(&magic), sizeof(magic));
+	in.read(reinterpret_cast<char*>(&version), sizeof(version));
+
+	if (!in.good() || magic != kMagic)
+	{
+		// 구버전(v1): 헤더 없음 → 스트림 처음으로 되감고 기존 포맷으로 읽기
+		in.clear();
+		in.seekg(0, ios::beg);
+
+		_uint count = 0;
+		in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+
+		infoList.reserve(count);
+		for (_uint i = 0; i < count; ++i)
+		{
+			CMeshBuffer::MeshBufferInitiaizeInfo info{};
+
+			read_wstring(info.meshName);
+			read_bytes(info.buffer);
+			read_indices(info.indices);
+
+			in.read(reinterpret_cast<char*>(&info.desc),
+				sizeof(CMeshBuffer::MESHBUFFERDESC));
+
+			read_wstring(info.diffuseMapPath);
+
+			// v1에는 인스턴스 데이터 없음
+			info.instancePack.meshName = info.meshName;
+			info.instancePack.instances.clear();
+
+			infoList.push_back(move(info));
+		}
+
+		in.close();
+		return infoList;
+	}
+
+	// 신버전(v2+)
 	_uint count = 0;
 	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+	infoList.reserve(count);
 
 	for (_uint i = 0; i < count; ++i)
 	{
-		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
-		_uint nameCount = 0;
-		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
-		if (nameCount > 0)
+		// 기본 필드
+		read_wstring(info.meshName);
+		read_bytes(info.buffer);
+		read_indices(info.indices);
+
+		in.read(reinterpret_cast<char*>(&info.desc),
+			sizeof(CMeshBuffer::MESHBUFFERDESC));
+
+		read_wstring(info.diffuseMapPath);
+
+		// 인스턴스 팩 (v2)
+		_uint instanceCount = 0;
+		in.read(reinterpret_cast<char*>(&instanceCount), sizeof(_uint));
+
+		info.instancePack.meshName = info.meshName;
+		info.instancePack.instances.resize(instanceCount);
+
+		for (_uint k = 0; k < instanceCount; ++k)
 		{
-			info.meshName.resize(nameCount);
-			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
+			auto& m = info.instancePack.instances[k];
+			in.read(reinterpret_cast<char*>(&m.row0), sizeof(m.row0));
+			in.read(reinterpret_cast<char*>(&m.row1), sizeof(m.row1));
+			in.read(reinterpret_cast<char*>(&m.row2), sizeof(m.row2));
+			in.read(reinterpret_cast<char*>(&m.row3), sizeof(m.row3));
 		}
 
-		_uint bufferSize = 0;
-		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
-		if (bufferSize > 0)
-		{
-			info.buffer.resize(bufferSize);
-			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
-		}
-
-		_uint indexCount = 0;
-		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
-		if (indexCount > 0)
-		{
-			info.indices.resize(indexCount);
-			in.read(reinterpret_cast<char*>(info.indices.data()), sizeof(_uint) * indexCount);
-		}
-
-		in.read(reinterpret_cast<char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
-
-		_uint diffuseTexPathCount = 0;
-		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
-		if (diffuseTexPathCount > 0)
-		{
-			info.diffuseMapPath.resize(diffuseTexPathCount);
-			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
-		}
-
-		infoList.push_back(info);
+		infoList.push_back(move(info));
 	}
 
 	in.close();
-
 	return infoList;
 }
 
 HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
 
 	if (!out.is_open())
@@ -958,7 +1048,7 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSki
 	out.write(reinterpret_cast<const char*>(&skeletalCount), sizeof(_uint));
 	for (const auto& bone : _skeletonInfo)
 	{
-		out.write(reinterpret_cast<const char*>(&bone.nodeId), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(&bone.nodeId), sizeof(_int));
 
 		_uint nameLen = static_cast<_uint>(bone.name.size());
 		out.write(reinterpret_cast<const char*>(&nameLen), sizeof(_uint));
@@ -993,8 +1083,6 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSki
 
 CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstring& _binFileName)
 {
-	using namespace std;
-
 	CSkinnedMeshBuffer::SkinnedBuffer resultBuffer = {};
 
 	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
@@ -1210,7 +1298,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 	auto read = [&](void* dst, size_t sz) -> bool
 		{
 			ifs.read(reinterpret_cast<char*>(dst), sz);
-			return ifs && (ifs.gcount() == static_cast<std::streamsize>(sz));
+			return ifs && (ifs.gcount() == static_cast<streamsize>(sz));
 		};
 
 	//---------------- 1) 헤더 -----------------------------------------------
@@ -1308,8 +1396,6 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 
 HRESULT CResources::SaveAnimationClipBufferInfos(const wstring& _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
 	if (!out.is_open())
 		return E_FAIL;
@@ -1360,7 +1446,6 @@ HRESULT CResources::SaveAnimationClipBufferInfos(const wstring& _filePath, vecto
 
 vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBufferInfos(const wstring& _binFileName)
 {
-	using namespace std;
 	vector<CAnimationClip::AnimationClipInitInfo> clips;
 
 	ifstream in(L"BinaryAssets/AnimationClipData/" + _binFileName, ios::binary);
@@ -1431,18 +1516,18 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 	return clips;
 }
 
-vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
+vector<CMeshBuffer::MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;
 
 	if (_desc)
 		scaleFactor = *reinterpret_cast<_float*>(_desc);
 
-	vector<MeshBundle> resultList = {};
+	vector<CMeshBuffer::MeshBundle> resultList = {};
 
 	for (_uint i = 0; i < _infoList.size(); ++i)
 	{
-		MeshBundle newBundle;
+		CMeshBuffer::MeshBundle newBundle;
 
 		if (_filter & FILTER_MESHBUFFER)
 		{
@@ -1450,6 +1535,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 			newBuffer->Initialize_Custom(_infoList[i], _desc);
 
 			newBundle.meshBuffer = newBuffer;
+			newBundle.instancePack = _infoList[i].instancePack;
 		}
 
 		if (_filter & FILTER_MATERIAL)
@@ -1476,7 +1562,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 	return resultList;
 }
 
-vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc, const _bool _tempScene)
+vector<CMeshBuffer::SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc, const _bool _tempScene)
 {
 	if (_infoList.size() <= 0)
 	{
@@ -1489,11 +1575,11 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 	if (_desc)
 		scaleFactor = *reinterpret_cast<_float*>(_desc);
 
-	vector<SkinnedMeshBundle> resultList = {};
+	vector<CMeshBuffer::SkinnedMeshBundle> resultList = {};
 
 	for (_uint i = 0; i < _infoList.size(); ++i)
 	{
-		SkinnedMeshBundle newBundle;
+		CMeshBuffer::SkinnedMeshBundle newBundle;
 
 		if (_filter & FILTER_MESHBUFFER)
 		{
@@ -1549,9 +1635,9 @@ CNaviMesh* CResources::CreateNaviMesh(const wstring& _name, CNaviMesh::NaviMeshB
 	return naviMesh;
 }
 
-vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
+vector<CMeshBuffer::MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
 {
-	vector<MeshBundle> r = {};
+	vector<CMeshBuffer::MeshBundle> r = {};
 
 	if (CSceneManager::Get_CrtScene())
 		r = CSceneManager::Get_CrtScene()->Find_MeshInfoResource(_name);
@@ -1559,9 +1645,9 @@ vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
 	return r;
 }
 
-vector<SkinnedMeshBundle> CResources::LoadSkinnedMeshBuffersOnScene(const wstring& _name)
+vector<CMeshBuffer::SkinnedMeshBundle> CResources::LoadSkinnedMeshBuffersOnScene(const wstring& _name)
 {
-	vector<SkinnedMeshBundle> r = {};
+	vector<CMeshBuffer::SkinnedMeshBundle> r = {};
 
 	if (CSceneManager::Get_CrtScene())
 		r = CSceneManager::Get_CrtScene()->Find_SkinnedMeshInfoResource(_name);

@@ -134,7 +134,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
                 continue;
 
             _float4x4 lightInfo = (*it)->To_LightInfo();
-            // gLight[0][3][3]에 조명 갯수 넣는 규약 유지
+  
             lightInfo._44 = (index == 0) ? static_cast<_float>(lightCount) : 0.f;
 
             vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));

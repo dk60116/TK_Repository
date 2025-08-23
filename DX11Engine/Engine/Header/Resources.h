@@ -56,8 +56,8 @@ public:
     template<typename T>
     static T* CreateSceneResource(const wstring& _name, const wstring& _path, void* _desc = nullptr, const _bool _tempScene = false);
 
-    static vector<MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
-    static vector<SkinnedMeshBundle> CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    static vector<CMeshBuffer::MeshBundle> CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
+    static vector<CMeshBuffer::SkinnedMeshBundle> CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc = nullptr, const _bool _tempScene = false);
     static class EngineAI::CNaviMesh* CreateNaviMesh(const wstring& _name, EngineAI::CNaviMesh::NaviMeshBufferInitiaizeInfo _info);
 
     template<typename T>
@@ -69,8 +69,8 @@ public:
     template<typename T>
     static T* LoadOnScene(const wstring& _name);
 
-    static vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
-    static vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
+    static vector<CMeshBuffer::MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
+    static vector<CMeshBuffer::SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
     static vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> LoadSkinnedBonesOnScene(const wstring& _name);
 
     static _bool FileExists(const wstring& _path);

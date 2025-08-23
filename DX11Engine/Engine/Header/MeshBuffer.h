@@ -19,6 +19,19 @@ public:
 		_uint indexCount = 0;
 	}MESHBUFFERDESC;
 
+	struct InstanceFileHeader
+	{
+		_uint magic = 'INSD';
+		_uint version = 1;
+		_uint meshCount = 0;
+	};
+
+	struct MeshInstancePack
+	{
+		wstring meshName = L"";
+		vector<MeshInstanceData> instances = {};
+	};
+
 	struct MeshBufferInitiaizeInfo
 	{
 		wstring meshName = L"";
@@ -26,6 +39,24 @@ public:
 		vector<_uint> indices = {};
 		MESHBUFFERDESC desc = {};
 		wstring diffuseMapPath = L"";
+
+		MeshInstancePack instancePack;
+	};
+
+
+	struct MeshBundle
+	{
+		class CMeshBuffer* meshBuffer = nullptr;
+		CMeshBuffer::MeshInstancePack instancePack;
+		CMaterial* material = nullptr;
+		CTexture* texture = nullptr;
+	};
+
+	struct SkinnedMeshBundle
+	{
+		class CSkinnedMeshBuffer* meshBuffer = nullptr;
+		CMaterial* material = nullptr;
+		CTexture* texture = nullptr;
 	};
 
 	typedef struct TerrainMeshBufferDesctiption

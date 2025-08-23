@@ -23,7 +23,7 @@ public:
 public:
 	CMaterial* Get_Material();
 	void Set_Material(CMaterial* _material);
-	virtual CMeshBuffer* Get_MeshBuffer() PURE;
+	virtual class CMeshBuffer* Get_MeshBuffer() PURE;
 
 	const _bool Is_UseInstancing() const;
 	void Set_UseInstancing(const _bool _value);
