@@ -58,6 +58,11 @@ struct VSIn
     float3 tangentL : TANGENT;
     uint4 boneIndices : BLENDINDICES;
     float4 boneWeights : BLENDWEIGHT;
+    
+    float4 instance_row0 : INSTANCE_ROW0;
+    float4 instance_row1 : INSTANCE_ROW1;
+    float4 instance_row2 : INSTANCE_ROW2;
+    float4 instance_row3 : INSTANCE_ROW3;
 };
 
 struct VSOut

@@ -1,5 +1,5 @@
 SceneName : Game Scene
-using NaviMesh : 1
+using NaviMesh : 0
 // Link
 Link_Model : Player/Link.fbx : [Skinned Mesh] [Material]
 Link_Idle : Player/Link_Idle.fbx : [Animation Clip]

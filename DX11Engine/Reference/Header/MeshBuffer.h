@@ -26,7 +26,7 @@ public:
 		vector<_uint> indices = {};
 		MESHBUFFERDESC desc = {};
 		wstring diffuseMapPath = L"";
-		vector<_float4x4> instanceWords = {};
+		vector<_float4x4> instanceWorlds = {};
 	};
 
 	typedef struct TerrainMeshBufferDesctiption
@@ -41,10 +41,10 @@ public:
 
 	typedef struct MeshInstanceDescription
 	{
-		vector<MeshInstaceData> data;
+		vector<MeshInstanceData> data;
 		_uint dcapacity = 0;
 		_uint count = 0;
-		_uint instanceStride = sizeof(MeshInstaceData);
+		_uint instanceStride = sizeof(MeshInstanceData);
 		_float4x4 world;
 	}INSTANCEDESC;
 

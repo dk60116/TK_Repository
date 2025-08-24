@@ -150,7 +150,8 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		}
 	}
 
-	Bind_InstanceData(matWorld, pBuffer);
+	if (inst.count == 0 || inst.dcapacity == 0)
+		Bind_InstanceData(matWorld, pBuffer);
 	
 	pBuffer->Render();
 }

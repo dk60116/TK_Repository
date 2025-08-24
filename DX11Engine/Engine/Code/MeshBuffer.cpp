@@ -268,20 +268,24 @@ CMeshBuffer::INSTANCEDESC& CMeshBuffer::Get_InstancingDesc()
 HRESULT CMeshBuffer::CreateInstanceBuffer(_uint _capacity, D3D11_USAGE _usage)
 {
     if (m_pInstanceBuffer)
+    {
         m_pInstanceBuffer->Release();
+        m_pInstanceBuffer = nullptr;
+    }
 
     m_sInstanceDesc.dcapacity = _capacity;
     m_sInstanceDesc.data.resize(_capacity);
+    m_sInstanceDesc.count = 0; // 아직 채우기 전
 
     D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = _capacity * sizeof(MeshInstaceData);
+    desc.ByteWidth = _capacity * sizeof(MeshInstanceData);
     desc.Usage = _usage;
     desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     desc.CPUAccessFlags = (_usage == D3D11_USAGE_DYNAMIC) ? D3D11_CPU_ACCESS_WRITE : 0;
     desc.MiscFlags = 0;
-    desc.StructureByteStride = sizeof(MeshInstaceData);
+    desc.StructureByteStride = sizeof(MeshInstanceData);
 
-    return CGraphicDevice::Get_Device()->CreateBuffer(&desc, nullptr, &m_pInstanceBuffer);
+    return CGraphicDevice::GetInstance().Get_Device()->CreateBuffer(&desc, nullptr, &m_pInstanceBuffer);
 }
 
 void CMeshBuffer::DestroyInstanceBuffer()
@@ -296,7 +300,7 @@ void CMeshBuffer::DestroyInstanceBuffer()
     m_sInstanceDesc.data.shrink_to_fit();
     m_sInstanceDesc.count = 0;
     m_sInstanceDesc.dcapacity = 0;
-    m_sInstanceDesc.instanceStride = sizeof(MeshInstaceData);
+    m_sInstanceDesc.instanceStride = sizeof(MeshInstanceData);
     XMStoreFloat4x4(&m_sInstanceDesc.world, XMMatrixIdentity());
 }
 
@@ -311,7 +315,7 @@ HRESULT CMeshBuffer::UpdateInstanceBuffer()
     if (FAILED(deviceContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub)))
         return E_FAIL;
 
-    memcpy(sub.pData, m_sInstanceDesc.data.data(), m_sInstanceDesc.count * sizeof(MeshInstaceData));
+    memcpy(sub.pData, m_sInstanceDesc.data.data(), m_sInstanceDesc.count * sizeof(MeshInstanceData));
     deviceContext->Unmap(m_pInstanceBuffer, 0);
 
     return S_OK;

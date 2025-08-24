@@ -77,8 +77,7 @@ void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
 HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 {
 	Assimp::Importer importer;
-	const aiScene* aiScene = importer.ReadFile
-	(
+	const aiScene* aiScene = importer.ReadFile(
 		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
@@ -98,14 +97,9 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	const bool hasMaterial = aiScene->HasMaterials();
 
 	// ─────────────────────────────────────────────────────────────
-	// 핵심: meshIndex -> 여러 인스턴스(노드 이름 + 글로벌 변환) 수집
+	// meshIndex → 이 mesh를 참조하는 노드의 글로벌 변환 수집
 	// ─────────────────────────────────────────────────────────────
-	struct MeshRef
-	{
-		aiMatrix4x4 g;        // global transform
-		wstring     nodeName; // node name (for meshName 식별)
-	};
-
+	struct MeshRef { aiMatrix4x4 g; wstring nodeName; };
 	std::vector<std::vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
 
 	std::function<void(aiNode*, const aiMatrix4x4&)> DFS =
@@ -125,108 +119,119 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			for (_uint c = 0; c < node->mNumChildren; ++c)
 				DFS(node->mChildren[c], current);
 		};
-
 	DFS(aiScene->mRootNode, aiMatrix4x4());
 
 	// ─────────────────────────────────────────────────────────────
-	// 인스턴스별로 실제 버퍼를 생성(지오메트리 복제)하여 누락 방지
+	// 메시당 1개 지오메트리 + 인스턴스 월드행렬들(instanceWorlds)
 	// ─────────────────────────────────────────────────────────────
 	std::vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
+	bufferInfoList.reserve(aiScene->mNumMeshes);
 
 	for (_uint mi = 0; mi < aiScene->mNumMeshes; ++mi)
 	{
 		const aiMesh* mesh = aiScene->mMeshes[mi];
 
-		// 만약 이 mesh를 참조하는 노드가 하나도 없으면(이례적),
-		// identity 로 1개 추가
+		// 이 mesh를 참조하는 노드가 하나도 없으면 identity 1개 추가
 		if (meshRefs[mi].empty())
 		{
 			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
 			meshRefs[mi].push_back(std::move(ref));
 		}
 
-		for (_uint inst = 0; inst < meshRefs[mi].size(); ++inst)
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
+
+		// 이름(첫 레퍼런스 노드명 or FindMeshName or Mesh_{mi})
+		wstring baseName = meshRefs[mi][0].nodeName;
+		if (baseName.empty())
+			baseName = CMeshBuffer::FindMeshName(aiScene, mi);
+		if (baseName.empty())
+			baseName = L"Mesh_" + std::to_wstring(mi);
+		info.meshName = baseName; // ★ 인스턴스 번호 붙이지 않음
+
+		// ── 지오메트리: 노드 변환을 적용하지 않고 "그대로" 기록
+		std::vector<VTX>   vertices;
+		std::vector<_uint> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		for (_uint v = 0; v < mesh->mNumVertices; ++v)
 		{
-			const aiMatrix4x4& gMat = meshRefs[mi][inst].g;
-			aiMatrix3x3        gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
-
-			CMeshBuffer::MeshBufferInitiaizeInfo info{};
-			// 이름: 노드명#인스턴스번호 (없으면 FindMeshName 또는 Mesh_{mi})
-			wstring baseName = meshRefs[mi][inst].nodeName;
-			if (baseName.empty())
-				baseName = CMeshBuffer::FindMeshName(aiScene, mi);
-			if (baseName.empty())
-				baseName = L"Mesh_" + std::to_wstring(mi);
-
-			info.meshName = baseName + L"#" + std::to_wstring(inst);
-
-			// ── Vertex 변환(포지션은 gMat, 노말/탄젠트는 gMat3)
-			std::vector<VTX>   vertices;
-			std::vector<_uint> indices;
-
-			vertices.reserve(mesh->mNumVertices);
-			for (_uint v = 0; v < mesh->mNumVertices; ++v)
+			VTX vert{};
+			if (mesh->HasPositions())
 			{
-				aiVector3D p = gMat * mesh->mVertices[v];
-				aiVector3D n = mesh->HasNormals()
-					? gMat3 * mesh->mNormals[v]
-					: aiVector3D(0, 0, 0);
-				aiVector3D t = mesh->HasTangentsAndBitangents()
-					? gMat3 * mesh->mTangents[v]
-					: aiVector3D(0, 0, 0);
-
-				VTX vert{};
+				aiVector3D p = mesh->mVertices[v];
 				vert.position = { p.x, p.y, p.z };
+			}
+			if (mesh->HasNormals())
+			{
+				aiVector3D n = mesh->mNormals[v];
 				vert.normal = { n.x, n.y, n.z };
+			}
+			if (mesh->HasTangentsAndBitangents())
+			{
+				aiVector3D t = mesh->mTangents[v];
 				vert.tangent = { t.x, t.y, t.z };
-				vert.uv = mesh->HasTextureCoords(0)
-					? _float2{ mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y }
-				: _float2{ 0, 0 };
-
-				vertices.emplace_back(vert);
 			}
-
-			for (_uint f = 0; f < mesh->mNumFaces; ++f)
+			if (mesh->HasTextureCoords(0))
 			{
-				const aiFace& face = mesh->mFaces[f];
-				if (face.mNumIndices == 3)
-				{
-					indices.push_back(face.mIndices[0]);
-					indices.push_back(face.mIndices[1]);
-					indices.push_back(face.mIndices[2]);
-				}
+				vert.uv = { mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y };
 			}
-
-			// ── Desc + 데이터
-			CMeshBuffer::MESHBUFFERDESC desc{};
-			desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			desc.vertexSize = sizeof(VTX);
-			desc.vertextCount = static_cast<_uint>(vertices.size());
-			desc.indexCount = static_cast<_uint>(indices.size());
-
-			info.buffer.assign(
-				reinterpret_cast<const uint8_t*>(vertices.data()),
-				reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX)
-			);
-			info.indices.assign(indices.begin(), indices.end());
-			info.desc = desc;
-
-			// ── 머티리얼(옵션)
-			if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
-			{
-				aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
-				aiString texPath;
-				if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
-				{
-					filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
-					filesystem::path relPath = filesystem::u8path(texPath.C_Str());
-					filesystem::path fullPath = fbxDir / relPath;
-					info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
-				}
-			}
-
-			bufferInfoList.push_back(std::move(info));
+			vertices.emplace_back(vert);
 		}
+
+		for (_uint f = 0; f < mesh->mNumFaces; ++f)
+		{
+			const aiFace& face = mesh->mFaces[f];
+			if (face.mNumIndices == 3)
+			{
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
+		}
+
+		// ── Desc + 데이터
+		CMeshBuffer::MESHBUFFERDESC desc{};
+		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		desc.vertexSize = sizeof(VTX);
+		desc.vertextCount = static_cast<_uint>(vertices.size());
+		desc.indexCount = static_cast<_uint>(indices.size());
+
+		info.buffer.assign(
+			reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX)
+		);
+		info.indices.assign(indices.begin(), indices.end());
+		info.desc = desc;
+
+		// ── 머티리얼(옵션)
+		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
+		{
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
+			aiString texPath;
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			{
+				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+				filesystem::path fullPath = fbxDir / relPath;
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
+			}
+		}
+
+		// ── 인스턴스 월드 행렬들 저장
+		info.instanceWorlds.reserve(meshRefs[mi].size());
+		for (const auto& r : meshRefs[mi])
+		{
+			const aiMatrix4x4& m = r.g;
+			_float4x4 w(
+				m.a1, m.b1, m.c1, m.d1,
+				m.a2, m.b2, m.c2, m.d2,
+				m.a3, m.b3, m.c3, m.d3,
+				m.a4, m.b4, m.c4, m.d4
+			);
+			info.instanceWorlds.push_back(w);
+		}
+
+		bufferInfoList.push_back(std::move(info));
 	}
 
 	// 파일명 구성
@@ -242,6 +247,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	}
 
 	CDebug::Log(L"Complete create mesh Data: " + _filePath);
+	
 	return S_OK;
 }
 
@@ -795,10 +801,7 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 
 HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
-
 	if (!out.is_open())
 		return E_FAIL;
 
@@ -828,23 +831,25 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBu
 		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
 		if (diffuseTexPathSize > 0)
 			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathSize);
+
+		_uint instCount = static_cast<_uint>(info.instanceWorlds.size());
+		out.write(reinterpret_cast<const char*>(&instCount), sizeof(_uint));
+		if (instCount > 0)
+			out.write(reinterpret_cast<const char*>(info.instanceWorlds.data()), sizeof(_float4x4) * instCount);
 	}
 
 	out.close();
-
 	CDebug::Log(L"Save complete meshdata: " + _filePath);
 
 	return S_OK;
+
 }
 
 vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring& _binFileName)
 {
-	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList = {};
-
-	using namespace std;
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList;
 
 	ifstream in(L"BinaryAssets/MeshData/" + _binFileName, ios::binary);
-
 	if (!in.is_open())
 	{
 		CDebug::LogError(L"ReadMeshBufferInfos failed - can not open: " + _binFileName);
@@ -856,7 +861,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 	for (_uint i = 0; i < count; ++i)
 	{
-		CMeshBuffer::MeshBufferInitiaizeInfo info = {};
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
 		_uint nameCount = 0;
 		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
@@ -892,7 +897,18 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
 		}
 
-		infoList.push_back(info);
+		if (in.peek() != std::char_traits<char>::eof())
+		{
+			_uint instCount = 0;
+			in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint));
+			if (instCount > 0)
+			{
+				info.instanceWorlds.resize(instCount);
+				in.read(reinterpret_cast<char*>(info.instanceWorlds.data()), sizeof(_float4x4) * instCount);
+			}
+		}
+
+		infoList.push_back(std::move(info));
 	}
 
 	in.close();
@@ -1434,45 +1450,68 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;
-
-	if (_desc)
-		scaleFactor = *reinterpret_cast<_float*>(_desc);
+	if (_desc) scaleFactor = *reinterpret_cast<_float*>(_desc);
 
 	vector<MeshBundle> resultList = {};
+	resultList.reserve(_infoList.size());
 
 	for (_uint i = 0; i < _infoList.size(); ++i)
 	{
-		MeshBundle newBundle;
+		MeshBundle newBundle{};
 
 		if (_filter & FILTER_MESHBUFFER)
 		{
 			CMeshBuffer* newBuffer = CMeshBuffer::Create();
 			newBuffer->Initialize_Custom(_infoList[i], _desc);
-
 			newBundle.meshBuffer = newBuffer;
+
+			// 인스턴싱 데이터 적용
+			const auto& worlds = _infoList[i].instanceWorlds;
+			if (!worlds.empty())
+			{
+				const _uint cap = static_cast<_uint>(worlds.size());
+				if (SUCCEEDED(newBuffer->CreateInstanceBuffer(cap, D3D11_USAGE_DYNAMIC)))
+				{
+					auto& inst = newBuffer->Get_InstancingDesc();
+					inst.count = cap;
+					inst.data.resize(cap);
+
+					// _float4x4 -> MeshInstaceData 변환
+					for (_uint k = 0; k < cap; ++k)
+					{
+						const _float4x4& m = worlds[k];
+
+						MeshInstanceData id = {};
+						id.row0 = { m._11, m._12, m._13, m._14 };
+						id.row1 = { m._21, m._22, m._23, m._24 };
+						id.row2 = { m._31, m._32, m._33, m._34 };
+						id.row3 = { m._41, m._42, m._43, m._44 };
+
+						inst.data[k] = id;
+					}
+
+					newBuffer->UpdateInstanceBuffer();
+				}
+			}
 		}
 
 		if (_filter & FILTER_MATERIAL)
 		{
 			CTexture* newTex = CTexture::Create();
 			newTex->Initialize(_infoList[i].diffuseMapPath, _infoList[i].diffuseMapPath, nullptr);
-
 			newBundle.texture = newTex;
 		}
 
 		resultList.push_back(newBundle);
 	}
 
-	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
-		CSceneManager::Get_CrtScene();
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene()
+		: CSceneManager::Get_CrtScene();
 
-	if (!_tempScene)
-		targetScene->Add_MeshBundle(_name, resultList);
-	else
-		targetScene->Add_TempMeshBundle(_name, resultList);
+	if (!_tempScene) targetScene->Add_MeshBundle(_name, resultList);
+	else             targetScene->Add_TempMeshBundle(_name, resultList);
 
 	CDebug::Log(L"Create Scene resource successfully: " + _name);
-
 	return resultList;
 }
 
