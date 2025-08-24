@@ -1379,7 +1379,7 @@ namespace Engine
         _float3 position;
         _float3 normal;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
         static const _uint numElements = 5;
@@ -1399,7 +1399,7 @@ namespace Engine
         _float3 normal;
         _float2 uv;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
         static const _uint numElements = 6;
@@ -1420,7 +1420,7 @@ namespace Engine
         _float3 normal;
         _float2 uv;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
         _float lineWidth = 1.f;
 
@@ -1436,29 +1436,6 @@ namespace Engine
             { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
     };
-
-    struct MeshInstanceData
-    {
-        _float4 row0;
-        _float4 row1;
-        _float4 row2;
-        _float4 row3;
-    };
-
-    inline static MeshInstanceData MatrixToInstanceData(const _matrix& _w)
-    {
-        _float4x4 f = {};
-        XMStoreFloat4x4(&f, _w);
-
-        MeshInstanceData result = {};
-
-        result.row0 = { f._11, f._12, f._13, f._14 };
-        result.row1 = { f._21, f._22, f._23, f._24 };
-        result.row2 = { f._31, f._32, f._33, f._34 };
-        result.row3 = { f._41, f._42, f._43, f._44 };
-        
-        return result;
-    }
 #pragma endregion;
 
 #pragma region ShaderBuffer

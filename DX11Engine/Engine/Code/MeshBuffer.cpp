@@ -5,9 +5,6 @@
 CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
 	, m_pIndexBuffer(nullptr)
-    , m_pInstanceBuffer(nullptr)
-    , m_iInstanceStride(sizeof(MeshInstanceData))
-    , m_iInstanceCount(0)
 	, m_sInfo({})
     , m_pVertexSysMem(nullptr)
     , m_pIndexSysMem(nullptr)
@@ -222,7 +219,6 @@ void CMeshBuffer::OnDestroy()
 
     Safe_Release(m_pVertexBuffer);
     Safe_Release(m_pIndexBuffer);
-    Safe_Release(m_pInstanceBuffer);
 }
 
 void CMeshBuffer::Render()
@@ -650,114 +646,6 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
 const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 {
 	return m_sInfo;
-}
-
-HRESULT CMeshBuffer::UpdateInstanceBuffer(const vector<MeshInstanceData>& _instances, _bool _discard)
-{
-    ID3D11Device* device = CGraphicDevice::Get_Device();
-    ID3D11DeviceContext* context = CGraphicDevice::Get_Context();
-
-    m_iInstanceCount = static_cast<_uint>(_instances.size());
-
-    if (m_iInstanceCount == 0)
-    {
-        Safe_Release(m_pInstanceBuffer);
-        return S_OK;
-    }
-
-    const _uint requiredBytes = m_iInstanceStride * m_iInstanceCount;
-
-    if (!m_pInstanceBuffer)
-    {
-        D3D11_BUFFER_DESC bd = {};
-        bd.ByteWidth = requiredBytes;
-        bd.Usage = D3D11_USAGE_DYNAMIC;
-        bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-        D3D11_SUBRESOURCE_DATA init{};
-        init.pSysMem = _instances.data();
-
-        HRESULT hr = device->CreateBuffer(&bd, &init, &m_pInstanceBuffer);
-        return hr;
-    }
-    else
-    {
-        D3D11_BUFFER_DESC cur{};
-        m_pInstanceBuffer->GetDesc(&cur);
-
-        if (cur.ByteWidth < requiredBytes)
-        {
-            Safe_Release(m_pInstanceBuffer);
-
-            D3D11_BUFFER_DESC bd{};
-            bd.ByteWidth = requiredBytes;
-            bd.Usage = D3D11_USAGE_DYNAMIC;
-            bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-            bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-            D3D11_SUBRESOURCE_DATA init{};
-            init.pSysMem = _instances.data();
-
-            HRESULT hr = device->CreateBuffer(&bd, &init, &m_pInstanceBuffer);
-            return hr;
-        }
-
-        D3D11_MAPPED_SUBRESOURCE mapped{};
-        const D3D11_MAP mapType = _discard ? D3D11_MAP_WRITE_DISCARD : D3D11_MAP_WRITE_NO_OVERWRITE;
-
-        HRESULT hr = context->Map(m_pInstanceBuffer, 0, mapType, 0, &mapped);
-        if (FAILED(hr)) 
-            return hr;
-
-        memcpy(mapped.pData, _instances.data(), requiredBytes);
-        context->Unmap(m_pInstanceBuffer, 0);
-        return S_OK;
-    }
-
-    return S_OK;
-}
-
-void CMeshBuffer::ClearInstanceBuffer()
-{
-    Safe_Release(m_pInstanceBuffer);
-    m_iInstanceCount = 0;
-}
-
-void CMeshBuffer::RenderInstanced(_uint _instanceCount)
-{
-    if (!m_pVertexBuffer)
-    {
-        CDebug::LogError("Mesh buffer failed instanced render - No vertex buffer");
-        return;
-    }
-
-    const _uint drawCount = (_instanceCount > 0) ? _instanceCount : m_iInstanceCount;
-
-    if (!m_pInstanceBuffer || drawCount == 0)
-    {
-        Render();
-        return;
-    }
-
-    ID3D11DeviceContext* context = CGraphicDevice::Get_Context();
-
-    ID3D11Buffer* vbs[2] = { m_pVertexBuffer, m_pInstanceBuffer };
-    _uint strides[2] = { m_sInfo.vertexSize, m_iInstanceStride };
-    _uint offsets[2] = { 0, 0 };
-
-    context->IASetVertexBuffers(0, 2, vbs, strides, offsets);
-
-    if (!m_sInfo.useDeviceTopology)
-        context->IASetPrimitiveTopology(m_sInfo.topology);
-
-    if (m_pIndexBuffer)
-        context->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-    if (m_pIndexBuffer)
-        context->DrawIndexedInstanced(m_sInfo.indexCount, drawCount, 0, 0, 0);
-    else
-        context->DrawInstanced(m_sInfo.vertextCount, drawCount, 0, 0);
 }
 
 _bool CMeshBuffer::PlaneFromTri(const vector3& _a, const vector3& _b, const vector3& _c, vector3& _n, _float& _d)

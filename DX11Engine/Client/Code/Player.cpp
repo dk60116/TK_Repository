@@ -126,6 +126,8 @@ void CPlayer::Awake()
 	m_pCollider->Set_Center(vector3(0.f, 0.85f, 0.2f));
 	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
 
+	m_pNavAgent->SetEnabled(false);
+
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 
 	ChangeWeapon(L"Sword");

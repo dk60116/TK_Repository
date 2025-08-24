@@ -31,8 +31,6 @@ public:
 protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
-
-	_bool m_bUseInstancing;
 };
 
 NS_END

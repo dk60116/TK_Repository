@@ -106,15 +106,8 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
-
-	// 셰이더 + 텍스처 + 상수 버퍼 바인딩
-	if (m_bUseInstancing)
-	{
-		_matrix identity = XMMatrixIdentity();
-		m_pMaterial->Bind_Matrix(identity);
-	}
-	else
-		m_pMaterial->Bind_Matrix(matWorld);
+	
+	m_pMaterial->Bind_Matrix(matWorld);
 
 	m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
 
@@ -146,17 +139,8 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 		m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
 	}
-
-	if (m_bUseInstancing)
-	{
-		MeshInstanceData d = MatrixToInstanceData(matWorld);
-		const vector<MeshInstanceData> one = { d };
-
-		if (SUCCEEDED(pBuffer->UpdateInstanceBuffer(one, true))) 
-			pBuffer->RenderInstanced(1);
-	}
-	else
-		pBuffer->Render();
+	
+	pBuffer->Render();
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)

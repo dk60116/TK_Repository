@@ -55,14 +55,14 @@ HRESULT CMonster::Initialize()
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
 
-	if (!m_pNavAgent)
-		m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-
 	return S_OK;
 }
 
 void CMonster::Awake()
 {
+	if (!m_pNavAgent)
+		m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
+
 	if (m_pHeadTF)
 	{
 		CMonsterPartCollision* headCol = m_pHeadTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();

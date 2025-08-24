@@ -268,9 +268,9 @@ void CMaterial::Set_FloatValue(const wstring _key, const _float _value)
 
 void CMaterial::Set_IntValue(const wstring _key, const _int _value)
 {
-	auto it = m_mFloatValues.find(_key);
+	auto it = m_mIntValues.find(_key);
 
-	if (it != m_mFloatValues.end())
+	if (it != m_mIntValues.end())
 		m_mIntValues[_key] = _value;
 	else
 		CDebug::LogError(L"Material - Set_IntValue Failed - Key not found: " + _key + L" - " + m_strResourceName);

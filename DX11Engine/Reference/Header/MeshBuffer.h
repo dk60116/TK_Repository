@@ -76,11 +76,6 @@ public:
 	const MESHBUFFERDESC& Get_Info();
 
 public:
-	HRESULT UpdateInstanceBuffer(const vector<MeshInstanceData>& _instances, _bool _discard = true);
-	void ClearInstanceBuffer();
-	void RenderInstanced(_uint _instanceCount);
-
-public:
 	static _bool  PlaneFromTri(const vector3& _a, const vector3& _b, const vector3& _c, vector3& _n, _float& _d);
 	static _bool PointInTri(const vector3& _p, const vector3& _a, const vector3& _b, const vector3& _c);
 	static vector3 ClosestPointOnSegment(const vector3& _p, const vector3& _a, const vector3& _b);
@@ -89,10 +84,6 @@ public:
 protected:
 	ID3D11Buffer* m_pVertexBuffer;
 	ID3D11Buffer* m_pIndexBuffer;
-
-	ID3D11Buffer* m_pInstanceBuffer;
-	_uint m_iInstanceStride;
-	_uint m_iInstanceCount;
 
 	MESHBUFFERDESC m_sInfo;
 

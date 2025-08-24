@@ -4,7 +4,6 @@
 CRenderer::CRenderer()
 	: m_pMaterial(nullptr)
 	, m_pOutlineMat(nullptr)
-	, m_bUseInstancing(false)
 {
 }
 
@@ -62,14 +61,4 @@ void CRenderer::Set_Material(CMaterial* _material)
 
 	if (m_pMaterial)
 		m_pMaterial->AddRef();
-}
-
-const _bool CRenderer::Is_UseInstancing() const
-{
-	return m_bUseInstancing;
-}
-
-void CRenderer::Set_UseInstancing(const _bool _value)
-{
-	m_bUseInstancing = _value;
 }
