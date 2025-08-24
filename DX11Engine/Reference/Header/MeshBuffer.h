@@ -26,6 +26,7 @@ public:
 		vector<_uint> indices = {};
 		MESHBUFFERDESC desc = {};
 		wstring diffuseMapPath = L"";
+		vector<_float4x4> instanceWords = {};
 	};
 
 	typedef struct TerrainMeshBufferDesctiption
@@ -37,6 +38,15 @@ public:
 		_float heightWeight = 1.f;
 		wstring heightMap = L"";
 	}TERRAINBUFFERDESC;
+
+	typedef struct MeshInstanceDescription
+	{
+		vector<MeshInstaceData> data;
+		_uint dcapacity = 0;
+		_uint count = 0;
+		_uint instanceStride = sizeof(MeshInstaceData);
+		_float4x4 world;
+	}INSTANCEDESC;
 
 protected:
 	explicit CMeshBuffer();
@@ -71,6 +81,12 @@ public:
 	void Render();
 
 public:
+	INSTANCEDESC& Get_InstancingDesc();
+	HRESULT CreateInstanceBuffer(_uint _capacity, D3D11_USAGE _usage = D3D11_USAGE_DYNAMIC);
+	void DestroyInstanceBuffer();
+	HRESULT UpdateInstanceBuffer();
+
+public:
 	vector<VertexTexNormalTangentBuffer> Get_VertexBuffer() const;
 	vector<_uint> Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
@@ -86,6 +102,10 @@ protected:
 	ID3D11Buffer* m_pIndexBuffer;
 
 	MESHBUFFERDESC m_sInfo;
+
+protected:
+	INSTANCEDESC m_sInstanceDesc;
+	ID3D11Buffer* m_pInstanceBuffer;
 
 protected:
 	void* m_pVertexSysMem;

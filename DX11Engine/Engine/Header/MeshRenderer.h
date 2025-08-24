@@ -30,6 +30,9 @@ public:
 public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;
+	
+private:
+	void Bind_InstanceData(_matrix matWorld, CMeshBuffer* pBuffer);
 
 public:
 	CMeshFilter* Get_MeshFilter();

@@ -139,12 +139,48 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 		m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
 	}
+
+	auto& inst = pBuffer->Get_InstancingDesc();
+
+	if (inst.dcapacity < 1)
+	{
+		if (FAILED(pBuffer->CreateInstanceBuffer(1, D3D11_USAGE_DYNAMIC)))
+		{
+			CDebug::LogError(L"MeshRenderer: failed to create instance buffer for " + m_pGameObject->Get_ObjectNameID());
+		}
+	}
+
+	Bind_InstanceData(matWorld, pBuffer);
 	
 	pBuffer->Render();
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)
 {
+}
+
+void CMeshRenderer::Bind_InstanceData(_matrix matWorld, CMeshBuffer* pBuffer)
+{
+	auto& inst = pBuffer->Get_InstancingDesc();
+
+	if (inst.dcapacity < 1)
+	{
+		if (FAILED(pBuffer->CreateInstanceBuffer(1, D3D11_USAGE_DYNAMIC)))
+		{
+			CDebug::LogError(L"MeshRenderer: failed to create instance buffer for " + m_pGameObject->Get_ObjectNameID());
+			return;
+		}
+	}
+
+	if (inst.data.size() < 1)
+		inst.data.resize(1);
+
+	_float4x4 w;
+	XMStoreFloat4x4(&w, matWorld);
+	inst.data[0] = MakeInstanceData(w);
+	inst.count = 1;
+
+	pBuffer->UpdateInstanceBuffer();
 }
 
 CMeshFilter* CMeshRenderer::Get_MeshFilter()

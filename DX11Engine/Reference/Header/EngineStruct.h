@@ -1314,6 +1314,26 @@ namespace Engine
 #pragma endregion
 
 #pragma region VertexBuffer
+    struct MeshInstaceData
+    {
+        _float4 row0;
+        _float4 row1;
+        _float4 row2;
+        _float4 row3;
+    };
+
+    inline static MeshInstaceData MakeInstanceData(const _float4x4 w)
+    {
+        MeshInstaceData inst = {};
+
+        inst.row0 = { w._11, w._12, w._13, w._14 };
+        inst.row1 = { w._21, w._22, w._23, w._24 };
+        inst.row2 = { w._31, w._32, w._33, w._34 };
+        inst.row3 = { w._41, w._42, w._43, w._44 };
+        
+        return inst;
+    }
+
     struct VertexTexColorBuffer
     {
         _float3 position;
@@ -1379,7 +1399,7 @@ namespace Engine
         _float3 position;
         _float3 normal;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
         static const _uint numElements = 5;
@@ -1399,7 +1419,7 @@ namespace Engine
         _float3 normal;
         _float2 uv;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
         static const _uint numElements = 6;
@@ -1420,7 +1440,7 @@ namespace Engine
         _float3 normal;
         _float2 uv;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
         _float lineWidth = 1.f;
 

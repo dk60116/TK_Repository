@@ -5,6 +5,7 @@
 CMeshBuffer::CMeshBuffer()
 	: m_pVertexBuffer(nullptr)
 	, m_pIndexBuffer(nullptr)
+    , m_pInstanceBuffer(nullptr)
 	, m_sInfo({})
     , m_pVertexSysMem(nullptr)
     , m_pIndexSysMem(nullptr)
@@ -219,6 +220,7 @@ void CMeshBuffer::OnDestroy()
 
     Safe_Release(m_pVertexBuffer);
     Safe_Release(m_pIndexBuffer);
+    Safe_Release(m_pInstanceBuffer);
 }
 
 void CMeshBuffer::Render()
@@ -229,24 +231,90 @@ void CMeshBuffer::Render()
         return;
     }
 
-    _uint stride = m_sInfo.vertexSize;
-    _uint offset = 0;
+    auto deviceContext = CGraphicDevice::Get_Context();
 
-    CGraphicDevice::GetInstance().Get_Context()->IASetVertexBuffers
-    (
-        0, 1, &m_pVertexBuffer, &stride, &offset
-    );
+    UINT strides[2] = { m_sInfo.vertexSize, m_sInstanceDesc.instanceStride };
+    UINT offsets[2] = { 0, 0 };
+    ID3D11Buffer* buffers[2] = { m_pVertexBuffer, m_pInstanceBuffer };
 
-    if (m_pIndexBuffer)
-        CGraphicDevice::GetInstance().Get_Context()->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    if (m_pInstanceBuffer && m_sInstanceDesc.count > 0)
+    {
+        deviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+        deviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+        deviceContext->IASetPrimitiveTopology(m_sInfo.topology);
 
-    if (!m_sInfo.useDeviceTopology)
-        CGraphicDevice::GetInstance().Get_Context()->IASetPrimitiveTopology(m_sInfo.topology);
-
-    if (m_pIndexBuffer)
-        CGraphicDevice::GetInstance().Get_Context()->DrawIndexed(m_sInfo.indexCount, 0, 0);
+        deviceContext->DrawIndexedInstanced(
+            m_sInfo.indexCount,
+            m_sInstanceDesc.count,
+            0, 0, 0);
+    }
     else
-        CGraphicDevice::GetInstance().Get_Context()->Draw(m_sInfo.vertextCount, 0);
+    {
+        UINT stride = m_sInfo.vertexSize;
+        UINT offset = 0;
+        deviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+        deviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+        deviceContext->IASetPrimitiveTopology(m_sInfo.topology);
+
+        deviceContext->DrawIndexed(m_sInfo.indexCount, 0, 0);
+    }
+}
+
+CMeshBuffer::INSTANCEDESC& CMeshBuffer::Get_InstancingDesc()
+{
+    return m_sInstanceDesc;
+}
+
+HRESULT CMeshBuffer::CreateInstanceBuffer(_uint _capacity, D3D11_USAGE _usage)
+{
+    if (m_pInstanceBuffer)
+        m_pInstanceBuffer->Release();
+
+    m_sInstanceDesc.dcapacity = _capacity;
+    m_sInstanceDesc.data.resize(_capacity);
+
+    D3D11_BUFFER_DESC desc = {};
+    desc.ByteWidth = _capacity * sizeof(MeshInstaceData);
+    desc.Usage = _usage;
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    desc.CPUAccessFlags = (_usage == D3D11_USAGE_DYNAMIC) ? D3D11_CPU_ACCESS_WRITE : 0;
+    desc.MiscFlags = 0;
+    desc.StructureByteStride = sizeof(MeshInstaceData);
+
+    return CGraphicDevice::Get_Device()->CreateBuffer(&desc, nullptr, &m_pInstanceBuffer);
+}
+
+void CMeshBuffer::DestroyInstanceBuffer()
+{
+    if (m_pInstanceBuffer)
+    {
+        m_pInstanceBuffer->Release();
+        m_pInstanceBuffer = nullptr;
+    }
+
+    m_sInstanceDesc.data.clear();
+    m_sInstanceDesc.data.shrink_to_fit();
+    m_sInstanceDesc.count = 0;
+    m_sInstanceDesc.dcapacity = 0;
+    m_sInstanceDesc.instanceStride = sizeof(MeshInstaceData);
+    XMStoreFloat4x4(&m_sInstanceDesc.world, XMMatrixIdentity());
+}
+
+HRESULT CMeshBuffer::UpdateInstanceBuffer()
+{
+    if (!m_pInstanceBuffer || m_sInstanceDesc.count == 0)
+        return E_FAIL;
+
+    D3D11_MAPPED_SUBRESOURCE sub = {};
+    auto deviceContext = CGraphicDevice::Get_Context();
+
+    if (FAILED(deviceContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub)))
+        return E_FAIL;
+
+    memcpy(sub.pData, m_sInstanceDesc.data.data(), m_sInstanceDesc.count * sizeof(MeshInstaceData));
+    deviceContext->Unmap(m_pInstanceBuffer, 0);
+
+    return S_OK;
 }
 
 CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateLine()
