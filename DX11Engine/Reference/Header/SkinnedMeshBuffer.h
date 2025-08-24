@@ -59,6 +59,8 @@ public:
 public:
 	static void FillBoneWeights(VertexSkinnedBuffer& _targetBuffer, const _uint _index, const _float _weight);
 
+	HRESULT UpdateInstanceBuffer() override;
+
 private:
 	static void FillBoneWeightsAndIndices(const aiMesh* mesh, vector<VertexSkinnedBuffer>& vertices);
 	const _float4x4& Get_BoneOffsetMatrix(const _uint _index);

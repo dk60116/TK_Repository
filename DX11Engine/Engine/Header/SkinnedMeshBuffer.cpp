@@ -177,6 +177,23 @@ void CSkinnedMeshBuffer::FillBoneWeights(VertexSkinnedBuffer& _targetBuffer, con
     }
 }
 
+HRESULT CSkinnedMeshBuffer::UpdateInstanceBuffer()
+{
+    if (!m_pInstanceBuffer || m_sInstanceDesc.count == 0)
+        return E_FAIL;
+
+    D3D11_MAPPED_SUBRESOURCE sub = {};
+    auto deviceContext = CGraphicDevice::Get_Context();
+
+    if (FAILED(deviceContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub)))
+        return E_FAIL;
+
+    memcpy(sub.pData, m_sInstanceDesc.data.data(), m_sInstanceDesc.count * sizeof(MeshInstanceData));
+    deviceContext->Unmap(m_pInstanceBuffer, 0);
+
+    return S_OK;
+}
+
 const _float4x4& CSkinnedMeshBuffer::Get_BoneOffsetMatrix(const _uint _index)
 {
     return m_vBoneOffsetMatrices[_index];

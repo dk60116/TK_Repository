@@ -762,7 +762,7 @@ vector3 CMeshBuffer::ClosestPointOnSegment(const vector3& _p, const vector3& _a,
 
 _float CMeshBuffer::SolveYOnPlane(const vector3& _n, _float _d, _float _x, _float _z, _float _fallbackY)
 {
-    if (fabsf(_n.y) < 1e-6f)              
+    if (fabsf(_n.y) < 1e-6f)          
         return _fallbackY;
     
     return (-_d - _n.x * _x - _n.z * _z) / _n.y;

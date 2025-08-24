@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "PlayerHUD.h"
+#include "Dungeon.h"
 #include "Wolf.h"
 #include "Troll.h"
 
@@ -11,6 +12,7 @@ CGameScene::CGameScene()
 	, m_pDirLight(nullptr)
 	, m_pPlayer(nullptr)
 	, m_pHUD(nullptr)
+	, m_pDungeon(nullptr)
 	, m_vMonsters({})
 {
 }
@@ -43,8 +45,8 @@ HRESULT CGameScene::Initialize()
 	//CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
 	//vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
 	
-	CGameObject* blueDungeonObj = Add_GameObject(L"Dugeon");
-	vector<CMeshRenderer*> bdRenders = blueDungeonObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Model (MeshBuffer)"), 0.01f, CGameObject::NavigationStatic);
+	CGameObject* dungeonObj = Add_GameObject(L"Dungeon");
+	m_pDungeon = dungeonObj->AddComponent<CDungeon>();
 
 	CGameObject* trollObject = Add_GameObject(L"Troll");
 	CTroll* troll = trollObject->AddComponent<CTroll>();

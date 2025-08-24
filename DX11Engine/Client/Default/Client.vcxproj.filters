@@ -61,6 +61,9 @@
     <Filter Include="Scripts\Object\Monster\Wolf">
       <UniqueIdentifier>{b607f882-87d4-4497-9fb1-8ffd9ac63b8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Monster\Map">
+      <UniqueIdentifier>{7609882f-6197-4700-a7a8-05bc9bcec135}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -156,6 +159,12 @@
     <ClInclude Include="..\Header\Wolf.h">
       <Filter>Scripts\Object\Monster\Wolf</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Dungeon.h">
+      <Filter>Scripts\Object\Monster\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Map.h">
+      <Filter>Scripts\Object\Monster\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -244,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\MonsterPartCollision.cpp">
       <Filter>Scripts\Object\Monster\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Dungeon.cpp">
+      <Filter>Scripts\Object\Monster\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Map.cpp">
+      <Filter>Scripts\Object\Monster\Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

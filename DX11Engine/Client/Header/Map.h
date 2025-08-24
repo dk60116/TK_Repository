@@ -1,0 +1,34 @@
+#pragma once
+#include "Component.h"
+
+class CMap abstract : public CComponent
+{
+public:
+	struct MapOptions
+	{
+		_float scaleFactor = 0.01f;
+	};
+
+protected:
+	explicit CMap();
+	~CMap();
+
+public:
+	HRESULT Initialize() override;
+
+	void Awake() override;
+	void Update() override;
+	void OnDestroy() override;
+
+private:
+	void AttachTextures();
+
+protected:
+	wstring m_strMapName;
+
+	MapOptions m_sOptions;
+
+	vector<CMeshRenderer*> m_vRendererList;
+	map<wstring, vector<wstring>> m_mTextureNameList;
+};
+

@@ -21,6 +21,7 @@ private:
 
 	class CPlayerHUD* m_pHUD;
 
+	class CDungeon* m_pDungeon;
 	vector <class CMonster*> m_vMonsters;
 };
 

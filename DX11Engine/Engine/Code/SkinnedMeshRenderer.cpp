@@ -218,6 +218,8 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
+	Bind_InstanceData(XMMatrixIdentity(), m_pMeshBuffer);
+
 	// 6) 메시 렌더링
 	m_pMeshBuffer->Render();
 }

@@ -59,10 +59,10 @@ struct VSIn
     uint4 boneIndices : BLENDINDICES;
     float4 boneWeights : BLENDWEIGHT;
     
-    float4 instance_row0 : INSTANCE_ROW0;
-    float4 instance_row1 : INSTANCE_ROW1;
-    float4 instance_row2 : INSTANCE_ROW2;
-    float4 instance_row3 : INSTANCE_ROW3;
+    float4 instance_row0 : INSTANCE0;
+    float4 instance_row1 : INSTANCE1;
+    float4 instance_row2 : INSTANCE2;
+    float4 instance_row3 : INSTANCE3;
 };
 
 struct VSOut
@@ -105,10 +105,30 @@ VSOut VSMain(VSIn v)
             skinnedN += mul((float3x3) gBones[idx], v.normalL) * w;
         }
     }
-
+    
+    float4x4 worldMatrix;
+    
+    if (!boneCount)
+    {
+        worldMatrix = float4x4
+        (
+            v.instance_row0,
+            v.instance_row1,
+            v.instance_row2,
+            v.instance_row3
+        );
+        
+        worldMatrix = mul(worldMatrix, world);
+    }
+    else
+    {
+        worldMatrix = world;
+    }
+    
     // ¿ùµå º¯È¯
-    float4 posW = mul(skinnedPos, world);
-    float3 normalW = normalize(mul((float3x3) world, skinnedN));
+
+    float4 posW = mul(skinnedPos, worldMatrix);
+    float3 normalW = normalize(mul((float3x3) worldMatrix, skinnedN));
 
     // MVP
     float4 posV = mul(posW, view);
@@ -124,7 +144,7 @@ VSOut VSMain(VSIn v)
 
 // ÇÈ¼¿ ¼ÎÀÌ´õ
 float4 PSMain(VSOut input) : SV_TARGET
-{    
+{
     float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
     float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
 
@@ -183,7 +203,7 @@ float4 PSMain(VSOut input) : SV_TARGET
         
         // Ambient
         float3 ambient = lightColor * ambientK;
-        ambientSum += ambient;  
+        ambientSum += ambient;
     }
 
     diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));

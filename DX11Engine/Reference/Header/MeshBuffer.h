@@ -84,7 +84,7 @@ public:
 	INSTANCEDESC& Get_InstancingDesc();
 	HRESULT CreateInstanceBuffer(_uint _capacity, D3D11_USAGE _usage = D3D11_USAGE_DYNAMIC);
 	void DestroyInstanceBuffer();
-	HRESULT UpdateInstanceBuffer();
+	virtual HRESULT UpdateInstanceBuffer();
 
 public:
 	vector<VertexTexNormalTangentBuffer> Get_VertexBuffer() const;
