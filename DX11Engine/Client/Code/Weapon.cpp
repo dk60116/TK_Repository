@@ -10,7 +10,6 @@ CWeapon::CWeapon()
 	, m_pCollider(nullptr)
 	, m_eHandType(CPlayer::HandType::Right)
 {
-	m_strName = L"Player Weapon";
 }
 
 CWeapon::~CWeapon()
@@ -37,8 +36,12 @@ void CWeapon::Awake()
 	tf->Set_LocalPosition(m_sOptions.localPos);
 	tf->Set_LocalQuaternion(m_sOptions.localQuat);
 	tf->Set_LocalScale(tf->Get_LocalScale() * m_sOptions.localScale);
+}
 
-	m_pCollider->SetEnabled(false);
+void CWeapon::Start()
+{
+	if (m_pCollider)
+		m_pCollider->SetEnabled(false);
 }
 
 const CWeapon::WeaponType CWeapon::Get_WeaponType() const

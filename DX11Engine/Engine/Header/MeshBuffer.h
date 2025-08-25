@@ -19,6 +19,12 @@ public:
 		_uint indexCount = 0;
 	}MESHBUFFERDESC;
 
+	struct MeshAABBInfo
+	{
+		vector3 min = vector3::one();
+		vector3 max = vector3::one();
+	};
+
 	struct MeshBufferInitiaizeInfo
 	{
 		wstring meshName = L"";
@@ -27,6 +33,7 @@ public:
 		MESHBUFFERDESC desc = {};
 		wstring diffuseMapPath = L"";
 		vector<_float4x4> instanceWorlds = {};
+		vector<MeshAABBInfo> aabbInfos = {};
 	};
 
 	typedef struct TerrainMeshBufferDesctiption

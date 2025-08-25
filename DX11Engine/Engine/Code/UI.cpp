@@ -45,7 +45,7 @@ HRESULT CUI::Initialize()
 
 	if (!m_pLineMat)
 	{
-		m_pLineMat = CResources::LoadOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
+		m_pLineMat = CResources::CloneOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
 		m_pLineMat->AddRef();
 	}
 #endif

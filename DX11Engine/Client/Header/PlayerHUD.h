@@ -34,11 +34,19 @@ public:
 	void OnOffBowCrossHair(const _bool _on);
 
 private:
+	void SpawnHeartBowl();
+	void SpawnBowCrossHair();
+	void EquipSlot();
+	void SpawnRupeeUI();
+
+private:
 	CPlayer* m_pPlayer;
 	CCanvas* m_pCanvas;
 	PlayerHUDOptions m_sOptions;
 	CRectTransform* m_pHeartContainer;
 	vector<CImage*> m_vHeartBowlList, m_vHeartImageList;
+	CImage* m_pRupeeIcon;
+	CText* m_pRupeeText;
 	CImage* m_pArrowCrossHair;
 	_float m_fACHAlpha;
 };

@@ -558,18 +558,48 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 	newGameObj->SetActive(_rhs->ActiveSelf());
 	newGameObj->Get_Transform()->SetTransformForMatrix(_rhs->Get_Transform()->Get_WorldMatrix());
 
+	_bool hasOnlyClone = false;
+
 	for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
 	{
-		if ((*it))
+		if ((*it)->IsOnlyClone())
+			hasOnlyClone = true;
+	}
+
+	if (!hasOnlyClone)
+	{
+		for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
 		{
-			if (dynamic_cast<CTransform*>(*it))
-				continue;
+			if ((*it))
+			{
+				if (dynamic_cast<CTransform*>(*it))
+					continue;
 
-			newGameObj->m_lComponentList.push_back((*it)->Clone());
-			newGameObj->m_lComponentList.back()->Set_Object(newGameObj);
-			newGameObj->m_lComponentList.back()->AddRef();
+				newGameObj->m_lComponentList.push_back((*it)->Clone());
+				newGameObj->m_lComponentList.back()->Set_Object(newGameObj);
+				newGameObj->m_lComponentList.back()->AddRef();
 
-			newGameObj->m_lComponentList.back()->Initialize();
+				newGameObj->m_lComponentList.back()->Initialize();
+			}
+		}
+	}
+	else
+	{
+		for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
+		{
+			if ((*it))
+			{
+				if (dynamic_cast<CTransform*>(*it))
+					continue;
+				if (!(*it)->IsOnlyClone())
+					continue;
+
+				newGameObj->m_lComponentList.push_back((*it)->Clone());
+				newGameObj->m_lComponentList.back()->Set_Object(newGameObj);
+				newGameObj->m_lComponentList.back()->AddRef();
+
+				newGameObj->m_lComponentList.back()->Initialize();
+			}
 		}
 	}
 

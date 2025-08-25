@@ -15,21 +15,18 @@ cbuffer PerCamera : register(b1)
 cbuffer PerMaterial : register(b2)
 {
     float4 baseColor;
-    uint boneCount;
     float3 padding; // 16바이트 정렬
-};
-
-cbuffer PerBones : register(b3)
-{
-    float4x4 gBones[128];
 };
 
 // ───────────── 버텍스 입력
 struct VSIn
 {
     float3 posL : POSITION;
-    uint4 boneIndices : BLENDINDICES;
-    float4 boneWeights : BLENDWEIGHT;
+    
+    float4 instance_row0 : INSTANCE0;
+    float4 instance_row1 : INSTANCE1;
+    float4 instance_row2 : INSTANCE2;
+    float4 instance_row3 : INSTANCE3;
 };
 
 // ───────────── 버텍스 출력
@@ -43,24 +40,11 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
 
-    float4 skinnedPos = float4(0, 0, 0, 0);
-    if (boneCount)
-    {
-        [unroll]
-        for (int i = 0; i < 4; ++i)
-        {
-            uint idx = v.boneIndices[i];
-            float w = v.boneWeights[i];
-            skinnedPos += mul(float4(v.posL, 1), gBones[idx]) * w;
-        }
-    }
-    else
-    {
-        skinnedPos = float4(v.posL, 1);
-    }
+    // 인스턴싱 월드 행렬 구성
 
-    // 월드, 뷰, 프로젝션 변환
-    float4 posW = mul(skinnedPos, world);
+    float4x4 finalWorld = world;
+
+    float4 posW = mul(float4(v.posL, 1.0f), finalWorld);
     float4 posV = mul(posW, gView);
     o.posH = mul(posV, gProj);
 

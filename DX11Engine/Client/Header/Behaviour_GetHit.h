@@ -15,8 +15,5 @@ public:
 	void Enter() override;
 	void During() override;
 	void Exit() override;
-
-private:
-	_float m_fChangeTime;
 };
 

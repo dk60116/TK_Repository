@@ -37,12 +37,6 @@ HRESULT CWoodenBow::Initialize()
 	m_sStat.attack = 1;
 	m_sStat.knockbackPower = 2.f;
 
-	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
-	CBoxCollider* boxCol = dynamic_cast<CBoxCollider*>(m_pCollider);
-
-	boxCol->Set_Center(vector3::up() * 0.4f);
-	boxCol->Set_Size(vector3(0.15f, 1.f, 0.1f));
-
 	return S_OK;
 }
 

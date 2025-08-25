@@ -5,6 +5,7 @@ CSphereCollider::CSphereCollider()
     : m_sLocal({})
     , m_sWorld({})
 {
+    m_strName = L"Box Collider";
 }
 
 CSphereCollider::~CSphereCollider()

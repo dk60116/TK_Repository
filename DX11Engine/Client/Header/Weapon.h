@@ -28,6 +28,7 @@ protected:
 public:
 	HRESULT Initialize() override;
 	void Awake() override;
+	void Start() override;
 
 public:
 	const WeaponType Get_WeaponType() const;

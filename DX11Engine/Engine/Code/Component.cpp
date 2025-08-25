@@ -6,6 +6,7 @@ CComponent::CComponent()
 	, m_pContext(nullptr)
 	, m_bEnabled(true)
 	, m_pGameObject(nullptr)
+	, m_bOnlyCloneComponent(false)
 {
 }
 
@@ -184,5 +185,10 @@ vector<FieldInfo> CComponent::GetInspectorFields()
 CTransform* CComponent::Get_Transform()
 {
 	return m_pGameObject->Get_Transform();
+}
+
+const _bool CComponent::IsOnlyClone() const
+{
+	return m_bOnlyCloneComponent;
 }
 

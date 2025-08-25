@@ -73,6 +73,8 @@ public:
 	CGameObject* Get_GameObject();
 	class CTransform* Get_Transform();
 
+	const _bool IsOnlyClone() const;
+
 private:
 	void Set_Object(class CGameObject* _gameObject);
 
@@ -83,6 +85,7 @@ protected:
 protected:
 	_bool m_bEnabled;
 	class CGameObject* m_pGameObject;
+	_bool m_bOnlyCloneComponent;
 
 public:
 	virtual vector<FieldInfo> GetInspectorFields();

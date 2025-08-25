@@ -1334,18 +1334,32 @@ namespace Engine
         return inst;
     }
 
+#define INSTANCEBUFFERCOUTN 4
 #define INSTANCEBUFFERMACHRO \
     { "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,  0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
     { "INSTANCE", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
     { "INSTANCE", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
     { "INSTANCE", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 
+    struct VertexBuffer
+    {
+        _float3 position;
+
+        static const _uint numElements = 1 + INSTANCEBUFFERCOUTN;
+        static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCEBUFFERMACHRO
+        };
+    };
+
     struct VertexTexColorBuffer
     {
         _float3 position;
         _float2 uv;
 
-        static const _uint numElements = 6;
+        static const _uint numElements = 2 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1361,7 +1375,7 @@ namespace Engine
         _float3 normal;
         _float4 color = { 1, 1, 1, 1 };
 
-        static const _uint numElements = 7;
+        static const _uint numElements = 3 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1378,7 +1392,7 @@ namespace Engine
         _float3 normal;
         _float2 uv;
 
-        static const _uint numElements = 7;
+        static const _uint numElements = 3 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1396,7 +1410,7 @@ namespace Engine
         _float2 uv;
         _float3 tangent;
 
-        static const _uint numElements = 8;
+        static const _uint numElements = 4 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1416,7 +1430,7 @@ namespace Engine
         UINT boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 9;
+        static const _uint numElements = 5 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1438,7 +1452,7 @@ namespace Engine
         UINT boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 10;
+        static const _uint numElements = 6 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1462,7 +1476,7 @@ namespace Engine
         _float boneWeights[4] = { 0,0,0,0 };
         _float lineWidth = 1.f;
 
-        static const _uint numElements = 11;
+        static const _uint numElements = 7 + INSTANCEBUFFERCOUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },

@@ -24,6 +24,13 @@ HRESULT CArrow::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+void CArrow::Awake()
+{
+	__super::Awake();
+
 	m_pCollider = m_pGameObject->AddComponent<CSphereCollider>();
 	CSphereCollider* spCol = dynamic_cast<CSphereCollider*>(m_pCollider);
 
@@ -31,18 +38,11 @@ HRESULT CArrow::Initialize()
 	spCol->Set_Center(vector3(0.f, 4.5f, 0.f));
 	spCol->Set_Size(2.f);
 
-	m_pCollider->SetEnabled(false);
-
 	m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
 	m_pRigidBody->SetKinematic(true);
 	m_pRigidBody->SetEnabled(false);
 
-	return S_OK;
-}
-
-void CArrow::Awake()
-{
-	__super::Awake();
+	m_pCollider->SetEnabled(false);
 }
 
 void CArrow::Start()
@@ -91,6 +91,7 @@ const _bool CArrow::IsUsed() const
 void CArrow::Pop()
 {
 	m_pGameObject->SetActive(true);
+	m_pCollider->SetEnabled(false);
 	Get_Transform()->Set_LocalScale(10.f);
 }
 
@@ -117,13 +118,15 @@ void CArrow::Shoot()
 	Get_Transform()->Set_Quaternion(playerCam->Get_Transform()->Get_Quaternion());
 	Get_Transform()->Add_LocalEulerAnglesX(90.f);
 
-	CGameObject* t = m_pGameObject->Get_Scene()->Add_GameObject(L"Tests");
-	t->Get_Transform()->Set_Position(target);
+	//CGameObject* t = m_pGameObject->Get_Scene()->Add_GameObject(L"Tests");
+	//t->Get_Transform()->Set_Position(target);
 
 	m_pRigidBody->SetEnabled(true);
 	m_pRigidBody->SetUseGravity(true);
 	m_pRigidBody->SetKinematic(false);
 	m_pRigidBody->AddForce(dir * 50.f);
+
+	m_pCollider->SetEnabled(true);
 }
 
 void CArrow::Return()
@@ -132,6 +135,8 @@ void CArrow::Return()
 
 	m_pRigidBody->SetKinematic(true);
 	m_pRigidBody->SetEnabled(false);
+
+	m_pCollider->SetEnabled(false);
 
 	Get_Transform()->SetParent(CGameManager::GetInstance().Get_Player()->Get_Hand(CPlayer::HandType::Right));
 	Get_Transform()->Set_LocalPosition(m_sOptions.localPos);

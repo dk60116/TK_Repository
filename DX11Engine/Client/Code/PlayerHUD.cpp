@@ -9,6 +9,8 @@ CPlayerHUD::CPlayerHUD()
 	, m_vHeartBowlList({})
 	, m_vHeartImageList({})
 	, m_pArrowCrossHair(nullptr)
+	, m_pRupeeIcon(nullptr)
+	, m_pRupeeText(nullptr)
 	, m_fACHAlpha(1.f)
 {
 }
@@ -29,39 +31,11 @@ CComponent* CPlayerHUD::Clone() const
 
 HRESULT CPlayerHUD::Initialize()
 {
-	CScene* crtScene = m_pGameObject->Get_Scene();
-
 	m_pCanvas = m_pGameObject->AddComponent<CCanvas>();
 
-	CGameObject* heartContainerObj = crtScene->Add_GameObject(L"Hearts");
-	m_pHeartContainer = heartContainerObj->AddComponent<CUI>()->Get_RectTransform();
-	m_pHeartContainer->SetParent(m_pCanvas->Get_RectTransform());
-
-	CTexture* heartTex = CResources::LoadOnScene<CTexture>(L"HeartBar (Texture)");
-
-	for (_uint i = 0; i < CPlayer::StaticPlayerStatus::HPMAX; ++i)
-	{
-		const wstring bowlName = wstring(L"Heart bowl ") + L"(" + to_wstring(i) + L")";
-		CGameObject* heartBowlObj = crtScene->Add_GameObject(bowlName);
-		m_vHeartBowlList.push_back(heartBowlObj->AddComponent<CImage>());
-		m_vHeartBowlList.back()->Get_RectTransform()->SetParent(m_pHeartContainer);
-		m_vHeartBowlList.back()->SetTexture(heartTex);
-		m_vHeartBowlList.back()->SetColor(ColorValue::gray(0.5f));
-
-		const wstring heartName = wstring(L"Heart") + L"(" + to_wstring(i) + L")";
-		CGameObject* heartObj = crtScene->Add_GameObject(heartName);
-		m_vHeartImageList.push_back(heartObj->AddComponent<CImage>());
-		m_vHeartImageList.back()->Get_RectTransform()->SetParent(m_vHeartBowlList.back()->Get_RectTransform());
-		m_vHeartImageList.back()->SetTexture(heartTex);
-		m_vHeartImageList.back()->SetColor(ColorValue::red());
-	}
-
-	CGameObject* bcObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Bow Cross Hair");
-	m_pArrowCrossHair = bcObj->AddComponent<CImage>();
-	bcObj->Get_Transform()->SetParent(Get_Transform());
-	m_pArrowCrossHair->SetTexture(CResources::LoadOnScene<CTexture>(L"ArrowCrossHair (Texture)"));
-	m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(70, 70);
-	bcObj->SetActive(false);
+	SpawnHeartBowl();
+	SpawnRupeeUI();
+	SpawnBowCrossHair();
 
 	CGameManager::GetInstance().Set_PlayerHUD(this);
 
@@ -134,4 +108,66 @@ void CPlayerHUD::OnOffBowCrossHair(const _bool _on)
 	m_pArrowCrossHair->Get_GameObject()->SetActive(_on);
 
 	m_fACHAlpha = 0.f;
+}
+
+void CPlayerHUD::SpawnHeartBowl()
+{
+	CScene* crtScene = m_pGameObject->Get_Scene();
+
+	CGameObject* heartContainerObj = crtScene->Add_GameObject(L"Hearts");
+	m_pHeartContainer = heartContainerObj->AddComponent<CUI>()->Get_RectTransform();
+	m_pHeartContainer->SetParent(m_pCanvas->Get_RectTransform());
+
+	CTexture* heartTex = CResources::LoadOnScene<CTexture>(L"HeartBar (Texture)");
+
+	for (_uint i = 0; i < CPlayer::StaticPlayerStatus::HPMAX; ++i)
+	{
+		const wstring bowlName = wstring(L"Heart bowl ") + L"(" + to_wstring(i) + L")";
+		CGameObject* heartBowlObj = crtScene->Add_GameObject(bowlName);
+		m_vHeartBowlList.push_back(heartBowlObj->AddComponent<CImage>());
+		m_vHeartBowlList.back()->Get_RectTransform()->SetParent(m_pHeartContainer);
+		m_vHeartBowlList.back()->SetTexture(heartTex);
+		m_vHeartBowlList.back()->SetColor(ColorValue::gray(0.5f));
+
+		const wstring heartName = wstring(L"Heart") + L"(" + to_wstring(i) + L")";
+		CGameObject* heartObj = crtScene->Add_GameObject(heartName);
+		m_vHeartImageList.push_back(heartObj->AddComponent<CImage>());
+		m_vHeartImageList.back()->Get_RectTransform()->SetParent(m_vHeartBowlList.back()->Get_RectTransform());
+		m_vHeartImageList.back()->SetTexture(heartTex);
+		m_vHeartImageList.back()->SetColor(ColorValue::red());
+	}
+}
+
+void CPlayerHUD::SpawnBowCrossHair()
+{
+	CGameObject* bcObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Bow Cross Hair");
+	m_pArrowCrossHair = bcObj->AddComponent<CImage>();
+	bcObj->Get_Transform()->SetParent(Get_Transform());
+	m_pArrowCrossHair->SetTexture(CResources::LoadOnScene<CTexture>(L"ArrowCrossHair (Texture)"));
+	m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(70, 70);
+	bcObj->SetActive(false);
+}
+
+void CPlayerHUD::SpawnRupeeUI()
+{
+	CScene* crtScene = m_pGameObject->Get_Scene();
+
+	CGameObject* rupeeIconObj = crtScene->Add_GameObject(L"RupeeIcon");
+	m_pRupeeIcon = rupeeIconObj->AddComponent<CImage>();
+	rupeeIconObj->Get_Transform()->SetParent(Get_Transform());
+	m_pRupeeIcon->SetTexture(CResources::LoadOnScene<CTexture>(L"RupeeIcon (Texture)"));
+	m_pRupeeIcon->Get_RectTransform()->Set_Pivot(1.f, 0.f);
+	m_pRupeeIcon->Get_RectTransform()->Set_AnchorsMin(1.f, 0.f);
+	m_pRupeeIcon->Get_RectTransform()->Set_AnchoredPosition(-30.f, 30.f);
+	m_pRupeeIcon->Get_RectTransform()->Set_WidthHeight(50, 50);
+
+	CGameObject* rupeeTextObj = crtScene->Add_GameObject(L"Rupee Count Text");
+	m_pRupeeText = rupeeTextObj->AddComponent<CText>();
+	m_pRupeeText->Get_Transform()->SetParent(Get_Transform());
+	m_pRupeeText->Set_FontSize(7);
+	m_pRupeeText->Get_RectTransform()->Set_Pivot(1.f, 0.f);
+	m_pRupeeText->Get_RectTransform()->Set_AnchorsMin(1.f, 0.f);
+	m_pRupeeText->Get_RectTransform()->Set_AnchoredPosition(-80.f, 72.f);
+	m_pRupeeText->SetColor(ColorValue::white());
+	m_pRupeeText->Set_Text(L"000");
 }

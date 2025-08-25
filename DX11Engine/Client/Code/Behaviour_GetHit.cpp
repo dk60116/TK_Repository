@@ -2,7 +2,6 @@
 #include "Behaviour_GetHit.h"
 
 CBehaviour_GetHit::CBehaviour_GetHit()
-	: m_fChangeTime(0.5f)
 {
 	m_bAnyTime = true;
 }
@@ -34,7 +33,7 @@ void CBehaviour_GetHit::During()
 {
 	__super::During();
 
-	if (m_fPassedTime >= m_fChangeTime)
+	if (m_pMonster->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f)
 	{
 		m_pMonster->Change_State(CMonsterController::CombatWait);
 	}
