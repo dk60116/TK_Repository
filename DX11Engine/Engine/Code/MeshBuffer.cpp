@@ -7,6 +7,7 @@ CMeshBuffer::CMeshBuffer()
 	, m_pIndexBuffer(nullptr)
     , m_pInstanceBuffer(nullptr)
 	, m_sInfo({})
+    , m_sAABB({})
     , m_pVertexSysMem(nullptr)
     , m_pIndexSysMem(nullptr)
 {
@@ -69,6 +70,7 @@ HRESULT CMeshBuffer::Initialize(const wstring& _name, const wstring& _filePath, 
         return E_FAIL;
 
     m_sInfo = info.desc;
+    m_sAABB = info.aabb;
 
     size_t size = info.desc.vertexSize * info.desc.vertextCount;
 
@@ -130,6 +132,7 @@ HRESULT CMeshBuffer::Initialize_Custom(const MeshBufferInitiaizeInfo _info, void
 
     m_sInfo = {};
     m_sInfo = _info.desc;
+    m_sAABB = _info.aabb;
 
     m_strResourceName = _info.meshName;
 
@@ -404,6 +407,8 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateRect()
     info.buffer.assign(reinterpret_cast<uint8_t*>(quadVertices), reinterpret_cast<uint8_t*>(quadVertices) + sizeof(quadVertices));
     info.indices.assign(begin(quadIndices), end(quadIndices));
     info.desc = desc;
+
+    info.aabb = { vector3::one() * -length, vector3::one() * length };
 
     return info;
 }
@@ -718,6 +723,11 @@ CMeshBuffer::MeshBufferInitiaizeInfo CMeshBuffer::CreateTerrain(_uint _sizeX, _u
 const CMeshBuffer::MESHBUFFERDESC& CMeshBuffer::Get_Info()
 {
 	return m_sInfo;
+}
+
+const CMeshBuffer::MeshAABBInfo& CMeshBuffer::Get_AABB()
+{
+    return m_sAABB;
 }
 
 _bool CMeshBuffer::PlaneFromTri(const vector3& _a, const vector3& _b, const vector3& _c, vector3& _n, _float& _d)

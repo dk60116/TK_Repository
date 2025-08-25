@@ -10,6 +10,12 @@ class ENGINE_DLL CMeshBuffer : public CEngineResource
 	friend class CPhysics;
 
 public:
+	struct MeshAABBInfo
+	{
+		vector3 min = vector3::one();
+		vector3 max = vector3::one();
+	};
+
 	typedef struct MeshBufferDescription
 	{
 		_bool useDeviceTopology = false;
@@ -17,13 +23,8 @@ public:
 		_uint vertexSize = 0;
 		_uint vertextCount = 0;
 		_uint indexCount = 0;
-	}MESHBUFFERDESC;
 
-	struct MeshAABBInfo
-	{
-		vector3 min = vector3::one();
-		vector3 max = vector3::one();
-	};
+	}MESHBUFFERDESC;
 
 	struct MeshBufferInitiaizeInfo
 	{
@@ -33,7 +34,7 @@ public:
 		MESHBUFFERDESC desc = {};
 		wstring diffuseMapPath = L"";
 		vector<_float4x4> instanceWorlds = {};
-		vector<MeshAABBInfo> aabbInfos = {};
+		MeshAABBInfo aabb = {};
 	};
 
 	typedef struct TerrainMeshBufferDesctiption
@@ -97,6 +98,7 @@ public:
 	vector<VertexTexNormalTangentBuffer> Get_VertexBuffer() const;
 	vector<_uint> Get_IndexBuffer() const;
 	const MESHBUFFERDESC& Get_Info();
+	const MeshAABBInfo& Get_AABB();
 
 public:
 	static _bool  PlaneFromTri(const vector3& _a, const vector3& _b, const vector3& _c, vector3& _n, _float& _d);
@@ -109,6 +111,7 @@ protected:
 	ID3D11Buffer* m_pIndexBuffer;
 
 	MESHBUFFERDESC m_sInfo;
+	MeshAABBInfo m_sAABB;
 
 protected:
 	INSTANCEDESC m_sInstanceDesc;

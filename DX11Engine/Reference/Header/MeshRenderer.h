@@ -23,6 +23,7 @@ public:
 	void OnPreRender() override;
 	void Render_Editor() override;
 	void Render() override;
+	void Render_Gizmo() override;
 	void OnPostRender() override;
 
 	void OnDestroy() override;
@@ -34,6 +35,8 @@ public:
 public:
 	CMeshFilter* Get_MeshFilter();
 	CMeshBuffer* Get_MeshBuffer() override;
+
+	void Set_ScaleFactor(const _float _value);
 
 private:
 	CMeshFilter* m_pMeshFilter;

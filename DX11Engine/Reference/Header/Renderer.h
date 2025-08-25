@@ -31,6 +31,7 @@ protected:
 protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
+	_float m_fScaleFactor;
 };
 
 NS_END

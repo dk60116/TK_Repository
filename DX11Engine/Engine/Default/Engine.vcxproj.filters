@@ -83,7 +83,7 @@
       <Filter>Components\Navigation\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshFilter.h">
-      <Filter>Components\Navigation\Render</Filter>
+      <Filter>Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Editor.h">
       <Filter>Editor</Filter>
@@ -101,10 +101,10 @@
       <Filter>Resource\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Renderer.h">
-      <Filter>Components\Navigation\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshRenderer.h">
-      <Filter>Components\Navigation\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkinnedMeshBuffer.h">
       <Filter>Resource\MeshBuffer</Filter>
@@ -170,7 +170,7 @@
       <Filter>Resource\MeshBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshRenderer.h">
-      <Filter>Components\Navigation\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Random.h">
       <Filter>System\Random</Filter>
@@ -294,12 +294,6 @@
     <Filter Include="Components\Navigation">
       <UniqueIdentifier>{3c6f5cc5-a1e2-49c7-ba19-efd475ae7534}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Navigation\Render">
-      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components\Navigation\Render\Renderer">
-      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\Navigation\Transform">
       <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
     </Filter>
@@ -308,6 +302,12 @@
     </Filter>
     <Filter Include="Components\Physics\Collider">
       <UniqueIdentifier>{7fce18fa-1c1c-450e-b79b-34b4317f5394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Render">
+      <UniqueIdentifier>{50387977-913a-4547-b042-489a31412937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Render\Renderer">
+      <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -366,7 +366,7 @@
       <Filter>Components\Navigation\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshFilter.cpp">
-      <Filter>Components\Navigation\Render</Filter>
+      <Filter>Components\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\EngineStruct.cpp">
       <Filter>Engine\Headers</Filter>
@@ -411,13 +411,13 @@
       <Filter>Resource\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Renderer.cpp">
-      <Filter>Components\Navigation\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshRenderer.cpp">
-      <Filter>Components\Navigation\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\SkinnedMeshRenderer.cpp">
-      <Filter>Components\Navigation\Render\Renderer</Filter>
+      <Filter>Components\Render\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Header\SkinnedMeshBuffer.cpp">
       <Filter>Resource\MeshBuffer</Filter>

@@ -399,6 +399,8 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 
 		CMeshRenderer* ren = child->AddComponent<CMeshRenderer>();
 
+		ren->Set_ScaleFactor(_scaleFactor);
+
 		renderers.push_back(ren);
 
 		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);

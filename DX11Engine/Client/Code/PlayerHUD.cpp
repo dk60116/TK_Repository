@@ -159,7 +159,7 @@ void CPlayerHUD::SpawnRupeeUI()
 	m_pRupeeIcon->Get_RectTransform()->Set_Pivot(1.f, 0.f);
 	m_pRupeeIcon->Get_RectTransform()->Set_AnchorsMin(1.f, 0.f);
 	m_pRupeeIcon->Get_RectTransform()->Set_AnchoredPosition(-30.f, 30.f);
-	m_pRupeeIcon->Get_RectTransform()->Set_WidthHeight(50, 50);
+	m_pRupeeIcon->Get_RectTransform()->Set_WidthHeight(45, 45);
 
 	CGameObject* rupeeTextObj = crtScene->Add_GameObject(L"Rupee Count Text");
 	m_pRupeeText = rupeeTextObj->AddComponent<CText>();

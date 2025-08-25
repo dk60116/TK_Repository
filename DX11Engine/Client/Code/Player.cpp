@@ -507,6 +507,10 @@ void CPlayer::PlayerControle_BowAction()
 			m_pEquipArrow->Shoot();
 			m_bShootReady = false;
 		}
+		else
+		{
+			m_pEquipArrow->Return();
+		}
 
 		PlayIdleAnimation(0.25f);
 		CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);

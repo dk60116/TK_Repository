@@ -77,7 +77,8 @@ void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
 HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 {
 	Assimp::Importer importer;
-	const aiScene* aiScene = importer.ReadFile(
+	const aiScene* aiScene = importer.ReadFile
+	(
 		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
@@ -96,13 +97,11 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	using VTX = VertexTexNormalTangentBuffer;
 	const bool hasMaterial = aiScene->HasMaterials();
 
-	// ─────────────────────────────────────────────────────────────
-	// meshIndex → 이 mesh를 참조하는 노드의 글로벌 변환 수집
-	// ─────────────────────────────────────────────────────────────
+	// meshIndex
 	struct MeshRef { aiMatrix4x4 g; wstring nodeName; };
-	std::vector<std::vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
+	vector<vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
 
-	std::function<void(aiNode*, const aiMatrix4x4&)> DFS =
+	function<void(aiNode*, const aiMatrix4x4&)> DFS =
 		[&](aiNode* node, const aiMatrix4x4& parent)
 		{
 			aiMatrix4x4 current = parent * node->mTransformation;
@@ -113,7 +112,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 				MeshRef ref;
 				ref.g = current;
 				ref.nodeName = CEngineString::StringToWString(node->mName.C_Str());
-				meshRefs[mi].push_back(std::move(ref));
+				meshRefs[mi].push_back(move(ref));
 			}
 
 			for (_uint c = 0; c < node->mNumChildren; ++c)
@@ -121,10 +120,8 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		};
 	DFS(aiScene->mRootNode, aiMatrix4x4());
 
-	// ─────────────────────────────────────────────────────────────
 	// 메시당 1개 지오메트리 + 인스턴스 월드행렬들(instanceWorlds)
-	// ─────────────────────────────────────────────────────────────
-	std::vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
 	bufferInfoList.reserve(aiScene->mNumMeshes);
 
 	for (_uint mi = 0; mi < aiScene->mNumMeshes; ++mi)
@@ -135,22 +132,22 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		if (meshRefs[mi].empty())
 		{
 			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
-			meshRefs[mi].push_back(std::move(ref));
+			meshRefs[mi].push_back(move(ref));
 		}
 
 		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
-		// 이름(첫 레퍼런스 노드명 or FindMeshName or Mesh_{mi})
+		// 이름
 		wstring baseName = meshRefs[mi][0].nodeName;
 		if (baseName.empty())
 			baseName = CMeshBuffer::FindMeshName(aiScene, mi);
 		if (baseName.empty())
-			baseName = L"Mesh_" + std::to_wstring(mi);
-		info.meshName = baseName; // ★ 인스턴스 번호 붙이지 않음
+			baseName = L"Mesh_" + to_wstring(mi);
+		info.meshName = baseName;
 
-		// ── 지오메트리: 노드 변환을 적용하지 않고 "그대로" 기록
-		std::vector<VTX>   vertices;
-		std::vector<_uint> indices;
+		// 지오메트리
+		vector<VTX>   vertices;
+		vector<_uint> indices;
 
 		vertices.reserve(mesh->mNumVertices);
 		for (_uint v = 0; v < mesh->mNumVertices; ++v)
@@ -189,35 +186,41 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			}
 		}
 
-		// ── Desc + 데이터
+		// Desc + 데이터
 		CMeshBuffer::MESHBUFFERDESC desc{};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
 		desc.vertextCount = static_cast<_uint>(vertices.size());
 		desc.indexCount = static_cast<_uint>(indices.size());
 
-		info.buffer.assign(
+		info.buffer.assign
+		(
 			reinterpret_cast<const uint8_t*>(vertices.data()),
 			reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX)
 		);
+
 		info.indices.assign(indices.begin(), indices.end());
 		info.desc = desc;
 
-		// ── 머티리얼(옵션)
-		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
+		// AABB
+		vector3 minSize = vector3(+FLT_MAX, +FLT_MAX, +FLT_MAX);
+		vector3 maxSize = vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+		for (const auto& vtx : vertices)
 		{
-			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
-			aiString texPath;
-			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
-			{
-				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
-				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
-				filesystem::path fullPath = fbxDir / relPath;
-				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
-			}
+			minSize.x = min(minSize.x, vtx.position.x);
+			maxSize.x = max(maxSize.x, vtx.position.x);
+
+			minSize.y = min(minSize.y, vtx.position.y);
+			maxSize.y = max(maxSize.y, vtx.position.y);
+
+			minSize.z = min(minSize.z, vtx.position.z);
+			maxSize.z = max(maxSize.z, vtx.position.z);
 		}
 
-		// ── 인스턴스 월드 행렬들 저장
+		info.aabb = { minSize, maxSize };
+
+		// 인스턴스 월드 행렬들 저장
 		info.instanceWorlds.reserve(meshRefs[mi].size());
 		for (const auto& r : meshRefs[mi])
 		{
@@ -231,7 +234,21 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			info.instanceWorlds.push_back(w);
 		}
 
-		bufferInfoList.push_back(std::move(info));
+		// 머티리얼
+		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
+		{
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
+			aiString texPath;
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			{
+				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+				filesystem::path fullPath = fbxDir / relPath;
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
+			}
+		}
+
+		bufferInfoList.push_back(move(info));
 	}
 
 	// 파일명 구성
@@ -802,6 +819,7 @@ vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(c
 HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
 {
 	ofstream out(_filePath, ios::binary);
+
 	if (!out.is_open())
 		return E_FAIL;
 
@@ -831,6 +849,8 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBu
 		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
 		if (diffuseTexPathSize > 0)
 			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathSize);
+
+		out.write(reinterpret_cast<const char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
 
 		_uint instCount = static_cast<_uint>(info.instanceWorlds.size());
 		out.write(reinterpret_cast<const char*>(&instCount), sizeof(_uint));
@@ -897,7 +917,9 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
 		}
 
-		if (in.peek() != std::char_traits<char>::eof())
+		in.read(reinterpret_cast<char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
+
+		if (in.peek() != char_traits<char>::eof())
 		{
 			_uint instCount = 0;
 			in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint));
@@ -908,7 +930,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			}
 		}
 
-		infoList.push_back(std::move(info));
+		infoList.push_back(move(info));
 	}
 
 	in.close();
@@ -1009,8 +1031,6 @@ HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSki
 
 CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstring& _binFileName)
 {
-	using namespace std;
-
 	CSkinnedMeshBuffer::SkinnedBuffer resultBuffer = {};
 
 	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
@@ -1226,7 +1246,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 	auto read = [&](void* dst, size_t sz) -> bool
 		{
 			ifs.read(reinterpret_cast<char*>(dst), sz);
-			return ifs && (ifs.gcount() == static_cast<std::streamsize>(sz));
+			return ifs && (ifs.gcount() == static_cast<streamsize>(sz));
 		};
 
 	//---------------- 1) 헤더 -----------------------------------------------
