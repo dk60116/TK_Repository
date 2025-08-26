@@ -85,16 +85,22 @@ void CMapCollision::OnDestroy()
 
 HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 {
-	vector<CBoxCollider*> colliderList = AbleColliderlist();
-
-	if (colliderList.size() <= 0)
+	if (m_vColliderList.size() <= 0)
 		return E_FAIL;
 
-	for (size_t i = 0; i < colliderList.size(); ++i)
+	for (size_t i = 0; i < m_vColliderList.size(); ++i)
 	{
 		_float4x4 w = {};
-		XMStoreFloat4x4(&w, colliderList[i]->Get_Transform()->Get_WorldMatrix());
+		XMStoreFloat4x4(&w, m_vColliderList[i]->Get_Transform()->Get_WorldMatrix());
 		m_vInfoList[i].matrix = w;
+	}
+
+	vector<CollidersInfo> infoList = {};
+
+	for (size_t i = 0; i < m_vColliderList.size(); ++i)
+	{
+		if (m_vColliderList[i]->Get_GameObject()->ActiveSelf())
+			infoList.push_back(m_vInfoList[i]);
 	}
 
 	ofstream out(_filePath);
@@ -105,12 +111,12 @@ HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 		return E_FAIL;
 	}
 
-	_uint count = static_cast<_uint>(colliderList.size());
+	_uint count = static_cast<_uint>(infoList.size());
 	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
 
 	for (_uint i = 0; i < count; ++i)
 	{
-		CollidersInfo info = m_vInfoList[i];
+		CollidersInfo info = infoList[i];
 		out.write(reinterpret_cast<const char*>(&info.type), sizeof(BYTE));
 		out.write(reinterpret_cast<const char*>(&info.id), sizeof(_int));
 		out.write(reinterpret_cast<const char*>(&info.matrix), sizeof(_float4x4));
@@ -159,19 +165,6 @@ void CMapCollision::Set_Map(CMap* _map)
 	m_pMap = _map;
 
 	m_pMap->AddRef();
-}
-
-vector<CBoxCollider*> CMapCollision::AbleColliderlist()
-{
-	vector<CBoxCollider*> result = {};
-
-	for (size_t i = 0; i < m_vColliderList.size(); ++i)
-	{
-		if (m_vColliderList[i]->Get_GameObject()->ActiveSelf())
-			result.push_back(m_vColliderList[i]);
-	}
-
-	return result;
 }
 
 CBoxCollider* CMapCollision::SpawnTempCollider(const MapCollisionType _type)
