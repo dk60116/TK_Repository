@@ -103,7 +103,7 @@ HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 			infoList.push_back(m_vInfoList[i]);
 	}
 
-	ofstream out(_filePath);
+	ofstream out(_filePath, ios::binary | ios::trunc);
 
 	if (!out.is_open())
 	{
