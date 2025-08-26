@@ -4,6 +4,7 @@
 CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
 	: m_iUniqueID(999999)
 	, m_iLayer(1)
+	, m_iTag(0)
 	, m_strGameObjectName(L"")
 	, m_bActive(true)
 	, m_bPrevActive(true)
@@ -15,6 +16,7 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 	, m_pContext(_pContext)
 	, m_bIsBoneTransform(false)
 	, m_iStaticMathod(0)
+	, m_bKill(false)
 {
 	m_strName = L"Game Object";
 	m_pDevice->AddRef();
@@ -23,6 +25,8 @@ CGameObject::CGameObject(const wstring _name, ID3D11Device* _pDevice, ID3D11Devi
 
 CGameObject::CGameObject(const CGameObject& _rhs)
 	: m_iUniqueID(999999)
+	, m_iLayer(_rhs.m_iLayer)
+	, m_iTag(_rhs.m_iTag)
 	, m_strGameObjectName(_rhs.m_strGameObjectName + L" (Clone)")
 	, m_bActive(_rhs.m_bActive)
 	, m_bPrevActive(_rhs.m_bPrevActive)
@@ -33,6 +37,8 @@ CGameObject::CGameObject(const CGameObject& _rhs)
 	, m_pDevice(_rhs.m_pDevice)
 	, m_pContext(_rhs.m_pContext)
 	, m_bIsBoneTransform(_rhs.m_bIsBoneTransform)
+	, m_iStaticMathod(_rhs.m_iStaticMathod)
+	, m_bKill(false)
 {
 	m_iUniqueID = CSceneManager::Get_CrtScene()->Get_UniqueObjectCount();
 }
@@ -609,6 +615,11 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 	newGameObj->Awake();
 
 	return newGameObj;
+}
+
+void CGameObject::Destroy(CGameObject* _target)
+{
+	_target->m_bKill = true;
 }
 
 const _bool CGameObject::IsRecursiveActive()

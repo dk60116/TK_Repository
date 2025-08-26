@@ -6,9 +6,11 @@ class CMapCollision final : public CComponent
 	friend class CGameObject;
 
 public:
+	enum class MapCollisionType { Wall, Floor };
+
 	struct CollidersInfo
 	{
-		wstring name = L"";
+		BYTE type = 0;
 		_int id = -1;
 		_float4x4 matrix = {};
 	};
@@ -30,13 +32,24 @@ public:
 
 public:
 	HRESULT SaveColliders(const wstring _filePath);
+	vector<CollidersInfo> ReadColliderInfo(const wstring _binFileName);
+	void LoadColliders(const vector<CollidersInfo>& _info);
 
 public:
 	void Set_Map(class CMap* _map);
 
 private:
+	vector<CBoxCollider*> AbleColliderlist();
+
+	CBoxCollider* SpawnTempCollider(const MapCollisionType _type);
+	CBoxCollider* SpawnDataCollider(const CollidersInfo& _info);
+	CBoxCollider* CopyTempCollider(CollidersInfo& _proto);
+
+private:
 	CMap* m_pMap;
-	map<wstring, CBoxCollider*> m_mColliderList;
-	vector<CollidersInfo> _infoList;
+	vector<CBoxCollider*> m_vColliderList;
+	vector<CollidersInfo> m_vInfoList;
+
+	_uint m_iIDCount;
 };
 

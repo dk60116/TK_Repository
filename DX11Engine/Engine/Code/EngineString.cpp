@@ -175,3 +175,55 @@ wstring CEngineString::Replace(const wstring& _wstr, const wstring& _dest, const
 
     return result;
 }
+
+_float CEngineString::ToFloat(const string& _str)
+{
+    _float value = 0.f;
+
+    try
+    {
+        value = stoul(_str);
+    }
+    catch (const exception& e) {}
+
+    return value;
+}
+
+_float CEngineString::ToFloat(const wstring& _wstr)
+{
+    _float value = 0.f;
+
+    try
+    {
+        value = stoul(_wstr);
+    }
+    catch (const exception& e) {}
+
+    return value;
+}
+
+_int CEngineString::ToInt(const string& _str)
+{
+    _int value = 0;
+
+    try
+    {
+        value = stoul(_str);
+    }
+    catch (const exception& e) {}
+
+    return value;
+}
+
+_int CEngineString::ToInt(const wstring& _wstr)
+{
+    _int value = 0;
+
+    try 
+    {
+        value = stoul(_wstr);
+    }
+    catch(const exception& e) {}
+
+    return value;
+}

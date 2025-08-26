@@ -6,6 +6,7 @@ CCollider::CCollider()
 	, m_mEnteredColliders({})
 	, m_bIsTrigger(false)
 	, m_pRigid(nullptr)
+	, m_bSmoothCollision(false)
 {
 }
 
@@ -92,4 +93,9 @@ void CCollider::ExitOther(CCollider* _other)
 		
 		m_mEnteredColliders.erase(it);
 	}
+}
+
+void CCollider::Set_SmoothTranslation(const _bool _value)
+{
+	m_bSmoothCollision = _value;
 }

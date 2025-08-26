@@ -21,5 +21,9 @@ public:
 	static wstring Erase(const wstring& _wstr, const wstring& _target);
 	static string Replace(const string& _str, const string& _dest, const string& _target);
 	static wstring Replace(const wstring& _wstr, const wstring& _dest, const wstring& _target);
+	static _float ToFloat(const string& _str);
+	static _float ToFloat(const wstring& _wstr);
+	static _int ToInt(const string& _str);
+	static _int ToInt(const wstring& _wstr);
 };
 

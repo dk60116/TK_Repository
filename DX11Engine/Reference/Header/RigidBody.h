@@ -46,6 +46,8 @@ public:
 	void AddForce(const vector3 _value);
 
 	void ResetVelocity();
+	void ResetGravity();
+
 	void SetVelocity(const vector3 _value);
 	void AddVelocity(const vector3 _value);
 	void AddVelocitX(const _float _value);

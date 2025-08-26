@@ -43,6 +43,7 @@ CPlayer::CPlayer()
 	, m_pFocusTransform(nullptr)
 	, m_pNavAgent(nullptr)
 	, m_pCollider(nullptr)
+	, m_pRigidBody(nullptr)
 	, m_vPrevMousePos({})
 	, m_vMouseDragDelta({})
 {
@@ -79,6 +80,12 @@ HRESULT CPlayer::Initialize()
 	m_pRootTransform = Get_Transform()->Get_Child(1);
 	m_pLHandTransform = Get_Transform()->Find_ChildRecursive(L"LeftHand");
 	m_pRHandTransform = Get_Transform()->Find_ChildRecursive(L"RightHand");
+
+	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	m_pCollider->Set_Center(vector3(0.f, 0.85f, 0.2f));
+	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
+
+	m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
@@ -122,10 +129,6 @@ HRESULT CPlayer::Initialize()
 void CPlayer::Awake()
 {
 	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-	m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
-	m_pCollider->Set_Center(vector3(0.f, 0.85f, 0.2f));
-	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
-
 	//m_pNavAgent->SetEnabled(false);
 
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
@@ -143,6 +146,8 @@ void CPlayer::Awake()
 void CPlayer::Start()
 {
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
+
+	m_pRigidBody->SetUseGravity(false);
 }
 
 void CPlayer::Update()
@@ -165,6 +170,11 @@ void CPlayer::Update()
 	if (CInput::GetKeyDown(O))
 	{
 		GetDamage(1);
+	}
+
+	if (CInput::GetKeyDown_Editor(L))
+	{
+		m_pRigidBody->SetUseGravity(true);
 	}
 }
 

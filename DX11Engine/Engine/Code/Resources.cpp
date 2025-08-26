@@ -758,8 +758,6 @@ HRESULT CResources::SaveSceneObjectTransformInfos(const wstring& _filePath, vect
 
 vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(const wstring& _binFileName)
 {
-	using namespace std;
-
 	vector<CScene::ObjectsTransformInfo> resultInfo = {};
 
 	ifstream in(L"BinaryAssets/SceneData/" + _binFileName, ios::binary);

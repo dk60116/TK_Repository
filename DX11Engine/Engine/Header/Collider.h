@@ -35,9 +35,13 @@ public:
 	void EnterOther(CCollider* _other);
 	void ExitOther(CCollider* _other);
 
+public:
+	void Set_SmoothTranslation(const _bool _value);
+
 protected:
 	_uint m_iColliderID;
 	_bool m_bIsTrigger;
+	_bool m_bSmoothCollision;
 	map<_uint, CCollider*> m_mEnteredColliders;
 
 	CRigidBody* m_pRigid;

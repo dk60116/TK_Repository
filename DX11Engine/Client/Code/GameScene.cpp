@@ -71,7 +71,7 @@ void CGameScene::Awake()
 	{
 		wolfObject = m_vMonsters[0]->Get_GameObject();
 
-		for (_uint i = 0; i < 1; ++i)
+		for (_uint i = 0; i < 3; ++i)
 		{
 			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
 			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());

@@ -120,3 +120,8 @@ void CRigidBody::ResetVelocity()
 {
     m_vVelocity = vector3::zero();
 }
+
+void CRigidBody::ResetGravity()
+{
+    m_vVelocity.y = 0.f;
+}

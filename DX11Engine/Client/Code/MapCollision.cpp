@@ -4,7 +4,8 @@
 
 CMapCollision::CMapCollision()
 	: m_pMap(nullptr)
-	, m_mColliderList()
+	, m_vColliderList()
+	, m_iIDCount(0)
 {
 }
 
@@ -40,22 +41,39 @@ void CMapCollision::Update()
 {
 	if (CInput::GetKey_Editor(CONTROL))
 	{
-		CScene* pScene = m_pGameObject->Get_Scene();
-
-		if (CInput::GetKeyDown_Editor(V))
+		if (CInput::GetKeyDown_Editor(N))
 		{
-			CGameObject* newColObj = pScene->Add_GameObject(m_pMap->Get_MapName() + L" Wall");
-			CBoxCollider* newCol = newColObj->AddComponent<CBoxCollider>();
-			newColObj->SetLayer(L"Map");
-			newColObj->SetTag(L"Wall");
+			SpawnTempCollider(MapCollisionType::Wall);
 		}
 
 		if (CInput::GetKeyDown_Editor(B))
 		{
-			CGameObject* newColObj = pScene->Add_GameObject(m_pMap->Get_MapName() + L" Floor");
-			CBoxCollider* newCol = newColObj->AddComponent<CBoxCollider>();
-			newColObj->SetLayer(L"Map");
-			newColObj->SetTag(L"Floor");
+			SpawnTempCollider(MapCollisionType::Floor);
+		}
+
+		if (CInput::GetKeyDown_Editor(M))
+		{
+			CBoxCollider* proto = CEditor::Get_SelectedGameObject()->GetComponent<CBoxCollider>();
+
+			if (proto)
+			{
+				CollidersInfo info = {};
+
+				switch (proto->Get_GameObject()->GetTag())
+				{
+				case 1:
+					info.type = 1;
+					break;
+				case 2:
+					info.type = 0;
+					break;
+				}
+
+				info.id = m_iIDCount + 1;
+				XMStoreFloat4x4(&info.matrix, proto->Get_Transform()->Get_WorldMatrix());
+
+				CopyTempCollider(info);
+			}
 		}
 	}
 }
@@ -67,7 +85,16 @@ void CMapCollision::OnDestroy()
 
 HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 {
-	ofstream out(_filePath, ios::out);
+	vector<CBoxCollider*> colliderList = AbleColliderlist();
+
+	for (size_t i = 0; i < colliderList.size(); ++i)
+	{
+		_float4x4 w = {};
+		XMStoreFloat4x4(&w, colliderList[i]->Get_Transform()->Get_WorldMatrix());
+		m_vInfoList[i].matrix = w;
+	}
+
+	ofstream out(_filePath);
 
 	if (!out.is_open())
 	{
@@ -75,12 +102,15 @@ HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 		return E_FAIL;
 	}
 
-	_uint count = static_cast<_uint>(m_mColliderList.size());
+	_uint count = static_cast<_uint>(colliderList.size());
 	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
 
 	for (_uint i = 0; i < count; ++i)
 	{
-		CollidersInfo info = _infoList[i];
+		CollidersInfo info = m_vInfoList[i];
+		out.write(reinterpret_cast<const char*>(&info.type), sizeof(BYTE));
+		out.write(reinterpret_cast<const char*>(&info.id), sizeof(_int));
+		out.write(reinterpret_cast<const char*>(&info.matrix), sizeof(_float4x4));
 	}
 
 	out.close();
@@ -90,9 +120,127 @@ HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 	return S_OK;
 }
 
+vector<CMapCollision::CollidersInfo> CMapCollision::ReadColliderInfo(const wstring _binFileName)
+{
+	ifstream in(L"BinaryAssets/SceneData/" + _binFileName + L".mapcoldata", ios::binary);
+
+	if (!in.is_open())
+		return {};
+
+	vector<CollidersInfo> infoList = {};
+
+	_uint count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+	infoList.resize(count);
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		in.read(reinterpret_cast<char*>(&infoList[i].type), sizeof(BYTE));
+		in.read(reinterpret_cast<char*>(&infoList[i].id), sizeof(_int));
+		in.read(reinterpret_cast<char*>(&infoList[i].matrix), sizeof(_float4x4));
+	}
+
+	return infoList;
+}
+
+void CMapCollision::LoadColliders(const vector<CollidersInfo>& _info)
+{
+	for (_uint i = 0; i < _info.size(); ++i)
+	{
+		SpawnDataCollider(_info[i]);
+	}
+}
+
 void CMapCollision::Set_Map(CMap* _map)
 {
 	m_pMap = _map;
 
 	m_pMap->AddRef();
+}
+
+vector<CBoxCollider*> CMapCollision::AbleColliderlist()
+{
+	vector<CBoxCollider*> result = {};
+
+	for (size_t i = 0; i < m_vColliderList.size(); ++i)
+	{
+		if (m_vColliderList[i]->Get_GameObject()->ActiveSelf())
+			result.push_back(m_vColliderList[i]);
+	}
+
+	return result;
+}
+
+CBoxCollider* CMapCollision::SpawnTempCollider(const MapCollisionType _type)
+{
+	CScene* pScene = m_pGameObject->Get_Scene();
+
+	CGameObject* newColObj = pScene->Add_GameObject(m_pMap->Get_MapName() + (_type == MapCollisionType::Wall ? L"_Wall" : L" _Floor") + L' ' + to_wstring(m_iIDCount));
+	CBoxCollider* newCol = newColObj->AddComponent<CBoxCollider>();
+	newColObj->SetLayer(L"Map");
+	newColObj->SetTag(_type == MapCollisionType::Wall ? L"Wall" : L"Floor");
+
+	CollidersInfo info = {};
+
+	switch (_type)
+	{
+	case MapCollisionType::Floor:
+		info.type = 1;
+		break;
+
+	case MapCollisionType::Wall:
+		info.type = 2;
+		break;
+	}
+
+	info.id = m_iIDCount;
+
+	m_vColliderList.push_back(newCol);
+	m_vInfoList.push_back(info);
+
+	++m_iIDCount;
+
+	return newCol;
+}
+
+CBoxCollider* CMapCollision::SpawnDataCollider(const CollidersInfo& _info)
+{
+	CScene* pScene = m_pGameObject->Get_Scene();
+
+	MapCollisionType type = static_cast<MapCollisionType>(_info.type);
+
+	CGameObject* newColObj = pScene->Add_GameObject(m_pMap->Get_MapName() + (type == MapCollisionType::Wall ? L"_Wall" : L" _Floor") + L' ' + to_wstring(_info.id));
+	CBoxCollider* newCol = newColObj->AddComponent<CBoxCollider>();
+	newColObj->SetLayer(L"Map");
+	newColObj->SetTag(type == MapCollisionType::Wall ? L"Wall" : L"Floor");
+
+	m_vColliderList.push_back(newCol);
+	m_vInfoList.push_back(_info);
+
+	_matrix world = XMLoadFloat4x4(&_info.matrix);
+	newColObj->Get_Transform()->SetTransformForMatrix(world);
+
+	++m_iIDCount;
+
+	return newCol;
+}
+
+CBoxCollider* CMapCollision::CopyTempCollider(CollidersInfo& _proto)
+{
+	CScene* pScene = m_pGameObject->Get_Scene();
+
+	MapCollisionType type = static_cast<MapCollisionType>(_proto.type);
+
+	CGameObject* newColObj = pScene->Add_GameObject(m_pMap->Get_MapName() + (type == MapCollisionType::Wall ? L"_Wall" : L" _Floor") + L' ' + to_wstring(m_iIDCount));
+	CBoxCollider* newCol = newColObj->AddComponent<CBoxCollider>();
+	newColObj->SetLayer(L"Map");
+	newColObj->SetTag(type == MapCollisionType::Wall ? L"Wall" : L"Floor");
+	newColObj->Get_Transform()->SetTransformForMatrix(XMLoadFloat4x4(&_proto.matrix));
+
+	m_vColliderList.push_back(newCol);
+	m_vInfoList.push_back(_proto);
+
+	++m_iIDCount;
+
+	return newCol;
 }

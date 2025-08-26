@@ -163,6 +163,12 @@ void CEditor::Editor_Update_During()
 		CTransform* camTransform = CSceneManager::Get_EditorCamera()->Get_Transform();
 		camTransform->Set_Position(interpPos);
 	}
+
+	if (GetInstance().m_pSelectedGameObject)
+	{
+		if (CInput::GetKeyDown_Editor(KEY_DELETE))
+			CGameObject::Destroy(GetInstance().m_pSelectedGameObject);
+	}
 }
 
 void CEditor::Editor_Update_End()

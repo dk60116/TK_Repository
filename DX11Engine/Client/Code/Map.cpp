@@ -35,8 +35,16 @@ void CMap::Update()
 {
     if (CInput::GetKey_Editor(CONTROL))
     {
-        if (CInput::GetKeyDown_Editor(C))
-			m_pMapCollision->SaveColliders(L"../BinaryAssets/SceneData/" + m_strMapName + L".mapcoldata");
+        if (CInput::GetKeyDown_Editor(K))
+			m_pMapCollision->SaveColliders(L"BinaryAssets/SceneData/" + m_strMapName + L".mapcoldata");
+
+        if (CInput::GetKeyDown_Editor(L))
+        {
+            auto d = m_pMapCollision->ReadColliderInfo(m_strMapName);
+            
+            if (!d.empty())
+                m_pMapCollision->LoadColliders(d);
+        }
     }
 }
 

@@ -101,6 +101,7 @@ public:
 
 public:
 	static CGameObject* Instantiate(const CGameObject* _rhs);
+	static void Destroy(CGameObject* _target);
 
 	template<typename T>
 	static T* FindObjectOfType();
@@ -145,6 +146,8 @@ private:
 	_bool m_bIsBoneTransform;
 
 	_uint m_iStaticMathod;
+
+	_bool m_bKill;
 };
 
 NS_END

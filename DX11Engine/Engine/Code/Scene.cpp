@@ -418,6 +418,17 @@ void CScene::Render_Game()
 		if ((*it)->IsRecursiveActive())
 			(*it)->OnPostRender();
 	}
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->m_bKill)
+		{
+			CGameObject* target = (*it);
+			m_lObjectList.remove((*it));
+			(target)->OnDestroy();
+			Safe_Release(target);
+		}
+	}
 }
 
 void CScene::SceneRelease()

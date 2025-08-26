@@ -130,9 +130,22 @@ void CCollisionManager::UpdateCollision()
 								}
 
 								if (rbA)
-									rbA->Get_Transform()->Add_Position(moveA * DELTA_TIME * 10.f);
+								{
+									if (colB->m_bSmoothCollision)
+										colA->Get_Transform()->Add_Position(moveA * DELTA_TIME * 10.f);
+									else
+										colA->Get_Transform()->Add_Position(moveA);
+
+									if (moveA.y > 0.001f)
+										rbA->ResetGravity();
+								}
 								if (rbB)
-									rbB->Get_Transform()->Add_Position(moveB * DELTA_TIME * 10.f);
+								{
+									if (colA->m_bSmoothCollision)
+										colB->Get_Transform()->Add_Position(moveB * DELTA_TIME * 10.f);
+									else
+										colB->Get_Transform()->Add_Position(moveB);
+								}
 							}
 						}
 					}

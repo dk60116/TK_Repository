@@ -95,6 +95,7 @@ void CMonster::Awake()
 
 	m_pBodyCollider->Set_Center(m_sOptions.colliderCenter);
 	m_pBodyCollider->Set_Size(m_sOptions.colliderSize);
+	m_pBodyCollider->Set_SmoothTranslation(true);
 
 	m_sStatus.crtHp = m_sStatus.maxHp;
 }

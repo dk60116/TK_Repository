@@ -110,6 +110,7 @@ private:
 
 	EngineAI::CNavMeshAgent* m_pNavAgent;
 	CBoxCollider* m_pCollider;
+	CRigidBody* m_pRigidBody;
 
 	vector2Int m_vPrevMousePos;
 	vector2 m_vMouseDragDelta;
