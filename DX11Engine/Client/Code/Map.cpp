@@ -1,11 +1,13 @@
 #include "cpch.h"
 #include "Map.h"
+#include "MapCollision.h"
 
 CMap::CMap()
     : m_strMapName(L"")
     , m_sOptions({})
     , m_vRendererList({})
     , m_mTextureNameList({})
+	, m_pMapCollision(nullptr)
 {
     m_strName = L"Map";
 }
@@ -19,6 +21,9 @@ HRESULT CMap::Initialize()
     m_vRendererList = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strMapName + L"_Model (MeshBuffer)"), m_sOptions.scaleFactor, CGameObject::NavigationStatic);
     AttachTextures();
 
+	m_pMapCollision = m_pGameObject->AddComponent<CMapCollision>();
+    m_pMapCollision->Set_Map(this);
+
     return S_OK;
 }
 
@@ -28,10 +33,20 @@ void CMap::Awake()
 
 void CMap::Update()
 {
+    if (CInput::GetKey_Editor(CONTROL))
+    {
+        if (CInput::GetKeyDown_Editor(C))
+			m_pMapCollision->SaveColliders(L"../BinaryAssets/SceneData/" + m_strMapName + L".mapcoldata");
+    }
 }
 
 void CMap::OnDestroy()
 {
+}
+
+const wstring& CMap::Get_MapName() const
+{
+    return m_strMapName;
 }
 
 void CMap::AttachTextures()

@@ -20,6 +20,9 @@ public:
 	void Update() override;
 	void OnDestroy() override;
 
+public:
+	const wstring& Get_MapName() const;
+
 private:
 	void AttachTextures();
 
@@ -30,5 +33,7 @@ protected:
 
 	vector<CMeshRenderer*> m_vRendererList;
 	map<wstring, vector<wstring>> m_mTextureNameList;
+
+	class CMapCollision* m_pMapCollision;
 };
 

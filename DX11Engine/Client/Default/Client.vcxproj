@@ -159,6 +159,7 @@
     <ClInclude Include="..\Header\LoadingScene.h" />
     <ClInclude Include="..\Header\MainScene.h" />
     <ClInclude Include="..\Header\Map.h" />
+    <ClInclude Include="..\Header\MapCollision.h" />
     <ClInclude Include="..\Header\Monster.h" />
     <ClInclude Include="..\Header\MonsterBehaviour.h" />
     <ClInclude Include="..\Header\MonsterController.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\MainScene.cpp" />
     <ClCompile Include="..\Code\Map.cpp" />
+    <ClCompile Include="..\Code\MapCollision.cpp" />
     <ClCompile Include="..\Code\Monster.cpp" />
     <ClCompile Include="..\Code\MonsterBehaviour.cpp" />
     <ClCompile Include="..\Code\MonsterController.cpp" />

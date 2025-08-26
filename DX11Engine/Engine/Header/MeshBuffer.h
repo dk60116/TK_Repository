@@ -12,8 +12,8 @@ class ENGINE_DLL CMeshBuffer : public CEngineResource
 public:
 	struct MeshAABBInfo
 	{
-		vector3 min = vector3::one();
-		vector3 max = vector3::one();
+		vector3 min = {};
+		vector3 max = {};
 	};
 
 	typedef struct MeshBufferDescription

@@ -714,13 +714,11 @@ HRESULT CResources::BakeNaviMesh(vector<CGameObject*> _naviObjs)
 
 HRESULT CResources::SaveSceneObjectTransformInfos(const wstring& _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
 
 	if (!out.is_open())
 	{
-		CDebug::LogError(L"SaveSceneObjectTransformInfos failed - can not open: " + _filePath);
+		CDebug::LogError(L"SaveCollisionObjectTransformInfos failed - can not open: " + _filePath);
 		return E_FAIL;
 	}
 

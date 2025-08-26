@@ -26,6 +26,10 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Layer(4, L"PlayerWeapon");
 	CSceneManager::Add_Layer(5, L"Monster");
 	CSceneManager::Add_Layer(6, L"MonsterBodyPart");
+	CSceneManager::Add_Layer(7, L"Map");
+
+	CSceneManager::Add_Tag(1, L"Floor");
+	CSceneManager::Add_Tag(2, L"Wall");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);
@@ -33,6 +37,10 @@ HRESULT CGameManager::Initialize()
 	CCollisionManager::Set_CollisionFilter(L"MonsterBodyPart", L"Default", false);
 	CCollisionManager::Set_CollisionFilter(L"MonsterBodyPart", L"MonsterBodyPart", false);
 	CCollisionManager::Set_CollisionFilter(L"Monster", L"MonsterBodyPart", false);
+
+	CCollisionManager::Set_CollisionFilter(L"Map", L"Map", false);
+	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"Map", false);
+	CCollisionManager::Set_CollisionFilter(L"MonsterBodyPart", L"Map", false);
 
 	return S_OK;
 }
