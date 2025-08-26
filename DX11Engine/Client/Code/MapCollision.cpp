@@ -69,7 +69,7 @@ void CMapCollision::Update()
 					break;
 				}
 
-				info.id = m_iIDCount + 1;
+				info.id = m_iIDCount;
 				XMStoreFloat4x4(&info.matrix, proto->Get_Transform()->Get_WorldMatrix());
 
 				CopyTempCollider(info);
