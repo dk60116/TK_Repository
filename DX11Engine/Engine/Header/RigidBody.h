@@ -11,8 +11,8 @@ class ENGINE_DLL CRigidBody final : public CComponent
 public:
 	struct RigidBodyOptions
 	{
-		_float mass;
-		_float drag;
+		_float mass = 1.f;
+		_float drag = 1.f;;
 	};
 
 	struct FreezeOption

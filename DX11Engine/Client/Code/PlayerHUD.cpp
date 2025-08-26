@@ -12,6 +12,7 @@ CPlayerHUD::CPlayerHUD()
 	, m_pRupeeIcon(nullptr)
 	, m_pRupeeText(nullptr)
 	, m_fACHAlpha(1.f)
+	, m_vEquipSlotImage({})
 {
 }
 
@@ -34,6 +35,7 @@ HRESULT CPlayerHUD::Initialize()
 	m_pCanvas = m_pGameObject->AddComponent<CCanvas>();
 
 	SpawnHeartBowl();
+	SpawnEquipSlot();
 	SpawnRupeeUI();
 	SpawnBowCrossHair();
 
@@ -142,10 +144,42 @@ void CPlayerHUD::SpawnBowCrossHair()
 {
 	CGameObject* bcObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Bow Cross Hair");
 	m_pArrowCrossHair = bcObj->AddComponent<CImage>();
-	bcObj->Get_Transform()->SetParent(Get_Transform());
+	bcObj->Get_Transform()->SetParent(m_pCanvas->Get_RectTransform());
 	m_pArrowCrossHair->SetTexture(CResources::LoadOnScene<CTexture>(L"ArrowCrossHair (Texture)"));
 	m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(70, 70);
 	bcObj->SetActive(false);
+}
+
+void CPlayerHUD::SpawnEquipSlot()
+{
+	CScene* crtScene = m_pGameObject->Get_Scene();
+
+	CTexture* slotImage = CResources::LoadOnScene<CTexture>(L"EquipCountSlot (Texture)");
+
+	CGameObject* equpSlotBox = crtScene->Add_GameObject(L"Equp Slots");
+	CRectTransform* slotBoxRect = equpSlotBox->AddComponent<CUI>()->Get_RectTransform();
+	slotBoxRect->SetParent(m_pCanvas->Get_RectTransform());
+
+	slotBoxRect->Set_Pivot(1.f, 1.f);
+	slotBoxRect->Set_AnchorsMin(1.f, 1.f);
+	slotBoxRect->Set_AnchoredPosition(-50.f, -50.f);
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		CGameObject* slotObj = crtScene->Add_GameObject(L"Eqip Slot (" + to_wstring(i) + L')');
+		m_vEquipSlotImage.push_back(slotObj->AddComponent<CImage>());
+		slotObj->Get_Transform()->SetParent(slotBoxRect);
+		m_vEquipSlotImage.back()->SetTexture(slotImage);
+
+		m_vEquipSlotImage.back()->Get_RectTransform()->Set_WidthHeight(50, 50);
+	}
+
+	const _float m_fSpacing = 40.f;
+
+	m_vEquipSlotImage[0]->Get_RectTransform()->Set_AnchoredPosition(0.f, m_fSpacing);
+	m_vEquipSlotImage[1]->Get_RectTransform()->Set_AnchoredPosition(-m_fSpacing, 0.f);
+	m_vEquipSlotImage[2]->Get_RectTransform()->Set_AnchoredPosition(m_fSpacing, 0.f);
+	m_vEquipSlotImage[3]->Get_RectTransform()->Set_AnchoredPosition(0.f, -m_fSpacing);
 }
 
 void CPlayerHUD::SpawnRupeeUI()

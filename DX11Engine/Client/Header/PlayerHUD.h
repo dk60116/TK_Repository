@@ -36,7 +36,7 @@ public:
 private:
 	void SpawnHeartBowl();
 	void SpawnBowCrossHair();
-	void EquipSlot();
+	void SpawnEquipSlot();
 	void SpawnRupeeUI();
 
 private:
@@ -49,5 +49,7 @@ private:
 	CText* m_pRupeeText;
 	CImage* m_pArrowCrossHair;
 	_float m_fACHAlpha;
+
+	vector<CImage*> m_vEquipSlotImage;
 };
 

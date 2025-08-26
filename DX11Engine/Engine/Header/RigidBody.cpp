@@ -71,14 +71,14 @@ void CRigidBody::Update()
 
     myTf->Add_Position(m_vVelocity * DELTA_TIME);
 
-    m_vVelocity = vector3::Lerp(m_vVelocity, vector3::zero(), DELTA_TIME);
+    m_vVelocity = vector3::Lerp(m_vVelocity, vector3::zero(), DELTA_TIME * (1.f / m_sOptions.drag));
 }
 
 void CRigidBody::LateUpdate()
 {
     if (m_bUseGravity)
     {
-        m_vVelocity += m_vGravityAcceleration;
+        m_vVelocity = m_vGravityAcceleration;
     }
 }
 
