@@ -182,9 +182,9 @@ _float CEngineString::ToFloat(const string& _str)
 
     try
     {
-        value = stoul(_str);
+        value = static_cast<_float>(stoul(_str));
     }
-    catch (const exception& e) {}
+    catch (const exception& e) { }
 
     return value;
 }
@@ -195,7 +195,7 @@ _float CEngineString::ToFloat(const wstring& _wstr)
 
     try
     {
-        value = stoul(_wstr);
+        value = static_cast<_float>(stoul(_wstr));
     }
     catch (const exception& e) {}
 

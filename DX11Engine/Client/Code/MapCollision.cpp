@@ -87,6 +87,9 @@ HRESULT CMapCollision::SaveColliders(const wstring _filePath)
 {
 	vector<CBoxCollider*> colliderList = AbleColliderlist();
 
+	if (colliderList.size() <= 0)
+		return E_FAIL;
+
 	for (size_t i = 0; i < colliderList.size(); ++i)
 	{
 		_float4x4 w = {};

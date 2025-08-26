@@ -87,8 +87,8 @@ void CMainProcess::Update_MainApp()
     {
         scene->Update_Editor();
         scene->Update();
-        scene->LateUpdate();
         scene->FixedUpdate();
+        scene->LateUpdate();
 
 #ifndef _CLIENT_BUILD
         CGraphicDevice::Set_RenderTarget(CEditor::Get_EditorWindow());

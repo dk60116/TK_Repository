@@ -67,16 +67,19 @@ void CRigidBody::Update()
         m_vGravityAcceleration += GRAVITY * DELTA_TIME;
     }
 
-    m_vVelocity += m_vGravityAcceleration;
+    CTransform* myTf = Get_Transform();
+
+    myTf->Add_Position(m_vVelocity * DELTA_TIME);
+
+    m_vVelocity = vector3::Lerp(m_vVelocity, vector3::zero(), DELTA_TIME);
 }
 
 void CRigidBody::LateUpdate()
 {
-    CTransform* myTf = Get_Transform();
-    
-    myTf->Add_Position(m_vVelocity * DELTA_TIME);
-
-    m_vVelocity = vector3::Lerp(m_vVelocity, vector3::zero(), DELTA_TIME);
+    if (m_bUseGravity)
+    {
+        m_vVelocity += m_vGravityAcceleration;
+    }
 }
 
 void CRigidBody::Render_Editor()
