@@ -92,6 +92,8 @@ void CArrow::Pop()
 {
 	m_pGameObject->SetActive(true);
 	m_pCollider->SetEnabled(false);
+	m_pRigidBody->ResetVelocity();
+	m_pRigidBody->ResetGravity();
 	Get_Transform()->Set_LocalScale(10.f);
 }
 
@@ -135,6 +137,8 @@ void CArrow::Return()
 
 	m_pRigidBody->SetKinematic(true);
 	m_pRigidBody->SetEnabled(false);
+	m_pRigidBody->ResetVelocity();
+	m_pRigidBody->ResetGravity();
 
 	m_pCollider->SetEnabled(false);
 
