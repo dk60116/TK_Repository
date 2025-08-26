@@ -74,7 +74,7 @@ protected:
 	CTransform* m_pHeadTF, * m_pBodyTF;
 
 	CBoxCollider* m_pBodyCollider;
-	CRigidBody* m_pRigid;
+	CRigidBody* m_pRigidBody;
 
 	map<wstring, class CMonsterPartCollision*> m_mPartColList;
 };

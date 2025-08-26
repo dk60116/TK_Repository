@@ -17,7 +17,7 @@ CMonster::CMonster()
 	, m_pHeadTF(nullptr)
 	, m_pBodyTF(nullptr)
 	, m_pBodyCollider(nullptr)
-	, m_pRigid(nullptr)
+	, m_pRigidBody(nullptr)
 	, m_mPartColList({})
 {
 	m_strName = L"Monster";
@@ -91,7 +91,7 @@ void CMonster::Awake()
 	}
 
 	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
-	m_pRigid = m_pGameObject->AddComponent<CRigidBody>();
+	m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
 
 	m_pBodyCollider->Set_Center(m_sOptions.colliderCenter);
 	m_pBodyCollider->Set_Size(m_sOptions.colliderSize);
@@ -106,6 +106,10 @@ void CMonster::Start()
 
 void CMonster::Update()
 {
+	if (CInput::GetKeyDown_Editor(L))
+	{
+		m_pRigidBody->SetUseGravity(true);
+	}
 }
 
 void CMonster::OnEnable()
@@ -165,7 +169,7 @@ void CMonster::Get_Damage(CWeapon* _weapon)
 	vector3 weaponPos = _weapon->Get_Transform()->Get_Position();
 	weaponPos.y = myPos.y;
 	vector3 knockbackDir = (myPos - weaponPos).normalized();
-	m_pRigid->AddForce(knockbackDir * _weapon->Get_Stat().knockbackPower);
+	m_pRigidBody->AddForce(knockbackDir * _weapon->Get_Stat().knockbackPower);
 
 	if (m_sStatus.crtHp <= 0)
 	{
