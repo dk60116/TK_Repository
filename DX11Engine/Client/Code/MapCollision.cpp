@@ -73,7 +73,9 @@ void CMapCollision::Update()
 				info.id = m_iIDCount;
 				XMStoreFloat4x4(&info.matrix, proto->Get_Transform()->Get_WorldMatrix());
 
-				CopyTempCollider(info);
+				auto copy = CopyTempCollider(info);
+
+				CEditor::Set_SelectedGameObject(copy->Get_GameObject());
 			}
 		}
 	}

@@ -33,6 +33,12 @@ HRESULT CCanvas::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	dsDesc.DepthEnable = FALSE;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	dsDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	dsDesc.StencilEnable = FALSE;
+
 	vector2 resolution = vector2(CDisplay::Get_ScreenResolution().x, CDisplay::Get_ScreenResolution().y);
 
 	if (m_eRenderMode == RenderMode::ScreenSpace_Overlay)

@@ -3,7 +3,7 @@
 
 CText::CText()
 	: m_pFont(nullptr)
-	, m_strText(L"")
+	, m_strText(L"text")
     , m_fFontSize(10.f)
 {
 	m_strName = L"Text";

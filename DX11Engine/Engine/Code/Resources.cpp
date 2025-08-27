@@ -858,7 +858,6 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBu
 	CDebug::Log(L"Save complete meshdata: " + _filePath);
 
 	return S_OK;
-
 }
 
 vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring& _binFileName)
@@ -866,6 +865,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList;
 
 	ifstream in(L"BinaryAssets/MeshData/" + _binFileName, ios::binary);
+
 	if (!in.is_open())
 	{
 		CDebug::LogError(L"ReadMeshBufferInfos failed - can not open: " + _binFileName);
@@ -936,8 +936,6 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 
 HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
 
 	if (!out.is_open())
@@ -1340,8 +1338,6 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 
 HRESULT CResources::SaveAnimationClipBufferInfos(const wstring& _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
 {
-	using namespace std;
-
 	ofstream out(_filePath, ios::binary);
 	if (!out.is_open())
 		return E_FAIL;
@@ -1392,7 +1388,6 @@ HRESULT CResources::SaveAnimationClipBufferInfos(const wstring& _filePath, vecto
 
 vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBufferInfos(const wstring& _binFileName)
 {
-	using namespace std;
 	vector<CAnimationClip::AnimationClipInitInfo> clips;
 
 	ifstream in(L"BinaryAssets/AnimationClipData/" + _binFileName, ios::binary);
@@ -1466,7 +1461,9 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;
-	if (_desc) scaleFactor = *reinterpret_cast<_float*>(_desc);
+
+	if (_desc) 
+		scaleFactor = *reinterpret_cast<_float*>(_desc);
 
 	vector<MeshBundle> resultList = {};
 	resultList.reserve(_infoList.size());
@@ -1486,6 +1483,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 			if (!worlds.empty())
 			{
 				const _uint cap = static_cast<_uint>(worlds.size());
+
 				if (SUCCEEDED(newBuffer->CreateInstanceBuffer(cap, D3D11_USAGE_DYNAMIC)))
 				{
 					auto& inst = newBuffer->Get_InstancingDesc();
@@ -1521,11 +1519,12 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 		resultList.push_back(newBundle);
 	}
 
-	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene()
-		: CSceneManager::Get_CrtScene();
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() : CSceneManager::Get_CrtScene();
 
-	if (!_tempScene) targetScene->Add_MeshBundle(_name, resultList);
-	else             targetScene->Add_TempMeshBundle(_name, resultList);
+	if (!_tempScene) 
+		targetScene->Add_MeshBundle(_name, resultList);
+	else             
+		targetScene->Add_TempMeshBundle(_name, resultList);
 
 	CDebug::Log(L"Create Scene resource successfully: " + _name);
 	return resultList;
@@ -1569,8 +1568,7 @@ vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _n
 		resultList.push_back(newBundle);
 	}
 
-	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
-		CSceneManager::Get_CrtScene();
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() : CSceneManager::Get_CrtScene();
 
 	if (!_tempScene)
 	{

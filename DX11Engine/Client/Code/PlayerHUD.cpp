@@ -13,7 +13,8 @@ CPlayerHUD::CPlayerHUD()
 	, m_pRupeeText(nullptr)
 	, m_fACHAlpha(1.f)
 	, m_vEquipSlotImage({})
-	, m_vEquipIconImage()
+	, m_vEquipIconImage({})
+	, m_vEquipCountText({})
 {
 }
 
@@ -178,6 +179,13 @@ void CPlayerHUD::SpawnEquipSlot()
 		iconObj->Get_Transform()->SetParent(slotObj->Get_Transform());
 		m_vEquipIconImage.back()->Get_RectTransform()->Set_WidthHeight(m_vEquipSlotImage.back()->Get_RectTransform()->Get_WidthHeight());
 		iconObj->SetActive(false);
+
+		CGameObject* textObj = crtScene->Add_GameObject(L"Count Text");
+		m_vEquipCountText.push_back(textObj->AddComponent<CText>());
+		textObj->Get_Transform()->SetParent(slotObj->Get_Transform());
+		m_vEquipCountText.back()->Get_RectTransform()->Set_WidthHeight(50, 50);
+		m_vEquipCountText.back()->Get_RectTransform()->Set_AnchoredPosition(50, -50);
+		m_vEquipCountText.back()->SetColor(ColorValue::white());
 	}
 
 	const _float m_fSpacing = 40.f;

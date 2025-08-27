@@ -236,8 +236,8 @@ void CMeshBuffer::Render()
 
     auto deviceContext = CGraphicDevice::Get_Context();
 
-    UINT strides[2] = { m_sInfo.vertexSize, m_sInstanceDesc.instanceStride };
-    UINT offsets[2] = { 0, 0 };
+    _uint strides[2] = { m_sInfo.vertexSize, m_sInstanceDesc.instanceStride };
+    _uint offsets[2] = { 0, 0 };
     ID3D11Buffer* buffers[2] = { m_pVertexBuffer, m_pInstanceBuffer };
 
     if (m_pInstanceBuffer && m_sInstanceDesc.count > 0)
@@ -246,15 +246,17 @@ void CMeshBuffer::Render()
         deviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
         deviceContext->IASetPrimitiveTopology(m_sInfo.topology);
 
-        deviceContext->DrawIndexedInstanced(
+        deviceContext->DrawIndexedInstanced
+        (
             m_sInfo.indexCount,
             m_sInstanceDesc.count,
-            0, 0, 0);
+            0, 0, 0
+        );
     }
     else
     {
-        UINT stride = m_sInfo.vertexSize;
-        UINT offset = 0;
+        _uint stride = m_sInfo.vertexSize;
+        _uint offset = 0;
         deviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
         deviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
         deviceContext->IASetPrimitiveTopology(m_sInfo.topology);

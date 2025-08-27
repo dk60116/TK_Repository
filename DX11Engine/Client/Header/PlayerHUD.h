@@ -51,5 +51,6 @@ private:
 	_float m_fACHAlpha;
 
 	vector<CImage*> m_vEquipSlotImage, m_vEquipIconImage;
+	vector<CText*> m_vEquipCountText;
 };
 
