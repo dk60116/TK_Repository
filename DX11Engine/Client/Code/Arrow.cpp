@@ -108,7 +108,7 @@ void CArrow::Shoot()
 
 	_float posY = Get_Transform()->Get_Position().y;
 	vector3 target = playerTF->Get_Position() + playerTF->Get_Directions().forward * 3.f;
-	target.y = posY + playerCam->Get_BowY() + 0.3f;
+	target.y = posY + playerCam->Get_BowY();
 
 	vector3 myPos = playerTF->Get_Position() + playerTF->Get_Directions().forward;
 	myPos.y = posY;

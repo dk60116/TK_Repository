@@ -13,6 +13,7 @@ CPlayerHUD::CPlayerHUD()
 	, m_pRupeeText(nullptr)
 	, m_fACHAlpha(1.f)
 	, m_vEquipSlotImage({})
+	, m_vEquipIconImage()
 {
 }
 
@@ -170,8 +171,13 @@ void CPlayerHUD::SpawnEquipSlot()
 		m_vEquipSlotImage.push_back(slotObj->AddComponent<CImage>());
 		slotObj->Get_Transform()->SetParent(slotBoxRect);
 		m_vEquipSlotImage.back()->SetTexture(slotImage);
-
 		m_vEquipSlotImage.back()->Get_RectTransform()->Set_WidthHeight(50, 50);
+
+		CGameObject* iconObj = crtScene->Add_GameObject(L"Eqip Icon");
+		m_vEquipIconImage.push_back(iconObj->AddComponent<CImage>());
+		iconObj->Get_Transform()->SetParent(slotObj->Get_Transform());
+		m_vEquipIconImage.back()->Get_RectTransform()->Set_WidthHeight(m_vEquipSlotImage.back()->Get_RectTransform()->Get_WidthHeight());
+		iconObj->SetActive(false);
 	}
 
 	const _float m_fSpacing = 40.f;
@@ -180,6 +186,9 @@ void CPlayerHUD::SpawnEquipSlot()
 	m_vEquipSlotImage[1]->Get_RectTransform()->Set_AnchoredPosition(-m_fSpacing, 0.f);
 	m_vEquipSlotImage[2]->Get_RectTransform()->Set_AnchoredPosition(m_fSpacing, 0.f);
 	m_vEquipSlotImage[3]->Get_RectTransform()->Set_AnchoredPosition(0.f, -m_fSpacing);
+
+	m_vEquipIconImage[0]->SetTexture(CResources::LoadOnScene<CTexture>(L"Arrow_Icon (Texture)"));
+	m_vEquipIconImage[0]->Get_GameObject()->SetActive(true);
 }
 
 void CPlayerHUD::SpawnRupeeUI()

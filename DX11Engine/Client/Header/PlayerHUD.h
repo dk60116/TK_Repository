@@ -50,6 +50,6 @@ private:
 	CImage* m_pArrowCrossHair;
 	_float m_fACHAlpha;
 
-	vector<CImage*> m_vEquipSlotImage;
+	vector<CImage*> m_vEquipSlotImage, m_vEquipIconImage;
 };
 

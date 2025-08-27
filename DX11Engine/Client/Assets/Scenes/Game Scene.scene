@@ -91,4 +91,4 @@ EquipCountSlot : UI/HUDUI/Slot_0.png : [Texture]
 RupeeIcon : UI/HUDUI/Rupee.png : [Texture]
 ArrowCrossHair : UI/HUDUI/ArrowCrossHair.png : [Texture]
 // UI Icon
-Arrow_Icon : UI/Eqaup/Arrow_Icon_0.png : [Texture]
+Arrow_Icon : UI/Equip/Arrow_Icon.png : [Texture]
