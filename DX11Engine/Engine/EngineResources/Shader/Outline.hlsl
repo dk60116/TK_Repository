@@ -31,6 +31,11 @@ struct VSIn
     uint4 boneIndices : BLENDINDICES;
     float4 boneWeights : BLENDWEIGHT;
     float lineWidth : TEXCOORD1;
+    
+    float4 instance_row0 : INSTANCE0;
+    float4 instance_row1 : INSTANCE1;
+    float4 instance_row2 : INSTANCE2;
+    float4 instance_row3 : INSTANCE3;
 };
 
 // ───────────── 버텍스 출력

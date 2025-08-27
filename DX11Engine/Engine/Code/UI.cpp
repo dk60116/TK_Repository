@@ -40,13 +40,15 @@ HRESULT CUI::Initialize()
 	if (!m_pRectGizmoMesh)
 	{
 		m_pRectGizmoMesh = CResources::LoadOnGame<CMeshBuffer>(L"LineRect (Mesh Buffer)");
-		m_pRectGizmoMesh->AddRef();
+		if (m_pRectGizmoMesh)
+			m_pRectGizmoMesh->AddRef();
 	}
 
 	if (!m_pLineMat)
 	{
 		m_pLineMat = CResources::CloneOnGame<CMaterial>(L"DefaultLineMaterial (Material)");
-		m_pLineMat->AddRef();
+		if (m_pLineMat)
+			m_pLineMat->AddRef();
 	}
 #endif
 
@@ -110,7 +112,8 @@ void CUI::Set_Material(CMaterial* _material)
 
 void CUI::Bind_Mesh()
 {
-	m_pRectMesh->Render();
+	if (m_pRectMesh)
+		m_pRectMesh->Render();
 }
 
 void CUI::Bind_Matrix()

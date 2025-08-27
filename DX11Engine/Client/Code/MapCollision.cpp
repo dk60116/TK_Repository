@@ -4,6 +4,7 @@
 
 CMapCollision::CMapCollision()
 	: m_pMap(nullptr)
+	, m_bSelectViewMode(nullptr)
 	, m_vColliderList()
 	, m_iIDCount(0)
 {
@@ -76,6 +77,11 @@ void CMapCollision::Update()
 			}
 		}
 	}
+
+	if (CInput::GetKeyDown_Editor(O))
+		m_bSelectViewMode = !m_bSelectViewMode;
+
+	UpdateViewMode(m_bSelectViewMode);
 }
 
 void CMapCollision::OnDestroy()
@@ -239,4 +245,26 @@ CBoxCollider* CMapCollision::CopyTempCollider(CollidersInfo& _proto)
 	++m_iIDCount;
 
 	return newCol;
+}
+
+void CMapCollision::UpdateViewMode(const _bool _selected)
+{
+	CBoxCollider* selectedCol = nullptr;
+
+	if (CEditor::Get_SelectedGameObject())
+		selectedCol = CEditor::Get_SelectedGameObject()->GetComponent<CBoxCollider>();
+
+	if (_selected)
+	{
+		for (TRAVERSAL_ITER(m_vColliderList, it))
+		{
+			if (selectedCol)
+				(*it)->SetEnabled(selectedCol == (*it));
+		}
+	}
+	else
+	{
+		for (TRAVERSAL_ITER(m_vColliderList, it))
+			(*it)->SetEnabled(true);
+	}
 }

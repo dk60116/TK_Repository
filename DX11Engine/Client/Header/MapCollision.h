@@ -38,14 +38,16 @@ public:
 public:
 	void Set_Map(class CMap* _map);
 
-
 private:
 	CBoxCollider* SpawnTempCollider(const MapCollisionType _type);
 	CBoxCollider* SpawnDataCollider(const CollidersInfo& _info);
 	CBoxCollider* CopyTempCollider(CollidersInfo& _proto);
 
+	void UpdateViewMode(const _bool _selected);
+
 private:
 	CMap* m_pMap;
+	_bool m_bSelectViewMode;
 	vector<CBoxCollider*> m_vColliderList;
 	vector<CollidersInfo> m_vInfoList;
 

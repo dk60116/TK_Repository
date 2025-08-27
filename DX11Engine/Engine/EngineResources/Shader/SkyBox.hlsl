@@ -31,6 +31,11 @@ struct VSIn
     float3 normalL : NORMAL;
     float2 uv : TEXCOORD0;
     float3 tangentL : TANGENT;
+    
+    float4 instance_row0 : INSTANCE0;
+    float4 instance_row1 : INSTANCE1;
+    float4 instance_row2 : INSTANCE2;
+    float4 instance_row3 : INSTANCE3;
 };
 
 struct VSOut

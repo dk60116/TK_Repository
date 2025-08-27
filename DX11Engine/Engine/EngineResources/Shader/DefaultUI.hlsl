@@ -29,6 +29,11 @@ struct VSIn
 {
     float3 posL : POSITION;
     float2 uv : TEXCOORD0;
+    
+    float4 instance_row0 : INSTANCE0;
+    float4 instance_row1 : INSTANCE1;
+    float4 instance_row2 : INSTANCE2;
+    float4 instance_row3 : INSTANCE3;
 };
 
 struct VSOut
