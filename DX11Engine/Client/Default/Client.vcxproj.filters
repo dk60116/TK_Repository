@@ -189,6 +189,9 @@
     <ClInclude Include="..\Header\PlayerBehaviour_Move.h">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\PlayerBehaviour_Jump.h">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -300,6 +303,9 @@
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\PlayerBehaviour_Move.cpp">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerBehaviour_Jump.cpp">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
   </ItemGroup>

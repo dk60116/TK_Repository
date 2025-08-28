@@ -96,6 +96,7 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"BackWalk", CResources::LoadOnScene<CAnimationClip>(L"Link_BackWalk (Animation)"));
 	m_pAnimator->Add_Animation(L"CombatBackWalk", CResources::LoadOnScene<CAnimationClip>(L"Link_CombatBackWalk (Animation)"));
 	m_pAnimator->Add_Animation(L"Run", CResources::LoadOnScene<CAnimationClip>(L"Link_Run (Animation)"));
+	m_pAnimator->Add_Animation(L"RunJump", CResources::LoadOnScene<CAnimationClip>(L"Link_RunJump (Animation)"));
 	m_pAnimator->Add_Animation(L"CombatRun", CResources::LoadOnScene<CAnimationClip>(L"Link_CombatRun (Animation)"));
 	m_pAnimator->Add_Animation(L"CombatIdle", CResources::LoadOnScene<CAnimationClip>(L"Link_CombatIdle (Animation)"));
 	m_pAnimator->Add_Animation(L"Jump", CResources::LoadOnScene<CAnimationClip>(L"Link_Jump (Animation)"));
@@ -127,6 +128,7 @@ HRESULT CPlayer::Initialize()
 	if (!m_pController)
 	{
 		m_pController = m_pGameObject->AddComponent<CPlayerController>();
+
 		if (m_pController)
 			m_pController->Set_Player(this);
 		else
@@ -138,9 +140,6 @@ HRESULT CPlayer::Initialize()
 
 void CPlayer::Awake()
 {
-	m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-	//m_pNavAgent->SetEnabled(false);
-
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 
 	ChangeWeapon(L"Sword");
@@ -221,6 +220,11 @@ CAnimator* CPlayer::Get_Animator() const
 	return m_pAnimator;
 }
 
+CRigidBody* CPlayer::Get_RigidBody() const
+{
+	return m_pRigidBody;
+}
+
 const CPlayer::PlayerStatus& CPlayer::Get_Status()
 {
 	return m_sPlayerStatus;
@@ -291,7 +295,7 @@ void CPlayer::PlayerControle()
 
 	if (m_bIsJump && !m_bIsPrevJump)
 	{
-		PlayerControle_Jump();
+
 	}
 
 	if (m_pEquipWeapon->Get_WeaponType() == CGameManager::WeaponType::Sword)
@@ -553,11 +557,6 @@ void CPlayer::PlayerControle_BowAction()
 	}
 }
 
-void CPlayer::PlayerControle_Jump()
-{
-	PlayJumpAnimation();
-}
-
 void CPlayer::PlayIdleAnimation(const _float _blending)
 {
 	if (m_bIsJump || m_bSwordActionDuring)
@@ -632,18 +631,17 @@ void CPlayer::PlayMoveAnimation(const vector3& _dir, const _float _rot, const _f
 	//CDebug::Log("CombatRun");
 }
 
-void CPlayer::PlayJumpAnimation(const _float _blending)
+void CPlayer::PlayJumpAnimation(const vector3& _dir, const _float _blending)
 {
-	if (m_bSwordActionDuring)
-		return;
-
 	if (m_pAnimator)
 	{
 		m_pAnimator->SetLoop(false);
-		m_pAnimator->Play(L"Jump", _blending);
-	}
 
-	//CDebug::Log("Jump");
+		if (_dir.z == 0)
+			m_pAnimator->Play(L"Jump", _blending);
+		else
+			m_pAnimator->Play(L"RunJump", _blending);
+	}
 }
 
 void CPlayer::PlaySwordAnimation()
@@ -668,4 +666,9 @@ void CPlayer::PlayBowLoadAnimatoin()
 		m_pAnimator->SetLoop(false);
 		m_pAnimator->Play(L"BowLoad", 0.1f);
 	}
+}
+
+const vector3& CPlayer::Get_GA()
+{
+	return m_pRigidBody->Get_GA();
 }

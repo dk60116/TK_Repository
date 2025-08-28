@@ -42,6 +42,8 @@ public:
 	void SetUseGravity(const _bool _value);
 	const _bool IsKinematic() const;
 	void SetKinematic(const _bool _value);
+	const vector3& GetVelocity();
+	const vector3& Get_GA();
 
 	void AddForce(const vector3 _value);
 
@@ -49,6 +51,10 @@ public:
 	void ResetGravity();
 
 	void SetVelocity(const vector3 _value);
+	void SetVelocitX(const _float _value);
+	void SetVelocitY(const _float _value);
+	void SetVelocitZ(const _float _value);
+
 	void AddVelocity(const vector3 _value);
 	void AddVelocitX(const _float _value);
 	void AddVelocitY(const _float _value);

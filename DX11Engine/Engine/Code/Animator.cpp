@@ -110,7 +110,10 @@ void CAnimator::Update()
 			if (!m_pSkinnedRenderer->m_bApplyRootMotion && name == m_pSkinnedRenderer->Get_RootBoneName())
 				continue;
 
-			if (bone->Get_GameObject()->Get_ObjectName() == L"root")
+			const _bool customRoot = name == L"root" || name == L"Root" || name == L"ROOT";
+
+			if (!m_pSkinnedRenderer->m_bApplyRootMotion &&
+				name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot)
 				continue;
 
 			const auto& startIt = m_mBlendStartPose.find(name);

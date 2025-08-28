@@ -112,6 +112,16 @@ void CRigidBody::SetKinematic(const _bool _value)
     m_bIsKinematic = _value;
 }
 
+const vector3& CRigidBody::GetVelocity()
+{
+    return m_vVelocity;
+}
+
+const vector3& CRigidBody::Get_GA()
+{
+    return m_vGravityAcceleration;
+}
+
 void CRigidBody::AddForce(const vector3 _value)
 {
     m_vVelocity += _value;
@@ -125,4 +135,44 @@ void CRigidBody::ResetVelocity()
 void CRigidBody::ResetGravity()
 {
     m_vGravityAcceleration = vector3::zero();
+}
+
+void CRigidBody::SetVelocity(const vector3 _value)
+{
+    m_vVelocity = _value;
+}
+
+void CRigidBody::SetVelocitX(const _float _value)
+{
+    m_vVelocity.x = _value;
+}
+
+void CRigidBody::SetVelocitY(const _float _value)
+{
+    m_vVelocity.y = _value;
+}
+
+void CRigidBody::SetVelocitZ(const _float _value)
+{
+    m_vVelocity.z = _value;
+}
+
+void CRigidBody::AddVelocity(const vector3 _value)
+{
+    m_vVelocity += _value;
+}
+
+void CRigidBody::AddVelocitX(const _float _value)
+{
+    m_vVelocity.x += _value;
+}
+
+void CRigidBody::AddVelocitY(const _float _value)
+{
+    m_vVelocity.y += _value;
+}
+
+void CRigidBody::AddVelocitZ(const _float _value)
+{
+    m_vVelocity.z += _value;
 }

@@ -2,6 +2,7 @@
 #include "PlayerController.h"
 #include "PlayerBehaviour_Idle.h"
 #include "PlayerBehaviour_Move.h"
+#include "PlayerBehaviour_Jump.h"
 
 CPlayerController::CPlayerController()
 	: m_pPlayer(nullptr)
@@ -38,6 +39,7 @@ void CPlayerController::Awake()
 {
 	AddBehaviour<CPlayerBehaviour_Idle>(Idle);
 	AddBehaviour<CPlayerBehaviour_Move>(Move);
+	AddBehaviour<CPlayerBehaviour_Jump>(Jump);
 }
 
 void CPlayerController::Start()
@@ -55,6 +57,12 @@ void CPlayerController::Update()
 
 void CPlayerController::OnDestroy()
 {
+	Safe_Release(m_pPlayer);
+
+	for (TRAVERSAL_ITER(m_mBehaviourList, it))
+		Safe_Release((*it).second);
+
+	m_mBehaviourList.clear();
 }
 
 CPlayer* CPlayerController::Get_Player()
@@ -66,8 +74,6 @@ void CPlayerController::Set_Player(CPlayer* _player)
 {
 	if (_player == m_pPlayer)
 		return;
-
-	Safe_Release(m_pPlayer);
 
 	m_pPlayer = _player;
 
@@ -100,6 +106,17 @@ void CPlayerController::ChangeState(const PlayerState _state, const _bool forceE
 	m_eCrtState = _state;
 }
 
+void CPlayerController::ForceChangeState(const PlayerState _state, void* _enterDesc)
+{
+	if (m_pCrtBehaviour)
+		m_pCrtBehaviour->Exit();
+
+	m_pCrtBehaviour = m_mBehaviourList[_state];
+	m_pCrtBehaviour->Enter(_enterDesc);
+
+	m_eCrtState = _state;
+}
+
 const vector3& CPlayerController::Get_MoveDirection()
 {
 	return m_sMoveDesc.moveDirection;
@@ -120,8 +137,16 @@ void CPlayerController::Set_RotationDiretion(const _float _value)
 	m_sMoveDesc.rotateDirection = _value;
 }
 
+CPlayerController::MOVEDESC& CPlayerController::Get_MoveDesc()
+{
+	return m_sMoveDesc;
+}
+
 void CPlayerController::UpdateControleState()
 {
+	if (CInput::GetKeyDown(SPACE))
+		ChangeState(Jump, false, &m_sMoveDesc);
+
 	m_sMoveDesc.moveDirection = vector3::zero();
 	m_sMoveDesc.rotateDirection = 0.f;
 
@@ -136,10 +161,10 @@ void CPlayerController::UpdateControleState()
 		m_sMoveDesc.rotateDirection += 1.f;
 
 	if (m_sMoveDesc.moveDirection != m_sMoveDesc.prevMoveDir)
-		ChangeState(PlayerState::Move, true, &m_sMoveDesc);
+		ChangeState(Move, true, &m_sMoveDesc);
 
 	if (m_sMoveDesc.moveDirection.z == 0 && m_sMoveDesc.rotateDirection != m_sMoveDesc.prevRotateDir)
-		ChangeState(PlayerState::Move, true, &m_sMoveDesc);
+		ChangeState(Move, true, &m_sMoveDesc);
 
 	m_sMoveDesc.prevMoveDir = m_sMoveDesc.moveDirection;
 	m_sMoveDesc.prevRotateDir = m_sMoveDesc.rotateDirection;

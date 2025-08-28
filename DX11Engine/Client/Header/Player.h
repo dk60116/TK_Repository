@@ -20,6 +20,7 @@ public:
 		_int maxHp = 6;
 		_int crtHp = 0;
 		_float moveSpeed = 4.f;
+		_float jumpForce = 7.f;
 		_float backWalkRatio = 0.7f;
 		_float turnSpeed = 180.f;
 		_float focusTurnRatio = 8.f;
@@ -50,6 +51,7 @@ public:
 public:
 	CPlayerController* Get_Controller(); 
 	CAnimator* Get_Animator() const;
+	CRigidBody* Get_RigidBody() const;
 	const PlayerStatus& Get_Status();
 	CTransform* Get_Hand(HandType _hand);
 	void Set_Focus(CTransform* _transform);
@@ -65,14 +67,15 @@ public:
 	void PlayerControle_LockOn();
 	void PlayerControle_AttackCombo();
 	void PlayerControle_BowAction();
-	void PlayerControle_Jump();
 
 	void PlayIdleAnimation(const _float _blending = 0.1f);
 	void PlayMoveAnimation(const vector3& _dir, const _float _rot, const _float _blending = 0.1f);
-	void PlayJumpAnimation(const _float _blending = 0.1f);
+	void PlayJumpAnimation(const vector3& _dir, const _float _blending = 0.1f);
 	
 	void PlaySwordAnimation();
 	void PlayBowLoadAnimatoin();
+
+	const vector3& Get_GA();
 
 private:
 	CPlayerController* m_pController;

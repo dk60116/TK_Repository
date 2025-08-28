@@ -42,6 +42,7 @@ private:
 public:
 	void Set_Focus(CTransform* _target);
 	void ChangeState(const PlayerState _state, const _bool forceEnter = false, void* _enterDesc = nullptr);
+	void ForceChangeState(const PlayerState _state, void* _enterDesc = nullptr);
 	const _bool IsDamaged() const;
 	void SetDamaged(const _bool _value);
 	const _bool IsDead() const;
@@ -52,6 +53,7 @@ public:
 	void Set_MoveDirection(const vector3& _value);
 	const float Get_RotateDirection();
 	void Set_RotationDiretion(const _float _value);
+	MOVEDESC& Get_MoveDesc();
 
 private:
 	void UpdateControleState();

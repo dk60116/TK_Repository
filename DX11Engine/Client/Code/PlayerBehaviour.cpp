@@ -18,9 +18,7 @@ HRESULT CPlayerBehaviour::Initialize(CPlayer* _player)
 {
 	m_pPlayer = _player;
 
-	if (m_pPlayer)
-		m_pPlayer->AddRef();
-	else
+	if (!m_pPlayer)
 		return E_FAIL;
 
 	return S_OK;
