@@ -7,6 +7,9 @@
 
 class CGameManager final
 {
+public:
+	enum class WeaponType { None, Sword, Bow, Arrow, Bomb };
+
 	SINGLETONCLASS(CGameManager);
 
 public:

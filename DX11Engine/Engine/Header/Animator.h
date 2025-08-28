@@ -42,12 +42,14 @@ public:
 
 public:
     CAnimationClip* Get_CurrentAnimation();
+    const wstring& Get_CurrentAnimationName();
     AnimatorStateInfo& Get_StateInfo();
 
 private:
     class CSkinnedMeshRenderer* m_pSkinnedRenderer;
     unordered_map<wstring, CAnimationClip*> m_mAnimationList;
     CAnimationClip* m_pCrtAnimation, * m_pNextAnimation;
+    wstring m_strCrtAnimName;
     _bool m_bIsPlaying, m_bBlending, m_bLoop;
     _float m_fCurrentTime, m_fBlendTime, m_fBlendDuration;
     _float m_fPlaybackSpeed;

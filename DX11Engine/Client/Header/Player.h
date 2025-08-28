@@ -1,11 +1,12 @@
 #pragma once
 
 #include "epch.h"
+#include "PlayerController.h"
 
 class CPlayer : public CComponent
 {
 public:
-	enum PlayerAnimationStatus { Idle, Run, CombatIdle };
+	enum PlayerAnimationStatus { Idle, Run, Jump, CombatIdle };
 	enum class HandType { Left, Right };
 
 public:
@@ -47,6 +48,9 @@ public:
 	void OnCollisionExit(class CCollider* _other) override;
 
 public:
+	CPlayerController* Get_Controller(); 
+	CAnimator* Get_Animator() const;
+	const PlayerStatus& Get_Status();
 	CTransform* Get_Hand(HandType _hand);
 	void Set_Focus(CTransform* _transform);
 	void RecoverHp(const _uint _value);
@@ -55,7 +59,7 @@ public:
 	void ChangeArrow(const wstring _name);
 	queue<class CArrow*>& Get_ArrowContainer(const wstring _name);
 
-private:
+public:
 	void PlayerControle();
 	void PlayerControle_NoneLockOn();
 	void PlayerControle_LockOn();
@@ -64,20 +68,21 @@ private:
 	void PlayerControle_Jump();
 
 	void PlayIdleAnimation(const _float _blending = 0.1f);
-	void PlayMoveAnimation(const _float _blending = 0.1f);
+	void PlayMoveAnimation(const vector3& _dir, const _float _rot, const _float _blending = 0.1f);
 	void PlayJumpAnimation(const _float _blending = 0.1f);
 	
 	void PlaySwordAnimation();
 	void PlayBowLoadAnimatoin();
 
 private:
+	CPlayerController* m_pController;
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
 	CAnimator* m_pAnimator;
 
 	CTransform* m_pRootTransform;
 	CTransform* m_pRHandTransform, * m_pLHandTransform;
 
-	map<wstring, CWeapon*> m_mWeapons;
+	map<wstring, class CWeapon*> m_mWeapons;
 	CGameObject* m_pArrowProto;
 	map<wstring, queue<class CArrow*>> m_mArrowPool;
 	wstring m_strCrtArrow;

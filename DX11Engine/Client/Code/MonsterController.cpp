@@ -9,6 +9,7 @@
 #include "Behaviour_CombatWait.h"
 #include "Behaviour_GetHit.h"
 #include "Behaviour_Death.h"
+#include "PlayerController.h"
 
 CMonsterController::CMonsterController()
 	: m_pMonster(nullptr)
@@ -152,6 +153,8 @@ void CMonsterController::ChangeState(MonsterState _state)
 
 	m_pCrtBehaviour = m_mBehaviourList[_state];
 	m_pCrtBehaviour->Enter();
+
+	m_eCrtState = _state;
 }
 
 const _bool CMonsterController::IsDamaged() const

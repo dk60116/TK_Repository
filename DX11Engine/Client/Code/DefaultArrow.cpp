@@ -26,7 +26,7 @@ HRESULT CDefaultArrow::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	m_sStat.type = WeaponType::Arrow;
+	m_sStat.type = CGameManager::WeaponType::Arrow;
 	m_strWeaponName = L"DefaultArrow";
 	m_eHandType = CPlayer::HandType::Right;
 

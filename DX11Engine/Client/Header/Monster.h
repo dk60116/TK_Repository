@@ -50,7 +50,7 @@ public:
 public:
 	const wstring& Get_MonsterName();
 	const MonsterOptions& Get_Option() const;
-	CAnimator* Get_Animator();
+	CAnimator* Get_Animator() const;
 	CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();

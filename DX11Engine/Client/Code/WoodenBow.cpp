@@ -23,7 +23,7 @@ CComponent* CWoodenBow::Clone() const
 
 HRESULT CWoodenBow::Initialize()
 {
-	m_sStat.type = WeaponType::Bow;
+	m_sStat.type = CGameManager::WeaponType::Bow;
 	m_strWeaponName = L"WoodenBow";
 	m_eHandType = CPlayer::HandType::Left;
 

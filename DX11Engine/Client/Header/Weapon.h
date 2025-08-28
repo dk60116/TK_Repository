@@ -5,8 +5,6 @@
 class CWeapon abstract : public CComponent
 {
 public:
-	enum class WeaponType { None, Sword, Bow, Arrow, Bomb };
-
 	struct WeaponOptions
 	{
 		vector3 localPos = {};
@@ -16,7 +14,7 @@ public:
 
 	typedef struct WeaponStatus
 	{
-		WeaponType type = WeaponType::None;
+		CGameManager::WeaponType type = CGameManager::WeaponType::None;
 		_int attack = 1;
 		_float knockbackPower = 1.f;
 	}WEAPONSTAT;
@@ -31,7 +29,7 @@ public:
 	void Start() override;
 
 public:
-	const WeaponType Get_WeaponType() const;
+	const CGameManager::WeaponType Get_WeaponType() const;
 	const wstring& Get_WeaponName();
 	const WEAPONSTAT& Get_Stat();
 	void OnOffCollider(const _bool _value);

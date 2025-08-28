@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "GameManager.h"
 #include "Player.h"
+#include "PlayerController.h"
 
 CGameManager::CGameManager()
 	: m_strNextScene(L"")

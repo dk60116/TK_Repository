@@ -8,7 +8,7 @@ public:
 	enum MonsterState { Idle, Patrole, Find, Tracking, Combat, CombatWait, GetHit, Death };
 	enum class TurnDir { None, Left, Right };
 
-protected:
+private:
 	explicit CMonsterController();
 	~CMonsterController();
 

@@ -139,7 +139,7 @@ const CMonster::MonsterOptions& CMonster::Get_Option() const
 	return m_sOptions;
 }
 
-CAnimator* CMonster::Get_Animator()
+CAnimator* CMonster::Get_Animator() const
 {
 	return m_pAnimator;
 }

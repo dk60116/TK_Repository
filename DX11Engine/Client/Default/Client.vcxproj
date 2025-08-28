@@ -166,7 +166,11 @@
     <ClInclude Include="..\Header\MonsterController.h" />
     <ClInclude Include="..\Header\MonsterPartCollision.h" />
     <ClInclude Include="..\Header\Player.h" />
+    <ClInclude Include="..\Header\PlayerBehaviour.h" />
+    <ClInclude Include="..\Header\PlayerBehaviour_Idle.h" />
+    <ClInclude Include="..\Header\PlayerBehaviour_Move.h" />
     <ClInclude Include="..\Header\PlayerCamera.h" />
+    <ClInclude Include="..\Header\PlayerController.h" />
     <ClInclude Include="..\Header\PlayerHUD.h" />
     <ClInclude Include="..\Header\Troll.h" />
     <ClInclude Include="..\Header\Weapon.h" />
@@ -203,7 +207,11 @@
     <ClCompile Include="..\Code\MonsterController.cpp" />
     <ClCompile Include="..\Code\MonsterPartCollision.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
+    <ClCompile Include="..\Code\PlayerBehaviour.cpp" />
+    <ClCompile Include="..\Code\PlayerBehaviour_Idle.cpp" />
+    <ClCompile Include="..\Code\PlayerBehaviour_Move.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
+    <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\PlayerHUD.cpp" />
     <ClCompile Include="..\Code\Troll.cpp" />
     <ClCompile Include="..\Code\Weapon.cpp" />

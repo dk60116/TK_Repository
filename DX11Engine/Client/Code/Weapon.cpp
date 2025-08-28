@@ -44,7 +44,7 @@ void CWeapon::Start()
 		m_pCollider->SetEnabled(false);
 }
 
-const CWeapon::WeaponType CWeapon::Get_WeaponType() const
+const CGameManager::WeaponType CWeapon::Get_WeaponType() const
 {
 	return m_sStat.type;
 }

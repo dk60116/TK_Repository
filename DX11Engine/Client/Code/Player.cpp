@@ -5,7 +5,8 @@
 #include "DefaultArrow.h"
 
 CPlayer::CPlayer()
-	: m_pSkinnedMeshRenderer(nullptr)
+	: m_pController(nullptr)
+	, m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pRootTransform(nullptr)
 	, m_pRHandTransform(nullptr)
@@ -123,6 +124,15 @@ HRESULT CPlayer::Initialize()
 
 	m_pArrowProto->SetActive(false);
 
+	if (!m_pController)
+	{
+		m_pController = m_pGameObject->AddComponent<CPlayerController>();
+		if (m_pController)
+			m_pController->Set_Player(this);
+		else
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -152,7 +162,7 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
-	PlayerControle();
+	//PlayerControle();
 
 	if (CInput::GetKeyDown(Alpha1))
 		ChangeWeapon(L"Sword");
@@ -199,6 +209,21 @@ void CPlayer::OnCollisionStay(CCollider* _other)
 void CPlayer::OnCollisionExit(CCollider* _other)
 {
 	//CDebug::Log("Exit");
+}
+
+CPlayerController* CPlayer::Get_Controller()
+{
+	return m_pController;
+}
+
+CAnimator* CPlayer::Get_Animator() const
+{
+	return m_pAnimator;
+}
+
+const CPlayer::PlayerStatus& CPlayer::Get_Status()
+{
+	return m_sPlayerStatus;
 }
 
 CTransform* CPlayer::Get_Hand(HandType _hand)
@@ -269,7 +294,7 @@ void CPlayer::PlayerControle()
 		PlayerControle_Jump();
 	}
 
-	if (m_pEquipWeapon->Get_WeaponType() == CWeapon::WeaponType::Sword)
+	if (m_pEquipWeapon->Get_WeaponType() == CGameManager::WeaponType::Sword)
 	{
 		if (m_bIsAttack && !m_bIsPrevAttack)
 		{
@@ -282,7 +307,7 @@ void CPlayer::PlayerControle()
 		if (m_bSwordActionDuring)
 			PlayerControle_AttackCombo();
 	}
-	else if (m_pEquipWeapon->Get_WeaponType() == CWeapon::WeaponType::Bow)
+	else if (m_pEquipWeapon->Get_WeaponType() == CGameManager::WeaponType::Bow)
 	{
 		if (m_bIsAttack && !m_bIsPrevAttack)
 		{
@@ -311,8 +336,8 @@ void CPlayer::PlayerControle()
 	{
 		if (m_vMoveDirection == vector3::zero())
 			PlayIdleAnimation();
-		else
-			PlayMoveAnimation();
+		//else
+			//PlayMoveAnimation();
 	}
 
 	m_vMoveDirection = vector3::zero();
@@ -329,7 +354,7 @@ void CPlayer::PlayerControle()
 
 	if ((m_vMoveDirection.z != m_vPrevMoveDirectoin.z && m_vMoveDirection != vector3::zero()))
 	{
-		PlayMoveAnimation();
+		//PlayMoveAnimation();
 		m_pAnimator->Pause();
 	}
 
@@ -355,15 +380,15 @@ void CPlayer::PlayerControle()
 
 	if (m_vMoveDirection != m_vPrevMoveDirectoin)
 	{
-		PlayMoveAnimation();
+		//PlayMoveAnimation();
 	}
 
 	if (m_bLockOnMode != m_bPrevLockOnMode)
 	{
 		if (!CInput::GetKey(SHIFT))
 		{
-			if (m_fRotateDirection != 0.f)
-				PlayMoveAnimation();
+			//if (m_fRotateDirection != 0.f)
+				//PlayMoveAnimation();
 		}
 	}
 
@@ -404,7 +429,7 @@ void CPlayer::PlayerControle_NoneLockOn()
 	{
 		if (m_fRotateDirection != 0.f)
 		{
-			PlayMoveAnimation();
+			//PlayMoveAnimation();
 			m_bNotMoveTurning = true;
 		}
 		else
@@ -453,7 +478,7 @@ void CPlayer::PlayerControle_LockOn()
 	{
 		if (m_vMoveDirection.z <= 0.f)
 		{
-			PlayMoveAnimation();
+			//PlayMoveAnimation();
 		}
 	}
 }
@@ -474,10 +499,10 @@ void CPlayer::PlayerControle_AttackCombo()
 		m_fAttackComboNT = 0.f;
 		m_bSwordActionDuring = false;
 
-		if (m_vMoveDirection == vector3::zero())
+		//if (m_vMoveDirection == vector3::zero())
 			PlayIdleAnimation(0.25f);
-		else
-			PlayMoveAnimation(0.25f);
+		//else
+			//PlayMoveAnimation(0.25f);
 
 		m_pEquipWeapon->OnOffCollider(false);
 	}
@@ -540,6 +565,8 @@ void CPlayer::PlayIdleAnimation(const _float _blending)
 
 	if (m_pAnimator)
 	{
+		m_pAnimator->SetLoop(true);
+
 		if (!m_bLockOnMode)
 		{
 			m_pAnimator->Play(L"Idle", _blending);
@@ -553,38 +580,51 @@ void CPlayer::PlayIdleAnimation(const _float _blending)
 	//CDebug::Log("Idle");
 }
 
-void CPlayer::PlayMoveAnimation(const _float _blending)
+void CPlayer::PlayMoveAnimation(const vector3& _dir, const _float _rot, const _float _blending)
 {
-	if (m_bIsJump || m_bSwordActionDuring)
-		return;
-
 	if (m_pAnimator)
 	{
 		m_pAnimator->SetLoop(true);
 
 		if (!m_bLockOnMode)
 		{
-			if (m_vMoveDirection.z > 0.f)
+			if (_dir.z > 0.f)
+			{
 				m_pAnimator->Play(L"Run", _blending);
-			else if (m_vMoveDirection.z < 0.f)
+			}
+			else if (_dir.z < 0.f)
+			{
 				m_pAnimator->Play(L"BackWalk", _blending);
-			else if (m_fRotateDirection != 0)
+			}
+			else if (_rot != 0)
+			{
 				m_pAnimator->Play(L"Walk", _blending);
+			}
 		}
 		else
 		{
-			if (m_vMoveDirection.z > 0.f)
+			if (_dir.z > 0.f)
+			{
 				m_pAnimator->Play(L"CombatRun", _blending);
+			}
 			else
 			{
-				if (m_vMoveDirection.x < 0.f)
+				if (_dir.x < 0.f)
+				{
 					m_pAnimator->Play(L"LeftWalk", _blending);
-				else if (m_vMoveDirection.x > 0.f)
+				}
+				else if (_dir.x > 0.f)
+				{
 					m_pAnimator->Play(L"RightWalk", _blending);
-				else if (m_vMoveDirection.z < 0.f)
+				}
+				else if (_dir.z < 0.f)
+				{
 					m_pAnimator->Play(L"CombatBackWalk", _blending);
+				}
 				else
+				{
 					PlayIdleAnimation(_blending);
+				}
 			}
 		}
 	}

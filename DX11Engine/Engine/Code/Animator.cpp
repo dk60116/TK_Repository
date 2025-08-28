@@ -7,6 +7,7 @@ CAnimator::CAnimator()
 	, m_mAnimationList({})
 	, m_pCrtAnimation(nullptr)
 	, m_pNextAnimation(nullptr)
+	, m_strCrtAnimName({})
 	, m_bIsPlaying(false)
 	, m_bBlending(false)
 	, m_bLoop(false)
@@ -36,6 +37,7 @@ CComponent* CAnimator::Clone() const
 	CAnimator* clone = new CAnimator();
 
 	clone->m_pCrtAnimation = this->m_pCrtAnimation;
+	clone->m_strCrtAnimName = this->m_strCrtAnimName;
 	clone->m_pNextAnimation = this->m_pNextAnimation;
 	clone->m_bIsPlaying = this->m_bIsPlaying;
 	clone->m_fCurrentTime = this->m_fCurrentTime;
@@ -246,6 +248,7 @@ void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 	if (_blendDuration <= 0.f || !m_pCrtAnimation)
 	{
 		m_pCrtAnimation = nextAnim;
+		m_strCrtAnimName = _animName;
 		m_pNextAnimation = nullptr;
 		m_fCurrentTime = 0.f;
 		m_bIsPlaying = true;
@@ -292,6 +295,11 @@ void CAnimator::SetSpeed(const _float _value)
 CAnimationClip* CAnimator::Get_CurrentAnimation()
 {
 	return m_pCrtAnimation;
+}
+
+const wstring& CAnimator::Get_CurrentAnimationName()
+{
+	return m_strCrtAnimName;
 }
 
 CAnimator:: AnimatorStateInfo& CAnimator::Get_StateInfo()

@@ -23,7 +23,7 @@ CComponent* CWoodenSword::Clone() const
 
 HRESULT CWoodenSword::Initialize()
 {
-	m_sStat.type = WeaponType::Sword;
+	m_sStat.type = CGameManager::WeaponType::Sword;
 	m_strWeaponName = L"WoodenSword";
 
 	if (FAILED(__super::Initialize()))
