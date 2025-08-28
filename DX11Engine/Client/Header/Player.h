@@ -61,6 +61,7 @@ private:
 	void PlayerControle_LockOn();
 	void PlayerControle_AttackCombo();
 	void PlayerControle_BowAction();
+	void PlayerControle_Jump();
 
 	void PlayIdleAnimation(const _float _blending = 0.1f);
 	void PlayMoveAnimation(const _float _blending = 0.1f);

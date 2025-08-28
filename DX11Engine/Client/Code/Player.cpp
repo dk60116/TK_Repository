@@ -266,7 +266,7 @@ void CPlayer::PlayerControle()
 
 	if (m_bIsJump && !m_bIsPrevJump)
 	{
-		PlayJumpAnimation();
+		PlayerControle_Jump();
 	}
 
 	if (m_pEquipWeapon->Get_WeaponType() == CWeapon::WeaponType::Sword)
@@ -526,6 +526,11 @@ void CPlayer::PlayerControle_BowAction()
 		CGameManager::GetInstance().Get_PlayerCamera()->ChangeMode(CPlayerCamera::PlayerCamMode::Default);
 		CGameManager::GetInstance().Get_PlayerHUD()->OnOffBowCrossHair(false);
 	}
+}
+
+void CPlayer::PlayerControle_Jump()
+{
+	PlayJumpAnimation();
 }
 
 void CPlayer::PlayIdleAnimation(const _float _blending)
