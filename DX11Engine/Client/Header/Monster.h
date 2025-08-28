@@ -11,6 +11,7 @@ class CMonster abstract : public CComponent
 public:
 	struct MonsterOptions
 	{
+		_float scaleFactor = 0.01f;
 		vector3 colliderCenter = {};
 		vector3 colliderSize = vector3::one();
 		vector3 headColliderCenter = {};
@@ -61,7 +62,6 @@ protected:
 
 protected:
 	wstring m_strMonsterName;
-	_float m_fSkinnedMeshScaleFactor;
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;

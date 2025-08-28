@@ -38,7 +38,7 @@ public:
 	void Set_AnchoredPosition(const _float _x, const _float _y);
 	void Set_AnchoredPositonX(const _float _value);
 	void Set_AnchoredPositonY(const _float _value);
-	const vector2 Get_ScreenPosition() const;
+	const vector2 Get_ScreenPosition();
 	const _float Get_Width() const;
 	const _float Get_Height() const;
 	const vector2 Get_WidthHeight() const;

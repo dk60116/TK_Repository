@@ -64,6 +64,9 @@
     <Filter Include="Scripts\Object\Map">
       <UniqueIdentifier>{7609882f-6197-4700-a7a8-05bc9bcec135}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Monster\Goblin">
+      <UniqueIdentifier>{20eb2fdb-9fb9-462f-8950-4fbf68f722e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="..\Header\MapCollision.h">
       <Filter>Scripts\Object\Map</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Goblin.h">
+      <Filter>Scripts\Object\Monster\Goblin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\MapCollision.cpp">
       <Filter>Scripts\Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CGoblin.cpp">
+      <Filter>Scripts\Object\Monster\Goblin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

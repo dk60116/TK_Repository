@@ -129,6 +129,7 @@ void CArrow::Shoot()
 	m_pRigidBody->AddForce(dir * 50.f);
 
 	m_pCollider->SetEnabled(true);
+	m_pCollider->SetTrigger(false);
 }
 
 void CArrow::Return()
@@ -140,6 +141,7 @@ void CArrow::Return()
 	m_pRigidBody->ResetVelocity();
 	m_pRigidBody->ResetGravity();
 
+	m_pCollider->SetTrigger(true);
 	m_pCollider->SetEnabled(false);
 
 	Get_Transform()->SetParent(CGameManager::GetInstance().Get_Player()->Get_Hand(CPlayer::HandType::Right));

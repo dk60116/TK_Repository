@@ -18,7 +18,7 @@ CMap::~CMap()
 
 HRESULT CMap::Initialize()
 {
-    m_vRendererList = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strMapName + L"_Model (MeshBuffer)"), m_sOptions.scaleFactor, CGameObject::NavigationStatic);
+    m_vRendererList = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strMapName + L"_Model (MeshBuffer)"), m_sOptions.scaleFactor, CGameObject::TransformStatic | CGameObject::NavigationStatic);
     AttachTextures();
 
 	m_pMapCollision = m_pGameObject->AddComponent<CMapCollision>();

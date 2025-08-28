@@ -83,6 +83,11 @@ void CPlayerHUD::Update()
 		_float size = m_sOptions.bowHairSize_Max - m_fACHAlpha * m_sOptions.bowHairSize_Min;
 		m_pArrowCrossHair->Get_RectTransform()->Set_WidthHeight(size, size);
 	}
+
+	if (CInput::GetKeyDown_Editor(I))
+	{
+		CDebug::LogError(m_vEquipCountText[0]->Get_RectTransform()->Get_ScreenPosition());
+	}
 }
 
 void CPlayerHUD::OnDestroy()
@@ -184,8 +189,10 @@ void CPlayerHUD::SpawnEquipSlot()
 		m_vEquipCountText.push_back(textObj->AddComponent<CText>());
 		textObj->Get_Transform()->SetParent(slotObj->Get_Transform());
 		m_vEquipCountText.back()->Get_RectTransform()->Set_WidthHeight(50, 50);
-		m_vEquipCountText.back()->Get_RectTransform()->Set_AnchoredPosition(50, -50);
+		m_vEquipCountText.back()->Get_RectTransform()->Set_AnchoredPosition(-15, -15);
+		m_vEquipCountText.back()->Set_FontSize(5.f);
 		m_vEquipCountText.back()->SetColor(ColorValue::white());
+		m_vEquipCountText.back()->Set_Text(L"0");
 	}
 
 	const _float m_fSpacing = 40.f;
@@ -218,7 +225,7 @@ void CPlayerHUD::SpawnRupeeUI()
 	m_pRupeeText->Set_FontSize(7);
 	m_pRupeeText->Get_RectTransform()->Set_Pivot(1.f, 0.f);
 	m_pRupeeText->Get_RectTransform()->Set_AnchorsMin(1.f, 0.f);
-	m_pRupeeText->Get_RectTransform()->Set_AnchoredPosition(-80.f, 72.f);
+	m_pRupeeText->Get_RectTransform()->Set_AnchoredPosition(-40.f, 20.f);
 	m_pRupeeText->SetColor(ColorValue::white());
 	m_pRupeeText->Set_Text(L"000");
 }

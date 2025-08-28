@@ -151,6 +151,7 @@
     <ClInclude Include="..\Header\Behaviour_Idle.h" />
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
+    <ClInclude Include="..\Header\Goblin.h" />
     <ClInclude Include="..\Header\DefaultArrow.h" />
     <ClInclude Include="..\Header\Dungeon.h" />
     <ClInclude Include="..\Header\GameManager.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="..\Code\Behaviour_Idle.cpp" />
     <ClCompile Include="..\Code\Behaviour_Patrole.cpp" />
     <ClCompile Include="..\Code\Behaviour_Tracking.cpp" />
+    <ClCompile Include="..\Code\CGoblin.cpp" />
     <ClCompile Include="..\Code\DefaultArrow.cpp" />
     <ClCompile Include="..\Code\Dungeon.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />

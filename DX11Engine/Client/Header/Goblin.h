@@ -2,14 +2,14 @@
 
 #include "Monster.h"
 
-class CTroll : public CMonster
+class CGoblin final : public CMonster
 {
 private:
-	explicit CTroll();
-	~CTroll();
+	explicit CGoblin();
+	~CGoblin();
 
 public:
-	static CTroll* Create();
+	static CGoblin* Create();
 	CComponent* Clone() const override;
 
 public:

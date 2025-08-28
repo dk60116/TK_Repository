@@ -6,7 +6,6 @@
 
 CMonster::CMonster()
 	: m_strMonsterName(L"")
-	, m_fSkinnedMeshScaleFactor(0.01f)
 	, m_vMeshRenderers({})
 	, m_pBaseMap(nullptr)
 	, m_pAnimator(nullptr)
@@ -35,11 +34,13 @@ HRESULT CMonster::Initialize()
 	m_pGameObject->SetLayer(L"Monster");
 
 	wstring skinnedMeshBufferName = m_strMonsterName + L"_Model (MeshBuffer)";
-	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(skinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(skinnedMeshBufferName), m_fSkinnedMeshScaleFactor, vector3::up() * 180.f);
+	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(skinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(skinnedMeshBufferName), m_sOptions.scaleFactor, vector3::up() * 180.f);
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 
 	m_pBaseMap = CResources::LoadOnScene<CTexture>(m_strMonsterName + L"_BaseMap (Texture)");
-	m_pBaseMap->AddRef();
+
+	if (m_pBaseMap)
+		m_pBaseMap->AddRef();
 
 	Add_Animation(L"Idle");
 	Add_Animation(L"Walk");

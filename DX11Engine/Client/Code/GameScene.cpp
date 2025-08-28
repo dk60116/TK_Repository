@@ -5,6 +5,7 @@
 #include "PlayerHUD.h"
 #include "Dungeon.h"
 #include "Wolf.h"
+#include "Goblin.h"
 #include "Troll.h"
 
 CGameScene::CGameScene()
@@ -48,6 +49,11 @@ HRESULT CGameScene::Initialize()
 	
 	CGameObject* dungeonObj = Add_GameObject(L"Dungeon");
 	m_pDungeon = dungeonObj->AddComponent<CDungeon>();
+
+	CGameObject* goblinObject = Add_GameObject(L"Goblin");
+	CGoblin* goblin = goblinObject->AddComponent<CGoblin>();
+	//m_vMonsters.push_back(lizard);
+	goblinObject->SetActive(false);
 
 	CGameObject* trollObject = Add_GameObject(L"Troll");
 	CTroll* troll = trollObject->AddComponent<CTroll>();
