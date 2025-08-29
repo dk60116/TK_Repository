@@ -66,6 +66,8 @@ void CDungeon::LateUpdate()
         for (TRAVERSAL_ITER(m_vChapterList, it))
             (*it)->HideColliders();
 
+        CCollisionManager::Set_CollisionFilter(L"DungeonChapter", L"Map", false);
+
         m_bAttachedChapterColliders = true;
     }
 }
