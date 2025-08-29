@@ -16,7 +16,7 @@ HRESULT CPlayerBehaviour_Jump::Initialize(CPlayer* _player)
 	if (FAILED(__super::Initialize(_player)))
 		return E_FAIL;
 
-	m_iWeight = 2;
+	m_iWeight = 3;
 
 	return S_OK;
 }

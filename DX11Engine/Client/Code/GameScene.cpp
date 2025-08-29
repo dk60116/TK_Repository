@@ -78,7 +78,7 @@ void CGameScene::Awake()
 	{
 		wolfObject = m_vMonsters[0]->Get_GameObject();
 
-		for (_uint i = 0; i < 3; ++i)
+		for (_uint i = 0; i < 0; ++i)
 		{
 			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
 			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
@@ -86,8 +86,6 @@ void CGameScene::Awake()
 			m_vMonsters.back()->Get_Transform()->Set_PositionX(20.f + (i) * 1.5f);
 		}
 	}
-
-	m_pPlayer->Set_Focus(m_vMonsters[0]->Get_Transform());
 }
 
 void CGameScene::Update()

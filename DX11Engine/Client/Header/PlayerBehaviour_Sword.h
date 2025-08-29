@@ -1,14 +1,13 @@
 #pragma once
-
 #include "PlayerBehaviour.h"
 
-class CPlayerBehaviour_Jump final : public CPlayerBehaviour
+class CPlayerBehaviour_Sword final : public CPlayerBehaviour
 {
 	friend class CPlayerController;
 
 private:
-	explicit CPlayerBehaviour_Jump();
-	~CPlayerBehaviour_Jump();
+	explicit CPlayerBehaviour_Sword();
+	~CPlayerBehaviour_Sword();
 
 public:
 	HRESULT Initialize(class CPlayer* _player) override;
@@ -18,7 +17,7 @@ public:
 	void Exit() override;
 
 private:
-	_bool m_bDetached;
-	vector3 m_vDirection;
+	_ubyte m_iCurrentCombo, m_iPrevCombo;
+	_bool m_bContinueCombo;
 };
 

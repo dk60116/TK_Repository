@@ -6,6 +6,7 @@ HHOOK CInput::s_mouseHook = nullptr;
 CInput::CInput()
     : m_fWheelAxis(0.f)
     , m_fWheelRaw(0.f)
+    , m_vMouseRawDelta(vector2::zero())
 {
 }
 
@@ -23,6 +24,8 @@ CInput& CInput::GetInstance()
 HRESULT CInput::Initialize()
 {
     //InstallMouseHook();
+
+    RegiserMouseRaw();
 
     return S_OK;
 }
@@ -92,7 +95,7 @@ _bool CInput::GetMouseButtonUp_Editor(_int _button)
     return !GetInstance().m_bKeyState[_button] && GetInstance().m_bPrevKeyState[_button] && GetInstance().IsEditor();
 }
 
-bool CInput::GetKey(_int _iKey)
+bool CInput::GetKey(const _int _iKey)
 {
     return GetInstance().m_bKeyState[_iKey] && !GetInstance().IsEditor();
 }
@@ -170,7 +173,7 @@ vector2Int CInput::GetMousePos()
     return vector2Int((_int)ptMouse.x, (_int)ptMouse.y);
 }
 
-_float CInput::GetAxis_Editor(const wstring _axisName)
+_float CInput::GetAxis_Editor(const wstring& _axisName)
 {
     if (!IsEditor())
         return 0.f;
@@ -209,7 +212,7 @@ _float CInput::GetAxis_Editor(const wstring _axisName)
     return result;
 }
 
-_float CInput::GetAxis(const wstring _axisName)
+_float CInput::GetAxis(const wstring& _axisName)
 {
     if (IsEditor())
         return 0.f;
@@ -238,12 +241,30 @@ _float CInput::GetAxis(const wstring _axisName)
         if (GetKey(W))
             result += 1.f;
     }
+    else if (_axisName == L"Mosue MoveDelta X")
+        result = GetInstance().m_vMouseRawDelta.x;
+    else if (_axisName == L"Mosue MoveDelta Y")
+        result = GetInstance().m_vMouseRawDelta.y;
     else if (_axisName == L"Mouse ScrollWheel")
         result = GetInstance().m_fWheelAxis;
     else
         return 0.f;
 
     result = clamp(result, -1.f, 1.f);
+
+    return result;
+}
+
+float CInput::GetAxisRaw(const wstring& _axisName)
+{
+    _float result = 0.f;
+
+    const _float delta = GetInstance().GetAxis(_axisName);
+
+    if (delta < 0.f)
+        result = -1.f;
+    else if (delta > 0.f)
+        result = 1.f;
 
     return result;
 }
@@ -260,6 +281,8 @@ void CInput::Reset()
         key.second = false;
         GetInstance().m_bPrevKeyState[key.first] = false;
     }
+
+    GetInstance().m_vMouseRawDelta = vector2::zero();
 }
 
 void CInput::Update()
@@ -285,6 +308,11 @@ void CInput::Update()
         GetInstance().m_fWheelAxis = 0.f;
 
     GetInstance().m_fWheelAxis = clamp(GetInstance().m_fWheelAxis, -1.f, 1.f);
+}
+
+void CInput::LateUpdate()
+{
+    GetInstance().m_vMouseRawDelta = vector2::zero();
 }
 
 LRESULT MouseProc(_int nCode, WPARAM wParam, LPARAM lParam)
@@ -320,6 +348,26 @@ void CInput::UninstallMouseHook()
         UnhookWindowsHookEx(s_mouseHook);
         s_mouseHook = nullptr;
     }
+}
+
+void CInput::RegiserMouseRaw_Editor()
+{
+}
+
+void CInput::RegiserMouseRaw()
+{
+    RAWINPUTDEVICE rid{};
+    rid.usUsagePage = 0x01;
+    rid.usUsage = 0x02; 
+    rid.dwFlags = RIDEV_INPUTSINK;
+    rid.hwndTarget = CDisplay::GetInstance().Get_GameWindow();
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
+}
+
+void CInput::AddRawMouseDelta(_float _x, _float _y)
+{
+    GetInstance().m_vMouseRawDelta.x += _x;
+    GetInstance().m_vMouseRawDelta.y += _y;
 }
 
 _bool CInput::IsEditor()

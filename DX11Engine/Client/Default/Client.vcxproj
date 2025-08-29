@@ -151,6 +151,9 @@
     <ClInclude Include="..\Header\Behaviour_Idle.h" />
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
+    <ClInclude Include="..\Header\DungeonChapter.h" />
+    <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
+    <ClInclude Include="..\Header\PlayerBehaviour_Sword.h" />
     <ClInclude Include="..\Header\Goblin.h" />
     <ClInclude Include="..\Header\DefaultArrow.h" />
     <ClInclude Include="..\Header\Dungeon.h" />
@@ -207,11 +210,14 @@
     <ClCompile Include="..\Code\MonsterBehaviour.cpp" />
     <ClCompile Include="..\Code\MonsterController.cpp" />
     <ClCompile Include="..\Code\MonsterPartCollision.cpp" />
+    <ClCompile Include="..\Code\DungeonChapter.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour.cpp" />
+    <ClCompile Include="..\Code\PlayerBehaviour_Bow.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Idle.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Jump.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Move.cpp" />
+    <ClCompile Include="..\Code\PlayerBehaviour_Sword.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\PlayerHUD.cpp" />

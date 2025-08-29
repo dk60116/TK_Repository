@@ -100,7 +100,18 @@ void CBoxCollider::Render_Editor()
         {
         ImVec2 sa, sb;
         if (WorldToScreen(a, sa) && WorldToScreen(b, sb))
-            dl->AddLine(sa, sb, m_mEnteredColliders.size() <= 0 ? IM_COL32(0, 230, 0, 255) : IM_COL32(230, 0, 0, 255), 1.5f);
+        {
+            ImU32 emptyColor = IM_COL32(0, 230, 0, 255);
+            ImU32 enterColor = IM_COL32(230, 0, 0, 255);
+
+            const ColorValue& pairColorF = CCollisionManager::Get_GizmoColorPair(m_eGizmoColor).first;
+            const ColorValue& pairColorS = CCollisionManager::Get_GizmoColorPair(m_eGizmoColor).second;
+
+            emptyColor = IM_COL32(pairColorF.r, pairColorF.g, pairColorF.b, 255);
+            enterColor = IM_COL32(pairColorS.r, pairColorS.g, pairColorS.b, 255);
+
+            dl->AddLine(sa, sb, m_mEnteredColliders.size() <= 0 ? emptyColor : enterColor, 1.5f);
+        }
         };
 
     DrawEdge(c000, c100);

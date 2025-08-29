@@ -1,14 +1,13 @@
 #pragma once
-
 #include "PlayerBehaviour.h"
 
-class CPlayerBehaviour_Jump final : public CPlayerBehaviour
+class CPlayerBehaviour_Bow final : public CPlayerBehaviour
 {
 	friend class CPlayerController;
 
 private:
-	explicit CPlayerBehaviour_Jump();
-	~CPlayerBehaviour_Jump();
+	explicit CPlayerBehaviour_Bow();
+	~CPlayerBehaviour_Bow();
 
 public:
 	HRESULT Initialize(class CPlayer* _player) override;
@@ -17,8 +16,6 @@ public:
 	void During() override;
 	void Exit() override;
 
-private:
-	_bool m_bDetached;
-	vector3 m_vDirection;
+	_bool m_bAiming;
 };
 

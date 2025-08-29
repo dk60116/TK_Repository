@@ -7,6 +7,7 @@ CCollider::CCollider()
 	, m_bIsTrigger(false)
 	, m_pRigid(nullptr)
 	, m_bSmoothCollision(false)
+	, m_eGizmoColor(GizmoColor::GreenRed)
 {
 }
 
@@ -61,6 +62,11 @@ void CCollider::Set_RigidBody(CRigidBody* _rigid)
 	m_pRigid = _rigid;
 }
 
+const map<_uint, CCollider*>& CCollider::Get_EnteredColliders()
+{
+	return m_mEnteredColliders;
+}
+
 void CCollider::EnterOther(CCollider* _other)
 {
 	if (m_mEnteredColliders.find(_other->m_iColliderID) != m_mEnteredColliders.end())
@@ -98,4 +104,9 @@ void CCollider::ExitOther(CCollider* _other)
 void CCollider::Set_SmoothTranslation(const _bool _value)
 {
 	m_bSmoothCollision = _value;
+}
+
+void CCollider::Set_GizmoColor(const GizmoColor _color)
+{
+	m_eGizmoColor = _color;
 }

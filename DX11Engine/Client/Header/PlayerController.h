@@ -4,7 +4,7 @@
 class CPlayerController final : public CComponent
 {
 public:
-	enum PlayerState { None, Idle, Move, Jump, GetHit, Ladder, Death };
+	enum PlayerState { None, Idle, Move, Sword, Bow, Jump, Ladder, GetHit, Death };
 	enum class TurnDir { None, Left, Right };
 
 	typedef struct moveDirectionDesc
@@ -40,6 +40,7 @@ private:
 	void AddBehaviour(const PlayerState _state);
 
 public:
+	const PlayerState Get_State() const;
 	void Set_Focus(CTransform* _target);
 	void ChangeState(const PlayerState _state, const _bool forceEnter = false, void* _enterDesc = nullptr);
 	void ForceChangeState(const PlayerState _state, void* _enterDesc = nullptr);

@@ -107,13 +107,9 @@ void CAnimator::Update()
 			if (!bone)
 				continue;
 
-			if (!m_pSkinnedRenderer->m_bApplyRootMotion && name == m_pSkinnedRenderer->Get_RootBoneName())
-				continue;
-
-			const _bool customRoot = name == L"root" || name == L"Root" || name == L"ROOT";
-
+			const _bool customRoot = (name == L"root" || name == L"Root" || name == L"ROOT");
 			if (!m_pSkinnedRenderer->m_bApplyRootMotion &&
-				name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot)
+				(name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot))
 				continue;
 
 			const auto& startIt = m_mBlendStartPose.find(name);
@@ -169,10 +165,9 @@ void CAnimator::Update()
 
 		const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 
-		const _bool customRoot = name == L"root" || name == L"Root" || name == L"ROOT";
-
-		if (!m_pSkinnedRenderer->m_bApplyRootMotion && 
-			name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot)
+		const _bool customRoot = (name == L"root" || name == L"Root" || name == L"ROOT");
+		if (!m_pSkinnedRenderer->m_bApplyRootMotion &&
+			(name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot))
 			continue;
 
 		auto it = sampled.find(name);
@@ -263,9 +258,6 @@ void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 	m_fBlendTime = 0.f;
 	m_fBlendDuration = _blendDuration;
 	m_bBlending = true;
-
-	if (!m_bIsPlaying)
-		m_fCurrentTime = 0.f;
 
 	m_mBlendStartPose.clear();
 	m_pCrtAnimation->Sample(m_fCurrentTime, m_mBlendStartPose);

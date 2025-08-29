@@ -23,7 +23,7 @@ protected:
 	CPlayer* m_pPlayer;
 
 protected:
-	_uint m_iWeight;
+	_ubyte m_iWeight;
 	_float m_fPassedTime;
 	_bool m_bAnyTime;
 };

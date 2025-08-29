@@ -20,5 +20,13 @@ public:
 	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
+
+private:
+	void SpawnMonsterPrototypes();
+	void SpawnDungeonChapters();
+
+private:
+	vector<class CMonster*> m_vMonsterProtoList;
+	vector<class CDungeonChapter*> m_vChapterList;
 };
 

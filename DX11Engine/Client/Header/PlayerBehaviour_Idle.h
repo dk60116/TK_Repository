@@ -1,7 +1,7 @@
 #pragma once
 #include "PlayerBehaviour.h"
 
-class CPlayerBehaviour_Idle : public CPlayerBehaviour
+class CPlayerBehaviour_Idle final : public CPlayerBehaviour
 {
 	friend class CPlayerController;
 
@@ -15,5 +15,8 @@ public:
 	void Enter(void* _desc = nullptr) override;
 	void During() override;
 	void Exit() override;
+
+private:
+	_bool m_bCombatMode;
 };
 

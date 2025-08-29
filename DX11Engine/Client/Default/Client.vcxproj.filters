@@ -70,6 +70,9 @@
     <Filter Include="Scripts\Object\Player\Controller\Bheaviour">
       <UniqueIdentifier>{b1cc5614-8165-4043-a0e7-9acd720e361d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Map\Spawner">
+      <UniqueIdentifier>{cd53044e-0432-4460-91e1-9ceb3725d62e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -192,6 +195,15 @@
     <ClInclude Include="..\Header\PlayerBehaviour_Jump.h">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\PlayerBehaviour_Sword.h">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\PlayerBehaviour_Bow.h">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonChapter.h">
+      <Filter>Scripts\Object\Map\Spawner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -307,6 +319,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\PlayerBehaviour_Jump.cpp">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerBehaviour_Sword.cpp">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerBehaviour_Bow.cpp">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonChapter.cpp">
+      <Filter>Scripts\Object\Map\Spawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

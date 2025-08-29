@@ -4,6 +4,7 @@
 CCollisionManager::CCollisionManager()
 	: m_vColliderList({})
 	, m_mCollisionFilter({})
+	, m_mColliderGizmoColorSet({})
 {
 }
 
@@ -20,6 +21,12 @@ CCollisionManager& CCollisionManager::GetInstance()
 
 HRESULT CCollisionManager::Initialize()
 {
+#ifndef _CLIENT_BUILD
+	GetInstance().m_mColliderGizmoColorSet.emplace(CCollider::GizmoColor::GreenRed, pair(ColorValue::green(), ColorValue::red()));
+	GetInstance().m_mColliderGizmoColorSet.emplace(CCollider::GizmoColor::BlackWhite, pair(ColorValue::black(), ColorValue::white()));
+	GetInstance().m_mColliderGizmoColorSet.emplace(CCollider::GizmoColor::BlueOrange, pair(ColorValue::blue(), ColorValue(150, 0, 0)));
+#endif // _DEBUG
+
 	for (_uint i = 0; i < 32; ++i)
 	{
 		for (_uint j = 0; j < 32; ++j)
@@ -186,4 +193,9 @@ void CCollisionManager::Set_CollisionFilter(const wstring _layerA, const wstring
 
 	GetInstance().m_mCollisionFilter[{layerA, layerB}] = _isCollidable;
 	GetInstance().m_mCollisionFilter[{layerB, layerA}] = _isCollidable;
+}
+
+pair<ColorValue, ColorValue> CCollisionManager::Get_GizmoColorPair(const CCollider::GizmoColor _color)
+{
+	return GetInstance().m_mColliderGizmoColorSet[_color];
 }

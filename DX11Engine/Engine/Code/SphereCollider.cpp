@@ -70,7 +70,6 @@ void CSphereCollider::Render_Editor()
         _float y = XMVectorGetY(clip) / w;
         _float z = XMVectorGetZ(clip) / w;
 
-        // DX NDC 범위 체크
         if (x < -1.f || x > 1.f || y < -1.f || y > 1.f || z < 0.f || z > 1.f)
             return false;
 
@@ -80,7 +79,6 @@ void CSphereCollider::Render_Editor()
         return true;
     };
 
-    // 카메라 Right 구하기(뷰행렬 역행렬의 X축)
     _matrix invV = XMMatrixInverse(nullptr, view);
     _float4x4 iv;
     XMStoreFloat4x4(&iv, invV);
@@ -93,7 +91,6 @@ void CSphereCollider::Render_Editor()
     if (!WorldToScreen(s.center, c2d)) 
         return;
 
-    // 화면상 반지름: center vs center + camRight * R
     vector3 edge = s.center + camRight * s.radius;
     if (!WorldToScreen(edge, r2d))
         return;
@@ -102,8 +99,16 @@ void CSphereCollider::Render_Editor()
     if (screenR <= 0.5f)
         return;
 
-    // 충돌 진입 여부에 따라 색상 전환(패턴을 Box와 맞춤)
-    ImU32 col = m_mEnteredColliders.size() <= 0 ? IM_COL32(0, 230, 0, 255) : IM_COL32(230, 0, 0, 255);
+    ImU32 emptyColor = IM_COL32(0, 230, 0, 255);
+    ImU32 enterColor = IM_COL32(230, 0, 0, 255);
+
+    const ColorValue& pairColorF = CCollisionManager::Get_GizmoColorPair(m_eGizmoColor).first;
+    const ColorValue& pairColorS = CCollisionManager::Get_GizmoColorPair(m_eGizmoColor).second;
+
+    emptyColor = IM_COL32(pairColorF.r, pairColorF.g, pairColorF.b, 255);
+    enterColor = IM_COL32(pairColorS.r, pairColorS.g, pairColorS.b, 255);
+
+    ImU32 col = m_mEnteredColliders.size() <= 0 ? emptyColor : enterColor;
     dl->AddCircle(c2d, screenR, col, 48, 1.5f);
 }
 

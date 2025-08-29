@@ -194,6 +194,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+    case WM_INPUT:
+    {
+        UINT dwSize = 0;
+        GetRawInputData((HRAWINPUT)lParam, RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
+        if (dwSize == 0)
+            break;
+
+        BYTE* lpb = new BYTE[dwSize];
+        if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
+        {
+            delete[] lpb;
+            break;
+        }
+
+        RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(lpb);
+        if (raw->header.dwType == RIM_TYPEMOUSE)
+        {
+            LONG dx = raw->data.mouse.lLastX;
+            LONG dy = raw->data.mouse.lLastY;
+
+            CInput::AddRawMouseDelta(static_cast<_float>(dx), static_cast<_float>(-dy));
+        }
+        delete[] lpb;
+    }
+        break;
     case WM_MOUSEWHEEL:
     {
 #ifndef _DEBUG

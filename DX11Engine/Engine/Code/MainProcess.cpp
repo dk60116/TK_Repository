@@ -106,6 +106,8 @@ void CMainProcess::Update_MainApp()
         CGraphicDevice::Present();
     }
 
+    CInput::LateUpdate();
+
     if (CSceneManager::Is_Loading() && !CSceneLoader::Is_Loading())
         CSceneManager::LoadComplete();
 }

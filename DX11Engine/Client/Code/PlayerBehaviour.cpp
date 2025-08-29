@@ -2,7 +2,7 @@
 #include "PlayerBehaviour.h"
 
 CPlayerBehaviour::CPlayerBehaviour()
-	: m_iWeight(9999)
+	: m_iWeight(0)
 	, m_pPlayer(nullptr)
 	, m_strBehaviourName(L"")
 	, m_fPassedTime(0.f)
@@ -27,8 +27,6 @@ HRESULT CPlayerBehaviour::Initialize(CPlayer* _player)
 void CPlayerBehaviour::Enter(void* _desc)
 {
 	m_fPassedTime = 0.f;
-
-	m_pPlayer->Get_Animator()->Stop();
 }
 
 void CPlayerBehaviour::During()

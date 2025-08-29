@@ -31,14 +31,21 @@ void CPlayerBehaviour_Move::During()
 {
 	__super::During();
 
+	_float rotateY = Lerp(m_pPlayer->Get_Root()->Get_LocalEulerAngles().y, -180.f, DELTA_TIME * 6.f);
+	m_pPlayer->Get_Root()->Set_LocalEulerAnglesY(rotateY);
+
+	CTransform* playerTF = m_pPlayer->Get_Transform();
 	const vector3& moveDir = m_pPlayer->Get_Controller()->Get_MoveDirection();
 	const _float rotDir = moveDir.z >= 0.f ? m_pPlayer->Get_Controller()->Get_RotateDirection() : -m_pPlayer->Get_Controller()->Get_RotateDirection();
-	CTransform* playerTF = m_pPlayer->Get_Transform();
+	_float speed = m_pPlayer->Get_Status().moveSpeed;
+
+	if (moveDir.z < 0)
+		speed *= m_pPlayer->Get_Status().backWalkRatio;
 
 	if (moveDir != vector3::zero())
 	{
 		const vector3 dir = moveDir.normalized();
-		playerTF->Add_Position(playerTF->Get_Directions().forward * dir.z * m_pPlayer->Get_Status().moveSpeed * DELTA_TIME);
+		playerTF->Add_Position(playerTF->Get_Directions().forward * dir.z * speed * DELTA_TIME);
 	}
 
 	if (rotDir != 0.f)

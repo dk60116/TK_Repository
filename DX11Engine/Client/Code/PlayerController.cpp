@@ -1,7 +1,10 @@
 #include "cpch.h"
 #include "PlayerController.h"
+#include "Weapon.h"
 #include "PlayerBehaviour_Idle.h"
 #include "PlayerBehaviour_Move.h"
+#include "PlayerBehaviour_Sword.h"
+#include "PlayerBehaviour_Bow.h"
 #include "PlayerBehaviour_Jump.h"
 
 CPlayerController::CPlayerController()
@@ -39,12 +42,15 @@ void CPlayerController::Awake()
 {
 	AddBehaviour<CPlayerBehaviour_Idle>(Idle);
 	AddBehaviour<CPlayerBehaviour_Move>(Move);
+	AddBehaviour<CPlayerBehaviour_Sword>(Sword);
 	AddBehaviour<CPlayerBehaviour_Jump>(Jump);
+	AddBehaviour<CPlayerBehaviour_Bow>(Bow);
+
+	ChangeState(Idle);
 }
 
 void CPlayerController::Start()
 {
-	ChangeState(Idle);
 }
 
 void CPlayerController::Update()
@@ -79,6 +85,11 @@ void CPlayerController::Set_Player(CPlayer* _player)
 
 	if (m_pPlayer)
 		m_pPlayer->AddRef();
+}
+
+const CPlayerController::PlayerState CPlayerController::Get_State() const
+{
+	return m_eCrtState;
 }
 
 void CPlayerController::Set_Focus(CTransform* _target)
@@ -146,6 +157,19 @@ void CPlayerController::UpdateControleState()
 {
 	if (CInput::GetKeyDown(SPACE))
 		ChangeState(Jump, false, &m_sMoveDesc);
+
+	if (CInput::GetMouseButtonDown(0))
+	{
+		switch (m_pPlayer->Get_EqupWeapon()->Get_WeaponType())
+		{
+		case CGameManager::WeaponType::Sword:
+			ChangeState(Sword);
+			break;
+		case CGameManager::WeaponType::Bow:
+			ChangeState(Bow);
+			break;
+		}
+	}
 
 	m_sMoveDesc.moveDirection = vector3::zero();
 	m_sMoveDesc.rotateDirection = 0.f;
