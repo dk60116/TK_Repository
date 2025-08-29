@@ -106,8 +106,8 @@ void CInspectorBox::Render()
         string layerLast = layerName + '(' + layerNum + ')';
 
         string tag = "Tag: ";
-        string tagName = CEngineString::WStringToString(CSceneManager::TagToName(selectedObj->GetTag()));
-        string tagNum = to_string(selectedObj->GetTag());
+        string tagName = CEngineString::WStringToString(CSceneManager::TagToName(selectedObj->GetTagIndex()));
+        string tagNum = to_string(selectedObj->GetTagIndex());
         string tagLast = tagName + '(' + tagNum + ')';
 
         ImGui::Text(layer.c_str());

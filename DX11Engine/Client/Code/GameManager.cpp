@@ -32,6 +32,7 @@ HRESULT CGameManager::Initialize()
 
 	CSceneManager::Add_Tag(1, L"Floor");
 	CSceneManager::Add_Tag(2, L"Wall");
+	CSceneManager::Add_Tag(3, L"Player");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);

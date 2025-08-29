@@ -19,6 +19,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void LateUpdate() override;
 	void OnDestroy() override;
 
 private:
@@ -28,5 +29,7 @@ private:
 private:
 	vector<class CMonster*> m_vMonsterProtoList;
 	vector<class CDungeonChapter*> m_vChapterList;
+
+	_bool m_bAttachedChapterColliders;
 };
 

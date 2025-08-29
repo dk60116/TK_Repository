@@ -35,6 +35,45 @@ void CCollider::FixedUpdate()
 	CCollisionManager::Add_Collider(this);
 }
 
+void CCollider::OnEnable()
+{
+	for (auto& [id, other] : m_mEnteredColliders)
+	{
+		if (!other)
+			continue;
+
+		if (!m_bIsTrigger)
+		{
+			m_pGameObject->OnCollisionExit(other);
+			other->Get_GameObject()->OnCollisionExit(this);
+		}
+		else {
+			m_pGameObject->OnTriggerExit(other);
+			other->Get_GameObject()->OnTriggerExit(this);
+		}
+
+		other->m_mEnteredColliders.erase(m_iColliderID);
+	}
+
+	m_mEnteredColliders.clear();
+}
+
+void CCollider::OnDisable()
+{
+	for (auto& [id, other] : m_mEnteredColliders)
+	{
+		if (!other)
+			continue;
+		if (!m_bIsTrigger)
+			other->Get_GameObject()->OnCollisionExit(this);
+		else
+			other->Get_GameObject()->OnTriggerExit(this);
+
+		other->m_mEnteredColliders.erase(m_iColliderID);
+	}
+	m_mEnteredColliders.clear();
+}
+
 void CCollider::OnDestroy()
 {
 }

@@ -9,7 +9,7 @@ class ENGINE_DLL CCollider abstract : public CComponent
 	friend class CCollisionManager;
 
 public:
-	enum class GizmoColor { GreenRed, BlackWhite, BlueOrange };
+	enum class GizmoColor { GreenRed, BlackWhite, BlueOrange, Transparent };
 
 public:
 	typedef struct ColliderTransform
@@ -25,6 +25,8 @@ public:
 	HRESULT Initialize() override;
 	void LateUpdate() override;
 	void FixedUpdate() override;
+	void OnEnable() override;
+	void OnDisable() override;
 	void OnDestroy() override;
 
 public:

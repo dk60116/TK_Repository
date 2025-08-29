@@ -36,7 +36,7 @@ void CPlayerBehaviour_Move::During()
 
 	CTransform* playerTF = m_pPlayer->Get_Transform();
 	const vector3& moveDir = m_pPlayer->Get_Controller()->Get_MoveDirection();
-	const _float rotDir = moveDir.z >= 0.f ? m_pPlayer->Get_Controller()->Get_RotateDirection() : -m_pPlayer->Get_Controller()->Get_RotateDirection();
+	const _float rotDir = m_pPlayer->Get_Controller()->Get_RotateDirection();
 	_float speed = m_pPlayer->Get_Status().moveSpeed;
 
 	if (moveDir.z < 0)

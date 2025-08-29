@@ -49,6 +49,7 @@ HRESULT CPlayer::Initialize()
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"Player");
+	m_pGameObject->SetTag(L"Player");
 
 	m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
 

@@ -35,6 +35,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void LateUpdate() override;
 	void OnDestroy() override;
 
 	void OnTriggerEnter(CCollider* _other) override;
@@ -44,12 +45,15 @@ public:
 	void SetBoundingBox(const BOUNDINGBOXDESC& _desc);
 
 public:
+	void AttachColliders();
+	void HideColliders();
+	void AbleColliders();
+
 	void OnPlayerEnter();
 	void OnPlayerExit();
 
 private:
 	void Bind_BoundingBox();
-	void AttachColliders();
 
 private:
 	class CDungon* m_pDungeon;
@@ -57,6 +61,6 @@ private:
 	vector<CGameObject*> m_vGateList;
 	BOUNDINGBOXDESC m_sBoundingBoxInfo;
 	vector<MONSTERSPAWNER> m_vMonsterList;
-	vector<CBoxCollider*> m_vMapColList;
+	vector<CCollider*> m_vMapColList;
 };
 

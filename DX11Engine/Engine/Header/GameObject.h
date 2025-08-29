@@ -117,7 +117,8 @@ public:
 
 public:
 	const _uint GetLayer() const;
-	const _uint GetTag() const;
+	const _uint GetTagIndex() const;
+	const wstring GetTag() const;
 	void SetLayer(const _uint _layerFlag);
 	void SetLayer(const wstring& _layerName);
 	void SetTag(const _uint _tag);

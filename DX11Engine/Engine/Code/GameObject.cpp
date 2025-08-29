@@ -650,9 +650,14 @@ const _uint CGameObject::GetLayer() const
 	return m_iLayer;
 }
 
-const _uint CGameObject::GetTag() const
+const _uint CGameObject::GetTagIndex() const
 {
 	return m_iTag;
+}
+
+const wstring CGameObject::GetTag() const
+{
+	return CSceneManager::TagToName(m_iTag);
 }
 
 void CGameObject::SetLayer(const _uint _layerFlag)

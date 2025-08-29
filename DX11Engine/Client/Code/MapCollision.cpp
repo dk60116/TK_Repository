@@ -60,7 +60,7 @@ void CMapCollision::Update()
 			{
 				CollidersInfo info = {};
 
-				switch (proto->Get_GameObject()->GetTag())
+				switch (proto->Get_GameObject()->GetTagIndex())
 				{
 				case 1:
 					info.type = 1;
@@ -262,12 +262,17 @@ void CMapCollision::UpdateViewMode(const _bool _selected)
 		for (TRAVERSAL_ITER(m_vColliderList, it))
 		{
 			if (selectedCol)
-				(*it)->SetEnabled(selectedCol == (*it));
+			{
+				if (selectedCol == (*it))
+					(*it)->Set_GizmoColor(CCollider::GizmoColor::GreenRed);
+				else
+					(*it)->Set_GizmoColor(CCollider::GizmoColor::Transparent);
+			}
 		}
 	}
 	else
 	{
 		for (TRAVERSAL_ITER(m_vColliderList, it))
-			(*it)->SetEnabled(true);
+			(*it)->Set_GizmoColor(CCollider::GizmoColor::GreenRed);
 	}
 }

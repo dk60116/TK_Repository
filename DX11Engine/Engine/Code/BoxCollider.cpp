@@ -54,6 +54,9 @@ void CBoxCollider::Render_Editor()
     if (!editorCam)
         return;
 
+    if (m_eGizmoColor == GizmoColor::Transparent)
+        return;
+
     _matrix view = editorCam->Get_ViewMatrix();
     _matrix proj = editorCam->Get_ProjectionMatrix();
     _matrix VP = XMMatrixMultiply(view, proj);

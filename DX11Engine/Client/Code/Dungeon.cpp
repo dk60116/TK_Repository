@@ -8,6 +8,7 @@
 CDungeon::CDungeon()
     : m_vMonsterProtoList({})
     , m_vChapterList({})
+    , m_bAttachedChapterColliders(false)
 {
 }
 
@@ -56,6 +57,19 @@ void CDungeon::Update()
     __super::Update();
 }
 
+void CDungeon::LateUpdate()
+{
+    if (!m_bAttachedChapterColliders)
+    {
+        for (TRAVERSAL_ITER(m_vChapterList, it))
+            (*it)->AttachColliders();
+        for (TRAVERSAL_ITER(m_vChapterList, it))
+            (*it)->HideColliders();
+
+        m_bAttachedChapterColliders = true;
+    }
+}
+
 void CDungeon::OnDestroy()
 {
     __super::OnDestroy();
@@ -76,5 +90,5 @@ void CDungeon::SpawnDungeonChapters()
         m_vChapterList.push_back(msObj->AddComponent<CDungeonChapter>());
     }
 
-    m_vChapterList[0]->SetBoundingBox({ pair(vector3(0.f, 5.f, -37.f), vector3(52.f, 10.f, 82.f)) });
+    m_vChapterList[0]->SetBoundingBox({ pair(vector3(0.f, 5.f, -37.f), vector3(54.f, 10.f, 82.f)) });
 }

@@ -54,16 +54,28 @@ void CDungeonChapter::Update()
 {
 }
 
+void CDungeonChapter::LateUpdate()
+{
+}
+
 void CDungeonChapter::OnDestroy()
 {
 }
 
 void CDungeonChapter::OnTriggerEnter(CCollider* _other)
 {
+	if (_other->Get_GameObject()->GetTag() == L"Player")
+	{
+		OnPlayerEnter();
+	}
 }
 
 void CDungeonChapter::OnTriggerExit(CCollider* _other)
 {
+	if (_other->Get_GameObject()->GetTag() == L"Player")
+	{
+		OnPlayerExit();
+	}
 }
 
 void CDungeonChapter::SetBoundingBox(const BOUNDINGBOXDESC& _desc)
@@ -73,10 +85,12 @@ void CDungeonChapter::SetBoundingBox(const BOUNDINGBOXDESC& _desc)
 
 void CDungeonChapter::OnPlayerEnter()
 {
+	AbleColliders();
 }
 
 void CDungeonChapter::OnPlayerExit()
 {
+	HideColliders();
 }
 
 void CDungeonChapter::Bind_BoundingBox()
@@ -88,4 +102,23 @@ void CDungeonChapter::Bind_BoundingBox()
 
 void CDungeonChapter::AttachColliders()
 {
+	auto& colliderList = m_pBoundingBox->Get_EnteredColliders();
+
+	for (TRAVERSAL_ITER(colliderList, it))
+	{
+		if ((*it).second->Get_GameObject()->GetLayer() == CSceneManager::NameToLayer(L"Map"))
+			m_vMapColList.push_back((*it).second);
+	}
+}
+
+void CDungeonChapter::HideColliders()
+{
+	for (TRAVERSAL_ITER(m_vMapColList, it))
+		(*it)->SetEnabled(false);
+}
+
+void CDungeonChapter::AbleColliders()
+{
+	for (TRAVERSAL_ITER(m_vMapColList, it))
+		(*it)->SetEnabled(true);
 }

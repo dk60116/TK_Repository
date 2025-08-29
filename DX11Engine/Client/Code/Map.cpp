@@ -24,6 +24,11 @@ HRESULT CMap::Initialize()
 	m_pMapCollision = m_pGameObject->AddComponent<CMapCollision>();
     m_pMapCollision->Set_Map(this);
 
+    auto data = m_pMapCollision->ReadColliderInfo(m_strMapName);
+
+    if (!data.empty())
+        m_pMapCollision->LoadColliders(data);
+
     return S_OK;
 }
 
