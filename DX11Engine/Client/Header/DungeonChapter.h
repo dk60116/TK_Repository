@@ -45,6 +45,7 @@ public:
 	void AddMonsterSpawner(const MONSTERSPAWNER& _desc);
 
 public:
+	void EnableBoundingBox(const _bool _on);
 	void AttachColliders();
 	void HideColliders();
 	void AbleColliders();

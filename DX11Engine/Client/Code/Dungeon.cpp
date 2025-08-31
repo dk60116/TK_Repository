@@ -45,6 +45,8 @@ HRESULT CDungeon::Initialize()
 void CDungeon::Awake()
 {
     __super::Awake();
+
+    CCollisionManager::Set_CollisionFilter(L"DungeonChapter", L"Map", true);
 }
 
 void CDungeon::Start()

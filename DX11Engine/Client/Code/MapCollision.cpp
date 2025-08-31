@@ -191,8 +191,7 @@ CBoxCollider* CMapCollision::SpawnTempCollider(const MapCollisionType _type)
 	{
 	case MapCollisionType::Floor:
 		info.type = 1;
-		break;
-
+		break; 
 	case MapCollisionType::Wall:
 		info.type = 2;
 		break;

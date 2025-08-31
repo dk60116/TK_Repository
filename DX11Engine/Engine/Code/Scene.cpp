@@ -225,6 +225,12 @@ HRESULT CScene::Initialize()
 void CScene::Awake()
 {
 	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->IsRecursiveActive())
+			(*it)->OnEnable();
+	}
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
 		(*it)->Awake();
 
 	Start();
@@ -236,12 +242,6 @@ void CScene::Start()
 	{
 		if ((*it)->IsRecursiveActive())
 			(*it)->Start();
-	}
-
-	for (TRAVERSAL_ITER(m_lObjectList, it))
-	{
-		if ((*it)->IsRecursiveActive())
-			(*it)->OnEnable();
 	}
 }
 

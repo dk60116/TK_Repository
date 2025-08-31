@@ -29,7 +29,7 @@ HRESULT CDungeonChapter::Initialize()
 {
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
-	
+
 	m_pGameObject->SetLayer(L"DungeonChapter");
 
 	if (!m_pBoundingBox)
@@ -58,8 +58,6 @@ void CDungeonChapter::Update()
 
 void CDungeonChapter::LateUpdate()
 {
-	if (!m_pBoundingBox->Get_Enabled())
-		m_pBoundingBox->SetEnabled(true);
 }
 
 void CDungeonChapter::OnDestroy()
@@ -114,8 +112,6 @@ void CDungeonChapter::Bind_BoundingBox()
 	Get_Transform()->Set_Position(m_sBoundingBoxInfo.posScale.first);
 	m_pBoundingBox->Set_Size(m_sBoundingBoxInfo.posScale.second);
 	Get_Transform()->Set_EulerAnglesY(m_sBoundingBoxInfo.yRot);
-
-	m_pBoundingBox->SetEnabled(false);
 }
 
 void CDungeonChapter::Spawn_Monsters()
@@ -133,6 +129,11 @@ void CDungeonChapter::Spawn_Monsters()
 			m_vCloneMonsterList.push_back(monster);
 		}
 	}
+}
+
+void CDungeonChapter::EnableBoundingBox(const _bool _on)
+{
+	m_pBoundingBox->SetEnabled(_on);
 }
 
 void CDungeonChapter::AttachColliders()
