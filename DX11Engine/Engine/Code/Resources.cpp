@@ -37,8 +37,9 @@ HRESULT CResources::Initialize()
 	if (!fs::exists("BinaryAssets/MeshData"))
 		fs::create_directories("BinaryAssets/MeshData");
 	if (!fs::create_directory("BinaryAssets/SkinnedMeshData"))
-		if (!fs::exists("BinaryAssets/NaviMeshData"))
-			fs::create_directories("BinaryAssets/NaviMeshData");
+		fs::create_directories("BinaryAssets/SkinnedMeshData");
+	if (!fs::exists("BinaryAssets/NaviMeshData"))
+		fs::create_directories("BinaryAssets/NaviMeshData");
 		fs::create_directories("BinaryAssets/SkinnedMeshData");
 	if (!fs::exists("BinaryAssets/AnimationClipData"))
 		fs::create_directories("BinaryAssets/AnimationClipData");
@@ -865,10 +866,8 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList;
 
 	ifstream in(L"BinaryAssets/MeshData/" + _binFileName, ios::binary);
-
-	if (!in.is_open())
-	{
-		CDebug::LogError(L"ReadMeshBufferInfos failed - can not open: " + _binFileName);
+	if (!in.is_open()) {
+		CDebug::LogError(L"ReadMeshBufferInfos failed - cannot open: " + _binFileName);
 		return {};
 	}
 
@@ -879,50 +878,64 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	{
 		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
+		// 이름
 		_uint nameCount = 0;
 		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
-		if (nameCount > 0)
-		{
+		if (nameCount > 0) {
 			info.meshName.resize(nameCount);
 			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
 		}
 
+		// 버퍼
 		_uint bufferSize = 0;
 		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
-		if (bufferSize > 0)
-		{
+		if (bufferSize > 0) {
 			info.buffer.resize(bufferSize);
 			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
 		}
 
+		// 인덱스
 		_uint indexCount = 0;
 		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
-		if (indexCount > 0)
-		{
+		if (indexCount > 0) {
 			info.indices.resize(indexCount);
 			in.read(reinterpret_cast<char*>(info.indices.data()), sizeof(_uint) * indexCount);
 		}
 
+		// desc
 		in.read(reinterpret_cast<char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
 
+		// diffuse path
 		_uint diffuseTexPathCount = 0;
 		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
-		if (diffuseTexPathCount > 0)
-		{
+		if (diffuseTexPathCount > 0) {
 			info.diffuseMapPath.resize(diffuseTexPathCount);
 			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
 		}
 
+		// AABB
 		in.read(reinterpret_cast<char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
 
-		if (in.peek() != char_traits<char>::eof())
-		{
-			_uint instCount = 0;
-			in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint));
-			if (instCount > 0)
+		// instancing (항상 존재한다고 가정)
+		_uint instCount = 0;
+		if (!in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint))) {
+			CDebug::LogError(L"ReadMeshBufferInfos: failed to read instCount, file: " + _binFileName);
+			return {};
+		}
+
+		if (instCount > 0) {
+			const _uint kMaxInstances = 1u << 16;
+			if (instCount > kMaxInstances) {
+				CDebug::LogError(L"ReadMeshBufferInfos: instCount overflow, file: " + _binFileName);
+				return {};
+			}
+
+			info.instanceWorlds.resize(instCount);
+			if (!in.read(reinterpret_cast<char*>(info.instanceWorlds.data()),
+				sizeof(_float4x4) * instCount))
 			{
-				info.instanceWorlds.resize(instCount);
-				in.read(reinterpret_cast<char*>(info.instanceWorlds.data()), sizeof(_float4x4) * instCount);
+				CDebug::LogError(L"ReadMeshBufferInfos: failed to read instanceWorlds, file: " + _binFileName);
+				return {};
 			}
 		}
 
@@ -930,7 +943,6 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	}
 
 	in.close();
-
 	return infoList;
 }
 
@@ -1144,8 +1156,6 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 		}
 		skeletal.numChild = childCount;
 
-		skeletalList.push_back(skeletal);
-
 		_uint meshCount = 0;
 		in.read(reinterpret_cast<char*>(&meshCount), sizeof(_uint));
 		skeletal.numMeshes = meshCount;
@@ -1154,6 +1164,8 @@ CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstri
 			skeletal.meshsId.resize(meshCount);
 			in.read(reinterpret_cast<char*>(skeletal.meshsId.data()), sizeof(_int) * meshCount);
 		}
+
+		skeletalList.push_back(skeletal);
 	}
 
 	resultBuffer.initList = infoList;

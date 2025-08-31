@@ -23,6 +23,7 @@ protected:
 
 public:
 	HRESULT Initialize() override;
+	void Awake() override;
 	void LateUpdate() override;
 	void FixedUpdate() override;
 	void OnEnable() override;

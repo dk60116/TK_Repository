@@ -20,6 +20,11 @@ HRESULT CCollider::Initialize()
 	return S_OK;
 }
 
+void CCollider::Awake()
+{
+
+}
+
 void CCollider::LateUpdate()
 {
 }

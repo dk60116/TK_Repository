@@ -237,6 +237,12 @@ void CScene::Start()
 		if ((*it)->IsRecursiveActive())
 			(*it)->Start();
 	}
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->IsRecursiveActive())
+			(*it)->OnEnable();
+	}
 }
 
 void CScene::Update_Editor()
