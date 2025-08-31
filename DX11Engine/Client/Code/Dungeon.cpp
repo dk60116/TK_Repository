@@ -6,7 +6,7 @@
 #include "Troll.h"
 
 CDungeon::CDungeon()
-    : m_vMonsterProtoList({})
+    : m_mMonsterProtoList({})
     , m_vChapterList({})
     , m_bAttachedChapterColliders(false)
 {
@@ -63,8 +63,6 @@ void CDungeon::LateUpdate()
     {
         for (TRAVERSAL_ITER(m_vChapterList, it))
             (*it)->AttachColliders();
-        for (TRAVERSAL_ITER(m_vChapterList, it))
-            (*it)->HideColliders();
 
         CCollisionManager::Set_CollisionFilter(L"DungeonChapter", L"Map", false);
 
@@ -79,18 +77,22 @@ void CDungeon::OnDestroy()
 
 void CDungeon::SpawnMonsterPrototypes()
 {
-    CGameObject* wolfObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Prototype_Wolf");
-    m_vMonsterProtoList.push_back(wolfObj->AddComponent<CWolf>());
-    wolfObj->SetActive(false);
+    CrateMonsterPrototype<CWolf>();
 }
 
 void CDungeon::SpawnDungeonChapters()
 {
-    for (_uint i = 0; i < 1; ++i)
+    for (_uint i = 0; i < 2; ++i)
     {
         CGameObject* msObj = m_pGameObject->Get_Scene()->Add_GameObject(L"DungeonChapter_" + to_wstring(i));
         m_vChapterList.push_back(msObj->AddComponent<CDungeonChapter>());
     }
 
-    m_vChapterList[0]->SetBoundingBox({ pair(vector3(0.f, 5.f, -37.f), vector3(54.f, 10.f, 82.f)) });
+    {
+        m_vChapterList[0]->SetBoundingBox({ pair(vector3(0.f, 5.f, -37.f), vector3(54.f, 10.f, 82.f)) });
+        vector<vector3> wolfPos = { {18.f, 3.f, -90.f} };
+        m_vChapterList[1]->AddMonsterSpawner({ m_mMonsterProtoList[L"Wolf"], wolfPos });
+    }
+
+    m_vChapterList[1]->SetBoundingBox({ pair(vector3(-3.45f, 5.f, -93.45f), vector3(64.3f, 10.f, 34.f)) });
 }

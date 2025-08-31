@@ -1,5 +1,6 @@
 #pragma once
 #include "Map.h"
+#include "Monster.h"
 
 class CDungeon final : public CMap
 {
@@ -27,9 +28,25 @@ private:
 	void SpawnDungeonChapters();
 
 private:
-	vector<class CMonster*> m_vMonsterProtoList;
+	template <typename T>
+	CMonster* CrateMonsterPrototype();
+
+private:
+	map<wstring, class CMonster*> m_mMonsterProtoList;
 	vector<class CDungeonChapter*> m_vChapterList;
 
 	_bool m_bAttachedChapterColliders;
 };
 
+template <typename T>
+inline CMonster* CDungeon::CrateMonsterPrototype()
+{
+	CGameObject* monsterObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Monster Clone");
+	CMonster* monster = monsterObj->AddComponent<T>();
+	monsterObj->Set_ObjectName(L"Prototype_" + monster->Get_MonsterName());
+	m_mMonsterProtoList.emplace(monster->Get_MonsterName(), monster);
+
+	monsterObj->SetActive(false);
+
+	return nullptr;
+}

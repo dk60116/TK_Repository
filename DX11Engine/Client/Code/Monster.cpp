@@ -28,6 +28,8 @@ CMonster::~CMonster()
 
 HRESULT CMonster::Initialize()
 {
+	m_bOnlyCloneComponent = true;
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -61,9 +63,6 @@ HRESULT CMonster::Initialize()
 
 void CMonster::Awake()
 {
-	if (!m_pNavAgent)
-		m_pNavAgent = m_pGameObject->AddComponent<EngineAI::CNavMeshAgent>();
-
 	if (m_pHeadTF)
 	{
 		CMonsterPartCollision* headCol = m_pHeadTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();
@@ -86,13 +85,12 @@ void CMonster::Awake()
 		m_pController = m_pGameObject->AddComponent<CMonsterController>();
 
 	if (m_pController)
-	{
-		m_pController->AddRef();
 		m_pController->Set_Monster(this);
-	}
 
-	m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
-	m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
+	if (!m_pBodyCollider)
+		m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();
+	if (!m_pRigidBody)
+		m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
 
 	m_pBodyCollider->Set_Center(m_sOptions.colliderCenter);
 	m_pBodyCollider->Set_Size(m_sOptions.colliderSize);
@@ -126,7 +124,6 @@ void CMonster::OnCollisionEnter(CCollider* _other)
 void CMonster::OnDestroy()
 {
 	Safe_Release(m_pBaseMap);
-	Safe_Release(m_pController);
 }
 
 const wstring& CMonster::Get_MonsterName()

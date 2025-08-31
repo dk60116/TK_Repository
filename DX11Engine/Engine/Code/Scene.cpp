@@ -431,6 +431,7 @@ void CScene::Render_Game()
 		{
 			CGameObject* target = (*it);
 			m_lObjectList.remove((*it));
+			--it;
 			(target)->OnDestroy();
 			Safe_Release(target);
 		}

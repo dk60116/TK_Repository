@@ -14,7 +14,6 @@ CGameScene::CGameScene()
 	, m_pPlayer(nullptr)
 	, m_pHUD(nullptr)
 	, m_pDungeon(nullptr)
-	, m_vMonsters({})
 {
 }
 
@@ -44,26 +43,8 @@ HRESULT CGameScene::Initialize()
 	CGameObject* playerObj = Add_GameObject(L"Player");
 	m_pPlayer = playerObj->AddComponent<CPlayer>();
 
-	//CGameObject* vahMedoh_BodyObj = Add_GameObject(L"VahMedoh_Body");
-	//vahMedoh_BodyObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"VahMedoh (MeshBuffer)"), 0.01f, CGameObject::navigationStatic);
-	
 	CGameObject* dungeonObj = Add_GameObject(L"Dungeon");
 	m_pDungeon = dungeonObj->AddComponent<CDungeon>();
-
-	CGameObject* goblinObject = Add_GameObject(L"Goblin");
-	CGoblin* goblin = goblinObject->AddComponent<CGoblin>();
-	//m_vMonsters.push_back(lizard);
-	goblinObject->SetActive(false);
-
-	CGameObject* trollObject = Add_GameObject(L"Troll");
-	CTroll* troll = trollObject->AddComponent<CTroll>();
-	//m_vMonsters.push_back(lizard);
-	trollObject->SetActive(false);
-
-	CGameObject* wolfObject = Add_GameObject(L"Wolf");
-	CWolf* wolf = wolfObject->AddComponent<CWolf>();
-	m_vMonsters.push_back(wolf);
-	wolfObject->SetActive(false);
 
 	return S_OK;
 }
@@ -71,21 +52,6 @@ HRESULT CGameScene::Initialize()
 void CGameScene::Awake()
 {
 	__super::Awake();
-
-	CGameObject* wolfObject = nullptr;
-
-	if (!m_vMonsters.empty() && m_vMonsters[0])
-	{
-		wolfObject = m_vMonsters[0]->Get_GameObject();
-
-		for (_uint i = 0; i < 0; ++i)
-		{
-			CGameObject* cloneWolf = CGameObject::Instantiate(wolfObject);
-			m_vMonsters.push_back(cloneWolf->GetComponent<CWolf>());
-			m_vMonsters.back()->Get_GameObject()->SetActive(true);
-			m_vMonsters.back()->Get_Transform()->Set_PositionX(20.f + (i) * 1.5f);
-		}
-	}
 }
 
 void CGameScene::Update()
@@ -93,14 +59,10 @@ void CGameScene::Update()
 	__super::Update();
 
 	if (CInput::GetKeyDown(Alpha0))
-	{
 		CSceneManager::LoadScene(L"Main Scene");
-	}
 }
 
 void CGameScene::SceneRelease()
 {
 	__super::SceneRelease();
-
-	m_vMonsters.clear();
 }

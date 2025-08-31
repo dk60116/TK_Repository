@@ -120,11 +120,6 @@ CMonster* CMonsterController::Get_Monster()
 
 void CMonsterController::Set_Monster(CMonster* _monster)
 {
-	if (_monster == m_pMonster)
-		return;
-
-	Safe_Release(m_pMonster);
-
 	m_pMonster = _monster;
 
 	if (m_pMonster)

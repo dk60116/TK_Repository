@@ -17,7 +17,6 @@ public:
 	typedef struct DungeonChapterMonsterDescription
 	{
 		CMonster* prototype;
-		_uint count;
 		vector<vector3> position;
 
 	} MONSTERSPAWNER;
@@ -43,17 +42,21 @@ public:
 
 public:
 	void SetBoundingBox(const BOUNDINGBOXDESC& _desc);
+	void AddMonsterSpawner(const MONSTERSPAWNER& _desc);
 
 public:
 	void AttachColliders();
 	void HideColliders();
 	void AbleColliders();
 
+	void AbleMonsters();
+
 	void OnPlayerEnter();
 	void OnPlayerExit();
 
 private:
 	void Bind_BoundingBox();
+	void Spawn_Monsters();
 
 private:
 	class CDungon* m_pDungeon;
@@ -61,6 +64,7 @@ private:
 	vector<CGameObject*> m_vGateList;
 	BOUNDINGBOXDESC m_sBoundingBoxInfo;
 	vector<MONSTERSPAWNER> m_vMonsterList;
+	vector<CMonster*> m_vCloneMonsterList;
 	vector<CCollider*> m_vMapColList;
 };
 

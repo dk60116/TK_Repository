@@ -92,7 +92,7 @@ public:
 	const _uint Get_UniqueID() const;
 	const wstring Get_ObjectName() const;
 	const wstring Get_ObjectNameID() const;
-	void Set_ObjectName(wstring& _name);
+	void Set_ObjectName(const wstring _name);
 
 	void Set_Scene(CScene* _scene);
 	CScene* Get_Scene();

@@ -840,7 +840,13 @@ HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBu
 		if (indicesSize > 0)
 			out.write(reinterpret_cast<const char*>(info.indices.data()), sizeof(_uint) * indicesSize);
 
-		out.write(reinterpret_cast<const char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+		out.write((const char*)&info.desc.useDeviceTopology, sizeof(_bool));
+
+		const _uint topo = static_cast<_uint>(info.desc.topology);
+		out.write((const char*)&topo, sizeof(_uint));
+		out.write((const char*)&info.desc.vertexSize, sizeof(_uint));
+		out.write((const char*)&info.desc.vertextCount, sizeof(_uint));
+		out.write((const char*)&info.desc.indexCount, sizeof(_uint));
 
 		_uint diffuseTexPathSize = static_cast<_uint>(info.diffuseMapPath.size());
 		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
@@ -903,7 +909,14 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 		}
 
 		// desc
-		in.read(reinterpret_cast<char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+		in.read((char*)&info.desc.useDeviceTopology, sizeof(_bool));
+
+		_uint topo = 0;
+		in.read((char*)&topo, sizeof(_uint));
+		info.desc.topology = static_cast<D3D11_PRIMITIVE_TOPOLOGY>(topo);
+		in.read((char*)&info.desc.vertexSize, sizeof(_uint));
+		in.read((char*)&info.desc.vertextCount, sizeof(_uint));
+		in.read((char*)&info.desc.indexCount, sizeof(_uint));
 
 		// diffuse path
 		_uint diffuseTexPathCount = 0;

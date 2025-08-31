@@ -63,6 +63,7 @@ Troll_Death : Monsters/Troll/Troll_Death.fbx : [Animation Clip]
 //VahMedoh : Map/VahMedoh/VahMedoh_Body.fbx : [Mesh] [Material]
 // Dungeon
 Dungeon_Model : Map/Dungeon/Dungeon.fbx : [Mesh]
+Dungeon_Door_Model : Map/Dungeon/Dungeon_Door.fbx : [Mesh]
 Dungeon_Pice-barrel_1_1-BaseMap : Map/Dungeon/barrels/barrel_albedo.png : [Texture]
 Dungeon_Pice-brick_1_1-BaseMap : Map/Dungeon/bricks/separator_albedo.png : [Texture]
 Dungeon_Pice-brick_2_1-BaseMap : Map/Dungeon/bricks2/separator_albedo.png : [Texture]
