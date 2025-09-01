@@ -70,11 +70,11 @@ void CDungeonChapter::OnDestroy()
 	m_vCloneMonsterList.clear();
 }
 
-void CDungeonChapter::OnTriggerEnter(CCollider* _other)
+void CDungeonChapter::OnTriggerStay(CCollider* _other)
 {
 	if (_other->Get_GameObject()->GetTag() == L"Player")
 	{
-		OnPlayerEnter();
+		OnPlayerStay();
 	}
 }
 
@@ -96,7 +96,7 @@ void CDungeonChapter::AddMonsterSpawner(const MONSTERSPAWNER& _desc)
 	m_vMonsterList.push_back(_desc);
 }
 
-void CDungeonChapter::OnPlayerEnter()
+void CDungeonChapter::OnPlayerStay()
 {
 	AbleColliders();
 	AbleMonsters();
@@ -110,7 +110,7 @@ void CDungeonChapter::OnPlayerExit()
 void CDungeonChapter::Bind_BoundingBox()
 {
 	Get_Transform()->Set_Position(m_sBoundingBoxInfo.posScale.first);
-	m_pBoundingBox->Set_Size(m_sBoundingBoxInfo.posScale.second);
+	Get_Transform()->Set_LocalScale(m_sBoundingBoxInfo.posScale.second);
 	Get_Transform()->Set_EulerAnglesY(m_sBoundingBoxInfo.yRot);
 }
 

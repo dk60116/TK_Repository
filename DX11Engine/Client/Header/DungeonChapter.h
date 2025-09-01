@@ -37,7 +37,7 @@ public:
 	void LateUpdate() override;
 	void OnDestroy() override;
 
-	void OnTriggerEnter(CCollider* _other) override;
+	void OnTriggerStay(CCollider* _other) override;
 	void OnTriggerExit(CCollider* _other) override;
 
 public:
@@ -52,7 +52,7 @@ public:
 
 	void AbleMonsters();
 
-	void OnPlayerEnter();
+	void OnPlayerStay();
 	void OnPlayerExit();
 
 private:

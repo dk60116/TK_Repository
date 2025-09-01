@@ -57,6 +57,18 @@ void CDungeon::Start()
 void CDungeon::Update()
 {
     __super::Update();
+
+    if (m_pGameObject->Get_Scene()->Get_PassedTime() > 0.1f)
+    {
+        for (TRAVERSAL_ITER(m_vChapterList, it))
+            (*it)->Get_GameObject()->SetActive(false);
+    }
+
+    if (m_pGameObject->Get_Scene()->Get_PassedTime() > 0.2f)
+    {
+        for (TRAVERSAL_ITER(m_vChapterList, it))
+            (*it)->Get_GameObject()->SetActive(true);
+    }
 }
 
 void CDungeon::LateUpdate()
@@ -84,7 +96,7 @@ void CDungeon::SpawnMonsterPrototypes()
 
 void CDungeon::SpawnDungeonChapters()
 {
-    for (_uint i = 0; i < 2; ++i)
+    for (_uint i = 0; i < 6; ++i)
     {
         CGameObject* msObj = m_pGameObject->Get_Scene()->Add_GameObject(L"DungeonChapter_" + to_wstring(i));
         m_vChapterList.push_back(msObj->AddComponent<CDungeonChapter>());
@@ -92,9 +104,27 @@ void CDungeon::SpawnDungeonChapters()
 
     {
         m_vChapterList[0]->SetBoundingBox({ pair(vector3(0.f, 5.f, -37.f), vector3(54.f, 10.f, 82.f)) });
-        vector<vector3> wolfPos = { {18.f, 3.f, -90.f} };
+        vector<vector3> wolfPos = { {18.f, 3.f, -90.f}, { 18.f, 3.f, -91.f} };
         m_vChapterList[1]->AddMonsterSpawner({ m_mMonsterProtoList[L"Wolf"], wolfPos });
     }
 
-    m_vChapterList[1]->SetBoundingBox({ pair(vector3(-3.45f, 5.f, -93.45f), vector3(64.3f, 10.f, 34.f)) });
+    {
+        m_vChapterList[1]->SetBoundingBox({ pair(vector3(-3.45f, 5.f, -93.45f), vector3(70.f, 10.f, 34.f)) });
+    }
+
+    {
+        m_vChapterList[2]->SetBoundingBox({ pair(vector3(-63.7f, 1.2f, -19.2f), vector3(75.f, 10.f, 34.f)) });
+    }
+
+    {
+        m_vChapterList[3]->SetBoundingBox({ pair(vector3(48.56f, 5.f, -21.72f), vector3(44.86f, 10.f, 22.83f)) });
+    }
+
+    {
+        m_vChapterList[4]->SetBoundingBox({ pair(vector3(40.88f, 5.f, -71.4f), vector3(17.57f, 15.f, 78.1f)) });
+    }
+
+    {
+        m_vChapterList[5]->SetBoundingBox({ pair(vector3(67.82f, 5.f, -71.4f), vector3(36.96f, 15.f, 78.1f)) });
+    }
 }

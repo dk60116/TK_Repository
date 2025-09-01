@@ -33,6 +33,7 @@ CScene::CScene()
 	, m_pUIResterizerState(nullptr)
 	, m_pBlendingState(nullptr)
 	, m_pNoneBlendingState(nullptr)
+	, m_fPassedTime(0.f)
 {
 	m_strName = L"Scene";
 
@@ -51,6 +52,8 @@ CScene::~CScene()
 HRESULT CScene::Initialize()
 {
 	SceneRelease();
+
+	m_fPassedTime = 0.f;
 
 	m_iUniqueObjectCount = 0;
 
@@ -297,6 +300,8 @@ void CScene::Update_Editor()
 
 void CScene::Update()
 {
+	m_fPassedTime += DELTA_TIME;
+
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 	{
 		if ((*it)->IsRecursiveActive())
@@ -955,6 +960,11 @@ HRESULT CScene::SaveScene(const wstring& _filePath)
 const _uint CScene::Get_UniqueObjectCount() const
 {
 	return m_iUniqueObjectCount;
+}
+
+const _float CScene::Get_PassedTime() const
+{
+	return m_fPassedTime;
 }
 
 HRESULT CScene::PreLoadResources()
