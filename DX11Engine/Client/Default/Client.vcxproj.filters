@@ -70,8 +70,14 @@
     <Filter Include="Scripts\Object\Player\Controller\Bheaviour">
       <UniqueIdentifier>{b1cc5614-8165-4043-a0e7-9acd720e361d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Map\Spawner">
+    <Filter Include="Scripts\Object\Map\Dungeon">
+      <UniqueIdentifier>{e66823ba-9a0b-411a-8e4d-4cf47703359e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Map\Dungeon\Spawner">
       <UniqueIdentifier>{cd53044e-0432-4460-91e1-9ceb3725d62e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Map\Objects">
+      <UniqueIdentifier>{a1ddfd0f-dd7b-4ade-af6e-af9c3138d3cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -168,9 +174,6 @@
     <ClInclude Include="..\Header\Wolf.h">
       <Filter>Scripts\Object\Monster\Wolf</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\Dungeon.h">
-      <Filter>Scripts\Object\Map</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\Map.h">
       <Filter>Scripts\Object\Map</Filter>
     </ClInclude>
@@ -202,7 +205,19 @@
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\DungeonChapter.h">
-      <Filter>Scripts\Object\Map\Spawner</Filter>
+      <Filter>Scripts\Object\Map\Dungeon\Spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Dungeon.h">
+      <Filter>Scripts\Object\Map\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonObject.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonGate.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\FootSwitch.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -293,9 +308,6 @@
     <ClCompile Include="..\Code\MonsterPartCollision.cpp">
       <Filter>Scripts\Object\Monster\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Dungeon.cpp">
-      <Filter>Scripts\Object\Map</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\Map.cpp">
       <Filter>Scripts\Object\Map</Filter>
     </ClCompile>
@@ -327,7 +339,19 @@
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DungeonChapter.cpp">
-      <Filter>Scripts\Object\Map\Spawner</Filter>
+      <Filter>Scripts\Object\Map\Dungeon\Spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Dungeon.cpp">
+      <Filter>Scripts\Object\Map\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonObject.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonGate.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FootSwitch.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

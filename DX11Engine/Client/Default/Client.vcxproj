@@ -152,6 +152,9 @@
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
     <ClInclude Include="..\Header\DungeonChapter.h" />
+    <ClInclude Include="..\Header\DungeonGate.h" />
+    <ClInclude Include="..\Header\DungeonObject.h" />
+    <ClInclude Include="..\Header\FootSwitch.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Sword.h" />
     <ClInclude Include="..\Header\Goblin.h" />
@@ -199,6 +202,9 @@
     <ClCompile Include="..\Code\CGoblin.cpp" />
     <ClCompile Include="..\Code\DefaultArrow.cpp" />
     <ClCompile Include="..\Code\Dungeon.cpp" />
+    <ClCompile Include="..\Code\DungeonGate.cpp" />
+    <ClCompile Include="..\Code\DungeonObject.cpp" />
+    <ClCompile Include="..\Code\FootSwitch.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />
     <ClCompile Include="..\Code\GameScene.cpp" />
     <ClCompile Include="..\Code\LizardWarrior.cpp" />

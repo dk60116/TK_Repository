@@ -51,6 +51,7 @@ void CPlayerCamera::Awake()
 
 void CPlayerCamera::Start()
 {
+	Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position() + vector3::up());
 }
 
 void CPlayerCamera::Update()

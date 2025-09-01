@@ -1,6 +1,7 @@
 #pragma once
 #include "Map.h"
 #include "Monster.h"
+#include "DungeonObject.h"
 
 class CDungeon final : public CMap
 {
@@ -25,17 +26,25 @@ public:
 
 private:
 	void SpawnMonsterPrototypes();
+	void SpawnDungonObjectPrototypes();
 	void SpawnDungeonChapters();
+
+	void CreateDungeonGates();
 
 private:
 	template <typename T>
 	CMonster* CrateMonsterPrototype();
+	template <typename T>
+	CDungeonObject* CreateDungonObjectPrototype();
 
 private:
-	map<wstring, class CMonster*> m_mMonsterProtoList;
+	map<wstring, CMonster*> m_mMonsterProtoList;
+	map<wstring, CDungeonObject*> m_mDungonObjProtoList;
 	vector<class CDungeonChapter*> m_vChapterList;
 
 	_bool m_bAttachedChapterColliders;
+
+	vector<class CDungeonGate*> m_vGateList;
 };
 
 template <typename T>
@@ -48,5 +57,18 @@ inline CMonster* CDungeon::CrateMonsterPrototype()
 
 	monsterObj->SetActive(false);
 
-	return nullptr;
+	return monster;
+}
+
+template<typename T>
+inline CDungeonObject* CDungeon::CreateDungonObjectPrototype()
+{
+	CGameObject* objectObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Dungon object Clone");
+	CDungeonObject* obj = objectObj->AddComponent<T>();
+	objectObj->Set_ObjectName(L"Prototype_" + obj->Get_ObjName());
+	m_mDungonObjProtoList.emplace(obj->Get_ObjName(), obj);
+
+	objectObj->SetActive(false);
+
+	return obj;
 }

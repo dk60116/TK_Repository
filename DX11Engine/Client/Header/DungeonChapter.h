@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Monster.h"
+#include "DungeonObject.h"
 
 class CDungeonChapter final : public CComponent
 {
@@ -18,8 +19,17 @@ public:
 	{
 		CMonster* prototype;
 		vector<vector3> position;
+		vector<_float> rotY;
 
 	} MONSTERSPAWNER;
+
+	typedef struct DungeonChapterObjectDescription
+	{
+		CMonster* prototype;
+		vector<vector3> position;
+		vector<_float> rotY;
+
+	} OBJECTSPAWNER;
 
 private:
 	explicit CDungeonChapter();
@@ -43,6 +53,7 @@ public:
 public:
 	void SetBoundingBox(const BOUNDINGBOXDESC& _desc);
 	void AddMonsterSpawner(const MONSTERSPAWNER& _desc);
+	void AddDungeonObject(const OBJECTSPAWNER& _desc);
 
 public:
 	void EnableBoundingBox(const _bool _on);
@@ -58,14 +69,17 @@ public:
 private:
 	void Bind_BoundingBox();
 	void Spawn_Monsters();
+	void Spawn_Objects();
 
 private:
 	class CDungon* m_pDungeon;
 	CBoxCollider* m_pBoundingBox;
-	vector<CGameObject*> m_vGateList;
+	vector<class CDungonGate*> m_vGateList;
 	BOUNDINGBOXDESC m_sBoundingBoxInfo;
-	vector<MONSTERSPAWNER> m_vMonsterList;
+	vector<MONSTERSPAWNER> m_vMonsterSpawnerList;
+	vector<OBJECTSPAWNER> m_vObjectSpawnerList;
 	vector<CMonster*> m_vCloneMonsterList;
+	vector<CDungeonObject*> m_vCloneObjectList;
 	vector<CCollider*> m_vMapColList;
 };
 

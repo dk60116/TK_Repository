@@ -1,14 +1,20 @@
 #include "cpch.h"
 #include "Dungeon.h"
 #include "DungeonChapter.h"
+
 #include "Wolf.h"
 #include "Goblin.h"
 #include "Troll.h"
 
+#include "DungeonGate.h"
+#include "FootSwitch.h"
+
 CDungeon::CDungeon()
     : m_mMonsterProtoList({})
+    , m_mDungonObjProtoList({})
     , m_vChapterList({})
     , m_bAttachedChapterColliders(false)
+    , m_vGateList({})
 {
 }
 
@@ -37,6 +43,7 @@ HRESULT CDungeon::Initialize()
         return E_FAIL;
 
     SpawnMonsterPrototypes();
+    SpawnDungonObjectPrototypes();
     SpawnDungeonChapters();
 
     return S_OK;
@@ -52,6 +59,8 @@ void CDungeon::Awake()
 void CDungeon::Start()
 {
     __super::Start();
+
+    CreateDungeonGates();
 }
 
 void CDungeon::Update()
@@ -68,6 +77,12 @@ void CDungeon::Update()
     {
         for (TRAVERSAL_ITER(m_vChapterList, it))
             (*it)->Get_GameObject()->SetActive(true);
+    }
+
+    if (CInput::GetKeyDown_Editor(G))
+    {
+        CGameObject* gate = Get_Transform()->Find_ChildRecursive(L"door_1")->Get_GameObject();
+        gate->SetActive(!gate->ActiveSelf());
     }
 }
 
@@ -92,6 +107,14 @@ void CDungeon::OnDestroy()
 void CDungeon::SpawnMonsterPrototypes()
 {
     CrateMonsterPrototype<CWolf>();
+    CrateMonsterPrototype<CGoblin>();
+    CrateMonsterPrototype<CTroll>();
+}
+
+void CDungeon::SpawnDungonObjectPrototypes()
+{
+    CreateDungonObjectPrototype<CDungeonGate>();
+    CreateDungonObjectPrototype<CFootSwitch>();
 }
 
 void CDungeon::SpawnDungeonChapters()
@@ -104,8 +127,9 @@ void CDungeon::SpawnDungeonChapters()
 
     {
         m_vChapterList[0]->SetBoundingBox({ pair(vector3(0.f, 5.f, -37.f), vector3(54.f, 10.f, 82.f)) });
-        vector<vector3> wolfPos = { {18.f, 3.f, -90.f}, { 18.f, 3.f, -91.f} };
-        m_vChapterList[1]->AddMonsterSpawner({ m_mMonsterProtoList[L"Wolf"], wolfPos });
+        vector<vector3> wolfPos = { {18.f, 3.f, -90.f}, { 18.f, 3.f, -91.f}, { 18.f, 3.f, -89.f} };
+        vector<_float> wolfRot = { -90.f, -90.f, -90.f };
+        m_vChapterList[1]->AddMonsterSpawner({ m_mMonsterProtoList[L"Wolf"], wolfPos, wolfRot });
     }
 
     {
@@ -125,6 +149,24 @@ void CDungeon::SpawnDungeonChapters()
     }
 
     {
-        m_vChapterList[5]->SetBoundingBox({ pair(vector3(67.82f, 5.f, -71.4f), vector3(36.96f, 15.f, 78.1f)) });
+        m_vChapterList[5]->SetBoundingBox({ pair(vector3(63.6f, 5.f, -71.4f), vector3(28.0f, 15.f, 78.1f)) });
     }
+}
+
+void CDungeon::CreateDungeonGates()
+{
+    for (size_t i = 0; i < 4; i++)
+    {
+        CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
+        newObj->Set_ObjectName(L"Gate (Clone) " + to_wstring(i));
+        m_vGateList.push_back(newObj->GetComponent<CDungeonGate>());
+        m_vGateList.back()->Get_GameObject()->SetActive(true);
+    }
+
+    m_vGateList[0]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
+    m_vGateList[1]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
+    m_vGateList[2]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
+
+    m_vGateList[3]->Get_Transform()->Set_Position(26.27f, 0.f, -22.56f);
+    m_vGateList[3]->Get_Transform()->Set_EulerAnglesY(90.f);
 }

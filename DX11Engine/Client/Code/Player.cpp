@@ -111,6 +111,8 @@ HRESULT CPlayer::Initialize()
 
 void CPlayer::Awake()
 {
+	Get_Transform()->Set_Position(127.5f, 0.f, -67.470f);
+
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 }
 
@@ -167,7 +169,6 @@ void CPlayer::OnDestroy()
 
 void CPlayer::OnCollisionEnter(CCollider* _other)
 {
-	//CDebug::Log("Enter");
 }
 
 void CPlayer::OnCollisionStay(CCollider* _other)
@@ -176,7 +177,6 @@ void CPlayer::OnCollisionStay(CCollider* _other)
 
 void CPlayer::OnCollisionExit(CCollider* _other)
 {
-	//CDebug::Log("Exit");
 }
 
 CPlayerController* CPlayer::Get_Controller()

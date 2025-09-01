@@ -58,7 +58,7 @@ void CGameScene::Update()
 {
 	__super::Update();
 
-	if (CInput::GetKeyDown(Alpha0))
+	if (CInput::GetKeyDown(RETURN))
 		CSceneManager::LoadScene(L"Main Scene");
 }
 

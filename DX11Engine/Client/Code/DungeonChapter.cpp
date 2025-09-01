@@ -1,12 +1,15 @@
 #include "cpch.h"
 #include "DungeonChapter.h"
+#include "DungeonGate.h"
 
 CDungeonChapter::CDungeonChapter()
 	: m_pDungeon(nullptr)
 	, m_pBoundingBox(nullptr)
 	, m_vGateList({})
-	, m_vMonsterList({})
+	, m_vMonsterSpawnerList({})
+	, m_vObjectSpawnerList({})
 	, m_vCloneMonsterList({})
+	, m_vCloneObjectList({})
 	, m_vMapColList({})
 {
 }
@@ -50,6 +53,7 @@ void CDungeonChapter::Awake()
 void CDungeonChapter::Start()
 {
 	Spawn_Monsters();
+	Spawn_Objects();
 }
 
 void CDungeonChapter::Update()
@@ -62,7 +66,8 @@ void CDungeonChapter::LateUpdate()
 
 void CDungeonChapter::OnDestroy()
 {
-	m_vMonsterList.clear();
+	m_vMonsterSpawnerList.clear();
+	m_vObjectSpawnerList.clear();
 	
 	for (TRAVERSAL_ITER(m_vCloneMonsterList, it))
 		Safe_Release((*it));
@@ -93,7 +98,12 @@ void CDungeonChapter::SetBoundingBox(const BOUNDINGBOXDESC& _desc)
 
 void CDungeonChapter::AddMonsterSpawner(const MONSTERSPAWNER& _desc)
 {
-	m_vMonsterList.push_back(_desc);
+	m_vMonsterSpawnerList.push_back(_desc);
+}
+
+void CDungeonChapter::AddDungeonObject(const OBJECTSPAWNER& _desc)
+{
+	m_vObjectSpawnerList.push_back(_desc);
 }
 
 void CDungeonChapter::OnPlayerStay()
@@ -116,17 +126,36 @@ void CDungeonChapter::Bind_BoundingBox()
 
 void CDungeonChapter::Spawn_Monsters()
 {
-	for (size_t i = 0; i < m_vMonsterList.size(); ++i)
+	for (size_t i = 0; i < m_vMonsterSpawnerList.size(); ++i)
 	{
-		auto& spawner = m_vMonsterList[i];
+		auto& spawner = m_vMonsterSpawnerList[i];
 
 		for (size_t j = 0; j < spawner.position.size(); ++j)
 		{
 			CGameObject* cloneObj = CGameObject::Instantiate(spawner.prototype->Get_GameObject());
 			cloneObj->Get_Transform()->Set_Position(spawner.position[j]);
+			cloneObj->Get_Transform()->Set_EulerAnglesY(spawner.rotY[j]);
 			CMonster* monster = cloneObj->GetComponent<CMonster>();
 			monster->AddRef();
 			m_vCloneMonsterList.push_back(monster);
+		}
+	}
+}
+
+void CDungeonChapter::Spawn_Objects()
+{
+	for (size_t i = 0; i < m_vObjectSpawnerList.size(); ++i)
+	{
+		auto& spawner = m_vObjectSpawnerList[i];
+
+		for (size_t j = 0; j < spawner.position.size(); ++j)
+		{
+			CGameObject* cloneObj = CGameObject::Instantiate(spawner.prototype->Get_GameObject());
+			cloneObj->Get_Transform()->Set_Position(spawner.position[j]);
+			cloneObj->Get_Transform()->Set_EulerAnglesY(spawner.rotY[j]);
+			CDungeonObject* obj = cloneObj->GetComponent<CDungeonObject>();
+			obj->AddRef();
+			m_vCloneObjectList.push_back(obj);
 		}
 	}
 }
@@ -146,7 +175,7 @@ void CDungeonChapter::AttachColliders()
 			m_vMapColList.push_back((*it).second);
 	}
 
-	HideColliders();
+	//HideColliders();
 }
 
 void CDungeonChapter::HideColliders()
