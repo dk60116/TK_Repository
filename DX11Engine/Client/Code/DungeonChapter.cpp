@@ -114,7 +114,7 @@ void CDungeonChapter::OnPlayerStay()
 
 void CDungeonChapter::OnPlayerExit()
 {
-	HideColliders();
+	//HideColliders();
 }
 
 void CDungeonChapter::Bind_BoundingBox()
