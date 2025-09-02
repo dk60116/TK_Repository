@@ -29,11 +29,11 @@ CComponent* CFootSwitch::Clone() const
 
 HRESULT CFootSwitch::Initialize()
 {
+	m_strObjName = L"Dungeon_FootSwitchPlat";
+
 	m_sDescription.isTrigger = true;
 	m_sDescription.colliderCenter = vector3::up() * 0.2f;
 	m_sDescription.colliderSize = vector3(0.7f, 1.f, 0.7f);
-
-	m_strObjName = L"Dungeon_FootSwitchPlat";
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;

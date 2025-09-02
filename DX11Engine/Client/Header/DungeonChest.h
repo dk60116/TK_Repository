@@ -1,14 +1,14 @@
 #pragma once
 #include "DungeonObject.h"
 
-class CDungeonGate final : public CDungeonObject
+class CDungeonChest : public CDungeonObject
 {
 protected:
-	explicit CDungeonGate();
-	~CDungeonGate();
+	explicit CDungeonChest();
+	~CDungeonChest();
 
 public:
-	static CDungeonGate* Create();
+	static CDungeonChest* Create();
 	CComponent* Clone() const override;
 
 public:
@@ -20,16 +20,12 @@ public:
 	void OnDestroy() override;
 
 public:
-	void SetLock();
 	void Open();
-	void Close();
 
 private:
 	pair<_uint, _uint> m_iChapterIndex;
 
 	_bool m_bLock;
 	_bool m_bIsOpen;
-
-	CMeshRenderer* m_pLockRenderer;
 };
 

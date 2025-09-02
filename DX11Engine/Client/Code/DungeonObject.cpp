@@ -6,7 +6,6 @@ CDungeonObject::CDungeonObject()
 	: m_pChapter(nullptr)
 	, m_strObjName(L"")
 	, m_sDescription({})
-	, m_bHasAnimation(nullptr)
 	, m_vRenderer({})
 	, m_vSkinnedRenderer({})
 	, m_pAnimator(nullptr)
@@ -38,7 +37,7 @@ void CDungeonObject::Awake()
 		m_pCollider->SetTrigger(m_sDescription.isTrigger);
 	}
 
-	if (!m_bHasAnimation)
+	if (!m_sDescription.isSkinning)
 	{
 		m_vRenderer = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strObjName + L"_Model (MeshBuffer)"), m_sDescription.scaleFactor);
 
@@ -47,7 +46,7 @@ void CDungeonObject::Awake()
 	}
 	else
 	{
-		m_vSkinnedRenderer = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strObjName + L"_Model (SkinnedBuffer)"), CResources::LoadSkinnedBonesOnScene(m_strObjName + L"_Model (SkinnedBuffer)"), m_sDescription.scaleFactor);
+		m_vSkinnedRenderer = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strObjName + L"_Model (MeshBuffer)"), CResources::LoadSkinnedBonesOnScene(m_strObjName + L"_Model (SkinnedBuffer)"), m_sDescription.scaleFactor);
 
 		for (TRAVERSAL_ITER(m_vSkinnedRenderer, it))
 			(*it)->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(m_strObjName + L"_BaseMap (Texture)"));

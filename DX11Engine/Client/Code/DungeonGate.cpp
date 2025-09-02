@@ -3,7 +3,9 @@
 
 CDungeonGate::CDungeonGate()
 	: m_iChapterIndex({})
+	, m_bLock(false)
 	, m_bIsOpen(false)
+	, m_pLockRenderer(nullptr)
 {
 }
 
@@ -26,7 +28,6 @@ CComponent* CDungeonGate::Clone() const
 HRESULT CDungeonGate::Initialize()
 {
 	m_strObjName = L"Dungeon_Gate";
-	m_bHasAnimation = false;
 
 	m_sDescription.colliderCenter = vector3::up() * 1.5f;
 	m_sDescription.colliderSize = vector3(2.f, 3.f, 0.6f);
@@ -42,6 +43,19 @@ HRESULT CDungeonGate::Initialize()
 void CDungeonGate::Awake()
 {
 	__super::Awake();
+
+	if (!m_pLockRenderer)
+	{
+		CGameObject* lockObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Lock");
+		lockObj->Get_Transform()->SetParent(Get_Transform());
+		m_pLockRenderer = lockObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Lock_Model (MeshBuffer)"), 0.005f)[0];
+		lockObj->Get_Transform()->Set_LocalPositionY(1.7f);
+	}
+}
+
+void CDungeonGate::Start()
+{
+	m_pLockRenderer->Get_GameObject()->SetActive(m_bLock);
 }
 
 void CDungeonGate::Update()
@@ -60,6 +74,11 @@ void CDungeonGate::Update()
 void CDungeonGate::OnDestroy()
 {
 	__super::OnDestroy();
+}
+
+void CDungeonGate::SetLock()
+{
+	m_bLock = true;
 }
 
 void CDungeonGate::Open()

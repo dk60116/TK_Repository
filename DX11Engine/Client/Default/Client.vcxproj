@@ -152,6 +152,7 @@
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
     <ClInclude Include="..\Header\DungeonChapter.h" />
+    <ClInclude Include="..\Header\DungeonChest.h" />
     <ClInclude Include="..\Header\DungeonGate.h" />
     <ClInclude Include="..\Header\DungeonObject.h" />
     <ClInclude Include="..\Header\FootSwitch.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="..\Code\CGoblin.cpp" />
     <ClCompile Include="..\Code\DefaultArrow.cpp" />
     <ClCompile Include="..\Code\Dungeon.cpp" />
+    <ClCompile Include="..\Code\DungeonChest.cpp" />
     <ClCompile Include="..\Code\DungeonGate.cpp" />
     <ClCompile Include="..\Code\DungeonObject.cpp" />
     <ClCompile Include="..\Code\FootSwitch.cpp" />

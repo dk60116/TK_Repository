@@ -219,6 +219,9 @@
     <ClInclude Include="..\Header\FootSwitch.h">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\DungeonChest.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -351,6 +354,9 @@
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\FootSwitch.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonChest.cpp">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,6 +8,7 @@
 
 #include "DungeonGate.h"
 #include "FootSwitch.h"
+#include "DungeonChest.h"
 
 CDungeon::CDungeon()
     : m_mMonsterProtoList({})
@@ -117,6 +118,7 @@ void CDungeon::SpawnDungonObjectPrototypes()
 {
     CreateDungonObjectPrototype<CDungeonGate>();
     CreateDungonObjectPrototype<CFootSwitch>();
+    CreateDungonObjectPrototype<CDungeonChest>();
 }
 
 void CDungeon::SpawnDungeonChapters()
@@ -177,7 +179,7 @@ void CDungeon::SpawnDungeonChapters()
 
 void CDungeon::CreateDungeonGates()
 {
-    for (size_t i = 0; i < 4; i++)
+    for (size_t i = 0; i < 5; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
         newObj->Set_ObjectName(L"Gate (Clone) " + to_wstring(i));
@@ -191,6 +193,10 @@ void CDungeon::CreateDungeonGates()
 
     m_vGateList[3]->Get_Transform()->Set_Position(108.8f, 0.f, -45.f);
     m_vGateList[3]->Get_Transform()->Set_EulerAnglesY(90.f);   
+
+    m_vGateList[4]->Get_Transform()->Set_Position(78.75f, 0.f, -45.f);
+    m_vGateList[4]->Get_Transform()->Set_EulerAnglesY(90.f);
+    m_vGateList[4]->SetLock();
 }
 
 void CDungeon::CreateDungeonFootSwitches()

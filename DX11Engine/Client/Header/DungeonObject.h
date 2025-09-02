@@ -6,6 +6,7 @@ class CDungeonObject abstract : public CComponent
 	typedef struct DungeonObjectDescription
 	{
 		_float scaleFactor = 0.015f;
+		_bool isSkinning = false;
 		_bool hasCollider = true;
 		_bool isTrigger = false;
 		vector3 colliderCenter = vector3::zero();
@@ -32,7 +33,6 @@ protected:
 	class CDungeonChapter* m_pChapter;
 	wstring m_strObjName;
 	DUNGEONOBJDESC m_sDescription;
-	_bool m_bHasAnimation;
 	vector<CMeshRenderer*> m_vRenderer;
 	vector<CSkinnedMeshRenderer*> m_vSkinnedRenderer;
 	CAnimator* m_pAnimator;
