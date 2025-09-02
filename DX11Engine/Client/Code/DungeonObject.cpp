@@ -20,16 +20,24 @@ CDungeonObject::~CDungeonObject()
 
 HRESULT CDungeonObject::Initialize()
 {
+	m_bOnlyCloneComponent = true;
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
-
-	m_bOnlyCloneComponent = true;
 
 	return S_OK;
 }
 
 void CDungeonObject::Awake()
 {
+	if (m_sDescription.hasCollider)
+	{
+		m_pCollider = m_pGameObject->AddComponent<CBoxCollider>();
+		m_pCollider->Set_Center(m_sDescription.colliderCenter);
+		m_pCollider->Set_Size(m_sDescription.colliderSize);
+		m_pCollider->SetTrigger(m_sDescription.isTrigger);
+	}
+
 	if (!m_bHasAnimation)
 	{
 		m_vRenderer = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strObjName + L"_Model (MeshBuffer)"), m_sDescription.scaleFactor);
@@ -44,6 +52,10 @@ void CDungeonObject::Awake()
 		for (TRAVERSAL_ITER(m_vSkinnedRenderer, it))
 			(*it)->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(m_strObjName + L"_BaseMap (Texture)"));
 	}
+}
+
+void CDungeonObject::Start()
+{
 }
 
 void CDungeonObject::Update()

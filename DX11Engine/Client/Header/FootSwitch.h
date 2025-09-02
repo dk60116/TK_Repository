@@ -16,12 +16,22 @@ public:
 
 	void Awake() override;
 	void Update() override;
+	void OnTriggerStay(CCollider* _other) override;
 	void OnDestroy() override;
 
 public:
 	void Set_Gate(vector<class CDungeonGate*>& _gates);
 
+public:
+	void OpenGate();
+
 private:
-	vector<CDungeonGate*> m_pGates;
+	vector<CDungeonGate*> m_vGates;
+
+	CTransform* m_pBodyTransform;
+	CSphereCollider* m_pStepCollider;
+
+	_bool m_bObjectEnter;
+	_bool m_bPressed, m_bPrevPressed;;
 };
 

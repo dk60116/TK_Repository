@@ -18,7 +18,13 @@ public:
 	void Update() override;
 	void OnDestroy() override;
 
+public:
+	void Open();
+	void Close();
+
 private:
 	pair<_uint, _uint> m_iChapterIndex;
+
+	_bool m_bIsOpen;
 };
 

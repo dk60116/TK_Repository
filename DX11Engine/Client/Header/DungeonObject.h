@@ -6,6 +6,10 @@ class CDungeonObject abstract : public CComponent
 	typedef struct DungeonObjectDescription
 	{
 		_float scaleFactor = 0.015f;
+		_bool hasCollider = true;
+		_bool isTrigger = false;
+		vector3 colliderCenter = vector3::zero();
+		vector3 colliderSize = vector3::one();
 	} DUNGEONOBJDESC;
 
 protected:
@@ -16,6 +20,7 @@ public:
 	HRESULT Initialize() override;
 
 	void Awake() override;
+	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
 

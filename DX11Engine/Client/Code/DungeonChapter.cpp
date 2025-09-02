@@ -114,7 +114,7 @@ void CDungeonChapter::OnPlayerStay()
 
 void CDungeonChapter::OnPlayerExit()
 {
-	//HideColliders();
+	HideColliders();
 }
 
 void CDungeonChapter::Bind_BoundingBox()
@@ -175,7 +175,7 @@ void CDungeonChapter::AttachColliders()
 			m_vMapColList.push_back((*it).second);
 	}
 
-	//HideColliders();
+	HideColliders();
 }
 
 void CDungeonChapter::HideColliders()

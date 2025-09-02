@@ -30,6 +30,7 @@ private:
 	void SpawnDungeonChapters();
 
 	void CreateDungeonGates();
+	void CreateDungeonFootSwitches();
 
 private:
 	template <typename T>
@@ -45,6 +46,7 @@ private:
 	_bool m_bAttachedChapterColliders;
 
 	vector<class CDungeonGate*> m_vGateList;
+	vector<class CFootSwitch*> m_vFootSwitchList;
 };
 
 template <typename T>
