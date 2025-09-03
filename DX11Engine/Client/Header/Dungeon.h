@@ -31,6 +31,7 @@ private:
 
 	void CreateDungeonGates();
 	void CreateDungeonFootSwitches();
+	void CreateDungeonChest();
 
 private:
 	template <typename T>
@@ -47,6 +48,7 @@ private:
 
 	vector<class CDungeonGate*> m_vGateList;
 	vector<class CFootSwitch*> m_vFootSwitchList;
+	vector<class CDungeonChest*> m_vChestList;
 };
 
 template <typename T>

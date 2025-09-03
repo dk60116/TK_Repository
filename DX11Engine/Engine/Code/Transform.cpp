@@ -223,8 +223,8 @@ void CTransform::SetParent(CTransform* _parent)
     _matrix invP = XMMatrixInverse(nullptr, P);
 
     // 5) 부모/자신 월드에서 S/R/T 분해
-    XMVECTOR sW, rW, tW;
-    XMVECTOR sP, rP, tP;
+    _vector sW, rW, tW;
+    _vector sP, rP, tP;
     bool okW = XMMatrixDecompose(&sW, &rW, &tW, W_old);
     bool okP = XMMatrixDecompose(&sP, &rP, &tP, P);
 
@@ -490,6 +490,26 @@ void CTransform::Add_PositionY(const _float _value)
 void CTransform::Add_PositionZ(const _float _value)
 {
     m_vPosition.z += _value;
+}
+
+void CTransform::Add_LocalPosition(const vector3& _value)
+{
+}
+
+void CTransform::Add_LocalPosition(const _float _x, const _float _y, const _float _z)
+{
+}
+
+void CTransform::Add_LocalPositionX(const _float _value)
+{
+}
+
+void CTransform::Add_LocalPositionY(const _float _value)
+{
+}
+
+void CTransform::Add_LocalPositionZ(const _float _value)
+{
 }
 
 void CTransform::Set_Quaternion(const quaternion& _value)

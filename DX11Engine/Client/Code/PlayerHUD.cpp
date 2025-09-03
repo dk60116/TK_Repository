@@ -10,7 +10,9 @@ CPlayerHUD::CPlayerHUD()
 	, m_vHeartImageList({})
 	, m_pArrowCrossHair(nullptr)
 	, m_pRupeeIcon(nullptr)
+	, m_pDungonKeyIcon(nullptr)
 	, m_pRupeeText(nullptr)
+	, m_pDungeonKeyText(nullptr)
 	, m_fACHAlpha(1.f)
 	, m_vEquipSlotImage({})
 	, m_vEquipIconImage({})
@@ -39,6 +41,7 @@ HRESULT CPlayerHUD::Initialize()
 	SpawnHeartBowl();
 	SpawnEquipSlot();
 	SpawnRupeeUI();
+	SpawnKeyCountUI();
 	SpawnBowCrossHair();
 
 	CGameManager::GetInstance().Set_PlayerHUD(this);
@@ -117,6 +120,16 @@ void CPlayerHUD::OnOffBowCrossHair(const _bool _on)
 	m_pArrowCrossHair->Get_GameObject()->SetActive(_on);
 
 	m_fACHAlpha = 0.f;
+}
+
+void CPlayerHUD::Update_Rupee(const _int _count)
+{
+	m_pRupeeText->Set_Text(to_wstring(_count));
+}
+
+void CPlayerHUD::Update_DungeonKey(const _int _count)
+{
+	m_pDungeonKeyText->Set_Text(to_wstring(_count));
 }
 
 void CPlayerHUD::SpawnHeartBowl()
@@ -210,7 +223,7 @@ void CPlayerHUD::SpawnRupeeUI()
 {
 	CScene* crtScene = m_pGameObject->Get_Scene();
 
-	CGameObject* rupeeIconObj = crtScene->Add_GameObject(L"RupeeIcon");
+	CGameObject* rupeeIconObj = crtScene->Add_GameObject(L"Rupee Icon");
 	m_pRupeeIcon = rupeeIconObj->AddComponent<CImage>();
 	rupeeIconObj->Get_Transform()->SetParent(Get_Transform());
 	m_pRupeeIcon->SetTexture(CResources::LoadOnScene<CTexture>(L"RupeeIcon (Texture)"));
@@ -228,4 +241,28 @@ void CPlayerHUD::SpawnRupeeUI()
 	m_pRupeeText->Get_RectTransform()->Set_AnchoredPosition(-40.f, 20.f);
 	m_pRupeeText->SetColor(ColorValue::white());
 	m_pRupeeText->Set_Text(L"000");
+}
+
+void CPlayerHUD::SpawnKeyCountUI()
+{
+	CScene* crtScene = m_pGameObject->Get_Scene();
+
+	CGameObject* keyIconObj = crtScene->Add_GameObject(L"Key Icon");
+	m_pRupeeIcon = keyIconObj->AddComponent<CImage>();
+	keyIconObj->Get_Transform()->SetParent(Get_Transform());
+	m_pRupeeIcon->SetTexture(CResources::LoadOnScene<CTexture>(L"DungeonKeyIcon (Texture)"));
+	m_pRupeeIcon->Get_RectTransform()->Set_Pivot(0.f, 0.f);
+	m_pRupeeIcon->Get_RectTransform()->Set_AnchorsMin(0.f, 0.f);
+	m_pRupeeIcon->Get_RectTransform()->Set_AnchoredPosition(30.f, 30.f);
+	m_pRupeeIcon->Get_RectTransform()->Set_WidthHeight(45, 45);
+
+	CGameObject* keyTextObj = crtScene->Add_GameObject(L"Key Count Text");
+	m_pDungeonKeyText = keyTextObj->AddComponent<CText>();
+	m_pDungeonKeyText->Get_Transform()->SetParent(Get_Transform());
+	m_pDungeonKeyText->Set_FontSize(7);
+	m_pDungeonKeyText->Get_RectTransform()->Set_Pivot(0.f, 0.f);
+	m_pDungeonKeyText->Get_RectTransform()->Set_AnchorsMin(0.f, 0.f);
+	m_pDungeonKeyText->Get_RectTransform()->Set_AnchoredPosition(40.f, 20.f);
+	m_pDungeonKeyText->SetColor(ColorValue::white());
+	m_pDungeonKeyText->Set_Text(L"0");
 }

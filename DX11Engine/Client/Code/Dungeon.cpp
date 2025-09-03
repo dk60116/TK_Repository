@@ -17,6 +17,7 @@ CDungeon::CDungeon()
     , m_bAttachedChapterColliders(false)
     , m_vGateList({})
     , m_vFootSwitchList({})
+    , m_vChestList({})
 {
 }
 
@@ -64,6 +65,7 @@ void CDungeon::Start()
 
     CreateDungeonGates();
     CreateDungeonFootSwitches();
+    CreateDungeonChest();
 }
 
 void CDungeon::Update()
@@ -130,7 +132,7 @@ void CDungeon::SpawnDungeonChapters()
     }
 
     {
-        m_vChapterList[0]->SetBoundingBox({ pair(vector3(124.5f, 5.f, -59.3f), vector3(30.f, 15.f, 39.5f)) });
+        m_vChapterList[0]->SetBoundingBox({ pair(vector3(124.5f, 5.f, -59.3f), vector3(31.f, 15.f, 39.5f)) });
     }
 
     {
@@ -215,4 +217,19 @@ void CDungeon::CreateDungeonFootSwitches()
         vector<CDungeonGate*> gates = { m_vGateList[3] };
         m_vFootSwitchList[0]->Set_Gate(gates);
     }
+}
+
+void CDungeon::CreateDungeonChest()
+{
+    for (size_t i = 0; i < 1; i++)
+    {
+        CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
+        newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
+        m_vChestList.push_back(newObj->GetComponent<CDungeonChest>());
+        m_vChestList.back()->Get_GameObject()->SetActive(true);
+    }
+
+    m_vChestList[0]->Get_Transform()->Set_Position(vector3(93.85f, -2.98f, -146.f));
+    m_vChestList[0]->Get_Transform()->Set_EulerAnglesY(180.f);
+    m_vChestList[0]->Set_Item(L"DungeonKey");
 }

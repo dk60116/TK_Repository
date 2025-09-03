@@ -33,11 +33,15 @@ public:
 	void Update_Heart(const _int _current, const _int _max);
 	void OnOffBowCrossHair(const _bool _on);
 
+	void Update_Rupee(const _int _count);
+	void Update_DungeonKey(const _int _count);
+
 private:
 	void SpawnHeartBowl();
 	void SpawnBowCrossHair();
 	void SpawnEquipSlot();
 	void SpawnRupeeUI();
+	void SpawnKeyCountUI();
 
 private:
 	CPlayer* m_pPlayer;
@@ -45,8 +49,8 @@ private:
 	PlayerHUDOptions m_sOptions;
 	CRectTransform* m_pHeartContainer;
 	vector<CImage*> m_vHeartBowlList, m_vHeartImageList;
-	CImage* m_pRupeeIcon;
-	CText* m_pRupeeText;
+	CImage* m_pRupeeIcon, * m_pDungonKeyIcon;
+	CText* m_pRupeeText, * m_pDungeonKeyText;
 	CImage* m_pArrowCrossHair;
 	_float m_fACHAlpha;
 

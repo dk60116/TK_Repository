@@ -17,6 +17,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnTriggerStay(CCollider* _other) override;
 	void OnDestroy() override;
 
 public:
@@ -25,11 +26,13 @@ public:
 	void Close();
 
 private:
-	pair<_uint, _uint> m_iChapterIndex;
+	CTransform* m_pBody;
+	CBoxCollider* m_pBodyCollider;
 
 	_bool m_bLock;
 	_bool m_bIsOpen;
 
 	CMeshRenderer* m_pLockRenderer;
+	vector<CTransform*> m_vLockChainRenders;
 };
 

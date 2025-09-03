@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "PlayerHUD.h"
+#include "Inventory.h"
 
 class CGameManager final
 {
@@ -27,10 +28,14 @@ public:
 	void Set_PlayerHUD(CPlayerHUD* _hud);
 	CPlayerHUD* Get_PlayerHUD();
 
+	void Set_Inventory(CInventory* _inven);
+	CInventory* Get_Inventory();
+
 private:
 	wstring m_strNextScene;
 	CPlayer* m_pPlayer;
 	CPlayerCamera* m_pPlayerCamera;
 	CPlayerHUD* m_pPlayerHUD;
+	CInventory* m_pInventory;
 };
 

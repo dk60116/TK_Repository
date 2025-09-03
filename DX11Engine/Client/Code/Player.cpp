@@ -1,11 +1,13 @@
 #include "cpch.h"
 #include "Player.h"
+#include "Inventory.h"
 #include "WoodenSword.h"
 #include "WoodenBow.h"
 #include "DefaultArrow.h"
 
 CPlayer::CPlayer()
 	: m_pController(nullptr)
+	, m_pInventroy(nullptr)
 	, m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pRootTransform(nullptr)
@@ -104,6 +106,13 @@ HRESULT CPlayer::Initialize()
 			m_pController->Set_Player(this);
 		else
 			return E_FAIL;
+	}
+
+	if (!m_pInventroy)
+	{
+		m_pInventroy = m_pGameObject->AddComponent<CInventory>();
+
+		CGameManager::GetInstance().Set_Inventory(m_pInventroy);
 	}
 
 	return S_OK;

@@ -93,3 +93,13 @@ CPlayerHUD* CGameManager::Get_PlayerHUD()
 {
 	return m_pPlayerHUD;
 }
+
+void CGameManager::Set_Inventory(CInventory* _inven)
+{
+	m_pInventory = _inven;
+}
+
+CInventory* CGameManager::Get_Inventory()
+{
+	return m_pInventory;
+}

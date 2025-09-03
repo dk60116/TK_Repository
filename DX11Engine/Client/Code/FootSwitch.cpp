@@ -32,7 +32,7 @@ HRESULT CFootSwitch::Initialize()
 	m_strObjName = L"Dungeon_FootSwitchPlat";
 
 	m_sDescription.isTrigger = true;
-	m_sDescription.colliderCenter = vector3::up() * 0.2f;
+	m_sDescription.colliderCenter = vector3::up() * 0.4f;
 	m_sDescription.colliderSize = vector3(0.7f, 1.f, 0.7f);
 
 	if (FAILED(__super::Initialize()))
@@ -56,14 +56,23 @@ void CFootSwitch::Awake()
 	if (!m_pStepCollider)
 	{
 		m_pStepCollider = m_pBodyTransform->Get_GameObject()->AddComponent<CSphereCollider>();
-		m_pStepCollider->Set_Size(2.5f * 100.f);
-		m_pStepCollider->Set_Center(vector3::down() * 0.6f * 120.f);
+		m_pStepCollider->Set_Size(2.3f * 100.f);
+		m_pStepCollider->Set_Center(vector3::down() * 0.7f * 100.f);
 	}
 }
 
 void CFootSwitch::Update()
 {
 	__super::Update();
+
+	if (!m_bPressed && !m_bObjectEnter)
+		m_pBodyTransform->Set_LocalPositionY(Lerp(m_pBodyTransform->Get_LocalPosition().y, 0.f, 4 * DELTA_TIME));
+
+	if (!m_bPressed && m_bObjectEnter)
+	{
+		if (m_pBodyTransform->Get_LocalPosition().y >= -0.57f)
+			m_pBodyTransform->Add_PositionY(-0.5f * DELTA_TIME);
+	}
 
 	if (m_pBodyTransform->Get_LocalPosition().y < -0.55f)
 		m_bPressed = true;
@@ -76,11 +85,18 @@ void CFootSwitch::Update()
 
 void CFootSwitch::OnTriggerStay(CCollider* _other)
 {
+}
+
+void CFootSwitch::OnTriggerEnter(CCollider* _other)
+{
 	if (_other->Get_GameObject()->CompareTag(L"Player"))
-	{
-		if (m_pBodyTransform->Get_LocalPosition().y >= -0.57f)
-			m_pBodyTransform->Add_PositionY(-0.5f * DELTA_TIME);
-	}
+		m_bObjectEnter = true;
+}
+
+void CFootSwitch::OnTriggerExit(CCollider* _other)
+{
+	if (_other->Get_GameObject()->CompareTag(L"Player"))
+		m_bObjectEnter = false;
 }
 
 void CFootSwitch::OnDestroy()

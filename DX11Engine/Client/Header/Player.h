@@ -18,7 +18,7 @@ public:
 	{
 		_int maxHp = 6;
 		_int crtHp = 0;
-		_float moveSpeed = 4.f;
+		_float moveSpeed = 4.5f;
 		_float jumpForce = 7.f;
 		_float attackWalkRatio = 0.5f;
 		_float backWalkRatio = 0.7f;
@@ -80,6 +80,7 @@ public:
 
 private:
 	CPlayerController* m_pController;
+	class CInventory* m_pInventroy;
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
 	CAnimator* m_pAnimator;
 

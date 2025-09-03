@@ -156,6 +156,9 @@
     <ClInclude Include="..\Header\DungeonGate.h" />
     <ClInclude Include="..\Header\DungeonObject.h" />
     <ClInclude Include="..\Header\FootSwitch.h" />
+    <ClInclude Include="..\Header\Inventory.h" />
+    <ClInclude Include="..\Header\Item.h" />
+    <ClInclude Include="..\Header\Item_DungeonKey.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Sword.h" />
     <ClInclude Include="..\Header\Goblin.h" />
@@ -209,6 +212,9 @@
     <ClCompile Include="..\Code\FootSwitch.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />
     <ClCompile Include="..\Code\GameScene.cpp" />
+    <ClCompile Include="..\Code\Inventory.cpp" />
+    <ClCompile Include="..\Code\Item.cpp" />
+    <ClCompile Include="..\Code\Item_DungeonKey.cpp" />
     <ClCompile Include="..\Code\LizardWarrior.cpp" />
     <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\MainScene.cpp" />

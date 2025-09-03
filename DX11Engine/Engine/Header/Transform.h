@@ -85,6 +85,12 @@ public:
 	void Add_PositionY(const _float _value);
 	void Add_PositionZ(const _float _value);
 
+	void Add_LocalPosition(const vector3& _value);
+	void Add_LocalPosition(const _float _x, const _float _y, const _float _z);
+	void Add_LocalPositionX(const _float _value);
+	void Add_LocalPositionY(const _float _value);
+	void Add_LocalPositionZ(const _float _value);
+
 	void Set_Quaternion(const quaternion& _value);
 	void Set_LocalQuaternion(const quaternion& _value);
 

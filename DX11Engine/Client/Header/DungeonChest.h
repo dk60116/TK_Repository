@@ -22,13 +22,16 @@ public:
 	void OnDestroy() override;
 
 public:
+	void Set_Item(const wstring& _name, _uint _count = 1);
 	void Open();
 
 private:
-	_bool m_bDetacted, m_bIsOpen;
-
+	wstring m_strItemName;
+	_uint m_iItemCount;
+	_bool m_bDetacted, m_bIsOpen, m_bTakeItem;
 	CTransform* m_pJoint;
-
 	CBoxCollider* m_pBodyCollider;
+
+	_float m_fOpenTimer;
 };
 

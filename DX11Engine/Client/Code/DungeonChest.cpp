@@ -2,10 +2,14 @@
 #include "DungeonChest.h"
 
 CDungeonChest::CDungeonChest()
-	: m_bIsOpen(false)
+	: m_strItemName(L"")
+	, m_iItemCount(1)
+	, m_bIsOpen(false)
+	, m_bTakeItem(false)
 	, m_pJoint(nullptr)
 	, m_bDetacted(false)
 	, m_pBodyCollider(nullptr)
+	, m_fOpenTimer(0.f)
 {
 }
 
@@ -31,7 +35,7 @@ HRESULT CDungeonChest::Initialize()
 
 	m_sDescription.scaleFactor = 0.009f;
 	m_sDescription.colliderCenter = vector3::up() * 0.6f;
-	m_sDescription.colliderSize = vector3(1.8f, 1.2f, 1.3f);
+	m_sDescription.colliderSize = vector3(2.f, 1.2f, 1.8f);
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
@@ -73,7 +77,16 @@ void CDungeonChest::Update()
 	}
 
 	if (m_bIsOpen)
-		m_pJoint->Set_LocalEulerAnglesX(Lerp(m_pJoint->Get_LocalEulerAngles().x, 0.f, DELTA_TIME * 2.f));
+	{
+		m_fOpenTimer += DELTA_TIME;
+		m_pJoint->Set_LocalEulerAnglesX(Lerp(m_pJoint->Get_LocalEulerAngles().x, 0.f, DELTA_TIME * 4.f));
+	}
+
+	if (m_fOpenTimer > 2.f && !m_bTakeItem)
+	{
+		CGameManager::GetInstance().Get_Inventory()->AddItem(m_strItemName);
+		m_bTakeItem = true;
+	}
 }
 
 void CDungeonChest::OnTriggerEnter(CCollider* _other)
@@ -91,6 +104,12 @@ void CDungeonChest::OnTriggerExit(CCollider* _other)
 void CDungeonChest::OnDestroy()
 {
 	__super::OnDestroy();
+}
+
+void CDungeonChest::Set_Item(const wstring& _name, _uint _count)
+{
+	m_strItemName = _name;
+	m_iItemCount = _count;
 }
 
 void CDungeonChest::Open()

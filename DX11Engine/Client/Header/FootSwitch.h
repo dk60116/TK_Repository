@@ -17,6 +17,8 @@ public:
 	void Awake() override;
 	void Update() override;
 	void OnTriggerStay(CCollider* _other) override;
+	void OnTriggerEnter(CCollider* _other) override;
+	void OnTriggerExit(CCollider* _other) override;
 	void OnDestroy() override;
 
 public:

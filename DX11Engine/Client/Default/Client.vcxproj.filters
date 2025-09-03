@@ -79,6 +79,9 @@
     <Filter Include="Scripts\Object\Map\Objects">
       <UniqueIdentifier>{a1ddfd0f-dd7b-4ade-af6e-af9c3138d3cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Item">
+      <UniqueIdentifier>{5d39cfa8-ba01-40eb-9552-8b335ceb5a3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -222,6 +225,15 @@
     <ClInclude Include="..\Header\DungeonChest.h">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Item.h">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Item_DungeonKey.h">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Inventory.h">
+      <Filter>Scripts\Object\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -358,6 +370,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\DungeonChest.cpp">
       <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Item.cpp">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Item_DungeonKey.cpp">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Inventory.cpp">
+      <Filter>Scripts\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
