@@ -9,6 +9,7 @@
 #include "DungeonGate.h"
 #include "FootSwitch.h"
 #include "DungeonChest.h"
+#include "Ladder.h"
 
 CDungeon::CDungeon()
     : m_mMonsterProtoList({})
@@ -66,6 +67,9 @@ void CDungeon::Start()
     CreateDungeonGates();
     CreateDungeonFootSwitches();
     CreateDungeonChest();
+    CreateDungeonLadder();
+
+    Get_Transform()->Find_ChildRecursive(L"door_1")->Get_GameObject()->SetActive(false);
 }
 
 void CDungeon::Update()
@@ -121,6 +125,7 @@ void CDungeon::SpawnDungonObjectPrototypes()
     CreateDungonObjectPrototype<CDungeonGate>();
     CreateDungonObjectPrototype<CFootSwitch>();
     CreateDungonObjectPrototype<CDungeonChest>();
+    CreateDungonObjectPrototype<CLadder>();
 }
 
 void CDungeon::SpawnDungeonChapters()
@@ -232,4 +237,21 @@ void CDungeon::CreateDungeonChest()
     m_vChestList[0]->Get_Transform()->Set_Position(vector3(93.85f, -2.98f, -146.f));
     m_vChestList[0]->Get_Transform()->Set_EulerAnglesY(180.f);
     m_vChestList[0]->Set_Item(L"DungeonKey");
+}
+
+void CDungeon::CreateDungeonLadder()
+{
+    for (size_t i = 0; i < 2; i++)
+    {
+        CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Ladder"]->Get_GameObject());
+        newObj->Set_ObjectName(L"Dungeon Ladder (Clone) " + to_wstring(i));
+        m_vLadderList.push_back(newObj->GetComponent<CLadder>());
+        m_vLadderList.back()->Get_GameObject()->SetActive(true);
+    }
+
+    m_vLadderList[0]->Get_Transform()->Set_Position(vector3(93.85f, -10.53f, -122.85f));
+    m_vLadderList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
+
+    m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.85f, -2.34f, -122.85f));
+    m_vLadderList[1]->Get_Transform()->Set_EulerAngles(0.f, 90.f, -180.f);
 }

@@ -103,8 +103,10 @@ Dungeon_FootSwitch_BaseMap : Map/Dungeon/Dungeon_FootSwitch_BaseMap.png : [Textu
 Dungeon_Lock_Model : Map/Dungeon/Lock/GateLock.fbx : [Mesh] [Material]
 Dungeon_Lock_BaseMap : Map/Dungeon/Lock/GateLock_BaseMap.png : [Texture]
 Dungeon_Lock_Chain : Map/Dungeon/Lock/Chain.fbx : [Mesh] [Material]
-Dungeon_Chest_Model : Map/Dungeon/Chest/Dungeon_Chest.fbx : [Mesh] [Material]
+Dungeon_Chest_Model : Map/Dungeon/Chest/Dungeon_Chest.fbx : [Mesh]
 Dungeon_Chest_BaseMap : Map/Dungeon/Chest/Dungeon_Chest_BaseMap.png : [Texture]
+Ladder_Model : Map/Dungeon/Ladder/Ladder.fbx : [Mesh]
+Ladder_BaseMap : Map/Dungeon/Ladder/Ladder_BaseMap.png : [Texture]
 //Sample_Terrain : Terrain : [1, 300, 300, 2.0, 50.0, Map/TerrainHeight.png]
 // Weapon
 WoodenSword : Weapons/WoodenSword.fbx : [Mesh] [Material]

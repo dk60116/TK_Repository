@@ -109,6 +109,10 @@ void CDungeonGate::Update()
 
 			if (lerp.x <= 0.1f)
 				m_pBody->Set_LocalPositionY(Lerp(m_pBody->Get_LocalPosition().y, -4.f, DELTA_TIME));
+
+			m_vLockChainRenders[0]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[0]->Get_LocalPosition(), vector3(-1.5f, 3.f, 0.f), DELTA_TIME * 3.f));
+			m_vLockChainRenders[1]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[1]->Get_LocalPosition(), vector3(1.5f, 3.f, 0.f), DELTA_TIME * 3.f));
+			m_vLockChainRenders[2]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[2]->Get_LocalPosition(), vector3(0.f, -2.f, 0.f), DELTA_TIME * 3.f));
 		}
 	}
 }
@@ -121,9 +125,7 @@ void CDungeonGate::OnTriggerStay(CCollider* _other)
 		{
 			wstring item = L"DungeonKey";
 			if (CGameManager::GetInstance().Get_Inventory()->UseItem(item))
-			{
 				Open();
-			}
 		}
 	}
 }

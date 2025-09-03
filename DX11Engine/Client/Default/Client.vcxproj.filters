@@ -234,6 +234,12 @@
     <ClInclude Include="..\Header\Inventory.h">
       <Filter>Scripts\Object\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Ladder.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -379,6 +385,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Inventory.cpp">
       <Filter>Scripts\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ladder.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerBehaviour_Ladder.cpp">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

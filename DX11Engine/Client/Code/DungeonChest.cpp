@@ -82,7 +82,7 @@ void CDungeonChest::Update()
 		m_pJoint->Set_LocalEulerAnglesX(Lerp(m_pJoint->Get_LocalEulerAngles().x, 0.f, DELTA_TIME * 4.f));
 	}
 
-	if (m_fOpenTimer > 2.f && !m_bTakeItem)
+	if (m_fOpenTimer > 1.f && !m_bTakeItem)
 	{
 		CGameManager::GetInstance().Get_Inventory()->AddItem(m_strItemName);
 		m_bTakeItem = true;
