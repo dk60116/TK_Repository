@@ -17,15 +17,18 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnTriggerEnter(CCollider* _other) override;
+	void OnTriggerExit(CCollider* _other) override;
 	void OnDestroy() override;
 
 public:
 	void Open();
 
 private:
-	pair<_uint, _uint> m_iChapterIndex;
+	_bool m_bDetacted, m_bIsOpen;
 
-	_bool m_bLock;
-	_bool m_bIsOpen;
+	CTransform* m_pJoint;
+
+	CBoxCollider* m_pBodyCollider;
 };
 

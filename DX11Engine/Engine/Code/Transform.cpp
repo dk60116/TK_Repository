@@ -284,7 +284,7 @@ CTransform* CTransform::Get_Child()
 
 CTransform* CTransform::Get_Child(const _int _index)
 {
-    UINT i = 0;
+    _uint i = 0;
 
     for (TRAVERSAL_ITER(m_lChildList, it))
     {

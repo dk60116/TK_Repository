@@ -96,7 +96,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	}
 
 	using VTX = VertexTexNormalTangentBuffer;
-	const bool hasMaterial = aiScene->HasMaterials();
+	const _bool hasMaterial = aiScene->HasMaterials();
 
 	// meshIndex
 	struct MeshRef { aiMatrix4x4 g; wstring nodeName; };
@@ -226,7 +226,8 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		for (const auto& r : meshRefs[mi])
 		{
 			const aiMatrix4x4& m = r.g;
-			_float4x4 w(
+			_float4x4 w
+			(
 				m.a1, m.b1, m.c1, m.d1,
 				m.a2, m.b2, m.c2, m.d2,
 				m.a3, m.b3, m.c3, m.d3,
