@@ -6,6 +6,7 @@
 #include "PlayerBehaviour_Sword.h"
 #include "PlayerBehaviour_Bow.h"
 #include "PlayerBehaviour_Jump.h"
+#include "PlayerBehaviour_Ladder.h"
 
 CPlayerController::CPlayerController()
 	: m_pPlayer(nullptr)
@@ -45,6 +46,7 @@ void CPlayerController::Awake()
 	AddBehaviour<CPlayerBehaviour_Sword>(Sword);
 	AddBehaviour<CPlayerBehaviour_Jump>(Jump);
 	AddBehaviour<CPlayerBehaviour_Bow>(Bow);
+	AddBehaviour<CPlayerBehaviour_Ladder>(Ladder);
 
 	ChangeState(Idle);
 }

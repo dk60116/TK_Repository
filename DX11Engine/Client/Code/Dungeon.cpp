@@ -252,6 +252,6 @@ void CDungeon::CreateDungeonLadder()
     m_vLadderList[0]->Get_Transform()->Set_Position(vector3(93.85f, -10.53f, -122.85f));
     m_vLadderList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
 
-    m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.85f, -2.34f, -122.85f));
+    m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.83f, -0.027f, -122.85f));
     m_vLadderList[1]->Get_Transform()->Set_EulerAngles(0.f, 90.f, -180.f);
 }

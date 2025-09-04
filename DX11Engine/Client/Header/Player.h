@@ -72,6 +72,8 @@ public:
 	void PlayBowLoadAnimatoin();
 	void PlayBowAimingAnimation();
 
+	void PlayLadderAnimation(const _byte _dir, const _float _blending = 0.1f);
+
 	void PopArrow();
 	void ReturnArrow();
 	void ShootArrow();

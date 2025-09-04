@@ -55,9 +55,14 @@ void CLadder::Update()
     __super::Update();
 }
 
-void CLadder::OnTriggerStay(CCollider* _other)
+void CLadder::OnTriggerEnter(CCollider* _other)
 {
-    __super::OnTriggerStay(_other);
+    __super::OnTriggerEnter(_other);
+
+    if (_other->Get_GameObject()->CompareTag(L"Player"))
+    {
+        CGameManager::GetInstance().Get_Player()->Get_Controller()->ChangeState(CPlayerController::Ladder, false, this);
+    }
 }
 
 void CLadder::OnDestroy()

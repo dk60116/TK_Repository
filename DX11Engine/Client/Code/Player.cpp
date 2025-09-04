@@ -81,6 +81,7 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"SwordCombo", CResources::LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 	m_pAnimator->Add_Animation(L"BowLoad", CResources::LoadOnScene<CAnimationClip>(L"Link_BowLoad (Animation)"));
 	m_pAnimator->Add_Animation(L"BowAiming", CResources::LoadOnScene<CAnimationClip>(L"Link_BowAiming (Animation)"));
+	m_pAnimator->Add_Animation(L"LadderUp", CResources::LoadOnScene<CAnimationClip>(L"Link_LadderUp (Animation)"));
 
 	CGameObject* swordObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Sword");
 	m_mWeapons.emplace(L"Sword", swordObj->AddComponent<CWoodenSword>());
@@ -374,6 +375,24 @@ void CPlayer::PlayBowAimingAnimation()
 	{
 		m_pAnimator->SetLoop(true);
 		m_pAnimator->Play(L"BowAiming", 0.2f);
+	}
+}
+
+void CPlayer::PlayLadderAnimation(const _byte _dir, const _float _blending)
+{
+	m_pAnimator->SetLoop(true);
+
+	if (_dir == 1)
+	{
+		m_pAnimator->Play(L"LadderUp", 0.2f);
+	}
+	else if (_dir == -1)
+	{
+		m_pAnimator->Play(L"LadderDown", 0.2f);
+	}
+	else
+	{
+		m_pAnimator->Play(L"LadderUp", 0.2f);
 	}
 }
 
