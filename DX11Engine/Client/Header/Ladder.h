@@ -20,7 +20,13 @@ public:
 	void OnTriggerEnter(CCollider* _other) override;
 	void OnDestroy() override;
 
+public:
+	const vector3 Get_HeightValues() const;
+	void Set_HeightValue(const _float _bottom, const _float _top, const _float _upPlat);
+
 private:
 	CBoxCollider* m_pBodyCollider;
+
+	_float m_fTopHeight, m_fBottomHeight, m_fUpPlatHeight;
 };
 

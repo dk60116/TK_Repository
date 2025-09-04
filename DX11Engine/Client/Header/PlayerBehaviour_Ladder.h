@@ -21,5 +21,9 @@ public:
 	class CLadder* m_pLadder;
 
 	_byte m_iDirection, m_iPrevDirection;
+
+	_bool m_bOutUp;
+
+	_float m_fOutUpDuration;
 };
 

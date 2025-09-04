@@ -6,6 +6,8 @@ CPlayerBehaviour_Ladder::CPlayerBehaviour_Ladder()
 	: m_pLadder(nullptr)
 	, m_iDirection(0)
 	, m_iPrevDirection(0)
+	, m_bOutUp(false)
+	, m_fOutUpDuration(0.f)
 {
 }
 
@@ -30,8 +32,12 @@ void CPlayerBehaviour_Ladder::Enter(void* _desc)
 	if (_desc)
 		m_pLadder = static_cast<CLadder*>(_desc);
 
+	m_pPlayer->OnOffGravity(false);
 	m_pPlayer->PlayLadderAnimation(0);
 	m_pPlayer->Get_Transform()->Set_EulerAnglesY(m_pLadder->Get_Transform()->Get_EulerAngles().y + 270.f);
+
+	m_bOutUp = false;
+	m_fOutUpDuration = 0.f;
 }
 
 void CPlayerBehaviour_Ladder::During()
@@ -42,7 +48,8 @@ void CPlayerBehaviour_Ladder::During()
 		m_iDirection = 1;
 	if (CInput::GetKey(S))
 		m_iDirection = -1;
-	else
+	
+	if (!CInput::GetKey(W) && !CInput::GetKey(S))
 		m_iDirection = 0;
 
 	if (m_iDirection != m_iPrevDirection)
@@ -50,15 +57,55 @@ void CPlayerBehaviour_Ladder::During()
 		m_pPlayer->PlayLadderAnimation(m_iDirection);
 	}
 
-	m_iPrevDirection = m_iDirection;
-
 	CTransform* playerTF = m_pPlayer->Get_Transform();
 
-	playerTF->Add_PositionY(3.f * static_cast<_float>(m_iDirection) * DELTA_TIME);
+	if (!m_bOutUp)
+		playerTF->Add_PositionY(3.f * static_cast<_float>(m_iDirection) * DELTA_TIME * 0.7f);
 
+	m_iPrevDirection = m_iDirection;
+
+	if (m_pLadder)
+	{
+		if (playerTF->Get_Position().y <= m_pLadder->Get_HeightValues().x)
+		{
+			if (CInput::GetKey(S))
+				m_pPlayer->Get_Controller()->ForceChangeState(CPlayerController::Move, &m_pPlayer->Get_Controller()->Get_MoveDesc());
+		}
+		
+		if (!m_pLadder)
+			return;
+
+		if (playerTF->Get_Position().y >= m_pLadder->Get_HeightValues().y && !m_bOutUp)
+		{
+			if (CInput::GetKey(W))
+			{
+				m_bOutUp = true;
+				m_pPlayer->PlayLadderOutAnimation();
+			}
+		}
+
+		if (m_bOutUp)
+		{
+			m_fOutUpDuration += DELTA_TIME;
+			
+			if (playerTF->Get_Position().y <= m_pLadder->Get_HeightValues().z + 0.25f)
+				playerTF->Add_PositionY(DELTA_TIME * 2.f);
+			else if (m_fOutUpDuration <= 1.f)
+				playerTF->Add_Position(playerTF->Get_Directions().forward * DELTA_TIME * 1.5f);
+			else
+				m_pPlayer->Get_Controller()->ForceChangeState(CPlayerController::Move, &m_pPlayer->Get_Controller()->Get_MoveDesc());
+		}
+	}
 }
 
 void CPlayerBehaviour_Ladder::Exit()
 {
 	__super::Exit();
+
+	m_pPlayer->OnOffGravity(true);
+
+	m_pLadder = nullptr;
+
+	m_bOutUp = false;
+	m_fOutUpDuration = 0.f;
 }

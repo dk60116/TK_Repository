@@ -18,7 +18,7 @@ public:
 	{
 		_int maxHp = 6;
 		_int crtHp = 0;
-		_float moveSpeed = 4.5f;
+		_float moveSpeed = 5.f;
 		_float jumpForce = 7.f;
 		_float attackWalkRatio = 0.5f;
 		_float backWalkRatio = 0.7f;
@@ -72,11 +72,14 @@ public:
 	void PlayBowLoadAnimatoin();
 	void PlayBowAimingAnimation();
 
-	void PlayLadderAnimation(const _byte _dir, const _float _blending = 0.1f);
+	void PlayLadderAnimation(const _byte _dir, const _float _blending = 0.2f);
+	void PlayLadderOutAnimation(const _float _blending = 0.2f);
 
 	void PopArrow();
 	void ReturnArrow();
 	void ShootArrow();
+
+	void OnOffGravity(const _bool _on);
 
 	const vector3& Get_GA();
 

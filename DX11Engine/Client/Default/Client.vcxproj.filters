@@ -240,6 +240,9 @@
     <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\MovingPlat.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\PlayerBehaviour_Ladder.cpp">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MovingPlat.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

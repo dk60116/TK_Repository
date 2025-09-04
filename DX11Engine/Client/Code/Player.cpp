@@ -82,6 +82,8 @@ HRESULT CPlayer::Initialize()
 	m_pAnimator->Add_Animation(L"BowLoad", CResources::LoadOnScene<CAnimationClip>(L"Link_BowLoad (Animation)"));
 	m_pAnimator->Add_Animation(L"BowAiming", CResources::LoadOnScene<CAnimationClip>(L"Link_BowAiming (Animation)"));
 	m_pAnimator->Add_Animation(L"LadderUp", CResources::LoadOnScene<CAnimationClip>(L"Link_LadderUp (Animation)"));
+	m_pAnimator->Add_Animation(L"LadderDown", CResources::LoadOnScene<CAnimationClip>(L"Link_LadderDown (Animation)"));
+	m_pAnimator->Add_Animation(L"LadderOutUp", CResources::LoadOnScene<CAnimationClip>(L"Link_LadderOutUp (Animation)"));
 
 	CGameObject* swordObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Wooden Sword");
 	m_mWeapons.emplace(L"Sword", swordObj->AddComponent<CWoodenSword>());
@@ -384,16 +386,23 @@ void CPlayer::PlayLadderAnimation(const _byte _dir, const _float _blending)
 
 	if (_dir == 1)
 	{
-		m_pAnimator->Play(L"LadderUp", 0.2f);
+		m_pAnimator->Play(L"LadderUp", _blending);
 	}
 	else if (_dir == -1)
 	{
-		m_pAnimator->Play(L"LadderDown", 0.2f);
+		m_pAnimator->Play(L"LadderDown", _blending);
 	}
 	else
 	{
-		m_pAnimator->Play(L"LadderUp", 0.2f);
+		m_pAnimator->Play(L"LadderUp", _blending);
 	}
+}
+
+void CPlayer::PlayLadderOutAnimation(const _float _blending)
+{
+	m_pAnimator->SetLoop(false);
+
+	m_pAnimator->Play(L"LadderOutUp", _blending);
 }
 
 void CPlayer::PopArrow()
@@ -412,6 +421,14 @@ void CPlayer::ReturnArrow()
 void CPlayer::ShootArrow()
 {
 	m_pEquipArrow->Shoot();
+}
+
+void CPlayer::OnOffGravity(const _bool _on)
+{
+	if (!m_pRigidBody)
+		return;
+
+	m_pRigidBody->SetUseGravity(_on);
 }
 
 const vector3& CPlayer::Get_GA()

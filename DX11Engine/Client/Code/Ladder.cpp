@@ -3,6 +3,9 @@
 
 CLadder::CLadder()
     : m_pBodyCollider(nullptr)
+    , m_fBottomHeight(0.f)
+    , m_fTopHeight(1.f)
+    , m_fUpPlatHeight(1.f)
 {
 }
 
@@ -28,6 +31,7 @@ HRESULT CLadder::Initialize()
 
     m_sDescription.scaleFactor = 0.0175f;
     m_sDescription.isTrigger = true;
+    m_sDescription.colliderSize = vector3(0.8f, 1.f, 0.75f);
 
     if (FAILED(__super::Initialize()))
         return S_OK;
@@ -61,8 +65,21 @@ void CLadder::OnTriggerEnter(CCollider* _other)
 
     if (_other->Get_GameObject()->CompareTag(L"Player"))
     {
-        CGameManager::GetInstance().Get_Player()->Get_Controller()->ChangeState(CPlayerController::Ladder, false, this);
+        if (CInput::GetKey(W))
+            CGameManager::GetInstance().Get_Player()->Get_Controller()->ChangeState(CPlayerController::Ladder, false, this);
     }
+}
+
+const vector3 CLadder::Get_HeightValues() const
+{
+    return vector3(m_fBottomHeight, m_fTopHeight, m_fUpPlatHeight);
+}
+
+void CLadder::Set_HeightValue(const _float _bottom, const _float _top, const _float _upPlat)
+{
+    m_fBottomHeight = _bottom;
+    m_fTopHeight = _top;
+    m_fUpPlatHeight = _upPlat;
 }
 
 void CLadder::OnDestroy()

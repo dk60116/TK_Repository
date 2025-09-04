@@ -10,6 +10,7 @@
 #include "FootSwitch.h"
 #include "DungeonChest.h"
 #include "Ladder.h"
+#include "MovingPlat.h"
 
 CDungeon::CDungeon()
     : m_mMonsterProtoList({})
@@ -68,6 +69,7 @@ void CDungeon::Start()
     CreateDungeonFootSwitches();
     CreateDungeonChest();
     CreateDungeonLadder();
+    CreateMovingPlat();
 
     Get_Transform()->Find_ChildRecursive(L"door_1")->Get_GameObject()->SetActive(false);
 }
@@ -126,6 +128,7 @@ void CDungeon::SpawnDungonObjectPrototypes()
     CreateDungonObjectPrototype<CFootSwitch>();
     CreateDungonObjectPrototype<CDungeonChest>();
     CreateDungonObjectPrototype<CLadder>();
+    CreateDungonObjectPrototype<CMovingPlat>();
 }
 
 void CDungeon::SpawnDungeonChapters()
@@ -172,7 +175,7 @@ void CDungeon::SpawnDungeonChapters()
     }
 
     {
-        m_vChapterList[8]->SetBoundingBox({ pair(vector3(-3.45f, 5.f, -93.45f), vector3(70.f, 10.f, 34.f)) });
+        m_vChapterList[8]->SetBoundingBox({ pair(vector3(-3.45f, 7.3f, -93.45f), vector3(70.f, 10.f, 34.f)) });
     }
 
     {
@@ -241,7 +244,7 @@ void CDungeon::CreateDungeonChest()
 
 void CDungeon::CreateDungeonLadder()
 {
-    for (size_t i = 0; i < 2; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Ladder"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Ladder (Clone) " + to_wstring(i));
@@ -251,7 +254,27 @@ void CDungeon::CreateDungeonLadder()
 
     m_vLadderList[0]->Get_Transform()->Set_Position(vector3(93.85f, -10.53f, -122.85f));
     m_vLadderList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
+    m_vLadderList[0]->Set_HeightValue(-10.f, -1.3f, 0.1f);
 
     m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.83f, -0.027f, -122.85f));
     m_vLadderList[1]->Get_Transform()->Set_EulerAngles(0.f, 90.f, -180.f);
+
+    m_vLadderList[2]->Get_Transform()->Set_Position(vector3(-33.f, 6.7f, -103.65f));
+    m_vLadderList[2]->Set_HeightValue(5.8f, 11.8f, 12.1f);
+}
+
+void CDungeon::CreateMovingPlat()
+{
+    for (size_t i = 0; i < 1; i++)
+    {
+        CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"MovingPlat"]->Get_GameObject());
+        newObj->Set_ObjectName(L"Moving Plat (Clone) " + to_wstring(i));
+        m_vMovingPlatList.push_back(newObj->GetComponent<CMovingPlat>());
+        m_vMovingPlatList.back()->Get_GameObject()->SetActive(true);
+    }
+
+    m_vMovingPlatList[0]->Get_Transform()->Set_Position(-37.25f, 10.4f, -103.8f);
+    m_vMovingPlatList[0]->AddRout(vector3(-37.25f, 10.4f, -103.8f));
+    m_vMovingPlatList[0]->AddRout(vector3(-46.f, -3.5f, -94.45f));
+    m_vMovingPlatList[0]->AddRout(vector3(-50.f, -3.5f, -94.45f));
 }

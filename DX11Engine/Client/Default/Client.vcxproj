@@ -160,6 +160,7 @@
     <ClInclude Include="..\Header\Item.h" />
     <ClInclude Include="..\Header\Item_DungeonKey.h" />
     <ClInclude Include="..\Header\Ladder.h" />
+    <ClInclude Include="..\Header\MovingPlat.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Sword.h" />
@@ -228,6 +229,7 @@
     <ClCompile Include="..\Code\MonsterController.cpp" />
     <ClCompile Include="..\Code\MonsterPartCollision.cpp" />
     <ClCompile Include="..\Code\DungeonChapter.cpp" />
+    <ClCompile Include="..\Code\MovingPlat.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Bow.cpp" />
