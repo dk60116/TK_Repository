@@ -18,7 +18,7 @@ HRESULT CBehaviour_GetHit::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-void CBehaviour_GetHit::Enter()
+void CBehaviour_GetHit::Enter(void* _desc)
 {
 	__super::Enter();
 

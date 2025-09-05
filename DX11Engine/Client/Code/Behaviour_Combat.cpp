@@ -18,7 +18,7 @@ HRESULT CBehaviour_Combat::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-void CBehaviour_Combat::Enter()
+void CBehaviour_Combat::Enter(void* _desc)
 {
 	__super::Enter();
 

@@ -19,9 +19,9 @@ HRESULT CBehaviour_CombatWait::Initialize(CMonster* _monster)
     return S_OK;
 }
 
-void CBehaviour_CombatWait::Enter()
+void CBehaviour_CombatWait::Enter(void* _desc)
 {
-    __super::Enter();
+    __super::Enter(_desc);
 
     m_pMonster->Get_Animator()->SetLoop(true);
     m_pMonster->Get_Animator()->Play(L"Idle", 0.2f);

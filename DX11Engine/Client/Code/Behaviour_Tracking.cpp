@@ -17,7 +17,7 @@ HRESULT CBehaviour_Tracking::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-void CBehaviour_Tracking::Enter()
+void CBehaviour_Tracking::Enter(void* _desc)
 {
 	__super::Enter();
 

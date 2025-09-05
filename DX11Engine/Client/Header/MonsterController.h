@@ -40,7 +40,7 @@ private:
 
 private:
 	MonsterState m_eCrtState;
-	class CMonster* m_pMonster;
+	CMonster* m_pMonster;
 
 	map<_uint, class CMonsterBehaviour*> m_mBehaviourList;
 	CMonsterBehaviour* m_pCrtBehaviour;

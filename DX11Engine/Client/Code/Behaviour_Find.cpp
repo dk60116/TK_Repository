@@ -17,7 +17,7 @@ HRESULT CBehaviour_Find::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-void CBehaviour_Find::Enter()
+void CBehaviour_Find::Enter(void* _desc)
 {
 	__super::Enter();
 

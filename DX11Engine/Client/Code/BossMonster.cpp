@@ -27,6 +27,9 @@ HRESULT CBossMonster::Initialize()
 	for (TRAVERSAL_ITER(m_vMeshRenderers, it))
 		(*it)->Get_Material()->Set_Texture(m_pBaseMap);
 
+	if (!m_pAnimator)
+		m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
+
 	return S_OK;
 }
 
@@ -64,10 +67,14 @@ CAnimator* CBossMonster::Get_Animator() const
 	return m_pAnimator;
 }
 
-void CBossMonster::Change_State(const _uint _state)
+void CBossMonster::Get_Damage(CWeapon* _weapon)
 {
 }
 
-void CBossMonster::Get_Damage(CWeapon* _weapon)
+void CBossMonster::Add_Animation(const wstring& _name)
 {
+	if (!m_pAnimator)
+		return;
+
+	m_pAnimator->Add_Animation(_name, CResources::LoadOnScene<CAnimationClip>(m_strBossName + L'_' + _name + L" (Animation)"));
 }

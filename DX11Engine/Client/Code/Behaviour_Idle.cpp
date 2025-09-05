@@ -18,7 +18,7 @@ HRESULT CBehaviour_Idle::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-void CBehaviour_Idle::Enter()
+void CBehaviour_Idle::Enter(void* _desc)
 {
 	__super::Enter();
 

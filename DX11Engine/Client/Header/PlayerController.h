@@ -42,7 +42,7 @@ private:
 public:
 	const PlayerState Get_State() const;
 	void Set_Focus(CTransform* _target);
-	void ChangeState(const PlayerState _state, const _bool forceEnter = false, void* _enterDesc = nullptr);
+	void ChangeState(const PlayerState _state, const _bool _forceEnter = false, void* _enterDesc = nullptr);
 	void ForceChangeState(const PlayerState _state, void* _enterDesc = nullptr);
 	const _bool IsDamaged() const;
 	void SetDamaged(const _bool _value);

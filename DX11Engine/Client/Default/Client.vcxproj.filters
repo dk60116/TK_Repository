@@ -88,6 +88,15 @@
     <Filter Include="Scripts\Object\Boss\Controller">
       <UniqueIdentifier>{b6648dbd-730b-4b4b-978d-45266f86522e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Boss\Dragon">
+      <UniqueIdentifier>{10aa4666-bf1c-469f-97c0-47f867d97dd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Boss\Dragon\Controller">
+      <UniqueIdentifier>{1903a63f-492c-49ed-b176-f64c4250cdca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Boss\Dragon\Controller\Behaviour">
+      <UniqueIdentifier>{a169460e-c4f4-4c8c-a2b3-936143aa26dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -249,14 +258,26 @@
     <ClInclude Include="..\Header\MovingPlat.h">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\Dragon.h">
-      <Filter>Scripts\Object\Boss</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\BossMonster.h">
       <Filter>Scripts\Object\Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\BossController.h">
       <Filter>Scripts\Object\Boss\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Dragon.h">
+      <Filter>Scripts\Object\Boss\Dragon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\BossController_Dragon.h">
+      <Filter>Scripts\Object\Boss\Dragon\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Idle.h">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Wakeup.h">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Landing.h">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -410,9 +431,6 @@
     <ClCompile Include="..\Code\MovingPlat.cpp">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Dragon.cpp">
-      <Filter>Scripts\Object\Boss</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\BossMonster.cpp">
       <Filter>Scripts\Object\Boss</Filter>
     </ClCompile>
@@ -421,6 +439,21 @@
     </ClCompile>
     <ClCompile Include="..\Code\BossController.cpp">
       <Filter>Scripts\Object\Boss\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Dragon.cpp">
+      <Filter>Scripts\Object\Boss\Dragon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\BossController_Dragon.cpp">
+      <Filter>Scripts\Object\Boss\Dragon\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_Idle.cpp">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_Wakeup.cpp">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_Landing.cpp">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

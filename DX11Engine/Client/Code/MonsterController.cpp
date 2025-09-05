@@ -10,6 +10,7 @@
 #include "Behaviour_GetHit.h"
 #include "Behaviour_Death.h"
 #include "PlayerController.h"
+#include "BossController.h"
 
 CMonsterController::CMonsterController()
 	: m_pMonster(nullptr)

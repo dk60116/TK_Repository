@@ -70,6 +70,7 @@ void CMovingPlat::Update()
 	if (m_iTargetStep < static_cast<_byte>(m_vRout.size()))
 	{
 		const vector3& targetPos = m_vRout[m_iTargetStep];
+
 		if (vector3::Distance(myPos, targetPos) > 0.01f)
 		{
 			const vector3 moveValue = (targetPos - myPos).normalized() * m_fMoveSpeed * DELTA_TIME;

@@ -99,9 +99,9 @@ void CPlayerController::Set_Focus(CTransform* _target)
 	m_pFocusTransform = _target;
 }
 
-void CPlayerController::ChangeState(const PlayerState _state, const _bool forceEnter, void* _enterDesc)
+void CPlayerController::ChangeState(const PlayerState _state, const _bool _forceEnter, void* _enterDesc)
 {
-	if (!forceEnter)
+	if (!_forceEnter)
 	{
 		if (_state == m_eCrtState)
 			return;

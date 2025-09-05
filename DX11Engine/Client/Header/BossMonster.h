@@ -29,6 +29,13 @@ public:
 	void Change_State(const _uint _state);
 	void Get_Damage(class CWeapon* _weapon);
 
+public:
+	virtual void PlayIdle(const _float _blending = 0.2f) PURE;
+	virtual void PlayThreat(const _float _blending = 0.2f) PURE;
+
+protected:
+	void Add_Animation(const wstring& _name);
+
 protected:
 	wstring m_strBossName;
 	BOSSDESC m_sDesc;

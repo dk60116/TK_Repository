@@ -88,7 +88,7 @@ void CPlayerBehaviour_Ladder::During()
 		{
 			m_fOutUpDuration += DELTA_TIME;
 			
-			if (playerTF->Get_Position().y <= m_pLadder->Get_HeightValues().z + 0.25f)
+			if (playerTF->Get_Position().y <= m_pLadder->Get_HeightValues().z)
 				playerTF->Add_PositionY(DELTA_TIME * 2.f);
 			else if (m_fOutUpDuration <= 1.f)
 				playerTF->Add_Position(playerTF->Get_Directions().forward * DELTA_TIME * 1.5f);

@@ -19,7 +19,7 @@ HRESULT CBehaviour_Patrole::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-void CBehaviour_Patrole::Enter()
+void CBehaviour_Patrole::Enter(void* _desc)
 {
 	__super::Enter();
 

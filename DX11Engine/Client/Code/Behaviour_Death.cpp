@@ -17,7 +17,7 @@ HRESULT CBehaviour_Death::Initialize(CMonster* _monster)
     return S_OK;
 }
 
-void CBehaviour_Death::Enter()
+void CBehaviour_Death::Enter(void* _desc)
 {
     __super::Enter();
 
