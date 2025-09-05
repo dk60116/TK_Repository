@@ -82,6 +82,9 @@
     <Filter Include="Scripts\Object\Item">
       <UniqueIdentifier>{5d39cfa8-ba01-40eb-9552-8b335ceb5a3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Boss">
+      <UniqueIdentifier>{6d267fed-7275-41bd-bccf-9f402e51b850}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -243,6 +246,12 @@
     <ClInclude Include="..\Header\MovingPlat.h">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Dragon.h">
+      <Filter>Scripts\Object\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\BossMonster.h">
+      <Filter>Scripts\Object\Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -397,6 +406,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\MovingPlat.cpp">
       <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Dragon.cpp">
+      <Filter>Scripts\Object\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\BossMonster.cpp">
+      <Filter>Scripts\Object\Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

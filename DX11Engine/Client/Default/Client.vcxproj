@@ -151,6 +151,8 @@
     <ClInclude Include="..\Header\Behaviour_Idle.h" />
     <ClInclude Include="..\Header\Behaviour_Patrole.h" />
     <ClInclude Include="..\Header\Behaviour_Tracking.h" />
+    <ClInclude Include="..\Header\BossMonster.h" />
+    <ClInclude Include="..\Header\Dragon.h" />
     <ClInclude Include="..\Header\DungeonChapter.h" />
     <ClInclude Include="..\Header\DungeonChest.h" />
     <ClInclude Include="..\Header\DungeonGate.h" />
@@ -206,8 +208,10 @@
     <ClCompile Include="..\Code\Behaviour_Idle.cpp" />
     <ClCompile Include="..\Code\Behaviour_Patrole.cpp" />
     <ClCompile Include="..\Code\Behaviour_Tracking.cpp" />
+    <ClCompile Include="..\Code\BossMonster.cpp" />
     <ClCompile Include="..\Code\CGoblin.cpp" />
     <ClCompile Include="..\Code\DefaultArrow.cpp" />
+    <ClCompile Include="..\Code\Dragon.cpp" />
     <ClCompile Include="..\Code\Dungeon.cpp" />
     <ClCompile Include="..\Code\DungeonChest.cpp" />
     <ClCompile Include="..\Code\DungeonGate.cpp" />

@@ -4,9 +4,6 @@
 #include "PlayerCamera.h"
 #include "PlayerHUD.h"
 #include "Dungeon.h"
-#include "Wolf.h"
-#include "Goblin.h"
-#include "Troll.h"
 
 CGameScene::CGameScene()
 	: m_pPlayerCamera(nullptr)

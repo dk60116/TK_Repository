@@ -5,6 +5,7 @@
 #include "Wolf.h"
 #include "Goblin.h"
 #include "Troll.h"
+#include "Dragon.h"
 
 #include "DungeonGate.h"
 #include "FootSwitch.h"
@@ -20,6 +21,7 @@ CDungeon::CDungeon()
     , m_vGateList({})
     , m_vFootSwitchList({})
     , m_vChestList({})
+    , m_pDragon(nullptr)
 {
 }
 
@@ -47,9 +49,10 @@ HRESULT CDungeon::Initialize()
     if (FAILED(__super::Initialize()))
         return E_FAIL;
 
-    SpawnMonsterPrototypes();
-    SpawnDungonObjectPrototypes();
-    SpawnDungeonChapters();
+    CreateMonsterPrototypes();
+    CreateDungonObjectPrototypes();
+    CreateDungeonChapters();
+    CreateDragon();
 
     return S_OK;
 }
@@ -65,11 +68,11 @@ void CDungeon::Start()
 {
     __super::Start();
 
-    CreateDungeonGates();
-    CreateDungeonFootSwitches();
-    CreateDungeonChest();
-    CreateDungeonLadder();
-    CreateMovingPlat();
+    SpawnDungeonGates();
+    SpawnDungeonFootSwitches();
+    SpawnDungeonChest();
+    SpawnDungeonLadder();
+    SpawnMovingPlat();
 
     Get_Transform()->Find_ChildRecursive(L"door_1")->Get_GameObject()->SetActive(false);
 }
@@ -115,14 +118,14 @@ void CDungeon::OnDestroy()
     __super::OnDestroy();
 }
 
-void CDungeon::SpawnMonsterPrototypes()
+void CDungeon::CreateMonsterPrototypes()
 {
     CrateMonsterPrototype<CWolf>();
     CrateMonsterPrototype<CGoblin>();
     CrateMonsterPrototype<CTroll>();
 }
 
-void CDungeon::SpawnDungonObjectPrototypes()
+void CDungeon::CreateDungonObjectPrototypes()
 {
     CreateDungonObjectPrototype<CDungeonGate>();
     CreateDungonObjectPrototype<CFootSwitch>();
@@ -131,7 +134,7 @@ void CDungeon::SpawnDungonObjectPrototypes()
     CreateDungonObjectPrototype<CMovingPlat>();
 }
 
-void CDungeon::SpawnDungeonChapters()
+void CDungeon::CreateDungeonChapters()
 {
     for (_uint i = 0; i < 11; ++i)
     {
@@ -187,7 +190,13 @@ void CDungeon::SpawnDungeonChapters()
     }
 }
 
-void CDungeon::CreateDungeonGates()
+void CDungeon::CreateDragon()
+{
+    CGameObject* dragonObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Dragon");
+    m_pDragon = dragonObj->AddComponent<CDragon>();
+}
+
+void CDungeon::SpawnDungeonGates()
 {
     for (size_t i = 0; i < 5; i++)
     {
@@ -209,7 +218,7 @@ void CDungeon::CreateDungeonGates()
     m_vGateList[4]->SetLock();
 }
 
-void CDungeon::CreateDungeonFootSwitches()
+void CDungeon::SpawnDungeonFootSwitches()
 {
     for (size_t i = 0; i < 1; i++)
     {
@@ -227,7 +236,7 @@ void CDungeon::CreateDungeonFootSwitches()
     }
 }
 
-void CDungeon::CreateDungeonChest()
+void CDungeon::SpawnDungeonChest()
 {
     for (size_t i = 0; i < 1; i++)
     {
@@ -242,7 +251,7 @@ void CDungeon::CreateDungeonChest()
     m_vChestList[0]->Set_Item(L"DungeonKey");
 }
 
-void CDungeon::CreateDungeonLadder()
+void CDungeon::SpawnDungeonLadder()
 {
     for (size_t i = 0; i < 3; i++)
     {
@@ -263,7 +272,7 @@ void CDungeon::CreateDungeonLadder()
     m_vLadderList[2]->Set_HeightValue(5.8f, 11.8f, 12.1f);
 }
 
-void CDungeon::CreateMovingPlat()
+void CDungeon::SpawnMovingPlat()
 {
     for (size_t i = 0; i < 1; i++)
     {

@@ -25,15 +25,17 @@ public:
 	void OnDestroy() override;
 
 private:
-	void SpawnMonsterPrototypes();
-	void SpawnDungonObjectPrototypes();
-	void SpawnDungeonChapters();
+	void CreateMonsterPrototypes();
+	void CreateDungonObjectPrototypes();
+	void CreateDungeonChapters();
+	
+	void CreateDragon();
 
-	void CreateDungeonGates();
-	void CreateDungeonFootSwitches();
-	void CreateDungeonChest();
-	void CreateDungeonLadder();
-	void CreateMovingPlat();
+	void SpawnDungeonGates();
+	void SpawnDungeonFootSwitches();
+	void SpawnDungeonChest();
+	void SpawnDungeonLadder();
+	void SpawnMovingPlat();
 
 private:
 	template <typename T>
@@ -53,6 +55,8 @@ private:
 	vector<class CDungeonChest*> m_vChestList;
 	vector<class CLadder*> m_vLadderList;
 	vector<class CMovingPlat*> m_vMovingPlatList;
+
+	class CDragon* m_pDragon;
 };
 
 template <typename T>

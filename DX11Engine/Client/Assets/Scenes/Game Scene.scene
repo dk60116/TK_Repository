@@ -59,6 +59,8 @@ Troll_Run : Monsters/Troll/Troll_Run.fbx : [Animation Clip]
 Troll_Attack01 : Monsters/Troll/Troll_Attack01.fbx : [Animation Clip]
 Troll_GetHit_Front : Monsters/Troll/Troll_GetHit_Front.fbx : [Animation Clip]
 Troll_Death : Monsters/Troll/Troll_Death.fbx : [Animation Clip]
+// Dragon
+Dragon_Model : Monstert/Dragon/Dragon.fbx : [SkinnedMesh]
 // Space
 //Temple_Model : Map/Temple.fbx : [Mesh] [Material]
 //Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]
