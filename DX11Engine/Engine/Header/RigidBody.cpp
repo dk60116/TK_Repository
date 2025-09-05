@@ -117,6 +117,13 @@ const vector3& CRigidBody::GetVelocity()
     return m_vVelocity;
 }
 
+const vector3 CRigidBody::GetVelocityDirection()
+{
+    vector3 result = ((m_vVelocity + m_vGravityAcceleration) - Get_Transform()->Get_Position()).normalized();
+
+    return result;
+}
+
 const vector3& CRigidBody::Get_GA()
 {
     return m_vGravityAcceleration;

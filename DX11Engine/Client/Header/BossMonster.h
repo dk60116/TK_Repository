@@ -6,7 +6,7 @@ class CBossMonster abstract : public CComponent
 public:
 	typedef struct BossMonsterDescription
 	{
-
+		_float scaleFactor = 0.01f;
 	}BOSSDESC;
 
 protected:
@@ -31,10 +31,10 @@ public:
 
 protected:
 	wstring m_strBossName;
+	BOSSDESC m_sDesc;
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
 	CTexture* m_pBaseMap;
 	CAnimator* m_pAnimator;
-	EngineAI::CNavMeshAgent* m_pNavAgent;
 
 	map<wstring, class CMonsterPartCollision*> m_mPartColList;
 };

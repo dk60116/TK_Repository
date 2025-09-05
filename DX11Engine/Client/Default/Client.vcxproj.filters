@@ -85,6 +85,9 @@
     <Filter Include="Scripts\Object\Boss">
       <UniqueIdentifier>{6d267fed-7275-41bd-bccf-9f402e51b850}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Boss\Controller">
+      <UniqueIdentifier>{b6648dbd-730b-4b4b-978d-45266f86522e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -252,6 +255,9 @@
     <ClInclude Include="..\Header\BossMonster.h">
       <Filter>Scripts\Object\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\BossController.h">
+      <Filter>Scripts\Object\Boss\Controller</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -325,9 +331,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\WoodenBow.cpp">
       <Filter>Scripts\Object\Weapons\Bows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\DefaultArrow.cpp">
-      <Filter>Scripts\Object\Weapons\Arrows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Arrow.cpp">
       <Filter>Scripts\Object\Weapons\Arrows</Filter>
@@ -412,6 +415,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\BossMonster.cpp">
       <Filter>Scripts\Object\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DefaultArrow.cpp">
+      <Filter>Scripts\Object\Weapons\Arrows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\BossController.cpp">
+      <Filter>Scripts\Object\Boss\Controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

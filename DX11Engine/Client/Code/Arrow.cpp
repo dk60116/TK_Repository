@@ -61,6 +61,12 @@ void CArrow::Update()
 		if (m_fPassedTime >= m_fLifeTime)
 			Return();
 	}
+
+	if (m_bUsed)
+	{
+		Get_Transform()->LookAt(m_pRigidBody->GetVelocityDirection());
+		CDebug::LogError(m_pRigidBody->GetVelocityDirection());
+	}
 }
 
 void CArrow::OnDestroy()
@@ -94,7 +100,7 @@ void CArrow::Pop()
 	m_pCollider->SetEnabled(false);
 	m_pRigidBody->ResetVelocity();
 	m_pRigidBody->ResetGravity();
-	Get_Transform()->Set_LocalScale(10.f);
+	Get_Transform()->Set_LocalScale(100.f);
 }
 
 void CArrow::Shoot()

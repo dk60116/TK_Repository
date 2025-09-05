@@ -43,6 +43,7 @@ public:
 	const _bool IsKinematic() const;
 	void SetKinematic(const _bool _value);
 	const vector3& GetVelocity();
+	const vector3 GetVelocityDirection();
 	const vector3& Get_GA();
 
 	void AddForce(const vector3 _value);
