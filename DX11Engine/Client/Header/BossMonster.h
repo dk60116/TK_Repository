@@ -9,6 +9,13 @@ public:
 		_float scaleFactor = 0.01f;
 	}BOSSDESC;
 
+	struct BossStatus
+	{
+		_uint maxHp = 10;
+		_uint crtHp = 10;
+		_float runSpeed = 3.f;
+	};
+
 protected:
 	explicit CBossMonster();
 	~CBossMonster();

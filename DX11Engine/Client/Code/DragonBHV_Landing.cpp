@@ -5,6 +5,7 @@
 CDragonBHV_Landing::CDragonBHV_Landing()
 	: m_bThreadingRise(false)
 	, m_vTargetPos({})
+	, m_bCompleteRise(false)
 {
 }
 
@@ -51,17 +52,42 @@ void CDragonBHV_Landing::During()
 {
 	__super::During();
 
+	CDragon* dragon = dynamic_cast<CDragon*>(m_pBoss);
+
 	CTransform* monsterTF = m_pBoss->Get_Transform();
 	const vector3 monsterPos = monsterTF->Get_Position();
 
 	if (m_bThreadingRise)
 	{
-		if (monsterPos.y <= m_vTargetPos.y)
-			monsterTF->Add_PositionY(DELTA_TIME);
+		if (!m_bCompleteRise)
+		{
+			quaternion rotQ = monsterTF->LookQuaternion(m_vTargetPos, CTransform::X | CTransform::Z);
+
+			monsterTF->Set_Quaternion(quaternion::Slerp(monsterTF->Get_Quaternion(), rotQ, DELTA_TIME * dragon->Get_Status().flyingTurnSpeed));
+
+			if (monsterPos.y <= m_vTargetPos.y)
+				monsterTF->Add_PositionY(DELTA_TIME);
+			else
+			{
+				dragon->PlayFly();
+				m_bCompleteRise = true;
+			}
+		}
+		else
+		{
+			const vector3 normal = (m_vTargetPos - monsterPos).normalized();
+
+			if (vector3::Distance(monsterPos, m_vTargetPos) >= 0.05f)
+				monsterTF->Add_Position(normal * 10.f * DELTA_TIME);
+			else
+				dragon->Get_Controller()->Change_State(3);
+		}
 	}
 }
 
 void CDragonBHV_Landing::Exit()
 {
 	__super::Exit();
+	
+	m_bCompleteRise = false;
 }

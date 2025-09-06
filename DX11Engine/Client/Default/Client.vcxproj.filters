@@ -279,6 +279,9 @@
     <ClInclude Include="..\Header\DragonBHV_Landing.h">
       <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_ShootFireBall.h">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -453,6 +456,9 @@
       <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DragonBHV_Landing.cpp">
+      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_ShootFireBall.cpp">
       <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
   </ItemGroup>

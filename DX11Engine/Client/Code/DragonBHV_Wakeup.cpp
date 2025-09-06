@@ -46,7 +46,7 @@ void CDragonBHV_Wakeup::During()
 		if (m_pBoss->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f && !m_bCompleteTakeFly)
 		{
 			dragon->SetFlying(true);
-			CDragon::LandingDesc ld = { true, vector3(0.f, 8.f, -35.f)};
+			CDragon::LandingDesc ld = { true, vector3(0.f, 10.f, -35.f)};
 			dragon->Get_Controller()->Change_State(2, &ld);
 			m_bCompleteTakeFly = true;
 		}

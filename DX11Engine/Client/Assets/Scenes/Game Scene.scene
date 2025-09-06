@@ -66,6 +66,7 @@ Dragon_Idle : Monster/Dragon/Dragon_Idle.fbx : [Animation Clip]
 Dragon_Threat : Monster/Dragon/Dragon_Threat.fbx : [Animation Clip]
 Dragon_GroundToFly : Monster/Dragon/Dragon_GroundToFly.fbx : [Animation Clip]
 Dragon_FlyIdle : Monster/Dragon/Dragon_FlyIdle.fbx : [Animation Clip]
+Dragon_Fly : Monster/Dragon/Dragon_Fly.fbx : [Animation Clip]
 // Space
 //Temple_Model : Map/Temple.fbx : [Mesh] [Material]
 //Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]

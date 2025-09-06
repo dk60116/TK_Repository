@@ -5,7 +5,7 @@ class CBossController_Dragon final : public CBossController
 {
 	friend class CGameObject;
 
-	enum DragonState { Idle, Wakeup, Landing };
+	enum DragonState { Idle, Wakeup, Landing, ShootFireBall };
 
 private:
 	explicit CBossController_Dragon();

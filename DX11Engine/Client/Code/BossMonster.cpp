@@ -20,7 +20,7 @@ HRESULT CBossMonster::Initialize()
 		return E_FAIL;
 
 	wstring skinnedMeshBufferName = m_strBossName + L"_Model (MeshBuffer)";
-	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(skinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(skinnedMeshBufferName), m_sDesc.scaleFactor);
+	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(skinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(skinnedMeshBufferName), m_sDesc.scaleFactor, vector3::up() * 180.f);
 
 	m_pBaseMap = CResources::LoadOnScene<CTexture>(m_strBossName + L"_BaseMap (Texture)");
 

@@ -5,6 +5,14 @@
 class CDragon final : public CBossMonster
 {
 public:
+	struct DragonStatus : BossStatus
+	{
+		_uint fireballPower = 1;
+		_uint handPower = 2;
+
+		_float flyingTurnSpeed = 5.f;
+	};
+
 	struct LandingDesc
 	{
 		_bool threadRise;
@@ -31,16 +39,19 @@ public:
 
 public:
 	CBossController_Dragon* Get_Controller();
+	const DragonStatus& Get_Status();
 
 public:
 	void PlayIdle(const _float _blending) override;
 	void PlayThreat(const _float _blending) override;
 	void PlayGroundToFly(const _float _blending = 0.2f);
+	void PlayFly(const _float _blending = 0.2f);
 
 	const _bool GetFlying() const;
 	void SetFlying(const _bool _fly);
 
 private:
+	DragonStatus m_sStatus;
 	CBossController_Dragon* m_pController;
 	_bool m_bFlying;
 };

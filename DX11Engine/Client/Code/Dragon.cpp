@@ -3,7 +3,8 @@
 #include "BossController_Dragon.h"
 
 CDragon::CDragon()
-	:m_pController(nullptr)
+	: m_sStatus({})
+	, m_pController(nullptr)
 	, m_bFlying(false)
 {
 }
@@ -43,6 +44,7 @@ HRESULT CDragon::Initialize()
 		Add_Animation(L"Threat");
 		Add_Animation(L"GroundToFly");
 		Add_Animation(L"FlyIdle");
+		Add_Animation(L"Fly");
 	}
 
 	return S_OK;
@@ -83,6 +85,11 @@ CBossController_Dragon* CDragon::Get_Controller()
 	return m_pController;
 }
 
+const CDragon::DragonStatus& CDragon::Get_Status()
+{
+	return m_sStatus;
+}
+
 void CDragon::PlayIdle(const _float _blending)
 {
 	if (!m_pAnimator)
@@ -118,6 +125,16 @@ void CDragon::PlayGroundToFly(const _float _blending)
 	m_pAnimator->SetLoop(false);
 
 	m_pAnimator->Play(L"GroundToFly", _blending);
+}
+
+void CDragon::PlayFly(const _float _blending)
+{
+	if (!m_pAnimator)
+		return;
+
+	m_pAnimator->SetLoop(true);
+
+	m_pAnimator->Play(L"Fly", _blending);
 }
 
 const _bool CDragon::GetFlying() const
