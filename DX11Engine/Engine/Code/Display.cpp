@@ -8,11 +8,13 @@ CDisplay::CDisplay()
 	, m_bIsFullScreen(false)
 	, m_iWidth(1280)
 	, m_iHeight(720)
+	, m_mRenderTargetList({})
 {
 }
 
 CDisplay::~CDisplay()
 {
+	Release();
 }
 
 CDisplay& CDisplay::GetInstance()
@@ -38,6 +40,14 @@ HRESULT CDisplay::Initialize(HINSTANCE _hInst, HWND _hGameWnd, HWND _hEditorWnd)
 	return S_OK;
 }
 
+void CDisplay::Release()
+{
+	for (TRAVERSAL_ITER(m_mRenderTargetList, it))
+		Safe_Release((*it).second);
+	
+	m_mRenderTargetList.clear();
+}
+
 HINSTANCE CDisplay::Get_HInstance()
 {
 	return GetInstance().m_hInst;
@@ -61,4 +71,18 @@ vector2Int CDisplay::Get_ScreenResolution()
 _float CDisplay::Get_Aspect()
 {
 	return static_cast<_float>(GetInstance().m_iWidth) / static_cast<_float>(GetInstance().m_iHeight);
+}
+
+HRESULT CDisplay::CreateRenderTargets()
+{
+	CRenderTarget* rt_Diffuse = CRenderTarget::Create(L"Diffuse", vector2(240.f, 135.f), DXGI_FORMAT_R8G8B8A8_UNORM, ColorValue::black());
+	rt_Diffuse->AddRef();
+	GetInstance().m_mRenderTargetList.emplace(rt_Diffuse->m_strTargetName, rt_Diffuse);
+
+	return S_OK;
+}
+
+void CDisplay::RenderTargetRender(const wstring& _name)
+{
+	m_mRenderTargetList[_name]->Render();
 }

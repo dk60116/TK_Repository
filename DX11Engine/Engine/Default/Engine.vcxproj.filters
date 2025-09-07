@@ -314,9 +314,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="epch.cpp">
-      <Filter>Default</Filter>
-    </ClCompile>
     <ClCompile Include="..\Header\GraphicDevice.cpp">
       <Filter>Engine\DirectX</Filter>
     </ClCompile>
@@ -517,6 +514,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\RenderTarget.cpp">
       <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="epch.cpp">
+      <Filter>Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

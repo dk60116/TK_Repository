@@ -28,6 +28,8 @@ public:
 private:
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
+
+public:
 	void Bind() const;
 
 public:

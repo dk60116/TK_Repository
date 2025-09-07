@@ -5,22 +5,25 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CRenderTarget final : public UObject
 {
+	friend class CDisplay;
+
 private:
-	CRenderTarget();
+	explicit CRenderTarget();
 	virtual ~CRenderTarget();
+
+private:
+	static CRenderTarget* Create(const wstring& _name, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC);
 
 public:
 	HRESULT Initialize(const wstring& _name, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor);
-	void Release();
+	void OnDestroy();
 
-#ifndef _CLIENT_BUILD
+public:
+	const wstring& Get_RTName();
+
 public:
 	HRESULT Ready_Debug(const vector2 _pos, const _float2 _size);
 	HRESULT Render(class CShader* _shader, class CVIBuffer_Rect* _viBuffer);
-
-private:
-	_float4x4 m_vWorldMatrix;
-#endif
 
 public:
 	ID3D11RenderTargetView* Get_RTV() const;
@@ -37,6 +40,17 @@ private:
 	ID3D11Texture2D* m_pTexture2D;
 
 	ColorValue m_vClearColor;
+
+#ifndef _CLIENT_BUILD
+	_float4x4 m_vWorldMatrix;
+
+	ID3D11Buffer* m_pCBPerObject;
+	ID3D11Buffer* m_pCBPerCamera;
+
+	ID3D11SamplerState* m_pDebugSampler;
+
+	CMeshBuffer* m_pMeshBuffer;
+#endif
 };
 
 NS_END
