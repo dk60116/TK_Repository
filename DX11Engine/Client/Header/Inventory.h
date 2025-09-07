@@ -44,13 +44,18 @@ inline CItem* CInventory::Add_ItemSlot()
 {
 	T* item = new T();
 
-	InvenItem itemSlot = {};
-	itemSlot.protoType = item;
-	itemSlot.count = 1;
-	
-	const wstring& name = item->Get_ItemName();
+	if (item)
+	{
+		item->AddRef();
 
-	m_mItemList.emplace(name, itemSlot);
+		InvenItem itemSlot = {};
+		itemSlot.protoType = item;
+		itemSlot.count = 1;
+
+		const wstring& name = item->Get_ItemName();
+
+		m_mItemList.emplace(name, itemSlot);
+	}
 
 	return item;
 }

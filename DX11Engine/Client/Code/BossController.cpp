@@ -42,6 +42,12 @@ void CBossController::Update()
 
 void CBossController::OnDestroy()
 {
+	Safe_Release(m_pMonster);
+
+	for (TRAVERSAL_ITER(m_mBehaviourList, it))
+		Safe_Release((*it).second);
+
+	m_mBehaviourList.clear();
 }
 
 CBossMonster* CBossController::Get_Monster()

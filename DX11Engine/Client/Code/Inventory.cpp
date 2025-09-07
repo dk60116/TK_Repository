@@ -43,6 +43,10 @@ void CInventory::Update()
 
 void CInventory::OnDestroy()
 {
+	for (TRAVERSAL_ITER(m_mItemList, it))
+	{
+		Safe_Release((*it).second.protoType);
+	}
 }
 
 void CInventory::AddItem(wstring& _name, const _uint _count)

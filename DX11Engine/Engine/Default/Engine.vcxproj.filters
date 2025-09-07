@@ -193,6 +193,9 @@
     <ClInclude Include="..\Header\SphereCollider.h">
       <Filter>Components\Physics\Collider</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\RenderTarget.h">
+      <Filter>Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -511,6 +514,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\SphereCollider.cpp">
       <Filter>Components\Physics\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\RenderTarget.cpp">
+      <Filter>Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
