@@ -24,7 +24,7 @@ public:
 	static CRenderTarget* CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color);
 	static HRESULT CreateRenderTargets();
 
-	static CRenderTarget* Get_RenderTarget(const wstring _name);
+	static CRenderTarget* Get_RenderTarget(const wstring& _name);
 
 	static void RenderTargetRender(const wstring& _name);
 	static void ClearTargetRender(const wstring& _name);

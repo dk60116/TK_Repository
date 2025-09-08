@@ -96,7 +96,7 @@ HRESULT CDisplay::CreateRenderTargets()
 	return S_OK;
 }
 
-CRenderTarget* CDisplay::Get_RenderTarget(const wstring _name)
+CRenderTarget* CDisplay::Get_RenderTarget(const wstring& _name)
 {
 	return GetInstance().m_mRenderTargetList[_name];
 }

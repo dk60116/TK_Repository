@@ -21,14 +21,14 @@ public:
 public:
 	const wstring& Get_RTName();
 	ID3D11RenderTargetView* Get_RTV() const;
+	ID3D11DepthStencilView* Get_DSV() const;
+	const D3D11_VIEWPORT& Get_VP();
 
 private:
 	HRESULT Ready_Debug(const vector2Int _pos, const vector2Int _size);
 
 public:
 	HRESULT Render();
-
-public:
 	HRESULT Bind_Shader();
 	void Clear();
 
@@ -37,7 +37,10 @@ private:
 
 	ID3D11RenderTargetView* m_pRTV;
 	ID3D11ShaderResourceView* m_pSRV;
+	ID3D11DepthStencilView* m_pDSV;
 	ID3D11Texture2D* m_pTexture2D;
+	ID3D11Buffer* m_pCBPerMaterial;
+	D3D11_VIEWPORT m_sViewPort;
 
 	ColorValue m_vClearColor;
 

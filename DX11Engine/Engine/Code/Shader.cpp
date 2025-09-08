@@ -81,6 +81,7 @@ HRESULT CShader::Initialize(const wstring& _name, const wstring& _filePath, void
 
 	hr = D3DCompileFromFile((m_sInfo.psPath.length() > 0) ? m_sInfo.psPath.c_str() : m_sInfo.vsPath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"PSMain", "ps_5_0", 0, 0, &psBlob, &errorBlob);
+
 	if (FAILED(hr))
 	{
 		if (errorBlob)
