@@ -16,14 +16,14 @@ CRenderTarget::CRenderTarget()
 
 CRenderTarget::~CRenderTarget()
 {
-	Release();
+	OnDestroy();
 }
 
-CRenderTarget* CRenderTarget::Create(const wstring& _name, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC)
+CRenderTarget* CRenderTarget::Create(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC)
 {
 	CRenderTarget* newTarget = new CRenderTarget();
 
-	if (FAILED(newTarget->Initialize(_name, _size, _pixelFormat, _clearC)))
+	if (FAILED(newTarget->Initialize(_name, _pos, _size, _pixelFormat, _clearC)))
 	{
 		delete newTarget;
 		return nullptr;
@@ -32,7 +32,7 @@ CRenderTarget* CRenderTarget::Create(const wstring& _name, const vector2Int _siz
 	return newTarget;
 }
 
-HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor)
+HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor)
 {
 	D3D11_TEXTURE2D_DESC textureDesc = {};
 
@@ -57,6 +57,9 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _size, 
 	textureDesc.MiscFlags = 0;
 
 	ID3D11Device* device = CGraphicDevice::Get_Device();
+
+	if (FAILED(Ready_Debug(_pos, _size)))
+		return E_FAIL;
 
 	if (FAILED(device->CreateTexture2D(&textureDesc, nullptr, &m_pTexture2D)))
 		return E_FAIL;
@@ -95,14 +98,14 @@ const wstring& CRenderTarget::Get_RTName()
 }
 
 #ifndef _CLIENT_BUILD
-HRESULT CRenderTarget::Ready_Debug(const vector2 _pos, const _float2 _size)
+HRESULT CRenderTarget::Ready_Debug(const vector2Int _pos, const vector2Int _size)
 {
 	_uint numViewports = 1;
 	D3D11_VIEWPORT vp{};
 	CGraphicDevice::GetInstance().Get_Context()->RSGetViewports(&numViewports, &vp);
 
-	const _float w = _size.x;
-	const _float h = _size.y;
+	const _float w = static_cast<_float>(_size.x);
+	const _float h = static_cast<_float>(_size.y);
 
 	_matrix S = XMMatrixScaling(w, h, 1.f);
 	_matrix T = XMMatrixTranslation
@@ -119,18 +122,20 @@ HRESULT CRenderTarget::Ready_Debug(const vector2 _pos, const _float2 _size)
 		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bd.ByteWidth = sizeof(XMFLOAT4X4);
-		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerObject))) return E_FAIL;
+		bd.ByteWidth = sizeof(_float4x4);
+		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerObject)))
+			return E_FAIL;
 	}
 	if (!m_pCBPerCamera)
 	{
 		// PerCamera: float3 camPos; float4x4 view; float4x4 proj; float pad;
-		struct CamCB { XMFLOAT3 camPos; float _pad; XMFLOAT4X4 view; XMFLOAT4X4 proj; };
+		struct CamCB { _float3 camPos; _float _pad; _float4x4 view; _float4x4 proj; };
 		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bd.ByteWidth = sizeof(CamCB);
-		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerCamera))) return E_FAIL;
+		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerCamera)))
+			return E_FAIL;
 	}
 
 	if (!m_pDebugSampler)
@@ -156,7 +161,8 @@ HRESULT CRenderTarget::Render()
 		return E_FAIL;
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
-	if (!ctx) return E_FAIL;
+	if (!ctx) 
+		return E_FAIL;
 
 	// 셰이더 바인딩(IL/VS/PS)
 	m_pDefferdShader->Bind();
@@ -168,7 +174,7 @@ HRESULT CRenderTarget::Render()
 	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 
 	// b1 : view/proj(직교 투영)
-	struct CamCB { XMFLOAT3 camPos; float _pad; XMFLOAT4X4 view; XMFLOAT4X4 proj; };
+	struct CamCB { _float3 camPos; float _pad; _float4x4 view; _float4x4 proj; };
 
 	_uint numViewports = 1;
 	D3D11_VIEWPORT vp{};
@@ -176,9 +182,7 @@ HRESULT CRenderTarget::Render()
 
 	_matrix V = XMMatrixIdentity();
 	// 화면 픽셀 좌표계를 그대로 쓰는 직교 투영(-w/2~w/2, -h/2~h/2)
-	_matrix P = XMMatrixOrthographicOffCenterLH(-vp.Width * 0.5f, vp.Width * 0.5f,
-		-vp.Height * 0.5f, vp.Height * 0.5f,
-		0.0f, 1.0f);
+	_matrix P = XMMatrixOrthographicOffCenterLH(-vp.Width * 0.5f, vp.Width * 0.5f, -vp.Height * 0.5f, vp.Height * 0.5f, 0.0f, 1.0f);
 
 	CamCB cam{};
 	cam.camPos = _float3(0, 0, 0);
@@ -210,7 +214,7 @@ ID3D11RenderTargetView* CRenderTarget::Get_RTV() const
 	return m_pRTV;
 }
 
-HRESULT CRenderTarget::Bind_Shader(const CShader* _shader)
+HRESULT CRenderTarget::Bind_Shader()
 {
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 	

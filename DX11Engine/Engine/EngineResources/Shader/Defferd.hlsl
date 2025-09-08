@@ -32,6 +32,7 @@ struct VSIn
 struct VSOut
 {
     float4 posH : SV_POSITION;
+    float2 uv : TEXCOORD0;
     float3 posW : TEXCOORD1;
 };
 
@@ -56,12 +57,13 @@ VSOut VSMain(VSIn v)
     o.posH = mul(mul(posW, view), proj);
 
     o.posW = posW.xyz;
+    o.uv = v.uv;
 
     return o;
 }
 
 // «»ºø ºŒ¿Ã¥ı
-float4 PSMain(VSOut input) : SV_TARGET
+float4 PSMain(VSOut i) : SV_TARGET
 {
-    return baseColor;
+    return (useTexture != 0) ? gTexture.Sample(gSampler, i.uv) : baseColor;
 }

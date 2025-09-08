@@ -21,9 +21,11 @@ public:
 	static _float Get_Aspect();
 
 public:
+	static CRenderTarget* CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color);
 	static HRESULT CreateRenderTargets();
 
 	static void RenderTargetRender(const wstring& _name);
+	static void ClearTargetRender(const wstring& _name);
 
 private:
 	HINSTANCE m_hInst;

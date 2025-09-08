@@ -12,24 +12,24 @@ private:
 	virtual ~CRenderTarget();
 
 private:
-	static CRenderTarget* Create(const wstring& _name, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC);
+	static CRenderTarget* Create(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC);
 
 public:
-	HRESULT Initialize(const wstring& _name, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor);
+	HRESULT Initialize(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor);
 	void OnDestroy();
 
 public:
 	const wstring& Get_RTName();
+	ID3D11RenderTargetView* Get_RTV() const;
+
+private:
+	HRESULT Ready_Debug(const vector2Int _pos, const vector2Int _size);
 
 public:
-	HRESULT Ready_Debug(const vector2 _pos, const _float2 _size);
 	HRESULT Render();
 
 public:
-	ID3D11RenderTargetView* Get_RTV() const;
-
-public:
-	HRESULT Bind_Shader(const CShader* _shader);
+	HRESULT Bind_Shader();
 	void Clear();
 
 private:

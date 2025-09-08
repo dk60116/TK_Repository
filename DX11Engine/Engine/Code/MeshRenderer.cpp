@@ -200,7 +200,10 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	CDisplay::RenderTargetRender(L"Diffuse");
+	CDisplay::ClearTargetRender(L"Diffuse");
+	CDisplay::ClearTargetRender(L"Normal");
+	CDisplay::ClearTargetRender(L"Shading");
+	CDisplay::ClearTargetRender(L"Specular");
 
 	// MeshBuffer 가져오기
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
@@ -263,6 +266,11 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		Bind_InstanceData(matWorld, pBuffer);
 	
 	pBuffer->Render();
+
+	CDisplay::RenderTargetRender(L"Diffuse");
+	CDisplay::RenderTargetRender(L"Normal");
+	CDisplay::RenderTargetRender(L"Shading");
+	CDisplay::RenderTargetRender(L"Specular");
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)
