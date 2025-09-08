@@ -1354,6 +1354,19 @@ namespace Engine
         };
     };
 
+    struct VertexDefferdBuffer
+    {
+        _float3 position;
+        _float2 uv;
+
+        static const _uint numElements = 2;
+        static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+        };
+    };
+
     struct VertexTexColorBuffer
     {
         _float3 position;

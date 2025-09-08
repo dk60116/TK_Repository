@@ -23,6 +23,8 @@ public:
 public:
 	static HRESULT CreateRenderTargets();
 
+	static void RenderTargetRender(const wstring& _name);
+
 private:
 	HINSTANCE m_hInst;
 	HWND m_hGameWindow;

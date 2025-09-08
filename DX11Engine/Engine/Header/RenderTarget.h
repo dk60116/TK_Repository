@@ -23,7 +23,7 @@ public:
 
 public:
 	HRESULT Ready_Debug(const vector2 _pos, const _float2 _size);
-	HRESULT Render(class CShader* _shader, class CVIBuffer_Rect* _viBuffer);
+	HRESULT Render();
 
 public:
 	ID3D11RenderTargetView* Get_RTV() const;
@@ -50,6 +50,7 @@ private:
 	ID3D11SamplerState* m_pDebugSampler;
 
 	CMeshBuffer* m_pMeshBuffer;
+	CShader* m_pDefferdShader;
 #endif
 };
 

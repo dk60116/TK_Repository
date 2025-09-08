@@ -84,5 +84,5 @@ HRESULT CDisplay::CreateRenderTargets()
 
 void CDisplay::RenderTargetRender(const wstring& _name)
 {
-	m_mRenderTargetList[_name]->Render();
+	GetInstance().m_mRenderTargetList[_name]->Render();
 }

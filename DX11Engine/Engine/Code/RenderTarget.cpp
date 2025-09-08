@@ -8,6 +8,7 @@ CRenderTarget::CRenderTarget()
 	, m_pTexture2D(nullptr)
 	, m_vWorldMatrix()
 	, m_pMeshBuffer(nullptr)
+	, m_pDefferdShader(nullptr)
 	, m_pDebugSampler(nullptr)
 {
 	m_strName = L"Render Target";
@@ -35,7 +36,11 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _size, 
 {
 	D3D11_TEXTURE2D_DESC textureDesc = {};
 
-	m_pMeshBuffer = CResources::LoadOnScene<CMeshBuffer>(L"Rect (Mesh Buffer)");
+	m_pMeshBuffer = CResources::LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)");
+	m_pDefferdShader = CResources::LoadOnGame<CShader>(L"Defferd (Shader)");
+
+	m_pMeshBuffer->AddRef();
+	m_pDefferdShader->AddRef();
 
 	textureDesc.Width = _size.x;
 	textureDesc.Height = _size.y;
@@ -74,6 +79,9 @@ void CRenderTarget::OnDestroy()
 	Safe_Release(m_pCBPerObject);
 	Safe_Release(m_pCBPerCamera);
 	Safe_Release(m_pDebugSampler);
+
+	Safe_Release(m_pMeshBuffer);
+	Safe_Release(m_pDefferdShader);
 #endif
 
 	Safe_Release(m_pSRV);
@@ -141,38 +149,39 @@ HRESULT CRenderTarget::Ready_Debug(const vector2 _pos, const _float2 _size)
 }
 #endif
 
-HRESULT CRenderTarget::Render(CShader* _shader, CVIBuffer_Rect* _viBuffer)
+HRESULT CRenderTarget::Render()
 {
 #ifndef _CLIENT_BUILD
-	if (!_shader || !_viBuffer || !m_pSRV) return E_FAIL;
+	if (!m_pDefferdShader || !m_pMeshBuffer || !m_pSRV)
+		return E_FAIL;
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 	if (!ctx) return E_FAIL;
 
 	// 셰이더 바인딩(IL/VS/PS)
-	_shader->Bind();
+	m_pDefferdShader->Bind();
 
 	// b0 : world
-	XMMATRIX W = XMLoadFloat4x4(&m_vWorldMatrix);
-	XMMATRIX WT = XMMatrixTranspose(W);
+	_matrix W = XMLoadFloat4x4(&m_vWorldMatrix);
+	_matrix WT = XMMatrixTranspose(W);
 	ctx->UpdateSubresource(m_pCBPerObject, 0, nullptr, &WT, 0, 0);
 	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 
 	// b1 : view/proj(직교 투영)
 	struct CamCB { XMFLOAT3 camPos; float _pad; XMFLOAT4X4 view; XMFLOAT4X4 proj; };
 
-	UINT numViewports = 1;
+	_uint numViewports = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&numViewports, &vp);
 
-	XMMATRIX V = XMMatrixIdentity();
+	_matrix V = XMMatrixIdentity();
 	// 화면 픽셀 좌표계를 그대로 쓰는 직교 투영(-w/2~w/2, -h/2~h/2)
-	XMMATRIX P = XMMatrixOrthographicOffCenterLH(-vp.Width * 0.5f, vp.Width * 0.5f,
+	_matrix P = XMMatrixOrthographicOffCenterLH(-vp.Width * 0.5f, vp.Width * 0.5f,
 		-vp.Height * 0.5f, vp.Height * 0.5f,
 		0.0f, 1.0f);
 
 	CamCB cam{};
-	cam.camPos = XMFLOAT3(0, 0, 0);
+	cam.camPos = _float3(0, 0, 0);
 	XMStoreFloat4x4(&cam.view, XMMatrixTranspose(V));
 	XMStoreFloat4x4(&cam.proj, XMMatrixTranspose(P));
 

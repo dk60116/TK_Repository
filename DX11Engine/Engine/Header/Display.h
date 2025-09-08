@@ -23,7 +23,7 @@ public:
 public:
 	static HRESULT CreateRenderTargets();
 
-	void RenderTargetRender(const wstring& _name);
+	static void RenderTargetRender(const wstring& _name);
 
 private:
 	HINSTANCE m_hInst;

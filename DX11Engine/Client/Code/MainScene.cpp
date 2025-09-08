@@ -54,6 +54,9 @@ HRESULT CMainScene::Initialize()
 	exitText->SetColor(ColorValue::white());
 	exitText->Set_Text(L"Exit");
 
+	CGameObject* tempObj = Add_GameObject(L"Test");
+	tempObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"WoodenSword (MeshBuffer)"), 0.01f);
+
 	return S_OK;
 }
 

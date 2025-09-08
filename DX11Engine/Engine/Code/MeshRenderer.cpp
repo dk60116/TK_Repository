@@ -200,6 +200,8 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
+	CDisplay::RenderTargetRender(L"Diffuse");
+
 	// MeshBuffer 가져오기
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
 
