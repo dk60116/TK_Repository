@@ -44,6 +44,9 @@ public:
 	static ID3D11DepthStencilState* Get_DepthStencil_NoWrite();
 	static ID3D11RasterizerState* Get_Rasterizer_CullFront();
 
+	static ID3D11RenderTargetView* Get_RTV();
+	static ID3D11DepthStencilView* Get_DSV();
+
 private:
 	static HRESULT Ready_BackBufferRenderTargetView();
 	static HRESULT Ready_DepthStencilView(_uint _winWidth, _uint _winHeight);

@@ -299,6 +299,16 @@ ID3D11RasterizerState* CGraphicDevice::Get_Rasterizer_CullFront()
 	return GetInstance().m_pRasterizerCullFront;
 }
 
+ID3D11RenderTargetView* CGraphicDevice::Get_RTV()
+{
+	return GetInstance().m_pBackBufferRTV;
+}
+
+ID3D11DepthStencilView* CGraphicDevice::Get_DSV()
+{
+	return GetInstance().m_pDepthStencilView;
+}
+
 HRESULT CGraphicDevice::Ready_BackBufferRenderTargetView()
 {
 	if (nullptr == GetInstance().m_pDevice)

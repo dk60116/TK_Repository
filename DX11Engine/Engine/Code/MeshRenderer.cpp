@@ -191,6 +191,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	if (!m_pMeshFilter)
 	{
 		CDebug::LogError(L"MeshRenderer: No MeshFilter assigned:" + m_pGameObject->Get_ObjectNameID());
+		CDebug::LogError(L"MeshRenderer: No MeshFilter assigned:" + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
 
@@ -199,11 +200,6 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		CDebug::LogError(L"MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
 		return;
 	}
-
-	CDisplay::ClearTargetRender(L"Diffuse");
-	CDisplay::ClearTargetRender(L"Normal");
-	CDisplay::ClearTargetRender(L"Shading");
-	CDisplay::ClearTargetRender(L"Specular");
 
 	// MeshBuffer 가져오기
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
@@ -266,11 +262,6 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		Bind_InstanceData(matWorld, pBuffer);
 	
 	pBuffer->Render();
-
-	CDisplay::RenderTargetRender(L"Diffuse");
-	CDisplay::RenderTargetRender(L"Normal");
-	CDisplay::RenderTargetRender(L"Shading");
-	CDisplay::RenderTargetRender(L"Specular");
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)

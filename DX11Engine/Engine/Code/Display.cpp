@@ -96,6 +96,11 @@ HRESULT CDisplay::CreateRenderTargets()
 	return S_OK;
 }
 
+CRenderTarget* CDisplay::Get_RenderTarget(const wstring _name)
+{
+	return GetInstance().m_mRenderTargetList[_name];
+}
+
 void CDisplay::RenderTargetRender(const wstring& _name)
 {
 	GetInstance().m_mRenderTargetList[_name]->Render();
