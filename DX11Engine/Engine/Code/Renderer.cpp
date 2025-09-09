@@ -4,6 +4,7 @@
 CRenderer::CRenderer()
 	: m_pMaterial(nullptr)
 	, m_pOutlineMat(nullptr)
+	, m_fScaleFactor(1.f)
 {
 }
 

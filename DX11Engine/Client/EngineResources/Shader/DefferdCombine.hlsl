@@ -22,6 +22,9 @@ cbuffer PerMaterial : register(b2)
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
+Texture2D gDiffuseTexture : register(t1);
+Texture2D gShadingTexture : register(t4);
+
 // 버텍스 입출력
 struct VSIn
 {
@@ -54,5 +57,16 @@ VSOut VSMain(VSIn v)
 // 픽셀 셰이더
 float4 PSMain(VSOut i) : SV_TARGET
 {
-    return (useTexture != 0) ? gTexture.Sample(gSampler, i.uv) * baseColor : baseColor;
+    float4 albedo = gDiffuseTexture.Sample(gSampler, i.uv);
+    
+    if (albedo.a < 0.001f)
+        discard;
+    if (all(albedo.rgb == float3(1.0f, 0.0f, 1.0f)))
+        discard;
+
+    float3 shade = gShadingTexture.Sample(gSampler, i.uv).rgb;
+
+    float3 lit = saturate(albedo.rgb * shade);
+
+    return float4(lit, albedo.a);
 }

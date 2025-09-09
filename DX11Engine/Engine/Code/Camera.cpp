@@ -173,32 +173,32 @@ void CCamera::Bind_RenderTarget()
 	_uint oldNumVP = 0;
 	m_pContext->RSGetViewports(&oldNumVP, nullptr);
 	vector<D3D11_VIEWPORT> oldVPs(oldNumVP);
+	
 	if (oldNumVP)
 		m_pContext->RSGetViewports(&oldNumVP, oldVPs.data());
+	
 	auto* dfRT = CDisplay::Get_RenderTarget(L"Diffuse");
 	auto* nmRT = CDisplay::Get_RenderTarget(L"Normal");
 	auto* dpRT = CDisplay::Get_RenderTarget(L"Depth");
 	auto* sdRT = CDisplay::Get_RenderTarget(L"Shading");
+	auto* spRT = CDisplay::Get_RenderTarget(L"Specular");
+	auto* cbRT = CDisplay::Get_RenderTarget(L"Combine");
 
-	 const _uint count = 4;
-
-	 ID3D11RenderTargetView* rtvs[count] =
-	 {
-		 dfRT->Get_RTV(), // SV_TARGET0
-		 nmRT->Get_RTV(),  // SV_TARGET1
-		 dpRT->Get_RTV(),  // SV_TARGET2
-		 sdRT->Get_RTV()
-		
+	ID3D11RenderTargetView* rtvs[] =
+	{
+		dfRT->Get_RTV(), // SV_TARGET0
+		nmRT->Get_RTV(), // SV_TARGET1
+		dpRT->Get_RTV(),
 	};
 	
-	 ID3D11DepthStencilView* dsv = dfRT->Get_DSV(); 
+	ID3D11DepthStencilView* dsv = dfRT->Get_DSV(); 
 
 	ID3D11ShaderResourceView* nullSRV[16] = {};
 	m_pContext->PSSetShaderResources(0, 16, nullSRV);
 	m_pContext->VSSetShaderResources(0, 16, nullSRV);
 	m_pContext->GSSetShaderResources(0, 16, nullSRV);
 
-	m_pContext->OMSetRenderTargets(count, rtvs, dsv);
+	m_pContext->OMSetRenderTargets(_countof(rtvs), rtvs, dsv);
 
 	D3D11_VIEWPORT vp = dfRT->Get_VP();
 	m_pContext->RSSetViewports(1, &vp);
@@ -207,6 +207,8 @@ void CCamera::Bind_RenderTarget()
 	nmRT->Clear();
 	dpRT->Clear();
 	sdRT->Clear();
+	spRT->Clear();
+	cbRT->Clear();
 
 	for (TRAVERSAL_ITER(m_vMeshList, it))
 	{
@@ -214,31 +216,59 @@ void CCamera::Bind_RenderTarget()
 			(*it)->Render_WithCamera(this);
 	}
 
+	auto sdRTV = sdRT->Get_RTV();
+	auto sdVP = sdRT->Get_VP();
+
+	m_pContext->OMSetRenderTargets(1, &sdRTV, nullptr);
+	m_pContext->RSSetViewports(1, &sdVP);
+
+	auto nmSRV = nmRT->Get_SRV();
+	m_pContext->PSSetShaderResources(2, 1, &nmSRV);
+
+	sdRT->Bind_Light();
+	sdRT->Bind_Shader();
+
+	auto cbRTV = cbRT->Get_RTV();
+	auto cbVP = cbRT->Get_VP();
+
+	m_pContext->OMSetRenderTargets(1, &cbRTV, nullptr);
+	m_pContext->RSSetViewports(1, &cbVP);
+
+	cbRT->Bind_Shader();
+
+	auto dfSRV = dfRT->Get_SRV();
+	auto sdSRV = sdRT->Get_SRV();
+	m_pContext->PSSetShaderResources(1, 1, &dfSRV);
+	m_pContext->PSSetShaderResources(4, 1, &sdSRV);
+
 	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
-	while (oldCount > 0 && oldRTV[oldCount - 1] == nullptr) --oldCount;
+
+	while (oldCount > 0 && oldRTV[oldCount - 1] == nullptr) 
+		--oldCount;
 
 	m_pContext->OMSetRenderTargets(oldCount, oldRTV, oldDSV);
 	
 	if (oldNumVP)
 		m_pContext->RSSetViewports(oldNumVP, oldVPs.data());
 
-	for (UINT i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+	for (_uint i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
 	{
 		if (oldRTV[i])
 			oldRTV[i]->Release();
 	}
 	if (oldDSV) 
 		oldDSV->Release();
-
-	dfRT->Render();
-	nmRT->Render();
-	dpRT->Render();
-	sdRT->Render();
 }
 
 void CCamera::RenderMesh()
 {
 	Bind_RenderTarget();
+
+	CDisplay::RenderTargetRender(L"Combine");
+	CDisplay::RenderTargetRender(L"Diffuse");
+	CDisplay::RenderTargetRender(L"Normal");
+	CDisplay::RenderTargetRender(L"Depth");
+	CDisplay::RenderTargetRender(L"Shading");
 	
 	m_vMeshList.clear();
 }

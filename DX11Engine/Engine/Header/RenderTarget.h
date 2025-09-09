@@ -12,14 +12,15 @@ private:
 	virtual ~CRenderTarget();
 
 private:
-	static CRenderTarget* Create(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC);
+	static CRenderTarget* Create(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC, const wstring& _psName = L"");
 
 public:
-	HRESULT Initialize(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor);
+	HRESULT Initialize(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor, const wstring& _psName);
 	void OnDestroy();
 
 public:
 	const wstring& Get_RTName();
+	ID3D11ShaderResourceView* Get_SRV() const;
 	ID3D11RenderTargetView* Get_RTV() const;
 	ID3D11DepthStencilView* Get_DSV() const;
 	const D3D11_VIEWPORT& Get_VP();
@@ -29,18 +30,21 @@ private:
 
 public:
 	HRESULT Render();
-	HRESULT Bind_Shader();
+	void Bind_Rect();
+	void Bind_Shader();
+	HRESULT Bind_Light();
 	void Clear();
 
 private:
 	wstring m_strTargetName;
 
+	D3D11_VIEWPORT m_sViewPort;
 	ID3D11RenderTargetView* m_pRTV;
 	ID3D11ShaderResourceView* m_pSRV;
 	ID3D11DepthStencilView* m_pDSV;
 	ID3D11Texture2D* m_pTexture2D;
 	ID3D11Buffer* m_pCBPerMaterial;
-	D3D11_VIEWPORT m_sViewPort;
+	ID3D11Buffer* m_pCBPerLight;
 
 	ColorValue m_vClearColor;
 

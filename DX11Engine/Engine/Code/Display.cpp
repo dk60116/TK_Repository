@@ -73,9 +73,9 @@ _float CDisplay::Get_Aspect()
 	return static_cast<_float>(GetInstance().m_iWidth) / static_cast<_float>(GetInstance().m_iHeight);
 }
 
-CRenderTarget* CDisplay::CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color)
+CRenderTarget* CDisplay::CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color, const wstring& _psName)
 {
-	CRenderTarget* newTarget = CRenderTarget::Create(_name, _pos, _size, DXGI_FORMAT_R8G8B8A8_UNORM, _color);
+	CRenderTarget* newTarget = CRenderTarget::Create(_name, _pos, _size, DXGI_FORMAT_R8G8B8A8_UNORM, _color, _psName);
 	newTarget->AddRef();
 	GetInstance().m_mRenderTargetList.emplace(newTarget->m_strTargetName, newTarget);
 
@@ -84,15 +84,17 @@ CRenderTarget* CDisplay::CreateRenderTarget(wstring _name, vector2Int _pos, vect
 
 HRESULT CDisplay::CreateRenderTargets()
 {
-	if (!CreateRenderTarget(L"Diffuse", vector2Int::zero(), vector2Int(200, 200), ColorValue::white()))
+	if (!CreateRenderTarget(L"Diffuse", vector2Int::zero(), vector2Int(200, 200), ColorValue::magenta()))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Normal", vector2Int(200, 0), vector2(200, 200), ColorValue::black()))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Depth", vector2Int(400, 0), vector2(200, 200), ColorValue::black()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Shading", vector2Int(0, 200), vector2Int(200, 200), ColorValue::white()))
+	if (!CreateRenderTarget(L"Shading", vector2Int(0, 200), vector2Int(200, 200), ColorValue::white(), L"Shading"))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Specular", vector2Int(200, 200), vector2Int(200, 200), ColorValue::black()))
+		return E_FAIL;
+	if (!CreateRenderTarget(L"Combine", vector2Int(0, 0), CDisplay::Get_ScreenResolution(), ColorValue(0, 0, 0, 0), L"Combine"))
 		return E_FAIL;
 
 	return S_OK;

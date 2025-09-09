@@ -3,11 +3,13 @@
 
 CRenderTarget::CRenderTarget()
 	: m_strTargetName(L"")
+	, m_sViewPort({})
+	, m_pDSV(nullptr)
 	, m_pRTV(nullptr)
 	, m_pSRV(nullptr)
 	, m_pTexture2D(nullptr)
 	, m_pCBPerMaterial(nullptr)
-	, m_sViewPort({})
+	, m_pCBPerLight(nullptr)
 	, m_vWorldMatrix()
 	, m_pCBPerObject(nullptr)
 	, m_pCBPerCamera(nullptr)
@@ -23,11 +25,11 @@ CRenderTarget::~CRenderTarget()
 	OnDestroy();
 }
 
-CRenderTarget* CRenderTarget::Create(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC)
+CRenderTarget* CRenderTarget::Create(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearC, const wstring& _psName)
 {
 	CRenderTarget* newTarget = new CRenderTarget();
 
-	if (FAILED(newTarget->Initialize(_name, _pos, _size, _pixelFormat, _clearC)))
+	if (FAILED(newTarget->Initialize(_name, _pos, _size, _pixelFormat, _clearC, _psName)))
 	{
 		delete newTarget;
 		return nullptr;
@@ -36,18 +38,18 @@ CRenderTarget* CRenderTarget::Create(const wstring& _name, const vector2Int _pos
 	return newTarget;
 }
 
-HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor)
+HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, const vector2Int _size, const DXGI_FORMAT _pixelFormat, const ColorValue _clearColor, const wstring& _psName)
 {
 	D3D11_TEXTURE2D_DESC textureDesc = {};
 
 	m_pMeshBuffer = CResources::LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)");
-	m_pDefferdShader = CResources::LoadOnGame<CShader>(L"Defferd (Shader)");
+	m_pDefferdShader = CResources::LoadOnGame<CShader>((wstring)L"Defferd" + _psName + L" (Shader)");
 
 	m_pMeshBuffer->AddRef();
 	m_pDefferdShader->AddRef();
 
-	textureDesc.Width = _size.x;
-	textureDesc.Height = _size.y;
+	textureDesc.Width = CDisplay::Get_ScreenResolution().x;
+	textureDesc.Height = CDisplay::Get_ScreenResolution().y;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = _pixelFormat;
@@ -75,8 +77,8 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 		return E_FAIL;
 
 	D3D11_TEXTURE2D_DESC depthDesc{};
-	depthDesc.Width = _size.x;
-	depthDesc.Height = _size.y;
+	depthDesc.Width = CDisplay::Get_ScreenResolution().x;
+	depthDesc.Height = CDisplay::Get_ScreenResolution().y;
 	depthDesc.MipLevels = 1;
 	depthDesc.ArraySize = 1;
 	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -101,8 +103,8 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 
 	m_sViewPort.TopLeftX = 0;
 	m_sViewPort.TopLeftY = 0;
-	m_sViewPort.Width = static_cast<_float>(_size.x);
-	m_sViewPort.Height = static_cast<_float>(_size.y);
+	m_sViewPort.Width = static_cast<_float>(CDisplay::Get_ScreenResolution().x);
+	m_sViewPort.Height = static_cast<_float>(CDisplay::Get_ScreenResolution().y);
 	m_sViewPort.MinDepth = 0.0f;
 	m_sViewPort.MaxDepth = 1.0f;
 
@@ -124,11 +126,17 @@ void CRenderTarget::OnDestroy()
 	Safe_Release(m_pRTV);
 	Safe_Release(m_pTexture2D);
 	Safe_Release(m_pCBPerMaterial);
+	Safe_Release(m_pCBPerLight);
 }
 
 const wstring& CRenderTarget::Get_RTName()
 {
 	return m_strTargetName;
+}
+
+ID3D11ShaderResourceView* CRenderTarget::Get_SRV() const
+{
+	return m_pSRV;
 }
 
 #ifndef _CLIENT_BUILD
@@ -202,6 +210,18 @@ HRESULT CRenderTarget::Ready_Debug(const vector2Int _pos, const vector2Int _size
 			return E_FAIL;
 	}
 
+	if (!m_pCBPerLight)
+	{
+		struct LightCB { _float4x4 lights[64]; };
+		D3D11_BUFFER_DESC bd{};
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.ByteWidth = sizeof(LightCB); // 4096 bytes
+		
+		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerLight)))
+			return E_FAIL;
+	}
+
 	if (!m_pDebugSampler)
 	{
 		D3D11_SAMPLER_DESC sd{};
@@ -261,7 +281,7 @@ HRESULT CRenderTarget::Render()
 	struct MatCB { XMFLOAT4 baseColor; UINT useTexture; UINT _pad[3]; };
 	MatCB mat{};
 	mat.baseColor = XMFLOAT4(1, 1, 1, 1);
-	mat.useTexture = 1; // ★ 반드시 1로! 텍스처를 샘플하도록
+	mat.useTexture = 1;
 	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
 
 	// 4) 셰이더 / CB / SRV 바인딩
@@ -292,6 +312,11 @@ HRESULT CRenderTarget::Render()
 #endif
 }
 
+void CRenderTarget::Bind_Rect()
+{
+	m_pMeshBuffer->Render();
+}
+
 ID3D11RenderTargetView* CRenderTarget::Get_RTV() const
 {
 	return m_pRTV;
@@ -307,74 +332,89 @@ const D3D11_VIEWPORT& CRenderTarget::Get_VP()
 	return m_sViewPort;
 }
 
-HRESULT CRenderTarget::Bind_Shader()
+void CRenderTarget::Bind_Shader()
 {
-#ifndef _CLIENT_BUILD
-	// 필수 리소스 점검
-	if (!m_pMeshBuffer || !m_pDefferdShader || !m_pSRV || !m_pCBPerObject || !m_pCBPerCamera)
-		return E_FAIL;
+	m_pDefferdShader->Bind();
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
-	if (!ctx) 
-		return E_FAIL;
 
-	// ── 0) 기존 OM 타깃 보관
-	ID3D11RenderTargetView* prevRTV = nullptr;
-	ID3D11DepthStencilView* prevDSV = nullptr;
-	ctx->OMGetRenderTargets(1, &prevRTV, &prevDSV);
-
-	// ── 1) 프리뷰는 깊이 테스트가 필요없으므로 DSV = nullptr 로 바인딩
-	//      (RTV는 현재 바인딩된 것(보통 백버퍼) 유지)
-	ctx->OMSetRenderTargets(1, &prevRTV, nullptr);
-
-	// ── 2) 현재 뷰포트로 직교 투영 구성
-	UINT numVP = 1;
+	// 현재 설정된 VP 가져오기 (이미 Shading/Combine용 VP로 바뀐 상태에서 호출됨)
+	UINT n = 1;
 	D3D11_VIEWPORT vp{};
-	ctx->RSGetViewports(&numVP, &vp);
+	ctx->RSGetViewports(&n, &vp);
 
+	// 직교 투영 & 월드
 	_matrix V = XMMatrixIdentity();
 	_matrix P = XMMatrixOrthographicOffCenterLH(
 		-vp.Width * 0.5f, vp.Width * 0.5f,
 		-vp.Height * 0.5f, vp.Height * 0.5f,
-		0.0f, 1.0f
-	);
+		0.0f, 1.0f);
 
-	// ── 3) 상수버퍼 갱신 (b0: world, b1: view/proj)
 	_matrix W = XMLoadFloat4x4(&m_vWorldMatrix);
 	_matrix WT = XMMatrixTranspose(W);
-	ctx->UpdateSubresource(m_pCBPerObject, 0, nullptr, &WT, 0, 0);
 
-	struct CamCB { _float3 camPos; _float _pad; _float4x4 view; _float4x4 proj; };
+	// b0: PerObject
+	ctx->UpdateSubresource(m_pCBPerObject, 0, nullptr, &WT, 0, 0);
+	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
+
+	// b1: PerCamera
+	struct CamCB { XMFLOAT3 camPos; float _pad; XMFLOAT4X4 view; XMFLOAT4X4 proj; };
 	CamCB cam{};
-	cam.camPos = _float3(0, 0, 0);
+	cam.camPos = XMFLOAT3(0, 0, 0);
 	XMStoreFloat4x4(&cam.view, XMMatrixTranspose(V));
 	XMStoreFloat4x4(&cam.proj, XMMatrixTranspose(P));
 	ctx->UpdateSubresource(m_pCBPerCamera, 0, nullptr, &cam, 0, 0);
-
-	// ── 4) 셰이더/상수버퍼/텍스처 바인딩
-	m_pDefferdShader->Bind(); // (프리뷰용 VS/PS가 바인딩되도록)
-	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 	ctx->VSSetConstantBuffers(1, 1, &m_pCBPerCamera);
 
-	ctx->PSSetShaderResources(0, 1, &m_pSRV);
-	ctx->PSSetSamplers(0, 1, &m_pDebugSampler);
+	// b2: PerMaterial (텍스처 사용 플래그 등)
+	struct MatCB { XMFLOAT4 baseColor; UINT useTexture; UINT _pad[3]; };
+	MatCB mat{};
+	mat.baseColor = XMFLOAT4(1, 1, 1, 1);
+	mat.useTexture = 1;
+	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
+	ctx->PSSetConstantBuffers(2, 1, &m_pCBPerMaterial);
 
-	// ── 5) 프리뷰 사각형 드로우
-	m_pMeshBuffer->Render();
+	// 샘플러(s0) 꼭 바인드 (없으면 Sample()가 0을 반환)
+	if (m_pDebugSampler)
+		ctx->PSSetSamplers(0, 1, &m_pDebugSampler);
+}
 
-	// ── 6) SRV 언바인드(다음 프레임 RTV로 쓸 때 충돌 방지)
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-	ctx->PSSetShaderResources(0, 1, nullSRV);
+HRESULT CRenderTarget::Bind_Light()
+{
+	if (!m_pCBPerLight) 
+		return E_FAIL;
 
-	// ── 7) OM 타깃 복원
-	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
-	Safe_Release(prevRTV);
-	Safe_Release(prevDSV);
+	auto* scene = CSceneManager::Get_CrtScene();
+	if (!scene) 
+		return E_FAIL;
+
+	// 1) 라이트 수집
+	list<CLight*> lights = scene->Get_LightList();
+	const _uint total = static_cast<_uint>(min<size_t>(lights.size(), 64));
+
+	struct LightCB { _float4x4 lights[64]; };
+	LightCB cb{};
+
+	_uint i = 0;
+	for (auto* L : lights)
+	{
+		if (!L) continue;
+		_float4x4 info = L->To_LightInfo();
+
+		if (i == 0)
+			info._44 = static_cast<_float>(total);
+		else
+			info._44 = 0.f;
+
+		cb.lights[i] = info;
+		if (++i >= total) break;
+	}
+
+	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
+	ctx->UpdateSubresource(m_pCBPerLight, 0, nullptr, &cb, 0, 0);
+	ctx->PSSetConstantBuffers(4, 1, &m_pCBPerLight);
 
 	return S_OK;
-#else
-	return S_OK;
-#endif
 }
 
 void CRenderTarget::Clear()

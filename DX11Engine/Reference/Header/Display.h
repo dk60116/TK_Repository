@@ -21,7 +21,7 @@ public:
 	static _float Get_Aspect();
 
 public:
-	static CRenderTarget* CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color);
+	static CRenderTarget* CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color, const wstring& _psName = L"");
 	static HRESULT CreateRenderTargets();
 
 	static CRenderTarget* Get_RenderTarget(const wstring& _name);

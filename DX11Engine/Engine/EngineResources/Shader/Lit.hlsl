@@ -33,17 +33,17 @@ cbuffer PerCustomValue : register(b10)
 }
 
 // 라이트 정의
-//#define MAX_LIGHTS 64
+#define MAX_LIGHTS 64
 
-//#define LIGHT_TYPE_DIRECTIONAL 0
-//#define LIGHT_TYPE_POINT 1
-//#define LIGHT_TYPE_SPOT 2
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
 
-//#pragma pack_matrix(row_major)
-//cbuffer PerLight : register(b4)
-//{
-//    float4x4 gLight[MAX_LIGHTS];
-//};
+#pragma pack_matrix(row_major)
+cbuffer PerLight : register(b4)
+{
+    float4x4 gLight[MAX_LIGHTS];
+};
 
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);

@@ -18,26 +18,9 @@ cbuffer PerMaterial : register(b2)
     uint useTexture;
 };
 
-#define MAX_LIGHTS 64
-
-#define LIGHT_TYPE_DIRECTIONAL 0
-#define LIGHT_TYPE_POINT 1
-#define LIGHT_TYPE_SPOT 2
-
-#pragma pack_matrix(row_major)
-cbuffer PerLight : register(b4)
-{
-    float4x4 gLight[MAX_LIGHTS];
-};
-
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
-
-texture2D gDiffuseTexture : register(t1);
-texture2D gNormalTexture : register(t2);
-texture2D gShadeTexture : register(t3);
-texture2D gSpecularTexture : register(t4);
 
 // 버텍스 입출력
 struct VSIn

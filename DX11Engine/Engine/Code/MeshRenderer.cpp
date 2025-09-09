@@ -216,34 +216,34 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
 
-	if (m_pMaterial->IsUseLight())
-	{
-		list<CLight*> lights = CSceneManager::Get_CrtScene()->Get_LightList();
-		const _uint lightCount = static_cast<_uint>(lights.size());
+	//if (m_pMaterial->IsUseLight())
+	//{
+	//	list<CLight*> lights = CSceneManager::Get_CrtScene()->Get_LightList();
+	//	const _uint lightCount = static_cast<_uint>(lights.size());
 
-		vector<_matrix> vLightInfos = {};
+	//	vector<_matrix> vLightInfos = {};
 
-		_uint index = 0;
+	//	_uint index = 0;
 
-		for (TRAVERSAL_ITER(lights, it))
-		{
-			if (!(*it))
-				continue;
+	//	for (TRAVERSAL_ITER(lights, it))
+	//	{
+	//		if (!(*it))
+	//			continue;
 
-			_float4x4 lightInfo = (*it)->To_LightInfo();
-			
-			if (index == 0)
-				lightInfo._44 = static_cast<_float>(lights.size());
-			else
-				lightInfo._44 = 0.f;
+	//		_float4x4 lightInfo = (*it)->To_LightInfo();
+	//		
+	//		if (index == 0)
+	//			lightInfo._44 = static_cast<_float>(lights.size());
+	//		else
+	//			lightInfo._44 = 0.f;
 
-			vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));
+	//		vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));
 
-			++index;
-		}
+	//		++index;
+	//	}
 
-		//m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
-	}
+	//	m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
+	//}
 
 	auto& inst = pBuffer->Get_InstancingDesc();
 

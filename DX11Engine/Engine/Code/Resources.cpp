@@ -1680,9 +1680,17 @@ void CResources::Ready_GameResources()
 
 	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
 
-	CShader::SHADERDESC lineDefferdShaderDesc = { L"../EngineResources/Shader/Defferd.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Defferd (Shader)", L"", &lineDefferdShaderDesc));
-		
+	{
+		CShader::SHADERDESC lineDefferdShaderDesc = { L"../EngineResources/Shader/Defferd.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
+		LoadResourceComplete_Game(CreateGameResource<CShader>(L"Defferd (Shader)", L"", &lineDefferdShaderDesc));
+
+		CShader::SHADERDESC lineDefferdShadingShaderDesc = { L"../EngineResources/Shader/DefferdShading.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
+		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdShading (Shader)", L"", &lineDefferdShadingShaderDesc));
+
+		CShader::SHADERDESC lineDefferdCombineShaderDesc = { L"../EngineResources/Shader/DefferdCombine.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
+		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdCombine (Shader)", L"", &lineDefferdCombineShaderDesc));
+	}
+
 	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexBuffer::numElements, VertexBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
 
