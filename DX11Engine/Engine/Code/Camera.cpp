@@ -164,7 +164,7 @@ void CCamera::Bind_ProjectionMatrix()
 	}
 }
 
-void CCamera::RenderMesh()
+void CCamera::Bind_RenderTarget(const wstring& _name)
 {
 	ID3D11DeviceContext* ctx = CGraphicDevice::Get_Context();
 
@@ -176,7 +176,7 @@ void CCamera::RenderMesh()
 	D3D11_VIEWPORT prevVP{};
 	ctx->RSGetViewports(&prevNumVP, &prevVP);
 
-	CRenderTarget* rt = CDisplay::Get_RenderTarget(L"Diffuse");
+	CRenderTarget* rt = CDisplay::Get_RenderTarget(_name);
 	ID3D11RenderTargetView* rtv = rt->Get_RTV();
 	ID3D11DepthStencilView* dsv = rt->Get_DSV();
 
@@ -189,7 +189,7 @@ void CCamera::RenderMesh()
 
 	ctx->RSSetViewports(1, &rt->Get_VP());
 
-	rt->Clear(); 
+	rt->Clear();
 
 	for (TRAVERSAL_ITER(m_vMeshList, it))
 	{
@@ -200,12 +200,17 @@ void CCamera::RenderMesh()
 
 	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
 	ctx->RSSetViewports(1, &prevVP);
-	if (prevRTV) 
+	if (prevRTV)
 		prevRTV->Release();
-	if (prevDSV) 
+	if (prevDSV)
 		prevDSV->Release();
 
-	CDisplay::RenderTargetRender(L"Diffuse");
+	CDisplay::RenderTargetRender(_name);
+}
+
+void CCamera::RenderMesh()
+{
+	Bind_RenderTarget(L"Diffuse");
 }
 
 void CCamera::RenderUI()

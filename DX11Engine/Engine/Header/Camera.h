@@ -43,6 +43,8 @@ protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
+	void Bind_RenderTarget(const wstring& _name, const _uint _target);
+
 public:
 	void RenderMesh();
 	void RenderUI();

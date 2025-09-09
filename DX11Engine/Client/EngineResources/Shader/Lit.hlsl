@@ -73,6 +73,13 @@ struct VSOut
     float2 uv : TEXCOORD0;
 };
 
+struct PSOut
+{
+    float4 diffuse : SV_TARGET0;
+    float4 normal : SV_TARGET1;
+    float4 depth : SV_TARGET2;
+};
+
 // πˆ≈ÿΩ∫ ºŒ¿Ã¥ı
 VSOut VSMain(VSIn v)
 {
@@ -143,74 +150,87 @@ VSOut VSMain(VSIn v)
 }
 
 // «»ºø ºŒ¿Ã¥ı
-float4 PSMain(VSOut input) : SV_TARGET
+PSOut PSMain(VSOut input) : SV_TARGET
 {
-    float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
-    float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
-
-    float3 N = normalize(input.normalW);
-    float3 V = normalize(pos - input.posW);
+    PSOut Out = (PSOut) 0;
     
-    float3 diffuseSum = float3(0, 0, 0);
-    float3 ambientSum = float3(0, 0, 0);
-    float3 specularSum = float3(0, 0, 0);
-
-    int lightCount = (int) gLight[0][3][3];
-
-    for (int i = 0; i < lightCount; ++i)
-    {
-        if (gLight[i][3][2] < 0.5)
-            continue;
-
-        uint lightType = (uint) gLight[i][3][0];
-        float3 lightPos = float3(gLight[i][0][0], gLight[i][0][1], gLight[i][0][2]);
-        float3 lightDir = float3(gLight[i][1][0], gLight[i][1][1], gLight[i][1][2]);
-        float3 lightColor = float3(gLight[i][2][0], gLight[i][2][1], gLight[i][2][2]);
-        float intensity = gLight[i][1][3];
-        float range = gLight[i][0][3];
-        float attenuationK = gLight[i][3][1];
-        float ambientK = gLight[i][2][3];
-
-        float3 L;
-        float attenuation = 1.0f;
-
-        if (lightType == LIGHT_TYPE_DIRECTIONAL)
-        {
-            L = normalize(-lightDir);
-        }
-        else if (lightType == LIGHT_TYPE_POINT)
-        {
-            float3 toLight = lightPos - input.posW;
-            float dist = length(toLight);
-            L = toLight / dist;
-            attenuation = saturate(1.0f - dist / range) * attenuationK;
-        }
-        else
-            continue;
-
-        // Diffuse
-        float NdotL = saturate(dot(N, L));
-        float3 diffuse = lightColor * NdotL * intensity * attenuation;
-        diffuseSum += diffuse;
-        
-        // Specular
-        float3 R = reflect(-L, N);
-        float RdotV = saturate(dot(R, V));
-        float3 fSpecular = pow(RdotV, 50);
-        float specularStrength = gSmoothness;
-        float3 specular = lightColor * fSpecular * specularStrength * intensity * attenuation;
-        specularSum += specular;
-        
-        // Ambient
-        float3 ambient = lightColor * ambientK;
-        ambientSum += ambient;
-    }
-
-    diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
-    float3 litDiffuse = texColor.rgb * saturate(ambientSum + diffuseSum);
-    float3 finalColor = litDiffuse + specularSum;
+    vector vMtrlDiffuse = gTexture.Sample(gSampler, input.uv);
     
-    finalColor = saturate(finalColor);
+    if (vMtrlDiffuse.a < 0.3f)
+        discard;
+    
+    Out.diffuse = vMtrlDiffuse;
+    Out.normal = vector(input.normalW.xyz * 0.5f + 0.5f, 0.f);
+    //Out.depth = vector(input.posH.z / input.posH.w, proj.4_4, 0.f, 0.f);
+    
+    return Out;
+    
+    //float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
+    //float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
 
-    return float4(finalColor, texColor.a);
+    //float3 N = normalize(input.normalW);
+    //float3 V = normalize(pos - input.posW);
+    
+    //float3 diffuseSum = float3(0, 0, 0);
+    //float3 ambientSum = float3(0, 0, 0);
+    //float3 specularSum = float3(0, 0, 0);
+
+    //int lightCount = (int) gLight[0][3][3];
+
+    //for (int i = 0; i < lightCount; ++i)
+    //{
+    //    if (gLight[i][3][2] < 0.5)
+    //        continue;
+
+    //    uint lightType = (uint) gLight[i][3][0];
+    //    float3 lightPos = float3(gLight[i][0][0], gLight[i][0][1], gLight[i][0][2]);
+    //    float3 lightDir = float3(gLight[i][1][0], gLight[i][1][1], gLight[i][1][2]);
+    //    float3 lightColor = float3(gLight[i][2][0], gLight[i][2][1], gLight[i][2][2]);
+    //    float intensity = gLight[i][1][3];
+    //    float range = gLight[i][0][3];
+    //    float attenuationK = gLight[i][3][1];
+    //    float ambientK = gLight[i][2][3];
+
+    //    float3 L;
+    //    float attenuation = 1.0f;
+
+    //    if (lightType == LIGHT_TYPE_DIRECTIONAL)
+    //    {
+    //        L = normalize(-lightDir);
+    //    }
+    //    else if (lightType == LIGHT_TYPE_POINT)
+    //    {
+    //        float3 toLight = lightPos - input.posW;
+    //        float dist = length(toLight);
+    //        L = toLight / dist;
+    //        attenuation = saturate(1.0f - dist / range) * attenuationK;
+    //    }
+    //    else
+    //        continue;
+
+    //    // Diffuse
+    //    float NdotL = saturate(dot(N, L));
+    //    float3 diffuse = lightColor * NdotL * intensity * attenuation;
+    //    diffuseSum += diffuse;
+        
+    //    // Specular
+    //    float3 R = reflect(-L, N);
+    //    float RdotV = saturate(dot(R, V));
+    //    float3 fSpecular = pow(RdotV, 50);
+    //    float specularStrength = gSmoothness;
+    //    float3 specular = lightColor * fSpecular * specularStrength * intensity * attenuation;
+    //    specularSum += specular;
+        
+    //    // Ambient
+    //    float3 ambient = lightColor * ambientK;
+    //    ambientSum += ambient;
+    //}
+
+    //diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
+    //float3 litDiffuse = texColor.rgb * saturate(ambientSum + diffuseSum);
+    //float3 finalColor = litDiffuse + specularSum;
+    
+    //finalColor = saturate(finalColor);
+
+    //return float4(finalColor, texColor.a);
 }
