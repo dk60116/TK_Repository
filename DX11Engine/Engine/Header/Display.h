@@ -25,6 +25,7 @@ public:
 	static HRESULT CreateRenderTargets();
 
 	static CRenderTarget* Get_RenderTarget(const wstring& _name);
+	static const _uint Get_RenderTargetCount();
 
 	static void RenderTargetRender(const wstring& _name);
 	static void ClearTargetRender(const wstring& _name);

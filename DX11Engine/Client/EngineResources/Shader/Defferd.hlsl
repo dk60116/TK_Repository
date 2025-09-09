@@ -18,9 +18,26 @@ cbuffer PerMaterial : register(b2)
     uint useTexture;
 };
 
+#define MAX_LIGHTS 64
+
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+#pragma pack_matrix(row_major)
+cbuffer PerLight : register(b4)
+{
+    float4x4 gLight[MAX_LIGHTS];
+};
+
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
+
+texture2D gDiffuseTexture : register(t1);
+texture2D gNormalTexture : register(t2);
+texture2D gShadeTexture : register(t3);
+texture2D gSpecularTexture : register(t4);
 
 // 버텍스 입출력
 struct VSIn
@@ -34,17 +51,6 @@ struct VSOut
     float4 posH : SV_POSITION;
     float2 uv : TEXCOORD0;
     float3 posW : TEXCOORD1;
-};
-
-struct PS_OUT_BACKBUFFER
-{
-    float4 color : SV_TARGET0;
-};
-
-struct PS_OUT_LIGHT
-{
-    vector shade : SV_TARGET0;
-    vector specular : SV_TARGET1;
 };
 
 // 버텍스 셰이더
@@ -65,5 +71,5 @@ VSOut VSMain(VSIn v)
 // 픽셀 셰이더
 float4 PSMain(VSOut i) : SV_TARGET
 {
-    return (useTexture != 0) ? gTexture.Sample(gSampler, i.uv) : baseColor;
+    return (useTexture != 0) ? gTexture.Sample(gSampler, i.uv) * baseColor : baseColor;
 }

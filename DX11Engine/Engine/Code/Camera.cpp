@@ -164,53 +164,83 @@ void CCamera::Bind_ProjectionMatrix()
 	}
 }
 
-void CCamera::Bind_RenderTarget(const wstring& _name)
+void CCamera::Bind_RenderTarget()
 {
-	ID3D11DeviceContext* ctx = CGraphicDevice::Get_Context();
+	ID3D11RenderTargetView* oldRTV[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
+	ID3D11DepthStencilView* oldDSV = nullptr;
+	m_pContext->OMGetRenderTargets(D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT, oldRTV, &oldDSV);
 
-	ID3D11RenderTargetView* prevRTV = nullptr;
-	ID3D11DepthStencilView* prevDSV = nullptr;
-	ctx->OMGetRenderTargets(1, &prevRTV, &prevDSV);
+	_uint oldNumVP = 0;
+	m_pContext->RSGetViewports(&oldNumVP, nullptr);
+	vector<D3D11_VIEWPORT> oldVPs(oldNumVP);
+	if (oldNumVP)
+		m_pContext->RSGetViewports(&oldNumVP, oldVPs.data());
+	auto* dfRT = CDisplay::Get_RenderTarget(L"Diffuse");
+	auto* nmRT = CDisplay::Get_RenderTarget(L"Normal");
+	auto* dpRT = CDisplay::Get_RenderTarget(L"Depth");
+	auto* sdRT = CDisplay::Get_RenderTarget(L"Shading");
 
-	UINT prevNumVP = 1;
-	D3D11_VIEWPORT prevVP{};
-	ctx->RSGetViewports(&prevNumVP, &prevVP);
+	 const _uint count = 4;
 
-	CRenderTarget* rt = CDisplay::Get_RenderTarget(_name);
-	ID3D11RenderTargetView* rtv = rt->Get_RTV();
-	ID3D11DepthStencilView* dsv = rt->Get_DSV();
+	 ID3D11RenderTargetView* rtvs[count] =
+	 {
+		 dfRT->Get_RTV(), // SV_TARGET0
+		 nmRT->Get_RTV(),  // SV_TARGET1
+		 dpRT->Get_RTV(),  // SV_TARGET2
+		 sdRT->Get_RTV()
+		
+	};
+	
+	 ID3D11DepthStencilView* dsv = dfRT->Get_DSV(); 
 
 	ID3D11ShaderResourceView* nullSRV[16] = {};
-	ctx->PSSetShaderResources(0, 16, nullSRV);
-	ctx->VSSetShaderResources(0, 16, nullSRV);
-	ctx->GSSetShaderResources(0, 16, nullSRV);
+	m_pContext->PSSetShaderResources(0, 16, nullSRV);
+	m_pContext->VSSetShaderResources(0, 16, nullSRV);
+	m_pContext->GSSetShaderResources(0, 16, nullSRV);
 
-	ctx->OMSetRenderTargets(1, &rtv, dsv);
+	m_pContext->OMSetRenderTargets(count, rtvs, dsv);
 
-	ctx->RSSetViewports(1, &rt->Get_VP());
+	D3D11_VIEWPORT vp = dfRT->Get_VP();
+	m_pContext->RSSetViewports(1, &vp);
 
-	rt->Clear();
+	dfRT->Clear();
+	nmRT->Clear();
+	dpRT->Clear();
+	sdRT->Clear();
 
 	for (TRAVERSAL_ITER(m_vMeshList, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
 			(*it)->Render_WithCamera(this);
 	}
-	m_vMeshList.clear();
 
-	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
-	ctx->RSSetViewports(1, &prevVP);
-	if (prevRTV)
-		prevRTV->Release();
-	if (prevDSV)
-		prevDSV->Release();
+	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
+	while (oldCount > 0 && oldRTV[oldCount - 1] == nullptr) --oldCount;
 
-	CDisplay::RenderTargetRender(_name);
+	m_pContext->OMSetRenderTargets(oldCount, oldRTV, oldDSV);
+	
+	if (oldNumVP)
+		m_pContext->RSSetViewports(oldNumVP, oldVPs.data());
+
+	for (UINT i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+	{
+		if (oldRTV[i])
+			oldRTV[i]->Release();
+	}
+	if (oldDSV) 
+		oldDSV->Release();
+
+	dfRT->Render();
+	nmRT->Render();
+	dpRT->Render();
+	sdRT->Render();
 }
 
 void CCamera::RenderMesh()
 {
-	Bind_RenderTarget(L"Diffuse");
+	Bind_RenderTarget();
+	
+	m_vMeshList.clear();
 }
 
 void CCamera::RenderUI()

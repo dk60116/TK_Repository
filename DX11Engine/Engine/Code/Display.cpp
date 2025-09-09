@@ -84,13 +84,15 @@ CRenderTarget* CDisplay::CreateRenderTarget(wstring _name, vector2Int _pos, vect
 
 HRESULT CDisplay::CreateRenderTargets()
 {
-	if (!CreateRenderTarget(L"Diffuse", vector2Int::zero(), vector2Int(200.f, 200.f), ColorValue::white()))
+	if (!CreateRenderTarget(L"Diffuse", vector2Int::zero(), vector2Int(200, 200), ColorValue::white()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Normal", vector2Int(200.f, 0.f), vector2(200.f, 200.f), ColorValue::white()))
+	if (!CreateRenderTarget(L"Normal", vector2Int(200, 0), vector2(200, 200), ColorValue::black()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Shading", vector2Int(0.f, 200.f), vector2Int(200.f, 200.f), ColorValue::white()))
+	if (!CreateRenderTarget(L"Depth", vector2Int(400, 0), vector2(200, 200), ColorValue::black()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Specular", vector2Int(200.f, 200.f), vector2Int(200.f, 200.f), ColorValue::black()))
+	if (!CreateRenderTarget(L"Shading", vector2Int(0, 200), vector2Int(200, 200), ColorValue::white()))
+		return E_FAIL;
+	if (!CreateRenderTarget(L"Specular", vector2Int(200, 200), vector2Int(200, 200), ColorValue::black()))
 		return E_FAIL;
 
 	return S_OK;
@@ -99,6 +101,11 @@ HRESULT CDisplay::CreateRenderTargets()
 CRenderTarget* CDisplay::Get_RenderTarget(const wstring& _name)
 {
 	return GetInstance().m_mRenderTargetList[_name];
+}
+
+const _uint CDisplay::Get_RenderTargetCount()
+{
+	return static_cast<_uint>(GetInstance().m_mRenderTargetList.size());
 }
 
 void CDisplay::RenderTargetRender(const wstring& _name)

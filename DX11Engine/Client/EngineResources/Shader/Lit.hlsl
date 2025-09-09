@@ -6,7 +6,7 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos;
+    float3 camPos;
     float4x4 view;
     float4x4 proj;
     float cpadding;
@@ -33,17 +33,17 @@ cbuffer PerCustomValue : register(b10)
 }
 
 // 라이트 정의
-#define MAX_LIGHTS 64
+//#define MAX_LIGHTS 64
 
-#define LIGHT_TYPE_DIRECTIONAL 0
-#define LIGHT_TYPE_POINT 1
-#define LIGHT_TYPE_SPOT 2
+//#define LIGHT_TYPE_DIRECTIONAL 0
+//#define LIGHT_TYPE_POINT 1
+//#define LIGHT_TYPE_SPOT 2
 
-#pragma pack_matrix(row_major)
-cbuffer PerLight : register(b4)
-{
-    float4x4 gLight[MAX_LIGHTS];
-};
+//#pragma pack_matrix(row_major)
+//cbuffer PerLight : register(b4)
+//{
+//    float4x4 gLight[MAX_LIGHTS];
+//};
 
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);
@@ -156,12 +156,15 @@ PSOut PSMain(VSOut input) : SV_TARGET
     
     vector vMtrlDiffuse = gTexture.Sample(gSampler, input.uv);
     
-    if (vMtrlDiffuse.a < 0.3f)
+    float ndcZ = input.posH.z * 2.0f - 1.0f; 
+    float clipW = input.posH.w;
+    
+    if (vMtrlDiffuse.a < 0.1f)
         discard;
     
     Out.diffuse = vMtrlDiffuse;
-    Out.normal = vector(input.normalW.xyz * 0.5f + 0.5f, 0.f);
-    //Out.depth = vector(input.posH.z / input.posH.w, proj.4_4, 0.f, 0.f);
+    Out.normal = vector(input.normalW.xyz * 0.5f + 0.5f, 1.f);
+    Out.depth = vector(ndcZ, clipW, 0.f, 1.f);
     
     return Out;
     

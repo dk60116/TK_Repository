@@ -93,13 +93,14 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 		Safe_Release(pDepth); 
 		return E_FAIL; 
 	}
+	
 	Safe_Release(pDepth);
 
 	m_strTargetName = _name;
 	m_vClearColor = _clearColor;
 
-	m_sViewPort.TopLeftX = static_cast<_float>(_pos.x);
-	m_sViewPort.TopLeftY = static_cast<_float>(_pos.y);
+	m_sViewPort.TopLeftX = 0;
+	m_sViewPort.TopLeftY = 0;
 	m_sViewPort.Width = static_cast<_float>(_size.x);
 	m_sViewPort.Height = static_cast<_float>(_size.y);
 	m_sViewPort.MinDepth = 0.0f;

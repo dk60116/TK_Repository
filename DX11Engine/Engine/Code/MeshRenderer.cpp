@@ -163,9 +163,6 @@ void CMeshRenderer::Render_Gizmo()
 	_matrix S = XMMatrixScaling(InverseFactor, InverseFactor, InverseFactor);
 	const _matrix WS = XMMatrixMultiply(S, W);
 
-	if (m_pGameObject->Get_ObjectName() == L"Mesh 0")
-		int a = 0;
-
 	DrawBoxWithWorld(WS, color, thickness);
 }
 
@@ -245,7 +242,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 			++index;
 		}
 
-		m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
+		//m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
 	}
 
 	auto& inst = pBuffer->Get_InstancingDesc();
