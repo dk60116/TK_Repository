@@ -34,6 +34,7 @@ cbuffer PerLight : register(b4)
 SamplerState gSampler : register(s0);
 
 Texture2D gNormalTexture : register(t2);
+Texture2D gDepthTexture : register(t3);
 
 // 버텍스 입출력
 struct VSIn
@@ -67,27 +68,79 @@ VSOut VSMain(VSIn v)
 // 픽셀 셰이더
 float4 PSMain(VSOut i) : SV_TARGET
 {
+// 1) Normal
     float3 N = normalize(gNormalTexture.Sample(gSampler, i.uv).xyz * 2.0f - 1.0f);
 
-    float3 finalLight = float3(0, 0, 0);
-    uint lightCount = (uint) gLight[0][3][3]; // 총 라이트 수 저장 위치
+    // 2) 화면 좌표 -> clip, view, world 로 복원 (포인트 라이트용)
+    //    NDC xy는 uv로부터 계산, z는 GBuffer에서, w는 clipW 사용
+    float2 ndc;
+    ndc.x = i.uv.x * 2.0f - 1.0f;
+    ndc.y = (1.0f - i.uv.y) * 2.0f - 1.0f;
 
-    for (uint iLight = 0; iLight < lightCount; ++iLight)
+    float2 depthRG = gDepthTexture.Sample(gSampler, i.uv).xy; // (ndcZ, clipW)
+    float ndcZ = depthRG.x;
+    float clipW = max(depthRG.y, 1e-6f);
+
+    float4 posC = float4(ndc.x * clipW, ndc.y * clipW, ndcZ * clipW, clipW);
+
+    //float4x4 invProj = inverse(proj);
+    //float4x4 invView = inverse(view);
+
+    float4 posV = mul(posC, proj);
+    posV /= max(posV.w, 1e-6f);
+
+    float4 posW = mul(posV, view);
+    posW /= max(posW.w, 1e-6f);
+
+    // 3) 조명 누적 (디퓨즈 + 앰비언트)
+    float3 diffuseSum = 0;
+    float3 ambientSum = 0;
+
+    uint lightCount = (uint) gLight[0][3][3];
+
+    [loop]
+    for (uint li = 0; li < lightCount; ++li)
     {
-        uint type = (uint) gLight[iLight][3][0];
-        float3 lightDir = float3(gLight[iLight][1][0], gLight[iLight][1][1], gLight[iLight][1][2]);
-        float intensity = gLight[iLight][1][3];
-        float ambientK = gLight[iLight][2][3];
+        // light payload
+        uint type = (uint) gLight[li][3][0];
+        float3 lightPos = float3(gLight[li][0][0], gLight[li][0][1], gLight[li][0][2]);
+        float3 lightDir = float3(gLight[li][1][0], gLight[li][1][1], gLight[li][1][2]);
+        float3 lightColor = float3(gLight[li][2][0], gLight[li][2][1], gLight[li][2][2]);
+        float intensity = gLight[li][1][3];
+        float range = gLight[li][0][3];
+        float attenK = gLight[li][3][1];
+        float ambientK = gLight[li][2][3];
 
-        float3 L = normalize((type == LIGHT_TYPE_DIRECTIONAL) ? -lightDir : lightDir);
+        float3 L;
+        float attenuation = 1.0f;
 
-        float shade = saturate(dot(N, L));
-        float lit = saturate(ambientK + shade * intensity);
+        if (type == LIGHT_TYPE_DIRECTIONAL)
+        {
+            L = normalize(-lightDir);
+        }
+        else if (type == LIGHT_TYPE_POINT)
+        {
+            float3 toLight = lightPos - posW.xyz; // 복원한 월드 pos 사용
+            float dist = length(toLight);
+            L = toLight / max(dist, 1e-6f);
+            attenuation = saturate(1.0f - dist / max(range, 1e-6f)) * attenK;
+        }
+        else
+        {
+            continue;
+        }
 
-        finalLight += lit;
+        float NdotL = saturate(dot(N, L));
+        diffuseSum += lightColor * NdotL * intensity * attenuation;
+        ambientSum += lightColor * ambientK;
     }
 
-    finalLight = saturate(finalLight);
+    // 살짝 바닥값 줄 거면 아래 활성화
+    // diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
 
-    return float4(finalLight, 1.0f);
+    float3 final = saturate(ambientSum + diffuseSum);
+
+    // 그레이스케일로 출력(Combine에서 곱셈)
+    float g = saturate(max(final.r, max(final.g, final.b)));
+    return float4(g, g, g, 1.0f);
 }

@@ -83,7 +83,7 @@ struct PSOut
 // 버텍스 셰이더
 VSOut VSMain(VSIn v)
 {
-    VSOut o;
+       VSOut o;
 
     // 스킨 포지션
     float4 skinnedPos = float4(v.posL, 1);

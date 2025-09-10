@@ -198,7 +198,7 @@ void CDungeon::CreateDragon()
 
 void CDungeon::SpawnDungeonGates()
 {
-    for (size_t i = 0; i < 5; i++)
+    for (size_t i = 0; i < 4; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
         newObj->Set_ObjectName(L"Gate (Clone) " + to_wstring(i));
@@ -206,16 +206,19 @@ void CDungeon::SpawnDungeonGates()
         m_vGateList.back()->Get_GameObject()->SetActive(true);
     }
 
-    m_vGateList[0]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
-    m_vGateList[1]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
-    m_vGateList[2]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
+    //m_vGateList[0]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
+    //m_vGateList[1]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
+    //m_vGateList[2]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
 
-    m_vGateList[3]->Get_Transform()->Set_Position(108.8f, 0.f, -45.f);
-    m_vGateList[3]->Get_Transform()->Set_EulerAnglesY(90.f);   
+    m_vGateList[0]->Get_Transform()->Set_Position(108.8f, 0.f, -45.f);
+    m_vGateList[0]->Get_Transform()->Set_EulerAnglesY(90.f);   
 
-    m_vGateList[4]->Get_Transform()->Set_Position(78.75f, 0.f, -45.f);
-    m_vGateList[4]->Get_Transform()->Set_EulerAnglesY(90.f);
-    m_vGateList[4]->SetLock();
+    m_vGateList[1]->Get_Transform()->Set_Position(78.75f, 0.f, -45.f);
+    m_vGateList[1]->Get_Transform()->Set_EulerAnglesY(90.f);
+    m_vGateList[1]->SetLock();
+
+    m_vGateList[2]->Get_Transform()->Set_Position(71.25f, 0.f, -22.5f);
+    m_vGateList[2]->Get_Transform()->Set_EulerAnglesY(90.f);
 }
 
 void CDungeon::SpawnDungeonFootSwitches()
