@@ -30,21 +30,20 @@ CResources& CResources::GetInstance()
 
 HRESULT CResources::Initialize()
 {
-	if (!fs::exists("BinaryAssets"))
-		fs::create_directories("BinaryAssets");
-	if (!fs::exists("BinaryAssets/SceneData"))
-		fs::create_directories("BinaryAssets/SceneData");
-	if (!fs::exists("BinaryAssets/MeshData"))
-		fs::create_directories("BinaryAssets/MeshData");
-	if (!fs::create_directory("BinaryAssets/SkinnedMeshData"))
-		fs::create_directories("BinaryAssets/SkinnedMeshData");
-	if (!fs::exists("BinaryAssets/NaviMeshData"))
-		fs::create_directories("BinaryAssets/NaviMeshData");
-		fs::create_directories("BinaryAssets/SkinnedMeshData");
-	if (!fs::exists("BinaryAssets/AnimationClipData"))
-		fs::create_directories("BinaryAssets/AnimationClipData");
-	if (!fs::exists("BinaryAssets/FontData"))
-		fs::create_directories("BinaryAssets/FontData");
+	for (const char* p : 
+		{
+		"BinaryAssets",
+		"BinaryAssets/SceneData",
+		"BinaryAssets/MeshData",
+		"BinaryAssets/SkinnedMeshData",
+		"BinaryAssets/NaviMeshData",
+		"BinaryAssets/AnimationClipData",
+		"BinaryAssets/FontData",
+		}
+		) 
+	{
+		if (!fs::exists(p)) fs::create_directories(p);
+	}
 
 	Ready_GameResources();
 
@@ -277,8 +276,8 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 	(
 		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
 		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_GenNormals |
+		//aiProcess_JoinIdenticalVertices |
+		//aiProcess_GenNormals |
 		aiProcess_CalcTangentSpace |
 		aiProcess_ConvertToLeftHanded |
 		aiProcess_FlipUVs
@@ -290,7 +289,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 		return E_FAIL;
 	}
 
-	bool hasBones = false;
+	_bool hasBones = false;
 	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
 		hasBones |= aiScene->mMeshes[i]->HasBones();
 
@@ -300,7 +299,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 		return E_FAIL;
 	}
 
-	const bool hasMaterial = aiScene->HasMaterials();
+	const _bool hasMaterial = aiScene->HasMaterials();
 	using VTX = VertexSkinnedBuffer;
 
 	vector<aiMatrix4x4> meshGlobalMats(aiScene->mNumMeshes, aiMatrix4x4());
@@ -337,8 +336,10 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			aiVector3D pos = gMat * mesh->mVertices[v];
 
 			aiVector3D nor(0, 0, 0), tan(0, 0, 0);
-			if (mesh->HasNormals())               nor = gMat3 * mesh->mNormals[v];
-			if (mesh->HasTangentsAndBitangents()) tan = gMat3 * mesh->mTangents[v];
+			if (mesh->HasNormals())
+				nor = gMat3 * mesh->mNormals[v];
+			if (mesh->HasTangentsAndBitangents())
+				tan = gMat3 * mesh->mTangents[v];
 
 			VTX vert{};
 			vert.position = { pos.x, pos.y, pos.z };
@@ -369,7 +370,8 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			for (_uint w = 0; w < bone->mNumWeights; ++w)
 			{
 				_uint vid = bone->mWeights[w].mVertexId;
-				float     bw = bone->mWeights[w].mWeight;
+				_float
+					bw = bone->mWeights[w].mWeight;
 				if (vid < vertices.size())
 					CSkinnedMeshBuffer::FillBoneWeights(vertices[vid], boneIdx, bw);
 			}
@@ -443,11 +445,13 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 
 			// 로컬 트랜스폼 복사
 			const aiMatrix4x4& m = node->mTransformation;
-			_float4x4 t = _float4x4(
+			_float4x4 t = _float4x4
+			(
 				m.a1, m.b1, m.c1, m.d1,
 				m.a2, m.b2, m.c2, m.d2,
 				m.a3, m.b3, m.c3, m.d3,
-				m.a4, m.b4, m.c4, m.d4);
+				m.a4, m.b4, m.c4, m.d4
+			);
 			n.transformation = t;
 
 			// 이 노드에 연결된 메시 인덱스
@@ -954,6 +958,15 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 		}
 
 		infoList.push_back(move(info));
+
+		if (info.desc.vertexSize != sizeof(VertexTexNormalTangentBuffer))
+		{
+			CDebug::LogError(L"[ReadMeshBufferInfos] vertexSize mismatch: file="
+				+ _binFileName + L", fileStride=" + to_wstring(info.desc.vertexSize)
+				+ L", codeStride=" + to_wstring(sizeof(VertexTexNormalTangentBuffer)));
+
+			return {};
+		}
 	}
 
 	in.close();

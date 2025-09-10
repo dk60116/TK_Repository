@@ -33,8 +33,8 @@ HRESULT CMovingPlat::Initialize()
 
 	m_sDescription.scaleFactor = 0.04f;
 	m_sDescription.isTrigger = true;
-	m_sDescription.colliderCenter = vector3::up() * 0.5f;
-	m_sDescription.colliderSize = vector3(2.f, 1.f, 2.f);
+	m_sDescription.colliderCenter = vector3::up();
+	m_sDescription.colliderSize = vector3(2.f, 2.f, 2.f);
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
@@ -50,8 +50,8 @@ void CMovingPlat::Awake()
 	{
 		m_pBodyCollider = Get_Transform()->Get_Child()->Get_GameObject()->AddComponent<CBoxCollider>();
 
-		m_pBodyCollider->Set_Center(vector3::up() * 0.25f * (1.f / m_sDescription.scaleFactor));
-		m_pBodyCollider->Set_Size(vector3(3.f, 0.5f, 3.f) * (1.f / m_sDescription.scaleFactor));
+		m_pBodyCollider->Set_Center(vector3::up() * 0.f * (1.f / m_sDescription.scaleFactor));
+		m_pBodyCollider->Set_Size(vector3(3.f, 1.f, 3.f) * (1.f / m_sDescription.scaleFactor));
 	}
 }
 

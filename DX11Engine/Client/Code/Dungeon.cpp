@@ -159,7 +159,7 @@ void CDungeon::CreateDungeonChapters()
     }
 
     {
-        m_vChapterList[4]->SetBoundingBox({ pair(vector3(63.6f, 5.f, -71.4f), vector3(28.0f, 15.f, 78.1f)) });
+        m_vChapterList[4]->SetBoundingBox({ pair(vector3(63.6f, 9.8f, -71.4f), vector3(28.0f, 20.f, 78.1f)) });
     }
 
     {
@@ -167,7 +167,7 @@ void CDungeon::CreateDungeonChapters()
     }
 
     {
-        m_vChapterList[6]->SetBoundingBox({ pair(vector3(40.88f, 5.f, -71.4f), vector3(17.57f, 15.f, 78.1f)) });
+        m_vChapterList[6]->SetBoundingBox({ pair(vector3(40.88f, 9.8f, -71.4f), vector3(17.57f, 15.f, 78.1f)) });
     }
 
     {
@@ -198,17 +198,13 @@ void CDungeon::CreateDragon()
 
 void CDungeon::SpawnDungeonGates()
 {
-    for (size_t i = 0; i < 4; i++)
+    for (size_t i = 0; i < 19; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
         newObj->Set_ObjectName(L"Gate (Clone) " + to_wstring(i));
         m_vGateList.push_back(newObj->GetComponent<CDungeonGate>());
         m_vGateList.back()->Get_GameObject()->SetActive(true);
     }
-
-    //m_vGateList[0]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
-    //m_vGateList[1]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
-    //m_vGateList[2]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
 
     m_vGateList[0]->Get_Transform()->Set_Position(108.8f, 0.f, -45.f);
     m_vGateList[0]->Get_Transform()->Set_EulerAnglesY(90.f);   
@@ -219,23 +215,60 @@ void CDungeon::SpawnDungeonGates()
 
     m_vGateList[2]->Get_Transform()->Set_Position(71.25f, 0.f, -22.5f);
     m_vGateList[2]->Get_Transform()->Set_EulerAnglesY(90.f);
+
+    m_vGateList[3]->Get_Transform()->Set_Position(56.28f, 0.f, -22.5f);
+    m_vGateList[3]->Get_Transform()->Set_EulerAnglesY(90.f);
+
+    m_vGateList[4]->Get_Transform()->Set_Position(45.f, 0.f, -41.2f);
+    m_vGateList[5]->Get_Transform()->Set_Position(37.45f, 0.f, -41.2f);
+
+    m_vGateList[6]->Get_Transform()->Set_Position(48.77f, 5.95f, -97.5f);
+    m_vGateList[6]->Get_Transform()->Set_EulerAnglesY(90.f);
+
+    m_vGateList[7]->Get_Transform()->Set_Position(22.47f, 3.f, -71.26f);
+    m_vGateList[8]->Get_Transform()->Set_Position(15.f, 3.f, -71.26f);
+    m_vGateList[9]->Get_Transform()->Set_Position(15.f, 3.f, -71.26f);
+    m_vGateList[10]->Get_Transform()->Set_Position(-15.f, 3.f, -71.26f);
+    m_vGateList[11]->Get_Transform()->Set_Position(-22.47f, 3.f, -71.26f);
+    
+    m_vGateList[12]->Get_Transform()->Set_Position(26.27f, 0.f, -22.47f);
+    m_vGateList[12]->Get_Transform()->Set_EulerAnglesY(90.f);
+    m_vGateList[13]->Get_Transform()->Set_Position(-26.27f, 0.f, -22.47f);
+    m_vGateList[13]->Get_Transform()->Set_EulerAnglesY(90.f);
+
+    m_vGateList[14]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
+    m_vGateList[15]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
+    m_vGateList[16]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
+    m_vGateList[17]->Get_Transform()->Set_Position(22.5f, 0.f, -11.27f);
+    m_vGateList[18]->Get_Transform()->Set_Position(-22.5f, 0.f, -11.27f);
 }
 
 void CDungeon::SpawnDungeonFootSwitches()
 {
-    for (size_t i = 0; i < 1; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_FootSwitchPlat"]->Get_GameObject());
         newObj->Set_ObjectName(L"FootSwitch (Clone) " + to_wstring(i));
         m_vFootSwitchList.push_back(newObj->GetComponent<CFootSwitch>());
         m_vFootSwitchList.back()->Get_GameObject()->SetActive(true);
     }
-
-    m_vFootSwitchList[0]->Get_Transform()->Set_Position(vector3(112.52f, 0.2f, -45.f));
     
     {
-        vector<CDungeonGate*> gates = { m_vGateList[3] };
+        m_vFootSwitchList[0]->Get_Transform()->Set_Position(vector3(112.52f, 0.2f, -45.f));
+        vector<CDungeonGate*> gates = { m_vGateList[0] };
         m_vFootSwitchList[0]->Set_Gate(gates);
+    }
+
+    {
+        m_vFootSwitchList[1]->Get_Transform()->Set_Position(vector3(67.5f, 0.2f, -22.5f));
+        vector<CDungeonGate*> gates = { m_vGateList[2] };
+        m_vFootSwitchList[1]->Set_Gate(gates);
+    }
+
+    {
+        m_vFootSwitchList[2]->Get_Transform()->Set_Position(vector3(52.45f, 6.015f, -101.27f));
+        vector<CDungeonGate*> gates = { m_vGateList[6] };
+        m_vFootSwitchList[2]->Set_Gate(gates);
     }
 }
 
@@ -277,7 +310,7 @@ void CDungeon::SpawnDungeonLadder()
 
 void CDungeon::SpawnMovingPlat()
 {
-    for (size_t i = 0; i < 1; i++)
+    for (size_t i = 0; i < 2; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"MovingPlat"]->Get_GameObject());
         newObj->Set_ObjectName(L"Moving Plat (Clone) " + to_wstring(i));
@@ -285,8 +318,15 @@ void CDungeon::SpawnMovingPlat()
         m_vMovingPlatList.back()->Get_GameObject()->SetActive(true);
     }
 
-    m_vMovingPlatList[0]->Get_Transform()->Set_Position(-37.25f, 10.4f, -103.8f);
-    m_vMovingPlatList[0]->AddRout(vector3(-37.25f, 10.4f, -103.8f));
-    m_vMovingPlatList[0]->AddRout(vector3(-46.f, -3.5f, -94.45f));
-    m_vMovingPlatList[0]->AddRout(vector3(-50.f, -3.5f, -94.45f));
+    {
+        m_vMovingPlatList[0]->Get_Transform()->Set_Position(-37.25f, 10.4f, -103.8f);
+        m_vMovingPlatList[0]->AddRout(vector3(-37.25f, 10.4f, -103.8f));
+        m_vMovingPlatList[0]->AddRout(vector3(-46.f, -3.5f, -94.45f));
+    }
+
+    {
+        m_vMovingPlatList[1]->Get_Transform()->Set_Position(54.f, 3.5f, -90.8f);
+        m_vMovingPlatList[1]->AddRout(vector3(54.f, 3.5f, -90.8f));
+        m_vMovingPlatList[1]->AddRout(vector3(54.f, 12.f, -90.8f));
+    }
 }
