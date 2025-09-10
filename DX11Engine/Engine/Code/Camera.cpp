@@ -227,6 +227,7 @@ void CCamera::Bind_RenderTarget()
 
 	sdRT->Bind_Light();
 	sdRT->Bind_Shader();
+	sdRT->Bind_Rect();
 
 	auto cbRTV = cbRT->Get_RTV();
 	auto cbVP = cbRT->Get_VP();
@@ -243,7 +244,7 @@ void CCamera::Bind_RenderTarget()
 
 	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
 
-	while (oldCount > 0 && oldRTV[oldCount - 1] == nullptr) 
+	while (oldCount > 0 && !oldRTV[oldCount - 1]) 
 		--oldCount;
 
 	m_pContext->OMSetRenderTargets(oldCount, oldRTV, oldDSV);

@@ -314,6 +314,20 @@ HRESULT CRenderTarget::Render()
 
 void CRenderTarget::Bind_Rect()
 {
+	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
+
+	// 현재 VP 크기
+	UINT n = 1;
+	D3D11_VIEWPORT vp{};
+	ctx->RSGetViewports(&n, &vp);
+
+	// VS에서 ortho P를 쓰고 있으므로,
+	// 화면을 꽉 채우려면 (0,0) 기준으로 vp.Width, vp.Height 크기로 스케일만 주면 됩니다.
+	_matrix W = XMMatrixScaling(vp.Width, vp.Height, 1.0f);
+
+	_matrix WT = XMMatrixTranspose(W);
+	ctx->UpdateSubresource(m_pCBPerObject, 0, nullptr, &WT, 0, 0);
+
 	m_pMeshBuffer->Render();
 }
 
@@ -358,9 +372,9 @@ void CRenderTarget::Bind_Shader()
 	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 
 	// b1: PerCamera
-	struct CamCB { XMFLOAT3 camPos; float _pad; XMFLOAT4X4 view; XMFLOAT4X4 proj; };
+	struct CamCB { _float3 camPos; float _pad; _float4x4 view; _float4x4 proj; };
 	CamCB cam{};
-	cam.camPos = XMFLOAT3(0, 0, 0);
+	cam.camPos = _float3(0, 0, 0);
 	XMStoreFloat4x4(&cam.view, XMMatrixTranspose(V));
 	XMStoreFloat4x4(&cam.proj, XMMatrixTranspose(P));
 	ctx->UpdateSubresource(m_pCBPerCamera, 0, nullptr, &cam, 0, 0);
