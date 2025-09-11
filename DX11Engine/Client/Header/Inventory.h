@@ -29,8 +29,9 @@ public:
 	void OnDestroy() override;
 
 public:
-	void AddItem(wstring& _name, const _uint _count = 1);
-	_bool UseItem(wstring& _name, const _uint _count = 1);
+	void AddItem(const wstring& _name, const _uint _count = 1);
+	_bool UseItem(const wstring& _name, const _uint _count = 1);
+	const _bool HasItem(const wstring& _name) const;
 
 private:
 	template<typename T>

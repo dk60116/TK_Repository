@@ -136,7 +136,7 @@ float4 PSMain(VSOut i) : SV_TARGET
     }
 
     // 살짝 바닥값 줄 거면 아래 활성화
-    // diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
+     diffuseSum = max(diffuseSum, float3(0.2f, 0.2f, 0.2f));
 
     float3 final = saturate(ambientSum + diffuseSum);
 

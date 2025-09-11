@@ -149,7 +149,10 @@ void CPlayer::Update()
 	if (CInput::GetKeyDown(Alpha1))
 		ChangeWeapon(L"Sword");
 	if (CInput::GetKeyDown(Alpha2))
-		ChangeWeapon(L"Bow");
+	{
+		if (m_pInventroy->HasItem(L"Bow"))
+			ChangeWeapon(L"Bow");
+	}
 
 	vector2Int currentMouse = CInput::GetMousePos();
 	m_vMouseDragDelta = (currentMouse - m_vPrevMousePos).to_vector2();

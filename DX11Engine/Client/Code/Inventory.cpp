@@ -1,6 +1,9 @@
 #include "cpch.h"
 #include "Inventory.h"
+
 #include "Item_DungeonKey.h"
+#include "Item_Bow.h"
+#include "Item_Arrow.h"
 
 CInventory::CInventory()
 	: m_mItemList({})
@@ -29,6 +32,8 @@ HRESULT CInventory::Initialize()
 		E_FAIL;
 
 	Add_ItemSlot<CItem_DungeonKey>();
+	Add_ItemSlot<CItem_Bow>();
+	Add_ItemSlot<CItem_Arrow>();
 
 	return S_OK;
 }
@@ -49,7 +54,7 @@ void CInventory::OnDestroy()
 	}
 }
 
-void CInventory::AddItem(wstring& _name, const _uint _count)
+void CInventory::AddItem(const wstring& _name, const _uint _count)
 {
 	auto it = m_mItemList.find(_name);
 	if (it == m_mItemList.end())
@@ -59,7 +64,7 @@ void CInventory::AddItem(wstring& _name, const _uint _count)
 	it->second.protoType->OnGetEvent(it->second.count);
 }
 
-_bool CInventory::UseItem(wstring& _name, const _uint _count)
+_bool CInventory::UseItem(const wstring& _name, const _uint _count)
 {
 	auto it = m_mItemList.find(_name);
 	if (it == m_mItemList.end())
@@ -75,4 +80,14 @@ _bool CInventory::UseItem(wstring& _name, const _uint _count)
 		return false;
 
 	return false;
+}
+
+const _bool CInventory::HasItem(const wstring& _name) const
+{
+	auto it = m_mItemList.find(_name);
+
+	if (it == m_mItemList.end())
+		return false;
+
+	return (*it).second.count > 0;
 }

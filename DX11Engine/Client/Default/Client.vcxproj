@@ -166,6 +166,8 @@
     <ClInclude Include="..\Header\FootSwitch.h" />
     <ClInclude Include="..\Header\Inventory.h" />
     <ClInclude Include="..\Header\Item.h" />
+    <ClInclude Include="..\Header\Item_Arrow.h" />
+    <ClInclude Include="..\Header\Item_Bow.h" />
     <ClInclude Include="..\Header\Item_DungeonKey.h" />
     <ClInclude Include="..\Header\Ladder.h" />
     <ClInclude Include="..\Header\MovingPlat.h" />
@@ -233,6 +235,8 @@
     <ClCompile Include="..\Code\GameScene.cpp" />
     <ClCompile Include="..\Code\Inventory.cpp" />
     <ClCompile Include="..\Code\Item.cpp" />
+    <ClCompile Include="..\Code\Item_Arrow.cpp" />
+    <ClCompile Include="..\Code\Item_Bow.cpp" />
     <ClCompile Include="..\Code\Item_DungeonKey.cpp" />
     <ClCompile Include="..\Code\Ladder.cpp" />
     <ClCompile Include="..\Code\LizardWarrior.cpp" />

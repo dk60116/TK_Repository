@@ -226,21 +226,20 @@ void CDungeon::SpawnDungeonGates()
     m_vGateList[6]->Get_Transform()->Set_EulerAnglesY(90.f);
 
     m_vGateList[7]->Get_Transform()->Set_Position(22.47f, 3.f, -71.26f);
-    m_vGateList[8]->Get_Transform()->Set_Position(15.f, 3.f, -71.26f);
-    m_vGateList[9]->Get_Transform()->Set_Position(15.f, 3.f, -71.26f);
-    m_vGateList[10]->Get_Transform()->Set_Position(-15.f, 3.f, -71.26f);
-    m_vGateList[11]->Get_Transform()->Set_Position(-22.47f, 3.f, -71.26f);
+    m_vGateList[8]->Get_Transform()->Set_Position(15.f, 3.f, -78.72f);
+    m_vGateList[9]->Get_Transform()->Set_Position(-15.f, 3.f, -78.72f);
+    m_vGateList[10]->Get_Transform()->Set_Position(-22.47f, 3.f, -71.26f);
     
-    m_vGateList[12]->Get_Transform()->Set_Position(26.27f, 0.f, -22.47f);
+    m_vGateList[11]->Get_Transform()->Set_Position(26.27f, 0.f, -22.47f);
+    m_vGateList[11]->Get_Transform()->Set_EulerAnglesY(90.f);
+    m_vGateList[12]->Get_Transform()->Set_Position(-26.27f, 0.f, -22.47f);
     m_vGateList[12]->Get_Transform()->Set_EulerAnglesY(90.f);
-    m_vGateList[13]->Get_Transform()->Set_Position(-26.27f, 0.f, -22.47f);
-    m_vGateList[13]->Get_Transform()->Set_EulerAnglesY(90.f);
 
-    m_vGateList[14]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
-    m_vGateList[15]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
-    m_vGateList[16]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
-    m_vGateList[17]->Get_Transform()->Set_Position(22.5f, 0.f, -11.27f);
-    m_vGateList[18]->Get_Transform()->Set_Position(-22.5f, 0.f, -11.27f);
+    m_vGateList[13]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
+    m_vGateList[14]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
+    m_vGateList[15]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
+    m_vGateList[16]->Get_Transform()->Set_Position(22.5f, 0.f, -11.27f);
+    m_vGateList[17]->Get_Transform()->Set_Position(-22.5f, 0.f, -11.27f);
 }
 
 void CDungeon::SpawnDungeonFootSwitches()
@@ -274,7 +273,7 @@ void CDungeon::SpawnDungeonFootSwitches()
 
 void CDungeon::SpawnDungeonChest()
 {
-    for (size_t i = 0; i < 1; i++)
+    for (size_t i = 0; i < 2; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -282,9 +281,18 @@ void CDungeon::SpawnDungeonChest()
         m_vChestList.back()->Get_GameObject()->SetActive(true);
     }
 
-    m_vChestList[0]->Get_Transform()->Set_Position(vector3(93.85f, -2.98f, -146.f));
-    m_vChestList[0]->Get_Transform()->Set_EulerAnglesY(180.f);
-    m_vChestList[0]->Set_Item(L"DungeonKey");
+    {
+        m_vChestList[0]->Get_Transform()->Set_Position(vector3(93.85f, -2.98f, -146.f));
+        m_vChestList[0]->Get_Transform()->Set_EulerAnglesY(180.f);
+        m_vChestList[0]->Set_Item(L"DungeonKey");
+    }
+
+    {
+        m_vChestList[1]->Get_Transform()->Set_Position(vector3(67.4f, 6.f, -105.f));
+        m_vChestList[1]->Get_Transform()->Set_EulerAnglesY(90.f);
+        m_vChestList[1]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[1]->Set_Item(L"Bow");
+    }
 }
 
 void CDungeon::SpawnDungeonLadder()
