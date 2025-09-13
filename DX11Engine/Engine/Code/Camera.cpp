@@ -280,13 +280,30 @@ void CCamera::Bind_RenderTarget()
 
 void CCamera::RenderMesh()
 {
-	Bind_RenderTarget();
+	//Bind_RenderTarget();
 
-	CDisplay::RenderTargetRender(L"Combine");
-	CDisplay::RenderTargetRender(L"Diffuse");
-	CDisplay::RenderTargetRender(L"Normal");
-	CDisplay::RenderTargetRender(L"Depth");
-	CDisplay::RenderTargetRender(L"Shading");
+	//CDisplay::RenderTargetRender(L"Combine");
+	//CDisplay::RenderTargetRender(L"Diffuse");
+	//CDisplay::RenderTargetRender(L"Normal");
+	//CDisplay::RenderTargetRender(L"Depth");
+	//CDisplay::RenderTargetRender(L"Shading");
+
+	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_WithCamera(this);
+	}
+
+	//const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+	//m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
+
+	//for (TRAVERSAL_ITER(m_vMeshList_Blend, it))
+	//{
+	//	if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+	//		(*it)->Render_WithCamera(this);
+	//}
+
+	//m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
 	
 	m_vMeshList_Lit.clear();
 }
