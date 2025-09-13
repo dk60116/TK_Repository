@@ -68,7 +68,11 @@ VSOut VSMain(VSIn v)
 // 픽셀 셰이더
 float4 PSMain(VSOut i) : SV_TARGET
 {
-// 1) Normal
+    float4 c = gNormalTexture.Sample(gSampler, i.uv);
+    
+    if (c.x == 1.f && c.y == 1.f && c.z == 1.f)
+        return float4(1.f, 1.f, 1.f, 1.f);
+    
     float3 N = normalize(gNormalTexture.Sample(gSampler, i.uv).xyz * 2.0f - 1.0f);
 
     // 2) 화면 좌표 -> clip, view, world 로 복원 (포인트 라이트용)

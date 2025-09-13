@@ -15,5 +15,8 @@ public:
 	void Enter(void* _desc) override;
 	void During() override;
 	void Exit() override;
+
+private:
+	_bool m_bShooted;
 };
 

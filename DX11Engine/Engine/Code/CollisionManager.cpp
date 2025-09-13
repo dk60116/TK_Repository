@@ -152,6 +152,9 @@ void CCollisionManager::UpdateCollision()
 										colB->Get_Transform()->Add_Position(moveB * DELTA_TIME * 10.f);
 									else
 										colB->Get_Transform()->Add_Position(moveB);
+
+									if (moveB.y > 0.001f)
+										rbB->ResetGravity();
 								}
 							}
 						}

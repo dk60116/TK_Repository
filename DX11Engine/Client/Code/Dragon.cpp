@@ -1,11 +1,13 @@
 #include "cpch.h"
 #include "Dragon.h"
 #include "BossController_Dragon.h"
+#include "ME_FireBall.h"
 
 CDragon::CDragon()
 	: m_sStatus({})
 	, m_pController(nullptr)
 	, m_bFlying(false)
+	, m_pFireBallProto(nullptr)
 {
 }
 
@@ -45,7 +47,11 @@ HRESULT CDragon::Initialize()
 		Add_Animation(L"GroundToFly");
 		Add_Animation(L"FlyIdle");
 		Add_Animation(L"Fly");
+		Add_Animation(L"ShootFireBall_Fly");
 	}
+
+	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
+	m_pFireBallProto = fireBallProtoObj->AddComponent<CME_FireBall>();
 
 	return S_OK;
 }
@@ -53,6 +59,8 @@ HRESULT CDragon::Initialize()
 void CDragon::Awake()
 {
 	__super::Awake();
+
+	m_pFireBallProto->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 }
 
 void CDragon::Start()
@@ -135,6 +143,20 @@ void CDragon::PlayFly(const _float _blending)
 	m_pAnimator->SetLoop(true);
 
 	m_pAnimator->Play(L"Fly", _blending);
+}
+
+void CDragon::PlayShootFireball(const _float _blending)
+{
+	if (!m_pAnimator)
+		return;
+
+	m_pAnimator->SetLoop(false);
+
+	m_pAnimator->Play(L"ShootFireBall_Fly", _blending);
+}
+
+void CDragon::ShootFireBall()
+{
 }
 
 const _bool CDragon::GetFlying() const

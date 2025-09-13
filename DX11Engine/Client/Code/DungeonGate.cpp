@@ -128,6 +128,9 @@ void CDungeonGate::OnTriggerStay(CCollider* _other)
 				Open();
 		}
 	}
+
+	if (CInput::GetKeyDown(T))
+		Open();
 }
 
 void CDungeonGate::OnDestroy()

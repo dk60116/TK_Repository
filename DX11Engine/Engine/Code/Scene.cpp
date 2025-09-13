@@ -1043,3 +1043,13 @@ ID3D11DepthStencilState* CScene::Get_UIStencillState() const
 {
 	return m_pUIDepthStencilState;
 }
+
+ID3D11BlendState* CScene::Get_NoneBlendingState() const
+{
+	return m_pNoneBlendingState;
+}
+
+ID3D11BlendState* CScene::Get_BlendingState() const
+{
+	return m_pBlendingState;
+}

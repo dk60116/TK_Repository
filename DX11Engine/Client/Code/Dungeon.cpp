@@ -136,7 +136,7 @@ void CDungeon::CreateDungonObjectPrototypes()
 
 void CDungeon::CreateDungeonChapters()
 {
-    for (_uint i = 0; i < 11; ++i)
+    for (_uint i = 0; i < 12; ++i)
     {
         CGameObject* msObj = m_pGameObject->Get_Scene()->Add_GameObject(L"DungeonChapter_" + to_wstring(i));
         m_vChapterList.push_back(msObj->AddComponent<CDungeonChapter>());
@@ -148,6 +148,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[1]->SetBoundingBox({ pair(vector3(93.f, 5.f, -56.4f), vector3(32.f, 15.f, 46.f)) });
+
+        vector<vector3> goblinPos = { {93.75f, 3.f, -71.65f} };
+        vector<_float> goblinRot = { 0.f };
+        m_vChapterList[1]->AddMonsterSpawner({ m_mMonsterProtoList[L"Goblin"], goblinPos, goblinRot });
     }
 
     {
@@ -156,6 +160,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[3]->SetBoundingBox({ pair(vector3(93.2f, -1.85f, -121.4f), vector3(44.25f, 23.f, 85.5f)) });
+
+        vector<vector3> goblinPos = { {93.8f, -2.9f, -143.7f} };
+        vector<_float> goblinRot = { 0.f };
+        m_vChapterList[3]->AddMonsterSpawner({ m_mMonsterProtoList[L"Goblin"], goblinPos, goblinRot });
     }
 
     {
@@ -167,7 +175,7 @@ void CDungeon::CreateDungeonChapters()
     }
 
     {
-        m_vChapterList[6]->SetBoundingBox({ pair(vector3(40.88f, 9.8f, -71.4f), vector3(17.57f, 15.f, 78.1f)) });
+        m_vChapterList[6]->SetBoundingBox({ pair(vector3(40.88f, 6.5f, -71.4f), vector3(17.57f, 15.f, 78.1f)) });
     }
 
     {
@@ -187,6 +195,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[10]->SetBoundingBox({ pair(vector3(-57.f, -3.9f, -71.f), vector3(46.f, 16.5f, 67.75f)) });
+    }
+
+    {
+        m_vChapterList[11]->SetBoundingBox({ pair(vector3(-61.f, -3.9f, -126.85f), vector3(40.f, 16.5f, 45.f)) });
     }
 }
 
@@ -273,7 +285,7 @@ void CDungeon::SpawnDungeonFootSwitches()
 
 void CDungeon::SpawnDungeonChest()
 {
-    for (size_t i = 0; i < 2; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -288,10 +300,16 @@ void CDungeon::SpawnDungeonChest()
     }
 
     {
-        m_vChestList[1]->Get_Transform()->Set_Position(vector3(67.4f, 6.f, -105.f));
-        m_vChestList[1]->Get_Transform()->Set_EulerAnglesY(90.f);
+        m_vChestList[1]->Get_Transform()->Set_Position(vector3(93.72f, 3.1f, -24.5f));
         m_vChestList[1]->Get_Transform()->Set_LocalScale(1.5f);
-        m_vChestList[1]->Set_Item(L"Bow");
+        m_vChestList[1]->Set_Item(L"Sword");
+    }
+
+    {
+        m_vChestList[2]->Get_Transform()->Set_Position(vector3(67.4f, 6.f, -105.f));
+        m_vChestList[2]->Get_Transform()->Set_EulerAnglesY(90.f);
+        m_vChestList[2]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[2]->Set_Item(L"Bow");
     }
 }
 

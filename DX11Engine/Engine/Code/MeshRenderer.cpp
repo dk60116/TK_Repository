@@ -59,7 +59,12 @@ void CMeshRenderer::Render()
 	_uint _layer = m_pGameObject->GetLayer();
 
 	if (_layer != CSceneManager::NameToLayer(L"NaviMesh_Walkable") && _layer != CSceneManager::NameToLayer(L"NaviMesh_WalkUnable"))
-		CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+	{
+		if (m_pMaterial->IsUseLight())
+			CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+		else
+			CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_BlendMesh(this);
+	}
 }
 
 void CMeshRenderer::Render_Gizmo()

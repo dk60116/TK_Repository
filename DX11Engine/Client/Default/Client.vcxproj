@@ -169,7 +169,10 @@
     <ClInclude Include="..\Header\Item_Arrow.h" />
     <ClInclude Include="..\Header\Item_Bow.h" />
     <ClInclude Include="..\Header\Item_DungeonKey.h" />
+    <ClInclude Include="..\Header\Item_Sword.h" />
     <ClInclude Include="..\Header\Ladder.h" />
+    <ClInclude Include="..\Header\MeshEffect.h" />
+    <ClInclude Include="..\Header\ME_FireBall.h" />
     <ClInclude Include="..\Header\MovingPlat.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h" />
@@ -238,12 +241,15 @@
     <ClCompile Include="..\Code\Item_Arrow.cpp" />
     <ClCompile Include="..\Code\Item_Bow.cpp" />
     <ClCompile Include="..\Code\Item_DungeonKey.cpp" />
+    <ClCompile Include="..\Code\Item_Sword.cpp" />
     <ClCompile Include="..\Code\Ladder.cpp" />
     <ClCompile Include="..\Code\LizardWarrior.cpp" />
     <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\MainScene.cpp" />
     <ClCompile Include="..\Code\Map.cpp" />
     <ClCompile Include="..\Code\MapCollision.cpp" />
+    <ClCompile Include="..\Code\MeshEffect.cpp" />
+    <ClCompile Include="..\Code\ME_FireBall.cpp" />
     <ClCompile Include="..\Code\Monster.cpp" />
     <ClCompile Include="..\Code\MonsterBehaviour.cpp" />
     <ClCompile Include="..\Code\MonsterController.cpp" />

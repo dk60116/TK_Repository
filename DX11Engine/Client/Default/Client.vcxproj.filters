@@ -82,19 +82,22 @@
     <Filter Include="Scripts\Object\Item">
       <UniqueIdentifier>{5d39cfa8-ba01-40eb-9552-8b335ceb5a3c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Boss">
+    <Filter Include="Scripts\Object\VFX">
+      <UniqueIdentifier>{48affeea-6dfc-46c7-ae2c-6d0b46471a68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\BossMonster">
       <UniqueIdentifier>{6d267fed-7275-41bd-bccf-9f402e51b850}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Boss\Controller">
+    <Filter Include="Scripts\Object\BossMonster\Controller">
       <UniqueIdentifier>{b6648dbd-730b-4b4b-978d-45266f86522e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Boss\Dragon">
+    <Filter Include="Scripts\Object\BossMonster\Dragon">
       <UniqueIdentifier>{10aa4666-bf1c-469f-97c0-47f867d97dd7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Boss\Dragon\Controller">
+    <Filter Include="Scripts\Object\BossMonster\Dragon\Controller">
       <UniqueIdentifier>{1903a63f-492c-49ed-b176-f64c4250cdca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Boss\Dragon\Controller\Behaviour">
+    <Filter Include="Scripts\Object\BossMonster\Dragon\Controller\Behaviour">
       <UniqueIdentifier>{a169460e-c4f4-4c8c-a2b3-936143aa26dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -259,34 +262,43 @@
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\BossMonster.h">
-      <Filter>Scripts\Object\Boss</Filter>
+      <Filter>Scripts\Object\BossMonster</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\BossController.h">
-      <Filter>Scripts\Object\Boss\Controller</Filter>
+      <Filter>Scripts\Object\BossMonster\Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Dragon.h">
-      <Filter>Scripts\Object\Boss\Dragon</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\BossController_Dragon.h">
-      <Filter>Scripts\Object\Boss\Dragon\Controller</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\DragonBHV_Idle.h">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\DragonBHV_Wakeup.h">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\DragonBHV_Landing.h">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\DragonBHV_ShootFireBall.h">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Item_Arrow.h">
       <Filter>Scripts\Object\Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Item_Bow.h">
       <Filter>Scripts\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Item_Sword.h">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MeshEffect.h">
+      <Filter>Scripts\Object\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\ME_FireBall.h">
+      <Filter>Scripts\Object\VFX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -307,9 +319,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\GameScene.cpp">
       <Filter>Scripts\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\Weapon.cpp">
-      <Filter>Scripts\Object\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\WoodenSword.cpp">
       <Filter>Scripts\Object\Weapons\Swords</Filter>
@@ -441,37 +450,49 @@
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\BossMonster.cpp">
-      <Filter>Scripts\Object\Boss</Filter>
+      <Filter>Scripts\Object\BossMonster</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DefaultArrow.cpp">
       <Filter>Scripts\Object\Weapons\Arrows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\BossController.cpp">
-      <Filter>Scripts\Object\Boss\Controller</Filter>
+      <Filter>Scripts\Object\BossMonster\Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Dragon.cpp">
-      <Filter>Scripts\Object\Boss\Dragon</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\BossController_Dragon.cpp">
-      <Filter>Scripts\Object\Boss\Dragon\Controller</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DragonBHV_Idle.cpp">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DragonBHV_Wakeup.cpp">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DragonBHV_Landing.cpp">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DragonBHV_ShootFireBall.cpp">
-      <Filter>Scripts\Object\Boss\Dragon\Controller\Behaviour</Filter>
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Item_Arrow.cpp">
       <Filter>Scripts\Object\Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Item_Bow.cpp">
       <Filter>Scripts\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Weapon.cpp">
+      <Filter>Scripts\Object\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Item_Sword.cpp">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MeshEffect.cpp">
+      <Filter>Scripts\Object\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ME_FireBall.cpp">
+      <Filter>Scripts\Object\VFX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

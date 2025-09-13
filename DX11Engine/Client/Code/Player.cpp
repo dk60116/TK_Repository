@@ -130,7 +130,6 @@ void CPlayer::Awake()
 
 void CPlayer::Start()
 {
-	ChangeWeapon(L"Sword");
 	ChangeArrow(L"DefaultArrow");
 
 	for (_uint i = 0; i < 10; ++i)
@@ -146,12 +145,19 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
+	static wstring weaponName = L"";
+
 	if (CInput::GetKeyDown(Alpha1))
-		ChangeWeapon(L"Sword");
+	{
+		weaponName = L"Sword";
+		if (m_pInventroy->HasItem(weaponName))
+		ChangeWeapon(weaponName);
+	}
 	if (CInput::GetKeyDown(Alpha2))
 	{
-		if (m_pInventroy->HasItem(L"Bow"))
-			ChangeWeapon(L"Bow");
+		weaponName = L"Bow";
+		if (m_pInventroy->HasItem(weaponName))
+			ChangeWeapon(weaponName);
 	}
 
 	vector2Int currentMouse = CInput::GetMousePos();
@@ -169,7 +175,7 @@ void CPlayer::Update()
 
 	if (CInput::GetKeyDown_Editor(L))
 	{
-		m_pRigidBody->SetUseGravity(true);
+		m_pRigidBody->SetUseGravity(!m_pRigidBody->UseGravity());
 	}
 }
 

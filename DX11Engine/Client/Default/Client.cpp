@@ -150,7 +150,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    CGameScene* gameScene = new CGameScene();
    CSceneManager::CreateScene(gameScene, L"Game Scene");
 
-   CSceneManager::LoadScene(L"Main Scene");
+   CSceneManager::LoadScene(L"Game Scene");
 
    return TRUE;
 }

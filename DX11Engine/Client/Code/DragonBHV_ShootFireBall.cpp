@@ -3,6 +3,7 @@
 #include "Dragon.h"
 
 CDragonBHV_ShootFireBall::CDragonBHV_ShootFireBall()
+	: m_bShooted(false)
 {
 }
 
@@ -45,6 +46,23 @@ void CDragonBHV_ShootFireBall::During()
 	quaternion rotQ = myTf->LookQuaternion(playerPos, CTransform::X | CTransform::Z);
 
 	myTf->Set_Quaternion(quaternion::Slerp(myTf->Get_Quaternion(), rotQ, DELTA_TIME * dragon->Get_Status().flyingTurnSpeed));
+
+	if (m_fPassedTime >= dragon->Get_Status().flyingTurnSpeed && !m_bShooted)
+	{
+		dragon->PlayShootFireball();
+
+		m_bShooted = true;
+		m_fPassedTime = 0.f;
+	}
+
+	if (m_bShooted)
+	{
+		if (m_fPassedTime >= 0.7f)
+		{
+			dragon->PlayIdle();
+			m_bShooted = false;
+		}
+	}
 }
 
 void CDragonBHV_ShootFireBall::Exit()

@@ -162,14 +162,17 @@ void CPlayerController::UpdateControleState()
 
 	if (CInput::GetMouseButtonDown(0))
 	{
-		switch (m_pPlayer->Get_EqupWeapon()->Get_WeaponType())
+		if (m_pPlayer->Get_EqupWeapon())
 		{
-		case CGameManager::WeaponType::Sword:
-			ChangeState(Sword);
-			break;
-		case CGameManager::WeaponType::Bow:
-			ChangeState(Bow);
-			break;
+			switch (m_pPlayer->Get_EqupWeapon()->Get_WeaponType())
+			{
+			case CGameManager::WeaponType::Sword:
+				ChangeState(Sword);
+				break;
+			case CGameManager::WeaponType::Bow:
+				ChangeState(Bow);
+				break;
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@
 
 class CInventory : public CComponent
 {
-	friend class CGameObjct;
+	friend class CGameObject;
 
 public:
 	struct InvenItem
@@ -51,7 +51,7 @@ inline CItem* CInventory::Add_ItemSlot()
 
 		InvenItem itemSlot = {};
 		itemSlot.protoType = item;
-		itemSlot.count = 1;
+		itemSlot.count = 0;
 
 		const wstring& name = item->Get_ItemName();
 

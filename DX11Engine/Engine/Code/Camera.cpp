@@ -13,8 +13,9 @@ CCamera::CCamera()
 	, m_fFar(600.f)
 	, m_fFieldOfView(60.f)
 	, m_fSize(5.f)
-	, m_vMeshList({})
+	, m_vMeshList_Lit({})
 	, m_vUIList({})
+	, m_vMeshList_Blend({})
 {
 	m_strName = L"Camera";
 }
@@ -113,7 +114,12 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 
 void CCamera::Add_RenderTarget_Mesh(CRenderer* _mesh)
 {
-	m_vMeshList.push_back(_mesh);
+	m_vMeshList_Lit.push_back(_mesh);
+}
+
+void CCamera::Add_RenderTarget_BlendMesh(CRenderer* _mesh)
+{
+	m_vMeshList_Blend.push_back(_mesh);
 }
 
 void CCamera::Add_RenderTarget_UI(CUI* _ui)
@@ -210,11 +216,22 @@ void CCamera::Bind_RenderTarget()
 	spRT->Clear();
 	cbRT->Clear();
 
-	for (TRAVERSAL_ITER(m_vMeshList, it))
+	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
 			(*it)->Render_WithCamera(this);
 	}
+
+	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
+
+	for (TRAVERSAL_ITER(m_vMeshList_Blend, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_WithCamera(this);
+	}
+
+	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
 
 	auto sdRTV = sdRT->Get_RTV();
 	auto sdVP = sdRT->Get_VP();
@@ -271,7 +288,7 @@ void CCamera::RenderMesh()
 	CDisplay::RenderTargetRender(L"Depth");
 	CDisplay::RenderTargetRender(L"Shading");
 	
-	m_vMeshList.clear();
+	m_vMeshList_Lit.clear();
 }
 
 void CCamera::RenderUI()

@@ -11,6 +11,7 @@ public:
 		_uint handPower = 2;
 
 		_float flyingTurnSpeed = 5.f;
+		_float fireballInterval = 4.f;
 	};
 
 	struct LandingDesc
@@ -42,10 +43,13 @@ public:
 	const DragonStatus& Get_Status();
 
 public:
-	void PlayIdle(const _float _blending) override;
-	void PlayThreat(const _float _blending) override;
+	void PlayIdle(const _float _blending = 0.2f) override;
+	void PlayThreat(const _float _blending = 0.2f) override;
 	void PlayGroundToFly(const _float _blending = 0.2f);
 	void PlayFly(const _float _blending = 0.2f);
+	void PlayShootFireball(const _float _blending = 0.2f);
+
+	void ShootFireBall();
 
 	const _bool GetFlying() const;
 	void SetFlying(const _bool _fly);
@@ -54,5 +58,6 @@ private:
 	DragonStatus m_sStatus;
 	CBossController_Dragon* m_pController;
 	_bool m_bFlying;
+	class CME_FireBall* m_pFireBallProto;
 };
 

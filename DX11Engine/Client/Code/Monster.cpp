@@ -101,6 +101,7 @@ void CMonster::Awake()
 
 void CMonster::Start()
 {
+	m_pRigidBody->SetUseGravity(true);
 }
 
 void CMonster::Update()

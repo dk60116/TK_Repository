@@ -67,6 +67,7 @@ Dragon_Threat : Monster/Dragon/Dragon_Threat.fbx : [Animation Clip]
 Dragon_GroundToFly : Monster/Dragon/Dragon_GroundToFly.fbx : [Animation Clip]
 Dragon_FlyIdle : Monster/Dragon/Dragon_FlyIdle.fbx : [Animation Clip]
 Dragon_Fly : Monster/Dragon/Dragon_Fly.fbx : [Animation Clip]
+Dragon_ShootFireBall_Fly : Monster/Dragon/Dragon_ShootFireBall_Fly.fbx : [Animation Clip]
 // Space
 //Temple_Model : Map/Temple.fbx : [Mesh] [Material]
 //Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]
@@ -133,3 +134,6 @@ DungeonKeyIcon : UI/HUDUI/DungeonKey.png : [Texture]
 ArrowCrossHair : UI/HUDUI/ArrowCrossHair.png : [Texture]
 // UI Icon
 Arrow_Icon : UI/Equip/Arrow_Icon.png : [Texture]
+// VFX
+FireBall_Mesh_0 : VFX/3D/FireBall/FireBall_Mesh_0.fbx : [Mesh]
+FireBall_Texture_0 : VFX/3D/FireBall/FireBall_Texture_0.png : [Texture]
