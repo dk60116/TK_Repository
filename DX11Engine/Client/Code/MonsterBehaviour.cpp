@@ -27,26 +27,12 @@ HRESULT CMonsterBehaviour::Initialize(CMonster* _monster)
 	return S_OK;
 }
 
-HRESULT CMonsterBehaviour::Initialize(CBossMonster* _boss)
-{
-	m_pBoss = _boss;
-
-	if (m_pBoss)
-		m_pBoss->AddRef();
-	else
-		return E_FAIL;
-
-	return S_OK;
-}
-
 void CMonsterBehaviour::Enter(void* _desc)
 {
 	m_fPassedTime = 0.f;
 
 	if (m_pMonster)
 		m_pMonster->Get_Animator()->Stop();
-	if (m_pBoss)
-		m_pBoss->Get_Animator()->Stop();
 }
 
 void CMonsterBehaviour::During()
@@ -62,5 +48,4 @@ void CMonsterBehaviour::Exit()
 void CMonsterBehaviour::OnDestroy()
 {
 	Safe_Release(m_pMonster);
-	Safe_Release(m_pBoss);
 }

@@ -20,8 +20,17 @@ public:
 	void Update() override;
 	void OnDestroy() override;
 
+public:
+	void Shoot(const vector3& _startPos, const vector3& _targetPos);
+
+private:
+	void Shooting();
+
 private:
 	_float m_fRotYSpeed;
 	_float m_fTime;
+
+	_bool m_bShooting;
+	vector3 m_vTargetPos;
 };
 

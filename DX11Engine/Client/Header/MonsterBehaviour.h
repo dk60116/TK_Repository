@@ -16,7 +16,6 @@ protected:
 
 public:
 	virtual HRESULT Initialize(class CMonster* _monster);
-	virtual HRESULT Initialize(class CBossMonster* _boss);
 
 	virtual void Enter(void* _desc = nullptr);
 	virtual void During();
@@ -27,7 +26,6 @@ public:
 protected:
 	wstring m_strBehaviourName;
 	CMonster* m_pMonster;
-	CBossMonster* m_pBoss;
 
 protected:
 	_ubyte m_iWeight;

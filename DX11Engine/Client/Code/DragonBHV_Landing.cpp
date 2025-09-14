@@ -13,11 +13,11 @@ CDragonBHV_Landing::~CDragonBHV_Landing()
 {
 }
 
-HRESULT CDragonBHV_Landing::Initialize(CBossMonster* _boss)
+HRESULT CDragonBHV_Landing::Initialize(CMonster* _monster)
 {
 	m_iWeight = 1;
 
-	if (FAILED(__super::Initialize(_boss)))
+	if (FAILED(__super::Initialize(_monster)))
 		return E_FAIL;
 
 	return S_OK;
@@ -34,13 +34,13 @@ void CDragonBHV_Landing::Enter(void* _desc)
 		m_vTargetPos = desc.targetPos;
 	}
 
-	CDragon* dragon = dynamic_cast<CDragon*>(m_pBoss);
+	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
 	dragon->SetFlying(true);
 
 	if (m_bThreadingRise)
 	{
-		m_pBoss->PlayIdle();
+		dragon->PlayIdle();
 	}
 	else
 	{
@@ -52,9 +52,9 @@ void CDragonBHV_Landing::During()
 {
 	__super::During();
 
-	CDragon* dragon = dynamic_cast<CDragon*>(m_pBoss);
+	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
-	CTransform* monsterTF = m_pBoss->Get_Transform();
+	CTransform* monsterTF = m_pMonster->Get_Transform();
 	const vector3 monsterPos = monsterTF->Get_Position();
 
 	if (m_bThreadingRise)

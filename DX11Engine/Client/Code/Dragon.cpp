@@ -29,10 +29,15 @@ CComponent* CDragon::Clone() const
 
 HRESULT CDragon::Initialize()
 {
-	m_strBossName = L"Dragon";
+	m_strMonsterName = L"Dragon";
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
+
+	m_pHeadTF = Get_Transform()->Find_ChildRecursive(L"MountainDragon_ Head");
+	m_pBodyTF = Get_Transform()->Find_ChildRecursive(L"MountainDragon_ Pelvis");
+
+	m_sOptions.headColliderCenter = vector3::right() * 0.5f;
 
 	if (!m_pController)
 	{
@@ -42,12 +47,12 @@ HRESULT CDragon::Initialize()
 
 	if (m_pAnimator)
 	{
-		Add_Animation(L"Idle");
-		Add_Animation(L"Threat");
-		Add_Animation(L"GroundToFly");
-		Add_Animation(L"FlyIdle");
-		Add_Animation(L"Fly");
-		Add_Animation(L"ShootFireBall_Fly");
+		auto idle = Add_Animation(L"Idle");
+		auto threat = Add_Animation(L"Threat");
+		auto groundTofly = Add_Animation(L"GroundToFly");
+		auto flyIdle = Add_Animation(L"FlyIdle");
+		auto fly = Add_Animation(L"Fly");
+		auto shootFireBall_fly = Add_Animation(L"ShootFireBall_Fly");
 	}
 
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
@@ -157,6 +162,7 @@ void CDragon::PlayShootFireball(const _float _blending)
 
 void CDragon::ShootFireBall()
 {
+	m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 }
 
 const _bool CDragon::GetFlying() const

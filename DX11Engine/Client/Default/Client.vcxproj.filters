@@ -300,6 +300,9 @@
     <ClInclude Include="..\Header\ME_FireBall.h">
       <Filter>Scripts\Object\VFX</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\LadderTrigger.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -493,6 +496,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\ME_FireBall.cpp">
       <Filter>Scripts\Object\VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\LadderTrigger.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

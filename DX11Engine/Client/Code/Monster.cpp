@@ -1,4 +1,5 @@
 #include "cpch.h"
+#include "BossMonster.h"
 #include "Monster.h"
 #include "MonsterController.h"
 #include "MonsterPartCollision.h"
@@ -44,16 +45,19 @@ HRESULT CMonster::Initialize()
 	if (m_pBaseMap)
 		m_pBaseMap->AddRef();
 
-	Add_Animation(L"Idle");
-	Add_Animation(L"Walk");
-	Add_Animation(L"WalkTurn_Left");
-	Add_Animation(L"WalkTurn_Right");
-	Add_Animation(L"LookAround");
-	Add_Animation(L"Find");
-	Add_Animation(L"Run");
-	Add_Animation(L"Attack01");
-	Add_Animation(L"GetHit_Front");
-	Add_Animation(L"Death");
+	if (!dynamic_cast<CBossMonster*>(this))
+	{
+		Add_Animation(L"Idle");
+		Add_Animation(L"Walk");
+		Add_Animation(L"WalkTurn_Left");
+		Add_Animation(L"WalkTurn_Right");
+		Add_Animation(L"LookAround");
+		Add_Animation(L"Find");
+		Add_Animation(L"Run");
+		Add_Animation(L"Attack01");
+		Add_Animation(L"GetHit_Front");
+		Add_Animation(L"Death");
+	}
 
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
@@ -81,11 +85,14 @@ void CMonster::Awake()
 		m_mPartColList.emplace(L"Body", bodyCol);
 	}
 
-	if (!m_pController)
-		m_pController = m_pGameObject->AddComponent<CMonsterController>();
+	if (!dynamic_cast<CBossMonster*>(this))
+	{
+		if (!m_pController)
+			m_pController = m_pGameObject->AddComponent<CMonsterController>();
 
-	if (m_pController)
-		m_pController->Set_Monster(this);
+		if (m_pController)
+			m_pController->Set_Monster(this);
+	}
 
 	if (!m_pBodyCollider)
 		m_pBodyCollider = m_pGameObject->AddComponent<CBoxCollider>();

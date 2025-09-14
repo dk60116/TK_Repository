@@ -171,6 +171,7 @@
     <ClInclude Include="..\Header\Item_DungeonKey.h" />
     <ClInclude Include="..\Header\Item_Sword.h" />
     <ClInclude Include="..\Header\Ladder.h" />
+    <ClInclude Include="..\Header\LadderTrigger.h" />
     <ClInclude Include="..\Header\MeshEffect.h" />
     <ClInclude Include="..\Header\ME_FireBall.h" />
     <ClInclude Include="..\Header\MovingPlat.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="..\Code\Item_DungeonKey.cpp" />
     <ClCompile Include="..\Code\Item_Sword.cpp" />
     <ClCompile Include="..\Code\Ladder.cpp" />
+    <ClCompile Include="..\Code\LadderTrigger.cpp" />
     <ClCompile Include="..\Code\LizardWarrior.cpp" />
     <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\MainScene.cpp" />

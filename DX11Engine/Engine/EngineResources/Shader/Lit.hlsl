@@ -147,6 +147,9 @@ float4 PSMain(VSOut input) : SV_TARGET
 {
     float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
     float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
+    
+    if (texColor.a < 0.01f)
+        discard;
 
     float3 N = normalize(input.normalW);
     float3 V = normalize(pos - input.posW);

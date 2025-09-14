@@ -12,11 +12,11 @@ CDragonBHV_Wakeup::~CDragonBHV_Wakeup()
 {
 }
 
-HRESULT CDragonBHV_Wakeup::Initialize(CBossMonster* _boss)
+HRESULT CDragonBHV_Wakeup::Initialize(CMonster* _monster)
 {
 	m_iWeight = 1;
 
-	if (FAILED(__super::Initialize(_boss)))
+	if (FAILED(__super::Initialize(_monster)))
 		return E_FAIL;
 
     return S_OK;
@@ -26,16 +26,18 @@ void CDragonBHV_Wakeup::Enter(void* _desc)
 {
 	__super::Enter();
 
-	m_pBoss->PlayThreat();
+	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
+
+	dragon->PlayThreat();
 }
 
 void CDragonBHV_Wakeup::During()
 {
 	__super::During();
 
-	CDragon* dragon = dynamic_cast<CDragon*>(m_pBoss);
+	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
-	if (m_pBoss->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f && !m_bCompleteThreat)
+	if (dragon->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f && !m_bCompleteThreat)
 	{
 		dragon->PlayGroundToFly();
 		m_bCompleteThreat = true;
@@ -43,7 +45,7 @@ void CDragonBHV_Wakeup::During()
 
 	if (m_bCompleteThreat && m_fPassedTime >= 3.f)
 	{
-		if (m_pBoss->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f && !m_bCompleteTakeFly)
+		if (dragon->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f && !m_bCompleteTakeFly)
 		{
 			dragon->SetFlying(true);
 			CDragon::LandingDesc ld = { true, vector3(0.f, 10.f, -35.f)};

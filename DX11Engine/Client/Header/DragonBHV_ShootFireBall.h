@@ -10,7 +10,7 @@ private:
 	~CDragonBHV_ShootFireBall();
 
 public:
-	HRESULT Initialize(class CBossMonster* _boss) override;
+	HRESULT Initialize(class CMonster* _monster) override;
 
 	void Enter(void* _desc) override;
 	void During() override;

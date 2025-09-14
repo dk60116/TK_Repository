@@ -11,11 +11,11 @@ CDragonBHV_ShootFireBall::~CDragonBHV_ShootFireBall()
 {
 }
 
-HRESULT CDragonBHV_ShootFireBall::Initialize(CBossMonster* _boss)
+HRESULT CDragonBHV_ShootFireBall::Initialize(CMonster* _monster)
 {
 	m_iWeight = 1;
 
-	if (FAILED(__super::Initialize(_boss)))
+	if (FAILED(__super::Initialize(_monster)))
 		E_FAIL;
 
 	return S_OK;
@@ -25,21 +25,21 @@ void CDragonBHV_ShootFireBall::Enter(void* _desc)
 {
 	__super::Enter();
 
-	m_pBoss->Get_Animator()->SetLoop(true);
-	m_pBoss->Get_Animator()->Play(L"FlyIdle", 0.3f);
+	m_pMonster->Get_Animator()->SetLoop(true);
+	m_pMonster->Get_Animator()->Play(L"FlyIdle", 0.3f);
 }
 
 void CDragonBHV_ShootFireBall::During()
 {
 	__super::During();
 
-	CDragon* dragon = dynamic_cast<CDragon*>(m_pBoss);
+	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
 	CTransform* playerTf = CGameManager::GetInstance().Get_Player()->Get_Transform();
 	const vector3 playerPos = playerTf->Get_Position();
 	const vector3 playerAngle = playerTf->Get_EulerAngles();
 
-	CTransform* myTf = m_pBoss->Get_Transform();
+	CTransform* myTf = m_pMonster->Get_Transform();
 	const vector3 myPos = myTf->Get_Position();
 	const vector3 myAngle = myTf->Get_EulerAngles();
 
@@ -57,6 +57,11 @@ void CDragonBHV_ShootFireBall::During()
 
 	if (m_bShooted)
 	{
+		if (m_fPassedTime >= 0.4f)
+		{
+			dragon->ShootFireBall();
+		}
+
 		if (m_fPassedTime >= 0.7f)
 		{
 			dragon->PlayIdle();

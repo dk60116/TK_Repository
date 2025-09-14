@@ -136,7 +136,7 @@ void CDungeon::CreateDungonObjectPrototypes()
 
 void CDungeon::CreateDungeonChapters()
 {
-    for (_uint i = 0; i < 12; ++i)
+    for (_uint i = 0; i < 15; ++i)
     {
         CGameObject* msObj = m_pGameObject->Get_Scene()->Add_GameObject(L"DungeonChapter_" + to_wstring(i));
         m_vChapterList.push_back(msObj->AddComponent<CDungeonChapter>());
@@ -171,7 +171,7 @@ void CDungeon::CreateDungeonChapters()
     }
 
     {
-        m_vChapterList[5]->SetBoundingBox({ pair(vector3(48.56f, 5.f, -21.72f), vector3(44.86f, 10.f, 22.83f)) });
+        m_vChapterList[5]->SetBoundingBox({ pair(vector3(48.56f, 5.f, -21.72f), vector3(44.86f, 15.f, 22.83f)) });
     }
 
     {
@@ -186,11 +186,11 @@ void CDungeon::CreateDungeonChapters()
     }
 
     {
-        m_vChapterList[8]->SetBoundingBox({ pair(vector3(-3.45f, 7.3f, -93.45f), vector3(70.f, 10.f, 34.f)) });
+        m_vChapterList[8]->SetBoundingBox({ pair(vector3(-3.45f, 7.3f, -93.45f), vector3(70.f, 15.f, 34.f)) });
     }
 
     {
-        m_vChapterList[9]->SetBoundingBox({ pair(vector3(-63.7f, 1.6f, -19.2f), vector3(75.f, 10.f, 34.f)) });
+        m_vChapterList[9]->SetBoundingBox({ pair(vector3(-63.7f, 1.6f, -30.45f), vector3(75.f, 15.f, 58.f)) });
     }
 
     {
@@ -199,6 +199,18 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[11]->SetBoundingBox({ pair(vector3(-61.f, -3.9f, -126.85f), vector3(40.f, 16.5f, 45.f)) });
+    }
+
+    {
+        m_vChapterList[12]->SetBoundingBox({ pair(vector3(-102.45f, -3.9f, -123.f), vector3(45.f, 16.5f, 50.f)) });
+    }
+
+    {
+        m_vChapterList[13]->SetBoundingBox({ pair(vector3(-106.45f, -3.9f, -75.35f), vector3(55.f, 16.5f, 48.f)) });
+    }
+
+    {
+        m_vChapterList[14]->SetBoundingBox({ pair(vector3(-119.25f, 0.75f, -18.45f), vector3(40.f, 16.5f, 50.f)) });
     }
 }
 

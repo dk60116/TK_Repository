@@ -1,7 +1,7 @@
 #pragma once
-#include "Component.h"
+#include "Monster.h"
 
-class CBossMonster abstract : public CComponent
+class CBossMonster abstract : public CMonster
 {
 public:
 	typedef struct BossMonsterDescription
@@ -41,14 +41,7 @@ public:
 	virtual void PlayThreat(const _float _blending = 0.2f) PURE;
 
 protected:
-	void Add_Animation(const wstring& _name);
-
-protected:
-	wstring m_strBossName;
 	BOSSDESC m_sDesc;
-	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
-	CTexture* m_pBaseMap;
-	CAnimator* m_pAnimator;
 
 	map<wstring, class CMonsterPartCollision*> m_mPartColList;
 };
