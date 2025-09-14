@@ -201,19 +201,19 @@ void CMaterial::Bind_CustomValues()
 	for (const auto& [key, value] : m_mFloatValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(_float));
 	}
 	for (const auto& [key, value] : m_mIntValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(int));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(_int));
 	}
 	for (const auto& [key, value] : m_mVector2Values)
 	{
 		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
 		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(float));
-		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(_float));
 	}
 	// TODO: Vector3, Vector4, Matrix 등도 추가 가능
 
@@ -236,7 +236,7 @@ CTexture* CMaterial::Get_Texture(_int _index) const
 	return m_vTextureList[_index];
 }
 
-void CMaterial::Set_Texture(CTexture* _texture, _int _index)
+void CMaterial::Set_Texture(CTexture* _texture, _uint _index)
 {
 	if (_index < 0)
 		return;
@@ -365,7 +365,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	// b10: Custom
 	if (m_vCustomBufferByteList.size() > 0)
 	{
-		_uint byteWidth = static_cast<_uint>(m_vCustomBufferByteList.size());
+		_uint byteWidth = 16;
 		byteWidth = (byteWidth + 15) & ~15;
 		
 		desc.ByteWidth = byteWidth;
@@ -389,10 +389,19 @@ void CMaterial::Bind_Texture() const
 
 	ID3D11ShaderResourceView* texture = nullptr;
 
-	if (!m_vTextureList.empty() && m_vTextureList[0])
-		texture = m_vTextureList[0]->Get_SRV();
+	const _uint slotCount = static_cast<_uint>(m_vTextureList.size());
 
-	context->PSSetShaderResources(0, 1, &texture);
+	if (slotCount > 0)
+	{
+		vector<ID3D11ShaderResourceView*> srvs(slotCount, nullptr);
+		for (_uint i = 0; i < slotCount; ++i)
+		{
+			if (m_vTextureList[i])
+				srvs[i] = m_vTextureList[i]->Get_SRV();
+		}
+
+		context->PSSetShaderResources(0, slotCount, srvs.data()); 
+	}
 
 	static ID3D11SamplerState* gSamplerState = nullptr;
 

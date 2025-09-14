@@ -294,18 +294,33 @@ void CCamera::RenderMesh()
 			(*it)->Render_WithCamera(this);
 	}
 
-	//const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
-	//m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
+	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_BlendingResterState());
+	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
+	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_TransparentStencillState(), 0);
 
-	//for (TRAVERSAL_ITER(m_vMeshList_Blend, it))
-	//{
-	//	if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
-	//		(*it)->Render_WithCamera(this);
-	//}
+	vector<CRenderer*> sorted(m_vMeshList_Blend.begin(), m_vMeshList_Blend.end());
+	const vector3 camPos = Get_Transform()->Get_Position();
 
-	//m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
+	sort(sorted.begin(), sorted.end(), [&](CRenderer* a, CRenderer* b)
+		{
+		const _float da = (a->Get_Transform()->Get_Position() - camPos).lengthSq();
+		const _float db = (b->Get_Transform()->Get_Position() - camPos).lengthSq();
+		return da > db; 
+		});
+
+	for (auto* r : sorted) 
+	{
+		if (r->Get_GameObject()->IsRecursiveActive() && r->Get_Enabled())
+			r->Render_WithCamera(this);
+	}
+
+	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
+	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
+	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
 	
 	m_vMeshList_Lit.clear();
+	m_vMeshList_Blend.clear();
 }
 
 void CCamera::RenderUI()

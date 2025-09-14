@@ -27,9 +27,11 @@ CScene::CScene()
 	, m_bUseNavi(false)
 	, m_pSkyBoxDepthStencillState(nullptr)
 	, m_pMeshDepthStencilState(nullptr)
+	, m_pTransparentDepthStencilState(nullptr)
 	, m_pUIDepthStencilState(nullptr)
 	, m_pSkyBoxResterizerState(nullptr)
 	, m_pMeshResterizerState(nullptr)
+	, m_pBlendResteraizerState(nullptr)
 	, m_pUIResterizerState(nullptr)
 	, m_pBlendingState(nullptr)
 	, m_pNoneBlendingState(nullptr)
@@ -132,6 +134,26 @@ HRESULT CScene::Initialize()
 			return E_FAIL;
 	}
 
+	// Transparent
+	{
+		D3D11_RASTERIZER_DESC resterBlendDesc = {};
+		resterBlendDesc.FillMode = D3D11_FILL_SOLID;
+		resterBlendDesc.CullMode = D3D11_CULL_NONE;
+		resterBlendDesc.FrontCounterClockwise = FALSE;
+		resterBlendDesc.DepthClipEnable = TRUE;
+
+		D3D11_DEPTH_STENCIL_DESC depthTransparentDesc = {};
+		depthTransparentDesc.DepthEnable = TRUE;
+		depthTransparentDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		depthTransparentDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		depthTransparentDesc.StencilEnable = FALSE;
+
+		if (FAILED(m_pDevice->CreateRasterizerState(&resterBlendDesc, &m_pBlendResteraizerState)))
+			return E_FAIL;
+		if (FAILED(m_pDevice->CreateDepthStencilState(&depthTransparentDesc, &m_pTransparentDepthStencilState)))
+			return E_FAIL;
+	}
+
 	// UI
 	{
 		D3D11_RASTERIZER_DESC resterUIDesc = {};
@@ -152,37 +174,37 @@ HRESULT CScene::Initialize()
 			return E_FAIL;
 	}
 
-	// Blending
+	// None Blending
 	{
-		D3D11_BLEND_DESC noneBlendingDesc = {};
-		noneBlendingDesc.AlphaToCoverageEnable = FALSE;
-		noneBlendingDesc.IndependentBlendEnable = FALSE;
+		D3D11_BLEND_DESC desc = {};
+		desc.AlphaToCoverageEnable = FALSE;
+		desc.IndependentBlendEnable = FALSE;
+		auto& rt = desc.RenderTarget[0];
+		rt.BlendEnable = FALSE;
+		rt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		D3D11_RENDER_TARGET_BLEND_DESC& rtbd = noneBlendingDesc.RenderTarget[0];
-		rtbd.BlendEnable = FALSE;
-		rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		if (FAILED(m_pDevice->CreateBlendState(&noneBlendingDesc, &m_pBlendingState)))
+		// NONE blending state
+		if (FAILED(m_pDevice->CreateBlendState(&desc, &m_pNoneBlendingState))) 
 			return E_FAIL;
 	}
 
-	// None Blending
+	// Blending
 	{
-		D3D11_BLEND_DESC noneBlendingDesc = {};
-		noneBlendingDesc.AlphaToCoverageEnable = FALSE;
-		noneBlendingDesc.IndependentBlendEnable = FALSE;
+		D3D11_BLEND_DESC desc = {};
+		desc.AlphaToCoverageEnable = FALSE;
+		desc.IndependentBlendEnable = FALSE;
+		auto& rt = desc.RenderTarget[0];
+		rt.BlendEnable = TRUE;
+		rt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		rt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		rt.BlendOp = D3D11_BLEND_OP_ADD;
+		rt.SrcBlendAlpha = D3D11_BLEND_ONE;
+		rt.DestBlendAlpha = D3D11_BLEND_ZERO;
+		rt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		rt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		D3D11_RENDER_TARGET_BLEND_DESC& rtbd = noneBlendingDesc.RenderTarget[0];
-		rtbd.BlendEnable = TRUE;
-		rtbd.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		rtbd.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		rtbd.BlendOp = D3D11_BLEND_OP_ADD;
-		rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
-		rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
-		rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		if (FAILED(m_pDevice->CreateBlendState(&noneBlendingDesc, &m_pNoneBlendingState)))
+		// BLENDING state
+		if (FAILED(m_pDevice->CreateBlendState(&desc, &m_pBlendingState)))
 			return E_FAIL;
 	}
 
@@ -430,16 +452,16 @@ void CScene::Render_Game()
 			(*it)->OnPostRender();
 	}
 
-	for (TRAVERSAL_ITER(m_lObjectList, it))
+	for (auto it = m_lObjectList.begin(); it != m_lObjectList.end(); )
 	{
 		if ((*it)->m_bKill)
 		{
-			CGameObject* target = (*it);
-			m_lObjectList.remove((*it));
-			--it;
-			(target)->OnDestroy();
+			CGameObject* target = *it;
+			it = m_lObjectList.erase(it);
+			target->OnDestroy();
 			Safe_Release(target);
 		}
+		else ++it;
 	}
 }
 
@@ -1039,9 +1061,24 @@ ID3D11DepthStencilState* CScene::Get_MeshStencillState() const
 	return m_pMeshDepthStencilState;
 }
 
+ID3D11DepthStencilState* CScene::Get_TransparentStencillState() const
+{
+	return m_pTransparentDepthStencilState;
+}
+
 ID3D11DepthStencilState* CScene::Get_UIStencillState() const
 {
 	return m_pUIDepthStencilState;
+}
+
+ID3D11RasterizerState* CScene::Get_NoneBlendingResterState() const
+{
+	return m_pMeshResterizerState;
+}
+
+ID3D11RasterizerState* CScene::Get_BlendingResterState() const
+{
+	return m_pBlendResteraizerState;
 }
 
 ID3D11BlendState* CScene::Get_NoneBlendingState() const

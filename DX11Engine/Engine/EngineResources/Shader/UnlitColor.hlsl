@@ -6,7 +6,7 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 camPos;
+    float3 pos;
     float4x4 view;
     float4x4 proj;
     float cpadding;
@@ -31,19 +31,6 @@ cbuffer PerCustomValue : register(b10)
     float2 gTiling;
     float2 gOffset;
 }
-
-//// 라이트 정의
-//#define MAX_LIGHTS 64
-
-//#define LIGHT_TYPE_DIRECTIONAL 0
-//#define LIGHT_TYPE_POINT 1
-//#define LIGHT_TYPE_SPOT 2
-
-//#pragma pack_matrix(row_major)
-//cbuffer PerLight : register(b4)
-//{
-//    float4x4 gLight[MAX_LIGHTS];
-//};
 
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);
@@ -71,13 +58,6 @@ struct VSOut
     float3 normalW : NORMAL;
     float3 posW : TEXCOORD1;
     float2 uv : TEXCOORD0;
-};
-
-struct PSOut
-{
-    float4 diffuse : SV_TARGET0;
-    float4 normal : SV_TARGET1;
-    float4 depth : SV_TARGET2;
 };
 
 // 버텍스 셰이더
@@ -135,7 +115,7 @@ VSOut VSMain(VSIn v)
     // 월드 변환
 
     float4 posW = mul(skinnedPos, worldMatrix);
-    float4 normalW = float4(1.f, 1.f, 1.f, 1.f);
+    float3 normalW = normalize(mul((float3x3) worldMatrix, skinnedN));
 
     // MVP
     float4 posV = mul(posW, view);
@@ -150,26 +130,12 @@ VSOut VSMain(VSIn v)
 }
 
 // 픽셀 셰이더
-PSOut PSMain(VSOut input) : SV_TARGET
+float4 PSMain(VSOut input) : SV_TARGET
 {
-    PSOut Out = (PSOut) 0;
+    float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
+    float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
     
-    vector vMtrlDiffuse;
-    
-    if (useTexture != 0)
-        vMtrlDiffuse = gTexture.Sample(gSampler, input.uv) * baseColor;
-    else
-        vMtrlDiffuse = baseColor;
-    
-    float ndcZ = input.posH.z * 2.0f - 1.0f;
-    float clipW = input.posH.w;
-    
-    if (vMtrlDiffuse.a < 0.1f)
-        discard;
-    
-    Out.diffuse = vMtrlDiffuse;
-    Out.normal = vector(input.normalW.xyz * 0.5f + 0.5f, 1.f);
-    Out.depth = vector(ndcZ, clipW, 0.f, 1.f);
-    
-    return Out;
+    texColor *= baseColor;
+
+    return float4(texColor.rgb, texColor.a);
 }

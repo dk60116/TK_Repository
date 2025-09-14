@@ -1751,6 +1751,15 @@ void CResources::Ready_GameResources()
 	wstring dfPath = L"BinaryAssets/FontData/LiberationSans.spritefont";
 	CFont* defaultFont = CreateGameResource<CFont>(L"Sans (Font)", L"", &dfPath);
 	LoadResourceComplete_Game(defaultFont);
+
+	CShader::SHADERDESC meshEffectShaderDesc = { L"../EngineResources/Shader/MeshEffect.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"MeshEffect (Shader)", L"", &meshEffectShaderDesc));
+
+	CShader* meShader = LoadOnGame<CShader>(L"MeshEffect (Shader)");
+	CMaterial::MATERIALDESC meMatDesc = { meShader, false };
+	meMatDesc.customFloatValues.push_back({ L"gTime", 0.f });
+	meMatDesc.customFloatValues.push_back({ L"gDistortionAmount", 0.5f });
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"MeshEffectMaterial (Material)", L"", &meMatDesc));
 }
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)

@@ -46,7 +46,7 @@ public:
 
 public:
 	void Set_Shader(CShader* _shader);
-	void Set_Texture(CTexture* _texture, _int _index = 0);
+	void Set_Texture(CTexture* _texture, _uint _index = 0);
 	void Set_BaseColor(const _float4& _color);
 
 	void Set_FloatValue(const wstring _key, const _float _value);

@@ -135,5 +135,10 @@ ArrowCrossHair : UI/HUDUI/ArrowCrossHair.png : [Texture]
 // UI Icon
 Arrow_Icon : UI/Equip/Arrow_Icon.png : [Texture]
 // VFX
-FireBall_Mesh_0 : VFX/3D/FireBall/FireBall_Mesh_0.fbx : [Mesh]
+NoiseTexture : VFX/3D/Noise.png : [Texture]
+FireBall_Mesh_0 : VFX/3D/FireBall/FireBall_Mesh_0.fbx : [Mesh]\
+FireBall_Mesh_1 : VFX/3D/FireBall/FireBall_Mesh_1.fbx : [Mesh]
+FireBall_Mesh_2 : VFX/3D/FireBall/FireBall_Mesh_2.fbx : [Mesh]
 FireBall_Texture_0 : VFX/3D/FireBall/FireBall_Texture_0.png : [Texture]
+FireBall_Texture_1 : VFX/3D/FireBall/FireBall_Texture_1.png : [Texture]
+FireBall_Texture_2 : VFX/3D/FireBall/FireBall_Texture_2.png : [Texture]

@@ -19,5 +19,9 @@ public:
 	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
+
+private:
+	_float m_fRotYSpeed;
+	_float m_fTime;
 };
 
