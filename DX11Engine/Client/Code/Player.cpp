@@ -151,7 +151,7 @@ void CPlayer::Update()
 	{
 		weaponName = L"Sword";
 		if (m_pInventroy->HasItem(weaponName))
-		ChangeWeapon(weaponName);
+			ChangeWeapon(weaponName);
 	}
 	if (CInput::GetKeyDown(Alpha2))
 	{

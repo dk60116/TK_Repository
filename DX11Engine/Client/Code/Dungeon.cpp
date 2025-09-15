@@ -49,6 +49,13 @@ HRESULT CDungeon::Initialize()
     if (FAILED(__super::Initialize()))
         return E_FAIL;
 
+    CMeshRenderer* pillar1 = Get_Transform()->Find_ChildRecursive(L"pillar_1_2")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    pillar1->Get_Material()->Set_FloatValue(L"gCustomNormal", -1.f);
+
+    CMeshRenderer* pillar2 = Get_Transform()->Find_ChildRecursive(L"pillar_2m_1")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    pillar1->Get_Material()->Set_FloatValue(L"gCustomNormal", -1.f);
+
+
     CreateMonsterPrototypes();
     CreateDungonObjectPrototypes();
     CreateDungeonChapters();

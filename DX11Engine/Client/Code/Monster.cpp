@@ -67,6 +67,9 @@ HRESULT CMonster::Initialize()
 
 void CMonster::Awake()
 {
+	if (m_strMonsterName == L"Dragon")
+		int a = 0;
+
 	if (m_pHeadTF)
 	{
 		CMonsterPartCollision* headCol = m_pHeadTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();

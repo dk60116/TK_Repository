@@ -29,7 +29,9 @@ cbuffer PerCustomValue : register(b10)
 {
     float gSmoothness;
     float2 gTiling;
+    float gCustomNormal;
     float2 gOffset;
+    float2 cPadding;
 }
 
 // 라이트 정의
@@ -94,6 +96,7 @@ VSOut VSMain(VSIn v)
 
     // 스킨 노멀
     float3 skinnedN = v.normalL;
+    
     if (boneCount)
     {
         skinnedN = 0;
@@ -129,6 +132,7 @@ VSOut VSMain(VSIn v)
 
     float4 posW = mul(skinnedPos, worldMatrix);
     float3 normalW = normalize(mul((float3x3) worldMatrix, skinnedN));
+    normalW *= gCustomNormal;
 
     // MVP
     float4 posV = mul(posW, view);

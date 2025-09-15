@@ -245,7 +245,8 @@ HRESULT CRenderTarget::Render()
 		return E_FAIL;
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
-	if (!ctx) return E_FAIL;
+	if (!ctx) 
+		return E_FAIL;
 
 	// 0) 현재 OM/VP 상태 저장
 	ID3D11RenderTargetView* prevRTV = nullptr;
@@ -317,7 +318,7 @@ void CRenderTarget::Bind_Rect()
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 
 	// 현재 VP 크기
-	UINT n = 1;
+	_uint n = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&n, &vp);
 
@@ -353,7 +354,7 @@ void CRenderTarget::Bind_Shader()
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 
 	// 현재 설정된 VP 가져오기 (이미 Shading/Combine용 VP로 바뀐 상태에서 호출됨)
-	UINT n = 1;
+	_uint n = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&n, &vp);
 
@@ -412,7 +413,8 @@ HRESULT CRenderTarget::Bind_Light()
 	_uint i = 0;
 	for (auto* L : lights)
 	{
-		if (!L) continue;
+		if (!L) 
+			continue;
 		_float4x4 info = L->To_LightInfo();
 
 		if (i == 0)
@@ -421,7 +423,8 @@ HRESULT CRenderTarget::Bind_Light()
 			info._44 = 0.f;
 
 		cb.lights[i] = info;
-		if (++i >= total) break;
+		if (++i >= total) 
+			break;
 	}
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
