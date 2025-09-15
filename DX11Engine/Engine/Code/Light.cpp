@@ -80,6 +80,16 @@ void CLight::Set_Intensity(const _float _value)
 	m_fIntensity = _value;
 }
 
+const _float CLight::Get_Rnge() const
+{
+	return m_fRange;
+}
+
+void CLight::Set_Range(const _float _value)
+{
+	m_fRange = _value;
+}
+
 void CLight::Set_Color(const ColorValue _color)
 {
 	m_vDiffuseColor = _color;
@@ -101,7 +111,7 @@ const _float4x4 CLight::To_LightInfo()
 	result._21 = dir.x;
 	result._22 = dir.y;
 	result._23 = dir.z;
-	result._24 = cosf(XMConvertToRadians(m_fSpotAngle * 0.5f));
+	result._24 = m_fIntensity; //cosf(XMConvertToRadians(m_fSpotAngle * 0.5f));
 
 	result._31 = color.x;
 	result._32 = color.y;

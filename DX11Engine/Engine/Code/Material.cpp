@@ -79,7 +79,7 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		{
 			m_mFloatValues.emplace(key, value);
 			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-			m_vCustomBufferByteList.push_back(*p);
+			m_vCustomBufferByteList.push_back(value);
 		}
 		for (const auto& [key, value] : matDesc->customIntValues)
 		{
@@ -141,6 +141,7 @@ void CMaterial::Bind_Matrix(const _fmatrix _world)
 	MatrixCB matrixCB = {};
 	matrixCB.world = XMMatrixTranspose(_world);
 	context->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &matrixCB, 0, 0);
+	context->PSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
 	context->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
 }
 
@@ -159,6 +160,7 @@ void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _
 	camCB.view = XMMatrixTranspose(_view);
 	camCB.proj = XMMatrixTranspose(_projection);
 	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &camCB, 0, 0);
+	context->PSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 	context->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 
 	// b2: PerMaterial
@@ -169,8 +171,8 @@ void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _
 	mat.boneCount = _boneCount;
 
 	context->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
-	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 	context->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
 
 	if (m_vCustomBufferByteList.size() > 0)
 		Bind_CustomValues();
@@ -190,6 +192,7 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
 
 	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
+	context->VSSetConstantBuffers(4, 1, &m_pLightBuffer);
 	context->PSSetConstantBuffers(4, 1, &m_pLightBuffer);
 }
 
@@ -223,6 +226,7 @@ void CMaterial::Bind_CustomValues()
 
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 	context->UpdateSubresource(m_pCustomBuffer, 0, nullptr, m_vCustomBufferByteList.data(), 0, 0);
+	context->VSSetConstantBuffers(10, 1, &m_pCustomBuffer);
 	context->PSSetConstantBuffers(10, 1, &m_pCustomBuffer);
 }
 
@@ -365,7 +369,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	// b10: Custom
 	if (m_vCustomBufferByteList.size() > 0)
 	{
-		_uint byteWidth = 16;
+		_uint byteWidth = 32;
 		byteWidth = (byteWidth + 15) & ~15;
 		
 		desc.ByteWidth = byteWidth;

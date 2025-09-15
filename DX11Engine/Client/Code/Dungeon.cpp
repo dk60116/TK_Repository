@@ -18,6 +18,7 @@ CDungeon::CDungeon()
     , m_mDungonObjProtoList({})
     , m_vChapterList({})
     , m_bAttachedChapterColliders(false)
+    , m_vLightList({})
     , m_vGateList({})
     , m_vFootSwitchList({})
     , m_vChestList({})
@@ -49,13 +50,12 @@ HRESULT CDungeon::Initialize()
     if (FAILED(__super::Initialize()))
         return E_FAIL;
 
-    CMeshRenderer* pillar1 = Get_Transform()->Find_ChildRecursive(L"pillar_1_2")->Get_GameObject()->GetComponent<CMeshRenderer>();
-    pillar1->Get_Material()->Set_FloatValue(L"gCustomNormal", -1.f);
+    CMeshRenderer* urn1 = Get_Transform()->Find_ChildRecursive(L"urn_1_2")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    CMeshRenderer* urn2 = Get_Transform()->Find_ChildRecursive(L"urn_2_1")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    urn1->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
+    urn2->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 
-    CMeshRenderer* pillar2 = Get_Transform()->Find_ChildRecursive(L"pillar_2m_1")->Get_GameObject()->GetComponent<CMeshRenderer>();
-    pillar1->Get_Material()->Set_FloatValue(L"gCustomNormal", -1.f);
-
-
+    SpawnPointLights();
     CreateMonsterPrototypes();
     CreateDungonObjectPrototypes();
     CreateDungeonChapters();
@@ -227,9 +227,53 @@ void CDungeon::CreateDragon()
     m_pDragon = dragonObj->AddComponent<CDragon>();
 }
 
+void CDungeon::SpawnPointLights()
+{
+    CScene* scene = m_pGameObject->Get_Scene();
+
+    for (_uint i = 0; i < 27; ++i)
+    {
+        CGameObject* newObj = scene->Add_GameObject(L"PointLight" + to_wstring(i));
+        CLight* newPointLight = newObj->AddComponent<CLight>();
+        newPointLight->Set_Type(CLight::Type::Point);
+        newPointLight->Set_Range(15.f);
+        newPointLight->Set_Color(ColorValue(180, 100, 0, 255));
+        m_vLightList.push_back(newPointLight);
+    }
+
+    m_vLightList[0]->Get_Transform()->Set_Position(127.5f, 1.f, -72.4f);
+    m_vLightList[1]->Get_Transform()->Set_Position(132.75f, 1.f, -67.55f);
+    m_vLightList[2]->Get_Transform()->Set_Position(127.5f, 1.f, -62.25f);
+    m_vLightList[3]->Get_Transform()->Set_Position(112.45f, 4.f, -45.f);
+    m_vLightList[4]->Get_Transform()->Set_Position(97.5f, 4.5f, -26.25f);
+    m_vLightList[5]->Get_Transform()->Set_Position(90.f, 4.5f, -26.25f);
+    m_vLightList[6]->Get_Transform()->Set_Position(101.f, 3.5f, -41.f);
+    m_vLightList[7]->Get_Transform()->Set_Position(93.7f, 6.48f, -22.55f);
+    m_vLightList[7]->Set_Color(ColorValue(0, 0, 200));
+    m_vLightList[8]->Get_Transform()->Set_Position(86.25f, 3.5f, -41.f);
+    m_vLightList[9]->Get_Transform()->Set_Position(101.25f, 8.72f, -55.2f);
+    m_vLightList[10]->Get_Transform()->Set_Position(86.25f, 8.72f, -55.2f);
+    m_vLightList[11]->Get_Transform()->Set_Position(101.25f, 8.f, -65.f);
+    m_vLightList[12]->Get_Transform()->Set_Position(86.25f, 8.f, -65.f);
+    m_vLightList[13]->Get_Transform()->Set_Position(101.25f, 8.f, -77.5f);
+    m_vLightList[14]->Get_Transform()->Set_Position(86.25f, 8.f, -77.5f);
+    m_vLightList[15]->Get_Transform()->Set_Position(101.f, 4.4f, -109.f);
+    m_vLightList[16]->Get_Transform()->Set_Position(86.25f, 4.4f, -109.f);
+    m_vLightList[17]->Get_Transform()->Set_Position(93.5f, -4.f, -116.5f);
+    m_vLightList[18]->Get_Transform()->Set_Position(101.f, 4.4f, -123.7f);
+    m_vLightList[19]->Get_Transform()->Set_Position(86.25f, 4.4f, -123.7f);
+    m_vLightList[20]->Get_Transform()->Set_Position(97.49f, 1.75f, -131.f);
+    m_vLightList[21]->Get_Transform()->Set_Position(90.f, 1.75f, -131.f);
+    m_vLightList[22]->Get_Transform()->Set_Position(93.7f, 0.77f, -152.35f);
+    m_vLightList[22]->Set_Color(ColorValue(0, 0, 200));
+    m_vLightList[23]->Get_Transform()->Set_Position(80.f, 5.f, -41.f);
+    m_vLightList[24]->Get_Transform()->Set_Position(80.f, 5.f, -48.75);
+    m_vLightList[25]->Get_Transform()->Set_Position(67.5, 2.5, -22.5f);
+}
+
 void CDungeon::SpawnDungeonGates()
 {
-    for (size_t i = 0; i < 19; i++)
+    for (_uint i = 0; i < 19; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
         newObj->Set_ObjectName(L"Gate (Clone) " + to_wstring(i));

@@ -31,6 +31,7 @@ private:
 	
 	void CreateDragon();
 
+	void SpawnPointLights();
 	void SpawnDungeonGates();
 	void SpawnDungeonFootSwitches();
 	void SpawnDungeonChest();
@@ -50,6 +51,7 @@ private:
 
 	_bool m_bAttachedChapterColliders;
 
+	vector<CLight*> m_vLightList;
 	vector<class CDungeonGate*> m_vGateList;
 	vector<class CFootSwitch*> m_vFootSwitchList;
 	vector<class CDungeonChest*> m_vChestList;

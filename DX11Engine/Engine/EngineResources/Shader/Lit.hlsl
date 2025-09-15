@@ -27,9 +27,8 @@ cbuffer PerBones : register(b3)
 
 cbuffer PerCustomValue : register(b10)
 {
-    float gSmoothness;
-    float2 gTiling;
-    float gCustomNormal;
+    float gSmoothness; 
+    float2 gTiling; 
     float2 gOffset;
     float2 cPadding;
 }
@@ -131,8 +130,7 @@ VSOut VSMain(VSIn v)
     // 월드 변환
 
     float4 posW = mul(skinnedPos, worldMatrix);
-    float3 normalW = normalize(mul((float3x3) worldMatrix, skinnedN));
-    normalW *= gCustomNormal;
+    float3 normalW = normalize(mul(skinnedN, (float3x3) worldMatrix));
 
     // MVP
     float4 posV = mul(posW, view);
@@ -209,14 +207,15 @@ float4 PSMain(VSOut input) : SV_TARGET
         specularSum += specular;
         
         // Ambient
-        float3 ambient = lightColor * ambientK;
+        float3 ambient = lightColor * ambientK * attenuation;
         ambientSum += ambient;
     }
 
-    diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
+    //diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
+    
     float3 litDiffuse = texColor.rgb * saturate(ambientSum + diffuseSum);
     float3 finalColor = litDiffuse + specularSum;
-    
+  
     finalColor = saturate(finalColor);
 
     return float4(finalColor, texColor.a);
