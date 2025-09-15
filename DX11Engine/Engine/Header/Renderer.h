@@ -11,6 +11,8 @@ protected:
 	~CRenderer();
 	
 public:
+	void OnPostRender_Editor() override;
+	void OnPostRender() override;
 	void OnDestroy() override;
 
 protected:
@@ -27,6 +29,7 @@ public:
 
 protected:
 	void Bind_InstanceData(_fmatrix _matWorld, CMeshBuffer* _buffer);
+	void ResetShaderResources();
 
 protected:
 	CMaterial* m_pMaterial;

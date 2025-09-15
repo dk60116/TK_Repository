@@ -80,7 +80,7 @@ void CDragonBHV_Landing::During()
 			if (vector3::Distance(monsterPos, m_vTargetPos) >= 0.05f)
 				monsterTF->Add_Position(normal * 10.f * DELTA_TIME);
 			else
-				dragon->Get_Controller()->Change_State(3);
+				dragon->Get_Controller()->ChangeState(3);
 		}
 	}
 }

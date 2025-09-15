@@ -5,6 +5,7 @@ class CBossController_Dragon final : public CBossController
 {
 	friend class CGameObject;
 
+public:
 	enum DragonState { Idle, Wakeup, Landing, ShootFireBall };
 
 private:
@@ -22,4 +23,7 @@ public:
 	void Start() override;
 	void Update() override;
 	void OnDestroy() override;
+
+public:
+	const DragonState Get_HitedState() const;
 };

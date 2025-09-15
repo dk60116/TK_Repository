@@ -306,7 +306,7 @@ void CCamera::RenderMesh()
 		{
 		const _float da = (a->Get_Transform()->Get_Position() - camPos).lengthSq();
 		const _float db = (b->Get_Transform()->Get_Position() - camPos).lengthSq();
-		return da > db; 
+		return da > db;
 		});
 
 	for (auto* r : sorted) 

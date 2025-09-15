@@ -43,13 +43,17 @@ public:
 	const DragonStatus& Get_Status();
 
 public:
+	void Get_Damage(class CWeapon* _weapon) override;
+
 	void PlayIdle(const _float _blending = 0.2f) override;
 	void PlayThreat(const _float _blending = 0.2f) override;
 	void PlayGroundToFly(const _float _blending = 0.2f);
 	void PlayFly(const _float _blending = 0.2f);
+	void PlayGetHit(const _float _blending = 0.2f);
 	void PlayShootFireball(const _float _blending = 0.2f);
 
 	void ShootFireBall();
+	const _uint Get_ShootFireBallCount() const;
 
 	const _bool GetFlying() const;
 	void SetFlying(const _bool _fly);
@@ -59,5 +63,6 @@ private:
 	CBossController_Dragon* m_pController;
 	_bool m_bFlying;
 	class CME_FireBall* m_pFireBallProto;
+	_uint m_iShootFireCount;
 };
 

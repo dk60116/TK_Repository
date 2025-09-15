@@ -8,6 +8,7 @@ CDragon::CDragon()
 	, m_pController(nullptr)
 	, m_bFlying(false)
 	, m_pFireBallProto(nullptr)
+	, m_iShootFireCount(0)
 {
 }
 
@@ -43,6 +44,7 @@ HRESULT CDragon::Initialize()
 	{
 		m_pController = m_pGameObject->AddComponent<CBossController_Dragon>();
 		m_pController->Set_Monster(this);
+		__super::m_pController = m_pController;
 	}
 
 	if (m_pAnimator)
@@ -53,6 +55,8 @@ HRESULT CDragon::Initialize()
 		auto flyIdle = Add_Animation(L"FlyIdle");
 		auto fly = Add_Animation(L"Fly");
 		auto shootFireBall_fly = Add_Animation(L"ShootFireBall_Fly");
+		auto getHit_fly = Add_Animation(L"GetHit_Fly");
+		auto glide = Add_Animation(L"Glide");
 	}
 
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
@@ -64,6 +68,20 @@ HRESULT CDragon::Initialize()
 void CDragon::Awake()
 {
 	__super::Awake();
+	
+	CTransform* pelvTF = Get_Transform()->Find_ChildRecursive(L"MountainDragon_ Spine");
+	CMonsterPartCollision* pelvCol = pelvTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();
+	pelvCol->Set_Monster(this);
+	pelvCol->SetCenter(vector3(0.25f, 0.f, 0.f));
+	pelvCol->SetSize(vector3(1.5f, 1.5f, 1.5f));
+	m_mPartColList.emplace(L"Pelv", pelvCol);
+
+	CTransform* chestTF = Get_Transform()->Find_ChildRecursive(L"MountainDragon_ Spine1");
+	CMonsterPartCollision* chestCol = chestTF->Get_GameObject()->AddComponent<CMonsterPartCollision>();
+	chestCol->Set_Monster(this);
+	chestCol->SetCenter(vector3(0.25f, 0.f, 0.f));
+	chestCol->SetSize(vector3(1.7f, 1.7f, 1.7f));
+	m_mPartColList.emplace(L"Chest", chestCol);
 
 	m_pFireBallProto->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 }
@@ -101,6 +119,12 @@ CBossController_Dragon* CDragon::Get_Controller()
 const CDragon::DragonStatus& CDragon::Get_Status()
 {
 	return m_sStatus;
+}
+
+void CDragon::Get_Damage(CWeapon* _weapon)
+{
+	_uint state = static_cast<_uint>(m_pController->Get_CrtState());
+	m_pController->ChangeState(CBossController_Dragon::GetHit, &state);
 }
 
 void CDragon::PlayIdle(const _float _blending)
@@ -150,6 +174,23 @@ void CDragon::PlayFly(const _float _blending)
 	m_pAnimator->Play(L"Fly", _blending);
 }
 
+void CDragon::PlayGetHit(const _float _blending)
+{
+	if (!m_pAnimator)
+		return;
+
+	m_pAnimator->SetLoop(false);
+
+	if (!m_bFlying)
+	{
+
+	}
+	else
+	{
+		m_pAnimator->Play(L"GetHit_Fly");
+	}
+}
+
 void CDragon::PlayShootFireball(const _float _blending)
 {
 	if (!m_pAnimator)
@@ -163,6 +204,13 @@ void CDragon::PlayShootFireball(const _float _blending)
 void CDragon::ShootFireBall()
 {
 	m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
+
+	++m_iShootFireCount;
+}
+
+const _uint CDragon::Get_ShootFireBallCount() const
+{
+	return m_iShootFireCount;
 }
 
 const _bool CDragon::GetFlying() const

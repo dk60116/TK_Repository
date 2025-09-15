@@ -77,10 +77,6 @@ void CSkinnedMeshRenderer::Render()
 	CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
 }
 
-void CSkinnedMeshRenderer::OnPostRender()
-{
-}
-
 void CSkinnedMeshRenderer::OnDestroy()
 {
 	__super::OnDestroy();
@@ -222,6 +218,9 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 
 	// 6) ¸Þ½Ã ·»´õ¸µ
 	m_pMeshBuffer->Render();
+
+	vector<ID3D11ShaderResourceView*> nulls(5, nullptr);
+	m_pContext->PSSetShaderResources(0, 5, nulls.data());
 }
 
 void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)

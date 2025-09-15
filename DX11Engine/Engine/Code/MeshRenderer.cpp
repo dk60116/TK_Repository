@@ -171,10 +171,6 @@ void CMeshRenderer::Render_Gizmo()
 	DrawBoxWithWorld(WS, color, thickness);
 }
 
-void CMeshRenderer::OnPostRender()
-{
-}
-
 void CMeshRenderer::OnDestroy()
 {
 	__super::OnDestroy();
@@ -264,6 +260,9 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		Bind_InstanceData(matWorld, pBuffer);
 	
 	pBuffer->Render();
+
+	vector<ID3D11ShaderResourceView*> nulls(5, nullptr);
+	m_pContext->PSSetShaderResources(0, 5, nulls.data());
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)

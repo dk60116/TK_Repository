@@ -27,10 +27,12 @@ private:
 	void Shooting();
 
 private:
+	CLight* m_pLight;
+
 	_float m_fRotYSpeed;
 	_float m_fTime;
 
 	_bool m_bShooting;
-	vector3 m_vTargetPos;
+	vector3 m_vTargetPos, m_vDirection;
 };
 

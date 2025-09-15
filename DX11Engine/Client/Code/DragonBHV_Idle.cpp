@@ -36,7 +36,7 @@ void CDragonBHV_Idle::During()
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
 	if (!dragon->GetFlying() && m_fPassedTime >= 5.f)
-		dragon->Get_Controller()->Change_State(1);
+		dragon->Get_Controller()->ChangeState(1);
 }
 
 void CDragonBHV_Idle::Exit()

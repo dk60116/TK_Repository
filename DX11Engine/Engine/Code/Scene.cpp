@@ -345,6 +345,18 @@ void CScene::Update()
 
 		(*it)->m_bPrevActive = (*it)->m_bActive;
 	}
+
+	for (auto it = m_lObjectList.begin(); it != m_lObjectList.end(); )
+	{
+		if ((*it)->m_bKill)
+		{
+			CGameObject* target = *it;
+			it = m_lObjectList.erase(it);
+			target->OnDestroy();
+			Safe_Release(target);
+		}
+		else ++it;
+	}
 }
 
 void CScene::FixedUpdate()
@@ -444,24 +456,6 @@ void CScene::Render_Game()
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
 			(*it)->RenderUI();
-	}
-
-	for (TRAVERSAL_ITER(m_lObjectList, it))
-	{
-		if ((*it)->IsRecursiveActive())
-			(*it)->OnPostRender();
-	}
-
-	for (auto it = m_lObjectList.begin(); it != m_lObjectList.end(); )
-	{
-		if ((*it)->m_bKill)
-		{
-			CGameObject* target = *it;
-			it = m_lObjectList.erase(it);
-			target->OnDestroy();
-			Safe_Release(target);
-		}
-		else ++it;
 	}
 }
 

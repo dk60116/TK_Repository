@@ -155,6 +155,7 @@
     <ClInclude Include="..\Header\BossController_Dragon.h" />
     <ClInclude Include="..\Header\BossMonster.h" />
     <ClInclude Include="..\Header\Dragon.h" />
+    <ClInclude Include="..\Header\DragonBHV_GetHit.h" />
     <ClInclude Include="..\Header\DragonBHV_Idle.h" />
     <ClInclude Include="..\Header\DragonBHV_Landing.h" />
     <ClInclude Include="..\Header\DragonBHV_Wakeup.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="..\Header\LadderTrigger.h" />
     <ClInclude Include="..\Header\MeshEffect.h" />
     <ClInclude Include="..\Header\ME_FireBall.h" />
+    <ClInclude Include="..\Header\ME_SwordSlash.h" />
     <ClInclude Include="..\Header\MovingPlat.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h" />
@@ -226,6 +228,7 @@
     <ClCompile Include="..\Code\CGoblin.cpp" />
     <ClCompile Include="..\Code\DefaultArrow.cpp" />
     <ClCompile Include="..\Code\Dragon.cpp" />
+    <ClCompile Include="..\Code\DragonBHV_GetHit.cpp" />
     <ClCompile Include="..\Code\DragonBHV_Idle.cpp" />
     <ClCompile Include="..\Code\DragonBHV_Landing.cpp" />
     <ClCompile Include="..\Code\DragonBHV_Wakeup.cpp" />
@@ -252,6 +255,7 @@
     <ClCompile Include="..\Code\MapCollision.cpp" />
     <ClCompile Include="..\Code\MeshEffect.cpp" />
     <ClCompile Include="..\Code\ME_FireBall.cpp" />
+    <ClCompile Include="..\Code\ME_SwordSlash.cpp" />
     <ClCompile Include="..\Code\Monster.cpp" />
     <ClCompile Include="..\Code\MonsterBehaviour.cpp" />
     <ClCompile Include="..\Code\MonsterController.cpp" />

@@ -3,9 +3,12 @@
 
 CME_FireBall::CME_FireBall()
 	: CMeshEffect{}
+	, m_pLight(nullptr)
 	, m_fRotYSpeed(0.f)
 	, m_fTime(0.f)
 	, m_bShooting(false)
+	, m_vTargetPos({})
+	, m_vDirection({})
 {
 }
 
@@ -35,6 +38,14 @@ HRESULT CME_FireBall::Initialize()
 
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
+
+	if (!m_pLight)
+	{
+		m_pLight = m_pGameObject->AddComponent<CLight>();
+		m_pLight->Set_Type(CLight::Type::Point);
+		m_pLight->Set_Range(5.f);
+		m_pLight->Set_Color(ColorValue::red());
+	}
 
 	ColorValue red = ColorValue::red();
 	red.a = 150;
@@ -99,6 +110,8 @@ void CME_FireBall::Shoot(const vector3& _startPos, const vector3& _targetPos)
 	Get_Transform()->Set_Position(_startPos);
 	Get_Transform()->LookAt(_targetPos);
 	Get_Transform()->Add_LocalEulerAnglesX(90.f);
+
+	m_vDirection = (_targetPos -_startPos).normalized();
 	m_bShooting = true;
 }
 
@@ -106,5 +119,5 @@ void CME_FireBall::Shooting()
 {
 	CTransform* myTF = Get_Transform();
 
-	myTF->Add_Position(myTF->Get_Directions().up * DELTA_TIME * 20.f);
+	myTF->Add_Position(m_vDirection * DELTA_TIME * 20.f);
 }

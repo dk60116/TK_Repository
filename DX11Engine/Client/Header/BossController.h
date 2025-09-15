@@ -1,7 +1,7 @@
 #pragma once
-#include "Component.h"
+#include "MonsterController.h"
 
-class CBossController abstract : public CComponent
+class CBossController abstract : public CMonsterController
 {
 public:
 	enum class TurnDir { None, Left, Right };
@@ -23,11 +23,8 @@ public:
 	void Set_Monster(CBossMonster* _monster);
 
 public:
-	void Change_State(const _uint _state, void* _desc = nullptr, const _bool _forceEnter = false);
-	const _bool IsDamaged() const;
-	void SetDamaged(const _bool _value);
-	const _bool IsDead() const;
-	void SetDead();
+	void ChangeState(const _uint _state, void* _desc = nullptr, const _bool _forceEnter = false);
+	void ForceChangeState(const _uint _state, void* _desc = nullptr);
 
 protected:
 	template<typename T>
@@ -39,7 +36,6 @@ private:
 private:
 	CBossMonster* m_pMonster;
 	
-	_uint m_iCrtState;
 	map<_uint, class CMonsterBehaviour*> m_mBehaviourList;
 	CMonsterBehaviour* m_pCrtBehaviour;
 

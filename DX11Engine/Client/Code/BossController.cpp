@@ -6,7 +6,6 @@
 
 CBossController::CBossController()
 	: m_pMonster(nullptr)
-	, m_iCrtState(0)
 	, m_mBehaviourList({})
 	, m_pCrtBehaviour(nullptr)
 	, m_bDamaged(false)
@@ -50,11 +49,6 @@ void CBossController::OnDestroy()
 	m_mBehaviourList.clear();
 }
 
-CBossMonster* CBossController::Get_Monster()
-{
-	return m_pMonster;
-}
-
 void CBossController::Set_Monster(CBossMonster* _monster)
 {
 	m_pMonster = _monster;
@@ -63,7 +57,7 @@ void CBossController::Set_Monster(CBossMonster* _monster)
 		m_pMonster->AddRef();
 }
 
-void CBossController::Change_State(const _uint _state, void* _desc, const _bool _forceEnter)
+void CBossController::ChangeState(const _uint _state, void* _desc, const _bool _forceEnter)
 {
 	if (!_forceEnter)
 	{
@@ -74,6 +68,17 @@ void CBossController::Change_State(const _uint _state, void* _desc, const _bool 
 	if (m_pCrtBehaviour && m_pCrtBehaviour->m_iWeight > m_mBehaviourList[_state]->m_iWeight)
 		return;
 
+	if (m_pCrtBehaviour)
+		m_pCrtBehaviour->Exit();
+
+	m_pCrtBehaviour = m_mBehaviourList[_state];
+	m_pCrtBehaviour->Enter(_desc);
+
+	m_iCrtState = _state;
+}
+
+void CBossController::ForceChangeState(const _uint _state, void* _desc)
+{
 	if (m_pCrtBehaviour)
 		m_pCrtBehaviour->Exit();
 

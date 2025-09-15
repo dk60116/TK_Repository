@@ -52,8 +52,10 @@ HRESULT CDungeon::Initialize()
 
     CMeshRenderer* urn1 = Get_Transform()->Find_ChildRecursive(L"urn_1_2")->Get_GameObject()->GetComponent<CMeshRenderer>();
     CMeshRenderer* urn2 = Get_Transform()->Find_ChildRecursive(L"urn_2_1")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    CMeshRenderer* firepit = Get_Transform()->Find_ChildRecursive(L"firepit_1_1")->Get_GameObject()->GetComponent<CMeshRenderer>();
     urn1->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
     urn2->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
+    firepit->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 
     SpawnPointLights();
     CreateMonsterPrototypes();
@@ -231,7 +233,7 @@ void CDungeon::SpawnPointLights()
 {
     CScene* scene = m_pGameObject->Get_Scene();
 
-    for (_uint i = 0; i < 27; ++i)
+    for (_uint i = 0; i < 30; ++i)
     {
         CGameObject* newObj = scene->Add_GameObject(L"PointLight" + to_wstring(i));
         CLight* newPointLight = newObj->AddComponent<CLight>();
@@ -269,6 +271,10 @@ void CDungeon::SpawnPointLights()
     m_vLightList[23]->Get_Transform()->Set_Position(80.f, 5.f, -41.f);
     m_vLightList[24]->Get_Transform()->Set_Position(80.f, 5.f, -48.75);
     m_vLightList[25]->Get_Transform()->Set_Position(67.5, 2.5, -22.5f);
+    m_vLightList[26]->Get_Transform()->Set_Position(77.65f, 5.f, -48.75f);
+    m_vLightList[27]->Get_Transform()->Set_Position(63.75f, 4.7f, -33.8f);
+    m_vLightList[28]->Get_Transform()->Set_Position(70.f, 5., -56.2f);
+    m_vLightList[29]->Get_Transform()->Set_Position(57.35f, 5., -56.2f);
 }
 
 void CDungeon::SpawnDungeonGates()

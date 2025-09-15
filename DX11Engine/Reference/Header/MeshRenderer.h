@@ -24,7 +24,6 @@ public:
 	void Render_Editor() override;
 	void Render() override;
 	void Render_Gizmo() override;
-	void OnPostRender() override;
 
 	void OnDestroy() override;
 

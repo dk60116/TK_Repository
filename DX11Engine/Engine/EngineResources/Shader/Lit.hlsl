@@ -47,7 +47,8 @@ cbuffer PerLight : register(b4)
 };
 
 // 텍스처 & 샘플러
-Texture2D gTexture : register(t0);
+Texture2D gBasemap : register(t0);
+Texture2D gNormalmap : register(t1);
 SamplerState gSampler : register(s0);
 
 // 버텍스 입출력
@@ -69,8 +70,9 @@ struct VSIn
 struct VSOut
 {
     float4 posH : SV_POSITION;
-    float3 normalW : NORMAL;
     float3 posW : TEXCOORD1;
+    float3 normalW : TEXCOORD2;
+    float3 tangentW : TEXCOORD3;
     float2 uv : TEXCOORD0;
 };
 
@@ -131,6 +133,7 @@ VSOut VSMain(VSIn v)
 
     float4 posW = mul(skinnedPos, worldMatrix);
     float3 normalW = normalize(mul(skinnedN, (float3x3) worldMatrix));
+    float3 tangentW = normalize(mul(v.tangentL, (float3x3) worldMatrix));
 
     // MVP
     float4 posV = mul(posW, view);
@@ -139,6 +142,7 @@ VSOut VSMain(VSIn v)
     // 출력
     o.posW = posW.xyz;
     o.normalW = normalW;
+    o.tangentW = tangentW;
     o.uv = v.uv;
     
     return o;
@@ -148,14 +152,28 @@ VSOut VSMain(VSIn v)
 float4 PSMain(VSOut input) : SV_TARGET
 {
     float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
-    float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
+    float4 texColor = useTexture ? gBasemap.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
     
     if (texColor.a < 0.01f)
         discard;
 
     float3 N = normalize(input.normalW);
+    float3 T = normalize(input.tangentW);
+    float3 B = normalize(cross(N, T));
     float3 V = normalize(pos - input.posW);
     
+    float3x3 TBN = float3x3(T, B, N);
+    
+    float4 nm = gNormalmap.Sample(gSampler, tillingUV);
+
+    
+    if (any(nm))
+    {
+        float3 normalMap = nm.rgb;
+        normalMap = normalize(normalMap * 2.0f - 1.0f);
+        N = normalize(mul(normalMap, TBN));
+    }
+  
     float3 diffuseSum = float3(0, 0, 0);
     float3 ambientSum = float3(0, 0, 0);
     float3 specularSum = float3(0, 0, 0);
@@ -211,8 +229,6 @@ float4 PSMain(VSOut input) : SV_TARGET
         ambientSum += ambient;
     }
 
-    //diffuseSum = max(diffuseSum, float3(0.1f, 0.1f, 0.1f));
-    
     float3 litDiffuse = texColor.rgb * saturate(ambientSum + diffuseSum);
     float3 finalColor = litDiffuse + specularSum;
   

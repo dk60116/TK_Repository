@@ -2,13 +2,13 @@
 
 #include "Component.h"
 
-class CMonsterController final : public CComponent
+class CMonsterController : public CComponent
 {
 public:
 	enum MonsterState { Idle, Patrole, Find, Tracking, Combat, CombatWait, GetHit, Death };
 	enum class TurnDir { None, Left, Right };
 
-private:
+protected:
 	explicit CMonsterController();
 	~CMonsterController();
 
@@ -29,6 +29,7 @@ public:
 	void Set_Monster(CMonster* _monster);
 
 public:
+	virtual const _uint Get_CrtState() const;
 	void ChangeState(const MonsterState _state);
 	const _bool IsDamaged() const;
 	void SetDamaged(const _bool _value);
@@ -38,8 +39,8 @@ public:
 private:
 	void UpdateControleState();
 
-private:
-	MonsterState m_eCrtState;
+protected:
+	_uint m_iCrtState;
 	CMonster* m_pMonster;
 
 	map<_uint, class CMonsterBehaviour*> m_mBehaviourList;

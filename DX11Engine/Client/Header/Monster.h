@@ -54,7 +54,7 @@ public:
 	CMonsterController* Get_Controller();
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();
-	void Get_Damage(class CWeapon* _weapon);
+	virtual void Get_Damage(class CWeapon* _weapon);
 	void PlayTurn(const CMonsterController::TurnDir _dir);
 
 protected:

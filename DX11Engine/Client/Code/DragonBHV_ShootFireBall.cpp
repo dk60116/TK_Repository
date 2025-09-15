@@ -40,7 +40,7 @@ void CDragonBHV_ShootFireBall::During()
 	const vector3 playerAngle = playerTf->Get_EulerAngles();
 
 	CTransform* myTf = m_pMonster->Get_Transform();
-	const vector3 myPos = myTf->Get_Position();
+	const vector3 myPos = myTf->Get_Position() + vector3::up() * 0.5f;
 	const vector3 myAngle = myTf->Get_EulerAngles();
 
 	quaternion rotQ = myTf->LookQuaternion(playerPos, CTransform::X | CTransform::Z);

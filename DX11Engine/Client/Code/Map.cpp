@@ -72,19 +72,39 @@ void CMap::AttachTextures()
     m_mTextureNameList.emplace(L"Height Map", vector<wstring>{count});
     m_mTextureNameList.emplace(L"Ocullusion Map", vector<wstring>{count});
 
-    for (size_t i = 0; i < count; i++)
     {
-        wstring objName = m_vRendererList[i]->Get_GameObject()->Get_ObjectName();
-        m_mTextureNameList[L"Base Map"][i] = m_strMapName + L"_Pice-" + objName + L"-BaseMap";
+        for (size_t i = 0; i < count; i++)
+        {
+            wstring objName = m_vRendererList[i]->Get_GameObject()->Get_ObjectName();
+            m_mTextureNameList[L"Base Map"][i] = m_strMapName + L"_Pice-" + objName + L"-BaseMap";
+        }
+
+        vector<wstring>& baseMapTexList = m_mTextureNameList[L"Base Map"];
+
+        for (size_t i = 0; i < count; i++)
+        {
+            CTexture* tex = CResources::LoadOnScene<CTexture>(baseMapTexList[i] + L" (Texture)");
+
+            if (tex)
+                m_vRendererList[i]->Get_Material()->Set_Texture(tex, 0);
+        }
     }
 
-    vector<wstring>& baseMapTexList = m_mTextureNameList[L"Base Map"];
-
-    for (size_t i = 0; i < count; i++)
     {
-        CTexture* tex = CResources::LoadOnScene<CTexture>(baseMapTexList[i] + L" (Texture)");
-        
-        if (tex)
-            m_vRendererList[i]->Get_Material()->Set_Texture(tex, 0);
+        for (size_t i = 0; i < count; i++)
+        {
+            wstring objName = m_vRendererList[i]->Get_GameObject()->Get_ObjectName();
+            m_mTextureNameList[L"Normal Map"][i] = m_strMapName + L"_Pice-" + objName + L"-NormalMap";
+        }
+
+        vector<wstring>& normalMapTexList = m_mTextureNameList[L"Normal Map"];
+
+        for (size_t i = 0; i < count; i++)
+        {
+            CTexture* tex = CResources::LoadOnScene<CTexture>(normalMapTexList[i] + L" (Texture)");
+
+            if (tex)
+                m_vRendererList[i]->Get_Material()->Set_Texture(tex, 1);
+        }
     }
 }

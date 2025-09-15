@@ -14,7 +14,7 @@
 
 CMonsterController::CMonsterController()
 	: m_pMonster(nullptr)
-	, m_eCrtState(MonsterState::Idle)
+	, m_iCrtState(0)
 	, m_mBehaviourList({})
 	, m_pCrtBehaviour(nullptr)
 	, m_bDamaged(false)
@@ -139,6 +139,11 @@ void CMonsterController::UpdateControleState()
 	const vector3 playerAnge = playerTf->Get_EulerAngles();
 }
 
+const _uint CMonsterController::Get_CrtState() const
+{
+	return m_iCrtState;
+}
+
 void CMonsterController::ChangeState(MonsterState _state)
 {
 	if (m_bDead)
@@ -150,7 +155,7 @@ void CMonsterController::ChangeState(MonsterState _state)
 	m_pCrtBehaviour = m_mBehaviourList[_state];
 	m_pCrtBehaviour->Enter();
 
-	m_eCrtState = _state;
+	m_iCrtState = static_cast<MonsterState>(_state);
 }
 
 const _bool CMonsterController::IsDamaged() const
