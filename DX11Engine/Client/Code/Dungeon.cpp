@@ -58,8 +58,7 @@ HRESULT CDungeon::Initialize()
     firepit->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 
     CMeshRenderer* coal = Get_Transform()->Find_ChildRecursive(L"firepit_coal")->Get_GameObject()->GetComponent<CMeshRenderer>();
-    coal->Set_Material(CResources::CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
-    coal->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(L"Dungeon_Pice-firepit_coal-BaseMap (Texture)"));
+    coal->Get_Material()->Set_FloatValue(L"gCalcLight", 0.f);
 
     SpawnPointLights();
     CreateMonsterPrototypes();
@@ -237,7 +236,7 @@ void CDungeon::SpawnPointLights()
 {
     CScene* scene = m_pGameObject->Get_Scene();
 
-    for (_uint i = 0; i < 48; ++i)
+    for (_uint i = 0; i < 66; ++i)
     {
         CGameObject* newObj = scene->Add_GameObject(L"PointLight" + to_wstring(i));
         CLight* newPointLight = newObj->AddComponent<CLight>();
@@ -297,6 +296,25 @@ void CDungeon::SpawnPointLights()
     m_vLightList[45]->Get_Transform()->Set_Position(25.2f, 5.f, -26.25f);
     m_vLightList[46]->Get_Transform()->Set_Position(12.3f, 8.65f, -33.75f);
     m_vLightList[47]->Get_Transform()->Set_Position(11.3f, 4.45f, -48.7f);
+    m_vLightList[48]->Get_Transform()->Set_Position(10.15f, 8.65f, -33.75f);
+    m_vLightList[49]->Get_Transform()->Set_Position(-12.35f, 8.65f, -33.75f);
+    m_vLightList[50]->Get_Transform()->Set_Position(-11.25f, 4.45f, -48.7f);
+    m_vLightList[51]->Get_Transform()->Set_Position(10.1f, 5.f, -11.25f);
+    m_vLightList[52]->Get_Transform()->Set_Position(-10.15f, 5.f, -11.25f);
+    m_vLightList[53]->Get_Transform()->Set_Position(5.2f, 5.2f, -56.2f);
+    m_vLightList[54]->Get_Transform()->Set_Position(-5.27f, 5.2f, -56.2f);
+    m_vLightList[55]->Get_Transform()->Set_Position(16.1f, 11.68f, -57.35f);
+    m_vLightList[56]->Get_Transform()->Set_Position(16.2f, 11.68f, -57.35f);
+    m_vLightList[57]->Get_Transform()->Set_Position(17.6f, 11.68f, -58.9f);
+    m_vLightList[58]->Get_Transform()->Set_Position(-17.6f, 11.68f, -58.9f);
+    m_vLightList[59]->Get_Transform()->Set_Position(12.35f, 11.68f, -63.75f);
+    m_vLightList[60]->Get_Transform()->Set_Position(-12.35f, 11.68f, -63.75f);
+    m_vLightList[61]->Get_Transform()->Set_Position(5.25f, 5.5f, -56.2f);
+    m_vLightList[62]->Get_Transform()->Set_Position(-5.25f, 5.5f, -56.2f);
+    m_vLightList[63]->Get_Transform()->Set_Position(3.75f, 13.55f, -71.25);
+    m_vLightList[64]->Get_Transform()->Set_Position(-3.75f, 13.55f, -71.25);
+    m_vLightList[65]->Get_Transform()->Set_Position(-3.75f, 13.55f, -71.25);
+
 }
 
 void CDungeon::SpawnDungeonGates()

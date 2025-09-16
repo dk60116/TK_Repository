@@ -25,7 +25,7 @@ HRESULT CMeshEffect::Initialize()
 		CMeshRenderer* mesh = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(meshName))[0];
 		m_vMesheList.push_back(mesh);
 
-		mesh->Set_Material(CResources::CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+		mesh->Set_Material(CResources::CloneOnGame<CMaterial>(L"MeshEffectMaterial (Material)"));
 		const wstring texName = m_strEffectName + L"_Texture_" + to_wstring(i) + L" (Texture)";
 		CTexture* texture = CResources::LoadOnScene<CTexture>(texName);
 		m_vTextureList.push_back(texture);

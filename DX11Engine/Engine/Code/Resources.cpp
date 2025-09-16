@@ -1727,6 +1727,7 @@ void CResources::Ready_GameResources()
 	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
 	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
 	litMatDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
+	litMatDesc.customFloatValues.push_back({ L"gCalcLight", 1.f });
 	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
 	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
@@ -1752,7 +1753,7 @@ void CResources::Ready_GameResources()
 	CFont* defaultFont = CreateGameResource<CFont>(L"Sans (Font)", L"", &dfPath);
 	LoadResourceComplete_Game(defaultFont);
 
-	CShader::SHADERDESC meshEffectShaderDesc = { L"../EngineResources/Shader/MeshEffect.hlsl", L"", VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
+	CShader::SHADERDESC meshEffectShaderDesc = { L"../EngineResources/Shader/MeshEffect.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"MeshEffect (Shader)", L"", &meshEffectShaderDesc));
 
 	CShader* meShader = LoadOnGame<CShader>(L"MeshEffect (Shader)");

@@ -87,13 +87,13 @@ void CME_FireBall::Update()
 
 	m_fTime += DELTA_TIME;
 
-	//m_vMesheList[0]->Get_Material()->Set_FloatValue(L"gTime", m_fTime);
+	m_vMesheList[0]->Get_Material()->Set_FloatValue(L"gTime", m_fTime);
 	m_vMesheList[0]->Get_Transform()->Add_LocalEulerAnglesY(m_fRotYSpeed * DELTA_TIME);
 
-	//m_vMesheList[1]->Get_Material()->Set_FloatValue(L"gTime", m_fTime);
+	m_vMesheList[1]->Get_Material()->Set_FloatValue(L"gTime", m_fTime);
 	m_vMesheList[1]->Get_Transform()->Add_LocalEulerAnglesY(m_fRotYSpeed * DELTA_TIME);
 
-	//m_vMesheList[1]->Get_Material()->Set_FloatValue(L"gTime", m_fTime);
+	m_vMesheList[1]->Get_Material()->Set_FloatValue(L"gTime", m_fTime);
 	m_vMesheList[2]->Get_Transform()->Add_LocalEulerAnglesY(-m_fRotYSpeed * 2.f * DELTA_TIME);
 
 	if (m_bShooting)

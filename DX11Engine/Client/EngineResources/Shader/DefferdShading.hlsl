@@ -18,7 +18,7 @@ cbuffer PerMaterial : register(b2)
     uint useTexture;
 };
 
-#define MAX_LIGHTS 64
+#define MAX_LIGHTS 128
 
 #define LIGHT_TYPE_DIRECTIONAL 0
 #define LIGHT_TYPE_POINT 1

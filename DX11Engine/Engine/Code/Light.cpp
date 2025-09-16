@@ -46,6 +46,7 @@ HRESULT CLight::Initialize()
 
 void CLight::Update()
 {
+	m_pGameObject->Get_Scene()->Add_Light(this);
 }
 
 void CLight::Render_Editor()

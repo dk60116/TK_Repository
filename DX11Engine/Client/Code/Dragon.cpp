@@ -203,7 +203,7 @@ void CDragon::PlayShootFireball(const _float _blending)
 
 void CDragon::ShootFireBall()
 {
-	m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
+	//m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 
 	++m_iShootFireCount;
 }

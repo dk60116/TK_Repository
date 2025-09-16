@@ -27,14 +27,15 @@ cbuffer PerBones : register(b3)
 
 cbuffer PerCustomValue : register(b10)
 {
-    float gSmoothness; 
+    float gSmoothness;
+    float gCalcLight;
     float2 gTiling; 
     float2 gOffset;
-    float2 cPadding;
+    float cPadding;
 }
 
 // 라이트 정의
-#define MAX_LIGHTS 64
+#define MAX_LIGHTS 128
 
 #define LIGHT_TYPE_DIRECTIONAL 0
 #define LIGHT_TYPE_POINT 1
@@ -152,7 +153,7 @@ VSOut VSMain(VSIn v)
 float4 PSMain(VSOut input) : SV_TARGET
 {
     float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
-    float4 texColor = useTexture ? gBasemap.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
+    float4 texColor = useTexture ? gBasemap.Sample(gSampler, tillingUV) * baseColor : baseColor;
     
     if (texColor.a < 0.01f)
         discard;
@@ -173,6 +174,9 @@ float4 PSMain(VSOut input) : SV_TARGET
         normalMap = normalize(normalMap * 2.0f - 1.0f);
         N = normalize(mul(normalMap, TBN));
     }
+    
+    if (gCalcLight == 0)
+        return texColor;
   
     float3 diffuseSum = float3(0, 0, 0);
     float3 ambientSum = float3(0, 0, 0);

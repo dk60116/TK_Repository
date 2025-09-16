@@ -457,6 +457,8 @@ void CScene::Render_Game()
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
 			(*it)->RenderUI();
 	}
+
+	m_lLightList.clear();
 }
 
 void CScene::SceneRelease()

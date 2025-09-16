@@ -40,6 +40,8 @@ struct VSIn
     float3 normalL : NORMAL;
     float2 uv : TEXCOORD0;
     float3 tangentL : TANGENT;
+    uint4 boneIndices : BLENDINDICES;
+    float4 boneWeights : BLENDWEIGHT;
     
     float4 instance_row0 : INSTANCE0;
     float4 instance_row1 : INSTANCE1;
@@ -68,7 +70,6 @@ VSOut VSMain(VSIn v)
         v.instance_row2,
         v.instance_row3
     );
-    
     worldMatrix = mul(worldMatrix, world);
 
     // Transform
@@ -95,7 +96,7 @@ float4 PSMain(VSOut input) : SV_TARGET
     float2 noiseVec = gNoiseTexture.Sample(gSampler, noiseUV).rg;
     noiseVec = noiseVec * 2.0f - 1.0f;
 
-    float2 distortedUV = input.uv; + noiseVec * gDistortionAmount * 0.2f;
+    float2 distortedUV = input.uv + noiseVec * gDistortionAmount * 0.2f;
 
     float4 texColor = useTexture ? gTexture.Sample(gSampler, distortedUV) : float4(1, 1, 1, 1);
 

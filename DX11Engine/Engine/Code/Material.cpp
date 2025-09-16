@@ -188,7 +188,7 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 	LightCB buffer = {};
 
 	// 데이터 복사
-	const _uint maxCount = min(_count, 64u);
+	const _uint maxCount = min(_count, 128u);
 	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
 
 	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
@@ -242,11 +242,11 @@ CTexture* CMaterial::Get_Texture(_int _index) const
 
 void CMaterial::Set_Texture(CTexture* _texture, _uint _index)
 {
-	if (_index < 0)
-		return;
-
 	while (m_vTextureList.size() <= _index)
 		m_vTextureList.push_back(nullptr);
+
+	if (m_vTextureList.size() < _index + 1)
+		m_vTextureList.resize(_index + 1);
 
 	Safe_Release(m_vTextureList[_index]);
 	m_vTextureList[_index] = _texture;
