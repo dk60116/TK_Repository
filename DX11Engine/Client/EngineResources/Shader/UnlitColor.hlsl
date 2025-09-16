@@ -34,6 +34,7 @@ cbuffer PerCustomValue : register(b10)
 
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);
+Texture2D gNormalmap : register(t1);
 SamplerState gSampler : register(s0);
 
 // 버텍스 입출력
@@ -134,6 +135,9 @@ float4 PSMain(VSOut input) : SV_TARGET
 {
     float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
     float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
+    
+    if (texColor.a < 0.01f)
+        discard;
     
     texColor *= baseColor;
 

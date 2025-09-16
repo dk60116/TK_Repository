@@ -291,7 +291,9 @@ void CCamera::RenderMesh()
 	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+		{
 			(*it)->Render_WithCamera(this);
+		}
 	}
 
 	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
@@ -312,7 +314,9 @@ void CCamera::RenderMesh()
 	for (auto* r : sorted) 
 	{
 		if (r->Get_GameObject()->IsRecursiveActive() && r->Get_Enabled())
+		{
 			r->Render_WithCamera(this);
+		}
 	}
 
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());

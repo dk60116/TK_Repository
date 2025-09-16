@@ -81,7 +81,7 @@ void CMap::AttachTextures()
 
         vector<wstring>& baseMapTexList = m_mTextureNameList[L"Base Map"];
 
-        for (size_t i = 0; i < count; i++)
+        for (size_t i = 0; i < count; ++i)
         {
             CTexture* tex = CResources::LoadOnScene<CTexture>(baseMapTexList[i] + L" (Texture)");
 
@@ -91,7 +91,7 @@ void CMap::AttachTextures()
     }
 
     {
-        for (size_t i = 0; i < count; i++)
+        for (size_t i = 0; i < count; ++i)
         {
             wstring objName = m_vRendererList[i]->Get_GameObject()->Get_ObjectName();
             m_mTextureNameList[L"Normal Map"][i] = m_strMapName + L"_Pice-" + objName + L"-NormalMap";

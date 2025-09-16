@@ -57,6 +57,10 @@ HRESULT CDungeon::Initialize()
     urn2->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
     firepit->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 
+    CMeshRenderer* coal = Get_Transform()->Find_ChildRecursive(L"firepit_coal")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    coal->Set_Material(CResources::CloneOnGame<CMaterial>(L"UnlitMaterial (Material)"));
+    coal->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(L"Dungeon_Pice-firepit_coal-BaseMap (Texture)"));
+
     SpawnPointLights();
     CreateMonsterPrototypes();
     CreateDungonObjectPrototypes();
@@ -233,7 +237,7 @@ void CDungeon::SpawnPointLights()
 {
     CScene* scene = m_pGameObject->Get_Scene();
 
-    for (_uint i = 0; i < 30; ++i)
+    for (_uint i = 0; i < 48; ++i)
     {
         CGameObject* newObj = scene->Add_GameObject(L"PointLight" + to_wstring(i));
         CLight* newPointLight = newObj->AddComponent<CLight>();
@@ -273,8 +277,26 @@ void CDungeon::SpawnPointLights()
     m_vLightList[25]->Get_Transform()->Set_Position(67.5, 2.5, -22.5f);
     m_vLightList[26]->Get_Transform()->Set_Position(77.65f, 5.f, -48.75f);
     m_vLightList[27]->Get_Transform()->Set_Position(63.75f, 4.7f, -33.8f);
-    m_vLightList[28]->Get_Transform()->Set_Position(70.f, 5., -56.2f);
-    m_vLightList[29]->Get_Transform()->Set_Position(57.35f, 5., -56.2f);
+    m_vLightList[28]->Get_Transform()->Set_Position(70.f, 5.f, -56.2f);
+    m_vLightList[29]->Get_Transform()->Set_Position(57.35f, 5.f, -56.2f);
+    m_vLightList[30]->Get_Transform()->Set_Position(56.2f, 5.3f, -77.2f);
+    m_vLightList[31]->Get_Transform()->Set_Position(56.2f, 5.3f, -87.75f);
+    m_vLightList[32]->Get_Transform()->Set_Position(60.f, 11.f, -107.65f);
+    m_vLightList[33]->Get_Transform()->Set_Position(52.35f, 8.77f, -101.25);
+    m_vLightList[34]->Get_Transform()->Set_Position(47.65f, 11.f, -101.25f);
+    m_vLightList[35]->Get_Transform()->Set_Position(47.65f, 12.f, -71.25f);
+    m_vLightList[36]->Get_Transform()->Set_Position(34.8f, 12.f, -71.25f);
+    m_vLightList[37]->Get_Transform()->Set_Position(47.65f, 5.f, -48.75f);
+    m_vLightList[38]->Get_Transform()->Set_Position(34.8f, 5.f, -48.75f);
+    m_vLightList[39]->Get_Transform()->Set_Position(41.25f, 4.55f, -33.7f);
+    m_vLightList[40]->Get_Transform()->Set_Position(55.2f, 5.f, -26.25f);
+    m_vLightList[41]->Get_Transform()->Set_Position(55.2f, 5.f, -18.75f);
+    m_vLightList[42]->Get_Transform()->Set_Position(27.35f, 5.f, -26.25f);
+    m_vLightList[43]->Get_Transform()->Set_Position(27.35f, 5.f, -18.75f);
+    m_vLightList[44]->Get_Transform()->Set_Position(25.2f, 5.f, -18.75f);
+    m_vLightList[45]->Get_Transform()->Set_Position(25.2f, 5.f, -26.25f);
+    m_vLightList[46]->Get_Transform()->Set_Position(12.3f, 8.65f, -33.75f);
+    m_vLightList[47]->Get_Transform()->Set_Position(11.3f, 4.45f, -48.7f);
 }
 
 void CDungeon::SpawnDungeonGates()
@@ -325,7 +347,7 @@ void CDungeon::SpawnDungeonGates()
 
 void CDungeon::SpawnDungeonFootSwitches()
 {
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_FootSwitchPlat"]->Get_GameObject());
         newObj->Set_ObjectName(L"FootSwitch (Clone) " + to_wstring(i));
@@ -354,7 +376,7 @@ void CDungeon::SpawnDungeonFootSwitches()
 
 void CDungeon::SpawnDungeonChest()
 {
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -384,7 +406,7 @@ void CDungeon::SpawnDungeonChest()
 
 void CDungeon::SpawnDungeonLadder()
 {
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Ladder"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Ladder (Clone) " + to_wstring(i));
@@ -405,7 +427,7 @@ void CDungeon::SpawnDungeonLadder()
 
 void CDungeon::SpawnMovingPlat()
 {
-    for (size_t i = 0; i < 2; i++)
+    for (size_t i = 0; i < 2; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"MovingPlat"]->Get_GameObject());
         newObj->Set_ObjectName(L"Moving Plat (Clone) " + to_wstring(i));

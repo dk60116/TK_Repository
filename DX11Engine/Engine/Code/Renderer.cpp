@@ -100,16 +100,4 @@ void CRenderer::Bind_InstanceData(_fmatrix matWorld, CMeshBuffer* pBuffer)
 
 void CRenderer::ResetShaderResources()
 {
-	vector<ID3D11ShaderResourceView*> nulls(5, nullptr);
-	m_pContext->PSSetShaderResources(0, 5, nulls.data());
-
-	array<ID3D11ShaderResourceView*, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT> nullSRVs{};
-	m_pContext->VSSetShaderResources(0, 5, nullSRVs.data());
-	m_pContext->PSSetShaderResources(0, 5, nullSRVs.data());
-	m_pContext->GSSetShaderResources(0, 5, nullSRVs.data());
-
-	array<ID3D11SamplerState*, D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT> nullSamplers{};
-	m_pContext->VSSetSamplers(0, 5, nullSamplers.data());
-	m_pContext->PSSetSamplers(0, 5, nullSamplers.data());
-	m_pContext->GSSetSamplers(0, 5, nullSamplers.data());
 }

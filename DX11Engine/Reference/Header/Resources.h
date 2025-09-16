@@ -69,6 +69,9 @@ public:
     template<typename T>
     static T* LoadOnScene(const wstring& _name);
 
+    template<typename T>
+    static T* CloneOnScene(const wstring& _name);
+
     static vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
     static vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
     static vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> LoadSkinnedBonesOnScene(const wstring& _name);
@@ -191,4 +194,23 @@ inline T* CResources::LoadOnScene(const wstring& _name)
     }
 
     return resultResource;
+}
+
+template<typename T>
+inline T* CResources::CloneOnScene(const wstring& _name)
+{
+    T* proto = LoadOnScene<T>(_name);
+
+    if (!proto)
+    {
+        CDebug::LogError(L"Failed clone Scene resource - not found resource: " + _name);
+        return nullptr;
+    }
+
+    T* clone = T::Clone(*proto);
+
+    if (CSceneManager::Get_CrtScene())
+        CSceneManager::Get_CrtScene()->Add_CloneResourece(clone);
+
+    return clone;
 }

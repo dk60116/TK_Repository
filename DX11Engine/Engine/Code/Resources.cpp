@@ -1752,7 +1752,7 @@ void CResources::Ready_GameResources()
 	CFont* defaultFont = CreateGameResource<CFont>(L"Sans (Font)", L"", &dfPath);
 	LoadResourceComplete_Game(defaultFont);
 
-	CShader::SHADERDESC meshEffectShaderDesc = { L"../EngineResources/Shader/MeshEffect.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	CShader::SHADERDESC meshEffectShaderDesc = { L"../EngineResources/Shader/MeshEffect.hlsl", L"", VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"MeshEffect (Shader)", L"", &meshEffectShaderDesc));
 
 	CShader* meShader = LoadOnGame<CShader>(L"MeshEffect (Shader)");

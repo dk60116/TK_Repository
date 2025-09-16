@@ -10,10 +10,12 @@ class ENGINE_DLL CTexture : public CEngineResource
 
 private:
 	explicit CTexture();
+	CTexture(const CTexture& _other);
 	~CTexture();
 
 private:
 	static CTexture* Create();
+	static CTexture* Clone(const CTexture& _other);
 	HRESULT Initialize(const wstring& _name, const wstring& _filePath, void* _desc) override;
 	void OnDestroy() override;
 

@@ -9,6 +9,13 @@ CTexture::CTexture()
 	m_strName = L"Texture";
 }
 
+CTexture::CTexture(const CTexture& _other)
+	: m_pTexture(_other.m_pTexture)
+	, m_pSRV(_other.m_pSRV)
+	, m_sTextureDesc(_other.m_sTextureDesc)
+{
+}
+
 CTexture::~CTexture()
 {
 	OnDestroy();
@@ -17,6 +24,13 @@ CTexture::~CTexture()
 CTexture* CTexture::Create()
 {
 	return new CTexture();
+}
+
+CTexture* CTexture::Clone(const CTexture& _other)
+{
+	CTexture* clone = new CTexture(_other);
+
+	return clone;
 }
 
 void CTexture::OnDestroy()
