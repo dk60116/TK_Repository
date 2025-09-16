@@ -188,7 +188,7 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 	LightCB buffer = {};
 
 	// 데이터 복사
-	const _uint maxCount = min(_count, 128u);
+	const _uint maxCount = min(_count, MAX_LIGHT);
 	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
 
 	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);

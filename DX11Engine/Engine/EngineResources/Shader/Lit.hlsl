@@ -35,7 +35,7 @@ cbuffer PerCustomValue : register(b10)
 }
 
 // 라이트 정의
-#define MAX_LIGHTS 128
+#define MAX_LIGHTS 256
 
 #define LIGHT_TYPE_DIRECTIONAL 0
 #define LIGHT_TYPE_POINT 1

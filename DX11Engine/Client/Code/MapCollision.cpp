@@ -165,7 +165,7 @@ void CMapCollision::LoadColliders(const vector<CollidersInfo>& _info)
 	for (_uint i = 0; i < _info.size(); ++i)
 	{
 		auto col = SpawnDataCollider(_info[i]);
-		//col->Get_GameObject()->Set_Static(CGameObject::TransformStatic);
+		col->Get_GameObject()->Set_Static(CGameObject::TransformStatic);
 	}
 }
 

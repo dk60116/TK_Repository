@@ -180,8 +180,6 @@ void CDungeonChapter::AttachColliders()
 
 void CDungeonChapter::HideColliders()
 {
-	//return;
-
 	for (TRAVERSAL_ITER(m_vMapColList, it))
 		(*it)->SetEnabled(false);
 }

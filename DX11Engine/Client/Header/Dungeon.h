@@ -44,6 +44,8 @@ private:
 	template <typename T>
 	CDungeonObject* CreateDungonObjectPrototype();
 
+	void CullingLights();
+
 private:
 	map<wstring, CMonster*> m_mMonsterProtoList;
 	map<wstring, CDungeonObject*> m_mDungonObjProtoList;

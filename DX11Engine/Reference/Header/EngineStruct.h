@@ -1529,7 +1529,7 @@ namespace Engine
 
     struct LightCB
     {
-        _matrix lights[128];
+        _matrix lights[MAX_LIGHT];
     };
 
     struct ImageCB

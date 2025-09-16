@@ -51,6 +51,8 @@
         (HTREEITEM)SendMessage((hwnd), TVM_GETHOTITEM, 0, 0)
 #endif
 
+#define MAX_LIGHT 256u
+
 #pragma warning(disable : 4251)
 
 using namespace std;

@@ -93,6 +93,8 @@ void CDungeon::Update()
 {
     __super::Update();
 
+    CullingLights();
+
     if (m_pGameObject->Get_Scene()->Get_PassedTime() > 0.1f)
     {
         for (TRAVERSAL_ITER(m_vChapterList, it))
@@ -236,7 +238,7 @@ void CDungeon::SpawnPointLights()
 {
     CScene* scene = m_pGameObject->Get_Scene();
 
-    for (_uint i = 0; i < 66; ++i)
+    for (_uint i = 0; i < 134; ++i)
     {
         CGameObject* newObj = scene->Add_GameObject(L"PointLight" + to_wstring(i));
         CLight* newPointLight = newObj->AddComponent<CLight>();
@@ -314,7 +316,80 @@ void CDungeon::SpawnPointLights()
     m_vLightList[63]->Get_Transform()->Set_Position(3.75f, 13.55f, -71.25);
     m_vLightList[64]->Get_Transform()->Set_Position(-3.75f, 13.55f, -71.25);
     m_vLightList[65]->Get_Transform()->Set_Position(-3.75f, 13.55f, -71.25);
+    m_vLightList[66]->Get_Transform()->Set_Position(0.f, 9.58f, -67.5f);
+    m_vLightList[66]->Set_Color(ColorValue(0, 0, 200));
+    m_vLightList[67]->Get_Transform()->Set_Position(22.5f, 4.f, -75.f);
+    m_vLightList[68]->Get_Transform()->Set_Position(-22.5f, 4.f, -75.f);
+    m_vLightList[69]->Get_Transform()->Set_Position(3.8f, 7.7f, -86.25f);
+    m_vLightList[70]->Get_Transform()->Set_Position(-3.8f, 7.7f, -86.25f);
+    m_vLightList[71]->Get_Transform()->Set_Position(3.8f, 7.7f, -93.7f);
+    m_vLightList[72]->Get_Transform()->Set_Position(-3.8f, 7.7f, -93.7f);
+    m_vLightList[73]->Get_Transform()->Set_Position(-32.65f, 11.f, -93.75f);
+    m_vLightList[74]->Get_Transform()->Set_Position(-32.65f, 11.f, -93.75f);
+    m_vLightList[75]->Get_Transform()->Set_Position(-32.65f, 11.f, -103.7f);
+    m_vLightList[75]->Set_Color(ColorValue::white());
+    m_vLightList[76]->Get_Transform()->Set_Position(-116.4f, -1.f, -132.35f);
+    m_vLightList[77]->Get_Transform()->Set_Position(-117.35f, -1.f, -131.2f);
+    m_vLightList[78]->Get_Transform()->Set_Position(-116.f, -1.f, -130.f);
+    m_vLightList[79]->Get_Transform()->Set_Position(-108.7f, -1.35f, -123.73f);
+    m_vLightList[80]->Get_Transform()->Set_Position(-108.7f, -1.35f, -108.7f);
+    m_vLightList[81]->Get_Transform()->Set_Position(-93.74f, -1.05f, -107.65f);
+    m_vLightList[82]->Get_Transform()->Set_Position(-108.76f, -1.05f, -108.76f);
+    m_vLightList[83]->Get_Transform()->Set_Position(-70.2f, -4.f, -131.2f);
+    m_vLightList[84]->Get_Transform()->Set_Position(-70.2f, -4.f, -131.2f);
+    m_vLightList[85]->Get_Transform()->Set_Position(-63.1f, -4.24f, -130.7f);
+    m_vLightList[86]->Get_Transform()->Set_Position(-56.28f, -4.24f, -130.7f);
+    m_vLightList[87]->Get_Transform()->Set_Position(-49.85f, -4.24f, -131.24f);
+    m_vLightList[88]->Get_Transform()->Set_Position(-49.85f, -4.24f, -123.75f);
+    m_vLightList[89]->Get_Transform()->Set_Position(-55.15f, -4.f, -86.23f);
+    m_vLightList[90]->Get_Transform()->Set_Position(-57.35f, -4.f, -86.23f);
+    m_vLightList[91]->Get_Transform()->Set_Position(-55.15f, -4.f, -75.f);
+    m_vLightList[92]->Get_Transform()->Set_Position(-55.15f, -4.f, -63.73f);
+    m_vLightList[93]->Get_Transform()->Set_Position(-81.23f, -5.f, -75.f);
+    m_vLightList[94]->Get_Transform()->Set_Position(-100.f, -4.f, -63.78f);
+    m_vLightList[95]->Get_Transform()->Set_Position(-101.33f, -4.f, -62.64f);
+    m_vLightList[96]->Get_Transform()->Set_Position(-101.33f, -4.f, -63.78f);
+    m_vLightList[97]->Get_Transform()->Set_Position(-101.33f, -4.f, -64.85f);
+    m_vLightList[98]->Get_Transform()->Set_Position(-122.68f, -4.f, -63.78f);
+    m_vLightList[99]->Get_Transform()->Set_Position(-124.87f, -4.f, -64.85f);
+    m_vLightList[99]->Get_Transform()->Set_Position(-124.87f, -4.f, -63.78f);
+    m_vLightList[100]->Get_Transform()->Set_Position(-123.68f, -4.f, -62.64f);
+    m_vLightList[101]->Get_Transform()->Set_Position(-123.68f, -4.f, -64.85f);
+    m_vLightList[102]->Get_Transform()->Set_Position(-117.74f, -6.58f, -71.21f);
+    m_vLightList[103]->Get_Transform()->Set_Position(-107.22f, -6.58f, -71.21f);
+    m_vLightList[104]->Get_Transform()->Set_Position(-124.84f, -1.f, -86.2f);
+    m_vLightList[105]->Get_Transform()->Set_Position(-122.62f, -1.f, -86.28f);
+    m_vLightList[106]->Get_Transform()->Set_Position(-102.35f, -1.f, -86.28f);
+    m_vLightList[107]->Get_Transform()->Set_Position(-100.1f, -1.f, -86.2f);
+    m_vLightList[108]->Get_Transform()->Set_Position(-123.8f, -1.f, -87.35f);
+    m_vLightList[109]->Get_Transform()->Set_Position(-123.7f, -1.f, -85.15f);
+    m_vLightList[110]->Get_Transform()->Set_Position(-123.7f, -1.f, -87.35f);
+    m_vLightList[111]->Get_Transform()->Set_Position(-101.2f, -1.f, -87.4f);
+    m_vLightList[112]->Get_Transform()->Set_Position(-101.28f, -1.f, -85.15f);
+    m_vLightList[113]->Get_Transform()->Set_Position(-55.15f, 1.9f, -48.76f);
+    m_vLightList[114]->Get_Transform()->Set_Position(-57.36f, 1.9f, -48.76f);
+    m_vLightList[115]->Get_Transform()->Set_Position(-27.34f, 4.9f, -26.25f);
+    m_vLightList[116]->Get_Transform()->Set_Position(-27.34f, 4.9f, -18.75f);
+    m_vLightList[117]->Get_Transform()->Set_Position(-48.74f, 4.9f, -32.65f);
+    m_vLightList[118]->Get_Transform()->Set_Position(-63.73f, 4.9f, -32.65f);
+    m_vLightList[119]->Get_Transform()->Set_Position(-75.f, -2.f, -30.f);
+    m_vLightList[120]->Get_Transform()->Set_Position(-75.f, -2.f, -15.f);
+    m_vLightList[121]->Get_Transform()->Set_Position(-42.34f, 4.9f, -11.26f);
+    m_vLightList[122]->Get_Transform()->Set_Position(-92.65f, 5.7f, -11.26f);
+    m_vLightList[123]->Get_Transform()->Set_Position(-100.18f, 1.9f, -18.75);
+    m_vLightList[124]->Get_Transform()->Set_Position(-100.18f, 1.9f, -26.26f);
+    m_vLightList[125]->Get_Transform()->Set_Position(-109.88f, 1.9f, -26.26f);
+    m_vLightList[126]->Get_Transform()->Set_Position(-109.88f, 1.9f, -11.22f);
+    m_vLightList[127]->Get_Transform()->Set_Position(-116.3f, 1.5f, -18.75);
+    m_vLightList[128]->Get_Transform()->Set_Position(-122.64f, 1.9f, -11.22f);
+    m_vLightList[129]->Get_Transform()->Set_Position(-122.64f, 1.9f, -26.28f);
+    m_vLightList[130]->Get_Transform()->Set_Position(-56.2f, -4.f, -100.18f);
+    m_vLightList[131]->Get_Transform()->Set_Position(-93.7f, -0.83f, -137.62f);
+    m_vLightList[132]->Get_Transform()->Set_Position(-93.76f, -0.83f, -139.84f);
+    m_vLightList[133]->Get_Transform()->Set_Position(-94.86f, -0.83f, -138.7f);
 
+    for (TRAVERSAL_ITER(m_vLightList, it))
+        (*it)->Get_GameObject()->Set_Static(CGameObject::TransformStatic);      
 }
 
 void CDungeon::SpawnDungeonGates()
@@ -464,4 +539,20 @@ void CDungeon::SpawnMovingPlat()
         m_vMovingPlatList[1]->AddRout(vector3(54.f, 3.5f, -90.8f));
         m_vMovingPlatList[1]->AddRout(vector3(54.f, 12.f, -90.8f));
     }
+}
+
+void CDungeon::CullingLights()
+{
+    vector3 camPos = CGameManager::GetInstance().Get_PlayerCamera()->Get_Transform()->Get_Position();
+
+    sort(m_vLightList.begin(), m_vLightList.end(),
+        [&camPos](const auto& a, const auto& b)
+        {
+            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), camPos);
+            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), camPos);
+            return distA < distB;
+        });
+
+    for (_uint i = 0; i < m_vLightList.size(); ++i)
+        m_vLightList[i]->SetEnabled(i < 40);
 }
