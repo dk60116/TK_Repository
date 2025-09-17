@@ -79,13 +79,13 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		{
 			m_mFloatValues.emplace(key, value);
 			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-			m_vCustomBufferByteList.push_back(value);
+			m_vCustomBufferByteList.push_back(*p);
 		}
 		for (const auto& [key, value] : matDesc->customIntValues)
 		{
 			m_mIntValues.emplace(key, value);
 			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-			m_vCustomBufferByteList.push_back(value);
+			m_vCustomBufferByteList.push_back(*p);
 		}
 		for (const auto& [key, value] : matDesc->customVector2Values)
 		{

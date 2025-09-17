@@ -11,6 +11,8 @@ public:
 		_uint handPower = 2;
 
 		_float flyingTurnSpeed = 5.f;
+		_float riseSpeed = 1.5f;
+		_float glideSpeed = 15.f;
 		_float fireballInterval = 4.f;
 	};
 
@@ -52,6 +54,7 @@ public:
 	void PlayGetHit(const _float _blending = 0.2f);
 	void PlayGlide(const _float _blending = 0.2f);
 	void PlayShootFireball(const _float _blending = 0.2f);
+	void PlaySpreadFire(const _float _blending = 0.2f);
 
 	void ShootFireBall();
 	const _uint Get_ShootFireBallCount() const;

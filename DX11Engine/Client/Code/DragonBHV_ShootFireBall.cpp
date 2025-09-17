@@ -49,10 +49,15 @@ void CDragonBHV_ShootFireBall::During()
 
 	if (m_fPassedTime >= dragon->Get_Status().flyingTurnSpeed && !m_bShooted)
 	{
-		dragon->PlayShootFireball();
+		if (dragon->Get_ShootFireCount() < 4)
+		{
+			dragon->PlayShootFireball();
 
-		m_bShooted = true;
-		m_fPassedTime = 0.f;
+			m_bShooted = true;
+			m_fPassedTime = 0.f;
+		}
+		else
+			dragon->Get_Controller()->ChangeState(CBossController_Dragon::RotateFly);
 	}
 
 	if (m_bShooted)

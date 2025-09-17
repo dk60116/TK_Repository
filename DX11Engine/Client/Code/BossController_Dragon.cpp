@@ -4,7 +4,9 @@
 #include "DragonBHV_Wakeup.h"
 #include "DragonBHV_Landing.h"
 #include "DragonBHV_GetHit.h"
+#include "DragonBHV_RotationFly.h"
 #include "DragonBHV_ShootFireBall.h"
+#include "DragonBHV_SpreadFire.h"
 
 CBossController_Dragon::CBossController_Dragon()
 {
@@ -42,7 +44,9 @@ void CBossController_Dragon::Awake()
 	AddBehaviour<CDragonBHV_Wakeup>((_uint)Wakeup);
 	AddBehaviour<CDragonBHV_Landing>((_uint)Landing);
 	AddBehaviour<CDragonBHV_GetHit>((_uint)GetHit);
+	AddBehaviour<CDragonBHV_RotationFly>((_uint)RotateFly);
 	AddBehaviour<CDragonBHV_ShootFireBall>((_uint)ShootFireBall);
+	AddBehaviour<CDragonBHV_SpreadFire>((_uint)SpreadFire);
 
 	ChangeState((_uint)Idle, nullptr, true);
 }

@@ -66,7 +66,7 @@ void CDragonBHV_Landing::During()
 			monsterTF->Set_Quaternion(quaternion::Slerp(monsterTF->Get_Quaternion(), rotQ, DELTA_TIME * dragon->Get_Status().flyingTurnSpeed));
 
 			if (monsterPos.y <= m_vTargetPos.y)
-				monsterTF->Add_PositionY(DELTA_TIME);
+				monsterTF->Add_PositionY(dragon->Get_Status().riseSpeed * DELTA_TIME);
 			else
 			{
 				dragon->PlayFly();
@@ -80,7 +80,7 @@ void CDragonBHV_Landing::During()
 			if (vector3::Distance(monsterPos, m_vTargetPos) >= 0.05f)
 				monsterTF->Add_Position(normal * 10.f * DELTA_TIME);
 			else
-				dragon->Get_Controller()->ChangeState(3);
+				dragon->Get_Controller()->ChangeState(CBossController_Dragon::ShootFireBall);
 		}
 	}
 }

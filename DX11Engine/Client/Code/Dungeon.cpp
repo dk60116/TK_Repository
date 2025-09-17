@@ -558,7 +558,7 @@ void CDungeon::SpawnMovingPlat()
 
 void CDungeon::CullingLights()
 {
-    vector3 camPos = CGameManager::GetInstance().Get_PlayerCamera()->Get_Transform()->Get_Position();
+    vector3 camPos = CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position();
 
     sort(m_vLightList.begin(), m_vLightList.end(),
         [&camPos](const auto& a, const auto& b)
@@ -568,12 +568,10 @@ void CDungeon::CullingLights()
             return distA < distB;
         });
 
-    _uint count = 0;
+    _uint count = 30;
 
 #ifdef _DEBUG
     count = 15;
-#elif
-    count = 40;
 #endif
 
     for (_uint i = 0; i < m_vLightList.size(); ++i)

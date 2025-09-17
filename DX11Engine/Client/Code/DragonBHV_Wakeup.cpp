@@ -49,7 +49,7 @@ void CDragonBHV_Wakeup::During()
 		{
 			dragon->SetFlying(true);
 			CDragon::LandingDesc ld = { true, vector3(0.f, 10.f, -35.f)};
-			dragon->Get_Controller()->ChangeState(2, &ld);
+			dragon->Get_Controller()->ChangeState(CBossController_Dragon::Landing, &ld);
 			m_bCompleteTakeFly = true;
 		}
 	}

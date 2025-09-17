@@ -57,6 +57,7 @@ HRESULT CDragon::Initialize()
 		auto shootFireBall_fly = Add_Animation(L"ShootFireBall_Fly");
 		auto getHit_fly = Add_Animation(L"GetHit_Fly");
 		auto glide = Add_Animation(L"Glide");
+		auto spreadFire_fly = Add_Animation(L"SpreadFire_Fly");
 	}
 
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
@@ -211,14 +212,28 @@ void CDragon::PlayShootFireball(const _float _blending)
 	m_pAnimator->Play(L"ShootFireBall_Fly", _blending);
 }
 
+void CDragon::PlaySpreadFire(const _float _blending)
+{
+	if (!m_pAnimator)
+		return;
+
+	m_pAnimator->SetLoop(false);
+
+	if (!m_bFlying)
+	{
+
+	}
+	else
+	{
+		m_pAnimator->Play(L"SpreadFire_Fly", _blending);
+	}
+}
+
 void CDragon::ShootFireBall()
 {
 	m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 
 	++m_iShootFireCount;
-
-	if (m_iShootFireCount == 4)
-		m_iShootFireCount = 0;
 }
 
 const _uint CDragon::Get_ShootFireBallCount() const
