@@ -141,7 +141,7 @@ void CPlayer::Start()
 
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 
-	//m_pRigidBody->SetUseGravity(true);
+	m_pRigidBody->SetUseGravity(true);
 }
 
 void CPlayer::Update()

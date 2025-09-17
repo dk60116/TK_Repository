@@ -31,7 +31,7 @@ private:
 	
 	void CreateDragon();
 
-	void SpawnPointLights();
+	void CreatePointLights();
 	void SpawnDungeonGates();
 	void SpawnDungeonFootSwitches();
 	void SpawnDungeonChest();

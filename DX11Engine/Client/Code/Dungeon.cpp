@@ -60,7 +60,7 @@ HRESULT CDungeon::Initialize()
     CMeshRenderer* coal = Get_Transform()->Find_ChildRecursive(L"firepit_coal")->Get_GameObject()->GetComponent<CMeshRenderer>();
     coal->Get_Material()->Set_FloatValue(L"gCalcLight", 0.f);
 
-    SpawnPointLights();
+    CreatePointLights();
     CreateMonsterPrototypes();
     CreateDungonObjectPrototypes();
     CreateDungeonChapters();
@@ -234,7 +234,7 @@ void CDungeon::CreateDragon()
     m_pDragon = dragonObj->AddComponent<CDragon>();
 }
 
-void CDungeon::SpawnPointLights()
+void CDungeon::CreatePointLights()
 {
     CScene* scene = m_pGameObject->Get_Scene();
 
@@ -394,6 +394,9 @@ void CDungeon::SpawnPointLights()
 
 void CDungeon::SpawnDungeonGates()
 {
+    if (!m_mDungonObjProtoList[L"Dungeon_Gate"])
+        return;
+
     for (_uint i = 0; i < 19; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
@@ -440,6 +443,9 @@ void CDungeon::SpawnDungeonGates()
 
 void CDungeon::SpawnDungeonFootSwitches()
 {
+    if (!m_mDungonObjProtoList[L"Dungeon_FootSwitchPlat"])
+        return;
+
     for (size_t i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_FootSwitchPlat"]->Get_GameObject());
@@ -469,6 +475,9 @@ void CDungeon::SpawnDungeonFootSwitches()
 
 void CDungeon::SpawnDungeonChest()
 {
+    if (!m_mDungonObjProtoList[L"Dungeon_Chest"])
+        return;
+
     for (size_t i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
@@ -499,6 +508,9 @@ void CDungeon::SpawnDungeonChest()
 
 void CDungeon::SpawnDungeonLadder()
 {
+    if (!m_mDungonObjProtoList[L"Ladder"])
+        return;
+
     for (size_t i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Ladder"]->Get_GameObject());
@@ -520,6 +532,9 @@ void CDungeon::SpawnDungeonLadder()
 
 void CDungeon::SpawnMovingPlat()
 {
+    if (!m_mDungonObjProtoList[L"MovingPlat"])
+        return;
+
     for (size_t i = 0; i < 2; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"MovingPlat"]->Get_GameObject());
