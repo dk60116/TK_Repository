@@ -553,6 +553,14 @@ void CDungeon::CullingLights()
             return distA < distB;
         });
 
+    _uint count = 0;
+
+#ifdef _DEBUG
+    count = 15;
+#elif
+    count = 40;
+#endif
+
     for (_uint i = 0; i < m_vLightList.size(); ++i)
-        m_vLightList[i]->SetEnabled(i < 40);
+        m_vLightList[i]->SetEnabled(i < count);
 }

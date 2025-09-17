@@ -50,6 +50,7 @@ public:
 	void PlayGroundToFly(const _float _blending = 0.2f);
 	void PlayFly(const _float _blending = 0.2f);
 	void PlayGetHit(const _float _blending = 0.2f);
+	void PlayGlide(const _float _blending = 0.2f);
 	void PlayShootFireball(const _float _blending = 0.2f);
 
 	void ShootFireBall();
@@ -57,6 +58,8 @@ public:
 
 	const _bool GetFlying() const;
 	void SetFlying(const _bool _fly);
+
+	const _uint Get_ShootFireCount() const;
 
 private:
 	DragonStatus m_sStatus;

@@ -191,6 +191,16 @@ void CDragon::PlayGetHit(const _float _blending)
 	}
 }
 
+void CDragon::PlayGlide(const _float _blending)
+{
+	if (!m_pAnimator)
+		return;
+
+	m_pAnimator->SetLoop(true);
+
+	m_pAnimator->Play(L"Glide", _blending);
+}
+
 void CDragon::PlayShootFireball(const _float _blending)
 {
 	if (!m_pAnimator)
@@ -206,6 +216,9 @@ void CDragon::ShootFireBall()
 	m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 
 	++m_iShootFireCount;
+
+	if (m_iShootFireCount == 4)
+		m_iShootFireCount = 0;
 }
 
 const _uint CDragon::Get_ShootFireBallCount() const
@@ -221,4 +234,9 @@ const _bool CDragon::GetFlying() const
 void CDragon::SetFlying(const _bool _fly)
 {
 	m_bFlying = true;
+}
+
+const _uint CDragon::Get_ShootFireCount() const
+{
+	return m_iShootFireCount;
 }

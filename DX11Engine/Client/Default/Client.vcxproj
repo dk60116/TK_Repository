@@ -158,6 +158,7 @@
     <ClInclude Include="..\Header\DragonBHV_GetHit.h" />
     <ClInclude Include="..\Header\DragonBHV_Idle.h" />
     <ClInclude Include="..\Header\DragonBHV_Landing.h" />
+    <ClInclude Include="..\Header\DragonBHV_RotationFly.h" />
     <ClInclude Include="..\Header\DragonBHV_Wakeup.h" />
     <ClInclude Include="..\Header\DragonBHV_ShootFireBall.h" />
     <ClInclude Include="..\Header\DungeonChapter.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="..\Code\DragonBHV_GetHit.cpp" />
     <ClCompile Include="..\Code\DragonBHV_Idle.cpp" />
     <ClCompile Include="..\Code\DragonBHV_Landing.cpp" />
+    <ClCompile Include="..\Code\DragonBHV_RotationFly.cpp" />
     <ClCompile Include="..\Code\DragonBHV_Wakeup.cpp" />
     <ClCompile Include="..\Code\Dungeon.cpp" />
     <ClCompile Include="..\Code\DragonBHV_ShootFireBall.cpp" />
