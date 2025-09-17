@@ -34,8 +34,11 @@ CComponent* CPlayerHUD::Clone() const
 	return new CPlayerHUD();
 }
 
-HRESULT CPlayerHUD::Initialize()
+HRESULT CPlayerHUD::Initialize(void* _desc)
 {
+	if (FAILED(__super::Initialize(_desc)))
+		return E_FAIL;
+
 	m_pCanvas = m_pGameObject->AddComponent<CCanvas>();
 
 	SpawnHeartBowl();

@@ -37,9 +37,9 @@ CComponent* CRigidBody::Clone() const
     return clone;
 }
 
-HRESULT CRigidBody::Initialize()
+HRESULT CRigidBody::Initialize(void* _desc)
 {
-    if (FAILED(__super::Initialize()))
+    if (FAILED(__super::Initialize(_desc)))
         return E_FAIL;
 
     if (CCollider* col = m_pGameObject->GetComponent<CCollider>())

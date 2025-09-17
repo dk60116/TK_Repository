@@ -31,7 +31,7 @@ public:
 	CComponent* Clone() const override;
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 
 	void Awake() override;
 	void Start() override;

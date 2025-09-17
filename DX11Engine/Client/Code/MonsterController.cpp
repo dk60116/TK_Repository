@@ -38,8 +38,11 @@ CComponent* CMonsterController::Clone() const
 	return clone;
 }
 
-HRESULT CMonsterController::Initialize()
+HRESULT CMonsterController::Initialize(void* _desc)
 {
+	if (FAILED(__super::Initialize(_desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

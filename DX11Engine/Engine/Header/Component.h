@@ -16,7 +16,7 @@ protected:
 	virtual CComponent* Clone() const PURE;
 
 public:
-	virtual HRESULT Initialize();
+	virtual HRESULT Initialize(void* _desc = nullptr);
 	void ComponentRelease();
 
 	virtual void Awake();

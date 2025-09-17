@@ -31,9 +31,9 @@ CComponent* CUI::Clone() const
 	return clone;
 }
 
-HRESULT CUI::Initialize()
+HRESULT CUI::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 #ifndef _CLIENT_BUILD

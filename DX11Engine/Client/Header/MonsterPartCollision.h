@@ -14,7 +14,7 @@ public:
 	CMonsterPartCollision* Clone() const override;
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 	void Awake() override;
 	void OnTriggerEnter(CCollider* _other) override;
 	void OnTriggerExit(CCollider* _other) override;

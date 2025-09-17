@@ -34,8 +34,11 @@ CComponent* CPlayerController::Clone() const
 	return new CPlayerController();
 }
 
-HRESULT CPlayerController::Initialize()
+HRESULT CPlayerController::Initialize(void* _desc)
 {
+	if (FAILED(__super::Initialize(_desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

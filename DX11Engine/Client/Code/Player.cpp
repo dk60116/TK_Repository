@@ -45,9 +45,9 @@ CComponent* CPlayer::Clone() const
 	return clone;
 }
 
-HRESULT CPlayer::Initialize()
+HRESULT CPlayer::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"Player");

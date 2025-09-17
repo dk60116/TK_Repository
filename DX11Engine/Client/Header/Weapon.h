@@ -24,7 +24,7 @@ protected:
 	~CWeapon();
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 	void Awake() override;
 	void Start() override;
 

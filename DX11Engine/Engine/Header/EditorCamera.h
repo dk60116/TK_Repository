@@ -23,7 +23,7 @@ public:
 	~CEditorCamera();
 
 public:
-    HRESULT Initialize() override;
+    HRESULT Initialize(void* _desc) override;
 	void Update_Editor() override;
 	void Update() override;
     void OnDestroy() override;

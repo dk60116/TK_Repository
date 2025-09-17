@@ -27,9 +27,9 @@ CComponent* CInventory::Clone() const
 	return clone;
 }
 
-HRESULT CInventory::Initialize()
+HRESULT CInventory::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		E_FAIL;
 
 	Add_ItemSlot<CItem_DungeonKey>();

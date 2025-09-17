@@ -21,7 +21,7 @@ CComponent* CGoblin::Clone() const
 	return clone;
 }
 
-HRESULT CGoblin::Initialize()
+HRESULT CGoblin::Initialize(void* _desc)
 {
 	m_strMonsterName = L"Goblin";
 	m_sOptions.scaleFactor = 0.015f;
@@ -35,7 +35,7 @@ HRESULT CGoblin::Initialize()
 	m_sStatus.maxHp = 5;
 	m_sStatus.attackRange = 3.f;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pHeadTF = Get_Transform()->Find_ChildRecursive(L"GOBLIN_ Head");

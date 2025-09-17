@@ -27,7 +27,7 @@ CComponent* CMovingPlat::Clone() const
 	return clone;
 }
 
-HRESULT CMovingPlat::Initialize()
+HRESULT CMovingPlat::Initialize(void* _desc)
 {
 	m_strObjName = L"MovingPlat";
 
@@ -36,7 +36,7 @@ HRESULT CMovingPlat::Initialize()
 	m_sDescription.colliderCenter = vector3::up();
 	m_sDescription.colliderSize = vector3(2.f, 2.f, 2.f);
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

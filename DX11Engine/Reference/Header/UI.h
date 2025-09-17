@@ -15,7 +15,7 @@ protected:
 	~CUI();
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 	void OnDestroy();
 
 private:

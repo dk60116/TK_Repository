@@ -18,7 +18,7 @@ private:
 	CComponent* Clone() const override;
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 	void OnPreCull() override;
 	void OnPreRender() override;
 	void Render_Editor() override;

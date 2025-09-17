@@ -25,7 +25,7 @@ CComponent* CLadder::Clone() const
     return clone;
 }
 
-HRESULT CLadder::Initialize()
+HRESULT CLadder::Initialize(void* _desc)
 {
     m_strObjName = L"Ladder";
 
@@ -33,7 +33,7 @@ HRESULT CLadder::Initialize()
     m_sDescription.isTrigger = true;
     m_sDescription.colliderSize = vector3(0.8f, 1.f, 0.75f);
 
-    if (FAILED(__super::Initialize()))
+    if (FAILED(__super::Initialize(_desc)))
         return S_OK;
 
     return S_OK;

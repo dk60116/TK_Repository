@@ -52,9 +52,9 @@ CComponent* CTransform::Clone() const
     return clone;
 }
 
-HRESULT CTransform::Initialize()
+HRESULT CTransform::Initialize(void* _desc)
 {
-    if (FAILED(__super::Initialize()))
+    if (FAILED(__super::Initialize(_desc)))
         return E_FAIL;
 
     Bind_Matrix();

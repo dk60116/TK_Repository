@@ -21,16 +21,13 @@ CComponent* CDefaultArrow::Clone() const
 	return clone;
 }
 
-HRESULT CDefaultArrow::Initialize()
+HRESULT CDefaultArrow::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
-		return E_FAIL;
-
 	m_sStat.type = CGameManager::WeaponType::Arrow;
 	m_strWeaponName = L"DefaultArrow";
 	m_eHandType = CPlayer::HandType::Right;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_sOptions.localPos = vector3(1.345f, 0.43f, -0.427f);

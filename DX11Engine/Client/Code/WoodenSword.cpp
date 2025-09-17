@@ -21,12 +21,12 @@ CComponent* CWoodenSword::Clone() const
 	return clone;
 }
 
-HRESULT CWoodenSword::Initialize()
+HRESULT CWoodenSword::Initialize(void* _desc)
 {
 	m_sStat.type = CGameManager::WeaponType::Sword;
 	m_strWeaponName = L"WoodenSword";
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_sOptions.localPos = vector3(1.614f, 8.73f, -12.f);

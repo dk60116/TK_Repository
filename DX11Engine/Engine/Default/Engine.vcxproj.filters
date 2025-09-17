@@ -196,6 +196,9 @@
     <ClInclude Include="..\Header\RenderTarget.h">
       <Filter>Window</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\ParticleSystem.h">
+      <Filter>Components\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -311,6 +314,9 @@
     </Filter>
     <Filter Include="Components\Render\Renderer">
       <UniqueIdentifier>{78b8f819-ab78-47f1-96c7-40d3ce8c5126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Particle">
+      <UniqueIdentifier>{f5e3a417-b5d5-4090-a530-a3585e4fd2aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -517,6 +523,9 @@
     </ClCompile>
     <ClCompile Include="epch.cpp">
       <Filter>Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ParticleSystem.cpp">
+      <Filter>Components\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

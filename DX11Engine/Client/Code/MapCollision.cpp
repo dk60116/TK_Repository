@@ -26,9 +26,9 @@ CComponent* CMapCollision::Clone() const
 	return clone;
 }
 
-HRESULT CMapCollision::Initialize()
+HRESULT CMapCollision::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

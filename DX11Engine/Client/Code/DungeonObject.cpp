@@ -17,11 +17,11 @@ CDungeonObject::~CDungeonObject()
 {
 }
 
-HRESULT CDungeonObject::Initialize()
+HRESULT CDungeonObject::Initialize(void* _desc)
 {
 	m_bOnlyCloneComponent = true;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -26,8 +26,11 @@ CComponent* CSphereCollider::Clone() const
 	return clone;
 }
 
-HRESULT CSphereCollider::Initialize()
+HRESULT CSphereCollider::Initialize(void* _desc)
 {
+    if (FAILED(__super::Initialize(_desc)))
+        return E_FAIL;
+
 	Build_WorldSPHERE();
 
 	return S_OK;

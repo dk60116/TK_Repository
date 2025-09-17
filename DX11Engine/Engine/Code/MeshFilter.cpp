@@ -30,9 +30,9 @@ CComponent* CMeshFilter::Clone() const
 	return clone;
 }
 
-HRESULT CMeshFilter::Initialize()
+HRESULT CMeshFilter::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

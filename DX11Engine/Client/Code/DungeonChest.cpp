@@ -29,7 +29,7 @@ CComponent* CDungeonChest::Clone() const
 	return clone;
 }
 
-HRESULT CDungeonChest::Initialize()
+HRESULT CDungeonChest::Initialize(void* _desc)
 {
 	m_strObjName = L"Dungeon_Chest";
 
@@ -37,7 +37,7 @@ HRESULT CDungeonChest::Initialize()
 	m_sDescription.colliderCenter = vector3::up() * 0.6f;
 	m_sDescription.colliderSize = vector3(2.f, 1.2f, 1.8f);
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pJoint = m_pGameObject->Get_Scene()->Add_GameObject(L"Joint")->Get_Transform();

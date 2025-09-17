@@ -28,7 +28,7 @@ CComponent* CME_FireBall::Clone() const
 	return clone;
 }
 
-HRESULT CME_FireBall::Initialize()
+HRESULT CME_FireBall::Initialize(void* _desc)
 {
 	m_strEffectName = L"FireBall";
 
@@ -36,7 +36,7 @@ HRESULT CME_FireBall::Initialize()
 
 	m_fRotYSpeed = 180.f;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	if (!m_pLight)

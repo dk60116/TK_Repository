@@ -16,7 +16,7 @@ public:
 	void OnDestroy() override;
 
 protected:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 
 public:
 	virtual void Render_WithCamera(class CCamera* _cam) PURE;

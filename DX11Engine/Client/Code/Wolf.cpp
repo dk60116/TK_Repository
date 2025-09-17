@@ -22,7 +22,7 @@ CComponent* CWolf::Clone() const
 	return clone;
 }
 
-HRESULT CWolf::Initialize()
+HRESULT CWolf::Initialize(void* _desc)
 {
 	m_strMonsterName = L"Wolf";
 
@@ -33,7 +33,7 @@ HRESULT CWolf::Initialize()
 	m_sOptions.bodyColliderCenter = vector3::right() * 0.5f;
 	m_sOptions.bodyColliderSize = vector3(1.5f, 0.5f, 0.5f);
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pHeadTF = Get_Transform()->Find_ChildRecursive(L"FantasyWolf_ Head");

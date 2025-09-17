@@ -15,7 +15,7 @@ CComponent::~CComponent()
 	Release();
 }
 
-HRESULT CComponent::Initialize()
+HRESULT CComponent::Initialize(void* _desc)
 {
 	m_pDevice = CGraphicDevice::GetInstance().Get_Device();
 	m_pContext = CGraphicDevice::GetInstance().Get_Context();

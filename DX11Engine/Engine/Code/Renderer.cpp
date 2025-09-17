@@ -28,9 +28,9 @@ void CRenderer::OnDestroy()
 	Safe_Release(m_pOutlineMat);
 }
 
-HRESULT CRenderer::Initialize()
+HRESULT CRenderer::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	if (!m_pMaterial)

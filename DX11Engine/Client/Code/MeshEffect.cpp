@@ -14,9 +14,9 @@ CMeshEffect::~CMeshEffect()
 {
 }
 
-HRESULT CMeshEffect::Initialize()
+HRESULT CMeshEffect::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	for (_uint i = 0; i < m_sDescription.meshCount; ++i)

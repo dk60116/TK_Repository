@@ -29,9 +29,9 @@ CComponent* CPlayerCamera::Clone() const
 	return clone;
 }
 
-HRESULT CPlayerCamera::Initialize()
+HRESULT CPlayerCamera::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	CGameManager::GetInstance().Set_PlayerCamera(this);

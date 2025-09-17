@@ -14,7 +14,7 @@ protected:
 	~CMap();
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 
 	void Awake() override;
 	void Update() override;

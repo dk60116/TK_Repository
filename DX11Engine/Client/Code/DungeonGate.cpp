@@ -27,7 +27,7 @@ CComponent* CDungeonGate::Clone() const
 	return clone;
 }
 
-HRESULT CDungeonGate::Initialize()
+HRESULT CDungeonGate::Initialize(void* _desc)
 {
 	m_strObjName = L"Dungeon_Gate";
 
@@ -35,7 +35,7 @@ HRESULT CDungeonGate::Initialize()
 	m_sDescription.colliderCenter = vector3::up() * 1.5f;
 	m_sDescription.colliderSize = vector3(2.f, 3.f, 2.f);
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(CSceneManager::NameToLayer(L"Map"));

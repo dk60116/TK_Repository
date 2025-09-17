@@ -15,8 +15,11 @@ CCollider::~CCollider()
 {
 }
 
-HRESULT CCollider::Initialize()
+HRESULT CCollider::Initialize(void* _desc)
 {
+	if (FAILED(__super::Initialize(_desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

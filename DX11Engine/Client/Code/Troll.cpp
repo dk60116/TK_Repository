@@ -21,7 +21,7 @@ CComponent* CTroll::Clone() const
 	return clone;
 }
 
-HRESULT CTroll::Initialize()
+HRESULT CTroll::Initialize(void* _desc)
 {
 	m_strMonsterName = L"Troll";
 
@@ -33,7 +33,7 @@ HRESULT CTroll::Initialize()
 	m_sStatus.maxHp = 5;
 	m_sStatus.attackRange = 4.5f;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pHeadTF = Get_Transform()->Find_ChildRecursive(L"TROLL_ Head");

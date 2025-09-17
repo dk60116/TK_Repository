@@ -28,9 +28,9 @@ CComponent* CBossController_Dragon::Clone() const
 	return clone;
 }
 
-HRESULT CBossController_Dragon::Initialize()
+HRESULT CBossController_Dragon::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

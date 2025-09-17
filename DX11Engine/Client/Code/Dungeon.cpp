@@ -42,12 +42,12 @@ CComponent* CDungeon::Clone() const
     return clone;
 }
 
-HRESULT CDungeon::Initialize()
+HRESULT CDungeon::Initialize(void* _desc)
 {
     m_strMapName = L"Dungeon";
     m_sOptions.scaleFactor = 0.015f;
 
-    if (FAILED(__super::Initialize()))
+    if (FAILED(__super::Initialize(_desc)))
         return E_FAIL;
 
     CMeshRenderer* urn1 = Get_Transform()->Find_ChildRecursive(L"urn_1_2")->Get_GameObject()->GetComponent<CMeshRenderer>();

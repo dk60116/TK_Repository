@@ -28,9 +28,9 @@ CComponent* CCanvas::Clone() const
 	return clone;
 }
 
-HRESULT CCanvas::Initialize()
+HRESULT CCanvas::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};

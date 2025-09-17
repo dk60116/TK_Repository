@@ -22,9 +22,9 @@ CComponent* CParticleSystem::Clone() const
 	return clone;
 }
 
-HRESULT CParticleSystem::Initialize()
+HRESULT CParticleSystem::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -28,11 +28,11 @@ CComponent* CDragon::Clone() const
 	return clone;
 }
 
-HRESULT CDragon::Initialize()
+HRESULT CDragon::Initialize(void* _desc)
 {
 	m_strMonsterName = L"Dragon";
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pHeadTF = Get_Transform()->Find_ChildRecursive(L"MountainDragon_ Head");

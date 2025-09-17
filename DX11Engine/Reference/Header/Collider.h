@@ -22,7 +22,7 @@ protected:
 	~CCollider();
 
 public:
-	HRESULT Initialize() override;
+	HRESULT Initialize(void* _desc) override;
 	void Awake() override;
 	void LateUpdate() override;
 	void FixedUpdate() override;

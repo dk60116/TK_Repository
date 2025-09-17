@@ -28,8 +28,11 @@ CComponent* CNavMeshAgent::Clone() const
 	return clone;
 }
 
-HRESULT CNavMeshAgent::Initialize()
+HRESULT CNavMeshAgent::Initialize(void* _desc)
 {
+	if (FAILED(__super::Initialize(_desc)))
+		return E_FAIL;
+
     return S_OK;
 }
 

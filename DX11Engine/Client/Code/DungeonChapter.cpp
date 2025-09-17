@@ -28,9 +28,9 @@ CComponent* CDungeonChapter::Clone() const
 	return new CDungeonChapter();
 }
 
-HRESULT CDungeonChapter::Initialize()
+HRESULT CDungeonChapter::Initialize(void*_desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"DungeonChapter");

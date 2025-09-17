@@ -27,8 +27,11 @@ CComponent* CBoxCollider::Clone() const
 	return clone;
 }
 
-HRESULT CBoxCollider::Initialize()
+HRESULT CBoxCollider::Initialize(void* _desc)
 {
+    if (FAILED(__super::Initialize(_desc)))
+        return E_FAIL;
+
     m_sLocal.axis[0] = vector3::right();
     m_sLocal.axis[1] = vector3::up();
     m_sLocal.axis[2] = vector3::forward();

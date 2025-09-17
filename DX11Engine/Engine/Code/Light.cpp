@@ -36,9 +36,9 @@ CComponent* CLight::Clone() const
 	return clone;
 }
 
-HRESULT CLight::Initialize()
+HRESULT CLight::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

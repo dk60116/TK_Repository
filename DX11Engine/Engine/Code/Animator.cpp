@@ -54,9 +54,9 @@ CComponent* CAnimator::Clone() const
 	return clone;
 }
 
-HRESULT CAnimator::Initialize()
+HRESULT CAnimator::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	if (!m_pSkinnedRenderer)

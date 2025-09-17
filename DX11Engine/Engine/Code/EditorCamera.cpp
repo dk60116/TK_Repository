@@ -34,9 +34,9 @@ CComponent* CEditorCamera::Clone() const
 	return nullptr;
 }
 
-HRESULT CEditorCamera::Initialize()
+HRESULT CEditorCamera::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_fNear = 0.1f;

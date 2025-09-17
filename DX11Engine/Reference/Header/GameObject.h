@@ -75,7 +75,7 @@ public:
 
 public:
 	template<typename T>
-	T* AddComponent();
+	T* AddComponent(void* _desc = nullptr);
 	template<typename T>
 	T* GetComponent();
 
@@ -154,7 +154,7 @@ private:
 NS_END
 
 template<typename T>
-inline T* CGameObject::AddComponent()
+inline T* CGameObject::AddComponent(void* _desc)
 {
 	T* newComponent = T::Create();
 
@@ -162,7 +162,7 @@ inline T* CGameObject::AddComponent()
 	newComponent->AddRef();
 	m_lComponentList.push_back(newComponent);
 
-	if (FAILED(newComponent->Initialize()))
+	if (FAILED(newComponent->Initialize(_desc)))
 	{
 		Safe_Release(newComponent);
 		return nullptr;

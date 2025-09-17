@@ -27,7 +27,7 @@ CComponent* CFootSwitch::Clone() const
 	return clone;
 }
 
-HRESULT CFootSwitch::Initialize()
+HRESULT CFootSwitch::Initialize(void* _desc)
 {
 	m_strObjName = L"Dungeon_FootSwitchPlat";
 
@@ -35,7 +35,7 @@ HRESULT CFootSwitch::Initialize()
 	m_sDescription.colliderCenter = vector3::up() * 0.4f;
 	m_sDescription.colliderSize = vector3(0.7f, 1.f, 0.7f);
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	return S_OK;

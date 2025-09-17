@@ -27,11 +27,11 @@ CMonster::~CMonster()
 {
 }
 
-HRESULT CMonster::Initialize()
+HRESULT CMonster::Initialize(void* _desc)
 {
 	m_bOnlyCloneComponent = true;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"Monster");

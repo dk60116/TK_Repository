@@ -17,9 +17,9 @@ CWeapon::~CWeapon()
 	Safe_Release(m_pTargetHand);
 }
 
-HRESULT CWeapon::Initialize()
+HRESULT CWeapon::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"PlayerWeapon");

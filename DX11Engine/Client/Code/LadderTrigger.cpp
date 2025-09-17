@@ -24,9 +24,9 @@ CComponent* CLadderTrigger::Clone() const
 	return clone;
 }
 
-HRESULT CLadderTrigger::Initialize()
+HRESULT CLadderTrigger::Initialize(void* _desc)
 {
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	if (!m_pCollider)

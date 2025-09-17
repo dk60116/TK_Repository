@@ -21,13 +21,13 @@ CComponent* CWoodenBow::Clone() const
 	return clone;
 }
 
-HRESULT CWoodenBow::Initialize()
+HRESULT CWoodenBow::Initialize(void* _desc)
 {
 	m_sStat.type = CGameManager::WeaponType::Bow;
 	m_strWeaponName = L"WoodenBow";
 	m_eHandType = CPlayer::HandType::Left;
 
-	if (FAILED(__super::Initialize()))
+	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
 	m_sOptions.localPos = vector3(-4.55f, -4.85f, -2.25f);
