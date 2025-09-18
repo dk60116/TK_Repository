@@ -280,7 +280,8 @@ HRESULT CMeshBuffer::CreateInstanceBuffer(_uint _capacity, D3D11_USAGE _usage)
 
     m_sInstanceDesc.dcapacity = _capacity;
     m_sInstanceDesc.data.resize(_capacity);
-    m_sInstanceDesc.count = 0; // 아직 채우기 전
+    m_sInstanceDesc.count = 0;
+    m_sInstanceDesc.instanceStride = sizeof(MeshInstanceData);
 
     D3D11_BUFFER_DESC desc = {};
     desc.ByteWidth = _capacity * sizeof(MeshInstanceData);

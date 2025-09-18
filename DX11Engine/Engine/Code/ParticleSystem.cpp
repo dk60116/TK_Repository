@@ -27,6 +27,13 @@ HRESULT CParticleSystem::Initialize(void* _desc)
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
+	if (!_desc)
+		return E_FAIL;
+
+	PARTICLEDESC particleInfo = *static_cast<PARTICLEDESC*>(_desc);
+
+	m_vParticleList = particleInfo.particles;
+
 	return S_OK;
 }
 
@@ -44,4 +51,9 @@ void CParticleSystem::Render()
 
 void CParticleSystem::OnDestroy()
 {
+}
+
+CMeshBuffer* CParticleSystem::CreateInstaceBuffer()
+{
+	return nullptr;
 }

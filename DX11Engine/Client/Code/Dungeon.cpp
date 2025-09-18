@@ -60,6 +60,9 @@ HRESULT CDungeon::Initialize(void* _desc)
     CMeshRenderer* coal = Get_Transform()->Find_ChildRecursive(L"firepit_coal")->Get_GameObject()->GetComponent<CMeshRenderer>();
     coal->Get_Material()->Set_FloatValue(L"gCalcLight", 0.f);
 
+    CMeshRenderer* web = Get_Transform()->Find_ChildRecursive(L"web_1")->Get_GameObject()->GetComponent<CMeshRenderer>();
+    web->SetNoneCull(true);
+
     CreatePointLights();
     CreateMonsterPrototypes();
     CreateDungonObjectPrototypes();
@@ -236,6 +239,8 @@ void CDungeon::CreateDragon()
 
 void CDungeon::CreatePointLights()
 {
+    CTransform* lightContainer = m_pGameObject->Get_Scene()->Add_GameObject(L"Light Container")->Get_Transform();
+
     CScene* scene = m_pGameObject->Get_Scene();
 
     for (_uint i = 0; i < 134; ++i)
@@ -389,7 +394,10 @@ void CDungeon::CreatePointLights()
     m_vLightList[133]->Get_Transform()->Set_Position(-94.86f, -0.83f, -138.7f);
 
     for (TRAVERSAL_ITER(m_vLightList, it))
-        (*it)->Get_GameObject()->Set_Static(CGameObject::TransformStatic);      
+    {
+        (*it)->Get_GameObject()->Set_Static(CGameObject::TransformStatic);
+        (*it)->Get_Transform()->SetParent(lightContainer);
+    }
 }
 
 void CDungeon::SpawnDungeonGates()
@@ -526,8 +534,14 @@ void CDungeon::SpawnDungeonLadder()
     m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.83f, -0.027f, -122.85f));
     m_vLadderList[1]->Get_Transform()->Set_EulerAngles(0.f, 90.f, -180.f);
 
-    m_vLadderList[2]->Get_Transform()->Set_Position(vector3(-33.f, 6.7f, -103.65f));
+    CTransform* ladder2Parent = m_pGameObject->Get_Scene()->Add_GameObject(L"Ladder2")->Get_Transform();
+    ladder2Parent->Set_Position(-33.f, 11.7f, -103.65f);
+
+    m_vLadderList[2]->Get_Transform()->SetParent(ladder2Parent);
+    m_vLadderList[2]->Get_Transform()->Set_LocalPosition(0.f, -5.f, 0.f);
     m_vLadderList[2]->Set_HeightValue(5.8f, 11.8f, 12.1f);
+
+    ladder2Parent->Set_EulerAnglesZ(180.f);
 }
 
 void CDungeon::SpawnMovingPlat()
@@ -558,17 +572,18 @@ void CDungeon::SpawnMovingPlat()
 
 void CDungeon::CullingLights()
 {
-    vector3 camPos = CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position();
+    CTransform* playerTf = CGameManager::GetInstance().Get_Player()->Get_Transform();
+    vector3 standardPos = playerTf->Get_Position() + playerTf->Get_Directions().forward * 20.f;
 
     sort(m_vLightList.begin(), m_vLightList.end(),
-        [&camPos](const auto& a, const auto& b)
+        [&standardPos](const auto& a, const auto& b)
         {
-            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), camPos);
-            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), camPos);
+            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), standardPos);
+            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), standardPos);
             return distA < distB;
         });
 
-    _uint count = 30;
+    static _uint count = 30;
 
 #ifdef _DEBUG
     count = 15;

@@ -26,6 +26,7 @@ public:
 	CMaterial* Get_Material();
 	void Set_Material(CMaterial* _material);
 	virtual class CMeshBuffer* Get_MeshBuffer() PURE;
+	void SetNoneCull(const _bool _value);
 
 protected:
 	void Bind_InstanceData(_fmatrix _matWorld, CMeshBuffer* _buffer);
@@ -35,6 +36,7 @@ protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
 	_float m_fScaleFactor;
+	_bool m_bNoneCulling;
 };
 
 NS_END

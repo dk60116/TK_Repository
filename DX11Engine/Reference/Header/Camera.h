@@ -37,6 +37,7 @@ public:
 	void Set_BackgroundColor(const ColorValue& _color);
 
 	void Add_RenderTarget_Mesh(class CRenderer* _mesh);
+	void Add_RenderTarget_NoneCullMesh(class CRenderer* _mesh);
 	void Add_RenderTarget_BlendMesh(class CRenderer* _mesh);
 	void Add_RenderTarget_UI(class CUI* _ui);
 
@@ -64,7 +65,7 @@ protected:
 	_float m_fFieldOfView;
 	_float m_fSize;
 
-	vector<CRenderer*> m_vMeshList_Lit, m_vMeshList_Blend;
+	vector<CRenderer*> m_vMeshList_Lit, m_vMeshList_NoneCull, m_vMeshList_Blend;
 	vector<CUI*> m_vUIList;
 
 private:

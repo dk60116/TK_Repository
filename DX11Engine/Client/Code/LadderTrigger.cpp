@@ -26,6 +26,8 @@ CComponent* CLadderTrigger::Clone() const
 
 HRESULT CLadderTrigger::Initialize(void* _desc)
 {
+	m_strObjName = L"LadderTrigger";
+
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 

@@ -116,6 +116,7 @@ public:
     ID3D11DepthStencilState* Get_UIStencillState() const;
 
     ID3D11RasterizerState* Get_NoneBlendingResterState() const;
+    ID3D11RasterizerState* Get_NoneBlendingNoneCullResterState() const;
     ID3D11RasterizerState* Get_BlendingResterState() const;
 
     ID3D11BlendState* Get_NoneBlendingState() const;
@@ -154,7 +155,7 @@ protected:
     _bool m_bUseNavi;
 
     ID3D11DepthStencilState* m_pSkyBoxDepthStencillState, * m_pMeshDepthStencilState, * m_pTransparentDepthStencilState, * m_pUIDepthStencilState;
-    ID3D11RasterizerState* m_pSkyBoxResterizerState, * m_pMeshResterizerState, *m_pBlendResteraizerState, * m_pUIResterizerState;
+    ID3D11RasterizerState* m_pSkyBoxResterizerState, * m_pMeshResterizerState, * m_pNoneCullResterizeState, *m_pBlendResteraizerState, * m_pUIResterizerState;
     ID3D11BlendState* m_pBlendingState, * m_pNoneBlendingState;
     
     _float m_fPassedTime;

@@ -14,6 +14,7 @@ CCamera::CCamera()
 	, m_fFieldOfView(60.f)
 	, m_fSize(5.f)
 	, m_vMeshList_Lit({})
+	, m_vMeshList_NoneCull({})
 	, m_vUIList({})
 	, m_vMeshList_Blend({})
 {
@@ -115,6 +116,11 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 void CCamera::Add_RenderTarget_Mesh(CRenderer* _mesh)
 {
 	m_vMeshList_Lit.push_back(_mesh);
+}
+
+void CCamera::Add_RenderTarget_NoneCullMesh(CRenderer* _mesh)
+{
+	m_vMeshList_NoneCull.push_back(_mesh);
 }
 
 void CCamera::Add_RenderTarget_BlendMesh(CRenderer* _mesh)
@@ -222,6 +228,12 @@ void CCamera::Bind_RenderTarget()
 			(*it)->Render_WithCamera(this);
 	}
 
+	for (TRAVERSAL_ITER(m_vMeshList_NoneCull, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_WithCamera(this);
+	}
+
 	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
 	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
 
@@ -288,12 +300,20 @@ void CCamera::RenderMesh()
 	//CDisplay::RenderTargetRender(L"Depth");
 	//CDisplay::RenderTargetRender(L"Shading");
 
+	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
+
 	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
-		{
 			(*it)->Render_WithCamera(this);
-		}
+	}
+
+	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingNoneCullResterState());
+
+	for (TRAVERSAL_ITER(m_vMeshList_NoneCull, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_WithCamera(this);
 	}
 
 	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
@@ -314,9 +334,7 @@ void CCamera::RenderMesh()
 	for (auto* r : sorted) 
 	{
 		if (r->Get_GameObject()->IsRecursiveActive() && r->Get_Enabled())
-		{
 			r->Render_WithCamera(this);
-		}
 	}
 
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
@@ -324,6 +342,7 @@ void CCamera::RenderMesh()
 	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
 	
 	m_vMeshList_Lit.clear();
+	m_vMeshList_NoneCull.clear();
 	m_vMeshList_Blend.clear();
 }
 

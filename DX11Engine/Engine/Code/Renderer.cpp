@@ -5,6 +5,7 @@ CRenderer::CRenderer()
 	: m_pMaterial(nullptr)
 	, m_pOutlineMat(nullptr)
 	, m_fScaleFactor(1.f)
+	, m_bNoneCulling(false)
 {
 }
 
@@ -72,6 +73,11 @@ void CRenderer::Set_Material(CMaterial* _material)
 
 	if (m_pMaterial)
 		m_pMaterial->AddRef();
+}
+
+void CRenderer::SetNoneCull(const _bool _value)
+{
+	m_bNoneCulling = _value;
 }
 
 void CRenderer::Bind_InstanceData(_fmatrix matWorld, CMeshBuffer* pBuffer)

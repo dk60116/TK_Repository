@@ -48,6 +48,9 @@ private:
 private:
 	CMap* m_pMap;
 	_bool m_bSelectViewMode;
+
+	CTransform* m_pColliderContainer;
+
 	vector<CBoxCollider*> m_vColliderList;
 	vector<CollidersInfo> m_vInfoList;
 

@@ -10,6 +10,8 @@ class CParticleSystem : public CComponent
 	typedef struct ParticleInformation
 	{
 		_uint shape;
+		_uint maxCount = 1;
+		_float lifeTime = 1.f;
 		_float startDelay = 0.f;
 		_float startLifeTime = 1.f;
 		vector3 startDirection = vector3::zero();
@@ -23,12 +25,17 @@ class CParticleSystem : public CComponent
 
 	typedef struct ParticleSystemPart
 	{
-		CMeshBuffer* buffer = nullptr;
-		CMaterial* material = nullptr;
-		CTexture* texture = nullptr;
-		_uint maxCount = 1;
+		wstring buffer = {};
+		wstring material = {};
+		wstring texture = {};
 		PARTICLEINFO info = {};
 	}PARTICLEPART;
+
+	typedef struct ParticleDescription
+	{
+		_uint count;
+		vector<ParticleSystemPart> particles;
+	} PARTICLEDESC; 
 
 protected:
 	explicit CParticleSystem();
@@ -46,7 +53,10 @@ public:
 
 	void OnDestroy() override;
 
-protected:
+private:
+	CMeshBuffer* CreateInstaceBuffer();
+
+private:
 	vector<ParticleSystemPart> m_vParticleList;
 };
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "Component.h"
+#include "DungeonObject.h"
 
-class CLadderTrigger : public CComponent
+class CLadderTrigger : public CDungeonObject
 {
 protected:
 	explicit CLadderTrigger();

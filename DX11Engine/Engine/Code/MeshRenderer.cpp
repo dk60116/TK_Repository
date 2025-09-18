@@ -61,7 +61,12 @@ void CMeshRenderer::Render()
 	if (_layer != CSceneManager::NameToLayer(L"NaviMesh_Walkable") && _layer != CSceneManager::NameToLayer(L"NaviMesh_WalkUnable"))
 	{
 		if (m_pMaterial->IsUseLight())
-			CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+		{
+			if (!m_bNoneCulling)
+				CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+			else
+				CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_NoneCullMesh(this);
+		}
 		else
 			CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_BlendMesh(this);
 	}

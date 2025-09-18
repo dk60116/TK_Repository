@@ -5,6 +5,7 @@
 CMapCollision::CMapCollision()
 	: m_pMap(nullptr)
 	, m_bSelectViewMode(nullptr)
+	, m_pColliderContainer(nullptr)
 	, m_vColliderList()
 	, m_iIDCount(0)
 {
@@ -30,6 +31,8 @@ HRESULT CMapCollision::Initialize(void* _desc)
 {
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
+
+	m_pColliderContainer = m_pGameObject->Get_Scene()->Add_GameObject(L"Collider Container")->Get_Transform();
 
 	return S_OK;
 }
@@ -225,6 +228,8 @@ CBoxCollider* CMapCollision::SpawnDataCollider(const CollidersInfo& _info)
 	newColObj->Get_Transform()->SetTransformForMatrix(world);
 
 	++m_iIDCount;
+
+	newCol->Get_Transform()->SetParent(m_pColliderContainer);
 
 	return newCol;
 }

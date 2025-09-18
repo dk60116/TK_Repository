@@ -23,7 +23,7 @@ CInput& CInput::GetInstance()
 
 HRESULT CInput::Initialize()
 {
-    //InstallMouseHook();
+    GetInstance().InstallMouseHook();
 
     RegiserMouseRaw();
 
@@ -35,7 +35,7 @@ void CInput::Release()
     GetInstance().m_bKeyState.clear();
     GetInstance().m_bPrevKeyState.clear();
 
-    //UninstallMouseHook();
+    GetInstance().UninstallMouseHook();
 }
 
 _bool CInput::GetKey_Editor(_int _iKey)

@@ -31,6 +31,7 @@ CScene::CScene()
 	, m_pUIDepthStencilState(nullptr)
 	, m_pSkyBoxResterizerState(nullptr)
 	, m_pMeshResterizerState(nullptr)
+	, m_pNoneCullResterizeState(nullptr)
 	, m_pBlendResteraizerState(nullptr)
 	, m_pUIResterizerState(nullptr)
 	, m_pBlendingState(nullptr)
@@ -122,6 +123,12 @@ HRESULT CScene::Initialize()
 		resterDefaultDesc.FrontCounterClockwise = FALSE;
 		resterDefaultDesc.DepthClipEnable = TRUE;
 
+		D3D11_RASTERIZER_DESC resterNoneBlendDesc = {};
+		resterNoneBlendDesc.FillMode = D3D11_FILL_SOLID;
+		resterNoneBlendDesc.CullMode = D3D11_CULL_NONE;
+		resterNoneBlendDesc.FrontCounterClockwise = FALSE;
+		resterNoneBlendDesc.DepthClipEnable = TRUE;
+
 		D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
 		depthDefaultDesc.DepthEnable = TRUE;
 		depthDefaultDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -130,6 +137,9 @@ HRESULT CScene::Initialize()
 
 		if (FAILED(m_pDevice->CreateRasterizerState(&resterDefaultDesc, &m_pMeshResterizerState)))
 			return E_FAIL;
+		if (FAILED(m_pDevice->CreateRasterizerState(&resterNoneBlendDesc, &m_pNoneCullResterizeState)))
+			return E_FAIL;
+
 		if (FAILED(m_pDevice->CreateDepthStencilState(&depthDefaultDesc, &m_pMeshDepthStencilState)))
 			return E_FAIL;
 	}
@@ -1070,6 +1080,11 @@ ID3D11DepthStencilState* CScene::Get_UIStencillState() const
 ID3D11RasterizerState* CScene::Get_NoneBlendingResterState() const
 {
 	return m_pMeshResterizerState;
+}
+
+ID3D11RasterizerState* CScene::Get_NoneBlendingNoneCullResterState() const
+{
+	return m_pNoneCullResterizeState;
 }
 
 ID3D11RasterizerState* CScene::Get_BlendingResterState() const

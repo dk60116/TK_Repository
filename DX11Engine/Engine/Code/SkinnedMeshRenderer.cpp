@@ -74,7 +74,10 @@ void CSkinnedMeshRenderer::Render_Editor()
 
 void CSkinnedMeshRenderer::Render()
 {
-	CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+	if (!m_bNoneCulling)
+		CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_Mesh(this);
+	else
+		CSceneManager::Get_CrtScene()->Get_Camera()->Add_RenderTarget_NoneCullMesh(this);
 }
 
 void CSkinnedMeshRenderer::OnDestroy()
