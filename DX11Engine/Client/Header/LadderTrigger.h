@@ -25,6 +25,7 @@ public:
 
 private:
 	CLadder* m_pLadder;
-	CBoxCollider* m_pCollider;
+
+	_bool m_bOnTrigger;
 };
 

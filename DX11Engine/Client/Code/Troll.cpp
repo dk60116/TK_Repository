@@ -2,6 +2,7 @@
 #include "Troll.h"
 
 CTroll::CTroll()
+	: CMonster{}
 {
 }
 

@@ -24,6 +24,8 @@ HRESULT CArrow::Initialize(void* _desc)
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
+	m_pGameObject->SetTag(L"Arrow");
+
 	return S_OK;
 }
 
@@ -35,8 +37,8 @@ void CArrow::Awake()
 	CSphereCollider* spCol = dynamic_cast<CSphereCollider*>(m_pCollider);
 
 	spCol->SetTrigger(true);
-	spCol->Set_Center(vector3(0.f, 4.5f, 0.f));
-	spCol->Set_Size(2.f);
+	spCol->Set_Center(vector3(0.f, 4.25f, 0.f));
+	spCol->Set_Size(1.5f);
 
 	m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
 	m_pRigidBody->SetKinematic(true);
@@ -77,6 +79,15 @@ void CArrow::OnDestroy()
 void CArrow::OnCollisionEnter(CCollider* _other)
 {
 	__super::OnCollisionEnter(_other);
+
+	m_pRigidBody->ResetVelocity();
+	m_pRigidBody->ResetGravity();
+
+	if (_other->Get_GameObject()->CompareTag(L"ArrowTrigger"))
+	{
+		CDebug::LogError("AT");
+		m_pRigidBody->SetUseGravity(false);
+	}
 }
 
 void CArrow::OnCollisionStay(CCollider* _other)
@@ -100,7 +111,7 @@ void CArrow::Pop()
 	m_pCollider->SetEnabled(false);
 	m_pRigidBody->ResetVelocity();
 	m_pRigidBody->ResetGravity();
-	Get_Transform()->Set_LocalScale(10.f);
+	Get_Transform()->Set_LocalScale(20.f);
 }
 
 void CArrow::Shoot()

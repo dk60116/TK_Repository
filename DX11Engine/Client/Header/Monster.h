@@ -31,6 +31,7 @@ public:
 		_float attackRange = 3.f;
 		_float walkSpeed = 2.f;
 		_float runSpeed = 3.5f;
+		_bool isDead = false;
 	};
 
 protected:
@@ -55,6 +56,7 @@ public:
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();
 	virtual void Get_Damage(class CWeapon* _weapon);
+	virtual void Death();
 	void PlayTurn(const CMonsterController::TurnDir _dir);
 
 protected:
@@ -63,7 +65,7 @@ protected:
 protected:
 	wstring m_strMonsterName;
 	vector<CSkinnedMeshRenderer*> m_vMeshRenderers;
-	CTexture* m_pBaseMap;
+	CTexture* m_pBaseMap, * m_pNormalMap;
 	CAnimator* m_pAnimator;
 	CMonsterController* m_pController;
 	EngineAI::CNavMeshAgent* m_pNavAgent;

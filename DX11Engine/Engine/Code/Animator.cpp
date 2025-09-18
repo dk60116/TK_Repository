@@ -107,7 +107,7 @@ void CAnimator::Update()
 			if (!bone)
 				continue;
 
-			const _bool customRoot = (name == L"root" || name == L"Root" || name == L"ROOT");
+			const _bool customRoot = (name == L"root" || name == L"Root" || name == L"ROOT" || name == L"ROOT_");
 			if (!m_pSkinnedRenderer->m_bApplyRootMotion &&
 				(name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot))
 				continue;
@@ -165,7 +165,7 @@ void CAnimator::Update()
 
 		const wstring& name = m_pSkinnedRenderer->Get_BoneName(i);
 
-		const _bool customRoot = (name == L"root" || name == L"Root" || name == L"ROOT");
+		const _bool customRoot = (name == L"root" || name == L"Root" || name == L"ROOT" || name == L"ROOT_");
 		if (!m_pSkinnedRenderer->m_bApplyRootMotion &&
 			(name == m_pSkinnedRenderer->Get_RootBoneName() || customRoot))
 			continue;

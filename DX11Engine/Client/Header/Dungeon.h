@@ -58,6 +58,7 @@ private:
 	vector<class CFootSwitch*> m_vFootSwitchList;
 	vector<class CDungeonChest*> m_vChestList;
 	vector<class CLadder*> m_vLadderList;
+	vector<class CLadderTrigger*> m_vLadderTriggerList;
 	vector<class CMovingPlat*> m_vMovingPlatList;
 
 	class CDragon* m_pDragon;

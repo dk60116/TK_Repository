@@ -180,6 +180,12 @@ void CDungeonChapter::AttachColliders()
 
 void CDungeonChapter::HideColliders()
 {
+	for (TRAVERSAL_ITER(m_vCloneMonsterList, it))
+	{
+		if ((*it)->Get_GameObject()->ActiveSelf())
+			return;
+	}
+
 	for (TRAVERSAL_ITER(m_vMapColList, it))
 		(*it)->SetEnabled(false);
 }
@@ -193,5 +199,8 @@ void CDungeonChapter::AbleColliders()
 void CDungeonChapter::AbleMonsters()
 {
 	for (TRAVERSAL_ITER(m_vCloneMonsterList, it))
-		(*it)->Get_GameObject()->SetActive(true);
+	{
+		if (!(*it)->Get_Status().isDead)
+			(*it)->Get_GameObject()->SetActive(true);
+	}
 }

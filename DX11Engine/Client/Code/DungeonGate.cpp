@@ -68,6 +68,9 @@ void CDungeonGate::Awake()
 		m_pLockRenderer = lockObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Lock_Model (MeshBuffer)"), 0.005f)[0];
 		lockObj->Get_Transform()->Set_LocalPositionY(1.7f);
 	}
+
+	for (TRAVERSAL_ITER(m_vRenderer, it))
+		(*it)->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 }
 
 void CDungeonGate::Start()
@@ -89,6 +92,8 @@ void CDungeonGate::Start()
 		m_vLockChainRenders[1]->Set_LocalPosition(vector3(0.25f, 1.8f, 0.f));
 		m_vLockChainRenders[1]->Set_LocalEulerAngles(vector3(0.f, 0.f, -45.f));
 	}
+
+	m_pLockRenderer->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 
 	m_pLockRenderer->Get_GameObject()->SetActive(m_bLock);
 }

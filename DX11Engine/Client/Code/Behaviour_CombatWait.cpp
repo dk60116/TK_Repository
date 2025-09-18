@@ -27,7 +27,6 @@ void CBehaviour_CombatWait::Enter(void* _desc)
     m_pMonster->Get_Animator()->Play(L"Idle", 0.2f);
 
     m_ePrevTurnDir = CMonsterController::TurnDir::None;
-    m_ePrevTurnDir = CMonsterController::TurnDir::None;
 
     CDebug::Log("Wait Enter");
 }

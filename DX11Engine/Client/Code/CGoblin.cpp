@@ -2,6 +2,7 @@
 #include "Goblin.h"
 
 CGoblin::CGoblin()
+	: CMonster{}
 {
 }
 

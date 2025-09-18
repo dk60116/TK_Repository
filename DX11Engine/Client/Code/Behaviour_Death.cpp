@@ -21,6 +21,7 @@ void CBehaviour_Death::Enter(void* _desc)
 {
     __super::Enter();
 
+    m_pMonster->Death();
     m_pMonster->Get_Animator()->SetLoop(false);
     m_pMonster->Get_Animator()->Play(L"Death", 0.25f);
 }
@@ -31,6 +32,9 @@ void CBehaviour_Death::During()
 
     if (m_fPassedTime >= 2.f)
         m_pMonster->Get_Animator()->Pause();
+
+    if (m_fPassedTime > 5.f)
+        m_pMonster->Get_GameObject()->SetActive(false);
 }
 
 void CBehaviour_Death::Exit()

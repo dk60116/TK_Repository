@@ -100,6 +100,12 @@
     <Filter Include="Scripts\Object\BossMonster\Dragon\Controller\Behaviour">
       <UniqueIdentifier>{a169460e-c4f4-4c8c-a2b3-936143aa26dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Monster\Snake">
+      <UniqueIdentifier>{9f14226d-cc4a-4de9-8428-e76eee46b659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Monster\SkeletonWarrior">
+      <UniqueIdentifier>{7bef09aa-93bd-42a0-a5cb-d35c7d944af1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -315,6 +321,12 @@
     <ClInclude Include="..\Header\DragonBHV_SpreadFire.h">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Snake.h">
+      <Filter>Scripts\Object\Monster\Snake</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\SkelletalWarrior.h">
+      <Filter>Scripts\Object\Monster\SkeletonWarrior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -523,6 +535,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\DragonBHV_SpreadFire.cpp">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Snake.cpp">
+      <Filter>Scripts\Object\Monster\Snake</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SkelletalWarrior.cpp">
+      <Filter>Scripts\Object\Monster\SkeletonWarrior</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

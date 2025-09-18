@@ -33,6 +33,8 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Tag(1, L"Floor");
 	CSceneManager::Add_Tag(2, L"Wall");
 	CSceneManager::Add_Tag(3, L"Player");
+	CSceneManager::Add_Tag(4, L"Arrow");
+	CSceneManager::Add_Tag(5, L"ArrowTrigger");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);
@@ -42,7 +44,6 @@ HRESULT CGameManager::Initialize()
 	CCollisionManager::Set_CollisionFilter(L"Monster", L"MonsterBodyPart", false);
 
 	CCollisionManager::Set_CollisionFilter(L"Map", L"Map", false);
-	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"Map", false);
 	CCollisionManager::Set_CollisionFilter(L"MonsterBodyPart", L"Map", false);
 
 	CCollisionManager::Set_CollisionFilter(L"DungeonChapter", L"Default", false);

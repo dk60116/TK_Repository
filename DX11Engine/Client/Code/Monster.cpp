@@ -9,6 +9,7 @@ CMonster::CMonster()
 	: m_strMonsterName(L"")
 	, m_vMeshRenderers({})
 	, m_pBaseMap(nullptr)
+	, m_pNormalMap(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pController(nullptr)
 	, m_pNavAgent(nullptr)
@@ -185,6 +186,11 @@ void CMonster::Get_Damage(CWeapon* _weapon)
 	}
 	else
 		m_pController->ChangeState(CMonsterController::GetHit);
+}
+
+void CMonster::Death()
+{
+	m_sStatus.isDead = true;
 }
 
 void CMonster::PlayTurn(const CMonsterController::TurnDir _dir)

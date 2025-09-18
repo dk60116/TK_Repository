@@ -3,7 +3,9 @@
 #include "DungeonChapter.h"
 
 #include "Wolf.h"
+#include "Snake.h"
 #include "Goblin.h"
+#include "SkelletalWarrior.h"
 #include "Troll.h"
 #include "Dragon.h"
 
@@ -11,6 +13,7 @@
 #include "FootSwitch.h"
 #include "DungeonChest.h"
 #include "Ladder.h"
+#include "LadderTrigger.h"
 #include "MovingPlat.h"
 
 CDungeon::CDungeon()
@@ -138,7 +141,9 @@ void CDungeon::OnDestroy()
 void CDungeon::CreateMonsterPrototypes()
 {
     CrateMonsterPrototype<CWolf>();
+    CrateMonsterPrototype<CSnake>();
     CrateMonsterPrototype<CGoblin>();
+    CrateMonsterPrototype<CSkelletalWarrior>();
     CrateMonsterPrototype<CTroll>();
 }
 
@@ -148,6 +153,7 @@ void CDungeon::CreateDungonObjectPrototypes()
     CreateDungonObjectPrototype<CFootSwitch>();
     CreateDungonObjectPrototype<CDungeonChest>();
     CreateDungonObjectPrototype<CLadder>();
+    CreateDungonObjectPrototype<CLadderTrigger>();
     CreateDungonObjectPrototype<CMovingPlat>();
 }
 
@@ -185,6 +191,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[4]->SetBoundingBox({ pair(vector3(63.6f, 9.8f, -71.4f), vector3(28.0f, 20.f, 78.1f)) });
+
+        vector<vector3> skellWarriorPos = { {59.75f, 6.1f, -104.45f} };
+        vector<_float> skellWarriorRot = { -90.f };
+        m_vChapterList[4]->AddMonsterSpawner({ m_mMonsterProtoList[L"SkelletalWarrior"], skellWarriorPos, skellWarriorRot });
     }
 
     {
@@ -486,7 +496,7 @@ void CDungeon::SpawnDungeonChest()
     if (!m_mDungonObjProtoList[L"Dungeon_Chest"])
         return;
 
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < 4; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -512,6 +522,13 @@ void CDungeon::SpawnDungeonChest()
         m_vChestList[2]->Get_Transform()->Set_LocalScale(1.5f);
         m_vChestList[2]->Set_Item(L"Bow");
     }
+
+    {
+        m_vChestList[3]->Get_Transform()->Set_Position(vector3(100.f, -10.5f, -111.3f));
+        m_vChestList[3]->Get_Transform()->Set_EulerAnglesY(90.f);
+        m_vChestList[3]->Get_Transform()->Set_LocalScale(1.5f);
+        //m_vChestList[4]->Set_Item(L"Bow");
+    }
 }
 
 void CDungeon::SpawnDungeonLadder()
@@ -527,21 +544,41 @@ void CDungeon::SpawnDungeonLadder()
         m_vLadderList.back()->Get_GameObject()->SetActive(true);
     }
 
-    m_vLadderList[0]->Get_Transform()->Set_Position(vector3(93.85f, -10.53f, -122.85f));
-    m_vLadderList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
-    m_vLadderList[0]->Set_HeightValue(-10.f, -1.3f, 0.1f);
+    {
+        m_vLadderList[0]->Get_Transform()->Set_Position(vector3(93.85f, -10.53f, -122.85f));
+        m_vLadderList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
+        m_vLadderList[0]->Set_HeightValue(-10.f, -1.3f, 0.1f);
+    }
 
-    m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.83f, -0.027f, -122.85f));
-    m_vLadderList[1]->Get_Transform()->Set_EulerAngles(0.f, 90.f, -180.f);
+    {
+        m_vLadderList[1]->Get_Transform()->Set_Position(vector3(93.83f, -0.027f, -122.85f));
+        m_vLadderList[1]->Get_Transform()->Set_EulerAngles(0.f, 90.f, -180.f);
+    }
 
-    CTransform* ladder2Parent = m_pGameObject->Get_Scene()->Add_GameObject(L"Ladder2")->Get_Transform();
-    ladder2Parent->Set_Position(-33.f, 11.7f, -103.65f);
+    {
+        CTransform* ladder2Parent = m_pGameObject->Get_Scene()->Add_GameObject(L"Ladder2")->Get_Transform();
+        ladder2Parent->Set_Position(-33.f, 11.7f, -103.65f);
 
-    m_vLadderList[2]->Get_Transform()->SetParent(ladder2Parent);
-    m_vLadderList[2]->Get_Transform()->Set_LocalPosition(0.f, -5.f, 0.f);
-    m_vLadderList[2]->Set_HeightValue(5.8f, 11.8f, 12.1f);
+        m_vLadderList[2]->Get_Transform()->SetParent(ladder2Parent);
+        m_vLadderList[2]->Get_Transform()->Set_LocalPosition(0.f, -5.f, 0.f);
+        m_vLadderList[2]->Set_HeightValue(5.8f, 11.8f, 12.1f);
 
-    ladder2Parent->Set_EulerAnglesZ(180.f);
+        ladder2Parent->Set_EulerAnglesZ(180.f);
+    }
+
+    for (size_t i = 0; i < 1; ++i)
+    {
+        CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"LadderTrigger"]->Get_GameObject());
+        newObj->Set_ObjectName(L"Ladder Trigger (Clone) " + to_wstring(i));
+        m_vLadderTriggerList.push_back(newObj->GetComponent<CLadderTrigger>());
+        m_vLadderTriggerList.back()->Get_GameObject()->SetActive(true);
+    }
+
+    {
+        m_vLadderTriggerList[0]->Set_Ladder(m_vLadderList[2]);
+        m_vLadderTriggerList[0]->Get_Transform()->Set_Position(-33.4f, 11.f, -102.5f);
+        m_vLadderTriggerList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
+    }
 }
 
 void CDungeon::SpawnMovingPlat()

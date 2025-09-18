@@ -204,6 +204,8 @@
     <ClInclude Include="..\Header\PlayerCamera.h" />
     <ClInclude Include="..\Header\PlayerController.h" />
     <ClInclude Include="..\Header\PlayerHUD.h" />
+    <ClInclude Include="..\Header\SkelletalWarrior.h" />
+    <ClInclude Include="..\Header\Snake.h" />
     <ClInclude Include="..\Header\Troll.h" />
     <ClInclude Include="..\Header\Weapon.h" />
     <ClInclude Include="..\Header\Wolf.h" />
@@ -277,6 +279,8 @@
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\PlayerHUD.cpp" />
+    <ClCompile Include="..\Code\SkelletalWarrior.cpp" />
+    <ClCompile Include="..\Code\Snake.cpp" />
     <ClCompile Include="..\Code\Troll.cpp" />
     <ClCompile Include="..\Code\Weapon.cpp" />
     <ClCompile Include="..\Code\Wolf.cpp" />
