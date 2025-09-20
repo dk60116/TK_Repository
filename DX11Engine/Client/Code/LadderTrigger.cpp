@@ -28,13 +28,13 @@ HRESULT CLadderTrigger::Initialize(void* _desc)
 {
 	m_strObjName = L"LadderTrigger";
 
-	m_pGameObject->SetTag(L"ArrowTrigger");
-
 	m_sDescription.isTrigger = true;
 	m_sDescription.colliderSize = vector3(0.7f, 0.7f, 0.2f);
 
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
+
+	m_pGameObject->SetTag(L"ArrowTrigger");
 
 	return S_OK;
 }

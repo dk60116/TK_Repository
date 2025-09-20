@@ -26,7 +26,6 @@ public:
 	void AddRout(const vector3 _pos);
 
 private:
-	CBoxCollider* m_pBodyCollider;
 	vector<vector3> m_vRout;
 
 	_bool m_bPlayerEnter;

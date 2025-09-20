@@ -17,8 +17,9 @@ public:
 
 public:
 	const wstring& Get_ItemName();
+	const wstring& Get_ItemDescription();
 
 protected:
-	wstring m_strItemName;
+	wstring m_strItemName, m_strItemDescription;
 };
 

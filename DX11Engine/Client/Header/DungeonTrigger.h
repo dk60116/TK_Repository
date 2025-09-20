@@ -1,14 +1,14 @@
 #pragma once
 #include "DungeonObject.h"
 
-class CLadder final : public CDungeonObject
+class CDungeonTrigger final : public CDungeonObject
 {
 protected:
-	explicit CLadder();
-	~CLadder();
+	explicit CDungeonTrigger();
+	~CDungeonTrigger();
 
 public:
-	static CLadder* Create();
+	static CDungeonTrigger* Create();
 	CComponent* Clone() const override;
 
 public:
@@ -21,10 +21,14 @@ public:
 	void OnDestroy() override;
 
 public:
-	const vector3 Get_HeightValues() const;
-	void Set_HeightValue(const _float _bottom, const _float _top, const _float _upPlat);
+	void Add_LinkObject(CDungeonObject* _obj);
 
 private:
-	_float m_fTopHeight, m_fBottomHeight, m_fUpPlatHeight;
+	void SwitchOnEvent();
+
+private:
+	vector<CDungeonObject*> m_vLinkObjects;
+	CLight* m_pPointLight;
+	CTexture* m_pOnTexture;
 };
 

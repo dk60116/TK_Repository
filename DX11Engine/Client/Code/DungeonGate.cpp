@@ -3,7 +3,6 @@
 
 CDungeonGate::CDungeonGate()
 	: m_pBody(nullptr)
-	, m_pBodyCollider(nullptr)
 	, m_bLock(false)
 	, m_bIsOpen(false)
 	, m_pLockRenderer(nullptr)
@@ -128,8 +127,7 @@ void CDungeonGate::OnTriggerStay(CCollider* _other)
 	{
 		if (m_bLock)
 		{
-			wstring item = L"DungeonKey";
-			if (CGameManager::GetInstance().Get_Inventory()->UseItem(item))
+			if (CGameManager::GetInstance().Get_Inventory()->UseItem(L"Dungeon Key"))
 				Open();
 		}
 	}

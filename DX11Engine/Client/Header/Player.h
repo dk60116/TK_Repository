@@ -75,6 +75,8 @@ public:
 	void PlayLadderAnimation(const _byte _dir, const _float _blending = 0.2f);
 	void PlayLadderOutAnimation(const _float _blending = 0.2f);
 
+	void AddHeart();
+
 	void PopArrow();
 	void ReturnArrow();
 	void ShootArrow();

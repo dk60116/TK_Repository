@@ -10,6 +10,8 @@ CDungeonObject::CDungeonObject()
 	, m_vSkinnedRenderer({})
 	, m_pAnimator(nullptr)
 	, m_pCollider(nullptr)
+	, m_pBodyCollider(nullptr)
+	, m_bOperation(true)
 {
 }
 
@@ -20,6 +22,8 @@ CDungeonObject::~CDungeonObject()
 HRESULT CDungeonObject::Initialize(void* _desc)
 {
 	m_bOnlyCloneComponent = true;
+
+	m_pGameObject->SetLayer(L"DungeonObject");
 
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
@@ -77,4 +81,9 @@ void CDungeonObject::Set_Chapter(CDungeonChapter* _chapter)
 const wstring& CDungeonObject::Get_ObjName()
 {
 	return m_strObjName;
+}
+
+void CDungeonObject::Set_Operation(const _bool _on)
+{
+	m_bOperation = _on;
 }

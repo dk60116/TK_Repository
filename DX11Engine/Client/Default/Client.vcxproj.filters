@@ -106,6 +106,9 @@
     <Filter Include="Scripts\Object\Monster\SkeletonWarrior">
       <UniqueIdentifier>{7bef09aa-93bd-42a0-a5cb-d35c7d944af1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Object\Map\Objects\Contents">
+      <UniqueIdentifier>{3fd868e9-b374-438c-b295-95b1508d9773}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\MainScene.h">
@@ -237,18 +240,6 @@
     <ClInclude Include="..\Header\Dungeon.h">
       <Filter>Scripts\Object\Map\Dungeon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\DungeonObject.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\DungeonGate.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\FootSwitch.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\DungeonChest.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\Item.h">
       <Filter>Scripts\Object\Item</Filter>
     </ClInclude>
@@ -258,14 +249,8 @@
     <ClInclude Include="..\Header\Inventory.h">
       <Filter>Scripts\Object\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\Ladder.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\MovingPlat.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\BossMonster.h">
       <Filter>Scripts\Object\BossMonster</Filter>
@@ -306,9 +291,6 @@
     <ClInclude Include="..\Header\ME_FireBall.h">
       <Filter>Scripts\Object\VFX</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\LadderTrigger.h">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\ME_SwordSlash.h">
       <Filter>Scripts\Object\VFX</Filter>
     </ClInclude>
@@ -326,6 +308,33 @@
     </ClInclude>
     <ClInclude Include="..\Header\SkelletalWarrior.h">
       <Filter>Scripts\Object\Monster\SkeletonWarrior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Item_Heart.h">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonChest.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonGate.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonTrigger.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\FootSwitch.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Ladder.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\LadderTrigger.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\MovingPlat.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DungeonObject.h">
+      <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,21 +452,6 @@
     <ClCompile Include="..\Code\DungeonChapter.cpp">
       <Filter>Scripts\Object\Map\Dungeon\Spawner</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Dungeon.cpp">
-      <Filter>Scripts\Object\Map\Dungeon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\DungeonObject.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\DungeonGate.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\FootSwitch.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\DungeonChest.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\Item.cpp">
       <Filter>Scripts\Object\Item</Filter>
     </ClCompile>
@@ -467,20 +461,11 @@
     <ClCompile Include="..\Code\Inventory.cpp">
       <Filter>Scripts\Object\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Ladder.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\PlayerBehaviour_Ladder.cpp">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\MovingPlat.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\BossMonster.cpp">
       <Filter>Scripts\Object\BossMonster</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\DefaultArrow.cpp">
-      <Filter>Scripts\Object\Weapons\Arrows</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\BossController.cpp">
       <Filter>Scripts\Object\BossMonster\Controller</Filter>
@@ -521,9 +506,6 @@
     <ClCompile Include="..\Code\ME_FireBall.cpp">
       <Filter>Scripts\Object\VFX</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\LadderTrigger.cpp">
-      <Filter>Scripts\Object\Map\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\ME_SwordSlash.cpp">
       <Filter>Scripts\Object\VFX</Filter>
     </ClCompile>
@@ -541,6 +523,39 @@
     </ClCompile>
     <ClCompile Include="..\Code\SkelletalWarrior.cpp">
       <Filter>Scripts\Object\Monster\SkeletonWarrior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Item_Heart.cpp">
+      <Filter>Scripts\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Dungeon.cpp">
+      <Filter>Scripts\Object\Map\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonChest.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonGate.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonTrigger.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FootSwitch.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ladder.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\LadderTrigger.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MovingPlat.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonObject.cpp">
+      <Filter>Scripts\Object\Map\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DefaultArrow.cpp">
+      <Filter>Scripts\Object\Weapons\Arrows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,12 +36,15 @@ public:
 	void Update_Rupee(const _int _count);
 	void Update_DungeonKey(const _int _count);
 
+	void OpenNotifaction(class CItem* _item);
+
 private:
 	void SpawnHeartBowl();
 	void SpawnBowCrossHair();
 	void SpawnEquipSlot();
 	void SpawnRupeeUI();
 	void SpawnKeyCountUI();
+	void SpawnNotifacionUI();
 
 private:
 	CPlayer* m_pPlayer;
@@ -56,5 +59,8 @@ private:
 
 	vector<CImage*> m_vEquipSlotImage, m_vEquipIconImage;
 	vector<CText*> m_vEquipCountText;
+
+	CImage* m_pNotifactionPanel, * m_pNotifactionIcon;
+	CText* m_pNotifactionTitleText, * m_pNotifactionDescText;
 };
 

@@ -29,6 +29,7 @@ public:
 	void OnDestroy() override;
 
 public:
+	CItem* FindItem(const wstring& _name) const;
 	void AddItem(const wstring& _name, const _uint _count = 1);
 	_bool UseItem(const wstring& _name, const _uint _count = 1);
 	const _bool HasItem(const wstring& _name) const;

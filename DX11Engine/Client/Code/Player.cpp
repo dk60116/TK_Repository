@@ -415,6 +415,14 @@ void CPlayer::PlayLadderOutAnimation(const _float _blending)
 	m_pAnimator->Play(L"LadderOutUp", _blending);
 }
 
+void CPlayer::AddHeart()
+{
+	m_sPlayerStatus.maxHp += 2;
+	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
+
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
+}
+
 void CPlayer::PopArrow()
 {
 	m_pEquipArrow = m_mArrowPool[m_strCrtArrow].front();

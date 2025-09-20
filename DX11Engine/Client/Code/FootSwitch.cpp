@@ -59,6 +59,8 @@ void CFootSwitch::Awake()
 		m_pStepCollider->Set_Size(2.3f * 100.f);
 		m_pStepCollider->Set_Center(vector3::down() * 0.7f * 100.f);
 	}
+
+	m_pStepCollider->Get_GameObject()->SetLayer(L"Map");
 }
 
 void CFootSwitch::Update()

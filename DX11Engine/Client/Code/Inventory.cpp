@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "Inventory.h"
 
+#include "Item_Heart.h"
 #include "Item_DungeonKey.h"
 #include "Item_Sword.h"
 #include "Item_Bow.h"
@@ -32,6 +33,7 @@ HRESULT CInventory::Initialize(void* _desc)
 	if (FAILED(__super::Initialize(_desc)))
 		E_FAIL;
 
+	Add_ItemSlot<CItem_Heart>();
 	Add_ItemSlot<CItem_DungeonKey>();
 	Add_ItemSlot<CItem_Sword>();
 	Add_ItemSlot<CItem_Bow>();
@@ -54,6 +56,15 @@ void CInventory::OnDestroy()
 	{
 		Safe_Release((*it).second.protoType);
 	}
+}
+
+CItem* CInventory::FindItem(const wstring& _name) const
+{
+	auto it = m_mItemList.find(_name);
+	if (it == m_mItemList.end())
+		return nullptr;
+
+	return (*it).second.protoType;
 }
 
 void CInventory::AddItem(const wstring& _name, const _uint _count)

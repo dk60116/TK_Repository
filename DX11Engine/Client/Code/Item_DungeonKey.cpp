@@ -3,7 +3,8 @@
 
 CItem_DungeonKey::CItem_DungeonKey()
 {
-	m_strItemName = L"DungeonKey";
+	m_strItemName = L"Dungeon Key";
+	m_strItemDescription = L"Can open the locked gate.";
 }
 
 CItem_DungeonKey::~CItem_DungeonKey()

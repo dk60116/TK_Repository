@@ -781,6 +781,26 @@ void CTransform::Set_LocalScaleZ(const _float _value)
     m_vScale.z = _value;
 }
 
+void CTransform::Add_LocalScale(const vector3& _scale)
+{
+    m_vScale += _scale;
+}
+
+void CTransform::Add_LocalScaleX(const _float _value)
+{
+    m_vScale.x += _value;
+}
+
+void CTransform::Add_LocalScaleY(const _float _value)
+{
+    m_vScale.y += _value;
+}
+
+void CTransform::Add_LocalScaleZ(const _float _value)
+{
+    m_vScale.z += _value;
+}
+
 const vector3& CTransform::Get_PrevPosition()
 {
     return m_vPrevPosition;

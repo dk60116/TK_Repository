@@ -8,7 +8,6 @@ CDungeonChest::CDungeonChest()
 	, m_bTakeItem(false)
 	, m_pJoint(nullptr)
 	, m_bDetacted(false)
-	, m_pBodyCollider(nullptr)
 	, m_fOpenTimer(0.f)
 {
 }
@@ -86,6 +85,8 @@ void CDungeonChest::Update()
 	{
 		CGameManager::GetInstance().Get_Inventory()->AddItem(m_strItemName);
 		m_bTakeItem = true;
+
+		CGameManager::GetInstance().Get_PlayerHUD()->OpenNotifaction(CGameManager::GetInstance().Get_Inventory()->FindItem(m_strItemName));
 	}
 }
 

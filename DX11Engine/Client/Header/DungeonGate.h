@@ -27,7 +27,6 @@ public:
 
 private:
 	CTransform* m_pBody;
-	CBoxCollider* m_pBodyCollider;
 
 	_bool m_bLock;
 	_bool m_bIsOpen;

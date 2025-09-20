@@ -4,6 +4,7 @@
 CItem_Bow::CItem_Bow()
 {
 	m_strItemName = L"Bow";
+	m_strItemDescription = L"Shoot the arrow";
 }
 
 CItem_Bow::~CItem_Bow()

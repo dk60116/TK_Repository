@@ -2,8 +2,8 @@
 #include "MovingPlat.h"
 
 CMovingPlat::CMovingPlat()
-	: m_pBodyCollider(nullptr)
-	, m_vRout({})
+	: m_vRout({})
+	, m_bPlayerEnter(false)
 	, m_fMoveSpeed(2.f)
 	, m_iTargetStep(1)
 	, m_bBackStep(false)
@@ -63,6 +63,9 @@ void CMovingPlat::Start()
 void CMovingPlat::Update()
 {
 	__super::Update();
+
+	if (!m_bOperation)
+		return;
 	
 	CTransform* myTF = Get_Transform();
 	const vector3 myPos = Get_Transform()->Get_Position();

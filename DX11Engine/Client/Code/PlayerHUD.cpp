@@ -17,6 +17,10 @@ CPlayerHUD::CPlayerHUD()
 	, m_vEquipSlotImage({})
 	, m_vEquipIconImage({})
 	, m_vEquipCountText({})
+	, m_pNotifactionPanel(nullptr)
+	, m_pNotifactionIcon(nullptr)
+	, m_pNotifactionTitleText(nullptr)
+	, m_pNotifactionDescText(nullptr)
 {
 }
 
@@ -46,6 +50,7 @@ HRESULT CPlayerHUD::Initialize(void* _desc)
 	SpawnRupeeUI();
 	SpawnKeyCountUI();
 	SpawnBowCrossHair();
+	SpawnNotifacionUI();
 
 	CGameManager::GetInstance().Set_PlayerHUD(this);
 
@@ -76,7 +81,7 @@ void CPlayerHUD::Awake()
 
 void CPlayerHUD::Start()
 {
-	Update_Heart(3, 3);
+	Update_Heart(CGameManager::GetInstance().Get_Player()->Get_Status().crtHp, CGameManager::GetInstance().Get_Player()->Get_Status().maxHp);
 }
 
 void CPlayerHUD::Update()
@@ -93,6 +98,19 @@ void CPlayerHUD::Update()
 	if (CInput::GetKeyDown_Editor(I))
 	{
 		CDebug::LogError(m_vEquipCountText[0]->Get_RectTransform()->Get_ScreenPosition());
+	}
+
+	if (m_pNotifactionPanel->Get_GameObject()->ActiveSelf())
+	{
+		CRectTransform* nfRT = m_pNotifactionPanel->Get_RectTransform();
+
+		if (nfRT->Get_LocalScale().x <= 1.f)
+			nfRT->Set_LocalScale(vector3::Lerp(nfRT->Get_LocalScale(), vector3::one() * 0.5f, DELTA_TIME * 5.f));
+		else
+			nfRT->Set_LocalScale(0.5f);
+
+		if (CInput::GetKeyDown(E))
+			m_pNotifactionPanel->Get_GameObject()->SetActive(false);
 	}
 }
 
@@ -133,6 +151,17 @@ void CPlayerHUD::Update_Rupee(const _int _count)
 void CPlayerHUD::Update_DungeonKey(const _int _count)
 {
 	m_pDungeonKeyText->Set_Text(to_wstring(_count));
+}
+
+void CPlayerHUD::OpenNotifaction(CItem* _item)
+{
+	m_pNotifactionTitleText->Set_Text(_item->Get_ItemName());
+	m_pNotifactionIcon->SetTexture(CResources::LoadOnScene<CTexture>(_item->Get_ItemName() + L"_Icon (Texture)"));
+	m_pNotifactionDescText->Set_Text(_item->Get_ItemDescription());
+
+	m_pNotifactionPanel->Get_RectTransform()->Set_LocalScale(0);
+
+	m_pNotifactionPanel->Get_GameObject()->SetActive(true);
 }
 
 void CPlayerHUD::SpawnHeartBowl()
@@ -268,4 +297,40 @@ void CPlayerHUD::SpawnKeyCountUI()
 	m_pDungeonKeyText->Get_RectTransform()->Set_AnchoredPosition(40.f, 20.f);
 	m_pDungeonKeyText->SetColor(ColorValue::white());
 	m_pDungeonKeyText->Set_Text(L"0");
+}
+
+void CPlayerHUD::SpawnNotifacionUI()
+{
+	CGameObject* panelObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Notifaction Panel");
+	m_pNotifactionPanel = panelObj->AddComponent<CImage>();
+	m_pNotifactionPanel->Get_RectTransform()->SetParent(Get_Transform());
+	m_pNotifactionPanel->SetTexture(CResources::LoadOnScene<CTexture>(L"NotifactionPanel (Texture)"));
+	m_pNotifactionPanel->Get_RectTransform()->Set_WidthHeight(600, 350);
+	m_pNotifactionPanel->SetAlpha(0.75f);
+
+	CGameObject* titleObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Title Text");
+	m_pNotifactionTitleText = titleObj->AddComponent<CText>();
+	m_pNotifactionTitleText->Get_RectTransform()->SetParent(m_pNotifactionPanel->Get_RectTransform());
+	m_pNotifactionTitleText->Get_RectTransform()->Set_WidthHeight(100, 50);
+	m_pNotifactionTitleText->Get_RectTransform()->Set_Pivot(0.5f, 1.f);
+	m_pNotifactionTitleText->Get_RectTransform()->Set_AnchorsMin(0.5f, 1.f);
+	m_pNotifactionTitleText->Get_RectTransform()->Set_AnchoredPosition(0.f, -65.f);
+	m_pNotifactionTitleText->Set_Text(L"Item Name");
+
+	CGameObject* iconObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Icon");
+	m_pNotifactionIcon = iconObj->AddComponent<CImage>();
+	m_pNotifactionIcon->Get_RectTransform()->SetParent(m_pNotifactionPanel->Get_RectTransform());
+	m_pNotifactionIcon->Get_RectTransform()->Set_WidthHeight(80);
+
+	CGameObject* descObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Descriptoin Text");
+	m_pNotifactionDescText = descObj->AddComponent<CText>();
+	m_pNotifactionDescText->Get_RectTransform()->SetParent(m_pNotifactionPanel->Get_RectTransform());
+	m_pNotifactionDescText->Get_RectTransform()->Set_WidthHeight(200, 50);
+	m_pNotifactionDescText->Get_RectTransform()->Set_Pivot(0.5f, 0.f);
+	m_pNotifactionDescText->Get_RectTransform()->Set_AnchorsMin(0.5f, 0.f);
+	m_pNotifactionDescText->Get_RectTransform()->Set_AnchoredPosition(0.f, 65.f);
+	m_pNotifactionDescText->Set_FontSize(7.f);
+	m_pNotifactionDescText->Set_Text(L"Item Desc");
+
+	m_pNotifactionPanel->Get_GameObject()->SetActive(false);
 }

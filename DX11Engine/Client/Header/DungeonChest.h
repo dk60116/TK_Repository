@@ -30,7 +30,6 @@ private:
 	_uint m_iItemCount;
 	_bool m_bDetacted, m_bIsOpen, m_bTakeItem;
 	CTransform* m_pJoint;
-	CBoxCollider* m_pBodyCollider;
 
 	_float m_fOpenTimer;
 };

@@ -166,12 +166,14 @@
     <ClInclude Include="..\Header\DungeonChest.h" />
     <ClInclude Include="..\Header\DungeonGate.h" />
     <ClInclude Include="..\Header\DungeonObject.h" />
+    <ClInclude Include="..\Header\DungeonTrigger.h" />
     <ClInclude Include="..\Header\FootSwitch.h" />
     <ClInclude Include="..\Header\Inventory.h" />
     <ClInclude Include="..\Header\Item.h" />
     <ClInclude Include="..\Header\Item_Arrow.h" />
     <ClInclude Include="..\Header\Item_Bow.h" />
     <ClInclude Include="..\Header\Item_DungeonKey.h" />
+    <ClInclude Include="..\Header\Item_Heart.h" />
     <ClInclude Include="..\Header\Item_Sword.h" />
     <ClInclude Include="..\Header\Ladder.h" />
     <ClInclude Include="..\Header\LadderTrigger.h" />
@@ -243,6 +245,7 @@
     <ClCompile Include="..\Code\DungeonChest.cpp" />
     <ClCompile Include="..\Code\DungeonGate.cpp" />
     <ClCompile Include="..\Code\DungeonObject.cpp" />
+    <ClCompile Include="..\Code\DungeonTrigger.cpp" />
     <ClCompile Include="..\Code\FootSwitch.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />
     <ClCompile Include="..\Code\GameScene.cpp" />
@@ -251,6 +254,7 @@
     <ClCompile Include="..\Code\Item_Arrow.cpp" />
     <ClCompile Include="..\Code\Item_Bow.cpp" />
     <ClCompile Include="..\Code\Item_DungeonKey.cpp" />
+    <ClCompile Include="..\Code\Item_Heart.cpp" />
     <ClCompile Include="..\Code\Item_Sword.cpp" />
     <ClCompile Include="..\Code\Ladder.cpp" />
     <ClCompile Include="..\Code\LadderTrigger.cpp" />

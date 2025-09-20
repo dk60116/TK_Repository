@@ -127,6 +127,11 @@ public:
 	void Set_LocalScaleY(const _float _value);
 	void Set_LocalScaleZ(const _float _value);
 
+	void Add_LocalScale(const vector3& _scale);
+	void Add_LocalScaleX(const _float _value);
+	void Add_LocalScaleY(const _float _value);
+	void Add_LocalScaleZ(const _float _value);
+
 	const vector3& Get_PrevPosition();
 	const vector3& Get_PrevLocalPos();
 	const vector3& Get_PrevEulerAngles();

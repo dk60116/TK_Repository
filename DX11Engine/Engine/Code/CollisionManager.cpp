@@ -25,7 +25,7 @@ HRESULT CCollisionManager::Initialize()
 	GetInstance().m_mColliderGizmoColorSet.emplace(CCollider::GizmoColor::GreenRed, pair(ColorValue::green(), ColorValue::red()));
 	GetInstance().m_mColliderGizmoColorSet.emplace(CCollider::GizmoColor::BlackWhite, pair(ColorValue::black(), ColorValue::white()));
 	GetInstance().m_mColliderGizmoColorSet.emplace(CCollider::GizmoColor::BlueOrange, pair(ColorValue::blue(), ColorValue(150, 0, 0)));
-#endif // _DEBUG
+#endif
 
 	for (_uint i = 0; i < 32; ++i)
 	{
@@ -49,9 +49,9 @@ void CCollisionManager::UpdateCollision()
 	if (n < 2) 
 		return;
 
-	for (size_t i = 0; i < colliderList.size(); ++i)
+	for (size_t i = 0; i < n; ++i)
 	{
-		for (size_t j = i + 1; j < colliderList.size(); ++j)
+		for (size_t j = i + 1; j < n; ++j)
 		{
 			_uint layerA = colliderList[i]->Get_GameObject()->GetLayer();
 			_uint layerB = colliderList[j]->Get_GameObject()->GetLayer();

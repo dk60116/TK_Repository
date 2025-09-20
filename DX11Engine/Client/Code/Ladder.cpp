@@ -2,8 +2,7 @@
 #include "Ladder.h"
 
 CLadder::CLadder()
-    : m_pBodyCollider(nullptr)
-    , m_fBottomHeight(0.f)
+    : m_fBottomHeight(0.f)
     , m_fTopHeight(1.f)
     , m_fUpPlatHeight(1.f)
 {
@@ -31,7 +30,7 @@ HRESULT CLadder::Initialize(void* _desc)
 
     m_sDescription.scaleFactor = 0.0175f;
     m_sDescription.isTrigger = true;
-    m_sDescription.colliderSize = vector3(0.8f, 1.f, 0.3f);
+    m_sDescription.colliderSize = vector3(0.8f, 1.f, 0.2f);
 
     if (FAILED(__super::Initialize(_desc)))
         return S_OK;

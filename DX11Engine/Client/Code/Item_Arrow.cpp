@@ -3,6 +3,8 @@
 
 CItem_Arrow::CItem_Arrow()
 {
+	m_strItemName = L"Arrow";
+	m_strItemDescription = L"Fire with the bow.";
 }
 
 CItem_Arrow::~CItem_Arrow()

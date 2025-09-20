@@ -60,6 +60,7 @@ private:
 	vector<class CLadder*> m_vLadderList;
 	vector<class CLadderTrigger*> m_vLadderTriggerList;
 	vector<class CMovingPlat*> m_vMovingPlatList;
+	vector<class CDungeonTrigger*> m_vDungeonTriggerList;
 
 	class CDragon* m_pDragon;
 };

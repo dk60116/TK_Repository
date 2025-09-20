@@ -28,6 +28,7 @@ public:
 public:
 	void Set_Chapter(class CDungeonChapter* _chapter);
 	const wstring& Get_ObjName();
+	void Set_Operation(const _bool _on);
 
 protected:
 	class CDungeonChapter* m_pChapter;
@@ -37,5 +38,7 @@ protected:
 	vector<CSkinnedMeshRenderer*> m_vSkinnedRenderer;
 	CAnimator* m_pAnimator;
 	CBoxCollider* m_pCollider;
+	CBoxCollider* m_pBodyCollider;
+	_bool m_bOperation;
 };
 

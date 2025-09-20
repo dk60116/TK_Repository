@@ -4,6 +4,7 @@
 CItem_Sword::CItem_Sword()
 {
 	m_strItemName = L"Sword";
+	m_strItemDescription = L"Equip and attack the enemy";
 }
 
 CItem_Sword::~CItem_Sword()
