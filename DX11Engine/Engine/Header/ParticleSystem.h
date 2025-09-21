@@ -12,13 +12,13 @@ class ENGINE_DLL CParticleSystem final : public CComponent
     typedef struct ParticleInformation
     {
         _uint shape = 0;
-        _uint maxCount = 1;
+        _uint maxCount = 100;
         _float lifeTime = 1.f;
         _float startDelay = 0.f;
         _float startLifeTime = 1.f;
         vector3 startDirection = vector3::zero();
         _bool startSize3D = false;
-        vector3 startSize = vector3::one();
+        vector3 startSize = vector3::one() * 0.5f;
         vector3 startRotation = vector3::zero();
         ColorValue startColor = ColorValue::white();
         _bool useGravity = false;
@@ -56,8 +56,13 @@ public:
     void OnDestroy() override;
 
 private:
+    CMeshBuffer* CreateInstanceBuffer(CMeshBuffer* _origin, _uint _count, D3D11_USAGE _usage);
+
+private:
     vector<CMeshRenderer*> m_vRenderers;
     PARTICLEDESC m_sDescription;
+    vector<CMeshBuffer*> m_vInstanceBuffers;
+    _float m_fCurrentTime;
 };
 
 NS_END

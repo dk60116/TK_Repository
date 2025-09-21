@@ -23,7 +23,7 @@ HRESULT CWeapon::Initialize(void* _desc)
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"PlayerWeapon");
-	m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strWeaponName + L" (MeshBuffer)"), 0.01f * m_sOptions.localScale);
+	m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strWeaponName + L" (Mesh Buffer)"), 0.01f * m_sOptions.localScale);
 
 	return S_OK;
 }

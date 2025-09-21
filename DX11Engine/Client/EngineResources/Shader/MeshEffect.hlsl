@@ -26,7 +26,7 @@ cbuffer PerCustomValue : register(b10)
     float gDistortionAmount;
     float4 ctpadding;
     float4 ctpadding1;
-}
+};
 
 // 텍스처 & 샘플러
 Texture2D gTexture : register(t0);

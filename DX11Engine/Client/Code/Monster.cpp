@@ -37,7 +37,7 @@ HRESULT CMonster::Initialize(void* _desc)
 
 	m_pGameObject->SetLayer(L"Monster");
 
-	wstring skinnedMeshBufferName = m_strMonsterName + L"_Model (MeshBuffer)";
+	wstring skinnedMeshBufferName = m_strMonsterName + L"_Model (Mesh Buffer)";
 	m_vMeshRenderers = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(skinnedMeshBufferName), CResources::LoadSkinnedBonesOnScene(skinnedMeshBufferName), m_sOptions.scaleFactor, vector3::up() * 180.f);
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 

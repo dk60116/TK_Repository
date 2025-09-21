@@ -45,7 +45,7 @@ void CFootSwitch::Awake()
 {
 	__super::Awake();
 
-	auto bodyRen = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_FootSwitch_Model (MeshBuffer)"), 0.012f);
+	auto bodyRen = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_FootSwitch_Model (Mesh Buffer)"), 0.012f);
 	bodyRen[0]->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(L"Dungeon_FootSwitch_BaseMap (Texture)"));
 
 	m_pBodyTransform = bodyRen[0]->Get_Transform();

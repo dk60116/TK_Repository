@@ -21,7 +21,7 @@ HRESULT CMeshEffect::Initialize(void* _desc)
 
 	for (_uint i = 0; i < m_sDescription.meshCount; ++i)
 	{
-		const wstring meshName = m_strEffectName + L"_Mesh_" + to_wstring(i) + L" (MeshBuffer)";
+		const wstring meshName = m_strEffectName + L"_Mesh_" + to_wstring(i) + L" (Mesh Buffer)";
 		CMeshRenderer* mesh = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(meshName))[0];
 		m_vMesheList.push_back(mesh);
 

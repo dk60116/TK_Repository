@@ -1497,6 +1497,19 @@ vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBuffe
 	return clips;
 }
 
+CEngineResource* CResources::AddSceneResource(const wstring& _name, CEngineResource* _resource, const _bool _tempScene)
+{
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
+		CSceneManager::Get_CrtScene();
+
+	if (!_tempScene)
+		targetScene->Add_Resource(_name, _resource);
+	else
+		targetScene->Add_TempResource(_name, _resource);
+
+	return _resource;
+}
+
 vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
 {
 	_float scaleFactor = 1.f;

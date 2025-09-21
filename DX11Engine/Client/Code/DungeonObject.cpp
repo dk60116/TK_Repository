@@ -43,14 +43,14 @@ void CDungeonObject::Awake()
 
 	if (!m_sDescription.isSkinning)
 	{
-		m_vRenderer = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strObjName + L"_Model (MeshBuffer)"), m_sDescription.scaleFactor);
+		m_vRenderer = m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strObjName + L"_Model (Mesh Buffer)"), m_sDescription.scaleFactor);
 
 		for (TRAVERSAL_ITER(m_vRenderer, it))
 			(*it)->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(m_strObjName + L"_BaseMap (Texture)"));
 	}
 	else
 	{
-		m_vSkinnedRenderer = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strObjName + L"_Model (MeshBuffer)"), CResources::LoadSkinnedBonesOnScene(m_strObjName + L"_Model (SkinnedBuffer)"), m_sDescription.scaleFactor);
+		m_vSkinnedRenderer = m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(m_strObjName + L"_Model (Mesh Buffer)"), CResources::LoadSkinnedBonesOnScene(m_strObjName + L"_Model (SkinnedBuffer)"), m_sDescription.scaleFactor);
 
 		for (TRAVERSAL_ITER(m_vSkinnedRenderer, it))
 			(*it)->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(m_strObjName + L"_BaseMap (Texture)"));

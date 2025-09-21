@@ -53,7 +53,7 @@ HRESULT CPlayer::Initialize(void* _desc)
 	m_pGameObject->SetLayer(L"Player");
 	m_pGameObject->SetTag(L"Player");
 
-	m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
+	m_pGameObject->CreateSkinnedMeshHierachy(CResources::LoadSkinnedMeshBuffersOnScene(L"Link_Model (Mesh Buffer)"), CResources::LoadSkinnedBonesOnScene(L"Link_Model (Mesh Buffer)"), 0.01f, vector3::up() * 180.f);
 
 	m_pRootTransform = Get_Transform()->Get_Child(1);
 	m_pLHandTransform = Get_Transform()->Find_ChildRecursive(L"LeftHand");

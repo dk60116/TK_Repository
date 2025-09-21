@@ -64,7 +64,7 @@ void CDungeonGate::Awake()
 	{
 		CGameObject* lockObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Lock");
 		lockObj->Get_Transform()->SetParent(Get_Transform());
-		m_pLockRenderer = lockObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Lock_Model (MeshBuffer)"), 0.005f)[0];
+		m_pLockRenderer = lockObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Lock_Model (Mesh Buffer)"), 0.005f)[0];
 		lockObj->Get_Transform()->Set_LocalPositionY(1.7f);
 	}
 
@@ -79,7 +79,7 @@ void CDungeonGate::Start()
 		for (_uint i = 0; i < 3; ++i)
 		{
 			CGameObject* chainObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Chain" + to_wstring(i));
-			m_vLockChainRenders.push_back(chainObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Lock_Chain (MeshBuffer)"), 0.005f)[0]->Get_Transform()->Get_Parent());
+			m_vLockChainRenders.push_back(chainObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"Dungeon_Lock_Chain (Mesh Buffer)"), 0.005f)[0]->Get_Transform()->Get_Parent());
 			chainObj->Get_Transform()->SetParent(Get_Transform());
 			chainObj->Get_Transform()->Set_LocalPosition(vector3::zero());
 			chainObj->Get_Transform()->Set_LocalScale(2.5f);

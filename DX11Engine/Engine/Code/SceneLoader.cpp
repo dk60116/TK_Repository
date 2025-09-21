@@ -136,7 +136,12 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					auto meshInfoList = CResources::ReadMeshBufferInfos(meshdataPath);
 
-					CResources::CreateSceneMeshBundle(wName + L" (MeshBuffer)", meshInfoList, filter, nullptr, true);
+					CResources::CreateSceneMeshBundle(wName + L" (Mesh Buffer)", meshInfoList, filter, nullptr, true);
+
+					CMeshBuffer * bufferOne = CMeshBuffer::Create();
+					bufferOne->Initialize_Custom(meshInfoList[0], nullptr);
+
+					CResources::AddSceneResource(wName + L" (Mesh Buffer)", bufferOne, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Skinned Mesh]"))
 				{
@@ -158,7 +163,7 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					auto skinnedInfoList = CResources::ReadSkinnedBufferInfos(skinnedDataPath);
 
-					CResources::CreateSceneSkinnedBundle(wName + L" (MeshBuffer)", skinnedInfoList.initList, skinnedInfoList.skeletalList, filter, nullptr, true);
+					CResources::CreateSceneSkinnedBundle(wName + L" (Mesh Buffer)", skinnedInfoList.initList, skinnedInfoList.skeletalList, filter, nullptr, true);
 				}
 				if (CEngineString::Contains(wFormat, L"[Animation Clip]"))
 				{

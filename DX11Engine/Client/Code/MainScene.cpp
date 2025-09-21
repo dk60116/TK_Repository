@@ -55,7 +55,7 @@ HRESULT CMainScene::Initialize()
 	exitText->Set_Text(L"Exit");
 
 	CGameObject* tempObj = Add_GameObject(L"Test");
-	tempObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"WoodenSword (MeshBuffer)"), 0.01f);
+	tempObj->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(L"WoodenSword (Mesh Buffer)"), 0.01f);
 
 	return S_OK;
 }

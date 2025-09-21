@@ -49,6 +49,8 @@ public:
     static HRESULT SaveAnimationClipBufferInfos(const wstring& _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList);
     static vector<CAnimationClip::AnimationClipInitInfo> ReadAnimationClipBufferInfos(const wstring& _binFileName);
 
+    static CEngineResource* AddSceneResource(const wstring& _name, CEngineResource* _resource, const _bool _tempScene);
+
 public:
     template<typename T>
     static T* CreateGameResource(const wstring& _name, const wstring& _path, void* _desc = nullptr);
@@ -142,7 +144,7 @@ inline T* CResources::LoadOnGame(const wstring& _name)
 
     if (iter == GetInstance().m_mGameResourceList.end())
     {
-        CDebug::LogError(L"Failed clone Game resource - not found resource: " + _name);
+        CDebug::LogError(L"Failed load Game resource - not found resource: " + _name);
         return nullptr;
     }
 

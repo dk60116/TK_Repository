@@ -1,7 +1,7 @@
 cbuffer PerObject : register(b0)
 {
     float4x4 gWorld;
-}
+};
 
 cbuffer PerCamera : register(b1)
 {
@@ -9,7 +9,7 @@ cbuffer PerCamera : register(b1)
     float4x4 gView;
     float4x4 gProj;
     float cpadding;
-}
+};
 
 cbuffer PerMaterial : register(b2)
 {
@@ -17,12 +17,12 @@ cbuffer PerMaterial : register(b2)
     uint useTexture;
     uint boneCount;
     float2 padding;
-}
+};
 
 cbuffer PerFillAmount : register(b3)
 {
     float gFillAmount;
-}
+};
 
 // ───── 버텍스 구조
 struct VSIn
