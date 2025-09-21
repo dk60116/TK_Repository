@@ -1691,6 +1691,7 @@ void CResources::Ready_GameResources()
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (Mesh Buffer)", L"Cube"));
 	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (Mesh Buffer)", L"Quad"));
 
+	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"Circle (Texture)", L"../EngineResources/Image/Circle.png"));
 	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
 
 	{
@@ -1757,10 +1758,17 @@ void CResources::Ready_GameResources()
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"MeshEffect (Shader)", L"", &meshEffectShaderDesc));
 
 	CShader* meShader = LoadOnGame<CShader>(L"MeshEffect (Shader)");
-	CMaterial::MATERIALDESC meMatDesc = { meShader, false };
+	CMaterial::MATERIALDESC meMatDesc = { meShader, false, true };
 	meMatDesc.customFloatValues.push_back({ L"gTime", 0.f });
 	meMatDesc.customFloatValues.push_back({ L"gDistortionAmount", 0.5f });
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"MeshEffectMaterial (Material)", L"", &meMatDesc));
+
+	CShader::SHADERDESC particleEffectShaderDesc = { L"../EngineResources/Shader/Particle.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"ParticleEffect (Shader)", L"", &particleEffectShaderDesc));
+
+	CShader* ptcShader = LoadOnGame<CShader>(L"ParticleEffect (Shader)");
+	CMaterial::MATERIALDESC ptcMatDesc = { ptcShader, false, true };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"ParticleMaterial (Material)", L"", &ptcMatDesc));
 }
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)

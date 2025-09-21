@@ -449,9 +449,6 @@
     <ClCompile Include="..\Code\PlayerBehaviour_Bow.cpp">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\DungeonChapter.cpp">
-      <Filter>Scripts\Object\Map\Dungeon\Spawner</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\Item.cpp">
       <Filter>Scripts\Object\Item</Filter>
     </ClCompile>
@@ -556,6 +553,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\DefaultArrow.cpp">
       <Filter>Scripts\Object\Weapons\Arrows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonChapter.cpp">
+      <Filter>Scripts\Object\Map\Dungeon\Spawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

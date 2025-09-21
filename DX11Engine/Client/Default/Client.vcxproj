@@ -242,6 +242,7 @@
     <ClCompile Include="..\Code\DragonBHV_Wakeup.cpp" />
     <ClCompile Include="..\Code\Dungeon.cpp" />
     <ClCompile Include="..\Code\DragonBHV_ShootFireBall.cpp" />
+    <ClCompile Include="..\Code\DungeonChapter.cpp" />
     <ClCompile Include="..\Code\DungeonChest.cpp" />
     <ClCompile Include="..\Code\DungeonGate.cpp" />
     <ClCompile Include="..\Code\DungeonObject.cpp" />
@@ -270,7 +271,6 @@
     <ClCompile Include="..\Code\MonsterBehaviour.cpp" />
     <ClCompile Include="..\Code\MonsterController.cpp" />
     <ClCompile Include="..\Code\MonsterPartCollision.cpp" />
-    <ClCompile Include="..\Code\DungeonChapter.cpp" />
     <ClCompile Include="..\Code\MovingPlat.cpp" />
     <ClCompile Include="..\Code\Player.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour.cpp" />

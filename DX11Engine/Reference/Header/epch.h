@@ -47,3 +47,4 @@
 #include "NavMeshAgent.h"
 #include "CollisionManager.h"
 #include "RigidBody.h"
+#include "ParticleSystem.h"

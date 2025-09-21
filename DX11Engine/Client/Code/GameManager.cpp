@@ -111,3 +111,13 @@ CInventory* CGameManager::Get_Inventory()
 {
 	return m_pInventory;
 }
+
+void CGameManager::Set_Dungeon(CDungeon* _dungeon)
+{
+	m_pDungeon = _dungeon;
+}
+
+CDungeon* CGameManager::Get_Dungeon()
+{
+	return m_pDungeon;
+}

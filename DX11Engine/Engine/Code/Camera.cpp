@@ -324,12 +324,12 @@ void CCamera::RenderMesh()
 	vector<CRenderer*> sorted(m_vMeshList_Blend.begin(), m_vMeshList_Blend.end());
 	const vector3 camPos = Get_Transform()->Get_Position();
 
-	sort(sorted.begin(), sorted.end(), [&](CRenderer* a, CRenderer* b)
-		{
-		const _float da = (a->Get_Transform()->Get_Position() - camPos).lengthSq();
-		const _float db = (b->Get_Transform()->Get_Position() - camPos).lengthSq();
-		return da > db;
-		});
+	//sort(sorted.begin(), sorted.end(), [&](CRenderer* a, CRenderer* b)
+	//	{
+	//	const _float da = (a->Get_Transform()->Get_Position() - camPos).lengthSq();
+	//	const _float db = (b->Get_Transform()->Get_Position() - camPos).lengthSq();
+	//	return da > db;
+	//	});
 
 	for (auto* r : sorted) 
 	{

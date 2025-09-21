@@ -11,6 +11,7 @@ CMaterial::CMaterial()
 	, m_pCustomBuffer(nullptr)
 	, m_vCustomBufferByteList({})
 	, m_bUseLight(false)
+	, m_bTransparent(false)
 	, m_vBaseColor(ColorValue::white().f4Color())
 	, m_vTextureList({})
 	, m_mIntValues({})
@@ -32,6 +33,7 @@ CMaterial::CMaterial(const CMaterial& _other)
 	, m_pCustomBuffer(nullptr)
 	, m_vCustomBufferByteList(_other.m_vCustomBufferByteList)
 	, m_bUseLight(_other.m_bUseLight)
+	, m_bTransparent(_other.m_bTransparent)
 	, m_vTextureList({})
 	, m_vBaseColor(ColorValue::white().f4Color())
 	, m_mFloatValues(_other.m_mFloatValues)
@@ -74,6 +76,7 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		MATERIALDESC* matDesc = reinterpret_cast<MATERIALDESC*>(_desc);
 		Set_Shader(matDesc->shaderPointer);
 		m_bUseLight = matDesc->usingRight;
+		m_bTransparent = matDesc->transparent;
 
 		for (const auto& [key, value] : matDesc->customFloatValues)
 		{
@@ -125,6 +128,7 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pCameraBuffer);
 	Safe_Release(m_pMaterialBuffer);
 	Safe_Release(m_pLightBuffer);
+	Safe_Release(m_pCustomBuffer);
 
 	m_vCustomBufferByteList.clear();
 
@@ -233,6 +237,11 @@ void CMaterial::Bind_CustomValues()
 const _bool CMaterial::IsUseLight() const
 {
 	return m_bUseLight;
+}
+
+const _bool CMaterial::IsTransparent() const
+{
+	return m_bTransparent;
 }
 
 CTexture* CMaterial::Get_Texture(_int _index) const
@@ -390,8 +399,6 @@ HRESULT CMaterial::Create_ConstantBuffer()
 void CMaterial::Bind_Texture() const
 {
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
-
-	ID3D11ShaderResourceView* texture = nullptr;
 
 	const _uint slotCount = static_cast<_uint>(m_vTextureList.size());
 

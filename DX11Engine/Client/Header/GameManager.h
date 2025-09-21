@@ -5,6 +5,7 @@
 #include "PlayerCamera.h"
 #include "PlayerHUD.h"
 #include "Inventory.h"
+#include "Dungeon.h"
 
 class CGameManager final
 {
@@ -31,11 +32,15 @@ public:
 	void Set_Inventory(CInventory* _inven);
 	CInventory* Get_Inventory();
 
+	void Set_Dungeon(CDungeon* _dungeon);
+	CDungeon* Get_Dungeon();
+
 private:
 	wstring m_strNextScene;
 	CPlayer* m_pPlayer;
 	CPlayerCamera* m_pPlayerCamera;
 	CPlayerHUD* m_pPlayerHUD;
 	CInventory* m_pInventory;
+	CDungeon* m_pDungeon;
 };
 

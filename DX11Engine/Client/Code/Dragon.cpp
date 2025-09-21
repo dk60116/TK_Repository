@@ -8,6 +8,7 @@ CDragon::CDragon()
 	, m_pController(nullptr)
 	, m_bFlying(false)
 	, m_pFireBallProto(nullptr)
+	, m_pFireBreath(nullptr)
 	, m_iShootFireCount(0)
 {
 }
@@ -60,6 +61,9 @@ HRESULT CDragon::Initialize(void* _desc)
 		auto spreadFire_fly = Add_Animation(L"SpreadFire_Fly");
 	}
 
+	CGameObject* particleObj = m_pGameObject->Get_Scene()->Add_GameObject(L"PTC");
+	m_pFireBreath = particleObj->AddComponent<CParticleSystem>();
+
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
 	m_pFireBallProto = fireBallProtoObj->AddComponent<CME_FireBall>();
 
@@ -83,13 +87,14 @@ void CDragon::Awake()
 	chestCol->SetCenter(vector3(0.25f, 0.f, 0.f));
 	chestCol->SetSize(vector3(1.7f, 1.7f, 1.7f));
 	m_mPartColList.emplace(L"Chest", chestCol);
-
-	m_pFireBallProto->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 }
 
 void CDragon::Start()
 {
 	__super::Start();
+
+	m_pFireBallProto->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
+	//m_pFireBreath->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position() + vector3::up() * 2.f);
 }
 
 void CDragon::Update()

@@ -206,7 +206,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	D3D11_MAPPED_SUBRESOURCE mappedRes;
 	if (SUCCEEDED(m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
 	{
-		memcpy(mappedRes.pData, boneMatrices, sizeof(XMMATRIX) * m_vBones.size());
+		memcpy(mappedRes.pData, boneMatrices, sizeof(_matrix) * m_vBones.size());
 		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
 	}
 
@@ -222,18 +222,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	// 6) ¸Þ½Ã ·»´õ¸µ
 	m_pMeshBuffer->Render();
 
-	vector<ID3D11ShaderResourceView*> nulls(5, nullptr);
-	m_pContext->PSSetShaderResources(0, 5, nulls.data());
-
-	array<ID3D11ShaderResourceView*, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT> nullSRVs{};
-	m_pContext->VSSetShaderResources(0, 5, nullSRVs.data());
-	m_pContext->PSSetShaderResources(0, 5, nullSRVs.data());
-	m_pContext->GSSetShaderResources(0, 5, nullSRVs.data());
-
-	array<ID3D11SamplerState*, D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT> nullSamplers{};
-	m_pContext->VSSetSamplers(0, 5, nullSamplers.data());
-	m_pContext->PSSetSamplers(0, 5, nullSamplers.data());
-	m_pContext->GSSetSamplers(0, 5, nullSamplers.data());
+	ResetShaderResources();
 }
 
 void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)

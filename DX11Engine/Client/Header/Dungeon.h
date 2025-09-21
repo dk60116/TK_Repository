@@ -24,6 +24,9 @@ public:
 	void LateUpdate() override;
 	void OnDestroy() override;
 
+public:
+	vector<class CDungeonTrigger*> Get_DungeonTrigger(const _uint _index);
+
 private:
 	void CreateMonsterPrototypes();
 	void CreateDungonObjectPrototypes();
@@ -37,6 +40,7 @@ private:
 	void SpawnDungeonChest();
 	void SpawnDungeonLadder();
 	void SpawnMovingPlat();
+	void SpawnDungeonTrigger();
 
 private:
 	template <typename T>

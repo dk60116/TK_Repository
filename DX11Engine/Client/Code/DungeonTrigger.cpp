@@ -4,9 +4,16 @@
 #include "MovingPlat.h"
 
 CDungeonTrigger::CDungeonTrigger()
-	: m_vLinkObjects({})
+	: CDungeonObject{}
+	, m_bSwitchOn(false)
+	, m_bSwitchComplete(false)
+	, m_iSiblingSwitchIndex(-1)
+	, m_vLinkObjects({})
 	, m_pPointLight(nullptr)
+	, m_pOffTexture(nullptr)
 	, m_pOnTexture(nullptr)
+	, m_fLimitTime(0.f)
+	, m_fPassedTime(0.f)
 {
 }
 
@@ -34,13 +41,14 @@ HRESULT CDungeonTrigger::Initialize(void* _desc)
 	m_sDescription.colliderCenter = vector3(0.f, 1.f, 0.f);
 	m_sDescription.colliderSize = vector3(0.3f, 1.f, 0.3f);
 
+	m_pOffTexture = CResources::LoadOnScene<CTexture>(L"DungeonTrigger_BaseMap (Texture)");
 	m_pOnTexture = CResources::LoadOnScene<CTexture>(L"DungeonTrigger_BaseMap_On (Texture)");
 
+	if (m_pOffTexture)
+		m_pOffTexture->AddRef();
+
 	if (m_pOnTexture)
-	{
-		if (m_pOnTexture)
-			m_pOnTexture->AddRef();
-	}
+		m_pOnTexture->AddRef();
 
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
@@ -82,6 +90,17 @@ void CDungeonTrigger::Start()
 void CDungeonTrigger::Update()
 {
 	__super::Update();
+
+	if (m_fLimitTime > 0.f)
+	{
+		if (m_bOperation && !m_bSwitchComplete && m_bSwitchOn)
+		{
+			m_fPassedTime += DELTA_TIME;
+
+			if (m_fPassedTime >= m_fLimitTime)
+				OffSwitch();
+		}
+	}
 }
 
 void CDungeonTrigger::OnTriggerEnter(CCollider* _other)
@@ -94,6 +113,7 @@ void CDungeonTrigger::OnDestroy()
 {
 	__super::OnDestroy();
 
+	Safe_Release(m_pOffTexture);
 	Safe_Release(m_pOnTexture);
 
 	for (TRAVERSAL_ITER(m_vLinkObjects, it))
@@ -108,19 +128,62 @@ void CDungeonTrigger::Add_LinkObject(CDungeonObject* _obj)
 	m_vLinkObjects.back()->AddRef();
 }
 
+const _uint CDungeonTrigger::Get_Index() const
+{
+	return m_iSiblingSwitchIndex;
+}
+
+void CDungeonTrigger::Set_Sibling(const _uint _index)
+{
+	m_iSiblingSwitchIndex = _index;
+}
+
+void CDungeonTrigger::Set_LimitTime(const _float _time)
+{
+	m_fLimitTime = _time;
+}
+
 void CDungeonTrigger::SwitchOnEvent()
 {
+	m_bSwitchOn = true;
 	m_pPointLight->SetEnabled(true);
 	m_vRenderer[0]->Get_Material()->Set_Texture(m_pOnTexture);
+	m_fPassedTime = 0.f;
 
-	for (size_t i = 0; i < m_vLinkObjects.size(); ++i)
+	_bool siblingOn = true;
+
+	if (m_iSiblingSwitchIndex != -1)
 	{
-		if (dynamic_cast<CDungeonGate*>(m_vLinkObjects[i]))
-		{
+		vector<CDungeonTrigger*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonTrigger(m_iSiblingSwitchIndex);
 
+		for (TRAVERSAL_ITER(siblingSwitchList, it))
+		{
+			if (!(*it)->m_bSwitchOn)
+				siblingOn = false;
+		}
+	}
+
+	if (m_iSiblingSwitchIndex == -1 || siblingOn)
+	{
+		for (size_t i = 0; i < m_vLinkObjects.size(); ++i)
+		{
+			if (CDungeonGate* gate = dynamic_cast<CDungeonGate*>(m_vLinkObjects[i]))
+				gate->Open();
+
+			if (CMovingPlat* plat = dynamic_cast<CMovingPlat*>(m_vLinkObjects[i]))
+				plat->Set_Operation(true);
 		}
 
-		if (CMovingPlat* plat = dynamic_cast<CMovingPlat*>(m_vLinkObjects[i]))
-			plat->Set_Operation(true);
+		vector<CDungeonTrigger*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonTrigger(m_iSiblingSwitchIndex);
+
+		for (TRAVERSAL_ITER(siblingSwitchList, it))
+			(*it)->m_bSwitchComplete = true;
 	}
+}
+
+void CDungeonTrigger::OffSwitch()
+{
+	m_bSwitchOn = false;
+	m_pPointLight->SetEnabled(false);
+	m_vRenderer[0]->Get_Material()->Set_Texture(m_pOffTexture);
 }

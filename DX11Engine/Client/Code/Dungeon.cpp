@@ -74,6 +74,8 @@ HRESULT CDungeon::Initialize(void* _desc)
     CreateDungeonChapters();
     CreateDragon();
 
+    CGameManager::GetInstance().Set_Dungeon(this);
+
     return S_OK;
 }
 
@@ -93,6 +95,7 @@ void CDungeon::Start()
     SpawnDungeonChest();
     SpawnDungeonLadder();
     SpawnMovingPlat();
+    SpawnDungeonTrigger();
 
     Get_Transform()->Find_ChildRecursive(L"door_1")->Get_GameObject()->SetActive(false);
 }
@@ -138,6 +141,19 @@ void CDungeon::LateUpdate()
 void CDungeon::OnDestroy()
 {
     __super::OnDestroy();
+}
+
+vector<class CDungeonTrigger*> CDungeon::Get_DungeonTrigger(const _uint _index)
+{
+    vector<class CDungeonTrigger*> result = {};
+
+    for (TRAVERSAL_ITER(m_vDungeonTriggerList, it))
+    {
+        if ((*it)->Get_Index() == _index)
+            result.push_back((*it));
+    }
+
+    return result;
 }
 
 void CDungeon::CreateMonsterPrototypes()
@@ -616,18 +632,40 @@ void CDungeon::SpawnMovingPlat()
         m_vMovingPlatList[0]->Set_Operation(false);
     }
 
-    CGameObject* triggerObj0 = CGameObject::Instantiate(m_mDungonObjProtoList[L"DungeonTrigger"]->Get_GameObject());
-    triggerObj0->Set_ObjectName(L"Dungeon Trigger (Clone) " + to_wstring(0));
-    m_vDungeonTriggerList.push_back(triggerObj0->GetComponent<CDungeonTrigger>());
-    m_vDungeonTriggerList.back()->Get_GameObject()->SetActive(true);
-
-    m_vDungeonTriggerList[0]->Get_Transform()->Set_Position(51.f, 3.f, -91.f);
-    m_vDungeonTriggerList[0]->Add_LinkObject(m_vMovingPlatList[0]);
-
     {
         m_vMovingPlatList[1]->Get_Transform()->Set_Position(-37.25f, 10.4f, -103.8f);
         m_vMovingPlatList[1]->AddRout(vector3(-37.25f, 10.4f, -103.8f));
         m_vMovingPlatList[1]->AddRout(vector3(-46.f, -3.5f, -94.45f));
+    }
+}
+
+void CDungeon::SpawnDungeonTrigger()
+{
+    for (size_t i = 0; i < 3; ++i)
+    {
+        CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"DungeonTrigger"]->Get_GameObject());
+        newObj->Set_ObjectName(L"Dungeon Trigger (Clone) " + to_wstring(i));
+        m_vDungeonTriggerList.push_back(newObj->GetComponent<CDungeonTrigger>());
+        m_vDungeonTriggerList.back()->Get_GameObject()->SetActive(true);
+    }
+
+    {
+        m_vDungeonTriggerList[0]->Get_Transform()->Set_Position(51.f, 3.f, -91.f);
+        m_vDungeonTriggerList[0]->Add_LinkObject(m_vMovingPlatList[0]);
+    }
+
+    {
+        m_vDungeonTriggerList[1]->Get_Transform()->Set_Position(45.05f, 0.f, -46.45f);
+        m_vDungeonTriggerList[1]->Set_Sibling(0);
+        m_vDungeonTriggerList[1]->Set_LimitTime(5);
+        m_vDungeonTriggerList[1]->Add_LinkObject(m_vGateList[4]);
+        m_vDungeonTriggerList[1]->Add_LinkObject(m_vGateList[5]);
+
+        m_vDungeonTriggerList[2]->Get_Transform()->Set_Position(37.85f, 0.f, -46.45f);
+        m_vDungeonTriggerList[2]->Set_Sibling(0);
+        m_vDungeonTriggerList[2]->Set_LimitTime(5);
+        m_vDungeonTriggerList[2]->Add_LinkObject(m_vGateList[4]);
+        m_vDungeonTriggerList[2]->Add_LinkObject(m_vGateList[5]);
     }
 }
 

@@ -70,6 +70,7 @@ VSOut VSMain(VSIn v)
         v.instance_row2,
         v.instance_row3
     );
+    
     worldMatrix = mul(worldMatrix, world);
 
     // Transform
@@ -84,6 +85,7 @@ VSOut VSMain(VSIn v)
     o.posW = posW.xyz;
     o.normalW = normalW;
     o.uv = v.uv;
+
     return o;
 }
 

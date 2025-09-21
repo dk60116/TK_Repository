@@ -1334,8 +1334,8 @@ namespace Engine
         return inst;
     }
 
-#define INSTANCEBUFFERCOUTN 4
-#define INSTANCEBUFFERMACHRO \
+#define INSTANCE_BUFFER_COUTN 4
+#define INSTANCE_INPUT_DESC \
     { "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,  0, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
     { "INSTANCE", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
     { "INSTANCE", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, \
@@ -1345,12 +1345,12 @@ namespace Engine
     {
         _float3 position;
 
-        static const _uint numElements = 1 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 1 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1372,13 +1372,13 @@ namespace Engine
         _float3 position;
         _float2 uv;
 
-        static const _uint numElements = 2 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 2 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1388,14 +1388,14 @@ namespace Engine
         _float3 normal;
         _float4 color = { 1, 1, 1, 1 };
 
-        static const _uint numElements = 3 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 3 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1405,14 +1405,14 @@ namespace Engine
         _float3 normal;
         _float2 uv;
 
-        static const _uint numElements = 3 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 3 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1423,7 +1423,7 @@ namespace Engine
         _float2 uv;
         _float3 tangent;
 
-        static const _uint numElements = 4 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 4 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1431,7 +1431,7 @@ namespace Engine
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1443,7 +1443,7 @@ namespace Engine
         UINT boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 5 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 5 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1452,7 +1452,7 @@ namespace Engine
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 56, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1465,7 +1465,7 @@ namespace Engine
         UINT boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 6 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 6 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1475,7 +1475,7 @@ namespace Engine
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 
@@ -1489,7 +1489,7 @@ namespace Engine
         _float boneWeights[4] = { 0,0,0,0 };
         _float lineWidth = 1.f;
 
-        static const _uint numElements = 7 + INSTANCEBUFFERCOUTN;
+        static const _uint numElements = 7 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1500,7 +1500,7 @@ namespace Engine
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 1, DXGI_FORMAT_R32_FLOAT, 0, 76, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCEBUFFERMACHRO
+            INSTANCE_INPUT_DESC
         };
     };
 #pragma endregion;

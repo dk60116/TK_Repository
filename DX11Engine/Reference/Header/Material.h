@@ -13,6 +13,7 @@ public:
 	{
 		class CShader* shaderPointer;
 		_bool usingRight = true;
+		_bool transparent = false;
 		vector<pair<wstring, _float>> customFloatValues = {};
 		vector<pair<wstring, _int>> customIntValues = {};
 		vector<pair<wstring, _float2>> customVector2Values = {};
@@ -42,6 +43,7 @@ public:
 
 public:
 	const _bool IsUseLight() const;
+	const _bool IsTransparent() const;
 	class CTexture* Get_Texture(_int _index) const;
 
 public:
@@ -71,7 +73,7 @@ private:
 	ID3D11Buffer* m_pCustomBuffer;
 	vector<BYTE> m_vCustomBufferByteList;
 
-	_bool m_bUseLight;
+	_bool m_bUseLight, m_bTransparent;
 	_float4 m_vBaseColor;
 	vector<class CTexture*> m_vTextureList;
 	unordered_map<wstring, _float> m_mFloatValues;
