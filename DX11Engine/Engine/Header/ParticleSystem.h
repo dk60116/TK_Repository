@@ -14,22 +14,23 @@ class ENGINE_DLL CParticleSystem final : public CComponent
         _bool loop = true;
         _bool playOnAwake = true;
         _uint shape = 0;
-        _uint maxCount = 1000;
+        _uint maxCount = 100;
 
-        _float lifeTime = 5.f;
-        _float startDelay = 1.f;
+        _float lifeTime = 1.f;
+        _float startDelay = 0.1f;
         _float startLifeTime = 1.f;
         vector3 startDistance = vector3::zero();
         vector3 startVelocity = vector3::one();
         vector3 startRotation = vector3::zero();
         _bool startSize3D = false;
         _bool size3D = false;
-        _float startSizeMin = 0.05f;
-        _float startSizeMax = 0.1f;
+        _float startSizeMin = 0.1f;
+        _float startSizeMax = 0.2f;
         vector3 startSizeMin3D = vector3::one() * 0.1f;
         vector3 startSizeMax3D = vector3::one() * 0.2f;
-        ColorValue startColor = ColorValue::blue();
-        ColorValue endColor = ColorValue::green();
+        ColorValue baseColor = ColorValue::white();
+        ColorValue startColor = ColorValue::red();
+        ColorValue endColor = ColorValue(0, 255, 0, 0);
         _bool useGravity = false;
 
     }PARTICLEINFO;

@@ -24,9 +24,9 @@ cbuffer PerCustomValue : register(b10)
 {
     float time;
     float lifeTime;
-    float startDelay;
-    float4 endColor;
+    float2 padding0;
     float4 startColor;
+    float4 endColor;
 }
 
 // 텍스처 & 샘플러
@@ -63,7 +63,26 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
 
+    // 카메라-파티클 방향 벡터 계산
+    float3 instancePos = v.instance_row3.xyz;
+    float3 toCamera = normalize(pos - instancePos); // 카메라 위치 - 파티클 위치
+    float3 up = float3(0, 1, 0);
+    float3 right = normalize(cross(up, toCamera));
+    up = cross(toCamera, right);
+
+    // billboard 회전 행렬
+    float4x4 billboardRot =
+    {
+        float4(right, 0),
+        float4(up, 0),
+        float4(toCamera, 0),
+        float4(0, 0, 0, 1)
+    };
+
     float4 posL = float4(v.posL, 1);
+
+    // billboard 회전 적용
+    posL = mul(posL, billboardRot);
 
     // 인스턴스 월드행렬 * 오브젝트 월드행렬
     float4x4 w = mul
@@ -72,19 +91,16 @@ VSOut VSMain(VSIn v)
         world
     );
 
-    // 월드 위치
     float4 posW = mul(posL, w);
-
     posW.xyz += v.startVelocity.xyz * time;
 
-    // 뷰/프로젝션
     float4 posV = mul(posW, view);
     float4 posH = mul(posV, proj);
 
-    // 출력
     o.posH = posH;
     o.posW = posW.xyz;
     o.uv = v.uv;
+
     return o;
 }
 
@@ -93,9 +109,10 @@ float4 PSMain(VSOut input) : SV_TARGET
 {
     float4 texColor = useTexture ? gBasemap.Sample(gSampler, input.uv) * baseColor : baseColor;
     
-    float4 finalColor = lerp(texColor * startColor, texColor * endColor, time / lifeTime);
-    
-    finalColor = startColor;
+    float4 start = texColor * startColor;
+    float4 end = texColor * endColor;
+   
+    float4 finalColor = lerp(start, end, time / lifeTime);
     
     if (finalColor.a < 0.01f)
         discard;

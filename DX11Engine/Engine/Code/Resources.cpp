@@ -1783,9 +1783,9 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC ptcMatDesc = { ptcShader, false, true };
 	ptcMatDesc.customFloatValues.push_back({ L"time", 0.f });
 	ptcMatDesc.customFloatValues.push_back({ L"lifeTime", 0.f });
-	ptcMatDesc.customFloatValues.push_back({ L"startDelay", 0.f });
-	ptcMatDesc.customVector4Values.push_back({ L"endColor", ColorValue::white().f4Color()});
+	ptcMatDesc.customVector2Values.push_back({ L"padding0", {} });
 	ptcMatDesc.customVector4Values.push_back({ L"startColor", ColorValue::white().f4Color()});
+	ptcMatDesc.customVector4Values.push_back({ L"endColor", ColorValue::white().f4Color()});
 
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"ParticleMaterial (Material)", L"", &ptcMatDesc));
 }

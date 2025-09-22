@@ -90,9 +90,9 @@ HRESULT CParticleSystem::Initialize(void* _desc)
         if (texture)
             m_vRenderers.back()->Get_Material()->Set_Texture(texture);
 
-        _float4 startCol = m_sDescription.particles[i].info.startColor.f4Color();
-        startCol.w = 0.5f;
-        m_vRenderers.back()->Get_Material()->Set_BaseColor(startCol);
+        _float4 baseCol = m_sDescription.particles[i].info.baseColor.f4Color();
+        baseCol.w = 0.5f;
+        m_vRenderers.back()->Get_Material()->Set_BaseColor(baseCol);
 
         m_vPlaying[i] = m_sDescription.particles[i].info.playOnAwake;
     }
@@ -199,11 +199,11 @@ void CParticleSystem::SetStartValue(CMeshBuffer& _buffer, const _uint _count)
     {
         const _uint instanceCount = _buffer.Get_InstancingDesc().count;
 
-        //m_vRenderers[i]->Get_Material()->Set_FloatValue(L"lifeTime", m_sDescription.particles[i].info.lifeTime);
-        //const _float4 startColor = m_sDescription.particles[i].info.startColor.f4Color();
-        //m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"startColor", startColor);
-        //const _float4 endColor = m_sDescription.particles[i].info.endColor.f4Color();
-        //m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"endColor", endColor);
+        m_vRenderers[i]->Get_Material()->Set_FloatValue(L"lifeTime", m_sDescription.particles[i].info.lifeTime);
+        const _float4 startColor = m_sDescription.particles[i].info.startColor.f4Color();
+        m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"startColor", startColor);
+        const _float4 endColor = m_sDescription.particles[i].info.endColor.f4Color();
+        m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"endColor", endColor);
 
         for (_uint j = 0; j < instanceCount; ++j)
         {
@@ -235,7 +235,8 @@ void CParticleSystem::SetStartValue(CMeshBuffer& _buffer, const _uint _count)
 
             const vector3& velValue = m_sDescription.particles[i].info.startVelocity;
             const _vector velocity = XMVectorSet(CRandom::Range(-velValue.x, velValue.x), CRandom::Range(-velValue.y, velValue.y), CRandom::Range(-velValue.z, velValue.z), 0.f);
-            XMStoreFloat3(&data.startVelocity, velocity);
+            const _vector velNor = XMVector3Normalize(velocity);
+            XMStoreFloat3(&data.startVelocity, velNor);
 
             inst.data[j] = data;
         }

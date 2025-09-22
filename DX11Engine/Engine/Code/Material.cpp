@@ -218,6 +218,19 @@ void CMaterial::Bind_CustomValues()
 {
 	m_vCustomBufferByteList.clear();
 
+	auto append = [&](const void* src, size_t sz) 
+		{
+		const BYTE* p = reinterpret_cast<const BYTE*>(src);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sz);
+		};
+	auto align16 = [&]() 
+		{
+		while (m_vCustomBufferByteList.size() % 16 != 0)
+			m_vCustomBufferByteList.push_back(0);
+		};
+
+	m_vCustomBufferByteList.clear();
+
 	// 순서 중요: HLSL과 일치해야 함
 	for (const auto& [key, value] : m_mFloatValues)
 	{
@@ -411,7 +424,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	// b10: Custom
 	if (m_vCustomBufferByteList.size() > 0)
 	{
-		_uint byteWidth = 128;
+		_uint byteWidth = (_uint)max<size_t>(16, ((m_vCustomBufferByteList.size() + 15) & ~15));
 		byteWidth = (byteWidth + 15) & ~15;
 		
 		desc.ByteWidth = byteWidth;
