@@ -770,7 +770,220 @@ namespace Engine
     {
         return vector3(-v.x, -v.y, -v.z);
     }
+#pragma endregion
 
+#pragma region vector4
+    struct vector4;
+    inline vector4 operator+(const vector4& lhs, const vector4& rhs);
+    inline vector4 operator-(const vector4& lhs, const vector4& rhs);
+    inline vector4 operator*(const vector4& vec, _float scalar);
+    inline vector4 operator/(const vector4& vec, _float scalar);
+
+    struct ENGINE_DLL vector4
+    {
+        _float x;
+        _float y;
+        _float z;
+        _float w;
+
+        vector4()
+            : x(0.f), y(0.f), z(0.f), w(0.f)
+        {
+        }
+
+        vector4(_float _x, _float _y, _float _z, _float _w)
+            : x(_x), y(_y), z(_z), w(_w)
+        {
+        }
+
+        vector4(const _vector& _v)
+            : x(XMVectorGetX(_v)), y(XMVectorGetY(_v)), z(XMVectorGetZ(_v)), w(XMVectorGetW(_v))
+        {
+        }
+
+        vector4(const _float4& _v)
+            : x(_v.x), y(_v.y), z(_v.z), w(_v.w)
+        {
+        }
+
+        const _float4 toFloat3()
+        {
+            return _float4(x, y, z, 0);
+        }
+
+        const _float4 toFloat4()
+        {
+            return _float4(x, y, z, w);
+        }
+
+        _vector toXMVector()
+        {
+            _vector result = XMVectorSet(x, y, z, w);
+
+            return result;
+        }
+
+        struct quaternion to_quaternion() const;
+
+        vector4& operator=(const vector4& _rhs)
+        {
+            x = _rhs.x;
+            y = _rhs.y;
+            z = _rhs.z;
+            w = _rhs.w;
+            return *this;
+        }
+
+        vector4& operator=(const _float4& _rhs)
+        {
+            x = _rhs.x;
+            y = _rhs.y;
+            z = _rhs.z;
+            w = _rhs.w;
+            return *this;
+        }
+
+        vector4& operator+=(const vector4& _rhs)
+        {
+            x += _rhs.x;
+            y += _rhs.y;
+            z += _rhs.z;
+            w += _rhs.w;
+            return *this;
+        }
+
+        vector4& operator-=(const vector4& _rhs)
+        {
+            x -= _rhs.x;
+            y -= _rhs.y;
+            z -= _rhs.z;
+            w -= _rhs.w;
+            return *this;
+        }
+
+        vector4& operator*=(const _float _scalar)
+        {
+            x *= _scalar;
+            y *= _scalar;
+            z *= _scalar;
+            w *= _scalar;
+            return *this;
+        }
+
+        vector4& operator/=(const _float _scalar)
+        {
+            x /= _scalar;
+            y /= _scalar;
+            z /= _scalar;
+            w /= _scalar;
+            return *this;
+        }
+
+        _bool operator==(const vector4& _rhs) const
+        {
+            return x == _rhs.x && y == _rhs.y && z == _rhs.z && w == _rhs.w;
+        }
+
+        _bool operator!=(const vector4& _rhs) const
+        {
+            return !(*this == _rhs);
+        }
+
+        static const _float Distance(const vector4& _a, const vector4& _b)
+        {
+            return vector3(_b.x - _a.x, _b.y - _a.y, _b.z - _a.z).length();
+        }
+
+        static const vector4 Lerp(const vector4& _a, const vector4& _b, _float _t)
+        {
+            return vector4
+            {
+                _a.x * (1.f - _t) + _b.x * _t,
+                _a.y * (1.f - _t) + _b.y * _t,
+                _a.z * (1.f - _t) + _b.z * _t,
+                _a.w * (1.f - _t) + _b.w * _t
+            };
+        }
+
+        static vector4 zero()
+        {
+            return vector4(0.f, 0.f, 0.f, 0.f);
+        }
+
+        static vector4 one()
+        {
+            return vector4(1.f, 1.f, 1.f, 1.f);
+        }
+
+        _float length() const
+        {
+            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector len = XMVector3Length(v);
+            return XMVectorGetX(len);
+        }
+
+        _float lengthSq() const
+        {
+            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector len = XMVector3LengthSq(v);
+            return XMVectorGetX(len);
+        }
+        
+        const _float3 to_float3()
+        {
+            return _float3(x, y, z);
+        }
+
+        const _vector toXMVector() const
+        {
+            return XMVectorSet(x, y, z, 0.f);
+        }
+
+        static _vector ToXM(const vector4& _v)
+        {
+            return XMVectorSet(_v.x, _v.y, _v.z, _v.w);
+        }
+    };
+
+    inline vector4 operator+(const vector4& _lhs, const vector4& _rhs)
+    {
+        return vector4(_lhs.x + _rhs.x, _lhs.y + _rhs.y, _lhs.z + _rhs.z, _lhs.w + _rhs.w);
+    }
+
+    inline vector4 operator-(const vector4& _lhs, const vector4& _rhs)
+    {
+        return vector4(_lhs.x - _rhs.x, _lhs.y - _rhs.y, _lhs.z - _rhs.z, _lhs.w - _rhs.w);
+    }
+
+    inline vector4 operator*(const vector4& _vec, _float _scalar)
+    {
+        return vector4(_vec.x * _scalar, _vec.y * _scalar, _vec.z * _scalar, _vec.w * _scalar);
+    }
+
+    inline vector4 operator*(_float _scalar, const vector4& _vec)
+    {
+        return vector4(_vec.x * _scalar, _vec.y * _scalar, _vec.z * _scalar, _vec.w * _scalar);
+    }
+
+    inline vector4 operator/(const vector4& _vec, _float _scalar)
+    {
+        return vector4(_vec.x / _scalar, _vec.y / _scalar, _vec.z / _scalar, _vec.w / _scalar);
+    }
+
+    inline vector4 operator*(const vector4& _lhs, const vector4& _rhs)
+    {
+        return vector4(_lhs.x * _rhs.x, _lhs.y * _rhs.y, _lhs.z * _rhs.z, _lhs.w * _rhs.w);
+    }
+
+    inline vector4 operator/(const vector4& _lhs, const vector4& _rhs)
+    {
+        return vector4(_lhs.x / _rhs.x, _lhs.y / _rhs.y, _lhs.z / _rhs.z, _lhs.w / _rhs.w);
+    }
+
+    inline vector4 operator-(const vector4& v)
+    {
+        return vector4(-v.x, -v.y, -v.z, -v.w);
+    }
 #pragma endregion
 
 #pragma region vector3Int
@@ -1014,10 +1227,10 @@ namespace Engine
 
         quaternion operator*(const quaternion& rhs) const
         {
-            XMVECTOR q1 = XMVectorSet(x, y, z, w);
-            XMVECTOR q2 = XMVectorSet(rhs.x, rhs.y, rhs.z, rhs.w);
+            _vector q1 = XMVectorSet(x, y, z, w);
+            _vector q2 = XMVectorSet(rhs.x, rhs.y, rhs.z, rhs.w);
 
-            XMVECTOR qResult = XMQuaternionMultiply(q1, q2);
+            _vector qResult = XMQuaternionMultiply(q1, q2);
 
             return quaternion(qResult);
         }
@@ -1041,9 +1254,9 @@ namespace Engine
 
         quaternion normalized() const
         {
-            XMVECTOR q = XMVectorSet(x, y, z, w);
+            _vector q = XMVectorSet(x, y, z, w);
 
-            XMVECTOR qNormalized = XMQuaternionNormalize(q);
+            _vector qNormalized = XMQuaternionNormalize(q);
 
             return quaternion(qNormalized);
         }
@@ -1055,10 +1268,10 @@ namespace Engine
 
         float dot(const quaternion& rhs) const
         {
-            XMVECTOR q1 = XMVectorSet(x, y, z, w);
-            XMVECTOR q2 = XMVectorSet(rhs.x, rhs.y, rhs.z, rhs.w);
+            _vector q1 = XMVectorSet(x, y, z, w);
+            _vector q2 = XMVectorSet(rhs.x, rhs.y, rhs.z, rhs.w);
 
-            XMVECTOR result = XMQuaternionDot(q1, q2);
+            _vector result = XMQuaternionDot(q1, q2);
 
             return XMVectorGetX(result);
         }
@@ -1158,7 +1371,7 @@ namespace Engine
             _float4 quat;
             XMStoreFloat4(&quat, *this);
 
-            float sinp = 2.f * (quat.w * quat.x - quat.z * quat.y);
+            _float sinp = 2.f * (quat.w * quat.x - quat.z * quat.y);
 
             euler.y = atan2f
             (
@@ -1320,6 +1533,9 @@ namespace Engine
         _float4 row1;
         _float4 row2;
         _float4 row3;
+
+        _float3 startVelocity = {};
+        _float padding;
     };
 
     inline static MeshInstanceData MakeInstanceData(const _float4x4 w)
@@ -1440,19 +1656,22 @@ namespace Engine
         _float3 position;
         _float3 normal;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
-        static const _uint numElements = 5 + INSTANCE_BUFFER_COUTN;
+        static const _uint numElements = 6 + INSTANCE_BUFFER_COUTN + 1;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 56, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "COLOR", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCE_INPUT_DESC
+            INSTANCE_INPUT_DESC,
+
+            { "INSTANCE", 4, DXGI_FORMAT_R32G32B32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         };
     };
 
@@ -1462,10 +1681,11 @@ namespace Engine
         _float3 normal;
         _float2 uv;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
+        _float3 startVelocity = {};
 
-        static const _uint numElements = 6 + INSTANCE_BUFFER_COUTN;
+        static const _uint numElements = 6 + INSTANCE_BUFFER_COUTN + 1;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1475,7 +1695,9 @@ namespace Engine
             { "BLENDINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-            INSTANCE_INPUT_DESC
+            INSTANCE_INPUT_DESC,
+
+            { "INSTANCE", 4, DXGI_FORMAT_R32G32B32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         };
     };
 

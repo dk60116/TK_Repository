@@ -101,10 +101,24 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		for (const auto& [key, value] : matDesc->customVector3Values)
 		{
 			m_mVector3Values.emplace(key, value);
+			const BYTE* pX = reinterpret_cast<const BYTE*>(&value.x);
+			const BYTE* pY = reinterpret_cast<const BYTE*>(&value.y);
+			const BYTE* pZ = reinterpret_cast<const BYTE*>(&value.z);
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pX, pX + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pY, pY + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pZ, pZ + sizeof(_float));
 		}
 		for (const auto& [key, value] : matDesc->customVector4Values)
 		{
 			m_mVector4Values.emplace(key, value);
+			const BYTE* pX = reinterpret_cast<const BYTE*>(&value.x);
+			const BYTE* pY = reinterpret_cast<const BYTE*>(&value.y);
+			const BYTE* pZ = reinterpret_cast<const BYTE*>(&value.z);
+			const BYTE* pW = reinterpret_cast<const BYTE*>(&value.w);
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pX, pX + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pY, pY + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pZ, pZ + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pW, pW + sizeof(_float));
 		}
 		for (const auto& [key, value] : matDesc->customMatrixValues)
 		{
@@ -222,7 +236,26 @@ void CMaterial::Bind_CustomValues()
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(_float));
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(_float));
 	}
-	// TODO: Vector3, Vector4, Matrix 등도 추가 가능
+	for (const auto& [key, value] : m_mVector3Values)
+	{
+		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
+		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
+		const BYTE* pz = reinterpret_cast<const BYTE*>(&value.z);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pz, pz + sizeof(_float));
+	}
+	for (const auto& [key, value] : m_mVector4Values)
+	{
+		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
+		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
+		const BYTE* pz = reinterpret_cast<const BYTE*>(&value.z);
+		const BYTE* pw = reinterpret_cast<const BYTE*>(&value.w);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pz, pz + sizeof(_float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pw, pw + sizeof(_float));
+	}
 
 	// 정렬 맞추기 (16바이트 단위)
 	while (m_vCustomBufferByteList.size() % 16 != 0)
@@ -378,7 +411,7 @@ HRESULT CMaterial::Create_ConstantBuffer()
 	// b10: Custom
 	if (m_vCustomBufferByteList.size() > 0)
 	{
-		_uint byteWidth = 32;
+		_uint byteWidth = 128;
 		byteWidth = (byteWidth + 15) & ~15;
 		
 		desc.ByteWidth = byteWidth;

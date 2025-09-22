@@ -2,10 +2,12 @@
 #include "ParticleSystem.h"
 
 CParticleSystem::CParticleSystem()
-    : m_vRenderers({})
+    : m_vPlaying({})
+    , m_vRenderers({})
     , m_sDescription({})
     , m_vInstanceBuffers({})
-    , m_fCurrentTime(0.f)
+    , m_vWaitTimes({})
+    , m_vCurrentTimes({})
 {
 }
 
@@ -40,6 +42,10 @@ HRESULT CParticleSystem::Initialize(void* _desc)
             m_sDescription.particles.push_back({});
     }
 
+    m_vPlaying.resize(m_sDescription.count);
+    m_vWaitTimes.resize(m_sDescription.count);
+    m_vCurrentTimes.resize(m_sDescription.count);
+
     for (_uint i = 0; i < m_sDescription.count; ++i)
     {
         CGameObject* partObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Particle_" + to_wstring(i));
@@ -71,32 +77,8 @@ HRESULT CParticleSystem::Initialize(void* _desc)
 
         CMeshBuffer* instanceBuffer = CreateInstanceBuffer(buffer, instanceCount, D3D11_USAGE_DYNAMIC);
 
-        if (instanceBuffer)
-        {
-            auto& inst = instanceBuffer->Get_InstancingDesc();
-            inst.count = instanceCount;
-
-            for (_uint j = 0; j < inst.count; ++j)
-            {
-                _matrix W = XMMatrixTranslation(static_cast<float>(j) * 0.3f, 0.f, 0.f);
-
-                MeshInstanceData data;
-                XMStoreFloat4(&data.row0, W.r[0]);
-                XMStoreFloat4(&data.row1, W.r[1]);
-                XMStoreFloat4(&data.row2, W.r[2]);
-                XMStoreFloat4(&data.row3, W.r[3]);
-
-                inst.data[j] = data;
-            }
-
-            instanceBuffer->UpdateInstanceBuffer();
-        }
-
-        if (buffer)
-        {
-            m_vInstanceBuffers.push_back(instanceBuffer);
-            m_vRenderers.back()->Get_MeshFilter()->Set_MeshBuffer(instanceBuffer);
-        }
+        m_vRenderers.back()->Get_MeshFilter()->Set_MeshBuffer(instanceBuffer);
+        SetStartValue(*instanceBuffer, instanceCount);
 
         const wstring textureName = m_sDescription.particles[i].texture + L" (Texture)";
 
@@ -108,7 +90,11 @@ HRESULT CParticleSystem::Initialize(void* _desc)
         if (texture)
             m_vRenderers.back()->Get_Material()->Set_Texture(texture);
 
-        m_vRenderers.back()->Get_Material()->Set_BaseColor(ColorValue(255, 255, 255, 125).f4Color());
+        _float4 startCol = m_sDescription.particles[i].info.startColor.f4Color();
+        startCol.w = 0.5f;
+        m_vRenderers.back()->Get_Material()->Set_BaseColor(startCol);
+
+        m_vPlaying[i] = m_sDescription.particles[i].info.playOnAwake;
     }
 
     return S_OK;
@@ -116,6 +102,33 @@ HRESULT CParticleSystem::Initialize(void* _desc)
 
 void CParticleSystem::Update()
 {
+    for (size_t i = 0; i < m_vCurrentTimes.size(); ++i)
+    {
+        if (m_vPlaying[i])
+        {
+            m_vWaitTimes[i] += DELTA_TIME;
+
+            if (m_vWaitTimes[i] >= m_sDescription.particles[i].info.startDelay)
+            {
+                m_vCurrentTimes[i] += DELTA_TIME;
+
+                if (m_vCurrentTimes[i] > m_sDescription.particles[i].info.lifeTime)
+                {
+                    m_vWaitTimes[i] = 0.f;
+                    m_vCurrentTimes[i] = 0.f;
+                }
+            }
+        }
+    }
+
+    for (_uint i = 0; i < m_sDescription.count; ++i)
+    {
+        const _uint instanceCount = m_sDescription.particles[i].info.maxCount;
+
+        auto& inst = m_vInstanceBuffers[i]->Get_InstancingDesc();
+       
+        m_vRenderers[i]->Get_Material()->Set_FloatValue(L"time", m_vCurrentTimes[i]);
+    }
 }
 
 void CParticleSystem::Render_Editor()
@@ -136,6 +149,12 @@ void CParticleSystem::OnDestroy()
 
     m_vRenderers.clear();
     m_vInstanceBuffers.clear();
+}
+
+void CParticleSystem::Play()
+{
+    for (TRAVERSAL_ITER(m_vPlaying, it))
+        (*it) = true;
 }
 
 CMeshBuffer* CParticleSystem::CreateInstanceBuffer(CMeshBuffer* _origin, _uint _count, D3D11_USAGE _usage)
@@ -169,4 +188,60 @@ CMeshBuffer* CParticleSystem::CreateInstanceBuffer(CMeshBuffer* _origin, _uint _
     instanced->UpdateInstanceBuffer();
 
     return instanced;
+}
+
+void CParticleSystem::SetStartValue(CMeshBuffer& _buffer, const _uint _count)
+{
+    auto& inst = _buffer.Get_InstancingDesc();
+    inst.count = _count;
+
+    for (_uint i = 0; i < m_sDescription.count; ++i)
+    {
+        const _uint instanceCount = _buffer.Get_InstancingDesc().count;
+
+        //m_vRenderers[i]->Get_Material()->Set_FloatValue(L"lifeTime", m_sDescription.particles[i].info.lifeTime);
+        //const _float4 startColor = m_sDescription.particles[i].info.startColor.f4Color();
+        //m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"startColor", startColor);
+        //const _float4 endColor = m_sDescription.particles[i].info.endColor.f4Color();
+        //m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"endColor", endColor);
+
+        for (_uint j = 0; j < instanceCount; ++j)
+        {
+            _matrix S = {};
+
+            if (!m_sDescription.particles[i].info.size3D)
+            {
+                const _float sizeMin = m_sDescription.particles[i].info.startSizeMin;
+                const _float sizeMax = m_sDescription.particles[i].info.startSizeMax;
+                const _float randomSize = CRandom::Range(sizeMin, sizeMax);
+                S = XMMatrixScaling(randomSize, randomSize, randomSize);
+            }
+            else
+            {
+                const vector3 sizeMin = m_sDescription.particles[i].info.startSizeMin3D;
+                const vector3 sizeMax = m_sDescription.particles[i].info.startSizeMax3D;
+                S = XMMatrixScaling(CRandom::Range(sizeMin.x, sizeMax.x), CRandom::Range(sizeMin.y, sizeMax.y), CRandom::Range(sizeMin.z, sizeMax.z));
+            }
+
+            _matrix W = XMMatrixTranslation(0.f, 0.f, 0.f);
+
+            _matrix F = S * W;
+
+            MeshInstanceData data = {};
+            XMStoreFloat4(&data.row0, F.r[0]);
+            XMStoreFloat4(&data.row1, F.r[1]);
+            XMStoreFloat4(&data.row2, F.r[2]);
+            XMStoreFloat4(&data.row3, F.r[3]);
+
+            const vector3& velValue = m_sDescription.particles[i].info.startVelocity;
+            const _vector velocity = XMVectorSet(CRandom::Range(-velValue.x, velValue.x), CRandom::Range(-velValue.y, velValue.y), CRandom::Range(-velValue.z, velValue.z), 0.f);
+            XMStoreFloat3(&data.startVelocity, velocity);
+
+            inst.data[j] = data;
+        }
+    }
+
+    _buffer.UpdateInstanceBuffer();
+
+    m_vInstanceBuffers.push_back(&_buffer);
 }
