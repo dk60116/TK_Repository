@@ -3,6 +3,8 @@
 
 class CDungeonTrigger final : public CDungeonObject
 {
+	friend class CGameObject;
+
 protected:
 	explicit CDungeonTrigger();
 	~CDungeonTrigger();

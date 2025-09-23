@@ -63,6 +63,8 @@ public:
 	void ChangeArrow(const wstring _name);
 	queue<class CArrow*>& Get_ArrowContainer(const wstring _name);
 
+	void CloseSpinCollider();
+
 public:
 	void PlayIdleAnimation(const _bool _combat, const _float _blending = 0.2f);
 	void PlayMoveAnimation(const vector3& _dir, const _float _rot, const _float _blending = 0.1f);
@@ -110,6 +112,9 @@ private:
 
 	CBoxCollider* m_pCollider;
 	CRigidBody* m_pRigidBody;
+
+	CTransform* m_pSpinParent;
+	CBoxCollider* m_pSpinSwordTrigger;
 
 	vector2Int m_vPrevMousePos;
 	vector2 m_vMouseDragDelta;

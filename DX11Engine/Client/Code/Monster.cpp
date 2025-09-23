@@ -188,6 +188,26 @@ void CMonster::Get_Damage(CWeapon* _weapon)
 		m_pController->ChangeState(CMonsterController::GetHit);
 }
 
+void CMonster::Get_Damage(CTransform* _weaponTf, const _uint _damage)
+{
+	m_sStatus.crtHp -= _damage;
+
+	const vector3& myPos = Get_Transform()->Get_Position();
+	vector3 weaponPos = _weaponTf->Get_Position();
+	weaponPos.y = myPos.y;
+	vector3 knockbackDir = (myPos - weaponPos).normalized();
+	m_pRigidBody->AddForce(knockbackDir * 1.5f);
+
+	if (m_sStatus.crtHp <= 0)
+	{
+		m_sStatus.crtHp = 0;
+		m_pController->ChangeState(CMonsterController::Death);
+		m_pController->SetDead();
+	}
+	else
+		m_pController->ChangeState(CMonsterController::GetHit);
+}
+
 void CMonster::Death()
 {
 	m_sStatus.isDead = true;

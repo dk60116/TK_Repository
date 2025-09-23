@@ -30,12 +30,14 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Layer(7, L"Map");
 	CSceneManager::Add_Layer(8, L"DungeonChapter");
 	CSceneManager::Add_Layer(9, L"DungeonObject");
+	CSceneManager::Add_Layer(10, L"RigidObject");
 
 	CSceneManager::Add_Tag(1, L"Floor");
 	CSceneManager::Add_Tag(2, L"Wall");
 	CSceneManager::Add_Tag(3, L"Player");
 	CSceneManager::Add_Tag(4, L"Arrow");
 	CSceneManager::Add_Tag(5, L"ArrowTrigger");
+	CSceneManager::Add_Tag(6, L"SpinSword");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);

@@ -40,4 +40,6 @@ void CPlayerBehaviour_SpinAttack::During()
 void CPlayerBehaviour_SpinAttack::Exit()
 {
 	__super::Exit();
+
+	m_pPlayer->CloseSpinCollider();
 }

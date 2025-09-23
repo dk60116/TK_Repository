@@ -3,6 +3,8 @@
 
 class CLadder final : public CDungeonObject
 {
+	friend class CGameObject;
+
 protected:
 	explicit CLadder();
 	~CLadder();

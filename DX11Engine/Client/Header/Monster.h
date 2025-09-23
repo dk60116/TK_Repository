@@ -56,6 +56,7 @@ public:
 	void Change_State(const _uint _state);
 	const MonsterStatus& Get_Status();
 	virtual void Get_Damage(class CWeapon* _weapon);
+	virtual void Get_Damage(CTransform* _weaponTf, const _uint _damage);
 	virtual void Death();
 	void PlayTurn(const CMonsterController::TurnDir _dir);
 

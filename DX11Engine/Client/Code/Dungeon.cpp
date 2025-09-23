@@ -16,6 +16,7 @@
 #include "LadderTrigger.h"
 #include "MovingPlat.h"
 #include "DungeonTrigger.h"
+#include "DungeonCube.h"
 
 CDungeon::CDungeon()
     : m_mMonsterProtoList({})
@@ -143,6 +144,19 @@ void CDungeon::OnDestroy()
     __super::OnDestroy();
 }
 
+vector<CFootSwitch*> CDungeon::Get_FootSwitch(const _uint _index)
+{
+    vector<class CFootSwitch*> result = {};
+
+    for (TRAVERSAL_ITER(m_vFootSwitchList, it))
+    {
+        if ((*it)->Get_Index() == _index)
+            result.push_back((*it));
+    }
+
+    return result;
+}
+
 vector<class CDungeonTrigger*> CDungeon::Get_DungeonTrigger(const _uint _index)
 {
     vector<class CDungeonTrigger*> result = {};
@@ -174,6 +188,7 @@ void CDungeon::CreateDungonObjectPrototypes()
     CreateDungonObjectPrototype<CLadderTrigger>();
     CreateDungonObjectPrototype<CMovingPlat>();
     CreateDungonObjectPrototype<CDungeonTrigger>();
+    CreateDungonObjectPrototype<CDungeonCube>();
 }
 
 void CDungeon::CreateDungeonChapters()
@@ -277,7 +292,7 @@ void CDungeon::CreatePointLights()
 
     CScene* scene = m_pGameObject->Get_Scene();
 
-    for (_uint i = 0; i < 134; ++i)
+    for (_uint i = 0; i < 138; ++i)
     {
         CGameObject* newObj = scene->Add_GameObject(L"PointLight" + to_wstring(i));
         CLight* newPointLight = newObj->AddComponent<CLight>();
@@ -426,6 +441,10 @@ void CDungeon::CreatePointLights()
     m_vLightList[131]->Get_Transform()->Set_Position(-93.7f, -0.83f, -137.62f);
     m_vLightList[132]->Get_Transform()->Set_Position(-93.76f, -0.83f, -139.84f);
     m_vLightList[133]->Get_Transform()->Set_Position(-94.86f, -0.83f, -138.7f);
+    m_vLightList[134]->Get_Transform()->Set_Position(25.17f, 5.f, -18.73f);
+    m_vLightList[135]->Get_Transform()->Set_Position(25.17f, 5.f, -26.22f);
+    m_vLightList[136]->Get_Transform()->Set_Position(-25.17f, 5.f, -18.73f);
+    m_vLightList[137]->Get_Transform()->Set_Position(-25.17f, 5.f, -26.22f);
 
     for (TRAVERSAL_ITER(m_vLightList, it))
     {
@@ -439,7 +458,7 @@ void CDungeon::SpawnDungeonGates()
     if (!m_mDungonObjProtoList[L"Dungeon_Gate"])
         return;
 
-    for (_uint i = 0; i < 19; ++i)
+    for (_uint i = 0; i < 23; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Gate"]->Get_GameObject());
         newObj->Set_ObjectName(L"Gate (Clone) " + to_wstring(i));
@@ -481,6 +500,16 @@ void CDungeon::SpawnDungeonGates()
     m_vGateList[15]->Get_Transform()->Set_Position(-7.5f, 0.f, 3.8f);
     m_vGateList[16]->Get_Transform()->Set_Position(22.5f, 0.f, -11.27f);
     m_vGateList[17]->Get_Transform()->Set_Position(-22.5f, 0.f, -11.27f);
+    
+    m_vGateList[18]->Get_Transform()->Set_Position(-60.f, -9.f, -101.2f);
+
+    m_vGateList[19]->Get_Transform()->Set_Position(-60.f, 0.f, -33.74f);
+    m_vGateList[20]->Get_Transform()->Set_Position(-52.53f, 0.f, -33.74f);
+
+    m_vGateList[21]->Get_Transform()->Set_Position(-112.52f, -6.f, -93.79f);
+    
+    m_vGateList[22]->Get_Transform()->Set_Position(-78.71f, -9.f, -75.f);
+    m_vGateList[22]->Get_Transform()->Set_EulerAnglesY(90.f);
 }
 
 void CDungeon::SpawnDungeonFootSwitches()
@@ -488,7 +517,7 @@ void CDungeon::SpawnDungeonFootSwitches()
     if (!m_mDungonObjProtoList[L"Dungeon_FootSwitchPlat"])
         return;
 
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < 6; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_FootSwitchPlat"]->Get_GameObject());
         newObj->Set_ObjectName(L"FootSwitch (Clone) " + to_wstring(i));
@@ -498,20 +527,37 @@ void CDungeon::SpawnDungeonFootSwitches()
     
     {
         m_vFootSwitchList[0]->Get_Transform()->Set_Position(vector3(112.52f, 0.2f, -45.f));
-        vector<CDungeonGate*> gates = { m_vGateList[0] };
+        vector<CDungeonObject*> gates = { m_vGateList[0] };
         m_vFootSwitchList[0]->Set_Gate(gates);
     }
 
     {
         m_vFootSwitchList[1]->Get_Transform()->Set_Position(vector3(67.5f, 0.2f, -22.5f));
-        vector<CDungeonGate*> gates = { m_vGateList[2] };
+        vector<CDungeonObject*> gates = { m_vGateList[2] };
         m_vFootSwitchList[1]->Set_Gate(gates);
     }
 
     {
         m_vFootSwitchList[2]->Get_Transform()->Set_Position(vector3(52.45f, 6.015f, -101.27f));
-        vector<CDungeonGate*> gates = { m_vGateList[6] };
+        vector<CDungeonObject*> gates = { m_vGateList[6] };
         m_vFootSwitchList[2]->Set_Gate(gates);
+    }
+
+    {
+        m_vFootSwitchList[3]->Get_Transform()->Set_Position(vector3(-97.88f, -5.96f, -142.72f));
+        m_vFootSwitchList[3]->Set_Index(1);
+        vector<CDungeonObject*> gates = { m_vGateList[21] };
+        m_vFootSwitchList[3]->Set_Gate(gates);
+
+        m_vFootSwitchList[4]->Get_Transform()->Set_Position(vector3(-112.48f, -5.96f, -99.f));
+        m_vFootSwitchList[4]->Set_Index(1);
+        m_vFootSwitchList[4]->Set_Gate(gates);
+    }
+
+    {
+        m_vFootSwitchList[5]->Get_Transform()->Set_Position(vector3(-84.f, -8.96f, -75.15f));
+        vector<CDungeonObject*> gates = { m_vGateList[22] };
+        m_vFootSwitchList[5]->Set_Gate(gates);
     }
 }
 
@@ -641,7 +687,7 @@ void CDungeon::SpawnMovingPlat()
 
 void CDungeon::SpawnDungeonTrigger()
 {
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < 8; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"DungeonTrigger"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Trigger (Clone) " + to_wstring(i));
@@ -666,6 +712,28 @@ void CDungeon::SpawnDungeonTrigger()
         m_vDungeonTriggerList[2]->Set_LimitTime(5);
         m_vDungeonTriggerList[2]->Add_LinkObject(m_vGateList[4]);
         m_vDungeonTriggerList[2]->Add_LinkObject(m_vGateList[5]);
+    }
+
+    {
+        m_vDungeonTriggerList[3]->Get_Transform()->Set_Position(-37.63f, -9.f, -67.5f);
+        m_vDungeonTriggerList[3]->Set_Sibling(1);
+        m_vDungeonTriggerList[3]->Set_LimitTime(15.f);
+
+        m_vDungeonTriggerList[4]->Get_Transform()->Set_Position(-37.63f, -9.f, -75.04f);
+        m_vDungeonTriggerList[4]->Set_Sibling(1);
+        m_vDungeonTriggerList[4]->Set_LimitTime(15.f);
+
+        m_vDungeonTriggerList[5]->Get_Transform()->Set_Position(-37.63f, -9.f, -82.58f);
+        m_vDungeonTriggerList[5]->Set_Sibling(-1);
+        m_vDungeonTriggerList[5]->Set_LimitTime(15.f);
+
+        m_vDungeonTriggerList[6]->Get_Transform()->Set_Position(-74.8f, -9.f, -82.58f);
+        m_vDungeonTriggerList[6]->Set_Sibling(-1);
+        m_vDungeonTriggerList[6]->Set_LimitTime(15.f);
+
+        m_vDungeonTriggerList[7]->Get_Transform()->Set_Position(-74.8f, -9.f, -67.5f);
+        m_vDungeonTriggerList[7]->Set_Sibling(-1);
+        m_vDungeonTriggerList[7]->Set_LimitTime(15.f);
     }
 }
 

@@ -26,6 +26,7 @@ CPlayer::CPlayer()
 	, m_vMouseDragDelta({})
 	, m_bSpinAttack(false)
 	, m_fSpinAttackGauge(0.f)
+	, m_pSpinSwordTrigger(nullptr)
 {
 	m_strName = L"Player";
 }
@@ -120,6 +121,27 @@ HRESULT CPlayer::Initialize(void* _desc)
 		CGameManager::GetInstance().Set_Inventory(m_pInventroy);
 	}
 
+	if (!m_pSpinSwordTrigger)
+	{
+		m_pSpinParent = m_pGameObject->Get_Scene()->Add_GameObject(L"Spin Parent")->Get_Transform();
+		m_pSpinParent->SetParent(Get_Transform());
+		m_pSpinParent->Set_LocalPosition(0.f, 1.f, 0.f);
+
+		CGameObject* spinColliderObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Spin Sword Collider");
+		spinColliderObj->SetLayer(L"PlayerWeapon");
+		spinColliderObj->SetTag(L"SpinSword");
+		m_pSpinSwordTrigger = spinColliderObj->AddComponent<CBoxCollider>();
+		m_pSpinSwordTrigger->Get_Transform()->SetParent(m_pSpinParent);
+		spinColliderObj->Get_Transform()->Set_LocalPosition(vector3::zero());
+		m_pSpinSwordTrigger->Get_Transform()->Add_LocalEulerAngles(0.f, 180.f, 0.f);
+		m_pSpinSwordTrigger->SetTrigger(true);
+
+		m_pSpinSwordTrigger->Set_Center(vector3::forward() * 0.75f);
+		m_pSpinSwordTrigger->Set_Size(vector3(0.5f, 0.2f, 1.5f));
+		
+		m_pSpinSwordTrigger->SetEnabled(false);
+	}
+
 	return S_OK;
 }
 
@@ -195,6 +217,8 @@ void CPlayer::Update()
 
 	if (CInput::GetMouseButtonUp(0))
 		m_bSpinAttack = false;
+
+	m_pSpinSwordTrigger->Get_Transform()->Add_LocalEulerAnglesY(360.f * DELTA_TIME);
 }
 
 void CPlayer::LateUpdate()
@@ -300,6 +324,11 @@ queue<CArrow*>& CPlayer::Get_ArrowContainer(const wstring _name)
 	return m_mArrowPool[_name];
 }
 
+void CPlayer::CloseSpinCollider()
+{
+	m_pSpinSwordTrigger->SetEnabled(false);
+}
+
 void CPlayer::PlayIdleAnimation(const _bool _combat, const _float _blending)
 {
 	if (m_pAnimator)
@@ -396,6 +425,8 @@ void CPlayer::PlaySpinAttackAnimation()
 	{
 		m_pAnimator->SetLoop(false);
 		m_pAnimator->Play(L"SpinAttack", 0.1f);
+
+		m_pSpinSwordTrigger->SetEnabled(true);
 	}
 }
 

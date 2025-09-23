@@ -3,6 +3,8 @@
 
 class CMovingPlat final : public CDungeonObject
 {
+	friend class CGameObject;
+
 protected:
 	explicit CMovingPlat();
 	~CMovingPlat();

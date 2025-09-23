@@ -26,7 +26,7 @@ HRESULT CWolf::Initialize(void* _desc)
 {
 	m_strMonsterName = L"Wolf";
 
-	m_sOptions.colliderCenter = vector3(0.f, 0.6f, 0.2f);
+	m_sOptions.colliderCenter = vector3(0.f, 0.5f, 0.2f);
 	m_sOptions.colliderSize = vector3(0.6f, 1.f, 1.5f);
 	m_sOptions.headColliderCenter = vector3::zero();
 	m_sOptions.headColliderSize = vector3::one() * 0.5f;

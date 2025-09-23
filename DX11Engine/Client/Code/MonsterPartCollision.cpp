@@ -57,6 +57,9 @@ void CMonsterPartCollision::OnTriggerEnter(CCollider* _other)
             m_pMonster->Get_Damage(wp);
         }
     }
+
+    if (_other->Get_GameObject()->CompareTag(L"SpinSword"))
+        m_pMonster->Get_Damage(_other->Get_Transform(), 1);
 }
 
 void CMonsterPartCollision::OnTriggerExit(CCollider* _other)

@@ -25,6 +25,7 @@ public:
 	void OnDestroy() override;
 
 public:
+	vector<class CFootSwitch*> Get_FootSwitch(const _uint _index);
 	vector<class CDungeonTrigger*> Get_DungeonTrigger(const _uint _index);
 
 private:

@@ -3,6 +3,8 @@
 
 class CFootSwitch final : public CDungeonObject
 {
+	friend class CGameObject;
+
 protected:
 	explicit CFootSwitch();
 	~CFootSwitch();
@@ -22,18 +24,27 @@ public:
 	void OnDestroy() override;
 
 public:
-	void Set_Gate(vector<class CDungeonGate*>& _gates);
+	void Set_Index(const _uint _index);
+	void Set_Gate(vector<class CDungeonObject*>& _gates);
 
 public:
-	void OpenGate();
+	const _uint Get_Index() const;
 
 private:
-	vector<CDungeonGate*> m_vGates;
+	void SwitchOnEvent();
+
+private:
+	vector<CDungeonObject*> m_vLinkObjects;
 
 	CTransform* m_pBodyTransform;
 	CSphereCollider* m_pStepCollider;
 
 	_bool m_bObjectEnter;
-	_bool m_bPressed, m_bPrevPressed;;
+	_bool m_bSwitchOn;
+	_bool m_bSwitchComplete;
+
+	_uint m_iSiblingSwitchIndex;
+	_bool m_bPressed, m_bPrevPressed;
+
 };
 

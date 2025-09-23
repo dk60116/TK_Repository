@@ -1,16 +1,16 @@
 #pragma once
 #include "DungeonObject.h"
 
-class CLadderTrigger : public CDungeonObject
+class CDungeonCube final : public CDungeonObject
 {
 	friend class CGameObject;
 
 protected:
-	explicit CLadderTrigger();
-	~CLadderTrigger();
+	explicit CDungeonCube();
+	~CDungeonCube();
 
 public:
-	static CLadderTrigger* Create();
+	static CDungeonCube* Create();
 	CComponent* Clone() const override;
 
 public:
@@ -22,12 +22,7 @@ public:
 	void OnTriggerEnter(CCollider* _other) override;
 	void OnDestroy() override;
 
-public:
-	void Set_Ladder(class CLadder* _ladder);
-
 private:
-	CLadder* m_pLadder;
-
-	_bool m_bOnTrigger;
+	CRigidBody* m_pRigidBody;
 };
 

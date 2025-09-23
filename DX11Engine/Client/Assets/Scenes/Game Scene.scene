@@ -187,7 +187,8 @@ LadderTrigger_BaseMap : Map/Dungeon/LadderTrigger/LadderTrigger_BaseMap.png : [T
 DungeonTrigger_Model : Map/Dungeon/DungeonTrigger/DungeonTrigger.fbx : [Mesh]
 DungeonTrigger_BaseMap : Map/Dungeon/DungeonTrigger/DungeonTrigger_BaseMap.png : [Texture]
 DungeonTrigger_BaseMap_On : Map/Dungeon/DungeonTrigger/DungeonTrigger_BaseMap_On.png : [Texture]
-//Sample_Terrain : Terrain : [1, 300, 300, 2.0, 50.0, Map/TerrainHeight.png]
+DungeonCube_Model : Map/Dungeon/Cube/DungeonCube.fbx : [Mesh]
+DungeonCube_BaseMap : Map/Dungeon/Cube/DungeonCube_BaseMap.png : [Texture]
 // Weapon
 WoodenSword : Weapons/WoodenSword.fbx : [Mesh] [Material]
 WoodenBow : Weapons/WoodenBow.fbx : [Mesh] [Material]

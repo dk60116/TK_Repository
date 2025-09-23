@@ -3,11 +3,13 @@
 
 class CDungeonGate final : public CDungeonObject
 {
+	friend class CGameObject;
+
 protected:
 	explicit CDungeonGate();
 	~CDungeonGate();
 
-public:
+protected:
 	static CDungeonGate* Create();
 	CComponent* Clone() const override;
 

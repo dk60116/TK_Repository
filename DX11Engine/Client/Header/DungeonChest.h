@@ -3,6 +3,8 @@
 
 class CDungeonChest : public CDungeonObject
 {
+	friend class CGameObject;
+
 protected:
 	explicit CDungeonChest();
 	~CDungeonChest();

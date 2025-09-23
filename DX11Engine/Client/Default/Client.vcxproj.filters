@@ -339,6 +339,9 @@
     <ClInclude Include="..\Header\PlayerBehaviour_SpinAttack.h">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\DungeonCube.h">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -562,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\PlayerBehaviour_SpinAttack.cpp">
       <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DungeonCube.cpp">
+      <Filter>Scripts\Object\Map\Objects\Contents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "FootSwitch.h"
 #include "DungeonGate.h"
+#include "MovingPlat.h"
 
 CFootSwitch::CFootSwitch()
 	: m_pBodyTransform(nullptr)
@@ -8,6 +9,8 @@ CFootSwitch::CFootSwitch()
 	, m_bObjectEnter(false)
 	, m_bPressed(false)
 	, m_bPrevPressed(false)
+	, m_iSiblingSwitchIndex(-1)
+	, m_bSwitchComplete(false)
 {
 }
 
@@ -80,7 +83,7 @@ void CFootSwitch::Update()
 		m_bPressed = true;
 
 	if (m_bPressed && !m_bPrevPressed)
-		OpenGate();
+		SwitchOnEvent();
 
 	m_bPrevPressed = m_bPressed;
 }
@@ -105,27 +108,64 @@ void CFootSwitch::OnDestroy()
 {
 	__super::OnDestroy();
 
-	for (TRAVERSAL_ITER(m_vGates, it))
+	for (TRAVERSAL_ITER(m_vLinkObjects, it))
 		Safe_Release(*it);
 
-	m_vGates.clear();
+	m_vLinkObjects.clear();
 }
 
-void CFootSwitch::Set_Gate(vector<class CDungeonGate*>& _gates)
+void CFootSwitch::Set_Index(const _uint _index)
 {
-	m_vGates = _gates;
+	m_iSiblingSwitchIndex = _index;
+}
 
-	for (TRAVERSAL_ITER(m_vGates, it))
+void CFootSwitch::Set_Gate(vector<CDungeonObject*>& _object)
+{
+	m_vLinkObjects = _object;
+
+	for (TRAVERSAL_ITER(m_vLinkObjects, it))
 	{
 		if (*it)
 			(*it)->AddRef();
 	}
 }
 
-void CFootSwitch::OpenGate()
+const _uint CFootSwitch::Get_Index() const
 {
-	for (TRAVERSAL_ITER(m_vGates, it))
+	return m_iSiblingSwitchIndex;
+}
+
+void CFootSwitch::SwitchOnEvent()
+{
+	m_bSwitchOn = true;
+
+	_bool siblingOn = true;
+
+	if (m_iSiblingSwitchIndex != -1)
 	{
-		(*it)->Open();
+		vector<CFootSwitch*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
+
+		for (TRAVERSAL_ITER(siblingSwitchList, it))
+		{
+			if (!(*it)->m_bSwitchOn)
+				siblingOn = false;
+		}
+	}
+
+	if (m_iSiblingSwitchIndex == -1 || siblingOn)
+	{
+		for (size_t i = 0; i < m_vLinkObjects.size(); ++i)
+		{
+			if (CDungeonGate* gate = dynamic_cast<CDungeonGate*>(m_vLinkObjects[i]))
+				gate->Open();
+
+			if (CMovingPlat* plat = dynamic_cast<CMovingPlat*>(m_vLinkObjects[i]))
+				plat->Set_Operation(true);
+		}
+
+		vector<CFootSwitch*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
+
+		for (TRAVERSAL_ITER(siblingSwitchList, it))
+			(*it)->m_bSwitchComplete = true;
 	}
 }
