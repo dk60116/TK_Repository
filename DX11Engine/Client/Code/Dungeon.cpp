@@ -314,6 +314,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[12]->SetBoundingBox({ pair(vector3(-102.45f, -3.9f, -123.f), vector3(45.f, 16.5f, 50.f)) });
+
+        vector<vector3> snakePos = { { -98.5f, -3.f, -119.3f } };
+        vector<_float> snakeRot = { 0.f };
+        m_vChapterList[12]->AddMonsterSpawner({ m_mMonsterProtoList[L"Snake"], snakePos, snakeRot });
     }
 
     {
@@ -618,7 +622,7 @@ void CDungeon::SpawnDungeonChest()
     if (!m_mDungonObjProtoList[L"Dungeon_Chest"])
         return;
 
-    for (_uint i = 0; i < 9; ++i)
+    for (_uint i = 0; i < 10; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -660,31 +664,38 @@ void CDungeon::SpawnDungeonChest()
     }
 
     {
-        m_vChestList[5]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -120.f));
-        m_vChestList[5]->Get_Transform()->Set_EulerAnglesY(180.f);
+        m_vChestList[5]->Get_Transform()->Set_Position(vector3(23.2f, 3.f, -93.72f));
+        m_vChestList[5]->Get_Transform()->Set_EulerAnglesY(90.f);
         m_vChestList[5]->Get_Transform()->Set_LocalScale(1.5f);
         m_vChestList[5]->Set_Item(L"Arrow", 5);
     }
 
     {
-        m_vChestList[6]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -135.f));
-        m_vChestList[6]->Get_Transform()->Set_EulerAnglesY(0.f);
+        m_vChestList[6]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -120.f));
+        m_vChestList[6]->Get_Transform()->Set_EulerAnglesY(180.f);
         m_vChestList[6]->Get_Transform()->Set_LocalScale(1.5f);
         m_vChestList[6]->Set_Item(L"Arrow", 5);
     }
 
     {
-        m_vChestList[7]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -135.f));
+        m_vChestList[7]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -135.f));
         m_vChestList[7]->Get_Transform()->Set_EulerAnglesY(0.f);
         m_vChestList[7]->Get_Transform()->Set_LocalScale(1.5f);
-        m_vChestList[7]->Set_Item(L"Heart");
+        m_vChestList[7]->Set_Item(L"Arrow", 5);
     }
 
     {
-        m_vChestList[8]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -120.f));
-        m_vChestList[8]->Get_Transform()->Set_EulerAnglesY(180.f);
+        m_vChestList[8]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -135.f));
+        m_vChestList[8]->Get_Transform()->Set_EulerAnglesY(0.f);
         m_vChestList[8]->Get_Transform()->Set_LocalScale(1.5f);
-        m_vChestList[8]->Set_Item(L"Dungeon Key");
+        m_vChestList[8]->Set_Item(L"Heart");
+    }
+
+    {
+        m_vChestList[9]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -120.f));
+        m_vChestList[9]->Get_Transform()->Set_EulerAnglesY(180.f);
+        m_vChestList[9]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[9]->Set_Item(L"Dungeon Key");
     }
 }
 
@@ -819,7 +830,7 @@ void CDungeon::SpawnDungeonCube()
         m_vDungeonCubeList.back()->Get_GameObject()->SetActive(true);
     }
 
-    m_vDungeonCubeList[0]->Get_Transform()->Set_Position(-105.f, -2.23f, -120.f);
+    m_vDungeonCubeList[0]->Get_Transform()->Set_Position(-105.f, -3.f, -120.f);
 }
 
 void CDungeon::Update_DTSwitch()
@@ -870,7 +881,7 @@ void CDungeon::CullingLights()
     static _uint count = 30;
 
 #ifdef _DEBUG
-    count = 15;
+    count = 10;
 #endif
 
     for (_uint i = 0; i < m_vLightList.size(); ++i)

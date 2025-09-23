@@ -52,8 +52,6 @@ void CSnake::Awake()
 void CSnake::Start()
 {
 	__super::Start();
-
-	m_pRigidBody->SetUseGravity(false);
 }
 
 void CSnake::Update()
