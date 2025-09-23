@@ -5,12 +5,15 @@
 
 CFootSwitch::CFootSwitch()
 	: m_pBodyTransform(nullptr)
+	, m_bSwitchOn(nullptr)
 	, m_pStepCollider(nullptr)
+	, m_pEnteredObj(nullptr)
 	, m_bObjectEnter(false)
 	, m_bPressed(false)
 	, m_bPrevPressed(false)
 	, m_iSiblingSwitchIndex(-1)
 	, m_bSwitchComplete(false)
+	, m_bMustDetect(nullptr)
 {
 }
 
@@ -79,8 +82,10 @@ void CFootSwitch::Update()
 			m_pBodyTransform->Add_PositionY(-0.5f * DELTA_TIME);
 	}
 
-	if (m_pBodyTransform->Get_LocalPosition().y < -0.55f)
+	if (m_pBodyTransform->Get_LocalPosition().y <= -0.55f)
+	{
 		m_bPressed = true;
+	}
 
 	if (m_bPressed && !m_bPrevPressed)
 		SwitchOnEvent();
@@ -88,20 +93,35 @@ void CFootSwitch::Update()
 	m_bPrevPressed = m_bPressed;
 }
 
-void CFootSwitch::OnTriggerStay(CCollider* _other)
-{
-}
-
 void CFootSwitch::OnTriggerEnter(CCollider* _other)
 {
-	if (_other->Get_GameObject()->CompareTag(L"Player"))
+	if (_other->Get_GameObject()->CompareTag(L"Player") || _other->Get_GameObject()->CompareTag(L"DungeonCube"))
+	{
+		m_pEnteredObj = _other->Get_GameObject();
 		m_bObjectEnter = true;
+	}
 }
 
 void CFootSwitch::OnTriggerExit(CCollider* _other)
 {
-	if (_other->Get_GameObject()->CompareTag(L"Player"))
+	if (_other->Get_GameObject()->CompareTag(L"Player") || _other->Get_GameObject()->CompareTag(L"DungeonCube"))
+	{
 		m_bObjectEnter = false;
+
+		if (m_bMustDetect)
+		{
+			if (m_pEnteredObj == _other->Get_GameObject())
+			{
+				if (!m_bSwitchComplete)
+				{
+					m_bPressed = false;
+					m_bSwitchOn = false;
+				}
+
+				m_pEnteredObj = nullptr;
+			}
+		}
+	}
 }
 
 void CFootSwitch::OnDestroy()
@@ -128,6 +148,11 @@ void CFootSwitch::Set_Gate(vector<CDungeonObject*>& _object)
 		if (*it)
 			(*it)->AddRef();
 	}
+}
+
+void CFootSwitch::SetMustDetect(const _bool _value)
+{
+	m_bMustDetect = _value;
 }
 
 const _uint CFootSwitch::Get_Index() const

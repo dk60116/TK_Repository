@@ -33,13 +33,7 @@ HRESULT CDungeonCube::Initialize(void* _desc)
 		return E_FAIL;
 
 	m_pGameObject->SetLayer(L"RigidObject");
-
-	if (!m_pRigidBody)
-	{
-		m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
-		m_pRigidBody->SetKinematic(false);
-		m_pRigidBody->SetUseGravity(true);
-	}
+	m_pGameObject->SetTag(L"DungeonCube");
 
 	return S_OK;
 }
@@ -47,6 +41,14 @@ HRESULT CDungeonCube::Initialize(void* _desc)
 void CDungeonCube::Awake()
 {
 	__super::Awake();
+
+	m_vRenderer[0]->Get_Material()->Set_FloatValue(L"gSmoothness", 0.8f);
+
+	if (!m_pRigidBody)
+	{
+		m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
+		//m_pRigidBody->SetUseGravity(true);
+	}
 }
 
 void CDungeonCube::Start()
@@ -57,6 +59,11 @@ void CDungeonCube::Start()
 void CDungeonCube::Update()
 {
 	__super::Update();
+
+	vector3 playerPos = CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position();
+	vector3 myPos = Get_Transform()->Get_Position();
+
+	m_pRigidBody->SetUseGravity(vector3::Distance(playerPos, myPos) <= 20.f);
 }
 
 void CDungeonCube::OnTriggerEnter(CCollider* _other)

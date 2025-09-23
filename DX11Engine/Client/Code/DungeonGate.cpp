@@ -92,7 +92,7 @@ void CDungeonGate::Start()
 		m_vLockChainRenders[1]->Set_LocalEulerAngles(vector3(0.f, 0.f, -45.f));
 	}
 
-	m_pLockRenderer->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
+	m_pLockRenderer->Get_Material()->Set_FloatValue(L"gSmoothness", 0.8f);
 
 	m_pLockRenderer->Get_GameObject()->SetActive(m_bLock);
 }

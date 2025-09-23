@@ -18,7 +18,6 @@ public:
 
 	void Awake() override;
 	void Update() override;
-	void OnTriggerStay(CCollider* _other) override;
 	void OnTriggerEnter(CCollider* _other) override;
 	void OnTriggerExit(CCollider* _other) override;
 	void OnDestroy() override;
@@ -26,6 +25,7 @@ public:
 public:
 	void Set_Index(const _uint _index);
 	void Set_Gate(vector<class CDungeonObject*>& _gates);
+	void SetMustDetect(const _bool _value);
 
 public:
 	const _uint Get_Index() const;
@@ -39,12 +39,14 @@ private:
 	CTransform* m_pBodyTransform;
 	CSphereCollider* m_pStepCollider;
 
+	CGameObject* m_pEnteredObj;
+
 	_bool m_bObjectEnter;
 	_bool m_bSwitchOn;
 	_bool m_bSwitchComplete;
 
 	_uint m_iSiblingSwitchIndex;
 	_bool m_bPressed, m_bPrevPressed;
-
+	_bool m_bMustDetect;
 };
 

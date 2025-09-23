@@ -18,7 +18,7 @@ public:
 	{
 		_int maxHp = 6;
 		_int crtHp = 0;
-		_float moveSpeed = 5.f;
+		_float moveSpeed = 10.f;
 		_float jumpForce = 7.f;
 		_float attackWalkRatio = 0.5f;
 		_float backWalkRatio = 0.7f;

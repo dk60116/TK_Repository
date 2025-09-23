@@ -14,6 +14,7 @@ CDungeonTrigger::CDungeonTrigger()
 	, m_pOnTexture(nullptr)
 	, m_fLimitTime(0.f)
 	, m_fPassedTime(0.f)
+	, m_bDTSet(false)
 {
 }
 
@@ -143,12 +144,29 @@ void CDungeonTrigger::Set_LimitTime(const _float _time)
 	m_fLimitTime = _time;
 }
 
+void CDungeonTrigger::Set_DT()
+{
+	m_bDTSet = true;
+}
+
+const _bool CDungeonTrigger::Get_SwitchOn() const
+{
+	return m_bSwitchOn;
+}
+
 void CDungeonTrigger::SwitchOnEvent()
 {
 	m_bSwitchOn = true;
 	m_pPointLight->SetEnabled(true);
 	m_vRenderer[0]->Get_Material()->Set_Texture(m_pOnTexture);
 	m_fPassedTime = 0.f;
+
+	if (m_bDTSet)
+	{
+		CGameManager::GetInstance().Get_Dungeon()->OnDTSwitch();
+
+		return;
+	}
 
 	_bool siblingOn = true;
 

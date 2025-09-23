@@ -46,6 +46,8 @@ void CMovingPlat::Awake()
 {
 	__super::Awake();
 
+	m_vRenderer[0]->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
+
 	if (!m_pBodyCollider)
 	{
 		m_pBodyCollider = Get_Transform()->Get_Child()->Get_GameObject()->AddComponent<CBoxCollider>();

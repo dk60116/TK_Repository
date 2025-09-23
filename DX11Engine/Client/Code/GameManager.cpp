@@ -38,6 +38,7 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Tag(4, L"Arrow");
 	CSceneManager::Add_Tag(5, L"ArrowTrigger");
 	CSceneManager::Add_Tag(6, L"SpinSword");
+	CSceneManager::Add_Tag(7, L"DungeonCube");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);

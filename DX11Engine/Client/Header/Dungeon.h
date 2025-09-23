@@ -28,6 +28,8 @@ public:
 	vector<class CFootSwitch*> Get_FootSwitch(const _uint _index);
 	vector<class CDungeonTrigger*> Get_DungeonTrigger(const _uint _index);
 
+	void OnDTSwitch();
+
 private:
 	void CreateMonsterPrototypes();
 	void CreateDungonObjectPrototypes();
@@ -42,6 +44,9 @@ private:
 	void SpawnDungeonLadder();
 	void SpawnMovingPlat();
 	void SpawnDungeonTrigger();
+	void SpawnDungeonCube();
+
+	void Update_DTSwitch();
 
 private:
 	template <typename T>
@@ -66,8 +71,14 @@ private:
 	vector<class CLadderTrigger*> m_vLadderTriggerList;
 	vector<class CMovingPlat*> m_vMovingPlatList;
 	vector<class CDungeonTrigger*> m_vDungeonTriggerList;
+	vector<class CDungeonCube*> m_vDungeonCubeList;
 
 	class CDragon* m_pDragon;
+
+	class vector<CDungeonTrigger*> m_vDTSets;
+	_bool m_bDTSwitchOn;
+	_float m_fDTOnDuration;
+	_bool m_bDTComplete;
 };
 
 template <typename T>
