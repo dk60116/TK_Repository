@@ -13,16 +13,18 @@ CItem_Arrow::~CItem_Arrow()
 
 void CItem_Arrow::OnGetEvent(const _uint _count)
 {
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_EquipSlot(0, _count);
 }
 
 void CItem_Arrow::OnDropEvent(const _uint _count)
 {
 }
 
-void CItem_Arrow::OnUseEvent()
+void CItem_Arrow::OnUseEvent(const _uint _count)
 {
+	CGameManager::GetInstance().Get_PlayerHUD()->Update_EquipSlot(0, _count);
 }
 
-void CItem_Arrow::OnUnUseEvent()
+void CItem_Arrow::OnUnUseEvent(const _uint _count)
 {
 }

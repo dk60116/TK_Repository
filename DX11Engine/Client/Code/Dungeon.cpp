@@ -163,6 +163,19 @@ void CDungeon::OnDestroy()
     __super::OnDestroy();
 }
 
+vector<class CDungeonGate*> CDungeon::Get_DungeonGate(const _uint _index)
+{
+    vector<class CDungeonGate*> result = {};
+
+    for (TRAVERSAL_ITER(m_vGateList, it))
+    {
+        if ((*it)->Get_Index() == _index)
+            result.push_back((*it));
+    }
+
+    return result;
+}
+
 vector<CFootSwitch*> CDungeon::Get_FootSwitch(const _uint _index)
 {
     vector<class CFootSwitch*> result = {};
@@ -289,6 +302,14 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[11]->SetBoundingBox({ pair(vector3(-61.f, -3.9f, -126.85f), vector3(40.f, 16.5f, 45.f)) });
+
+        vector<vector3> swPos = { {-59.2f, -8.75f, -127.7f} };
+        vector<_float> swRot = {0.f };
+        m_vChapterList[11]->AddMonsterSpawner({ m_mMonsterProtoList[L"SkelletalWarrior"], swPos, swRot });
+
+        vector<vector3> goblinPos = { {-52.9f, -8.75f, -135.75}, {-68.f, -8.75f, -135.75} };
+        vector<_float> goblinRot = { 0.f, 0.f };
+        m_vChapterList[11]->AddMonsterSpawner({ m_mMonsterProtoList[L"Goblin"], goblinPos, goblinRot });
     }
 
     {
@@ -308,6 +329,7 @@ void CDungeon::CreateDragon()
 {
     CGameObject* dragonObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Dragon");
     m_pDragon = dragonObj->AddComponent<CDragon>();
+    m_pDragon->Get_Transform()->Set_EulerAnglesY(180.f);
 }
 
 void CDungeon::CreatePointLights()
@@ -528,7 +550,11 @@ void CDungeon::SpawnDungeonGates()
     m_vGateList[18]->Get_Transform()->Set_Position(-60.f, -9.f, -101.2f);
 
     m_vGateList[19]->Get_Transform()->Set_Position(-60.f, 0.f, -33.74f);
+    m_vGateList[19]->SetLock();
+    m_vGateList[19]->Set_Index(1);
     m_vGateList[20]->Get_Transform()->Set_Position(-52.53f, 0.f, -33.74f);
+    m_vGateList[20]->SetLock();
+    m_vGateList[20]->Set_Index(1);
 
     m_vGateList[21]->Get_Transform()->Set_Position(-112.52f, -6.f, -93.79f);
     
@@ -592,7 +618,7 @@ void CDungeon::SpawnDungeonChest()
     if (!m_mDungonObjProtoList[L"Dungeon_Chest"])
         return;
 
-    for (_uint i = 0; i < 5; ++i)
+    for (_uint i = 0; i < 9; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -631,6 +657,34 @@ void CDungeon::SpawnDungeonChest()
         m_vChestList[4]->Get_Transform()->Set_EulerAnglesY(0.f);
         m_vChestList[4]->Get_Transform()->Set_LocalScale(1.5f);
         m_vChestList[4]->Set_Item(L"Heart");
+    }
+
+    {
+        m_vChestList[5]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -120.f));
+        m_vChestList[5]->Get_Transform()->Set_EulerAnglesY(180.f);
+        m_vChestList[5]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[5]->Set_Item(L"Arrow", 5);
+    }
+
+    {
+        m_vChestList[6]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -135.f));
+        m_vChestList[6]->Get_Transform()->Set_EulerAnglesY(0.f);
+        m_vChestList[6]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[6]->Set_Item(L"Arrow", 5);
+    }
+
+    {
+        m_vChestList[7]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -135.f));
+        m_vChestList[7]->Get_Transform()->Set_EulerAnglesY(0.f);
+        m_vChestList[7]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[7]->Set_Item(L"Heart");
+    }
+
+    {
+        m_vChestList[8]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -120.f));
+        m_vChestList[8]->Get_Transform()->Set_EulerAnglesY(180.f);
+        m_vChestList[8]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[8]->Set_Item(L"Dungeon Key");
     }
 }
 

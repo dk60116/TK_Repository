@@ -4,9 +4,13 @@
 CDungeonGate::CDungeonGate()
 	: m_pBody(nullptr)
 	, m_bLock(false)
-	, m_bIsOpen(false)
+	, m_bUnLock(false)
+	, m_bIsOpenDoor(false)
+	, m_bIsOpenLock(false)
 	, m_pLockRenderer(nullptr)
 	, m_vLockChainRenders({})
+	, m_bComplete(false)
+	, m_fPassedTime(0.f)
 {
 }
 
@@ -101,22 +105,34 @@ void CDungeonGate::Update()
 {
 	__super::Update();
 
-	if (m_bIsOpen)
+	if (m_bUnLock && !m_bComplete)
 	{
-		if (!m_bLock)
-			m_pBody->Set_LocalPositionY(Lerp(m_pBody->Get_LocalPosition().y, -4.f, DELTA_TIME));
-		else
-		{
-			CTransform* lockTF = m_pLockRenderer->Get_Transform();
-			const vector3 lerp = vector3::Lerp(lockTF->Get_LocalScale(), vector3::zero(), DELTA_TIME * 5.f);
-			m_pLockRenderer->Get_Transform()->Set_LocalScale(lerp);
+		m_fPassedTime += DELTA_TIME;
 
+		CTransform* lockTF = m_pLockRenderer->Get_Transform();
+		const vector3 lerp = vector3::Lerp(lockTF->Get_LocalScale(), vector3::zero(), DELTA_TIME * 5.f);
+		m_pLockRenderer->Get_Transform()->Set_LocalScale(lerp);
+
+		if (m_bIsOpenDoor)
+		{
 			if (lerp.x <= 0.1f)
 				m_pBody->Set_LocalPositionY(Lerp(m_pBody->Get_LocalPosition().y, -4.f, DELTA_TIME));
+		}
 
-			m_vLockChainRenders[0]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[0]->Get_LocalPosition(), vector3(-1.5f, 3.f, 0.f), DELTA_TIME * 3.f));
-			m_vLockChainRenders[1]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[1]->Get_LocalPosition(), vector3(1.5f, 3.f, 0.f), DELTA_TIME * 3.f));
-			m_vLockChainRenders[2]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[2]->Get_LocalPosition(), vector3(0.f, -2.f, 0.f), DELTA_TIME * 3.f));
+		if (m_bLock)
+		{
+			if (m_bIsOpenLock)
+			{
+				m_vLockChainRenders[0]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[0]->Get_LocalPosition(), vector3(-1.5f, 3.f, 0.f), DELTA_TIME * 3.f));
+				m_vLockChainRenders[1]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[1]->Get_LocalPosition(), vector3(1.5f, 3.f, 0.f), DELTA_TIME * 3.f));
+				m_vLockChainRenders[2]->Set_LocalPosition(vector3::Lerp(m_vLockChainRenders[2]->Get_LocalPosition(), vector3(0.f, -2.f, 0.f), DELTA_TIME * 3.f));
+			}
+		}
+
+		if (m_pBody->Get_LocalPosition().y <= -3.9f)
+		{
+			m_pBody->Set_LocalPositionY(-4.f);
+			m_bComplete = true;
 		}
 	}
 }
@@ -148,7 +164,33 @@ void CDungeonGate::SetLock()
 
 void CDungeonGate::Open()
 {
-	m_bIsOpen = true;
+	m_bUnLock = true;
+
+	_bool siblingOn = true;
+
+	if (m_iSiblingSwitchIndex != -1)
+	{
+		auto siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonGate(m_iSiblingSwitchIndex);
+
+		for (TRAVERSAL_ITER(siblingSwitchList, it))
+		{
+			if (!(*it)->m_bUnLock)
+				siblingOn = false;
+		}
+	}
+
+	if (m_iSiblingSwitchIndex == -1 || siblingOn)
+	{
+		m_bIsOpenDoor = true;
+
+		auto siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonGate(m_iSiblingSwitchIndex);
+
+		for (TRAVERSAL_ITER(siblingSwitchList, it))
+			(*it)->m_bIsOpenDoor = true;
+	}
+
+	if (m_bLock)
+		m_bIsOpenLock = true;
 }
 
 void CDungeonGate::Close()

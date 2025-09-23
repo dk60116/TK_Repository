@@ -31,9 +31,13 @@ private:
 	CTransform* m_pBody;
 
 	_bool m_bLock;
-	_bool m_bIsOpen;
+	_bool m_bUnLock;
+	_bool m_bIsOpenDoor, m_bIsOpenLock;
+	_bool m_bComplete;
 
 	CMeshRenderer* m_pLockRenderer;
 	vector<CTransform*> m_vLockChainRenders;
+
+	_float m_fPassedTime;
 };
 

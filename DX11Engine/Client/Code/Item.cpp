@@ -19,11 +19,11 @@ void CItem::OnDropEvent(const _uint _count)
 {
 }
 
-void CItem::OnUseEvent()
+void CItem::OnUseEvent(const _uint _count)
 {
 }
 
-void CItem::OnUnUseEvent()
+void CItem::OnUnUseEvent(const _uint _count)
 {
 }
 

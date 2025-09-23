@@ -11,6 +11,6 @@ class CItem_Sword final : public CItem
 public:
 	void OnGetEvent(const _uint _count) override;
 	void OnDropEvent(const _uint _count) override;
-	void OnUseEvent() override;
-	void OnUnUseEvent() override;
+	void OnUseEvent(const _uint _count) override;
+	void OnUnUseEvent(const _uint _count) override;
 };

@@ -87,6 +87,7 @@ _bool CInventory::UseItem(const wstring& _name, const _uint _count)
 	{
 		it->second.count -= _count;
 		it->second.protoType->OnDropEvent(it->second.count);
+		it->second.protoType->OnUseEvent(it->second.count);
 		return true;
 	}
 	else

@@ -21,10 +21,10 @@ void CItem_DungeonKey::OnDropEvent(const _uint _count)
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_DungeonKey(_count);
 }
 
-void CItem_DungeonKey::OnUseEvent()
+void CItem_DungeonKey::OnUseEvent(const _uint _count)
 {
 }
 
-void CItem_DungeonKey::OnUnUseEvent()
+void CItem_DungeonKey::OnUnUseEvent(const _uint _count)
 {
 }

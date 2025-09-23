@@ -30,6 +30,9 @@ public:
 	const wstring& Get_ObjName();
 	void Set_Operation(const _bool _on);
 
+	void Set_Index(const _int _index);
+	const _int Get_Index() const;
+
 protected:
 	class CDungeonChapter* m_pChapter;
 	wstring m_strObjName;
@@ -40,5 +43,6 @@ protected:
 	CBoxCollider* m_pCollider;
 	CBoxCollider* m_pBodyCollider;
 	_bool m_bOperation;
+	_int m_iSiblingSwitchIndex;
 };
 

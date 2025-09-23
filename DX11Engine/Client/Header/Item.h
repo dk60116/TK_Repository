@@ -12,8 +12,8 @@ protected:
 public:
 	virtual void OnGetEvent(const _uint _count);
 	virtual void OnDropEvent(const _uint _count);
-	virtual void OnUseEvent();
-	virtual void OnUnUseEvent();
+	virtual void OnUseEvent(const _uint _count);
+	virtual void OnUnUseEvent(const _uint _count);
 
 public:
 	const wstring& Get_ItemName();

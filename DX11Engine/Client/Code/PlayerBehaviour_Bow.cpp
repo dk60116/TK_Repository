@@ -63,7 +63,10 @@ void CPlayerBehaviour_Bow::During()
 	if (CInput::GetMouseButtonUp(0))
 	{
 		if (m_bAiming)
-			m_pPlayer->ShootArrow();
+		{
+			if (CGameManager::GetInstance().Get_Inventory()->UseItem(L"Arrow"))
+				m_pPlayer->ShootArrow();
+		}
 		else
 			m_pPlayer->ReturnArrow();
 

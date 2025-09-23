@@ -20,10 +20,10 @@ void CItem_Heart::OnDropEvent(const _uint _count)
 {
 }
 
-void CItem_Heart::OnUseEvent()
+void CItem_Heart::OnUseEvent(const _uint _count)
 {
 }
 
-void CItem_Heart::OnUnUseEvent()
+void CItem_Heart::OnUnUseEvent(const _uint _count)
 {
 }

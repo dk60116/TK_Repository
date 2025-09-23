@@ -12,6 +12,7 @@ CDungeonObject::CDungeonObject()
 	, m_pCollider(nullptr)
 	, m_pBodyCollider(nullptr)
 	, m_bOperation(true)
+	, m_iSiblingSwitchIndex(-1)
 {
 }
 
@@ -86,4 +87,14 @@ const wstring& CDungeonObject::Get_ObjName()
 void CDungeonObject::Set_Operation(const _bool _on)
 {
 	m_bOperation = _on;
+}
+
+void CDungeonObject::Set_Index(const _int _index)
+{
+	m_iSiblingSwitchIndex = _index;
+}
+
+const _int CDungeonObject::Get_Index() const
+{
+	return m_iSiblingSwitchIndex;
 }

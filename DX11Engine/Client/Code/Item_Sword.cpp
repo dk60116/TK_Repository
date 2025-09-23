@@ -20,10 +20,10 @@ void CItem_Sword::OnDropEvent(const _uint _count)
 {
 }
 
-void CItem_Sword::OnUseEvent()
+void CItem_Sword::OnUseEvent(const _uint _count)
 {
 }
 
-void CItem_Sword::OnUnUseEvent()
+void CItem_Sword::OnUnUseEvent(const _uint _count)
 {
 }

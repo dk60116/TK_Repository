@@ -35,6 +35,7 @@ public:
 
 	void Update_Rupee(const _int _count);
 	void Update_DungeonKey(const _int _count);
+	void Update_EquipSlot(const _uint _index, const _uint _count);
 
 	void OpenNotifaction(class CItem* _item);
 

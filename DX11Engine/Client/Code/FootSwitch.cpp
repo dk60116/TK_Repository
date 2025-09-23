@@ -11,7 +11,6 @@ CFootSwitch::CFootSwitch()
 	, m_bObjectEnter(false)
 	, m_bPressed(false)
 	, m_bPrevPressed(false)
-	, m_iSiblingSwitchIndex(-1)
 	, m_bSwitchComplete(false)
 	, m_bMustDetect(nullptr)
 {
@@ -134,11 +133,6 @@ void CFootSwitch::OnDestroy()
 	m_vLinkObjects.clear();
 }
 
-void CFootSwitch::Set_Index(const _uint _index)
-{
-	m_iSiblingSwitchIndex = _index;
-}
-
 void CFootSwitch::Set_Gate(vector<CDungeonObject*>& _object)
 {
 	m_vLinkObjects = _object;
@@ -155,11 +149,6 @@ void CFootSwitch::SetMustDetect(const _bool _value)
 	m_bMustDetect = _value;
 }
 
-const _uint CFootSwitch::Get_Index() const
-{
-	return m_iSiblingSwitchIndex;
-}
-
 void CFootSwitch::SwitchOnEvent()
 {
 	m_bSwitchOn = true;
@@ -168,7 +157,7 @@ void CFootSwitch::SwitchOnEvent()
 
 	if (m_iSiblingSwitchIndex != -1)
 	{
-		vector<CFootSwitch*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
+		auto siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
 
 		for (TRAVERSAL_ITER(siblingSwitchList, it))
 		{

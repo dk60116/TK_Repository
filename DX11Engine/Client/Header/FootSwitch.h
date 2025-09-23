@@ -23,12 +23,8 @@ public:
 	void OnDestroy() override;
 
 public:
-	void Set_Index(const _uint _index);
 	void Set_Gate(vector<class CDungeonObject*>& _gates);
 	void SetMustDetect(const _bool _value);
-
-public:
-	const _uint Get_Index() const;
 
 private:
 	void SwitchOnEvent();
@@ -45,7 +41,6 @@ private:
 	_bool m_bSwitchOn;
 	_bool m_bSwitchComplete;
 
-	_uint m_iSiblingSwitchIndex;
 	_bool m_bPressed, m_bPrevPressed;
 	_bool m_bMustDetect;
 };

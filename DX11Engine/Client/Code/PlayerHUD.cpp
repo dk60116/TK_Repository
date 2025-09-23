@@ -153,6 +153,11 @@ void CPlayerHUD::Update_DungeonKey(const _int _count)
 	m_pDungeonKeyText->Set_Text(to_wstring(_count));
 }
 
+void CPlayerHUD::Update_EquipSlot(const _uint _index, const _uint _count)
+{
+	m_vEquipCountText[_index]->Set_Text(to_wstring(_count));
+}
+
 void CPlayerHUD::OpenNotifaction(CItem* _item)
 {
 	m_pNotifactionTitleText->Set_Text(_item->Get_ItemName());

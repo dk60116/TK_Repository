@@ -83,7 +83,7 @@ void CDungeonChest::Update()
 
 	if (m_fOpenTimer > 1.f && !m_bTakeItem)
 	{
-		CGameManager::GetInstance().Get_Inventory()->AddItem(m_strItemName);
+		CGameManager::GetInstance().Get_Inventory()->AddItem(m_strItemName, m_iItemCount);
 		m_bTakeItem = true;
 
 		CGameManager::GetInstance().Get_PlayerHUD()->OpenNotifaction(CGameManager::GetInstance().Get_Inventory()->FindItem(m_strItemName));

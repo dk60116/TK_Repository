@@ -7,7 +7,6 @@ CDungeonTrigger::CDungeonTrigger()
 	: CDungeonObject{}
 	, m_bSwitchOn(false)
 	, m_bSwitchComplete(false)
-	, m_iSiblingSwitchIndex(-1)
 	, m_vLinkObjects({})
 	, m_pPointLight(nullptr)
 	, m_pOffTexture(nullptr)
@@ -129,11 +128,6 @@ void CDungeonTrigger::Add_LinkObject(CDungeonObject* _obj)
 	m_vLinkObjects.back()->AddRef();
 }
 
-const _uint CDungeonTrigger::Get_Index() const
-{
-	return m_iSiblingSwitchIndex;
-}
-
 void CDungeonTrigger::Set_Sibling(const _uint _index)
 {
 	m_iSiblingSwitchIndex = _index;
@@ -172,7 +166,7 @@ void CDungeonTrigger::SwitchOnEvent()
 
 	if (m_iSiblingSwitchIndex != -1)
 	{
-		vector<CDungeonTrigger*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonTrigger(m_iSiblingSwitchIndex);
+		auto siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonTrigger(m_iSiblingSwitchIndex);
 
 		for (TRAVERSAL_ITER(siblingSwitchList, it))
 		{
