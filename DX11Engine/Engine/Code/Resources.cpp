@@ -1776,21 +1776,21 @@ void CResources::Ready_GameResources()
 	meMatDesc.customFloatValues.push_back({ L"gDistortionAmount", 0.5f });
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"MeshEffectMaterial (Material)", L"", &meMatDesc));
 
-	CShader::SHADERDESC particleEffectShaderDesc = { L"../EngineResources/Shader/Particle.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	CShader::SHADERDESC particleEffectShaderDesc = { L"../EngineResources/Shader/Particle.hlsl", L"", VetexParticleBuffer::numElements, VetexParticleBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"ParticleEffect (Shader)", L"", &particleEffectShaderDesc));
 
 	CShader* ptcShader = LoadOnGame<CShader>(L"ParticleEffect (Shader)");
 	CMaterial::MATERIALDESC ptcMatDesc = { ptcShader, false, true };
 	ptcMatDesc.customFloatValues.push_back({ L"time", 0.f });
 	ptcMatDesc.customFloatValues.push_back({ L"lifeTime", 0.f });
-	ptcMatDesc.customVector2Values.push_back({ L"padding0", {} });
+	ptcMatDesc.customVector2Values.push_back({ L"startEndSpeed", {1.f, 1.f} });
 	ptcMatDesc.customVector4Values.push_back({ L"startColor", ColorValue::white().f4Color()});
 	ptcMatDesc.customVector4Values.push_back({ L"endColor", ColorValue::white().f4Color()});
 
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"ParticleMaterial (Material)", L"", &ptcMatDesc));
 }
 
-void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)
+void CResources::TraverseSkeleton(aiNode* _node, const _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)
 {
 	using SKIN = CSkinnedMeshBuffer::SKINNEDSKELETAL;
 

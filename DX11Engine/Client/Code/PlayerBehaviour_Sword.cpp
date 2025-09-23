@@ -15,10 +15,10 @@ CPlayerBehaviour_Sword::~CPlayerBehaviour_Sword()
 
 HRESULT CPlayerBehaviour_Sword::Initialize(CPlayer* _player)
 {
+	m_iWeight = 2;
+
 	if (FAILED(__super::Initialize(_player)))
 		return E_FAIL;
-
-	m_iWeight = 2;
 
 	return S_OK;
 }
@@ -54,7 +54,9 @@ void CPlayerBehaviour_Sword::During()
 		m_pPlayer->Get_Controller()->ForceChangeState(CPlayerController::Move, &m_pPlayer->Get_Controller()->Get_MoveDesc());
 
 	if (m_fPassedTime >= 0.25f && CInput::GetMouseButtonDown(0))
+	{
 		m_bContinueCombo = true;
+	}
 
 	if (m_iCurrentCombo != m_iPrevCombo)
 	{

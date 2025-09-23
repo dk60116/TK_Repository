@@ -20,11 +20,12 @@ CPlayer::CPlayer()
 	, m_pEquipArrow(nullptr)
 	, m_pEquipWeapon(nullptr)
 	, m_sPlayerStatus({})
-	, m_pNavAgent(nullptr)
 	, m_pCollider(nullptr)
 	, m_pRigidBody(nullptr)
 	, m_vPrevMousePos({})
 	, m_vMouseDragDelta({})
+	, m_bSpinAttack(false)
+	, m_fSpinAttackGauge(0.f)
 {
 	m_strName = L"Player";
 }
@@ -79,6 +80,7 @@ HRESULT CPlayer::Initialize(void* _desc)
 	m_pAnimator->Add_Animation(L"Jump", CResources::LoadOnScene<CAnimationClip>(L"Link_Jump (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
 	m_pAnimator->Add_Animation(L"SwordCombo", CResources::LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
+	m_pAnimator->Add_Animation(L"SpinAttack", CResources::LoadOnScene<CAnimationClip>(L"Link_SwordAttack2 (Animation)"));
 	m_pAnimator->Add_Animation(L"BowLoad", CResources::LoadOnScene<CAnimationClip>(L"Link_BowLoad (Animation)"));
 	m_pAnimator->Add_Animation(L"BowAiming", CResources::LoadOnScene<CAnimationClip>(L"Link_BowAiming (Animation)"));
 	m_pAnimator->Add_Animation(L"LadderUp", CResources::LoadOnScene<CAnimationClip>(L"Link_LadderUp (Animation)"));
@@ -178,6 +180,21 @@ void CPlayer::Update()
 	{
 		m_pRigidBody->SetUseGravity(!m_pRigidBody->UseGravity());
 	}
+
+	if (m_bSpinAttack)
+	{
+		m_fSpinAttackGauge += DELTA_TIME;
+
+		if (m_fSpinAttackGauge >= 1.5f)
+		{
+			m_pController->ChangeState(CPlayerController::SpinAttack);
+			m_fSpinAttackGauge = 0.f;
+			m_bSpinAttack = false;
+		}
+	}
+
+	if (CInput::GetMouseButtonUp(0))
+		m_bSpinAttack = false;
 }
 
 void CPlayer::LateUpdate()
@@ -369,6 +386,16 @@ void CPlayer::PlaySwordAnimation()
 	{
 		m_pAnimator->SetLoop(false);
 		m_pAnimator->Play(L"SwordCombo", 0.1f);
+		m_bSpinAttack = true;
+	}
+}
+
+void CPlayer::PlaySpinAttackAnimation()
+{
+	if (m_pAnimator)
+	{
+		m_pAnimator->SetLoop(false);
+		m_pAnimator->Play(L"SpinAttack", 0.1f);
 	}
 }
 

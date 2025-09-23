@@ -183,6 +183,7 @@
     <ClInclude Include="..\Header\MovingPlat.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Bow.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Ladder.h" />
+    <ClInclude Include="..\Header\PlayerBehaviour_SpinAttack.h" />
     <ClInclude Include="..\Header\PlayerBehaviour_Sword.h" />
     <ClInclude Include="..\Header\Goblin.h" />
     <ClInclude Include="..\Header\DefaultArrow.h" />
@@ -279,6 +280,7 @@
     <ClCompile Include="..\Code\PlayerBehaviour_Jump.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Ladder.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Move.cpp" />
+    <ClCompile Include="..\Code\PlayerBehaviour_SpinAttack.cpp" />
     <ClCompile Include="..\Code\PlayerBehaviour_Sword.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />

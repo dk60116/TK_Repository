@@ -4,6 +4,7 @@
 #include "PlayerBehaviour_Idle.h"
 #include "PlayerBehaviour_Move.h"
 #include "PlayerBehaviour_Sword.h"
+#include "PlayerBehaviour_SpinAttack.h"
 #include "PlayerBehaviour_Bow.h"
 #include "PlayerBehaviour_Jump.h"
 #include "PlayerBehaviour_Ladder.h"
@@ -47,6 +48,7 @@ void CPlayerController::Awake()
 	AddBehaviour<CPlayerBehaviour_Idle>(Idle);
 	AddBehaviour<CPlayerBehaviour_Move>(Move);
 	AddBehaviour<CPlayerBehaviour_Sword>(Sword);
+	AddBehaviour<CPlayerBehaviour_SpinAttack>(SpinAttack);
 	AddBehaviour<CPlayerBehaviour_Jump>(Jump);
 	AddBehaviour<CPlayerBehaviour_Bow>(Bow);
 	AddBehaviour<CPlayerBehaviour_Ladder>(Ladder);

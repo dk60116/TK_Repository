@@ -24,7 +24,8 @@ cbuffer PerCustomValue : register(b10)
 {
     float time;
     float lifeTime;
-    float2 padding0;
+    float2 startEndSpeed;
+    
     float4 startColor;
     float4 endColor;
 }
@@ -40,15 +41,18 @@ struct VSIn
     float3 normalL : NORMAL;
     float2 uv : TEXCOORD0;
     float3 tangentL : TANGENT;
-    uint4 boneIndices : BLENDINDICES;
-    float4 boneWeights : BLENDWEIGHT;
     
     float4 instance_row0 : INSTANCE0;
     float4 instance_row1 : INSTANCE1;
     float4 instance_row2 : INSTANCE2;
     float4 instance_row3 : INSTANCE3;
     
-    float4 startVelocity : INSTANCE4;
+    float4 randomSeed : INSTANCE4;
+    float4 startSizeMin : INSTANCE5;
+    float4 startSizeMax : INSTANCE6;
+    float4 endSizeMin : INSTANCE7;
+    float4 endSizeMax : INSTANCE8;
+    float4 startVelocity : INSTANCE9;
 };
 
 struct VSOut
@@ -69,6 +73,20 @@ VSOut VSMain(VSIn v)
     float3 up = float3(0, 1, 0);
     float3 right = normalize(cross(up, toCamera));
     up = cross(toCamera, right);
+    
+    float randValue = v.randomSeed.x;
+    float startSizeValueR = lerp(v.startSizeMin.w, v.startSizeMax.w, randValue);
+    float endSizeValueR = lerp(v.endSizeMin.w, v.endSizeMax.w, randValue);
+    
+    float sizeValueR = lerp(startSizeValueR, endSizeValueR, (time / lifeTime));
+    
+    float4x4 sizeMat =
+    {
+        float4(sizeValueR, 0, 0, 0),
+        float4(0, sizeValueR, 0, 0),
+        float4(0, 0, sizeValueR, 0),
+        float4(0, 0, 0, 1)
+    };
 
     // billboard 회전 행렬
     float4x4 billboardRot =
@@ -81,7 +99,8 @@ VSOut VSMain(VSIn v)
 
     float4 posL = float4(v.posL, 1);
 
-    // billboard 회전 적용
+    // 크기, billboard 회전 적용
+    posL = mul(posL, sizeMat);
     posL = mul(posL, billboardRot);
 
     // 인스턴스 월드행렬 * 오브젝트 월드행렬
@@ -92,7 +111,8 @@ VSOut VSMain(VSIn v)
     );
 
     float4 posW = mul(posL, w);
-    posW.xyz += v.startVelocity.xyz * time;
+    float speedL = lerp(startEndSpeed.x, startEndSpeed.y, (time / lifeTime));
+    posW.xyz += normalize(v.startVelocity.xyz) * (time / lifeTime) * speedL;
 
     float4 posV = mul(posW, view);
     float4 posH = mul(posV, proj);

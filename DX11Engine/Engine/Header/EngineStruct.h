@@ -917,21 +917,21 @@ namespace Engine
 
         _float length() const
         {
-            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector v = XMVectorSet(x, y, z, w);
             _vector len = XMVector3Length(v);
             return XMVectorGetX(len);
         }
 
         _float lengthSq() const
         {
-            _vector v = XMVectorSet(x, y, z, 0.f);
+            _vector v = XMVectorSet(x, y, z, w);
             _vector len = XMVector3LengthSq(v);
             return XMVectorGetX(len);
         }
         
-        const _float3 to_float3()
+        const _float4 to_float4()
         {
-            return _float3(x, y, z);
+            return _float4(x, y, z, w);
         }
 
         const _vector toXMVector() const
@@ -1529,13 +1529,19 @@ namespace Engine
 #pragma region VertexBuffer
     struct MeshInstanceData
     {
-        _float4 row0;
-        _float4 row1;
-        _float4 row2;
-        _float4 row3;
+        _float4 row0 = {};
+        _float4 row1 = {};
+        _float4 row2 = {};
+        _float4 row3 = {};
 
-        _float3 startVelocity = {};
-        _float padding;
+        _float4 randomSeed = {};
+
+        _float4 startSizeMin = {};
+        _float4 startSizeMax = {};
+        _float4 endSizeMin = {};
+        _float4 endSizeMax = {};
+
+        _float4 startVelocity = {};
     };
 
     inline static MeshInstanceData MakeInstanceData(const _float4x4 w)
@@ -1671,7 +1677,7 @@ namespace Engine
 
             INSTANCE_INPUT_DESC,
 
-            { "INSTANCE", 4, DXGI_FORMAT_R32G32B32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+            { "INSTANCE", 4, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         };
     };
 
@@ -1683,9 +1689,8 @@ namespace Engine
         _float3 tangent;
         _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
-        _float3 startVelocity = {};
 
-        static const _uint numElements = 6 + INSTANCE_BUFFER_COUTN + 1;
+        static const _uint numElements = 6 + INSTANCE_BUFFER_COUTN;
         static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -1696,8 +1701,32 @@ namespace Engine
             { "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
             INSTANCE_INPUT_DESC,
+        };
+    };
 
-            { "INSTANCE", 4, DXGI_FORMAT_R32G32B32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+    struct VetexParticleBuffer
+    {
+        _float3 position;
+        _float3 normal;
+        _float2 uv;
+        _float3 tangent;
+
+        static const _uint numElements = 4 + INSTANCE_BUFFER_COUTN + 6;
+        static constexpr D3D11_INPUT_ELEMENT_DESC elementDesc[numElements] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+            INSTANCE_INPUT_DESC,
+
+            { "INSTANCE", 4, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+            { "INSTANCE", 5, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 80, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+            { "INSTANCE", 6, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 96, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+            { "INSTANCE", 7, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 112, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+            { "INSTANCE", 8, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 128, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+            { "INSTANCE", 9, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 144, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
         };
     };
 

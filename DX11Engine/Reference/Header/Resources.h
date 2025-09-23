@@ -83,7 +83,7 @@ public:
 
 private:
     static void Ready_GameResources();
-    static void TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList);
+    static void TraverseSkeleton(aiNode* _node, const _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList);
 
 private:
     unordered_map<wstring, CEngineResource*> m_mEditorResourceList;

@@ -2,7 +2,8 @@
 #include "EngineResource.h"
 
 CEngineResource::CEngineResource()
-	: m_strResourceName({})
+	: m_iRsourceID(0)
+	, m_strResourceName({})
 	, m_strFilePath({})
 {
 }

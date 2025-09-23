@@ -336,6 +336,9 @@
     <ClInclude Include="..\Header\DungeonObject.h">
       <Filter>Scripts\Object\Map\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\PlayerBehaviour_SpinAttack.h">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\MainScene.cpp">
@@ -556,6 +559,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\DungeonChapter.cpp">
       <Filter>Scripts\Object\Map\Dungeon\Spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerBehaviour_SpinAttack.cpp">
+      <Filter>Scripts\Object\Player\Controller\Bheaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

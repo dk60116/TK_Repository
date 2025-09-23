@@ -4,7 +4,7 @@
 class CPlayerController final : public CComponent
 {
 public:
-	enum PlayerState { None, Idle, Move, Sword, Bow, Jump, Ladder, GetHit, Death };
+	enum PlayerState { None, Idle, Move, Sword, SpinAttack, Bow, Jump, Ladder, GetHit, Death };
 	enum class TurnDir { None, Left, Right };
 
 	typedef struct moveDirectionDesc

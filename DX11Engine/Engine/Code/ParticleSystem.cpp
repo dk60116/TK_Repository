@@ -112,7 +112,7 @@ void CParticleSystem::Update()
             {
                 m_vCurrentTimes[i] += DELTA_TIME;
 
-                if (m_vCurrentTimes[i] > m_sDescription.particles[i].info.lifeTime)
+                if (m_vCurrentTimes[i] > m_sDescription.particles[i].info.startLifeTime)
                 {
                     m_vWaitTimes[i] = 0.f;
                     m_vCurrentTimes[i] = 0.f;
@@ -199,33 +199,19 @@ void CParticleSystem::SetStartValue(CMeshBuffer& _buffer, const _uint _count)
     {
         const _uint instanceCount = _buffer.Get_InstancingDesc().count;
 
-        m_vRenderers[i]->Get_Material()->Set_FloatValue(L"lifeTime", m_sDescription.particles[i].info.lifeTime);
-        const _float4 startColor = m_sDescription.particles[i].info.startColor.f4Color();
+        PARTICLEINFO& info = m_sDescription.particles[i].info;
+
+        m_vRenderers[i]->Get_Material()->Set_FloatValue(L"lifeTime", info.startLifeTime);
+        const _float4 startColor = info.startColor.f4Color();
         m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"startColor", startColor);
-        const _float4 endColor = m_sDescription.particles[i].info.endColor.f4Color();
+        const _float4 endColor = info.endColor.f4Color();
         m_vRenderers[i]->Get_Material()->Set_Vector4Value(L"endColor", endColor);
 
         for (_uint j = 0; j < instanceCount; ++j)
         {
-            _matrix S = {};
-
-            if (!m_sDescription.particles[i].info.size3D)
-            {
-                const _float sizeMin = m_sDescription.particles[i].info.startSizeMin;
-                const _float sizeMax = m_sDescription.particles[i].info.startSizeMax;
-                const _float randomSize = CRandom::Range(sizeMin, sizeMax);
-                S = XMMatrixScaling(randomSize, randomSize, randomSize);
-            }
-            else
-            {
-                const vector3 sizeMin = m_sDescription.particles[i].info.startSizeMin3D;
-                const vector3 sizeMax = m_sDescription.particles[i].info.startSizeMax3D;
-                S = XMMatrixScaling(CRandom::Range(sizeMin.x, sizeMax.x), CRandom::Range(sizeMin.y, sizeMax.y), CRandom::Range(sizeMin.z, sizeMax.z));
-            }
-
             _matrix W = XMMatrixTranslation(0.f, 0.f, 0.f);
 
-            _matrix F = S * W;
+            _matrix F = W;
 
             MeshInstanceData data = {};
             XMStoreFloat4(&data.row0, F.r[0]);
@@ -233,10 +219,23 @@ void CParticleSystem::SetStartValue(CMeshBuffer& _buffer, const _uint _count)
             XMStoreFloat4(&data.row2, F.r[2]);
             XMStoreFloat4(&data.row3, F.r[3]);
 
+            const _float random = CRandom::Range(0.f, 1.f);
+            const _vector randomSeed = XMVectorSet(random, random, random, random);
+            //const _vector randomSeed = XMVectorSet(0.1f, 0.1f, 0.1f, 0.1f);
+            XMStoreFloat4(&data.randomSeed, randomSeed);
+
+            const _vector startSizeMin = XMVectorSet(info.startSizeMin.x, info.startSizeMin.y, info.startSizeMin.z, info.startSizeMin.w);
+            XMStoreFloat4(&data.startSizeMin, startSizeMin);
+            const _vector startSizeMax = XMVectorSet(info.startSizeMax.x, info.startSizeMax.y, info.startSizeMax.z, info.startSizeMax.w);
+            XMStoreFloat4(&data.startSizeMax, startSizeMax);
+            const _vector endSizeMin = XMVectorSet(info.endSizeMin.x, info.endSizeMin.y, info.endSizeMin.z, info.endSizeMin.w);
+            XMStoreFloat4(&data.endSizeMin, endSizeMin);
+            const _vector endSizeMax = XMVectorSet(info.endSizeMax.x, info.endSizeMax.y, info.endSizeMax.z, info.endSizeMax.w);
+            XMStoreFloat4(&data.endSizeMax, endSizeMax);
+
             const vector3& velValue = m_sDescription.particles[i].info.startVelocity;
             const _vector velocity = XMVectorSet(CRandom::Range(-velValue.x, velValue.x), CRandom::Range(-velValue.y, velValue.y), CRandom::Range(-velValue.z, velValue.z), 0.f);
-            const _vector velNor = XMVector3Normalize(velocity);
-            XMStoreFloat3(&data.startVelocity, velNor);
+            XMStoreFloat4(&data.startVelocity, velocity);
 
             inst.data[j] = data;
         }

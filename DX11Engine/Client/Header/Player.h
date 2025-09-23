@@ -69,6 +69,7 @@ public:
 	void PlayJumpAnimation(const vector3& _dir, const _float _blending = 0.1f);
 	
 	void PlaySwordAnimation();
+	void PlaySpinAttackAnimation();
 	void PlayBowLoadAnimatoin();
 	void PlayBowAimingAnimation();
 
@@ -104,7 +105,9 @@ private:
 
 	PlayerStatus m_sPlayerStatus;
 
-	EngineAI::CNavMeshAgent* m_pNavAgent;
+	_bool m_bSpinAttack;
+	_float m_fSpinAttackGauge;
+
 	CBoxCollider* m_pCollider;
 	CRigidBody* m_pRigidBody;
 
