@@ -82,6 +82,9 @@ void CMovingPlat::Update()
 			myTF->Add_Position(moveValue);
 			if (m_bPlayerEnter)
 				CGameManager::GetInstance().Get_Player()->Get_Transform()->Add_Position(moveValue);
+
+			if (vector3::Distance(myPos, targetPos) <= 0.05f)
+				myTF->Set_Position(targetPos);
 		}
 		else
 		{

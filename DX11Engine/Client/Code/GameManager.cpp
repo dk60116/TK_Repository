@@ -61,6 +61,10 @@ HRESULT CGameManager::Initialize()
 	CCollisionManager::Set_CollisionFilter(L"DungeonObject", L"DungeonChapter", false);
 	CCollisionManager::Set_CollisionFilter(L"DungeonObject", L"MonsterBodyPart", false);
 	CCollisionManager::Set_CollisionFilter(L"DungeonObject", L"Map", false);
+	
+	CCollisionManager::Set_CollisionFilter(L"RigidObject", L"Default", false);
+	CCollisionManager::Set_CollisionFilter(L"RigidObject", L"DungeonChapter", false);
+	CCollisionManager::Set_CollisionFilter(L"RigidObject", L"MonsterBodyPart", false);
 
 	return S_OK;
 }

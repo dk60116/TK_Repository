@@ -33,6 +33,7 @@ CDungeon::CDungeon()
     , m_vDTSets({})
     , m_bDTSwitchOn(false)
     , m_fDTOnDuration(0.f)
+    , m_bDTComplete(false)
 {
 }
 
@@ -109,9 +110,9 @@ void CDungeon::Start()
 
     SpawnDungeonGates();
     SpawnDungeonFootSwitches();
+    SpawnMovingPlat();
     SpawnDungeonChest();
     SpawnDungeonLadder();
-    SpawnMovingPlat();
     SpawnDungeonTrigger();
     SpawnDungeonCube();
 
@@ -622,7 +623,7 @@ void CDungeon::SpawnDungeonChest()
     if (!m_mDungonObjProtoList[L"Dungeon_Chest"])
         return;
 
-    for (_uint i = 0; i < 10; ++i)
+    for (_uint i = 0; i < 11; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -666,21 +667,21 @@ void CDungeon::SpawnDungeonChest()
     {
         m_vChestList[5]->Get_Transform()->Set_Position(vector3(23.2f, 3.f, -93.72f));
         m_vChestList[5]->Get_Transform()->Set_EulerAnglesY(90.f);
-        m_vChestList[5]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[5]->Get_Transform()->Set_LocalScale(1.f);
         m_vChestList[5]->Set_Item(L"Arrow", 5);
     }
 
     {
         m_vChestList[6]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -120.f));
         m_vChestList[6]->Get_Transform()->Set_EulerAnglesY(180.f);
-        m_vChestList[6]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[6]->Get_Transform()->Set_LocalScale(1.f);
         m_vChestList[6]->Set_Item(L"Arrow", 5);
     }
 
     {
         m_vChestList[7]->Get_Transform()->Set_Position(vector3(-45.f, -9.f, -135.f));
         m_vChestList[7]->Get_Transform()->Set_EulerAnglesY(0.f);
-        m_vChestList[7]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[7]->Get_Transform()->Set_LocalScale(1.f);
         m_vChestList[7]->Set_Item(L"Arrow", 5);
     }
 
@@ -694,8 +695,16 @@ void CDungeon::SpawnDungeonChest()
     {
         m_vChestList[9]->Get_Transform()->Set_Position(vector3(-75.f, -9.f, -120.f));
         m_vChestList[9]->Get_Transform()->Set_EulerAnglesY(180.f);
-        m_vChestList[9]->Get_Transform()->Set_LocalScale(1.5f);
+        m_vChestList[9]->Get_Transform()->Set_LocalScale(1.f);
         m_vChestList[9]->Set_Item(L"Dungeon Key");
+    }
+
+    {
+        m_vChestList[10]->Get_Transform()->Set_Position(vector3(-112.36f, -4.35f + 0.5f, -58.f));
+        m_vChestList[10]->Get_Transform()->Set_EulerAnglesY(0.f);
+        m_vChestList[10]->Get_Transform()->Set_LocalScale(1.f);
+        m_vChestList[10]->Set_Item(L"Dungeon Key");
+        m_vChestList[10]->Get_Transform()->SetParent(m_vMovingPlatList[2]->Get_Transform());
     }
 }
 
@@ -754,7 +763,7 @@ void CDungeon::SpawnMovingPlat()
     if (!m_mDungonObjProtoList[L"MovingPlat"])
         return;
 
-    for (_uint i = 0; i < 2; ++i)
+    for (_uint i = 0; i < 3; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"MovingPlat"]->Get_GameObject());
         newObj->Set_ObjectName(L"Moving Plat (Clone) " + to_wstring(i));
@@ -773,6 +782,13 @@ void CDungeon::SpawnMovingPlat()
         m_vMovingPlatList[1]->Get_Transform()->Set_Position(-37.25f, 10.4f, -103.8f);
         m_vMovingPlatList[1]->AddRout(vector3(-37.25f, 10.4f, -103.8f));
         m_vMovingPlatList[1]->AddRout(vector3(-46.f, -3.5f, -94.45f));
+    }
+
+    {
+        m_vMovingPlatList[2]->Get_Transform()->Set_Position(-112.36f, -4.35f, -58.7f);
+        m_vMovingPlatList[2]->AddRout(vector3(-112.36f, -4.35f, -58.7f));
+        m_vMovingPlatList[2]->AddRout(vector3(-112.36f, -8.5f, -58.7f));
+        m_vMovingPlatList[2]->Set_Operation(true);
     }
 }
 
