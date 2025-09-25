@@ -35,6 +35,14 @@ void CPlayerBehaviour_SpinAttack::During()
 		_bool combatMode = true;
 		m_pPlayer->Get_Controller()->ForceChangeState(CPlayerController::Idle, &combatMode);
 	}
+
+	CAnimator* animator = m_pPlayer->Get_Animator();
+
+	if (animator->Get_StateInfo().frame == 5)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"SwordAttack03");
+	}
 }
 
 void CPlayerBehaviour_SpinAttack::Exit()

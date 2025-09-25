@@ -6,10 +6,12 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos;
-    float4x4 view;
-    float4x4 proj;
-    float campadding;
+    float3 gPos;
+    float padding1;
+
+    float4x4 gView;
+    float4x4 gProj;
+    float4x4 gViewInv;
 };
 
 cbuffer PerMaterial : register(b2)
@@ -67,55 +69,46 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
 
-    // 카메라-파티클 방향 벡터 계산
+    // 1) 카메라 축 추출( view^-1 사용 )
+    float4x4 viewInv = gViewInv;
+    float3 camRight = normalize(viewInv[0].xyz);
+    float3 camUp = normalize(viewInv[1].xyz);
+    float3 camPos = viewInv[3].xyz; // 또는 cbuffer의 pos 사용 가능
+
+    // 2) 인스턴스 기준 정보 (로컬)
     float3 instancePos = v.instance_row3.xyz;
-    float3 toCamera = normalize(pos - instancePos); // 카메라 위치 - 파티클 위치
-    float3 up = float3(0, 1, 0);
-    float3 right = normalize(cross(up, toCamera));
-    up = cross(toCamera, right);
-    
+    float3 centerW = mul(float4(instancePos, 1), world).xyz;
+
+    // 3) toCamera (안전장치 포함)
+    float3 toCamera = camPos - centerW;
+    float lenTC = max(length(toCamera), 1e-6);
+    toCamera /= lenTC;
+
+    // (camRight, camUp이 이미 정규직교에 가깝지만, 혹시 위해 재직교)
+    camRight = normalize(camRight - camUp * dot(camRight, camUp));
+    camUp = normalize(cross(toCamera, camRight)); // 화면 위쪽이 자연스럽도록
+
+    // 4) 랜덤/시간 기반 크기 보간
     float randValue = v.randomSeed.x;
     float startSizeValueR = lerp(v.startSizeMin.w, v.startSizeMax.w, randValue);
     float endSizeValueR = lerp(v.endSizeMin.w, v.endSizeMax.w, randValue);
+    float t01 = saturate(time / max(lifeTime, 1e-6));
+    float sizeValueR = lerp(startSizeValueR, endSizeValueR, t01);
+
+    // 5) 로컬 쿼드(보통 -0.5~0.5) 를 카메라 축으로 전개 (회전행렬 곱 대신 선형결합)
+    float2 l = v.posL.xy * sizeValueR;
+    float3 billboardOffset = camRight * l.x + camUp * l.y;
+
+    // 6) 위치 = 인스턴스 위치 + 빌보드 오프셋 + 속도 이동
+    float speedL = lerp(startEndSpeed.x, startEndSpeed.y, t01);
+    float3 vel = (lenTC > 1e-6) ? normalize(v.startVelocity.xyz) : v.startVelocity.xyz;
     
-    float sizeValueR = lerp(startSizeValueR, endSizeValueR, (time / lifeTime));
-    
-    float4x4 sizeMat =
-    {
-        float4(sizeValueR, 0, 0, 0),
-        float4(0, sizeValueR, 0, 0),
-        float4(0, 0, sizeValueR, 0),
-        float4(0, 0, 0, 1)
-    };
+    float3 posW3 = centerW + billboardOffset + vel * t01 * speedL;
+    float4 posW = float4(posW3, 1);
 
-    // billboard 회전 행렬
-    float4x4 billboardRot =
-    {
-        float4(right, 0),
-        float4(up, 0),
-        float4(toCamera, 0),
-        float4(0, 0, 0, 1)
-    };
-
-    float4 posL = float4(v.posL, 1);
-
-    // 크기, billboard 회전 적용
-    posL = mul(posL, sizeMat);
-    posL = mul(posL, billboardRot);
-
-    // 인스턴스 월드행렬 * 오브젝트 월드행렬
-    float4x4 w = mul
-    (
-        float4x4(v.instance_row0, v.instance_row1, v.instance_row2, v.instance_row3),
-        world
-    );
-
-    float4 posW = mul(posL, w);
-    float speedL = lerp(startEndSpeed.x, startEndSpeed.y, (time / lifeTime));
-    posW.xyz += normalize(v.startVelocity.xyz) * (time / lifeTime) * speedL;
-
-    float4 posV = mul(posW, view);
-    float4 posH = mul(posV, proj);
+    // 7) 뷰/프로젝션
+    float4 posV = mul(posW, gView);
+    float4 posH = mul(posV, gProj);
 
     o.posH = posH;
     o.posW = posW.xyz;
@@ -127,6 +120,9 @@ VSOut VSMain(VSIn v)
 // 픽셀 셰이더
 float4 PSMain(VSOut input) : SV_TARGET
 {
+    if (time == 0.f)
+        discard;
+    
     float4 texColor = useTexture ? gBasemap.Sample(gSampler, input.uv) * baseColor : baseColor;
     
     float4 start = texColor * startColor;

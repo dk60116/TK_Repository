@@ -78,6 +78,8 @@ public:
 	void PlayLadderAnimation(const _byte _dir, const _float _blending = 0.2f);
 	void PlayLadderOutAnimation(const _float _blending = 0.2f);
 
+	void PlaySoundEffect(const wstring& _clip);
+
 	void AddHeart();
 
 	void PopArrow();
@@ -93,6 +95,7 @@ private:
 	class CInventory* m_pInventroy;
 	CSkinnedMeshRenderer* m_pSkinnedMeshRenderer;
 	CAnimator* m_pAnimator;
+	CAudioSource* m_pAudioSource;
 
 	CTransform* m_pRootTransform;
 	CTransform* m_pRHandTransform, * m_pLHandTransform;

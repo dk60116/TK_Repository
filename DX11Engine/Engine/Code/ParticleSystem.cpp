@@ -100,6 +100,15 @@ HRESULT CParticleSystem::Initialize(void* _desc)
     return S_OK;
 }
 
+void CParticleSystem::OnEnable()
+{
+    for (_uint i = 0; i < m_sDescription.count; ++i)
+    {
+        m_vCurrentTimes[i] = 0.f;
+        m_vPlaying[i] = m_sDescription.particles[i].info.playOnAwake;
+    }
+}
+
 void CParticleSystem::Update()
 {
     for (size_t i = 0; i < m_vCurrentTimes.size(); ++i)
@@ -116,6 +125,9 @@ void CParticleSystem::Update()
                 {
                     m_vWaitTimes[i] = 0.f;
                     m_vCurrentTimes[i] = 0.f;
+
+                    if (!m_sDescription.particles[i].info.loop)
+                        m_vPlaying[i] = false;
                 }
             }
         }

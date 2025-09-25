@@ -89,7 +89,7 @@ void CDungeonObject::Set_Operation(const _bool _on)
 	m_bOperation = _on;
 }
 
-void CDungeonObject::Set_Index(const _int _index)
+void CDungeonObject::Set_SibilingIndex(const _int _index)
 {
 	m_iSiblingSwitchIndex = _index;
 }

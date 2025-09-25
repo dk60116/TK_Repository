@@ -10,6 +10,7 @@ CPlayer::CPlayer()
 	, m_pInventroy(nullptr)
 	, m_pSkinnedMeshRenderer(nullptr)
 	, m_pAnimator(nullptr)
+	, m_pAudioSource(nullptr)
 	, m_pRootTransform(nullptr)
 	, m_pRHandTransform(nullptr)
 	, m_pLHandTransform(nullptr)
@@ -24,6 +25,7 @@ CPlayer::CPlayer()
 	, m_pRigidBody(nullptr)
 	, m_vPrevMousePos({})
 	, m_vMouseDragDelta({})
+	, m_pSpinParent(nullptr)
 	, m_bSpinAttack(false)
 	, m_fSpinAttackGauge(0.f)
 	, m_pSpinSwordTrigger(nullptr)
@@ -66,6 +68,9 @@ HRESULT CPlayer::Initialize(void* _desc)
 	m_pCollider->Set_Size(vector3(0.5f, 1.7f, 0.5f));
 
 	m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
+
+	m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
+	m_pAudioSource->SetLoop(false);
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
 	m_pAnimator->Add_Animation(L"Idle", CResources::LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
@@ -136,8 +141,8 @@ HRESULT CPlayer::Initialize(void* _desc)
 		m_pSpinSwordTrigger->Get_Transform()->Add_LocalEulerAngles(0.f, 180.f, 0.f);
 		m_pSpinSwordTrigger->SetTrigger(true);
 
-		m_pSpinSwordTrigger->Set_Center(vector3::forward() * 0.75f);
-		m_pSpinSwordTrigger->Set_Size(vector3(0.5f, 0.2f, 1.5f));
+		m_pSpinSwordTrigger->Set_Center(vector3::forward() * 1.5f);
+		m_pSpinSwordTrigger->Set_Size(vector3(0.5f, 0.2f, 2.f));
 		
 		m_pSpinSwordTrigger->SetEnabled(false);
 	}
@@ -471,6 +476,17 @@ void CPlayer::PlayLadderOutAnimation(const _float _blending)
 	m_pAnimator->SetLoop(false);
 
 	m_pAnimator->Play(L"LadderOutUp", _blending);
+}
+
+void CPlayer::PlaySoundEffect(const wstring& _clip)
+{
+	CAudioClip* clip = CResources::LoadOnScene<CAudioClip>(L"Link_" + _clip + L" (Audio)");
+
+	if (clip)
+	{
+		m_pAudioSource->SetClip(clip);
+		m_pAudioSource->Play();
+	}
 }
 
 void CPlayer::AddHeart()

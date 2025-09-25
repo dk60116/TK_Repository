@@ -6,7 +6,11 @@
 #include "DragonBHV_GetHit.h"
 #include "DragonBHV_RotationFly.h"
 #include "DragonBHV_ShootFireBall.h"
-#include "DragonBHV_SpreadFire.h"
+#include "DragonBHV_Grounding.h"
+#include "DragonBHV_Tracking.h"
+#include "DragonBHV_Attack.h"
+#include "DragonBHV_CombatWait.h"
+#include "DragonBHV_Dead.h"
 
 CBossController_Dragon::CBossController_Dragon()
 {
@@ -40,15 +44,19 @@ void CBossController_Dragon::Awake()
 {
 	__super::Awake();
 
-	AddBehaviour<CDragonBHV_Idle>((_uint)Idle);
+	AddBehaviour<CDragonBHV_Idle>((_uint)DIdle);
 	AddBehaviour<CDragonBHV_Wakeup>((_uint)Wakeup);
 	AddBehaviour<CDragonBHV_Landing>((_uint)Landing);
-	AddBehaviour<CDragonBHV_GetHit>((_uint)GetHit);
+	AddBehaviour<CDragonBHV_GetHit>((_uint)DGetHit);
 	AddBehaviour<CDragonBHV_RotationFly>((_uint)RotateFly);
 	AddBehaviour<CDragonBHV_ShootFireBall>((_uint)ShootFireBall);
-	AddBehaviour<CDragonBHV_SpreadFire>((_uint)SpreadFire);
+	AddBehaviour<CDragonBHV_Grounding>((_uint)Grounding);
+	AddBehaviour<CDragonBHV_Tracking>((_uint)DTracking);
+	AddBehaviour<CDragonBHV_Attack>((_uint)Attack_Ground);
+	AddBehaviour<CDragonBHV_CombatWait>((_uint)DCombatWait);
+	AddBehaviour<CDragonBHV_Dead>((_uint)DDeath);
 
-	ChangeState((_uint)Idle, nullptr, true);
+	ChangeState((_uint)DIdle, nullptr, true);
 }
 
 void CBossController_Dragon::Start()

@@ -11,6 +11,7 @@ CGameScene::CGameScene()
 	, m_pPlayer(nullptr)
 	, m_pHUD(nullptr)
 	, m_pDungeon(nullptr)
+	, m_pBGMSource(nullptr)
 {
 }
 
@@ -40,12 +41,19 @@ HRESULT CGameScene::Initialize()
 	CGameObject* dungeonObj = Add_GameObject(L"Dungeon");
 	m_pDungeon = dungeonObj->AddComponent<CDungeon>();
 
+	CGameObject* bgmObj = Add_GameObject(L"BGM Source");
+	m_pBGMSource = dungeonObj->AddComponent<CAudioSource>();
+
+	m_pBGMSource->SetClip(CResources::LoadOnScene<CAudioClip>(L"Dungeon_MainBGM (Audio)"));
+
 	return S_OK;
 }
 
 void CGameScene::Awake()
 {
 	__super::Awake();
+
+	m_pBGMSource->Play();
 }
 
 void CGameScene::Update()

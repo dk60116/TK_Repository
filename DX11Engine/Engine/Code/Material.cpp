@@ -177,6 +177,8 @@ void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _
 	camCB.camPos = _camPos;
 	camCB.view = XMMatrixTranspose(_view);
 	camCB.proj = XMMatrixTranspose(_projection);
+	_matrix viewInv = XMMatrixInverse(nullptr, _view);
+	camCB.viewInv = XMMatrixTranspose(viewInv);
 	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &camCB, 0, 0);
 	context->PSSetConstantBuffers(1, 1, &m_pCameraBuffer);
 	context->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);

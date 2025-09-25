@@ -52,7 +52,7 @@ inline CItem* CInventory::Add_ItemSlot()
 
 		InvenItem itemSlot = {};
 		itemSlot.protoType = item;
-		itemSlot.count = 1;
+		itemSlot.count = 10;
 
 		const wstring& name = item->Get_ItemName();
 

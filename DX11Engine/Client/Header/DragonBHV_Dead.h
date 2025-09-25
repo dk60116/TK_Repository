@@ -1,13 +1,13 @@
 #pragma once
 #include "MonsterBehaviour.h"
 
-class CDragonBHV_SpreadFire final : public CMonsterBehaviour
+class CDragonBHV_Dead final : public CMonsterBehaviour
 {
 	friend class CBossController;
 
 private:
-	explicit CDragonBHV_SpreadFire();
-	~CDragonBHV_SpreadFire();
+	explicit CDragonBHV_Dead();
+	~CDragonBHV_Dead();
 
 public:
 	HRESULT Initialize(class CMonster* _monster) override;

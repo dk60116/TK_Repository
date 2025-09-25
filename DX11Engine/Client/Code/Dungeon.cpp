@@ -295,6 +295,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[9]->SetBoundingBox({ pair(vector3(-63.7f, 1.6f, -30.45f), vector3(75.f, 15.f, 58.f)) });
+
+        vector<vector3> trollPos = { {-88.62f, -3.f, -22.74f} };
+        vector<_float> trollRot = { 90.f };
+        m_vChapterList[9]->AddMonsterSpawner({ m_mMonsterProtoList[L"Troll"], trollPos, trollRot });
     }
 
     {
@@ -323,6 +327,10 @@ void CDungeon::CreateDungeonChapters()
 
     {
         m_vChapterList[13]->SetBoundingBox({ pair(vector3(-106.45f, -3.9f, -75.35f), vector3(55.f, 16.5f, 48.f)) });
+
+        vector<vector3> wolfPos = { { -90.f, -9.f, -75.15f } };
+        vector<_float> wolfRot = { -90.f };
+        m_vChapterList[13]->AddMonsterSpawner({ m_mMonsterProtoList[L"Wolf"], wolfPos, wolfRot });
     }
 
     {
@@ -543,8 +551,10 @@ void CDungeon::SpawnDungeonGates()
     
     m_vGateList[11]->Get_Transform()->Set_Position(26.27f, 0.f, -22.47f);
     m_vGateList[11]->Get_Transform()->Set_EulerAnglesY(90.f);
+
     m_vGateList[12]->Get_Transform()->Set_Position(-26.27f, 0.f, -22.47f);
     m_vGateList[12]->Get_Transform()->Set_EulerAnglesY(90.f);
+    m_vGateList[12]->SetLock();
 
     m_vGateList[13]->Get_Transform()->Set_Position(7.5f, 0.f, 3.8f);
     m_vGateList[14]->Get_Transform()->Set_Position(0.f, 0.f, 3.8f);
@@ -556,10 +566,10 @@ void CDungeon::SpawnDungeonGates()
 
     m_vGateList[19]->Get_Transform()->Set_Position(-60.f, 0.f, -33.74f);
     m_vGateList[19]->SetLock();
-    m_vGateList[19]->Set_Index(1);
+    m_vGateList[19]->Set_SibilingIndex(1);
     m_vGateList[20]->Get_Transform()->Set_Position(-52.53f, 0.f, -33.74f);
     m_vGateList[20]->SetLock();
-    m_vGateList[20]->Set_Index(1);
+    m_vGateList[20]->Set_SibilingIndex(1);
 
     m_vGateList[21]->Get_Transform()->Set_Position(-112.52f, -6.f, -93.79f);
     
@@ -600,13 +610,13 @@ void CDungeon::SpawnDungeonFootSwitches()
 
     {
         m_vFootSwitchList[3]->Get_Transform()->Set_Position(vector3(-97.88f, -5.96f, -142.72f));
-        m_vFootSwitchList[3]->Set_Index(1);
+        m_vFootSwitchList[3]->Set_SibilingIndex(1);
         m_vFootSwitchList[3]->SetMustDetect(true);
         vector<CDungeonObject*> gates = { m_vGateList[21] };
         m_vFootSwitchList[3]->Set_Gate(gates);
 
         m_vFootSwitchList[4]->Get_Transform()->Set_Position(vector3(-112.48f, -5.96f, -99.f));
-        m_vFootSwitchList[4]->Set_Index(1);
+        m_vFootSwitchList[4]->Set_SibilingIndex(1);
         m_vFootSwitchList[4]->SetMustDetect(true);
         m_vFootSwitchList[4]->Set_Gate(gates);
     }
@@ -788,13 +798,13 @@ void CDungeon::SpawnMovingPlat()
         m_vMovingPlatList[2]->Get_Transform()->Set_Position(-112.36f, -4.35f, -58.7f);
         m_vMovingPlatList[2]->AddRout(vector3(-112.36f, -4.35f, -58.7f));
         m_vMovingPlatList[2]->AddRout(vector3(-112.36f, -8.5f, -58.7f));
-        m_vMovingPlatList[2]->Set_Operation(true);
+        m_vMovingPlatList[2]->Set_Operation(false);
     }
 }
 
 void CDungeon::SpawnDungeonTrigger()
 {
-    for (_uint i = 0; i < 8; ++i)
+    for (_uint i = 0; i < 12; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"DungeonTrigger"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Trigger (Clone) " + to_wstring(i));
@@ -809,13 +819,13 @@ void CDungeon::SpawnDungeonTrigger()
 
     {
         m_vDungeonTriggerList[1]->Get_Transform()->Set_Position(45.05f, 0.f, -46.45f);
-        m_vDungeonTriggerList[1]->Set_Sibling(0);
+        m_vDungeonTriggerList[1]->Set_SibilingIndex(0);
         m_vDungeonTriggerList[1]->Set_LimitTime(5);
         m_vDungeonTriggerList[1]->Add_LinkObject(m_vGateList[4]);
         m_vDungeonTriggerList[1]->Add_LinkObject(m_vGateList[5]);
 
         m_vDungeonTriggerList[2]->Get_Transform()->Set_Position(37.85f, 0.f, -46.45f);
-        m_vDungeonTriggerList[2]->Set_Sibling(0);
+        m_vDungeonTriggerList[2]->Set_SibilingIndex(0);
         m_vDungeonTriggerList[2]->Set_LimitTime(5);
         m_vDungeonTriggerList[2]->Add_LinkObject(m_vGateList[4]);
         m_vDungeonTriggerList[2]->Add_LinkObject(m_vGateList[5]);
@@ -833,6 +843,31 @@ void CDungeon::SpawnDungeonTrigger()
             m_vDTSets.push_back(m_vDungeonTriggerList[i]);
             m_vDTSets.back()->Set_DT();
         }
+    }
+
+    {
+        const vector3 center = vector3(-112.36f, -9.f, -66.05f);
+        const _float dist = 2.f;
+
+        m_vDungeonTriggerList[8]->Get_Transform()->Set_Position(center + vector3::forward() * dist);
+        m_vDungeonTriggerList[8]->Set_SibilingIndex(1);
+        m_vDungeonTriggerList[8]->Set_LimitTime(1);
+        m_vDungeonTriggerList[8]->Add_LinkObject(m_vMovingPlatList[2]);
+
+        m_vDungeonTriggerList[9]->Get_Transform()->Set_Position(center + vector3::back() * dist);
+        m_vDungeonTriggerList[9]->Set_SibilingIndex(1);
+        m_vDungeonTriggerList[9]->Set_LimitTime(1);
+        m_vDungeonTriggerList[9]->Add_LinkObject(m_vMovingPlatList[2]);
+
+        m_vDungeonTriggerList[10]->Get_Transform()->Set_Position(center + vector3::left() * dist);
+        m_vDungeonTriggerList[10]->Set_SibilingIndex(1);
+        m_vDungeonTriggerList[10]->Set_LimitTime(1);
+        m_vDungeonTriggerList[10]->Add_LinkObject(m_vMovingPlatList[2]);
+
+        m_vDungeonTriggerList[11]->Get_Transform()->Set_Position(center + vector3::right() * dist);
+        m_vDungeonTriggerList[11]->Set_SibilingIndex(1);
+        m_vDungeonTriggerList[11]->Set_LimitTime(1);
+        m_vDungeonTriggerList[11]->Add_LinkObject(m_vMovingPlatList[2]);
     }
 }
 

@@ -68,10 +68,10 @@ void CDragonBHV_RotationFly::During()
 			m_bFinal = true;
 		}
 
-		if (m_fPassedTime <= 28.f)
+		if (m_fPassedTime <= 32.f)
 			myTF->Add_PositionY(-dragon->Get_Status().riseSpeed * DELTA_TIME);
 		else
-			dragon->Get_Controller()->ChangeState(CBossController_Dragon::SpreadFire);
+			dragon->Get_Controller()->ChangeState(CBossController_Dragon::Grounding);
 	}
 }
 

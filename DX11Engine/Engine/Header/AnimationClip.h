@@ -52,7 +52,7 @@ public:
 	HRESULT Initiailize_Custom(AnimationClipInitInfo _info, void* _desc);
 
 public:
-	void Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const;
+	_int Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const;
 	const _bool IsLoop() const;
 	const _float Get_Duration() const;
 	const _float Get_TickPerSecons() const;

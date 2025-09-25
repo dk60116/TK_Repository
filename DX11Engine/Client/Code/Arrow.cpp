@@ -4,8 +4,10 @@
 CArrow::CArrow()
 	: m_pRigidBody(nullptr)
 	, m_bUsed(false)
+	, m_bDetected(false)
 	, m_fLifeTime(10.f)
 	, m_fPassedTime(0.f)
+	, m_pDetactParticle(nullptr)
 {
 	m_strName = L"Arrow";
 }
@@ -25,6 +27,28 @@ HRESULT CArrow::Initialize(void* _desc)
 		return E_FAIL;
 
 	m_pGameObject->SetTag(L"Arrow");
+
+	if (!m_pDetactParticle)
+	{
+		CGameObject* particleObject = m_pGameObject->Get_Scene()->Add_GameObject(L"Detect Particle");
+
+		CParticleSystem::PARTICLEDESC ptDesc = {};
+		ptDesc.particles[0].info.loop = false;
+		ptDesc.particles[0].info.maxCount = 50;
+		ptDesc.particles[0].info.startLifeTime = 0.5f;
+		ptDesc.particles[0].info.startSpeed = 0.1f;
+		ptDesc.particles[0].info.endSpeed = 0.2f;
+		ptDesc.particles[0].info.endSizeMax = vector4::one() * 0.3f;
+		ptDesc.particles[0].info.startColor = ColorValue::white();
+		ptDesc.particles[0].info.startColor = ColorValue::white();
+		ptDesc.particles[0].info.startColor.a = 150;
+		ptDesc.particles[0].info.endColor = ColorValue::white();
+		ptDesc.particles[0].info.endColor.a = 0;
+
+		m_pDetactParticle = particleObject->AddComponent<CParticleSystem>(&ptDesc);
+
+		m_pDetactParticle->Get_GameObject()->SetActive(false);
+	}
 
 	return S_OK;
 }
@@ -80,14 +104,17 @@ void CArrow::OnCollisionEnter(CCollider* _other)
 {
 	__super::OnCollisionEnter(_other);
 
+
+	if (!m_bUsed || m_bDetected)
+		return;
+
 	m_pRigidBody->ResetVelocity();
 	m_pRigidBody->ResetGravity();
 
-	if (_other->Get_GameObject()->CompareTag(L"ArrowTrigger"))
-	{
-		CDebug::LogError("AT");
-		m_pRigidBody->SetUseGravity(false);
-	}
+	m_pDetactParticle->Get_Transform()->Set_Position(Get_Transform()->Get_Position());
+	m_pDetactParticle->Get_GameObject()->SetActive(true);
+
+	m_bDetected = true;
 }
 
 void CArrow::OnCollisionStay(CCollider* _other)
@@ -152,6 +179,9 @@ void CArrow::Shoot()
 void CArrow::Return()
 {
 	m_bUsed = false;
+	m_bDetected = false;
+
+	m_pDetactParticle->Get_GameObject()->SetActive(false);
 
 	m_pRigidBody->SetKinematic(true);
 	m_pRigidBody->SetEnabled(false);

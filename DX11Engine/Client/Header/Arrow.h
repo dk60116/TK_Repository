@@ -32,7 +32,10 @@ public:
 
 private:
 	CRigidBody* m_pRigidBody;
-	_bool m_bUsed;
+	_bool m_bUsed, m_bDetected;
 	_float m_fLifeTime, m_fPassedTime;
+
+private:
+	CParticleSystem* m_pDetactParticle;
 };
 

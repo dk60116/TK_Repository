@@ -35,6 +35,8 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CInput::Initialize()))
         return E_FAIL;
+    if (FAILED(CFMODSystem::Initialize()))
+        return E_FAIL;
     if (FAILED(CUIManager::Initialize()))
         return E_FAIL;
     if (FAILED(CCollisionManager::Initialize()))
@@ -85,6 +87,7 @@ void CMainProcess::Update_MainApp()
 
     CTime::Update();
     CInput::Update();
+    CFMODSystem::Update();
 
     if (scene)
     {
@@ -118,4 +121,5 @@ void CMainProcess::Update_MainApp()
 void CMainProcess::Release_MainApp()
 {
     CDebug::Release();
+    CFMODSystem::Release();
 }

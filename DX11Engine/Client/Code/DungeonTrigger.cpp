@@ -128,11 +128,6 @@ void CDungeonTrigger::Add_LinkObject(CDungeonObject* _obj)
 	m_vLinkObjects.back()->AddRef();
 }
 
-void CDungeonTrigger::Set_Sibling(const _uint _index)
-{
-	m_iSiblingSwitchIndex = _index;
-}
-
 void CDungeonTrigger::Set_LimitTime(const _float _time)
 {
 	m_fLimitTime = _time;

@@ -14,7 +14,7 @@ CDragonBHV_Wakeup::~CDragonBHV_Wakeup()
 
 HRESULT CDragonBHV_Wakeup::Initialize(CMonster* _monster)
 {
-	m_iWeight = 1;
+	m_iWeight = 2;
 
 	if (FAILED(__super::Initialize(_monster)))
 		return E_FAIL;
@@ -48,7 +48,7 @@ void CDragonBHV_Wakeup::During()
 		if (dragon->Get_Animator()->Get_StateInfo().normalizeTime >= 0.95f && !m_bCompleteTakeFly)
 		{
 			dragon->SetFlying(true);
-			CDragon::LandingDesc ld = { true, vector3(0.f, 10.f, -35.f)};
+			CDragon::LandingDesc ld = { true, vector3(0.f, 10.f, -22.f)};
 			dragon->Get_Controller()->ChangeState(CBossController_Dragon::Landing, &ld);
 			m_bCompleteTakeFly = true;
 		}

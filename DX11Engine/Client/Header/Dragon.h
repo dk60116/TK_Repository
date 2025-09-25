@@ -14,6 +14,7 @@ public:
 		_float riseSpeed = 1.5f;
 		_float glideSpeed = 15.f;
 		_float fireballInterval = 4.f;
+		_float attackRange = 5.f;
 	};
 
 	struct LandingDesc
@@ -46,6 +47,7 @@ public:
 
 public:
 	void Get_Damage(class CWeapon* _weapon) override;
+	void Death() override;
 
 	void PlayIdle(const _float _blending = 0.2f) override;
 	void PlayThreat(const _float _blending = 0.2f) override;
@@ -54,7 +56,10 @@ public:
 	void PlayGetHit(const _float _blending = 0.2f);
 	void PlayGlide(const _float _blending = 0.2f);
 	void PlayShootFireball(const _float _blending = 0.2f);
-	void PlaySpreadFire(const _float _blending = 0.2f);
+	void PlaySpreadGrounding(const _float _blending = 0.2f);
+	void PlayRun(const _float _blending = 0.2f) ;
+	void PlayAttack_Ground(const _float _blending = 0.2f);
+	void PlayDeath(const _float _blending = 0.2f);
 
 	void ShootFireBall();
 	const _uint Get_ShootFireBallCount() const;

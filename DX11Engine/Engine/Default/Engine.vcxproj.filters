@@ -199,6 +199,39 @@
     <ClInclude Include="..\Header\ParticleSystem.h">
       <Filter>Components\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\fmod.hpp">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_codec.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_common.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_dsp.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_dsp_effects.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_errors.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\fmod_output.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\FMODSystem.h">
+      <Filter>System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\AudioSource.h">
+      <Filter>Components\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\AudioClip.h">
+      <Filter>Resource\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -317,6 +350,15 @@
     </Filter>
     <Filter Include="Components\Particle">
       <UniqueIdentifier>{f5e3a417-b5d5-4090-a530-a3585e4fd2aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\FMod">
+      <UniqueIdentifier>{439e6dbc-8ef9-40b8-8026-8cb56e40f4bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Sound">
+      <UniqueIdentifier>{18c71ea7-bba8-4d6c-91b9-591e9826f8e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Sound">
+      <UniqueIdentifier>{381b3e47-b277-4525-b7b1-c298ca5a7be9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -526,6 +568,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\ParticleSystem.cpp">
       <Filter>Components\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\AudioSource.cpp">
+      <Filter>Components\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\AudioClip.cpp">
+      <Filter>Resource\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FMODSystem.cpp">
+      <Filter>System\FMod</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

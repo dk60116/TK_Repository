@@ -18,6 +18,7 @@ CAnimator::CAnimator()
 	, m_vFinalBoneMatrix({})
 	, m_mBlendStartPose({})
 	, m_sStateInfo({})
+	, m_iPrevFrame(-1)
 {
 	m_strName = L"Animator";
 }
@@ -151,7 +152,7 @@ void CAnimator::Update()
 
 	// 현재 시각의 키프레임 샘플링
 	unordered_map<wstring, CAnimationClip::BoneTransform> sampled;
-	m_pCrtAnimation->Sample(m_fCurrentTime, sampled);
+	m_sStateInfo.frame = m_pCrtAnimation->Sample(m_fCurrentTime, sampled);
 
 	// 각 본 CTransform 갱신
 	const _uint boneCount = m_pSkinnedRenderer->Get_BoneCount();
@@ -183,6 +184,16 @@ void CAnimator::Update()
 	}
 
 	m_sStateInfo.normalizeTime = m_fCurrentTime / duration;
+
+	if (m_sStateInfo.frame != m_iPrevFrame)
+		m_sStateInfo.startedFrame = true;
+
+	m_iPrevFrame = m_sStateInfo.frame;
+}
+
+void CAnimator::LateUpdate()
+{
+	m_sStateInfo.startedFrame = false;
 }
 
 void CAnimator::OnDestroy()
@@ -260,7 +271,7 @@ void CAnimator::Play(const wstring& _animName, const _float _blendDuration)
 	m_bBlending = true;
 
 	m_mBlendStartPose.clear();
-	m_pCrtAnimation->Sample(m_fCurrentTime, m_mBlendStartPose);
+	m_sStateInfo.frame = m_pCrtAnimation->Sample(m_fCurrentTime, m_mBlendStartPose);
 
 	m_bIsPlaying = true;
 }

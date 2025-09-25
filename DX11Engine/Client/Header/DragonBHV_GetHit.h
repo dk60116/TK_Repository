@@ -16,6 +16,7 @@ public:
 	void During() override;
 	void Exit() override;
 
+private:
 	_uint m_iPrevState;
 };
 

@@ -48,10 +48,12 @@ HRESULT CAnimationClip::Initiailize_Custom(AnimationClipInitInfo _info, void* _d
 	return S_OK;
 }
 
-void CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const
+_int CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransform>& _out) const
 {
+	_int frameIndex = -1;
+
 	if (m_vBoneAnimation.empty() || m_fDuration == 0.f)
-		return;
+		return frameIndex;
 
 	double ticks = _timeSec * m_fTicksPerSecond;
 	double time = fmod(ticks, m_fDuration);
@@ -85,11 +87,12 @@ void CAnimationClip::Sample(_float _timeSec, unordered_map<wstring, BoneTransfor
 
 		XMStoreFloat3(&bt.scale, XMVectorLerp(XMLoadFloat3(&keys[i1].scaling), XMLoadFloat3(&keys[i2].scaling), t));
 
-		if (ba.nodeName == L"FantasyWolf_")
-			int a = 0;
-
 		_out.emplace(ba.nodeName, bt);
+
+		frameIndex = static_cast<_int>(i1);
 	}
+
+	return frameIndex;
 }
 
 const _bool CAnimationClip::IsLoop() const

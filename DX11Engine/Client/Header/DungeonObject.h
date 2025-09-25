@@ -30,7 +30,7 @@ public:
 	const wstring& Get_ObjName();
 	void Set_Operation(const _bool _on);
 
-	void Set_Index(const _int _index);
+	void Set_SibilingIndex(const _int _index);
 	const _int Get_Index() const;
 
 protected:

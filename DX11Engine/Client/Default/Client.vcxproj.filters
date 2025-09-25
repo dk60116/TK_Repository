@@ -261,13 +261,7 @@
     <ClInclude Include="..\Header\Dragon.h">
       <Filter>Scripts\Object\BossMonster\Dragon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\BossController_Dragon.h">
-      <Filter>Scripts\Object\BossMonster\Dragon\Controller</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\DragonBHV_Idle.h">
-      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\DragonBHV_Wakeup.h">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\DragonBHV_Landing.h">
@@ -300,7 +294,7 @@
     <ClInclude Include="..\Header\DragonBHV_RotationFly.h">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\DragonBHV_SpreadFire.h">
+    <ClInclude Include="..\Header\DragonBHV_Grounding.h">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Snake.h">
@@ -341,6 +335,24 @@
     </ClInclude>
     <ClInclude Include="..\Header\DungeonCube.h">
       <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Tracking.h">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Wakeup.h">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Attack.h">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_CombatWait.h">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\BossController_Dragon.h">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\DragonBHV_Dead.h">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -518,7 +530,7 @@
     <ClCompile Include="..\Code\DragonBHV_RotationFly.cpp">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\DragonBHV_SpreadFire.cpp">
+    <ClCompile Include="..\Code\DragonBHV_Grounding.cpp">
       <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Snake.cpp">
@@ -568,6 +580,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\DungeonCube.cpp">
       <Filter>Scripts\Object\Map\Objects\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_Tracking.cpp">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_Attack.cpp">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_CombatWait.cpp">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DragonBHV_Dead.cpp">
+      <Filter>Scripts\Object\BossMonster\Dragon\Controller\Behaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

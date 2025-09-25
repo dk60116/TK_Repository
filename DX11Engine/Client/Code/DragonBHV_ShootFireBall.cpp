@@ -13,7 +13,7 @@ CDragonBHV_ShootFireBall::~CDragonBHV_ShootFireBall()
 
 HRESULT CDragonBHV_ShootFireBall::Initialize(CMonster* _monster)
 {
-	m_iWeight = 1;
+	m_iWeight = 2;
 
 	if (FAILED(__super::Initialize(_monster)))
 		E_FAIL;

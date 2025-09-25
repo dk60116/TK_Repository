@@ -1,9 +1,9 @@
 #pragma once
 
 #include "epch.h"
-#include "Scene.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "AudioClip.h"
 #include "SkinnedMeshBuffer.h"
 #include "AnimationClip.h"
 #include "NaviMesh.h"

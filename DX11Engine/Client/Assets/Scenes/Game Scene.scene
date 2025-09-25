@@ -99,6 +99,13 @@ Dragon_ShootFireBall_Fly : Monster/Dragon/Dragon_ShootFireBall_Fly.fbx : [Animat
 Dragon_Glide : Monster/Dragon/Dragon_Glide.fbx : [Animation Clip]
 Dragon_GetHit_Fly : Monster/Dragon/Dragon_GetHit_Fly.fbx : [Animation Clip]
 Dragon_SpreadFire_Fly : Monster/Dragon/Dragon_SpreadFire_Fly.fbx : [Animation Clip]
+Dragon_Grounding : Monster/Dragon/Dragon_Grounding.fbx : [Animation Clip]
+Dragon_Run : Monster/Dragon/Dragon_Run.fbx : [Animation Clip]
+Dragon_Attack01_Ground : Monster/Dragon/Dragon_Attack01_Ground.fbx : [Animation Clip]
+Dragon_WalkTurn_Left : Monster/Dragon/Dragon_WalkTurn_Left.fbx : [Animation Clip]
+Dragon_WalkTurn_Right : Monster/Dragon/Dragon_WalkTurn_Right.fbx : [Animation Clip]
+Dragon_GetHit_Ground : Monster/Dragon/Dragon_GetHit_Ground.fbx : [Animation Clip]
+Dragon_Death_Ground : Monster/Dragon/Dragon_Death_Ground.fbx : [Animation Clip]
 // Space
 //Temple_Model : Map/Temple.fbx : [Mesh] [Material]
 //Castle_Model : Map/Castle_0.fbx : [Mesh] [Material]
@@ -214,3 +221,13 @@ FireBall_Mesh_2 : VFX/3D/FireBall/FireBall_Mesh_2.fbx : [Mesh]
 FireBall_Texture_0 : VFX/3D/FireBall/FireBall_Texture_0.png : [Texture]
 FireBall_Texture_1 : VFX/3D/FireBall/FireBall_Texture_1.png : [Texture]
 FireBall_Texture_2 : VFX/3D/FireBall/FireBall_Texture_2.png : [Texture]
+// Sound BGM
+Dungeon_MainBGM : Sound/BGM/Dungeon_Main.mp3 : [Audio Clip]
+Dungeon_MainBGM : Sound/BGM/Dungeon_Main.mp3 : [Audio Clip]
+// Sound SFX
+//Link
+Link_SwordAttack01 : Sound/SFX/Player/SwordAttack01.wav : [Audio Clip]
+Link_SwordAttack02 : Sound/SFX/Player/SwordAttack02.wav : [Audio Clip]
+Link_SwordAttack03 : Sound/SFX/Player/SwordAttack03.wav : [Audio Clip]
+Link_Jump : Sound/SFX/Player/Jump.wav : [Audio Clip]
+Link_Scream : Sound/SFX/Player/Scream.wav : [Audio Clip]

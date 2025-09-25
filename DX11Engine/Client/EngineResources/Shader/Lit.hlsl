@@ -6,10 +6,12 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos;
-    float4x4 view;
-    float4x4 proj;
-    float cpadding;
+    float3 gPos;
+    float padding1;
+
+    float4x4 gView;
+    float4x4 gProj;
+    float4x4 gViewInv;
 };
 
 cbuffer PerMaterial : register(b2)
@@ -137,8 +139,8 @@ VSOut VSMain(VSIn v)
     float3 tangentW = normalize(mul(v.tangentL, (float3x3) worldMatrix));
 
     // MVP
-    float4 posV = mul(posW, view);
-    o.posH = mul(posV, proj);
+    float4 posV = mul(posW, gView);
+    o.posH = mul(posV, gProj);
 
     // Ãâ·Â
     o.posW = posW.xyz;
@@ -161,7 +163,7 @@ float4 PSMain(VSOut input) : SV_TARGET
     float3 N = normalize(input.normalW);
     float3 T = normalize(input.tangentW);
     float3 B = normalize(cross(N, T));
-    float3 V = normalize(pos - input.posW);
+    float3 V = normalize(gPos - input.posW);
     
     float3x3 TBN = float3x3(T, B, N);
     

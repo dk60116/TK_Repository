@@ -12,7 +12,7 @@ CDragonBHV_Idle::~CDragonBHV_Idle()
 
 HRESULT CDragonBHV_Idle::Initialize(CMonster* _monster)
 {
-	m_iWeight = 1;
+	m_iWeight = 2;
 
 	if (FAILED(__super::Initialize(_monster)))
 		return E_FAIL;
@@ -35,7 +35,7 @@ void CDragonBHV_Idle::During()
 
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
-	if (!dragon->GetFlying() && m_fPassedTime >= 5.f)
+	if (!dragon->GetFlying() && m_fPassedTime >= 3.f)
 		dragon->Get_Controller()->ChangeState(CBossController_Dragon::Wakeup);
 }
 

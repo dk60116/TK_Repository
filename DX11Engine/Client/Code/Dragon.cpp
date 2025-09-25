@@ -2,6 +2,7 @@
 #include "Dragon.h"
 #include "BossController_Dragon.h"
 #include "ME_FireBall.h"
+#include "Weapon.h"
 
 CDragon::CDragon()
 	: m_sStatus({})
@@ -33,6 +34,9 @@ HRESULT CDragon::Initialize(void* _desc)
 {
 	m_strMonsterName = L"Dragon";
 
+	m_sOptions.colliderCenter = vector3::up() * 1.5f;
+	m_sOptions.colliderSize = vector3(2.f, 3.f, 3.f);
+
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
@@ -52,13 +56,20 @@ HRESULT CDragon::Initialize(void* _desc)
 	{
 		auto idle = Add_Animation(L"Idle");
 		auto threat = Add_Animation(L"Threat");
-		auto groundTofly = Add_Animation(L"GroundToFly");
+		auto groundToFly = Add_Animation(L"GroundToFly");
 		auto flyIdle = Add_Animation(L"FlyIdle");
 		auto fly = Add_Animation(L"Fly");
-		auto shootFireBall_fly = Add_Animation(L"ShootFireBall_Fly");
+		auto shootFireBall_Fly = Add_Animation(L"ShootFireBall_Fly");
 		auto getHit_fly = Add_Animation(L"GetHit_Fly");
+		auto getHit_Ground = Add_Animation(L"GetHit_Ground");
 		auto glide = Add_Animation(L"Glide");
-		auto spreadFire_fly = Add_Animation(L"SpreadFire_Fly");
+		auto spreadFire_Fly = Add_Animation(L"SpreadFire_Fly");
+		auto grounding = Add_Animation(L"Grounding");
+		auto run = Add_Animation(L"Run");
+		auto attack01G = Add_Animation(L"Attack01_Ground");
+		auto walkTurnL = Add_Animation(L"WalkTurn_Left");
+		auto walkTurnR = Add_Animation(L"WalkTurn_Right");
+		auto death_Ground = Add_Animation(L"Death_Ground");
 	}
 
 	CGameObject* particleObj = m_pGameObject->Get_Scene()->Add_GameObject(L"PTC");
@@ -66,6 +77,7 @@ HRESULT CDragon::Initialize(void* _desc)
 
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
 	m_pFireBallProto = fireBallProtoObj->AddComponent<CME_FireBall>();
+	m_pFireBallProto->Get_GameObject()->SetActive(false);
 
 	return S_OK;
 }
@@ -130,7 +142,18 @@ const CDragon::DragonStatus& CDragon::Get_Status()
 void CDragon::Get_Damage(CWeapon* _weapon)
 {
 	_uint state = static_cast<_uint>(m_pController->Get_CrtState());
-	m_pController->ChangeState(CBossController_Dragon::GetHit, &state);
+	m_pController->ChangeState(CBossController_Dragon::DGetHit, &state);
+
+	m_sStatus.crtHp -= _weapon->Get_Stat().attack;
+
+	if (m_sStatus.crtHp <= 0)
+		Death();
+}
+
+void CDragon::Death()
+{
+	__super::Death();
+	m_pController->ChangeState(CBossController_Dragon::DDeath);
 }
 
 void CDragon::PlayIdle(const _float _blending)
@@ -189,11 +212,11 @@ void CDragon::PlayGetHit(const _float _blending)
 
 	if (!m_bFlying)
 	{
-
+		m_pAnimator->Play(L"GetHit_Ground", _blending);
 	}
 	else
 	{
-		m_pAnimator->Play(L"GetHit_Fly");
+		m_pAnimator->Play(L"GetHit_Fly", _blending);
 	}
 }
 
@@ -217,25 +240,40 @@ void CDragon::PlayShootFireball(const _float _blending)
 	m_pAnimator->Play(L"ShootFireBall_Fly", _blending);
 }
 
-void CDragon::PlaySpreadFire(const _float _blending)
+void CDragon::PlaySpreadGrounding(const _float _blending)
 {
 	if (!m_pAnimator)
 		return;
 
 	m_pAnimator->SetLoop(false);
 
-	if (!m_bFlying)
-	{
+	m_pAnimator->Play(L"Grounding", _blending);
+}
 
-	}
-	else
-	{
-		m_pAnimator->Play(L"SpreadFire_Fly", _blending);
-	}
+void CDragon::PlayRun(const _float _blending)
+{
+	m_pAnimator->SetLoop(true);
+
+	m_pAnimator->Play(L"Run", _blending);
+}
+
+void CDragon::PlayAttack_Ground(const _float _blending)
+{
+	m_pAnimator->SetLoop(false);
+
+	m_pAnimator->Play(L"Attack01_Ground", _blending);
+}
+
+void CDragon::PlayDeath(const _float _blending)
+{
+	m_pAnimator->SetLoop(false);
+
+	m_pAnimator->Play(L"Death_Ground", _blending);
 }
 
 void CDragon::ShootFireBall()
 {
+	m_pFireBallProto->Get_GameObject()->SetActive(true);
 	m_pFireBallProto->Shoot(m_pHeadTF->Get_Position(), CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
 
 	++m_iShootFireCount;
@@ -253,7 +291,9 @@ const _bool CDragon::GetFlying() const
 
 void CDragon::SetFlying(const _bool _fly)
 {
-	m_bFlying = true;
+	m_bFlying = _fly;
+
+	m_pRigidBody->SetUseGravity(!m_bFlying);
 }
 
 const _uint CDragon::Get_ShootFireCount() const

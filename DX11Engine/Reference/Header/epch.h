@@ -27,6 +27,8 @@
 #include "Transform.h"
 #include "RectTransform.h"
 #include "Camera.h"
+#include "FMODSystem.h"
+#include "AudioSource.h"
 #include "Light.h"
 #include "Material.h"
 #include "MeshBuffer.h"

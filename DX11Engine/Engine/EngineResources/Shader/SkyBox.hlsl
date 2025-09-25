@@ -6,9 +6,11 @@ cbuffer PerObject : register(b0)
 cbuffer PerCamera : register(b1)
 {
     float3 gPos;
+    float padding1;
+
     float4x4 gView;
     float4x4 gProj;
-    float cpadding;
+    float4x4 gViewInv;
 }
 
 cbuffer PerMaterial : register(b2)

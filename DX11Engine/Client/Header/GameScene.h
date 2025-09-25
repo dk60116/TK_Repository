@@ -22,5 +22,6 @@ private:
 	class CPlayerHUD* m_pHUD;
 
 	class CDungeon* m_pDungeon;
+	CAudioSource* m_pBGMSource;
 };
 

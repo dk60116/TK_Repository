@@ -175,7 +175,8 @@ void CPlayerController::UpdateControleState()
 				ChangeState(Sword);
 				break;
 			case CGameManager::WeaponType::Bow:
-				ChangeState(Bow);
+				if (CGameManager::GetInstance().Get_Inventory()->HasItem(L"Arrow"))
+					ChangeState(Bow);
 				break;
 			}
 		}

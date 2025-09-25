@@ -21,6 +21,10 @@
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
+// FMod
+#include "fmod.h"
+#include "fmod.hpp"
+
 #ifdef new
 #undef new
 #endif
@@ -29,7 +33,7 @@ using Microsoft::WRL::ComPtr;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-// C 런타임 헤더 파일입니다.
+// C 런타임 헤더 파일
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>

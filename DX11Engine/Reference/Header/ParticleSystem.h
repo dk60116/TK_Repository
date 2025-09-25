@@ -7,6 +7,7 @@ class ENGINE_DLL CParticleSystem final : public CComponent
 {
     friend class CGameObject;
 
+public:
     enum class ParticleShape { Sphere, Box };
 
     typedef struct ParticleInformation
@@ -14,7 +15,7 @@ class ENGINE_DLL CParticleSystem final : public CComponent
         _bool loop = true;
         _bool playOnAwake = true;
         _uint shape = 0;
-        _uint maxCount = 300;
+        _uint maxCount = 100;
 
         _float startDelay = 0.1f;
         _float startLifeTime = 1.f;
@@ -46,7 +47,7 @@ class ENGINE_DLL CParticleSystem final : public CComponent
     typedef struct ParticleDescription
     {
         _uint count = 1;
-        vector<ParticleSystemPart> particles = {};
+        vector<ParticleSystemPart> particles = { {} };
     } PARTICLEDESC;
 
 private:
@@ -59,6 +60,7 @@ private:
 
 public:
     HRESULT Initialize(void* _desc) override;
+    void OnEnable() override;
     void Update() override;
     void Render_Editor() override;
     void Render() override;

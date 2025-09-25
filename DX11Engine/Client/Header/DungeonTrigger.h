@@ -24,7 +24,6 @@ public:
 
 public:
 	void Add_LinkObject(CDungeonObject* _obj);
-	void Set_Sibling(const _uint _index);
 	void Set_LimitTime(const _float _time);
 	void OffSwitch();
 	void Set_DT();

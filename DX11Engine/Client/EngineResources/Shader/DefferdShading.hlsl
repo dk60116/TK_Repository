@@ -6,10 +6,12 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos;
-    float4x4 view;
-    float4x4 proj;
-    float cpadding;
+    float3 gPos;
+    float padding1;
+
+    float4x4 gView;
+    float4x4 gProj;
+    float4x4 gViewInv;
 };
 
 cbuffer PerMaterial : register(b2)
@@ -57,7 +59,7 @@ VSOut VSMain(VSIn v)
 
     float4 posW = mul(float4(v.posL, 1.0f), world);
     
-    o.posH = mul(mul(posW, view), proj);
+    o.posH = mul(mul(posW, gView), gProj);
 
     o.posW = posW.xyz;
     o.uv = v.uv;
@@ -90,61 +92,61 @@ float4 PSMain(VSOut i) : SV_TARGET
     //float4x4 invProj = inverse(proj);
     //float4x4 invView = inverse(view);
 
-    float4 posV = mul(posC, proj);
-    posV /= max(posV.w, 1e-6f);
+    float4 posV = mul(posC, gProj);
+        posV /= max(posV.w, 1e-6f);
 
-    float4 posW = mul(posV, view);
-    posW /= max(posW.w, 1e-6f);
+        float4 posW = mul(posV, gView);
+        posW /= max(posW.w, 1e-6f);
 
     // 3) 조명 누적 (디퓨즈 + 앰비언트)
-    float3 diffuseSum = 0;
-    float3 ambientSum = 0;
+        float3 diffuseSum = 0;
+        float3 ambientSum = 0;
 
-    uint lightCount = (uint) gLight[0][3][3];
+        uint lightCount = (uint) gLight[0][3][3];
 
     [loop]
-    for (uint li = 0; li < lightCount; ++li)
-    {
+        for (uint li = 0; li < lightCount; ++li)
+        {
         // light payload
-        uint type = (uint) gLight[li][3][0];
-        float3 lightPos = float3(gLight[li][0][0], gLight[li][0][1], gLight[li][0][2]);
-        float3 lightDir = float3(gLight[li][1][0], gLight[li][1][1], gLight[li][1][2]);
-        float3 lightColor = float3(gLight[li][2][0], gLight[li][2][1], gLight[li][2][2]);
-        float intensity = gLight[li][1][3];
-        float range = gLight[li][0][3];
-        float attenK = gLight[li][3][1];
-        float ambientK = gLight[li][2][3];
+            uint type = (uint) gLight[li][3][0];
+            float3 lightPos = float3(gLight[li][0][0], gLight[li][0][1], gLight[li][0][2]);
+            float3 lightDir = float3(gLight[li][1][0], gLight[li][1][1], gLight[li][1][2]);
+            float3 lightColor = float3(gLight[li][2][0], gLight[li][2][1], gLight[li][2][2]);
+            float intensity = gLight[li][1][3];
+            float range = gLight[li][0][3];
+            float attenK = gLight[li][3][1];
+            float ambientK = gLight[li][2][3];
 
-        float3 L;
-        float attenuation = 1.0f;
+            float3 L;
+            float attenuation = 1.0f;
 
-        if (type == LIGHT_TYPE_DIRECTIONAL)
-        {
-            L = normalize(-lightDir);
-        }
-        else if (type == LIGHT_TYPE_POINT)
-        {
-            float3 toLight = lightPos - posW.xyz; // 복원한 월드 pos 사용
-            float dist = length(toLight);
-            L = toLight / max(dist, 1e-6f);
-            attenuation = saturate(1.0f - dist / max(range, 1e-6f)) * attenK;
-        }
-        else
-        {
-            continue;
-        }
+            if (type == LIGHT_TYPE_DIRECTIONAL)
+            {
+                L = normalize(-lightDir);
+            }
+            else if (type == LIGHT_TYPE_POINT)
+            {
+                float3 toLight = lightPos - posW.xyz; // 복원한 월드 pos 사용
+                float dist = length(toLight);
+                L = toLight / max(dist, 1e-6f);
+                attenuation = saturate(1.0f - dist / max(range, 1e-6f)) * attenK;
+            }
+            else
+            {
+                continue;
+            }
 
-        float NdotL = saturate(dot(N, L));
-        diffuseSum += lightColor * NdotL * intensity * attenuation;
-        ambientSum += lightColor * ambientK;
-    }
+            float NdotL = saturate(dot(N, L));
+            diffuseSum += lightColor * NdotL * intensity * attenuation;
+            ambientSum += lightColor * ambientK;
+        }
 
     // 살짝 바닥값 줄 거면 아래 활성화
-     diffuseSum = max(diffuseSum, float3(0.2f, 0.2f, 0.2f));
+        diffuseSum = max(diffuseSum, float3(0.2f, 0.2f, 0.2f));
 
-    float3 final = saturate(ambientSum + diffuseSum);
+        float3 final = saturate(ambientSum + diffuseSum);
 
     // 그레이스케일로 출력(Combine에서 곱셈)
-    float g = saturate(max(final.r, max(final.g, final.b)));
-    return float4(g, g, g, 1.0f);
-}
+        float g = saturate(max(final.r, max(final.g, final.b)));
+        return float4(g, g, g, 1.0f);
+    }

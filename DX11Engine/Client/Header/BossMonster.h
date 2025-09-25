@@ -14,6 +14,8 @@ public:
 		_uint maxHp = 10;
 		_uint crtHp = 10;
 		_float runSpeed = 3.f;
+		_float attackRange = 10.f;
+		_float rotateSpeed = 2.f;
 	};
 
 protected:
@@ -35,6 +37,7 @@ public:
 	CAnimator* Get_Animator() const;
 	void Change_State(const _uint _state);
 	void Get_Damage(class CWeapon* _weapon);
+	const _bool Is_Dead() const;
 
 public:
 	virtual void PlayIdle(const _float _blending = 0.2f) PURE;

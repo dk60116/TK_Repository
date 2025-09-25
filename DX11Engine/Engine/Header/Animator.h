@@ -12,7 +12,9 @@ public:
     struct AnimatorStateInfo
     {
         _float length;
+        _int frame;
         _float normalizeTime;
+        _bool startedFrame;
     };
 
 protected:
@@ -26,6 +28,7 @@ private:
 public:
     HRESULT Initialize(void* _desc) override;
     void Update() override;
+    void LateUpdate() override;
     void OnDestroy() override;
 
 public:
@@ -57,6 +60,8 @@ private:
 	AnimatorStateInfo m_sStateInfo;
 
     unordered_map<wstring, CAnimationClip::BoneTransform> m_mBlendStartPose;
+
+    _int m_iPrevFrame;
 
     BEGIN_SERIALIZEFIELD
         SERIALIZEFIELD(m_pSkinnedRenderer)

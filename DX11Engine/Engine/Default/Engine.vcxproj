@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;DirectXTK_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTK_Debug.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Reference/Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -147,7 +147,7 @@ call copy.bat</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;DirectXTK_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTK_Release.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Reference/Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -158,6 +158,8 @@ call copy.bat</Command>
   <ItemGroup>
     <ClInclude Include="..\Header\AnimationClip.h" />
     <ClInclude Include="..\Header\Animator.h" />
+    <ClInclude Include="..\Header\AudioClip.h" />
+    <ClInclude Include="..\Header\AudioSource.h" />
     <ClInclude Include="..\Header\BoxCollider.h" />
     <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Canvas.h" />
@@ -171,6 +173,15 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\EngineDebug.h" />
     <ClInclude Include="..\Header\EngineFunction.h" />
     <ClInclude Include="..\Header\EngineString.h" />
+    <ClInclude Include="..\Header\fmod.h" />
+    <ClInclude Include="..\Header\fmod.hpp" />
+    <ClInclude Include="..\Header\FMODSystem.h" />
+    <ClInclude Include="..\Header\fmod_codec.h" />
+    <ClInclude Include="..\Header\fmod_common.h" />
+    <ClInclude Include="..\Header\fmod_dsp.h" />
+    <ClInclude Include="..\Header\fmod_dsp_effects.h" />
+    <ClInclude Include="..\Header\fmod_errors.h" />
+    <ClInclude Include="..\Header\fmod_output.h" />
     <ClInclude Include="..\Header\Font.h" />
     <ClInclude Include="..\Header\HierachyBox.h" />
     <ClInclude Include="..\Header\Image.h" />
@@ -229,6 +240,8 @@ call copy.bat</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\Code\AudioClip.cpp" />
+    <ClCompile Include="..\Code\AudioSource.cpp" />
     <ClCompile Include="..\Code\BoxCollider.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Canvas.cpp" />
@@ -241,6 +254,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\EditorCamera.cpp" />
     <ClCompile Include="..\Code\EngineDebug.cpp" />
     <ClCompile Include="..\Code\EngineString.cpp" />
+    <ClCompile Include="..\Code\FMODSystem.cpp" />
     <ClCompile Include="..\Code\Font.cpp" />
     <ClCompile Include="..\Code\HierachyBox.cpp" />
     <ClCompile Include="..\Code\Image.cpp" />

@@ -23,8 +23,6 @@ void CBehaviour_Tracking::Enter(void* _desc)
 
 	m_pMonster->Get_Animator()->SetLoop(true);
 	m_pMonster->Get_Animator()->Play(L"Run", 0.25f);
-
-	CDebug::Log("TrakingEnter");
 }
 
 void CBehaviour_Tracking::During()

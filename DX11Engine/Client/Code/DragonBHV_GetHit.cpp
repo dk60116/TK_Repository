@@ -25,7 +25,8 @@ void CDragonBHV_GetHit::Enter(void* _desc)
 {
 	__super::Enter(_desc);
 
-	m_iPrevState = *static_cast<_uint*>(_desc);
+	if (_desc)
+		m_iPrevState = *static_cast<_uint*>(_desc);
 
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 

@@ -32,8 +32,6 @@ void CPlayerBehaviour_Sword::Enter(void* _desc)
 	m_bContinueCombo = false;
 
 	m_pPlayer->PlaySwordAnimation();
-
-	m_pPlayer->Get_EqupWeapon()->OnOffCollider(true);
 }
 
 void CPlayerBehaviour_Sword::During()
@@ -43,6 +41,9 @@ void CPlayerBehaviour_Sword::During()
 	CTransform* playerTF = m_pPlayer->Get_Transform();
 	const vector3& moveDir = m_pPlayer->Get_Controller()->Get_MoveDirection();
 	const _float rotDir = moveDir.z >= 0.f ? m_pPlayer->Get_Controller()->Get_RotateDirection() : -m_pPlayer->Get_Controller()->Get_RotateDirection();
+
+	if (m_fPassedTime >= 0.25f)
+		m_pPlayer->Get_EqupWeapon()->OnOffCollider(true);
 
 	if (m_fPassedTime <= 1.f)
 		m_iCurrentCombo = 0;
@@ -89,6 +90,28 @@ void CPlayerBehaviour_Sword::During()
 		if (rotDir != 0.f)
 			playerTF->Add_EulerAnglesY(rotDir * m_pPlayer->Get_Status().turnSpeed * DELTA_TIME);
 	}
+
+	CAnimator* animator = m_pPlayer->Get_Animator();
+
+	if (animator->Get_StateInfo().frame == 6)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"SwordAttack01");
+	}
+
+	if (animator->Get_StateInfo().frame == 22)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"SwordAttack02");
+	}
+
+	if (animator->Get_StateInfo().frame == 40)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"SwordAttack02");
+	}
+
+	CDebug::LogError(animator->Get_StateInfo().frame);
 
 	m_iPrevCombo = m_iCurrentCombo;
 }

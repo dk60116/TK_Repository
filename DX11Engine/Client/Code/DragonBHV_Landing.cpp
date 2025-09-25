@@ -15,7 +15,7 @@ CDragonBHV_Landing::~CDragonBHV_Landing()
 
 HRESULT CDragonBHV_Landing::Initialize(CMonster* _monster)
 {
-	m_iWeight = 1;
+	m_iWeight = 2;
 
 	if (FAILED(__super::Initialize(_monster)))
 		return E_FAIL;

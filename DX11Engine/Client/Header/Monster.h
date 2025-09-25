@@ -58,7 +58,7 @@ public:
 	virtual void Get_Damage(class CWeapon* _weapon);
 	virtual void Get_Damage(CTransform* _weaponTf, const _uint _damage);
 	virtual void Death();
-	void PlayTurn(const CMonsterController::TurnDir _dir);
+	virtual void PlayTurn(const CMonsterController::TurnDir _dir);
 
 protected:
 	CAnimationClip* Add_Animation(const wstring _name);

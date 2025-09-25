@@ -36,8 +36,8 @@ HRESULT CSceneLoader::Initialize()
 {
 	InitializeCriticalSection(&GetInstance().m_pCriticalSection);
 
-	GetInstance().m_hThread = (HANDLE)_beginthreadex(
-		nullptr, 0, ThreadMain, &GetInstance(), 0, nullptr);
+	GetInstance().m_hThread = (HANDLE)_beginthreadex
+	( nullptr, 0, ThreadMain, &GetInstance(), 0, nullptr);
 
 	if (!GetInstance().m_hThread)
 		return E_FAIL;
@@ -181,6 +181,13 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					if (animaitonInfoList.size() > 0)
 						newClip->Initiailize_Custom(animaitonInfoList[0], nullptr);
+				}
+			}
+			else if (CEngineString::Contains(wFile, L".mp3") || CEngineString::Contains(wFile, L".wav") || CEngineString::Contains(wFile, L".ogg"))
+			{
+				if (CEngineString::Contains(wFormat, L"[Audio Clip]"))
+				{
+					CResources::LoadResourceComplete_Scene(CResources::CreateSceneResource<CAudioClip>(wName + L" (Audio)", wFile, nullptr, true));
 				}
 			}
 			else if (wFile == L"SkyBox")
