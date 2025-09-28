@@ -58,6 +58,14 @@ void CPlayerBehaviour_Jump::During()
 			m_pPlayer->Get_Controller()->ForceChangeState(CPlayerController::Move, &m_pPlayer->Get_Controller()->Get_MoveDesc());
 		}
 	}
+
+	CAnimator* animator = m_pPlayer->Get_Animator();
+
+	if (animator->Get_StateInfo().frame == 5)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"Jump");
+	}
 }
 
 void CPlayerBehaviour_Jump::Exit()

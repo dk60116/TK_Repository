@@ -150,6 +150,8 @@ void CDungeonTrigger::SwitchOnEvent()
 	m_vRenderer[0]->Get_Material()->Set_Texture(m_pOnTexture);
 	m_fPassedTime = 0.f;
 
+	PlaySoundEffect(L"HitGlass");
+
 	if (m_bDTSet)
 	{
 		CGameManager::GetInstance().Get_Dungeon()->OnDTSwitch();
@@ -180,6 +182,9 @@ void CDungeonTrigger::SwitchOnEvent()
 			if (CMovingPlat* plat = dynamic_cast<CMovingPlat*>(m_vLinkObjects[i]))
 				plat->Set_Operation(true);
 		}
+
+		if (!m_bSwitchComplete)
+			CGameManager::GetInstance().Get_Dungeon()->PlayPuzzleClearSound();
 
 		vector<CDungeonTrigger*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_DungeonTrigger(m_iSiblingSwitchIndex);
 

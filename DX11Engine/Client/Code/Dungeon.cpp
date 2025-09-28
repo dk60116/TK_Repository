@@ -34,6 +34,8 @@ CDungeon::CDungeon()
     , m_bDTSwitchOn(false)
     , m_fDTOnDuration(0.f)
     , m_bDTComplete(false)
+    , m_pAudioSource(nullptr)
+    , m_pPuzzleClearSound(nullptr)
 {
 }
 
@@ -85,6 +87,12 @@ HRESULT CDungeon::Initialize(void* _desc)
 
     CMeshRenderer* floor4 = Get_Transform()->Find_ChildRecursive(L"floor_4_2")->Get_GameObject()->GetComponent<CMeshRenderer>();
     floor4->Get_Material()->Set_FloatValue(L"gSmoothness", 0.25f);
+
+    m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
+    m_pAudioSource->SetLoop(false);
+
+    m_pPuzzleClearSound = CResources::LoadOnScene<CAudioClip>(L"PuzzleClear (Audio)");
+    m_pPuzzleClearSound->AddRef();
 
     CreatePointLights();
     CreateMonsterPrototypes();
@@ -162,6 +170,8 @@ void CDungeon::LateUpdate()
 void CDungeon::OnDestroy()
 {
     __super::OnDestroy();
+    
+    Safe_Release(m_pPuzzleClearSound);
 }
 
 vector<class CDungeonGate*> CDungeon::Get_DungeonGate(const _uint _index)
@@ -266,7 +276,7 @@ void CDungeon::CreateDungeonChapters()
     }
 
     {
-        m_vChapterList[4]->SetBoundingBox({ pair(vector3(63.6f, 9.8f, -71.4f), vector3(28.0f, 20.f, 78.1f)) });
+        m_vChapterList[4]->SetBoundingBox({ pair(vector3(63.6f, 9.8f, -71.4f), vector3(32.f, 20.f, 78.1f)) });
 
         vector<vector3> skellWarriorPos = { {59.75f, 6.1f, -104.45f} };
         vector<_float> skellWarriorRot = { -90.f };
@@ -633,7 +643,7 @@ void CDungeon::SpawnDungeonChest()
     if (!m_mDungonObjProtoList[L"Dungeon_Chest"])
         return;
 
-    for (_uint i = 0; i < 11; ++i)
+    for (_uint i = 0; i < 13; ++i)
     {
         CGameObject* newObj = CGameObject::Instantiate(m_mDungonObjProtoList[L"Dungeon_Chest"]->Get_GameObject());
         newObj->Set_ObjectName(L"Dungeon Chest (Clone) " + to_wstring(i));
@@ -716,6 +726,20 @@ void CDungeon::SpawnDungeonChest()
         m_vChestList[10]->Set_Item(L"Dungeon Key");
         m_vChestList[10]->Get_Transform()->SetParent(m_vMovingPlatList[2]->Get_Transform());
     }
+
+    {
+        m_vChestList[11]->Get_Transform()->Set_Position(vector3(-127.47f, -3.f, 0.f));
+        m_vChestList[11]->Get_Transform()->Set_EulerAnglesY(0.f);
+        m_vChestList[11]->Get_Transform()->Set_LocalScale(1.f);
+        m_vChestList[11]->Set_Item(L"Dungeon Key");
+    }
+
+    {
+        m_vChestList[12]->Get_Transform()->Set_Position(vector3(-135.f, -3.f, -30.f));
+        m_vChestList[12]->Get_Transform()->Set_EulerAnglesY(-90.f);
+        m_vChestList[12]->Get_Transform()->Set_LocalScale(1.f);
+        m_vChestList[12]->Set_Item(L"Arrow", 5);
+    }
 }
 
 void CDungeon::SpawnDungeonLadder()
@@ -763,7 +787,7 @@ void CDungeon::SpawnDungeonLadder()
 
     {
         m_vLadderTriggerList[0]->Set_Ladder(m_vLadderList[2]);
-        m_vLadderTriggerList[0]->Get_Transform()->Set_Position(-33.3f, 11.f, -102.5f);
+        m_vLadderTriggerList[0]->Get_Transform()->Set_Position(-33.1f, 11.f, -102.5f);
         m_vLadderTriggerList[0]->Get_Transform()->Set_EulerAnglesY(-90.f);
     }
 }
@@ -901,6 +925,8 @@ void CDungeon::Update_DTSwitch()
                 m_vGateList[18]->Open();
                 m_bDTComplete = true;
                 m_bDTSwitchOn = false;
+
+                PlayPuzzleClearSound();
             }
         }
             
@@ -914,6 +940,18 @@ void CDungeon::Update_DTSwitch()
             m_fDTOnDuration = 0.f;
         }
     }
+}
+
+void CDungeon::PlayPuzzleClearSound()
+{
+    m_pAudioSource->SetClip(m_pPuzzleClearSound);
+    m_pAudioSource->Play();
+}
+
+void CDungeon::PlaySoundEffect(const wstring& _clip)
+{
+    m_pAudioSource->SetClip(CResources::LoadOnScene<CAudioClip>(_clip + L" (Audio)"));
+    m_pAudioSource->Play();
 }
 
 void CDungeon::CullingLights()

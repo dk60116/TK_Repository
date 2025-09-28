@@ -1,5 +1,6 @@
 #include "cpch.h"
 #include "Behaviour_Find.h"
+#include "GameScene.h"
 
 CBehaviour_Find::CBehaviour_Find()
 {
@@ -21,10 +22,11 @@ void CBehaviour_Find::Enter(void* _desc)
 {
 	__super::Enter();
 
-	m_pMonster->Get_Animator()->SetLoop(false);
-	m_pMonster->Get_Animator()->Play(L"Find", 0.1f);
+	dynamic_cast<CGameScene*>(CSceneManager::GetInstance().Get_CrtScene())->ChangeBGM(L"Dungeon_BattleBGM");
 
-	CDebug::Log("Find Enter");
+	m_pMonster->Get_Animator()->SetLoop(false);
+	m_pMonster->Get_Animator()->Stop();
+	m_pMonster->Get_Animator()->Play(L"Find", 0.1f);
 }
 
 void CBehaviour_Find::During()
@@ -46,6 +48,14 @@ void CBehaviour_Find::During()
 	if (m_pMonster->Get_Animator()->Get_StateInfo().normalizeTime >= 0.9f)
 	{
 		m_pMonster->Change_State(CMonsterController::Tracking);
+	}
+
+	CAnimator* animator = m_pMonster->Get_Animator();
+
+	if (animator->Get_StateInfo().frame == 10)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pMonster->PlaySoundEffect(L"Threat");
 	}
 }
 

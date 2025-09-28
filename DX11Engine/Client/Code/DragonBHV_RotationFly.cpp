@@ -69,7 +69,17 @@ void CDragonBHV_RotationFly::During()
 		}
 
 		if (m_fPassedTime <= 32.f)
+		{
+			CAnimator* animator = m_pMonster->Get_Animator();
+
+			if (animator->Get_StateInfo().frame == 5)
+			{
+				if (animator->Get_StateInfo().startedFrame)
+					m_pMonster->PlaySoundEffect(L"Wing");
+			}
+
 			myTF->Add_PositionY(-dragon->Get_Status().riseSpeed * DELTA_TIME);
+		}
 		else
 			dragon->Get_Controller()->ChangeState(CBossController_Dragon::Grounding);
 	}

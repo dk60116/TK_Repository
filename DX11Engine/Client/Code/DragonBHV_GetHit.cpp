@@ -30,7 +30,9 @@ void CDragonBHV_GetHit::Enter(void* _desc)
 
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
+	dragon->Get_Animator()->Stop();
 	dragon->PlayGetHit();
+	dragon->PlaySoundEffect(L"GetHit");
 }
 
 void CDragonBHV_GetHit::During()

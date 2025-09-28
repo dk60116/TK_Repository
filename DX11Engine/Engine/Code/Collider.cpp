@@ -4,6 +4,7 @@
 CCollider::CCollider()
 	: m_iColliderID(0)
 	, m_mEnteredColliders({})
+	, m_bUpdated(false)
 	, m_bIsTrigger(false)
 	, m_pRigid(nullptr)
 	, m_bSmoothCollision(false)
@@ -28,19 +29,28 @@ void CCollider::Awake()
 
 }
 
-void CCollider::LateUpdate()
+void CCollider::PrevUpdate()
 {
-}
+	if (!m_bUpdated)
+		return;
 
-void CCollider::FixedUpdate()
-{
 	if (m_iColliderID == 0)
 		m_iColliderID = m_pGameObject->Get_UniqueID();
 
 	if (!m_pGameObject->IsRecursiveActive() || !m_bEnabled)
 		return;
 
-	CCollisionManager::Add_Collider(this);
+	CCollisionManager::Add_Collider(this, m_pGameObject->GetLayer());
+}
+
+void CCollider::LateUpdate()
+{
+}
+
+void CCollider::FixedUpdate()
+{
+	if (!m_bUpdated)
+		m_bUpdated = true;
 }
 
 void CCollider::OnEnable()

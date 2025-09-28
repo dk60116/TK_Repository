@@ -22,6 +22,7 @@ public:
 	CComponent* Clone() const override;
 
 public:
+	const CAudioClip* Get_Clip();
 	void SetClip(CAudioClip* _clip);
 	void Play();
 	void Stop();

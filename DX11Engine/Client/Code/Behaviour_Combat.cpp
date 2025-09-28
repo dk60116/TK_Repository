@@ -24,8 +24,8 @@ void CBehaviour_Combat::Enter(void* _desc)
 
 	m_pMonster->Get_Animator()->SetLoop(false);
 	m_pMonster->Get_Animator()->Play(L"Attack01", 0.1f);
-
-	CDebug::Log("Combat Enter");
+	m_pMonster->PlaySoundEffect(L"Attack");
+	m_pMonster->OnOffAttackTrigger(true);
 }
 
 void CBehaviour_Combat::During()
@@ -44,10 +44,12 @@ void CBehaviour_Combat::During()
 	{
 		if (vector3::Distance(myPos, playerPos) <= m_pMonster->Get_Status().attackRange)
 		{
+			m_pMonster->OnOffAttackTrigger(false);
 			m_pMonster->Change_State(CMonsterController::CombatWait);
 		}
 		else
 		{
+			m_pMonster->OnOffAttackTrigger(false);
 			m_pMonster->Change_State(CMonsterController::Tracking);
 		}
 

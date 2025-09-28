@@ -18,7 +18,7 @@ public:
 	{
 		_int maxHp = 6;
 		_int crtHp = 0;
-		_float moveSpeed = 10.f;
+		_float moveSpeed = 6.f;
 		_float jumpForce = 7.f;
 		_float attackWalkRatio = 0.5f;
 		_float backWalkRatio = 0.7f;
@@ -57,7 +57,7 @@ public:
 	CTransform* Get_Root() const;
 	CTransform* Get_Hand(HandType _hand);
 	void RecoverHp(const _uint _value);
-	void GetDamage(const _uint _damage);
+	void GetDamage(const _uint _damage, const _bool _power = false);
 	class CWeapon* Get_EqupWeapon() const;
 	CWeapon* ChangeWeapon(const wstring _name);
 	void ChangeArrow(const wstring _name);
@@ -90,6 +90,8 @@ public:
 
 	const vector3& Get_GA();
 
+	class CME_SwordSlash* Get_SwordSlashEffect();
+
 private:
 	CPlayerController* m_pController;
 	class CInventory* m_pInventroy;
@@ -121,5 +123,7 @@ private:
 
 	vector2Int m_vPrevMousePos;
 	vector2 m_vMouseDragDelta;
+
+	CME_SwordSlash* m_pSwordEffect;
 };
 

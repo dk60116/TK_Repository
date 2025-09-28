@@ -18,6 +18,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnTriggerEnter(CCollider* _other) override;
 	void OnDestroy() override;
 
 public:
@@ -30,9 +31,11 @@ private:
 	CLight* m_pLight;
 
 	_float m_fRotYSpeed;
-	_float m_fTime;
 
 	_bool m_bShooting;
 	vector3 m_vTargetPos, m_vDirection;
+
+	CSphereCollider* m_pCollider;
+	CParticleSystem* m_pParticle;
 };
 

@@ -48,6 +48,8 @@ HRESULT CSkelletalWarrior::Initialize(void* _desc)
 void CSkelletalWarrior::Awake()
 {
 	__super::Awake();
+
+	m_pAttackTrigger->Get_Transform()->SetParent(Get_Transform()->Find_ChildRecursive(L"SkeletonKnight_ R Hand"));
 }
 
 void CSkelletalWarrior::Start()

@@ -9,6 +9,8 @@ CPlayerCamera::CPlayerCamera()
 	, m_eMode(PlayerCamMode::Default)
 	, m_fBowYValue(0.f)
 	, m_vFinalTargetPos({})
+	, m_sRaycast({})
+	, m_fWallDist(0.f)
 {
 }
 
@@ -71,6 +73,8 @@ void CPlayerCamera::Update()
 		m_fBowYValue += DELTA_TIME;
 
 	m_fBackOffset = std::clamp(m_fBackOffset, m_sOptions.zoomMin, m_sOptions.zoomMax);
+
+	ObstacleHandlling();
 }
 
 void CPlayerCamera::LateUpdate()
@@ -89,6 +93,10 @@ void CPlayerCamera::LateUpdate()
 			break;
 		}
 	}
+}
+
+void CPlayerCamera::OnPostRender()
+{
 }
 
 void CPlayerCamera::OnDestroy()
@@ -142,7 +150,7 @@ void CPlayerCamera::Look_Default()
 	CTransform* playerTf = m_pPlayer->Get_Transform();
 	const vector3 playerPos = playerTf->Get_Position();
 	const vector3 forwardOffset = playerTf->Get_Directions().forward * 1.f;
-	const vector3 targetPos = playerPos + playerTf->Get_Directions().back * m_fBackOffset + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset)));
+	const vector3 targetPos = playerPos + playerTf->Get_Directions().back * m_fBackOffset + (vector3::up() * m_sOptions.lookHeightOffset * 2.f) + (vector3::down() * (5.f / (m_fBackOffset))) + (Get_Transform()->Get_Directions().forward * m_fWallDist);
 	tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
 	m_vFinalTargetPos = playerPos + vector3::up() * m_sOptions.lookHeightOffset + forwardOffset + vector3::down() * (1.f / (m_fBackOffset * 5.f)) + vector3::down() * (2.5f / m_fBackOffset);
 	tf->LookAt(m_vFinalTargetPos);
@@ -158,4 +166,20 @@ void CPlayerCamera::Look_BowAiming()
 	tf->Set_Position(vector3::Lerp(tf->Get_Position(), targetPos, m_sOptions.trackingSpeed * DELTA_TIME));
 	m_vFinalTargetPos = playerPos + vector3::up() * m_fBowYValue + forwardOffset;
 	tf->LookAt(m_vFinalTargetPos);
+}
+
+void CPlayerCamera::ObstacleHandlling()
+{
+	CTransform* myTF = Get_Transform();
+
+	m_sRaycast.origin = myTF->Get_Position();
+	m_sRaycast.dir = myTF->Get_Directions().forward;
+	m_sRaycast.maxDist = 10.f;
+
+	auto hits = CPhysics::Raycast(m_sRaycast, CSceneManager::NameToLayer(L"Map"));
+
+	if (!hits.empty())
+		m_fWallDist = 5.25f;
+	else
+		m_fWallDist = 0.f;
 }

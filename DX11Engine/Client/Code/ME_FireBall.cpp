@@ -5,10 +5,11 @@ CME_FireBall::CME_FireBall()
 	: CMeshEffect{}
 	, m_pLight(nullptr)
 	, m_fRotYSpeed(0.f)
-	, m_fTime(0.f)
 	, m_bShooting(false)
 	, m_vTargetPos({})
 	, m_vDirection({})
+	, m_pCollider(nullptr)
+	, m_pParticle(nullptr)
 {
 }
 
@@ -66,6 +67,19 @@ HRESULT CME_FireBall::Initialize(void* _desc)
 	m_vMesheList[2]->Get_Transform()->Set_LocalScale(0.005f, 0.01f, 0.005f);
 	m_vMesheList[2]->Get_Material()->Set_BaseColor(red.f4Color());
 
+	m_pCollider = m_pGameObject->AddComponent<CSphereCollider>();
+	m_pCollider->Set_Size(1.5f);
+	m_pCollider->SetTrigger(true);
+
+	CGameObject* ptcObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Fire Particle");
+	CParticleSystem::PARTICLEDESC desc = {};
+	desc.particles[0].info.loop = false;
+	desc.particles[0].info.startDelay = 0.f;
+	desc.particles[0].info.startLifeTime = 1.f;
+	desc.particles[0].info.startColor = ColorValue::black();
+
+	m_pParticle = ptcObj->AddComponent<CParticleSystem>(&desc);
+
 	return S_OK;
 }
 
@@ -100,6 +114,17 @@ void CME_FireBall::Update()
 		Shooting();
 }
 
+void CME_FireBall::OnTriggerEnter(CCollider* _other)
+{
+	if (_other->Get_GameObject()->CompareTag(L"Player"))
+	{
+		CGameManager::GetInstance().Get_Player()->GetDamage(1);
+	}
+
+	m_pParticle->Get_Transform()->Set_Position(Get_Transform()->Get_Position());
+	m_pParticle->Get_GameObject()->SetActive(true);
+}
+
 void CME_FireBall::OnDestroy()
 {
 	__super::OnDestroy();
@@ -107,6 +132,8 @@ void CME_FireBall::OnDestroy()
 
 void CME_FireBall::Shoot(const vector3& _startPos, const vector3& _targetPos)
 {
+	m_pParticle->Get_GameObject()->SetActive(false);
+
 	Get_Transform()->Set_Position(_startPos);
 	Get_Transform()->LookAt(_targetPos);
 	Get_Transform()->Add_LocalEulerAnglesX(90.f);

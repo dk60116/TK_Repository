@@ -33,8 +33,8 @@ HRESULT CGoblin::Initialize(void* _desc)
 	m_sOptions.bodyColliderCenter = vector3(0.f, 0.f, 0.f);
 	m_sOptions.bodyColliderSize = vector3(1.5f, 0.5f, 0.5f);
 
-	m_sStatus.maxHp = 5;
-	m_sStatus.attackRange = 3.f;
+	m_sStatus.maxHp = 4;
+	m_sStatus.attackRange = 2.f;
 
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
@@ -48,6 +48,8 @@ HRESULT CGoblin::Initialize(void* _desc)
 void CGoblin::Awake()
 {
 	__super::Awake();
+
+	m_pAttackTrigger->Get_Transform()->SetParent(Get_Transform()->Find_ChildRecursive(L"GOBLIN_ R Hand"));
 }
 
 void CGoblin::Start()

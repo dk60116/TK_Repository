@@ -26,7 +26,9 @@ void CDragonBHV_Attack::Enter(void* _desc)
 
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 	
+	dragon->Get_Animator()->Stop();
 	dragon->PlayAttack_Ground();
+	dragon->PlaySoundEffect(L"Attack");
 }
 
 void CDragonBHV_Attack::During()

@@ -203,6 +203,17 @@ _uint CSceneManager::LayerToIndex(const _uint _layer)
 	return 0;
 }
 
+_uint CSceneManager::IndexToLayer(const _uint _layerIndex)
+{
+	for (TRAVERSAL_ITER(GetInstance().m_vLayerFlags, it))
+	{
+		if ((*it).index == _layerIndex)
+			return (*it).value;
+	}
+
+	return 0;
+}
+
 _uint CSceneManager::NameToIndex(const wstring& _name)
 {
 	for (TRAVERSAL_ITER(GetInstance().m_vLayerFlags, it))

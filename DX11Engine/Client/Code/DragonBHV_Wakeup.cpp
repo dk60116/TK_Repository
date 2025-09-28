@@ -28,7 +28,10 @@ void CDragonBHV_Wakeup::Enter(void* _desc)
 
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
+	m_pMonster->Get_Animator()->Stop();
 	dragon->PlayThreat();
+
+	dragon->PlaySoundEffect(L"Threat");
 }
 
 void CDragonBHV_Wakeup::During()

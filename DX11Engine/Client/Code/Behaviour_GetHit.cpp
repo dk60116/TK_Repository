@@ -26,7 +26,7 @@ void CBehaviour_GetHit::Enter(void* _desc)
 	m_pMonster->Get_Animator()->SetLoop(false);
 	m_pMonster->Get_Animator()->Play(L"GetHit_Front", 0.1f);
 
-	CDebug::Log("GetHit Enter");
+	m_pMonster->PlaySoundEffect(L"GetHit");
 }
 
 void CBehaviour_GetHit::During()

@@ -24,6 +24,7 @@ protected:
 public:
 	HRESULT Initialize(void* _desc) override;
 	void Awake() override;
+	void PrevUpdate() override;
 	void LateUpdate() override;
 	void FixedUpdate() override;
 	void OnEnable() override;
@@ -42,6 +43,7 @@ public:
 public:
 	void EnterOther(CCollider* _other);
 	void ExitOther(CCollider* _other);
+	virtual const CPhysics::RAYCASTHIT Raycast(CPhysics::Ray _ray) const PURE;
 
 public:
 	void Set_SmoothTranslation(const _bool _value);
@@ -51,6 +53,7 @@ public:
 
 protected:
 	_uint m_iColliderID;
+	_bool m_bUpdated;
 	_bool m_bIsTrigger;
 	_bool m_bSmoothCollision;
 	map<_uint, CCollider*> m_mEnteredColliders;

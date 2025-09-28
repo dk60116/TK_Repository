@@ -11,9 +11,9 @@ public:
 
 	struct BossStatus
 	{
-		_uint maxHp = 10;
-		_uint crtHp = 10;
-		_float runSpeed = 3.f;
+		_uint maxHp = 12;
+		_uint crtHp = 12;
+		_float runSpeed = 5.f;
 		_float attackRange = 10.f;
 		_float rotateSpeed = 2.f;
 	};

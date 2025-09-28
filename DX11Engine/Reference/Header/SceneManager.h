@@ -38,6 +38,7 @@ public:
 	static _uint NameToLayer(const wstring& _name);
 	static wstring LayerToName(const _uint _layer);
 	static _uint LayerToIndex(const _uint _layer);
+	static _uint IndexToLayer(const _uint _layerIndex);
 	static _uint NameToIndex(const wstring& _name);
 	static wstring TagToName(const _uint _tag);
 	static _uint NameToTag(const wstring _name);

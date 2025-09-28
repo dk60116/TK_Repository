@@ -9,7 +9,6 @@ CDragon::CDragon()
 	, m_pController(nullptr)
 	, m_bFlying(false)
 	, m_pFireBallProto(nullptr)
-	, m_pFireBreath(nullptr)
 	, m_iShootFireCount(0)
 {
 }
@@ -72,12 +71,21 @@ HRESULT CDragon::Initialize(void* _desc)
 		auto death_Ground = Add_Animation(L"Death_Ground");
 	}
 
-	CGameObject* particleObj = m_pGameObject->Get_Scene()->Add_GameObject(L"PTC");
-	m_pFireBreath = particleObj->AddComponent<CParticleSystem>();
-
+	if (m_pAudioSource)
+	{
+		Add_Sound(L"Threat");
+		Add_Sound(L"Wing");
+		Add_Sound(L"Shooting");
+		Add_Sound(L"GetHit");
+		Add_Sound(L"Attack");
+		Add_Sound(L"Dead");
+	}
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
 	m_pFireBallProto = fireBallProtoObj->AddComponent<CME_FireBall>();
 	m_pFireBallProto->Get_GameObject()->SetActive(false);
+
+	m_vMeshRenderers[0]->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(L"Dragon_NormalMap (Texture)"), 1);
+	m_vMeshRenderers[0]->Get_Material()->Set_FloatValue(L"gSmoothness", 0.5f);
 
 	return S_OK;
 }
@@ -238,6 +246,7 @@ void CDragon::PlayShootFireball(const _float _blending)
 	m_pAnimator->SetLoop(false);
 
 	m_pAnimator->Play(L"ShootFireBall_Fly", _blending);
+
 }
 
 void CDragon::PlaySpreadGrounding(const _float _blending)

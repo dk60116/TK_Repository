@@ -27,6 +27,8 @@ void CDragonBHV_Landing::Enter(void* _desc)
 {
 	__super::Enter(_desc);
 
+	m_pMonster->Get_Animator()->Stop();
+
 	if (_desc)
 	{
 		CDragon::LandingDesc desc = *static_cast<CDragon::LandingDesc*>(_desc);
@@ -41,10 +43,6 @@ void CDragonBHV_Landing::Enter(void* _desc)
 	if (m_bThreadingRise)
 	{
 		dragon->PlayIdle();
-	}
-	else
-	{
-
 	}
 }
 
@@ -65,8 +63,18 @@ void CDragonBHV_Landing::During()
 
 			monsterTF->Set_Quaternion(quaternion::Slerp(monsterTF->Get_Quaternion(), rotQ, DELTA_TIME * dragon->Get_Status().flyingTurnSpeed));
 
-			if (monsterPos.y <= m_vTargetPos.y)
+			if (abs(monsterPos.y - m_vTargetPos.y) > 0.1f)
+			{
+				CAnimator* animator = m_pMonster->Get_Animator();
+
+				if (animator->Get_StateInfo().frame == 5)
+				{
+					if (animator->Get_StateInfo().startedFrame)
+						m_pMonster->PlaySoundEffect(L"Wing");
+				}
+
 				monsterTF->Add_PositionY(dragon->Get_Status().riseSpeed * DELTA_TIME);
+			}
 			else
 			{
 				dragon->PlayFly();

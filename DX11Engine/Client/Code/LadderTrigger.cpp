@@ -53,9 +53,6 @@ void CLadderTrigger::Update()
 {
 	__super::Update();
 
-	if (CInput::GetKeyDown_Editor(U))
-		m_bOnTrigger = true;
-
 	if (m_bOnTrigger)
 	{
 		CTransform* ladderTF = m_pLadder->Get_Transform()->Get_Parent();
@@ -71,6 +68,9 @@ void CLadderTrigger::OnTriggerEnter(CCollider* _other)
 {
 	if (_other->Get_GameObject()->CompareTag(L"Arrow"))
 	{
+		if (!m_bOnTrigger)
+			CGameManager::GetInstance().Get_Dungeon()->PlayPuzzleClearSound();
+
 		m_bOnTrigger = true;
 	}
 }

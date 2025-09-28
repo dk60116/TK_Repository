@@ -56,6 +56,20 @@ void CPlayerBehaviour_Move::During()
 
 	if (moveDir == vector3::zero() && rotDir == 0)
 		m_pPlayer->Get_Controller()->ChangeState(CPlayerController::Idle);
+
+	CAnimator* animator = m_pPlayer->Get_Animator();
+
+	if (animator->Get_StateInfo().frame == 5)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"Step");
+	}
+
+	if (animator->Get_StateInfo().frame == 15)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->PlaySoundEffect(L"Step");
+	}
 }
 
 void CPlayerBehaviour_Move::Exit()

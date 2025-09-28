@@ -29,7 +29,6 @@ private:
 public:
 	HRESULT Initialize(void* _desc) override;
 	void Update() override;
-	void LateUpdate() override;
 	void Render_Editor() override;
 	void OnDestroy() override;
 
@@ -38,7 +37,7 @@ public:
 	void Set_Size(const vector3 _size);
 
 public:
-	static _bool Raycast(CPhysics::Ray _ray, const OBB& _box, _float& _outT);
+	const CPhysics::RAYCASTHIT Raycast(CPhysics::Ray _ray) const override;
 	static void GetCorners(const OBB& _b, vector3 _outCorners[8]);
 
 private:

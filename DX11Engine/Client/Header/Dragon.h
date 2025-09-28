@@ -74,7 +74,6 @@ private:
 	CBossController_Dragon* m_pController;
 	_bool m_bFlying;
 	class CME_FireBall* m_pFireBallProto;
-	CParticleSystem* m_pFireBreath;
 	_uint m_iShootFireCount;
 };
 

@@ -52,6 +52,7 @@ void CDragonBHV_ShootFireBall::During()
 		if (dragon->Get_ShootFireCount() < 4)
 		{
 			dragon->PlayShootFireball();
+			dragon->PlaySoundEffect(L"Shooting");
 
 			m_bShooted = true;
 			m_fPassedTime = 0.f;
@@ -60,17 +61,28 @@ void CDragonBHV_ShootFireBall::During()
 			dragon->Get_Controller()->ChangeState(CBossController_Dragon::RotateFly);
 	}
 
+	CAnimator* animator = dragon->Get_Animator();
+
 	if (m_bShooted)
 	{
-		if (m_fPassedTime >= 0.4f)
+		if (animator->Get_StateInfo().frame == 10)
 		{
-			dragon->ShootFireBall();
+			if (animator->Get_StateInfo().startedFrame)
+				dragon->ShootFireBall();
 		}
 
 		if (m_fPassedTime >= 0.7f)
 		{
 			dragon->PlayIdle();
 			m_bShooted = false;
+		}
+	}
+	else
+	{
+		if (animator->Get_StateInfo().frame == 5)
+		{
+			if (animator->Get_StateInfo().startedFrame)
+				m_pMonster->PlaySoundEffect(L"Wing");
 		}
 	}
 }

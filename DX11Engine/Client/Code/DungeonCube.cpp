@@ -3,6 +3,8 @@
 
 CDungeonCube::CDungeonCube()
 	: m_pRigidBody(nullptr)
+	, m_bSliding(false)
+	, m_bPrevSliding(false)
 {
 }
 
@@ -47,8 +49,9 @@ void CDungeonCube::Awake()
 	if (!m_pRigidBody)
 	{
 		m_pRigidBody = m_pGameObject->AddComponent<CRigidBody>();
-		//m_pRigidBody->SetUseGravity(true);
 	}
+
+	m_pAudioSource->SetLoop(true);
 }
 
 void CDungeonCube::Start()
@@ -66,8 +69,21 @@ void CDungeonCube::Update()
 	m_pRigidBody->SetUseGravity(vector3::Distance(playerPos, myPos) <= 20.f);
 }
 
+void CDungeonCube::LateUpdate()
+{
+	m_bSliding = (abs(m_pRigidBody->Get_CollisionVector().x + m_pRigidBody->Get_CollisionVector().z)) > 0.f;
+
+	if (m_bSliding && !m_bPrevSliding)
+		PlaySoundEffect(L"Rock");
+	else if (!m_bSliding && m_bPrevSliding)
+		StopSound();
+
+	m_bPrevSliding = m_bSliding;
+}
+
 void CDungeonCube::OnTriggerEnter(CCollider* _other)
 {
+	
 }
 
 void CDungeonCube::OnDestroy()

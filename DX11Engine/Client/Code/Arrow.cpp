@@ -104,12 +104,16 @@ void CArrow::OnCollisionEnter(CCollider* _other)
 {
 	__super::OnCollisionEnter(_other);
 
-
 	if (!m_bUsed || m_bDetected)
 		return;
 
 	m_pRigidBody->ResetVelocity();
 	m_pRigidBody->ResetGravity();
+
+	CDebug::LogError(_other->Get_GameObject()->GetTag());
+
+	if (_other->Get_GameObject()->CompareTag(L"ArrowTrigger"))
+		m_pRigidBody->SetUseGravity(false);
 
 	m_pDetactParticle->Get_Transform()->Set_Position(Get_Transform()->Get_Position());
 	m_pDetactParticle->Get_GameObject()->SetActive(true);
@@ -174,6 +178,8 @@ void CArrow::Shoot()
 
 	m_pCollider->SetEnabled(true);
 	m_pCollider->SetTrigger(false);
+
+	CGameManager::GetInstance().Get_Player()->PlaySoundEffect(L"ShootArrow");
 }
 
 void CArrow::Return()

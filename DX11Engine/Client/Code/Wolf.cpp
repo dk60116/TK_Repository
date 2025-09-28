@@ -33,6 +33,8 @@ HRESULT CWolf::Initialize(void* _desc)
 	m_sOptions.bodyColliderCenter = vector3::right() * 0.5f;
 	m_sOptions.bodyColliderSize = vector3(1.5f, 0.5f, 0.5f);
 
+	m_sStatus.attackRange = 2.f;
+
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
@@ -45,6 +47,8 @@ HRESULT CWolf::Initialize(void* _desc)
 void CWolf::Awake()
 {
 	__super::Awake();
+
+	m_pAttackTrigger->Get_Transform()->SetParent(m_pHeadTF);
 }
 
 void CWolf::Start()

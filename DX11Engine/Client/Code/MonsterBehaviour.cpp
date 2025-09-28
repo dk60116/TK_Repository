@@ -31,8 +31,7 @@ void CMonsterBehaviour::Enter(void* _desc)
 {
 	m_fPassedTime = 0.f;
 
-	if (m_pMonster)
-		m_pMonster->Get_Animator()->Stop();
+	m_pMonster->Get_Animator()->Stop();
 }
 
 void CMonsterBehaviour::During()

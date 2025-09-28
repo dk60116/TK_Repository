@@ -43,6 +43,7 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* bgmObj = Add_GameObject(L"BGM Source");
 	m_pBGMSource = dungeonObj->AddComponent<CAudioSource>();
+	m_pBGMSource->SetLoop(true);
 
 	m_pBGMSource->SetClip(CResources::LoadOnScene<CAudioClip>(L"Dungeon_MainBGM (Audio)"));
 
@@ -60,6 +61,9 @@ void CGameScene::Update()
 {
 	__super::Update();
 
+	if (CInput::GetMouseButtonDown(1))
+		ChangeBGM(L"Dungeon_MainBGM");
+
 	//if (CInput::GetKeyDown(RETURN))
 	//	CSceneManager::LoadScene(L"Main Scene");
 }
@@ -67,4 +71,15 @@ void CGameScene::Update()
 void CGameScene::SceneRelease()
 {
 	__super::SceneRelease();
+}
+
+void CGameScene::ChangeBGM(const wstring& _clip)
+{
+	auto clip = CResources::LoadOnScene<CAudioClip>(_clip + L" (Audio)");
+
+	if (clip == m_pBGMSource->Get_Clip())
+		return;
+
+	//m_pBGMSource->SetClip(clip);
+	//m_pBGMSource->Play();
 }

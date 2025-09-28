@@ -33,6 +33,7 @@ public:
 	void Start() override;
 	void Update() override;
 	void LateUpdate() override;
+	void OnPostRender() override;
 	void OnDestroy() override;
 
 public:
@@ -46,6 +47,7 @@ public:
 private:
 	void Look_Default();
 	void Look_BowAiming();
+	void ObstacleHandlling();
 
 private:
 	class CPlayer* m_pPlayer;
@@ -53,5 +55,8 @@ private:
 	_float m_fBackOffset, m_fZoomSensor, m_fBowYValue;
 	PlayerCamMode m_eMode;
 	vector3 m_vFinalTargetPos;
+
+	CPhysics::Ray m_sRaycast;
+	_float m_fWallDist;
 };
 

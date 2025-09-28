@@ -36,7 +36,7 @@ public:
 	void Set_Size(const _float _size);
 
 public:
-	static _bool Raycast(CPhysics::Ray _ray, const SPHERE& _sphere, _float& _outT);
+	const CPhysics::RAYCASTHIT Raycast(CPhysics::Ray _ray) const override;
 
 private:
 	void Build_WorldSPHERE();

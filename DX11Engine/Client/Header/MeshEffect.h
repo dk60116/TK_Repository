@@ -19,6 +19,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnEnable() override;
 	void OnDestroy() override;
 
 protected:
@@ -26,5 +27,8 @@ protected:
 	MESHEFFECTDESC m_sDescription;
 	vector<CMeshRenderer*> m_vMesheList;
 	vector<CTexture*> m_vTextureList;
+
+protected:
+	_float m_fTime;
 };
 

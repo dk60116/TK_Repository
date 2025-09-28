@@ -123,6 +123,8 @@ void CTroll::Awake()
 	rightCalfCol->SetCenter(vector3(0.5f, 0.f, 0.f));
 	rightCalfCol->SetSize(vector3(1.2f, 0.4f, 0.4f));
 	m_mPartColList.emplace(L"RighrCalf", rightCalfCol);
+
+	m_pAttackTrigger->Get_Transform()->SetParent(Get_Transform()->Find_ChildRecursive(L"TROLL_ R Hand"));
 }
 
 void CTroll::Start()

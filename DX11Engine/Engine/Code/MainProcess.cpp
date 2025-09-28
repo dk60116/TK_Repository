@@ -92,6 +92,7 @@ void CMainProcess::Update_MainApp()
     if (scene)
     {
         scene->Update_Editor();
+        scene->PrevUpdate();
         scene->Update();
         scene->FixedUpdate();
         scene->LateUpdate();

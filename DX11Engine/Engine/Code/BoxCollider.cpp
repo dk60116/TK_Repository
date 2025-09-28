@@ -46,10 +46,6 @@ void CBoxCollider::Update()
     Build_WorldOBB();
 }
 
-void CBoxCollider::LateUpdate()
-{
-}
-
 void CBoxCollider::Render_Editor()
 {
     CCamera* editorCam = CSceneManager::Get_CrtScene()->Get_EditorCamera();
@@ -151,6 +147,86 @@ void CBoxCollider::Set_Size(const vector3 _size)
 {
 	m_sLocal.halfExtents = _size * 0.5f;
     Build_WorldOBB();
+}
+
+const CPhysics::RAYCASTHIT CBoxCollider::Raycast(CPhysics::Ray _ray) const
+{
+    CPhysics::RAYCASTHIT hit = {};
+
+    const OBB& b = m_sWorld;
+    const _float EPS = 1e-6f;
+
+    _float dirLen = _ray.dir.length();
+
+    if (dirLen < EPS)
+        return hit;
+
+    vector3 d = _ray.dir / dirLen;
+    _float maxT = _ray.maxDist / dirLen;
+
+    vector3 p = _ray.origin - b.center;
+    _float px = vector3::dot(p, b.axis[0]);
+    _float py = vector3::dot(p, b.axis[1]);
+    _float pz = vector3::dot(p, b.axis[2]);
+    _float dx = vector3::dot(d, b.axis[0]);
+    _float dy = vector3::dot(d, b.axis[1]);
+    _float dz = vector3::dot(d, b.axis[2]);
+
+    _float tmin = 0.f;
+    _float tmax = maxT;
+
+    auto slab = [&](_float p, _float d, _float he)->_bool 
+        {
+        if (fabsf(d) < EPS) 
+        {
+            return (p >= -he && p <= he);
+        }
+        _float t1 = (-he - p) / d;
+        _float t2 = (he - p) / d;
+        if (t1 > t2)
+            swap(t1, t2);
+        if (t1 > tmin) 
+            tmin = t1;
+        if (t2 < tmax) 
+            tmax = t2;
+        return tmin <= tmax;
+        };
+
+    if (!slab(px, dx, b.halfExtents.x)) 
+        return hit;
+    if (!slab(py, dy, b.halfExtents.y))
+        return hit;
+    if (!slab(pz, dz, b.halfExtents.z))
+        return hit;
+
+    _float tHit = (tmin >= 0.f) ? tmin : tmax;
+
+    if (tHit < 0.f || tHit > maxT) 
+        return hit;
+
+    hit.isHit = true;
+    hit.distance = tHit * dirLen;
+    hit.hitPos = _ray.origin + d * (tHit * dirLen);
+
+    vector3 localHit(px + dx * tHit, py + dy * tHit, pz + dz * tHit);
+    vector3 nLocal(0, 0, 0);
+    _float bx = fabsf(localHit.x) - b.halfExtents.x;
+    _float by = fabsf(localHit.y) - b.halfExtents.y;
+    _float bz = fabsf(localHit.z) - b.halfExtents.z;
+    _float m = max(bx, max(by, bz));
+
+    if (m == bx)
+        nLocal = vector3((localHit.x > 0) ? 1.f : -1.f, 0, 0);
+    else if (m == by)
+        nLocal = vector3(0, (localHit.y > 0) ? 1.f : -1.f, 0);
+    else  
+        nLocal = vector3(0, 0, (localHit.z > 0) ? 1.f : -1.f);
+
+    hit.hitNormal = b.axis[0] * nLocal.x + b.axis[1] * nLocal.y + b.axis[2] * nLocal.z;
+    hit.object = m_pGameObject;
+    hit.collider = const_cast<CBoxCollider*>(this);
+
+    return hit;
 }
 
 void CBoxCollider::Build_WorldOBB()

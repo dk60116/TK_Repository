@@ -103,11 +103,11 @@
     <Filter Include="Scripts\Object\Monster\Snake">
       <UniqueIdentifier>{9f14226d-cc4a-4de9-8428-e76eee46b659}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Object\Monster\SkeletonWarrior">
-      <UniqueIdentifier>{7bef09aa-93bd-42a0-a5cb-d35c7d944af1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts\Object\Map\Objects\Contents">
       <UniqueIdentifier>{3fd868e9-b374-438c-b295-95b1508d9773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Object\Monster\SkeletalWarrior">
+      <UniqueIdentifier>{7bef09aa-93bd-42a0-a5cb-d35c7d944af1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -301,7 +301,7 @@
       <Filter>Scripts\Object\Monster\Snake</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\SkelletalWarrior.h">
-      <Filter>Scripts\Object\Monster\SkeletonWarrior</Filter>
+      <Filter>Scripts\Object\Monster\SkeletalWarrior</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Item_Heart.h">
       <Filter>Scripts\Object\Item</Filter>
@@ -537,7 +537,7 @@
       <Filter>Scripts\Object\Monster\Snake</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\SkelletalWarrior.cpp">
-      <Filter>Scripts\Object\Monster\SkeletonWarrior</Filter>
+      <Filter>Scripts\Object\Monster\SkeletalWarrior</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Item_Heart.cpp">
       <Filter>Scripts\Object\Item</Filter>

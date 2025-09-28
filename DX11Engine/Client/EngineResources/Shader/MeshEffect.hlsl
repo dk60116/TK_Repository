@@ -26,8 +26,8 @@ cbuffer PerCustomValue : register(b10)
 {
     float gTime;
     float gDistortionAmount;
-    float4 ctpadding;
-    float4 ctpadding1;
+    float ctpadding;
+    float ctpadding1;
 };
 
 // 텍스처 & 샘플러
@@ -101,8 +101,16 @@ float4 PSMain(VSOut input) : SV_TARGET
     noiseVec = noiseVec * 2.0f - 1.0f;
 
     float2 distortedUV = input.uv + noiseVec * gDistortionAmount * 0.2f;
+    
+    float4 tex = gTexture.Sample(gSampler, distortedUV);
+    
+    if (tex.r + tex.g + tex.b < 0.3f)
+        discard;
 
     float4 texColor = useTexture ? gTexture.Sample(gSampler, distortedUV) : float4(1, 1, 1, 1);
+    
+    if (texColor.a >= 1.f)
+        texColor.a = 0.95f;
 
     texColor *= baseColor;
 

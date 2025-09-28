@@ -29,6 +29,7 @@ public:
 	virtual void Awake();
 	virtual void Start();
 	virtual void Update_Editor();
+	virtual void PrevUpdate();
 	virtual void Update();
 	virtual void FixedUpdate();
 	virtual void LateUpdate_Editor();

@@ -83,6 +83,15 @@ void CGameObject::Update_Editor()
 	}
 }
 
+void CGameObject::PrevUpdate()
+{
+	for (TRAVERSAL_ITER(m_lComponentList, it))
+	{
+		if ((*it)->Get_Enabled())
+			(*it)->PrevUpdate();
+	}
+}
+
 void CGameObject::Update()
 {
 	for (TRAVERSAL_ITER(m_lComponentList, it))

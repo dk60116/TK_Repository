@@ -132,7 +132,7 @@ HRESULT CScene::Initialize()
 		D3D11_DEPTH_STENCIL_DESC depthDefaultDesc = {};
 		depthDefaultDesc.DepthEnable = TRUE;
 		depthDefaultDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthDefaultDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthDefaultDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 		depthDefaultDesc.StencilEnable = FALSE;
 
 		if (FAILED(m_pDevice->CreateRasterizerState(&resterDefaultDesc, &m_pMeshResterizerState)))
@@ -292,7 +292,7 @@ void CScene::Update_Editor()
 		const vector2Int point = CInput::GetMousePos_Editor();
 		CPhysics::Ray ray = m_pEditorCamera->ScreenPointToRay_Editor(point);
 
-		auto hits = CPhysics::GetInstance().Raycast(ray);
+		auto hits = CPhysics::GetInstance().RaycastMesh(ray);
 
 		if (hits.size() <= 0)
 			return;
@@ -327,6 +327,15 @@ void CScene::Update_Editor()
 			wstring path = L"BinaryAssets/SceneData/" + m_strSceneName + L".scenedata";
 			CResources::SaveSceneObjectTransformInfos(path, Convert_ObjectsTransformInfo());
 		}
+	}
+}
+
+void CScene::PrevUpdate()
+{
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->IsRecursiveActive())
+			(*it)->PrevUpdate();
 	}
 }
 
@@ -377,7 +386,7 @@ void CScene::FixedUpdate()
 			(*it)->FixedUpdate();
 	}
 
-	CCollisionManager::UpdateCollision();
+	CCollisionManager::FixedUpdate();
 }
 
 void CScene::LateUpdateEditor()
@@ -396,6 +405,8 @@ void CScene::LateUpdate()
 		if ((*it)->ActiveSelf())
 			(*it)->LateUpdate();
 	}
+
+	CCollisionManager::LateUpdate();
 }
 
 void CScene::Render_Editor()

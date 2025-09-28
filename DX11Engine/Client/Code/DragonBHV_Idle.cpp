@@ -35,8 +35,10 @@ void CDragonBHV_Idle::During()
 
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
-	if (!dragon->GetFlying() && m_fPassedTime >= 3.f)
+	if (vector3::Distance(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position(), dragon->Get_Transform()->Get_Position()) < 12.f)
+	{
 		dragon->Get_Controller()->ChangeState(CBossController_Dragon::Wakeup);
+	}
 }
 
 void CDragonBHV_Idle::Exit()

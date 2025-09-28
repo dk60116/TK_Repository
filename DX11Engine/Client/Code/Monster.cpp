@@ -20,6 +20,9 @@ CMonster::CMonster()
 	, m_pBodyCollider(nullptr)
 	, m_pRigidBody(nullptr)
 	, m_mPartColList({})
+	, m_pAudioSource(nullptr)
+	, m_mSoundClipList({})
+	, m_pAttackTrigger(nullptr)
 {
 	m_strName = L"Monster";
 }
@@ -46,6 +49,9 @@ HRESULT CMonster::Initialize(void* _desc)
 	if (m_pBaseMap)
 		m_pBaseMap->AddRef();
 
+	m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
+	m_pAudioSource->SetLoop(false);
+
 	if (!dynamic_cast<CBossMonster*>(this))
 	{
 		Add_Animation(L"Idle");
@@ -58,10 +64,21 @@ HRESULT CMonster::Initialize(void* _desc)
 		Add_Animation(L"Attack01");
 		Add_Animation(L"GetHit_Front");
 		Add_Animation(L"Death");
+
+		Add_Sound(L"Threat");
+		Add_Sound(L"Attack");
+		Add_Sound(L"GetHit");
+		Add_Sound(L"Dead");
 	}
 
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);
+
+	CGameObject* atColobj = m_pGameObject->Get_Scene()->Add_GameObject(L"Attack Collider");
+	atColobj->SetTag(L"AttackTrigger");
+	m_pAttackTrigger = atColobj->AddComponent<CSphereCollider>();
+	m_pAttackTrigger->SetTrigger(true);
+	m_pAttackTrigger->Set_Size(0.5f);
 
 	return S_OK;
 }
@@ -110,6 +127,8 @@ void CMonster::Awake()
 void CMonster::Start()
 {
 	m_pRigidBody->SetUseGravity(true);
+	m_pAttackTrigger->Get_Transform()->Set_LocalPosition(vector3::zero());
+	m_pAttackTrigger->SetEnabled(false);
 }
 
 void CMonster::Update()
@@ -231,9 +250,29 @@ void CMonster::PlayTurn(const CMonsterController::TurnDir _dir)
 	}
 }
 
+void CMonster::PlaySoundEffect(const wstring& _clip)
+{
+	CAudioClip* clip = m_mSoundClipList[_clip];
+
+	m_pAudioSource->SetClip(clip);
+	m_pAudioSource->Play();
+}
+
+void CMonster::OnOffAttackTrigger(const _bool _on)
+{
+	m_pAttackTrigger->SetEnabled(_on);
+}
+
 CAnimationClip* CMonster::Add_Animation(const wstring _name)
 {
 	CAnimationClip* anim = CResources::LoadOnScene<CAnimationClip>(m_strMonsterName + L"_" + _name + L" (Animation)");
 	m_pAnimator->Add_Animation(_name, anim);
 	return anim;
+}
+
+CAudioClip* CMonster::Add_Sound(const wstring _name)
+{
+	CAudioClip* audio = CResources::LoadOnScene<CAudioClip>(m_strMonsterName + L"_" + _name + L" (Audio)");
+	m_mSoundClipList.emplace(_name, audio);
+	return audio;
 }

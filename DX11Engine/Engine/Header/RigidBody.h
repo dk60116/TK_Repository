@@ -31,10 +31,10 @@ private:
 public:
 	HRESULT Initialize(void* _desc) override;
 	void Awake() override;
+	void PrevUpdate() override;
 	void Update() override;
 	void LateUpdate() override;
 	void Render_Editor() override;
-	void Render() override;
 	void OnDestroy() override;
 
 public:
@@ -44,6 +44,7 @@ public:
 	void SetKinematic(const _bool _value);
 	const vector3& GetVelocity();
 	const vector3 GetVelocityDirection();
+	const vector3& Get_CollisionVector();
 	const vector3& Get_GA();
 
 	void AddForce(const vector3 _value);
@@ -61,6 +62,8 @@ public:
 	void AddVelocitY(const _float _value);
 	void AddVelocitZ(const _float _value);
 
+	void AddCollisionVector(const vector3& _vector);
+
 private:
 	class CCollider* m_pCollider;
 
@@ -69,6 +72,7 @@ private:
 	FreezeOption m_sFreezeRotation;
 	_bool m_bUseGravity, m_bIsKinematic;
 	vector3 m_vVelocity, m_vGravityAcceleration;
+	vector3 m_vCollisionVector;
 };
 
 NS_END

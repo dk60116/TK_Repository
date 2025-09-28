@@ -320,6 +320,7 @@ void CPlayerHUD::SpawnNotifacionUI()
 	m_pNotifactionTitleText->Get_RectTransform()->Set_Pivot(0.5f, 1.f);
 	m_pNotifactionTitleText->Get_RectTransform()->Set_AnchorsMin(0.5f, 1.f);
 	m_pNotifactionTitleText->Get_RectTransform()->Set_AnchoredPosition(0.f, -65.f);
+	m_pNotifactionTitleText->SetColor(ColorValue::white());
 	m_pNotifactionTitleText->Set_Text(L"Item Name");
 
 	CGameObject* iconObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Icon");
@@ -335,6 +336,7 @@ void CPlayerHUD::SpawnNotifacionUI()
 	m_pNotifactionDescText->Get_RectTransform()->Set_AnchorsMin(0.5f, 0.f);
 	m_pNotifactionDescText->Get_RectTransform()->Set_AnchoredPosition(0.f, 65.f);
 	m_pNotifactionDescText->Set_FontSize(7.f);
+	m_pNotifactionDescText->SetColor(ColorValue::white());
 	m_pNotifactionDescText->Set_Text(L"Item Desc");
 
 	m_pNotifactionPanel->Get_GameObject()->SetActive(false);

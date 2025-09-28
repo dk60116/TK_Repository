@@ -1,5 +1,6 @@
 #include "cpch.h"
 #include "PlayerBehaviour_SpinAttack.h"
+#include "ME_SwordSlash.h"
 
 CPlayerBehaviour_SpinAttack::CPlayerBehaviour_SpinAttack()
 {
@@ -38,10 +39,16 @@ void CPlayerBehaviour_SpinAttack::During()
 
 	CAnimator* animator = m_pPlayer->Get_Animator();
 
-	if (animator->Get_StateInfo().frame == 5)
+	if (animator->Get_StateInfo().frame == 15)
 	{
 		if (animator->Get_StateInfo().startedFrame)
-			m_pPlayer->PlaySoundEffect(L"SwordAttack03");
+			m_pPlayer->PlaySoundEffect(L"SwordAttack04");
+	}
+
+	if (animator->Get_StateInfo().frame == 15)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->Get_SwordSlashEffect()->PlayCombo(3);
 	}
 }
 

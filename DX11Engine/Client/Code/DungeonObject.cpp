@@ -9,6 +9,7 @@ CDungeonObject::CDungeonObject()
 	, m_vRenderer({})
 	, m_vSkinnedRenderer({})
 	, m_pAnimator(nullptr)
+	, m_pAudioSource(nullptr)
 	, m_pCollider(nullptr)
 	, m_pBodyCollider(nullptr)
 	, m_bOperation(true)
@@ -56,6 +57,9 @@ void CDungeonObject::Awake()
 		for (TRAVERSAL_ITER(m_vSkinnedRenderer, it))
 			(*it)->Get_Material()->Set_Texture(CResources::LoadOnScene<CTexture>(m_strObjName + L"_BaseMap (Texture)"));
 	}
+
+	m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
+	m_pAudioSource->SetLoop(false);
 }
 
 void CDungeonObject::Start()
@@ -97,4 +101,16 @@ void CDungeonObject::Set_SibilingIndex(const _int _index)
 const _int CDungeonObject::Get_Index() const
 {
 	return m_iSiblingSwitchIndex;
+}
+
+void CDungeonObject::PlaySoundEffect(const wstring _cilp)
+{
+	CAudioClip* clip = CResources::LoadOnScene<CAudioClip>(_cilp + L" (Audio)");
+	m_pAudioSource->SetClip(clip);
+	m_pAudioSource->Play();
+}
+
+void CDungeonObject::StopSound()
+{
+	m_pAudioSource->Stop();
 }

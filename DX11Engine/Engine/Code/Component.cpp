@@ -44,6 +44,10 @@ void CComponent::Update_Editor()
 {
 }
 
+void CComponent::PrevUpdate()
+{
+}
+
 void CComponent::Update()
 {
 }

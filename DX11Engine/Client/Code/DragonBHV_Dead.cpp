@@ -27,6 +27,7 @@ void CDragonBHV_Dead::Enter(void* _desc)
 	CDragon* dragon = dynamic_cast<CDragon*>(m_pMonster);
 
 	dragon->PlayDeath();
+	dragon->PlaySoundEffect(L"Dead");
 }
 
 void CDragonBHV_Dead::During()

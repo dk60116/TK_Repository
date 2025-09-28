@@ -15,11 +15,13 @@ public:
 	static void Release();
 
 public:
-	static void UpdateCollision();
+	static void FixedUpdate();
+	static void LateUpdate();
 
 public:
 	static const vector<CCollider*>& Get_ColliderList();
-	static CCollider* Add_Collider(CCollider* _collider);
+	static const vector<CCollider*>& Get_ColliderList(const _uint _layer);
+	static CCollider* Add_Collider(CCollider* _collider, const _uint _layer);
 	static void Set_CollisionFilter(const _uint _layerA, const _uint _layerB, const _bool _isCollidable);
 	static void Set_CollisionFilter(const wstring _layerA, const wstring _layerB, const _bool _isCollidable);
 
@@ -27,6 +29,7 @@ public:
 
 private:
 	vector<CCollider*> m_vColliderList;
+	map<_uint, vector<CCollider*>> m_mColliderListByLayer;
 
 	map<pair<_uint, _uint>, _bool> m_mCollisionFilter;
 	map<CCollider::GizmoColor, pair<ColorValue, ColorValue>> m_mColliderGizmoColorSet;

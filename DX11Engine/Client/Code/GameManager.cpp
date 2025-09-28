@@ -31,6 +31,7 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Layer(8, L"DungeonChapter");
 	CSceneManager::Add_Layer(9, L"DungeonObject");
 	CSceneManager::Add_Layer(10, L"RigidObject");
+	CSceneManager::Add_Layer(11, L"CameraRay");
 
 	CSceneManager::Add_Tag(1, L"Floor");
 	CSceneManager::Add_Tag(2, L"Wall");
@@ -39,6 +40,7 @@ HRESULT CGameManager::Initialize()
 	CSceneManager::Add_Tag(5, L"ArrowTrigger");
 	CSceneManager::Add_Tag(6, L"SpinSword");
 	CSceneManager::Add_Tag(7, L"DungeonCube");
+	CSceneManager::Add_Tag(8, L"AttackTrigger");
 
 	CCollisionManager::Set_CollisionFilter(L"Player", L"PlayerWeapon", false);
 	CCollisionManager::Set_CollisionFilter(L"PlayerWeapon", L"PlayerWeapon", false);
@@ -65,6 +67,13 @@ HRESULT CGameManager::Initialize()
 	CCollisionManager::Set_CollisionFilter(L"RigidObject", L"Default", false);
 	CCollisionManager::Set_CollisionFilter(L"RigidObject", L"DungeonChapter", false);
 	CCollisionManager::Set_CollisionFilter(L"RigidObject", L"MonsterBodyPart", false);
+
+	CCollisionManager::Set_CollisionFilter(L"CameraRay", L"Default", false);
+	CCollisionManager::Set_CollisionFilter(L"CameraRay", L"Player", false);
+	CCollisionManager::Set_CollisionFilter(L"CameraRay", L"DungeonChapter", false);
+	CCollisionManager::Set_CollisionFilter(L"CameraRay", L"PlayerWeapon", false);
+	CCollisionManager::Set_CollisionFilter(L"CameraRay", L"MonsterBodyPart", false);
+	CCollisionManager::Set_CollisionFilter(L"CameraRay", L"Monster", false);
 
 	return S_OK;
 }

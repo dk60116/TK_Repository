@@ -10,6 +10,7 @@ CRigidBody::CRigidBody()
     , m_bIsKinematic(false)
     , m_vVelocity({})
     , m_vGravityAcceleration({})
+    , m_vCollisionVector({})
 {
     m_strName = L"RigidBody";
 }
@@ -60,6 +61,11 @@ void CRigidBody::Awake()
 {
 }
 
+void CRigidBody::PrevUpdate()
+{
+    m_vCollisionVector = vector3::zero();
+}
+
 void CRigidBody::Update()
 {
     if (m_bUseGravity)
@@ -80,10 +86,6 @@ void CRigidBody::LateUpdate()
 }
 
 void CRigidBody::Render_Editor()
-{
-}
-
-void CRigidBody::Render()
 {
 }
 
@@ -122,6 +124,11 @@ const vector3 CRigidBody::GetVelocityDirection()
     vector3 result = ((m_vVelocity + m_vGravityAcceleration) - Get_Transform()->Get_Position()).normalized();
 
     return result;
+}
+
+const vector3& CRigidBody::Get_CollisionVector()
+{
+    return m_vCollisionVector;
 }
 
 const vector3& CRigidBody::Get_GA()
@@ -182,4 +189,9 @@ void CRigidBody::AddVelocitY(const _float _value)
 void CRigidBody::AddVelocitZ(const _float _value)
 {
     m_vVelocity.z += _value;
+}
+
+void CRigidBody::AddCollisionVector(const vector3& _vector)
+{
+    m_vCollisionVector += _vector;
 }

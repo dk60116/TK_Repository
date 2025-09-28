@@ -187,6 +187,12 @@ void CDungeonGate::Open()
 
 		for (TRAVERSAL_ITER(siblingSwitchList, it))
 			(*it)->m_bIsOpenDoor = true;
+
+		if (!m_bComplete)
+		{
+			m_pAudioSource->SetLoop(false);
+			PlaySoundEffect(L"Gate");
+		}
 	}
 
 	if (m_bLock)

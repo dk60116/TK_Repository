@@ -19,6 +19,32 @@ CPhysics& CPhysics::GetInstance()
 
 vector<CPhysics::RAYCASTHIT> CPhysics::Raycast(const Ray& _ray, _uint _layerMask)
 {
+	vector<RAYCASTHIT> hits;
+
+	auto& colliders = CCollisionManager::Get_ColliderList(_layerMask);
+
+	for (size_t i = 0; i < colliders.size(); ++i)
+	{
+		RAYCASTHIT hit = colliders[i]->Raycast(_ray);
+
+		if (hit.isHit)
+			hits.push_back(hit);
+	}
+
+	if (!hits.empty())
+	{
+		sort(hits.begin(), hits.end(),
+			[](const RAYCASTHIT& a, const RAYCASTHIT& b)
+			{
+				return a.distance < b.distance;
+			});
+	}
+
+	return hits;
+}
+
+vector<CPhysics::RAYCASTHIT> CPhysics::RaycastMesh(const Ray& _ray, _uint _layerMask)
+{
     vector<RAYCASTHIT> hits;
 
     vector<CRenderer*> renders = CSceneManager::Get_CrtScene()->Get_MeshObjects(_layerMask);
@@ -48,7 +74,7 @@ vector<CPhysics::RAYCASTHIT> CPhysics::Raycast(const Ray& _ray, _uint _layerMask
 			_float t = 0.f;
 			vector3 normal;
 
-			if (IntersectRayTriangle(_ray.origin, _ray.dir, p0, p1, p2, t, normal))
+			if (GetInstance().IntersectRayTriangle(_ray.origin, _ray.dir, p0, p1, p2, t, normal))
 			{
 				if (t < 0 || t > _ray.maxDist)
 					continue;

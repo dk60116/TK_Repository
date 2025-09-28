@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CPhysics
+class ENGINE_DLL CPhysics final
 {
 public:
 	struct Ray 
@@ -21,12 +21,14 @@ public:
 		vector3 hitNormal = {};
 		_float distance = 0.f;
 		class CGameObject* object = nullptr;
+		class CCollider* collider = nullptr;
 	}RAYCASTHIT;
 
 	SINGLETONCLASS(CPhysics);
 
 public:
-	vector<RAYCASTHIT> Raycast(const Ray& _ray, _uint _layerMask = 0xFFFFFFFF);
+	static vector<RAYCASTHIT> Raycast(const Ray& _ray, _uint _layerMask = 0xFFFFFFFF);
+	static vector<RAYCASTHIT> RaycastMesh(const Ray& _ray, _uint _layerMask = 0xFFFFFFFF);
 
 	static const vector3& Get_Gravity();
 	static void Set_GravityValue(const vector3 _value);

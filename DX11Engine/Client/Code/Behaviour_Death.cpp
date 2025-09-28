@@ -24,6 +24,8 @@ void CBehaviour_Death::Enter(void* _desc)
     m_pMonster->Death();
     m_pMonster->Get_Animator()->SetLoop(false);
     m_pMonster->Get_Animator()->Play(L"Death", 0.25f);
+
+    m_pMonster->PlaySoundEffect(L"Dead");
 }
 
 void CBehaviour_Death::During()

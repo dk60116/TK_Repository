@@ -1,6 +1,7 @@
 #include "cpch.h"
 #include "PlayerBehaviour_Sword.h"
 #include "Weapon.h"
+#include "ME_SwordSlash.h"
 
 CPlayerBehaviour_Sword::CPlayerBehaviour_Sword()
 	: m_iCurrentCombo(0)
@@ -108,10 +109,26 @@ void CPlayerBehaviour_Sword::During()
 	if (animator->Get_StateInfo().frame == 40)
 	{
 		if (animator->Get_StateInfo().startedFrame)
-			m_pPlayer->PlaySoundEffect(L"SwordAttack02");
+			m_pPlayer->PlaySoundEffect(L"SwordAttack03");
 	}
 
-	CDebug::LogError(animator->Get_StateInfo().frame);
+	if (animator->Get_StateInfo().frame == 10)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->Get_SwordSlashEffect()->PlayCombo(0);
+	}
+
+	if (animator->Get_StateInfo().frame == 22)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->Get_SwordSlashEffect()->PlayCombo(1);
+	}
+
+	if (animator->Get_StateInfo().frame == 44)
+	{
+		if (animator->Get_StateInfo().startedFrame)
+			m_pPlayer->Get_SwordSlashEffect()->PlayCombo(2);
+	}
 
 	m_iPrevCombo = m_iCurrentCombo;
 }

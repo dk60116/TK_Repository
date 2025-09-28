@@ -3,6 +3,7 @@
 
 CCollisionManager::CCollisionManager()
 	: m_vColliderList({})
+	, m_mColliderListByLayer({})
 	, m_mCollisionFilter({})
 	, m_mColliderGizmoColorSet({})
 {
@@ -41,7 +42,7 @@ void CCollisionManager::Release()
 	GetInstance().m_vColliderList.clear();
 }
 
-void CCollisionManager::UpdateCollision()
+void CCollisionManager::FixedUpdate()
 {
 	auto& colliderList = GetInstance().m_vColliderList;
 	const size_t n = colliderList.size();
@@ -139,9 +140,15 @@ void CCollisionManager::UpdateCollision()
 								if (rbA)
 								{
 									if (colB->m_bSmoothCollision)
+									{
 										colA->Get_Transform()->Add_Position(moveA * DELTA_TIME * 10.f);
+										colA->Get_RigidBody()->AddCollisionVector(moveA * DELTA_TIME * 10.f);
+									}
 									else
+									{
 										colA->Get_Transform()->Add_Position(moveA);
+										colA->Get_RigidBody()->AddCollisionVector(moveA * DELTA_TIME * 10.f);
+									}
 
 									if (moveA.y > 0.001f)
 										rbA->ResetGravity();
@@ -149,9 +156,15 @@ void CCollisionManager::UpdateCollision()
 								if (rbB)
 								{
 									if (colA->m_bSmoothCollision)
+									{
 										colB->Get_Transform()->Add_Position(moveB * DELTA_TIME * 10.f);
+										colB->Get_RigidBody()->AddCollisionVector(moveB * DELTA_TIME * 10.f);
+									}
 									else
+									{
 										colB->Get_Transform()->Add_Position(moveB);
+										colB->Get_RigidBody()->AddCollisionVector(moveB);
+									}
 
 									if (moveB.y > 0.001f)
 										rbB->ResetGravity();
@@ -168,8 +181,12 @@ void CCollisionManager::UpdateCollision()
 			}
 		}
 	}
+}
 
-	colliderList.clear();
+void CCollisionManager::LateUpdate()
+{
+	GetInstance().m_vColliderList.clear();
+	GetInstance().m_mColliderListByLayer.clear();
 }
 
 const vector<CCollider*>& CCollisionManager::Get_ColliderList()
@@ -177,9 +194,18 @@ const vector<CCollider*>& CCollisionManager::Get_ColliderList()
 	return GetInstance().m_vColliderList;
 }
 
-CCollider* CCollisionManager::Add_Collider(CCollider* _collider)
+const vector<CCollider*>& CCollisionManager::Get_ColliderList(const _uint _layer)
+{
+	auto& l = GetInstance().m_mColliderListByLayer;
+
+	return GetInstance().m_mColliderListByLayer[_layer];
+}
+
+CCollider* CCollisionManager::Add_Collider(CCollider* _collider, const _uint _layer)
 {
 	GetInstance().m_vColliderList.push_back(_collider);
+	GetInstance().m_mColliderListByLayer[_layer].push_back(_collider);
+
 	return GetInstance().m_vColliderList.back();
 }
 

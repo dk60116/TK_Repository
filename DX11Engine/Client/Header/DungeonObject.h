@@ -33,6 +33,9 @@ public:
 	void Set_SibilingIndex(const _int _index);
 	const _int Get_Index() const;
 
+	void PlaySoundEffect(const wstring _cilp);
+	void StopSound();
+
 protected:
 	class CDungeonChapter* m_pChapter;
 	wstring m_strObjName;
@@ -40,6 +43,7 @@ protected:
 	vector<CMeshRenderer*> m_vRenderer;
 	vector<CSkinnedMeshRenderer*> m_vSkinnedRenderer;
 	CAnimator* m_pAnimator;
+	CAudioSource* m_pAudioSource;
 	CBoxCollider* m_pCollider;
 	CBoxCollider* m_pBodyCollider;
 	_bool m_bOperation;

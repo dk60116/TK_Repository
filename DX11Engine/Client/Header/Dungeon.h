@@ -49,6 +49,10 @@ private:
 
 	void Update_DTSwitch();
 
+public:
+	void PlayPuzzleClearSound();
+	void PlaySoundEffect(const wstring& _clip);
+
 private:
 	template <typename T>
 	CMonster* CrateMonsterPrototype();
@@ -80,6 +84,9 @@ private:
 	_bool m_bDTSwitchOn;
 	_float m_fDTOnDuration;
 	_bool m_bDTComplete;
+
+	CAudioSource* m_pAudioSource;
+	CAudioClip* m_pPuzzleClearSound;
 };
 
 template <typename T>

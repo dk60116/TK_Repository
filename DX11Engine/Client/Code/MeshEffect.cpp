@@ -6,6 +6,7 @@ CMeshEffect::CMeshEffect()
 	, m_sDescription({})
 	, m_vMesheList({})
 	, m_vTextureList({})
+	, m_fTime(0.f)
 {
 	m_strName = L"MeshEffect";
 }
@@ -28,8 +29,12 @@ HRESULT CMeshEffect::Initialize(void* _desc)
 		mesh->Set_Material(CResources::CloneOnGame<CMaterial>(L"MeshEffectMaterial (Material)"));
 		const wstring texName = m_strEffectName + L"_Texture_" + to_wstring(i) + L" (Texture)";
 		CTexture* texture = CResources::LoadOnScene<CTexture>(texName);
-		m_vTextureList.push_back(texture);
-		mesh->Get_Material()->Set_Texture(texture);
+
+		if (texture)
+		{
+			m_vTextureList.push_back(texture);
+			mesh->Get_Material()->Set_Texture(texture);
+		}
 	}
 
 	return S_OK;
@@ -45,6 +50,12 @@ void CMeshEffect::Start()
 
 void CMeshEffect::Update()
 {
+	m_fTime += DELTA_TIME;
+}
+
+void CMeshEffect::OnEnable()
+{
+	m_fTime = 0.f;
 }
 
 void CMeshEffect::OnDestroy()

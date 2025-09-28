@@ -55,6 +55,8 @@ void CAudioSource::OnDestroy()
 		m_pChannel = nullptr;
 	}
 
+	Safe_Release(m_pAudioClip);
+
 	m_pSystem = nullptr;
 }
 
@@ -70,6 +72,11 @@ CComponent* CAudioSource::Clone() const
 	clone->SetClip(this->m_pAudioClip);
 
 	return clone;
+}
+
+const CAudioClip* CAudioSource::Get_Clip()
+{
+	return m_pAudioClip;
 }
 
 void CAudioSource::SetClip(CAudioClip* _clip)

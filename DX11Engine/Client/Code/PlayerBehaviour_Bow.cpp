@@ -72,6 +72,17 @@ void CPlayerBehaviour_Bow::During()
 
 		m_pPlayer->Get_Controller()->ForceChangeState(CPlayerController::Move, &m_pPlayer->Get_Controller()->Get_MoveDesc());
 	}
+
+	CAnimator* animator = m_pPlayer->Get_Animator();
+
+	if (m_fPassedTime < 1.f)
+	{
+		if (animator->Get_StateInfo().frame == 5)
+		{
+			if (animator->Get_StateInfo().startedFrame)
+				m_pPlayer->PlaySoundEffect(L"BowLoading");
+		}
+	}
 }
 
 void CPlayerBehaviour_Bow::Exit()

@@ -19,10 +19,12 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void LateUpdate() override;
 	void OnTriggerEnter(CCollider* _other) override;
 	void OnDestroy() override;
 
 private:
 	CRigidBody* m_pRigidBody;
+	_bool m_bSliding, m_bPrevSliding;
 };
 

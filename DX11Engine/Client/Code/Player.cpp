@@ -4,6 +4,7 @@
 #include "WoodenSword.h"
 #include "WoodenBow.h"
 #include "DefaultArrow.h"
+#include "ME_SwordSlash.h"
 
 CPlayer::CPlayer()
 	: m_pController(nullptr)
@@ -29,6 +30,7 @@ CPlayer::CPlayer()
 	, m_bSpinAttack(false)
 	, m_fSpinAttackGauge(0.f)
 	, m_pSpinSwordTrigger(nullptr)
+	, m_pSwordEffect(nullptr)
 {
 	m_strName = L"Player";
 }
@@ -147,13 +149,16 @@ HRESULT CPlayer::Initialize(void* _desc)
 		m_pSpinSwordTrigger->SetEnabled(false);
 	}
 
+	CGameObject* seObj = m_pGameObject->Get_Scene()->Add_GameObject(L"Sword Effect");
+	m_pSwordEffect = seObj->AddComponent<CME_SwordSlash>();
+
 	return S_OK;
 }
 
 void CPlayer::Awake()
 {
 	Get_Transform()->Set_Position(127.5f, 0.f, -67.470f);
-	Get_Transform()->Set_Position(vector3::zero());
+	//Get_Transform()->Set_Position(vector3::zero());
 
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 }
@@ -224,6 +229,14 @@ void CPlayer::Update()
 		m_bSpinAttack = false;
 
 	m_pSpinSwordTrigger->Get_Transform()->Add_LocalEulerAnglesY(360.f * DELTA_TIME);
+
+	if (CInput::GetKeyDown(TAB))
+	{
+		if (m_sPlayerStatus.moveSpeed == 5.f)
+			m_sPlayerStatus.moveSpeed = 10.f;
+		else
+			m_sPlayerStatus.moveSpeed = 5.f;
+	}
 }
 
 void CPlayer::LateUpdate()
@@ -237,6 +250,11 @@ void CPlayer::OnDestroy()
 
 void CPlayer::OnCollisionEnter(CCollider* _other)
 {
+	if (_other->Get_GameObject()->CompareTag(L"AttackTrigger"))
+	{
+		GetDamage(1);
+		_other->SetEnabled(false);
+	}
 }
 
 void CPlayer::OnCollisionStay(CCollider* _other)
@@ -292,11 +310,16 @@ void CPlayer::RecoverHp(const _uint _value)
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
 }
 
-void CPlayer::GetDamage(const _uint _damage)
+void CPlayer::GetDamage(const _uint _damage, const _bool _power)
 {
 	m_sPlayerStatus.crtHp -= _damage;
 	m_sPlayerStatus.crtHp = max(m_sPlayerStatus.crtHp, 0);
 	CGameManager::GetInstance().Get_PlayerHUD()->Update_Heart(m_sPlayerStatus.crtHp, m_sPlayerStatus.maxHp);
+
+	if (!_power)
+	{
+		PlaySoundEffect(L"Damaged");
+	}
 }
 
 CWeapon* CPlayer::Get_EqupWeapon() const
@@ -506,8 +529,11 @@ void CPlayer::PopArrow()
 
 void CPlayer::ReturnArrow()
 {
-	m_pEquipArrow->Return();
-	m_pEquipArrow = nullptr;
+	if (m_pEquipArrow)
+	{
+		m_pEquipArrow->Return();
+		m_pEquipArrow = nullptr;
+	}
 }
 
 void CPlayer::ShootArrow()
@@ -526,4 +552,9 @@ void CPlayer::OnOffGravity(const _bool _on)
 const vector3& CPlayer::Get_GA()
 {
 	return m_pRigidBody->Get_GA();
+}
+
+CME_SwordSlash* CPlayer::Get_SwordSlashEffect()
+{
+	return m_pSwordEffect;
 }

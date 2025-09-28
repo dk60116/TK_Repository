@@ -132,6 +132,13 @@ void CSphereCollider::Set_Size(const _float _size)
     Build_WorldSPHERE();
 }
 
+const CPhysics::RAYCASTHIT CSphereCollider::Raycast(CPhysics::Ray _ray) const
+{
+    CPhysics::RAYCASTHIT hit = {};
+
+    return hit;
+}
+
 void CSphereCollider::Build_WorldSPHERE()
 {
     CTransform* tr = m_pGameObject->Get_Transform();

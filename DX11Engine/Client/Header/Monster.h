@@ -26,7 +26,7 @@ public:
 		_int crtHp = 0;
 		_float moveSpeed = 3.f;
 		_float rotateSpeed = 5.f;
-		_float detectionRange = 10.f;
+		_float detectionRange = 15.f;
 		_float attackWait = 3.f;
 		_float attackRange = 3.f;
 		_float walkSpeed = 2.f;
@@ -59,9 +59,12 @@ public:
 	virtual void Get_Damage(CTransform* _weaponTf, const _uint _damage);
 	virtual void Death();
 	virtual void PlayTurn(const CMonsterController::TurnDir _dir);
+	virtual void PlaySoundEffect(const wstring& _clip);
+	void OnOffAttackTrigger(const _bool _on);
 
 protected:
 	CAnimationClip* Add_Animation(const wstring _name);
+	CAudioClip* Add_Sound(const wstring _name);
 
 protected:
 	wstring m_strMonsterName;
@@ -80,5 +83,11 @@ protected:
 	CRigidBody* m_pRigidBody;
 
 	map<wstring, class CMonsterPartCollision*> m_mPartColList;
+
+protected:
+	CAudioSource* m_pAudioSource;
+	map<wstring, CAudioClip*> m_mSoundClipList;
+
+	CSphereCollider* m_pAttackTrigger;
 };
 

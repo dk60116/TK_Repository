@@ -66,6 +66,8 @@ void CFootSwitch::Awake()
 	}
 
 	m_pStepCollider->Get_GameObject()->SetLayer(L"Map");
+
+	m_pAudioSource->SetLoop(true);
 }
 
 void CFootSwitch::Update()
@@ -98,6 +100,7 @@ void CFootSwitch::OnTriggerEnter(CCollider* _other)
 	{
 		m_pEnteredObj = _other->Get_GameObject();
 		m_bObjectEnter = true;
+		PlaySoundEffect(L"FootSwitch");
 	}
 }
 
@@ -118,6 +121,8 @@ void CFootSwitch::OnTriggerExit(CCollider* _other)
 				}
 
 				m_pEnteredObj = nullptr;
+
+				StopSound();
 			}
 		}
 	}
@@ -155,6 +160,8 @@ void CFootSwitch::SwitchOnEvent()
 
 	_bool siblingOn = true;
 
+	StopSound();
+
 	if (m_iSiblingSwitchIndex != -1)
 	{
 		auto siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
@@ -168,6 +175,8 @@ void CFootSwitch::SwitchOnEvent()
 
 	if (m_iSiblingSwitchIndex == -1 || siblingOn)
 	{
+		CGameManager::GetInstance().Get_Dungeon()->PlayPuzzleClearSound();
+
 		for (size_t i = 0; i < m_vLinkObjects.size(); ++i)
 		{
 			if (CDungeonGate* gate = dynamic_cast<CDungeonGate*>(m_vLinkObjects[i]))

@@ -69,7 +69,7 @@ void CDungeonChest::Update()
 {
 	__super::Update();
 
-	if (m_bDetacted && !m_bIsOpen)
+	if (m_bOperation && m_bDetacted && !m_bIsOpen)
 	{
 		if (CInput::GetKeyDown(E))
 			Open();
@@ -87,6 +87,8 @@ void CDungeonChest::Update()
 		m_bTakeItem = true;
 
 		CGameManager::GetInstance().Get_PlayerHUD()->OpenNotifaction(CGameManager::GetInstance().Get_Inventory()->FindItem(m_strItemName));
+
+		CGameManager::GetInstance().Get_Dungeon()->PlaySoundEffect(L"Reward");
 	}
 }
 
