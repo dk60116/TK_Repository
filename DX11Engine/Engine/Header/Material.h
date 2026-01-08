@@ -39,6 +39,7 @@ public:
 	void Bind_Matrix(const _fmatrix _world);
 	void Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
 	void Bind_Light(_matrix* _lights, const _uint _count);
+	void Bind_Shadow(const _fmatrix _world, const _fmatrix _lightVP, const _bool _alphaCutout);
 	void Bind_CustomValues();
 
 public:
@@ -70,6 +71,7 @@ private:
 	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pMaterialBuffer;
 	ID3D11Buffer* m_pLightBuffer;
+	ID3D11Buffer* m_pShadowBuffer;
 	ID3D11Buffer* m_pCustomBuffer;
 	vector<BYTE> m_vCustomBufferByteList;
 

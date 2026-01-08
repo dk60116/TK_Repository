@@ -8,6 +8,7 @@ CMaterial::CMaterial()
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
 	, m_pLightBuffer(nullptr)
+	, m_pShadowBuffer(nullptr)
 	, m_pCustomBuffer(nullptr)
 	, m_vCustomBufferByteList({})
 	, m_bUseLight(false)
@@ -142,6 +143,7 @@ void CMaterial::OnDestroy()
 	Safe_Release(m_pCameraBuffer);
 	Safe_Release(m_pMaterialBuffer);
 	Safe_Release(m_pLightBuffer);
+	Safe_Release(m_pShadowBuffer);
 	Safe_Release(m_pCustomBuffer);
 
 	m_vCustomBufferByteList.clear();
@@ -214,6 +216,64 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
 	context->VSSetConstantBuffers(4, 1, &m_pLightBuffer);
 	context->PSSetConstantBuffers(4, 1, &m_pLightBuffer);
+}
+
+void CMaterial::Bind_Shadow(const _fmatrix _world, const _fmatrix _lightVP, const _bool _alphaCutout)
+{
+	//ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
+
+	//// 1) DepthOnly 셰이더 바인딩
+	////  - 프로젝트 셰이더 매니저에 맞춰 교체하세요.
+	////  - 예: "VS_DepthOnly", "PS_DepthOnly_Null" / "PS_DepthOnly_AlphaTest"
+	//{
+	//	CShader* vsDepth = CShaderManager::Get()->Get(L"VS_DepthOnly");
+	//	CShader* psDepth = nullptr;
+	//	if (alphaCutout)
+	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_AlphaTest");
+	//	else
+	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_Null"); // 혹은 PS 생략 가능
+
+	//	if (vsDepth) 
+	//		vsDepth->BindVS();     // 입력 레이아웃 포함
+	//	if (psDepth) 
+	//		psDepth->BindPS();
+	//	else         
+	//		ctx->PSSetShader(nullptr, nullptr, 0); // 완전 depth-only
+	//}
+
+	//// 2) b0 : World
+	//MatrixCB m = {};
+	//m.world = XMMatrixTranspose(_world);
+	//ctx->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &m, 0, 0);
+	//ctx->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer); // VS만으로도 충분
+
+	//// 3) b5 : LightVP
+	//ShadowCB s = {};
+	//s.lightVP = XMMatrixTranspose(_lightVP);
+	//ctx->UpdateSubresource(m_pShadowBuffer, 0, nullptr, &s, 0, 0);
+	//ctx->VSSetConstantBuffers(5, 1, &m_pShadowBuffer);
+
+	//// 4) 알파 컷아웃이면 베이스 텍스처 t0 바인딩(샘플러는 Bind_Texture에서 만들던 기본 s0 사용)
+	//if (_alphaCutout)
+	//{
+	//	ID3D11ShaderResourceView* base = Get_DiffuseSRV();
+	//	ctx->PSSetShaderResources(0, 1, &base);
+
+	//	// 샘플러(선형 래핑) 하나는 기본적으로 만들어 두셨으니 재사용:
+	//	// CMaterial::Bind_Texture()를 부르지 않는 이유: 불필요한 CB/텍스처까지 대거 바인딩되기 때문
+	//	static ID3D11SamplerState* s0 = nullptr;
+	//	
+	//	if (!s0)
+	//	{
+	//		D3D11_SAMPLER_DESC sd = {};
+	//		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	//		sd.AddressU = sd.AddressV = sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	//		sd.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	//		sd.MinLOD = 0; sd.MaxLOD = D3D11_FLOAT32_MAX;
+	//		CGraphicDevice::GetInstance().Get_Device()->CreateSamplerState(&sd, &s0);
+	//	}
+	//	ctx->PSSetSamplers(0, 1, &s0);
+	//}
 }
 
 void CMaterial::Bind_CustomValues()
@@ -422,6 +482,11 @@ HRESULT CMaterial::Create_ConstantBuffer()
 		if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pLightBuffer)))
 			return E_FAIL;
 	}
+
+	// b5: Shadow (LightVP)
+	desc.ByteWidth = sizeof(ShadowCB);
+	if (FAILED(device->CreateBuffer(&desc, nullptr, &m_pShadowBuffer)))
+		return E_FAIL;
 
 	// b10: Custom
 	if (m_vCustomBufferByteList.size() > 0)

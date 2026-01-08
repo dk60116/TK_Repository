@@ -59,7 +59,7 @@
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Transform.h">
-      <Filter>Components\Navigation\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshBuffer.h">
       <Filter>Resource\MeshBuffer</Filter>
@@ -80,7 +80,7 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\RectTransform.h">
-      <Filter>Components\Navigation\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\MeshFilter.h">
       <Filter>Components\Render</Filter>
@@ -193,9 +193,6 @@
     <ClInclude Include="..\Header\SphereCollider.h">
       <Filter>Components\Physics\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\RenderTarget.h">
-      <Filter>Window</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\ParticleSystem.h">
       <Filter>Components\Particle</Filter>
     </ClInclude>
@@ -231,6 +228,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\AudioClip.h">
       <Filter>Resource\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\RenderTarget.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\ShadowMap.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,9 +336,6 @@
     <Filter Include="Components\Navigation">
       <UniqueIdentifier>{3c6f5cc5-a1e2-49c7-ba19-efd475ae7534}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Navigation\Transform">
-      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\Physics">
       <UniqueIdentifier>{41d5a9ca-5ef1-4cd8-a48e-718c2cc696d0}</UniqueIdentifier>
     </Filter>
@@ -359,6 +359,12 @@
     </Filter>
     <Filter Include="Resource\Sound">
       <UniqueIdentifier>{381b3e47-b277-4525-b7b1-c298ca5a7be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{7de62f26-4bf2-495d-9e4e-cc5c0f288bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Transform">
+      <UniqueIdentifier>{b43cf096-3292-4bfd-8cc1-a59301bb9d7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -393,7 +399,7 @@
       <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Transform.cpp">
-      <Filter>Components\Navigation\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshBuffer.cpp">
       <Filter>Resource\MeshBuffer</Filter>
@@ -411,7 +417,7 @@
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\RectTransform.cpp">
-      <Filter>Components\Navigation\Transform</Filter>
+      <Filter>Components\Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MeshFilter.cpp">
       <Filter>Components\Render</Filter>
@@ -560,9 +566,6 @@
     <ClCompile Include="..\Code\SphereCollider.cpp">
       <Filter>Components\Physics\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\RenderTarget.cpp">
-      <Filter>Window</Filter>
-    </ClCompile>
     <ClCompile Include="epch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
@@ -577,6 +580,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\FMODSystem.cpp">
       <Filter>System\FMod</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\RenderTarget.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ShadowMap.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

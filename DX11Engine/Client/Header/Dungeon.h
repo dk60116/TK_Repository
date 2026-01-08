@@ -60,13 +60,14 @@ private:
 	CDungeonObject* CreateDungonObjectPrototype();
 
 	void CullingLights();
+	void CullingObjects();
 
 private:
 	map<wstring, CMonster*> m_mMonsterProtoList;
 	map<wstring, CDungeonObject*> m_mDungonObjProtoList;
 	vector<class CDungeonChapter*> m_vChapterList;
 
-	_bool m_bAttachedChapterColliders;
+	_bool m_bUpdated, m_bAttachedChapterColliders;
 
 	vector<CLight*> m_vLightList;
 	vector<class CDungeonGate*> m_vGateList;

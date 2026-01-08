@@ -159,6 +159,7 @@ void CPlayer::Awake()
 {
 	Get_Transform()->Set_Position(127.5f, 0.f, -67.470f);
 	//Get_Transform()->Set_Position(vector3::zero());
+	//Get_Transform()->Set_Position(-47.3f, -8.7f, -73.f);
 
 	m_sPlayerStatus.crtHp = m_sPlayerStatus.maxHp;
 }

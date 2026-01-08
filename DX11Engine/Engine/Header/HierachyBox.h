@@ -4,20 +4,20 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CHierachyBox final : public CEditorBox
+class ENGINE_DLL CHierarchyBox final : public CEditorBox
 {
 	friend class CEditor;
 
 protected:
-	explicit CHierachyBox();
-	~CHierachyBox();
+	explicit CHierarchyBox();
+	~CHierarchyBox();
 
 public:
 	void Render() override;
 	void OnDestroy() override;
 
 private:
-	static CHierachyBox* Create();
+	static CHierarchyBox* Create();
 
 private:
 	void RenderObjectHierarchy(CGameObject* _obj);

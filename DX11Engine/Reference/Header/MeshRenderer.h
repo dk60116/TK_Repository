@@ -30,6 +30,7 @@ public:
 public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;
+	void Render_Shadow(const _matrix& lightVP, _bool alphaCutout = false) override;
 
 public:
 	CMeshFilter* Get_MeshFilter();

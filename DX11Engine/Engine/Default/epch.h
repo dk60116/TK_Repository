@@ -30,6 +30,7 @@
 #include "FMODSystem.h"
 #include "AudioSource.h"
 #include "Light.h"
+#include "ShadowMap.h"
 #include "Material.h"
 #include "MeshBuffer.h"
 #include "MeshFilter.h"

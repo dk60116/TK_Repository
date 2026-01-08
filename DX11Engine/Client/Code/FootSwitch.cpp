@@ -125,6 +125,8 @@ void CFootSwitch::OnTriggerExit(CCollider* _other)
 				StopSound();
 			}
 		}
+		else
+			StopSound();
 	}
 }
 
@@ -160,8 +162,6 @@ void CFootSwitch::SwitchOnEvent()
 
 	_bool siblingOn = true;
 
-	StopSound();
-
 	if (m_iSiblingSwitchIndex != -1)
 	{
 		auto siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
@@ -189,6 +189,11 @@ void CFootSwitch::SwitchOnEvent()
 		vector<CFootSwitch*> siblingSwitchList = CGameManager::GetInstance().Get_Dungeon()->Get_FootSwitch(m_iSiblingSwitchIndex);
 
 		for (TRAVERSAL_ITER(siblingSwitchList, it))
+		{
 			(*it)->m_bSwitchComplete = true;
+			StopSound();
+		}
 	}
+
+	StopSound();
 }

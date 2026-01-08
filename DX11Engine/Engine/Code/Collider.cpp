@@ -45,6 +45,16 @@ void CCollider::PrevUpdate()
 
 void CCollider::LateUpdate()
 {
+	if (!m_bUpdated)
+		return;
+
+	if (m_iColliderID == 0)
+		m_iColliderID = m_pGameObject->Get_UniqueID();
+
+	if (!m_pGameObject->IsRecursiveActive() || !m_bEnabled)
+		return;
+
+	CCollisionManager::Add_Collider(this, m_pGameObject->GetLayer());
 }
 
 void CCollider::FixedUpdate()

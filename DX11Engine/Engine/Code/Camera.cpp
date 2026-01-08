@@ -1,5 +1,6 @@
 #include "epch.h"
 #include "Camera.h"
+#include "ShadowMap.h"
 
 const ColorValue CCamera::s_vDefaultCameraColor = ColorValue(49, 77, 121, 255);
 
@@ -17,6 +18,7 @@ CCamera::CCamera()
 	, m_vMeshList_NoneCull({})
 	, m_vUIList({})
 	, m_vMeshList_Blend({})
+	, m_pShadowMap(nullptr)
 {
 	m_strName = L"Camera";
 }
@@ -50,6 +52,9 @@ HRESULT CCamera::Initialize(void* _desc)
 	if (FAILED(__super::Initialize(_desc)))
 		return E_FAIL;
 
+	if (FAILED(InitShadowMap()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -67,6 +72,7 @@ void CCamera::Render()
 
 void CCamera::OnDestroy()
 {
+	Safe_Release(m_pShadowMap);
 }
 
 _matrix CCamera::Get_ViewMatrix() const
@@ -131,6 +137,13 @@ void CCamera::Add_RenderTarget_BlendMesh(CRenderer* _mesh)
 void CCamera::Add_RenderTarget_UI(CUI* _ui)
 {
 	m_vUIList.push_back(_ui);
+}
+
+HRESULT CCamera::InitShadowMap()
+{
+	m_pShadowMap = CShadowMap::Create(2048);
+
+	return m_pShadowMap ? S_OK : E_FAIL;
 }
 
 void CCamera::Bind_ViewMatrix()
@@ -300,6 +313,8 @@ void CCamera::RenderMesh()
 	//CDisplay::RenderTargetRender(L"Depth");
 	//CDisplay::RenderTargetRender(L"Shading");
 
+	//RenderShadowPass();
+
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
 
 	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
@@ -344,6 +359,12 @@ void CCamera::RenderMesh()
 	m_vMeshList_Lit.clear();
 	m_vMeshList_NoneCull.clear();
 	m_vMeshList_Blend.clear();
+}
+
+void CCamera::RenderShadowPass()
+{
+	if (!m_pShadowMap) 
+		return;
 }
 
 void CCamera::RenderUI()

@@ -5,6 +5,7 @@ CRenderer::CRenderer()
 	: m_pMaterial(nullptr)
 	, m_pOutlineMat(nullptr)
 	, m_fScaleFactor(1.f)
+	, m_bShadowTarget(false)
 	, m_bNoneCulling(false)
 {
 }

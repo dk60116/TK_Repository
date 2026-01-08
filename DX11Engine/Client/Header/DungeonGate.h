@@ -19,6 +19,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update() override;
+	void OnEnable() override;
 	void OnTriggerStay(CCollider* _other) override;
 	void OnDestroy() override;
 

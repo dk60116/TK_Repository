@@ -9,6 +9,7 @@ CWeapon::CWeapon()
 	, m_pTargetHand(nullptr)
 	, m_pCollider(nullptr)
 	, m_eHandType(CPlayer::HandType::Right)
+	, m_pAudioSource(nullptr)
 {
 }
 
@@ -24,6 +25,8 @@ HRESULT CWeapon::Initialize(void* _desc)
 
 	m_pGameObject->SetLayer(L"PlayerWeapon");
 	m_pGameObject->CreateMeshHierachy(CResources::LoadMeshBuffersOnScene(m_strWeaponName + L" (Mesh Buffer)"), 0.01f * m_sOptions.localScale);
+
+	m_pAudioSource = m_pGameObject->AddComponent<CAudioSource>();
 
 	return S_OK;
 }

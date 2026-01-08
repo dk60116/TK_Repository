@@ -46,8 +46,10 @@ void CPlayerBehaviour_Ladder::During()
 
 	if (CInput::GetKey(W))
 		m_iDirection = 1;
-	if (CInput::GetKey(S))
+	else if (CInput::GetKey(S))
 		m_iDirection = -1;
+	else
+		m_iDirection = 0;
 	
 	if (!CInput::GetKey(W) && !CInput::GetKey(S))
 		m_iDirection = 0;
@@ -55,6 +57,14 @@ void CPlayerBehaviour_Ladder::During()
 	if (m_iDirection != m_iPrevDirection)
 	{
 		m_pPlayer->PlayLadderAnimation(m_iDirection);
+
+		if (!m_bOutUp)
+		{
+			if (m_iDirection == 0)
+				m_pPlayer->Get_Animator()->Pause();
+			else
+				m_pPlayer->Get_Animator()->Play();
+		}
 	}
 
 	CTransform* playerTF = m_pPlayer->Get_Transform();

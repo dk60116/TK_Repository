@@ -1,0 +1,1831 @@
+#include "epch.h"
+#include "Resources.h"
+
+#include <shlobj.h> 
+#include <shlwapi.h> 
+#include <tchar.h>
+
+#pragma comment(lib, "Shlwapi.lib")
+
+using namespace EngineAI;
+
+CResources::CResources()
+	: m_strDefaultAssetPath(L"../Assets/")
+	, m_strEngineFilePath(L"../EngineResource/")
+	, m_mEditorResourceList({})
+	, m_mGameResourceList({})
+{
+}
+
+CResources::~CResources()
+{
+	Release();
+}
+
+CResources& CResources::GetInstance()
+{
+	static CResources inst;
+	return inst;
+}
+
+HRESULT CResources::Initialize()
+{
+	for (const char* p : 
+		{
+		"BinaryAssets",
+		"BinaryAssets/SceneData",
+		"BinaryAssets/MeshData",
+		"BinaryAssets/SkinnedMeshData",
+		"BinaryAssets/NaviMeshData",
+		"BinaryAssets/AnimationClipData",
+		"BinaryAssets/FontData",
+		}
+		) 
+	{
+		if (!fs::exists(p)) fs::create_directories(p);
+	}
+
+	Ready_GameResources();
+
+	return S_OK;
+}
+
+void CResources::Release()
+{
+	for (TRAVERSAL_ITER(GetInstance().m_mGameResourceList, it))
+		Safe_Release((*it).second);
+
+	GetInstance().m_mGameResourceList.clear();
+}
+
+void CResources::LoadResourceComplete_Game(const CEngineResource* _ptr)
+{
+	if (_ptr)
+		CDebug::Log(L"Create Game resource successfully: " + _ptr->Get_ResourceName());
+	else
+		CDebug::LogError("Failed create Scene resource");
+}
+
+void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
+{
+	if (_ptr)
+		CDebug::Log(L"Create Scene resource successfully: " + _ptr->Get_ResourceName());
+	else
+		CDebug::LogError("Failed create Scene resource");
+}
+
+HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
+{
+	Assimp::Importer importer;
+	const aiScene* aiScene = importer.ReadFile
+	(
+		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_FlipUVs
+	);
+
+	if (!aiScene || !aiScene->HasMeshes())
+	{
+		CDebug::LogError(L"Failed create mesh buffer - Invalid scene: " + _filePath);
+		return E_FAIL;
+	}
+
+	using VTX = VertexTexNormalTangentBuffer;
+	const _bool hasMaterial = aiScene->HasMaterials();
+
+	// meshIndex
+	struct MeshRef { aiMatrix4x4 g; wstring nodeName; };
+	vector<vector<MeshRef>> meshRefs(aiScene->mNumMeshes);
+
+	function<void(aiNode*, const aiMatrix4x4&)> DFS =
+		[&](aiNode* node, const aiMatrix4x4& parent)
+		{
+			aiMatrix4x4 current = parent * node->mTransformation;
+
+			for (_uint m = 0; m < node->mNumMeshes; ++m)
+			{
+				const _uint mi = node->mMeshes[m];
+				MeshRef ref;
+				ref.g = current;
+				ref.nodeName = CEngineString::StringToWString(node->mName.C_Str());
+				meshRefs[mi].push_back(move(ref));
+			}
+
+			for (_uint c = 0; c < node->mNumChildren; ++c)
+				DFS(node->mChildren[c], current);
+		};
+	DFS(aiScene->mRootNode, aiMatrix4x4());
+
+	// 메시당 1개 지오메트리 + 인스턴스 월드행렬들(instanceWorlds)
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
+	bufferInfoList.reserve(aiScene->mNumMeshes);
+
+	for (_uint mi = 0; mi < aiScene->mNumMeshes; ++mi)
+	{
+		const aiMesh* mesh = aiScene->mMeshes[mi];
+
+		// 이 mesh를 참조하는 노드가 하나도 없으면 identity 1개 추가
+		if (meshRefs[mi].empty())
+		{
+			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
+			meshRefs[mi].push_back(move(ref));
+		}
+
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
+
+		// 이름
+		wstring baseName = meshRefs[mi][0].nodeName;
+		if (baseName.empty())
+			baseName = CMeshBuffer::FindMeshName(aiScene, mi);
+		if (baseName.empty())
+			baseName = L"Mesh_" + to_wstring(mi);
+		info.meshName = baseName;
+
+		// 지오메트리
+		vector<VTX>   vertices;
+		vector<_uint> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		for (_uint v = 0; v < mesh->mNumVertices; ++v)
+		{
+			VTX vert{};
+			if (mesh->HasPositions())
+			{
+				aiVector3D p = mesh->mVertices[v];
+				vert.position = { p.x, p.y, p.z };
+			}
+			if (mesh->HasNormals())
+			{
+				aiVector3D n = mesh->mNormals[v];
+				vert.normal = { n.x, n.y, n.z };
+			}
+			if (mesh->HasTangentsAndBitangents())
+			{
+				aiVector3D t = mesh->mTangents[v];
+				vert.tangent = { t.x, t.y, t.z };
+			}
+			if (mesh->HasTextureCoords(0))
+			{
+				vert.uv = { mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y };
+			}
+			vertices.emplace_back(vert);
+		}
+
+		for (_uint f = 0; f < mesh->mNumFaces; ++f)
+		{
+			const aiFace& face = mesh->mFaces[f];
+			if (face.mNumIndices == 3)
+			{
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
+		}
+
+		// Desc + 데이터
+		CMeshBuffer::MESHBUFFERDESC desc{};
+		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		desc.vertexSize = sizeof(VTX);
+		desc.vertextCount = static_cast<_uint>(vertices.size());
+		desc.indexCount = static_cast<_uint>(indices.size());
+
+		info.buffer.assign
+		(
+			reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) + vertices.size() * sizeof(VTX)
+		);
+
+		info.indices.assign(indices.begin(), indices.end());
+		info.desc = desc;
+
+		// AABB
+		vector3 minSize = vector3(+FLT_MAX, +FLT_MAX, +FLT_MAX);
+		vector3 maxSize = vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+		for (const auto& vtx : vertices)
+		{
+			minSize.x = min(minSize.x, vtx.position.x);
+			maxSize.x = max(maxSize.x, vtx.position.x);
+
+			minSize.y = min(minSize.y, vtx.position.y);
+			maxSize.y = max(maxSize.y, vtx.position.y);
+
+			minSize.z = min(minSize.z, vtx.position.z);
+			maxSize.z = max(maxSize.z, vtx.position.z);
+		}
+
+		info.aabb = { minSize, maxSize };
+
+		// 인스턴스 월드 행렬들 저장
+		info.instanceWorlds.reserve(meshRefs[mi].size());
+		for (const auto& r : meshRefs[mi])
+		{
+			const aiMatrix4x4& m = r.g;
+			_float4x4 w
+			(
+				m.a1, m.b1, m.c1, m.d1,
+				m.a2, m.b2, m.c2, m.d2,
+				m.a3, m.b3, m.c3, m.d3,
+				m.a4, m.b4, m.c4, m.d4
+			);
+			info.instanceWorlds.push_back(w);
+		}
+
+		// 머티리얼
+		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
+		{
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
+			aiString texPath;
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			{
+				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+				filesystem::path fullPath = fbxDir / relPath;
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
+			}
+		}
+
+		bufferInfoList.push_back(move(info));
+	}
+
+	// 파일명 구성
+	auto split = CEngineString::Split(_filePath, L"/");
+	wstring folder = split[split.size() - 2];
+	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
+	wstring saveName = folder + L"_" + fileNoExt;
+
+	if (FAILED(SaveMeshBufferInfos(L"BinaryAssets/MeshData/" + saveName + L".meshdata", bufferInfoList)))
+	{
+		CDebug::LogError(L"Failed create mesh Data - can not save: " + _filePath);
+		return E_FAIL;
+	}
+
+	CDebug::Log(L"Complete create mesh Data: " + _filePath);
+	
+	return S_OK;
+}
+
+HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
+{
+	Assimp::Importer importer;
+	const aiScene* aiScene = importer.ReadFile
+	(
+		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
+		aiProcess_Triangulate |
+		//aiProcess_JoinIdenticalVertices |
+		//aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_FlipUVs
+	);
+
+	if (!aiScene || !aiScene->HasMeshes())
+	{
+		CDebug::LogError(L"Failed create skinned buffer - Invalid scene: " + _filePath);
+		return E_FAIL;
+	}
+
+	_bool hasBones = false;
+	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
+		hasBones |= aiScene->mMeshes[i]->HasBones();
+
+	if (!hasBones)
+	{
+		CDebug::LogError(L"Failed create skinned buffer - No bones: " + _filePath);
+		return E_FAIL;
+	}
+
+	const _bool hasMaterial = aiScene->HasMaterials();
+	using VTX = VertexSkinnedBuffer;
+
+	vector<aiMatrix4x4> meshGlobalMats(aiScene->mNumMeshes, aiMatrix4x4());
+
+	function<void(aiNode*, const aiMatrix4x4&)> BuildMeshTransforms =
+		[&](aiNode* node, const aiMatrix4x4& parentTrafo)
+		{
+			aiMatrix4x4 current = parentTrafo * node->mTransformation;
+			for (_uint mi = 0; mi < node->mNumMeshes; ++mi)
+				meshGlobalMats[node->mMeshes[mi]] = current;
+
+			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
+				BuildMeshTransforms(node->mChildren[ci], current);
+		};
+	BuildMeshTransforms(aiScene->mRootNode, aiMatrix4x4());
+
+	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> bufferInfoList;
+
+	for (_uint i = 0; i < aiScene->mNumMeshes; ++i)
+	{
+		const aiMesh* mesh = aiScene->mMeshes[i];
+		const aiMatrix4x4& gMat = meshGlobalMats[i];
+		aiMatrix3x3 gMat3 = aiMatrix3x3(gMat).Inverse().Transpose();
+
+		CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo info{};
+		info.meshName = CMeshBuffer::FindMeshName(aiScene, i);
+
+		vector<VTX>   vertices;
+		vector<_uint> indices;
+
+		vertices.reserve(mesh->mNumVertices);
+		for (_uint v = 0; v < mesh->mNumVertices; ++v)
+		{
+			aiVector3D pos = gMat * mesh->mVertices[v];
+
+			aiVector3D nor(0, 0, 0), tan(0, 0, 0);
+			if (mesh->HasNormals())
+				nor = gMat3 * mesh->mNormals[v];
+			if (mesh->HasTangentsAndBitangents())
+				tan = gMat3 * mesh->mTangents[v];
+
+			VTX vert{};
+			vert.position = { pos.x, pos.y, pos.z };
+			vert.normal = { nor.x, nor.y, nor.z };
+			vert.tangent = { tan.x, tan.y, tan.z };
+			vert.uv = mesh->HasTextureCoords(0) ? _float2{ mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y } : _float2{ 0, 0 };
+
+			vertices.emplace_back(vert);
+		}
+
+		unordered_map<string, _uint> boneNameToIndex;
+		_uint boneIdxCounter = 0;
+
+		for (_uint b = 0; b < mesh->mNumBones; ++b)
+		{
+			aiBone* bone = mesh->mBones[b];
+			string boneName = bone->mName.C_Str();
+
+			_uint boneIdx = 0;
+			auto it = boneNameToIndex.find(boneName);
+			if (it == boneNameToIndex.end())
+			{
+				boneIdx = boneIdxCounter++;
+				boneNameToIndex.insert({ boneName, boneIdx });
+			}
+			else boneIdx = it->second;
+
+			for (_uint w = 0; w < bone->mNumWeights; ++w)
+			{
+				_uint vid = bone->mWeights[w].mVertexId;
+				_float
+					bw = bone->mWeights[w].mWeight;
+				if (vid < vertices.size())
+					CSkinnedMeshBuffer::FillBoneWeights(vertices[vid], boneIdx, bw);
+			}
+		}
+
+		for (_uint f = 0; f < mesh->mNumFaces; ++f)
+		{
+			const aiFace& face = mesh->mFaces[f];
+			if (face.mNumIndices == 3)
+			{
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
+		}
+
+		CMeshBuffer::MESHBUFFERDESC desc{};
+		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		desc.vertexSize = sizeof(VTX);
+		desc.vertextCount = static_cast<_uint>(vertices.size());
+		desc.indexCount = static_cast<_uint>(indices.size());
+
+		info.buffer.assign(reinterpret_cast<const uint8_t*>(vertices.data()),
+			reinterpret_cast<const uint8_t*>(vertices.data()) +
+			vertices.size() * sizeof(VTX));
+		info.indices.assign(indices.begin(), indices.end());
+		info.desc = desc;
+
+		if (hasMaterial)
+		{
+			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
+			aiString texPath;
+
+			if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == aiReturn_SUCCESS)
+			{
+				filesystem::path fbxDir = filesystem::path(_filePath).parent_path();
+				filesystem::path relPath = filesystem::u8path(texPath.C_Str());
+				filesystem::path fullPath = fbxDir / relPath;
+				info.diffuseMapPath = GetInstance().m_strDefaultAssetPath + fullPath.wstring();
+			}
+		}
+
+		for (_uint b = 0; b < mesh->mNumBones; ++b)
+		{
+			aiBone* bone = mesh->mBones[b];
+			info.boneNames.push_back(CEngineString::StringToWString(bone->mName.C_Str()));
+
+			const aiMatrix4x4& m = bone->mOffsetMatrix;
+			_float4x4 o = _float4x4(
+				m.a1, m.b1, m.c1, m.d1,
+				m.a2, m.b2, m.c2, m.d2,
+				m.a3, m.b3, m.c3, m.d3,
+				m.a4, m.b4, m.c4, m.d4);
+			info.boneOffsetMatrices.push_back(o);
+		}
+
+		bufferInfoList.push_back(move(info));
+	}
+
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierarchy;
+	unordered_map<aiNode*, _uint> nodeToIdMap;
+
+	// 모든 노드에 대해 transformation/childsId/meshsId/numChild/numMeshes를 채우는 DFS
+	function<void(aiNode*, const _int, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>&)> TraverseSkeleton =
+		[&](aiNode* node, const _int parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& out)
+		{
+			CSkinnedMeshBuffer::SKINNEDSKELETAL n{};
+			n.nodeId = (_int)out.size();
+			n.parentId = parentId;
+			n.name = CEngineString::StringToWString(node->mName.C_Str());
+
+			// 로컬 트랜스폼 복사
+			const aiMatrix4x4& m = node->mTransformation;
+			_float4x4 t = _float4x4
+			(
+				m.a1, m.b1, m.c1, m.d1,
+				m.a2, m.b2, m.c2, m.d2,
+				m.a3, m.b3, m.c3, m.d3,
+				m.a4, m.b4, m.c4, m.d4
+			);
+			n.transformation = t;
+
+			// 이 노드에 연결된 메시 인덱스
+			n.numMeshes = (_uint)node->mNumMeshes;
+			n.meshsId.reserve(node->mNumMeshes);
+			for (_uint mi = 0; mi < node->mNumMeshes; ++mi)
+				n.meshsId.push_back(node->mMeshes[mi]);
+
+			// 우선 푸시한 뒤 자식 재귀
+			out.push_back(n);
+			nodeToIdMap[node] = (_uint)n.nodeId;
+
+			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
+				TraverseSkeleton(node->mChildren[ci], n.nodeId, out);
+
+			// 자식 id 목록/개수 채우기
+			out[n.nodeId].childsId.reserve(node->mNumChildren);
+			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
+			{
+				aiNode* ch = node->mChildren[ci];
+				auto it = nodeToIdMap.find(ch);
+				if (it != nodeToIdMap.end())
+					out[n.nodeId].childsId.push_back((_int)it->second);
+			}
+			out[n.nodeId].numChild = (_uint)out[n.nodeId].childsId.size();
+		};
+
+	TraverseSkeleton(aiScene->mRootNode, -1, skeletalHierarchy);
+
+	auto split = CEngineString::Split(_filePath, L"/");
+	wstring folder = split[split.size() - 2];
+	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
+	wstring saveName = folder + L"_" + fileNoExt;
+
+	if (FAILED(SaveSkinnedBufferInfos(
+		L"BinaryAssets/SkinnedMeshData/" + saveName + L".skinneddata",
+		bufferInfoList, skeletalHierarchy)))
+	{
+		CDebug::LogError(L"Failed create skinned mesh Data - can not save: " + _filePath);
+		return E_FAIL;
+	}
+
+	CDebug::Log(L"Complete create skinned mesh Data: " + _filePath);
+
+	return S_OK;
+}
+
+HRESULT CResources::ConvertFBXToAnimationClipData(const wstring& _filePath)
+{
+	Assimp::Importer importer;
+	const aiScene* aiScene = importer.ReadFile
+	(
+		CEngineString::WStringToString(GetInstance().m_strDefaultAssetPath + _filePath),
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_FlipUVs
+	);
+
+	if (!aiScene)
+	{
+		CDebug::LogError(L"Failed create skinned buffer - Can not create AIScene: " + _filePath);
+		return E_FAIL;
+	}
+
+	if (!aiScene->HasAnimations())
+	{
+		CDebug::LogError(L"Failed create animation clip buffer - AIScene has not animations: " + _filePath);
+		return E_FAIL;
+	}
+
+	vector<CAnimationClip::AnimationClipInitInfo> animationInfoList = {};
+
+	for (_uint i = 0; i < aiScene->mNumAnimations; i++)
+	{
+		const aiAnimation* aiAnim = aiScene->mAnimations[i];
+		CAnimationClip::AnimationClipInitInfo clip{};
+
+		clip.name = aiAnim->mName.length > 0 ?
+			CEngineString::StringToWString(aiAnim->mName.C_Str()) :
+			L"Anim_" + to_wstring(i);
+
+		clip.duration = static_cast<_float>(aiAnim->mDuration);
+		clip.ticksPerSecond = aiAnim->mTicksPerSecond != 0.0 ?
+			static_cast<_float>(aiAnim->mTicksPerSecond) : 30.f;
+
+		for (_uint c = 0; c < aiAnim->mNumChannels; ++c)
+		{
+			const aiNodeAnim* channel = aiAnim->mChannels[c];
+			CAnimationClip::NodeTrack track{};
+			track.nodeName = CEngineString::StringToWString(channel->mNodeName.C_Str());
+
+			_uint maxKeys = max
+			(
+				channel->mNumPositionKeys,
+				max(channel->mNumRotationKeys, channel->mNumScalingKeys)
+			);
+
+			for (_uint k = 0; k < maxKeys; ++k)
+			{
+				CAnimationClip::Keyframe keyframe{};
+				if (k < channel->mNumPositionKeys)
+				{
+					keyframe.timeStamp = channel->mPositionKeys[k].mTime;
+					aiVector3D p = channel->mPositionKeys[k].mValue;
+					keyframe.position = { p.x, p.y, p.z };
+				}
+
+				if (k < channel->mNumRotationKeys)
+				{
+					aiQuaternion q = channel->mRotationKeys[k].mValue;
+					keyframe.rotation = { q.x, q.y, q.z, q.w };
+				}
+
+				if (k < channel->mNumScalingKeys)
+				{
+					aiVector3D s = channel->mScalingKeys[k].mValue;
+					keyframe.scaling = { s.x, s.y, s.z };
+				}
+
+				track.keyframes.push_back(keyframe);
+			}
+
+			clip.tracks.push_back(move(track));
+		}
+
+		animationInfoList.push_back(move(clip));
+	}
+
+	auto splitPath = CEngineString::Split(_filePath, L"/");
+
+	wstring fileFolder = splitPath[splitPath.size() - 2];
+	wstring fileNameExt = splitPath[splitPath.size() - 1];
+
+	auto pureName = CEngineString::Split(fileNameExt, L".")[0];
+
+	wstring saveName = fileFolder + L"_" + pureName;
+
+	if (FAILED(SaveAnimationClipBufferInfos(L"BinaryAssets/AnimationClipData/" + saveName + L".animdata", animationInfoList)))
+	{
+		CDebug::LogError(L"Failed ceate animation clip Data - can not save: " + _filePath);
+		return E_FAIL;
+	}
+
+	CDebug::Log(L"Complete ceate animation clip Data: " + _filePath);
+
+	return S_OK;
+}
+
+HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
+{
+	// 1. 실행파일 위치 얻기
+	wchar_t exeDir[MAX_PATH] = {};
+	GetModuleFileNameW(NULL, exeDir, MAX_PATH);
+	PathRemoveFileSpecW(exeDir);
+
+	// 2. 상대경로를 절대경로로 변환
+	wchar_t fullFontPath[MAX_PATH] = {};
+	wcscpy_s(fullFontPath, exeDir);
+	PathAppendW(fullFontPath, _filePath.c_str());
+
+	wchar_t absoluteFontPath[MAX_PATH] = {};
+	if (!GetFullPathNameW(fullFontPath, MAX_PATH, absoluteFontPath, nullptr))
+	{
+		CDebug::LogError("GetFullPathName failed.");
+		return E_FAIL;
+	}
+
+	// 3. %WINDIR%\Fonts 폴더로 복사
+	wchar_t fontsDir[MAX_PATH] = {};
+	GetWindowsDirectoryW(fontsDir, MAX_PATH);
+	PathAppendW(fontsDir, L"Fonts");
+
+	const wchar_t* fontFileName = PathFindFileNameW(absoluteFontPath);
+	wchar_t installedFontPath[MAX_PATH] = {};
+	PathCombineW(installedFontPath, fontsDir, fontFileName);
+
+	if (!CopyFileW(absoluteFontPath, installedFontPath, FALSE))
+	{
+		CDebug::LogError(L"Failed to copy to Fonts folder. Error: " + GetLastError());
+		return E_FAIL;
+	}
+
+	// 4. 폰트 등록
+	if (AddFontResourceExW(installedFontPath, FR_NOT_ENUM, 0) == 0)
+	{
+		CDebug::LogError("AddFontResourceExW failed");
+		return E_FAIL;
+	}
+	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+
+	wstring fixPath = CEngineString::Replace(_filePath, L"/", L"\\");
+	auto splitPath = CEngineString::Split(_filePath, L"\\");
+	wstring onlyFileName = CEngineString::Split(splitPath[splitPath.size() - 1], L".")[0];
+
+	wstring outfilePath = L"BinaryAssets/FontData/" + onlyFileName + L".spritefont";
+	outfilePath = CEngineString::Replace(outfilePath, L"/", L"\\");
+
+	CDebug::Log(L"OutFilePath: " + outfilePath);
+
+	// 5. 출력 파일 경로 (예시로 동일 위치에 저장)
+	wchar_t spriteOutput[MAX_PATH] = {};
+	wcscpy_s(spriteOutput, exeDir);
+	PathAppendW(spriteOutput, outfilePath.c_str());
+
+	wchar_t outputFullPath[MAX_PATH] = {};
+	GetFullPathNameW(spriteOutput, MAX_PATH, outputFullPath, nullptr);
+
+	// 6. MakeSpriteFont.exe 실행 (폰트 이름으로 호출해야 함)
+	wstring cmdLine = L"\"";
+	cmdLine += exeDir;
+	cmdLine += L"\\..\\..\\Engine\\Tools\\MakeSpriteFont.exe\" /FontSize:32 /FontStyle:Regular ";
+	cmdLine += L"\"Liberation Sans\" ";  // 실제 폰트 패밀리 이름
+	cmdLine += L"\"" + wstring(outputFullPath) + L"\"";
+
+	CDebug::Log(L"[RUNNING]: " + cmdLine);
+
+	STARTUPINFOW si{ sizeof(si) };
+	PROCESS_INFORMATION pi{};
+	vector<wchar_t> cmdBuf(cmdLine.begin(), cmdLine.end());
+	cmdBuf.push_back(L'\0');
+
+	if (!CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, nullptr, exeDir, &si, &pi))
+	{
+		CDebug::LogError(L"CreateProcess failed. Error: " + GetLastError());
+		RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
+		DeleteFileW(installedFontPath);
+		return E_FAIL;
+	}
+
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	DWORD exitCode = 0;
+	GetExitCodeProcess(pi.hProcess, &exitCode);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+
+	// 7. 폰트 제거 및 파일 삭제
+	RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
+	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+	DeleteFileW(installedFontPath);
+
+	if (exitCode != 0)
+	{
+		CDebug::LogError("MakeSpriteFont.exe failed with exit code: " + exitCode);
+		return E_FAIL;
+	}
+
+	CDebug::Log(L"SpriteFont successfully created at: " + wstring(outputFullPath));
+	
+	return S_OK;
+}
+
+HRESULT CResources::BakeNaviMesh(vector<CGameObject*> _naviObjs)
+{
+	vector<CNaviMesh::NaviMeshBufferInitiaizeInfo> meshInfos = CNaviMesh::BuildFromMesh(_naviObjs, {});
+
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::Get_CrtScene()->Get_SceneName() + L".wanavmeshdata", meshInfos[0])))
+		return E_FAIL;
+	if (FAILED(SaveNaviMeshBufferInfos(L"BinaryAssets/NaviMeshData/" + CSceneManager::Get_CrtScene()->Get_SceneName() + L".wuanavmeshdata", meshInfos[1])))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CResources::SaveSceneObjectTransformInfos(const wstring& _filePath, vector<CScene::ObjectsTransformInfo> _infoList)
+{
+	ofstream out(_filePath, ios::binary);
+
+	if (!out.is_open())
+	{
+		CDebug::LogError(L"SaveCollisionObjectTransformInfos failed - can not open: " + _filePath);
+		return E_FAIL;
+	}
+
+	_uint count = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		CScene::ObjectsTransformInfo info = _infoList[i];
+
+		out.write(reinterpret_cast<const char*>(&info.objID), sizeof(_uint));
+
+		_uint nameSize = static_cast<_uint>(info.objName.size());
+		out.write(reinterpret_cast<const char*>(&nameSize), sizeof(_uint));
+		out.write(reinterpret_cast<const char*>(info.objName.data()), sizeof(wchar_t) * nameSize);
+		out.write(reinterpret_cast<const char*>(&info.localPos), sizeof(_float3));
+		out.write(reinterpret_cast<const char*>(&info.localQuaternion), sizeof(_float4));
+		out.write(reinterpret_cast<const char*>(&info.localScale), sizeof(_float3));
+
+		out.write(reinterpret_cast<const char*>(&info.isRect), sizeof(_bool));
+		if (info.isRect)
+		{
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.anchoredPos), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.widthHeight), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.pivot), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.anchorMin), sizeof(_float2));
+			out.write(reinterpret_cast<const char*>(&info.rectInfo.anchorMax), sizeof(_float2));
+		}
+	}
+
+	out.close();
+
+	CDebug::Log(L"Save complete scenedata: " + _filePath);
+
+	return S_OK;
+}
+
+vector<CScene::ObjectsTransformInfo> CResources::ReadSceneObjectTransformInfos(const wstring& _binFileName)
+{
+	vector<CScene::ObjectsTransformInfo> resultInfo = {};
+
+	ifstream in(L"BinaryAssets/SceneData/" + _binFileName, ios::binary);
+
+	if (!in.is_open())
+		return {};
+
+	_uint count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		CScene::ObjectsTransformInfo info = {};
+
+		_uint objId = 0;
+		in.read(reinterpret_cast<char*>(&objId), sizeof(_uint));
+		info.objID = objId;
+
+		_uint nameSize = 0;
+		in.read(reinterpret_cast<char*>(&nameSize), sizeof(_uint));
+		if (nameSize > 0)
+		{
+			wstring temp(nameSize, L'\0');
+			in.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * nameSize);
+			info.objName = move(temp);
+		}
+		else
+			info.objName = L"";
+
+		_float3 pos = {};
+		in.read(reinterpret_cast<char*>(&info.localPos), sizeof(_float3));
+		in.read(reinterpret_cast<char*>(&info.localQuaternion), sizeof(_float4));
+		in.read(reinterpret_cast<char*>(&info.localScale), sizeof(_float3));
+
+		_bool isRect = false;
+		in.read(reinterpret_cast<char*>(&info.isRect), sizeof(_bool));
+		
+		if (info.isRect)
+		{
+			in.read(reinterpret_cast<char*>(&info.rectInfo.anchoredPos), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.widthHeight), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.pivot), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.anchorMin), sizeof(_float2));
+			in.read(reinterpret_cast<char*>(&info.rectInfo.anchorMax), sizeof(_float2));
+		}
+
+		resultInfo.push_back(info);
+	}
+
+	in.close();
+
+	return resultInfo;
+}
+
+HRESULT CResources::SaveMeshBufferInfos(const wstring& _filePath, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList)
+{
+	ofstream out(_filePath, ios::binary);
+
+	if (!out.is_open())
+		return E_FAIL;
+
+	_uint count = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
+
+	for (const auto& info : _infoList)
+	{
+		_uint nameSize = static_cast<_uint>(info.meshName.size());
+		out.write(reinterpret_cast<char*>(&nameSize), sizeof(_uint));
+		if (nameSize > 0)
+			out.write(reinterpret_cast<const char*>(info.meshName.data()), sizeof(wchar_t) * nameSize);
+
+		_uint bufferSize = static_cast<_uint>(info.buffer.size());
+		out.write(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		if (bufferSize > 0)
+			out.write(reinterpret_cast<const char*>(info.buffer.data()), bufferSize);
+
+		_uint indicesSize = static_cast<_uint>(info.indices.size());
+		out.write(reinterpret_cast<char*>(&indicesSize), sizeof(_uint));
+		if (indicesSize > 0)
+			out.write(reinterpret_cast<const char*>(info.indices.data()), sizeof(_uint) * indicesSize);
+
+		out.write((const char*)&info.desc.useDeviceTopology, sizeof(_bool));
+
+		const _uint topo = static_cast<_uint>(info.desc.topology);
+		out.write((const char*)&topo, sizeof(_uint));
+		out.write((const char*)&info.desc.vertexSize, sizeof(_uint));
+		out.write((const char*)&info.desc.vertextCount, sizeof(_uint));
+		out.write((const char*)&info.desc.indexCount, sizeof(_uint));
+
+		_uint diffuseTexPathSize = static_cast<_uint>(info.diffuseMapPath.size());
+		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
+		if (diffuseTexPathSize > 0)
+			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathSize);
+
+		out.write(reinterpret_cast<const char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
+
+		_uint instCount = static_cast<_uint>(info.instanceWorlds.size());
+		out.write(reinterpret_cast<const char*>(&instCount), sizeof(_uint));
+		if (instCount > 0)
+			out.write(reinterpret_cast<const char*>(info.instanceWorlds.data()), sizeof(_float4x4) * instCount);
+	}
+
+	out.close();
+	CDebug::Log(L"Save complete meshdata: " + _filePath);
+
+	return S_OK;
+}
+
+vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(const wstring& _binFileName)
+{
+	vector<CMeshBuffer::MeshBufferInitiaizeInfo> infoList;
+
+	ifstream in(L"BinaryAssets/MeshData/" + _binFileName, ios::binary);
+	if (!in.is_open()) {
+		CDebug::LogError(L"ReadMeshBufferInfos failed - cannot open: " + _binFileName);
+		return {};
+	}
+
+	_uint count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		CMeshBuffer::MeshBufferInitiaizeInfo info{};
+
+		// 이름
+		_uint nameCount = 0;
+		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
+		if (nameCount > 0) {
+			info.meshName.resize(nameCount);
+			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
+		}
+
+		// 버퍼
+		_uint bufferSize = 0;
+		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		if (bufferSize > 0) {
+			info.buffer.resize(bufferSize);
+			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
+		}
+
+		// 인덱스
+		_uint indexCount = 0;
+		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
+		if (indexCount > 0) {
+			info.indices.resize(indexCount);
+			in.read(reinterpret_cast<char*>(info.indices.data()), sizeof(_uint) * indexCount);
+		}
+
+		// desc
+		in.read((char*)&info.desc.useDeviceTopology, sizeof(_bool));
+
+		_uint topo = 0;
+		in.read((char*)&topo, sizeof(_uint));
+		info.desc.topology = static_cast<D3D11_PRIMITIVE_TOPOLOGY>(topo);
+		in.read((char*)&info.desc.vertexSize, sizeof(_uint));
+		in.read((char*)&info.desc.vertextCount, sizeof(_uint));
+		in.read((char*)&info.desc.indexCount, sizeof(_uint));
+
+		// diffuse path
+		_uint diffuseTexPathCount = 0;
+		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
+		if (diffuseTexPathCount > 0) {
+			info.diffuseMapPath.resize(diffuseTexPathCount);
+			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
+		}
+
+		// AABB
+		in.read(reinterpret_cast<char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
+
+		// instancing (항상 존재한다고 가정)
+		_uint instCount = 0;
+		if (!in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint))) {
+			CDebug::LogError(L"ReadMeshBufferInfos: failed to read instCount, file: " + _binFileName);
+			return {};
+		}
+
+		if (instCount > 0) {
+			const _uint kMaxInstances = 1u << 16;
+			if (instCount > kMaxInstances) {
+				CDebug::LogError(L"ReadMeshBufferInfos: instCount overflow, file: " + _binFileName);
+				return {};
+			}
+
+			info.instanceWorlds.resize(instCount);
+			if (!in.read(reinterpret_cast<char*>(info.instanceWorlds.data()),
+				sizeof(_float4x4) * instCount))
+			{
+				CDebug::LogError(L"ReadMeshBufferInfos: failed to read instanceWorlds, file: " + _binFileName);
+				return {};
+			}
+		}
+
+		infoList.push_back(move(info));
+
+		if (info.desc.vertexSize != sizeof(VertexTexNormalTangentBuffer))
+		{
+			CDebug::LogError(L"[ReadMeshBufferInfos] vertexSize mismatch: file="
+				+ _binFileName + L", fileStride=" + to_wstring(info.desc.vertexSize)
+				+ L", codeStride=" + to_wstring(sizeof(VertexTexNormalTangentBuffer)));
+
+			return {};
+		}
+	}
+
+	in.close();
+	return infoList;
+}
+
+HRESULT CResources::SaveSkinnedBufferInfos(const wstring& _filePath, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skeletonInfo)
+{
+	ofstream out(_filePath, ios::binary);
+
+	if (!out.is_open())
+		return E_FAIL;
+
+	_uint count = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&count), sizeof(_uint));
+
+	for (const auto& info : _infoList)
+	{
+		_uint nameSize = static_cast<_uint>(info.meshName.size());
+		out.write(reinterpret_cast<char*>(&nameSize), sizeof(_uint));
+		if (nameSize > 0)
+			out.write(reinterpret_cast<const char*>(info.meshName.data()), sizeof(wchar_t) * nameSize);
+
+		_uint bufferSize = static_cast<_uint>(info.buffer.size());
+		out.write(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		if (bufferSize > 0)
+			out.write(reinterpret_cast<const char*>(info.buffer.data()), bufferSize);
+
+		_uint indicesSize = static_cast<_uint>(info.indices.size());
+		out.write(reinterpret_cast<char*>(&indicesSize), sizeof(_uint));
+		if (indicesSize > 0)
+			out.write(reinterpret_cast<const char*>(info.indices.data()), sizeof(_uint) * indicesSize);
+
+		out.write(reinterpret_cast<const char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+
+		_uint diffuseTexPathSize = static_cast<_uint>(info.diffuseMapPath.size());
+		out.write(reinterpret_cast<char*>(&diffuseTexPathSize), sizeof(_uint));
+		if (diffuseTexPathSize > 0)
+			out.write(reinterpret_cast<const char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathSize);
+
+		_uint boneNamesSize = static_cast<_uint>(info.boneNames.size());
+		out.write(reinterpret_cast<char*>(&boneNamesSize), sizeof(_uint));
+		if (boneNamesSize > 0)
+		{
+			for (_uint i = 0; i < boneNamesSize; ++i)
+			{
+				_uint size = static_cast<_uint>(info.boneNames[i].size());
+				out.write(reinterpret_cast<char*>(&size), sizeof(_uint));
+				out.write(reinterpret_cast<const char*>(info.boneNames[i].data()), sizeof(wchar_t) * size);
+			}
+		}
+
+		_uint boneMatricesSize = static_cast<_uint>(info.boneOffsetMatrices.size());
+		out.write(reinterpret_cast<char*>(&boneMatricesSize), sizeof(_uint));
+		if (boneMatricesSize > 0)
+			out.write(reinterpret_cast<const char*>(info.boneOffsetMatrices.data()), sizeof(_float4x4) * boneMatricesSize);
+	}
+
+	_uint skeletalCount = static_cast<_uint>(_skeletonInfo.size());
+	out.write(reinterpret_cast<const char*>(&skeletalCount), sizeof(_uint));
+	for (const auto& bone : _skeletonInfo)
+	{
+		out.write(reinterpret_cast<const char*>(&bone.nodeId), sizeof(_uint));
+
+		_uint nameLen = static_cast<_uint>(bone.name.size());
+		out.write(reinterpret_cast<const char*>(&nameLen), sizeof(_uint));
+		if (nameLen > 0)
+			out.write(reinterpret_cast<const char*>(bone.name.data()), sizeof(wchar_t) * nameLen);
+
+		out.write(reinterpret_cast<const char*>(&bone.transformation), sizeof(_float4x4));
+		out.write(reinterpret_cast<const char*>(&bone.parentId), sizeof(_int));
+
+		_uint numMeshes = bone.numMeshes;
+		out.write(reinterpret_cast<const char*>(&numMeshes), sizeof(_uint));
+
+		// child info
+		_uint childLen = static_cast<_uint>(bone.childsId.size());
+		out.write(reinterpret_cast<const char*>(&childLen), sizeof(_uint));
+		if (childLen > 0)
+			out.write(reinterpret_cast<const char*>(bone.childsId.data()), sizeof(_int) * childLen);
+
+		// mesh info
+		_uint meshLen = static_cast<_uint>(bone.meshsId.size());
+		out.write(reinterpret_cast<const char*>(&meshLen), sizeof(_uint));
+		if (meshLen > 0)
+			out.write(reinterpret_cast<const char*>(bone.meshsId.data()), sizeof(_int) * meshLen);
+	}
+
+	out.close();
+
+	CDebug::Log(L"Save complete skinneddata: " + _filePath);
+
+	return S_OK;
+}
+
+CSkinnedMeshBuffer::SkinnedBuffer CResources::ReadSkinnedBufferInfos(const wstring& _binFileName)
+{
+	CSkinnedMeshBuffer::SkinnedBuffer resultBuffer = {};
+
+	vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> infoList = {};
+
+	ifstream in(L"BinaryAssets/SkinnedMeshData/" + _binFileName, ios::binary);
+
+	if (!in.is_open())
+	{
+		CDebug::LogError(L"ReadSkinnedBufferInfos failed - can not open: " + _binFileName);
+		return {};
+	}
+
+	_uint count = 0;
+	in.read(reinterpret_cast<char*>(&count), sizeof(_uint));
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo info = {};
+
+		_uint nameCount = 0;
+		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
+		if (nameCount > 0)
+		{
+			info.meshName.resize(nameCount);
+			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
+		}
+
+		_uint bufferSize = 0;
+		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
+		if (bufferSize > 0)
+		{
+			info.buffer.resize(bufferSize);
+			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
+		}
+
+		_uint indexCount = 0;
+		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
+		if (indexCount > 0)
+		{
+			info.indices.resize(indexCount);
+			in.read(reinterpret_cast<char*>(info.indices.data()), sizeof(_uint) * indexCount);
+		}
+
+		in.read(reinterpret_cast<char*>(&info.desc), sizeof(CMeshBuffer::MESHBUFFERDESC));
+
+		_uint diffuseTexPathCount = 0;
+		in.read(reinterpret_cast<char*>(&diffuseTexPathCount), sizeof(_uint));
+		if (diffuseTexPathCount > 0)
+		{
+			info.diffuseMapPath.resize(diffuseTexPathCount);
+			in.read(reinterpret_cast<char*>(info.diffuseMapPath.data()), sizeof(wchar_t) * diffuseTexPathCount);
+		}
+
+		_uint boneNamesCount = 0;
+		in.read(reinterpret_cast<char*>(&boneNamesCount), sizeof(_uint));
+		if (boneNamesCount > 0)
+		{
+			for (_uint i = 0; i < boneNamesCount; ++i)
+			{
+				_uint size = 0;
+				in.read(reinterpret_cast<char*>(&size), sizeof(_uint));
+
+				wstring name;
+				if (size > 0)
+				{
+					name.resize(size);
+					in.read(reinterpret_cast<char*>(name.data()), sizeof(wchar_t) * size);
+				}
+
+				info.boneNames.push_back(name);
+			}
+		}
+
+		_uint boneMatrixCount = 0;
+		in.read(reinterpret_cast<char*>(&boneMatrixCount), sizeof(_uint));
+		if (boneMatrixCount > 0)
+		{
+			for (_uint i = 0; i < boneMatrixCount; ++i)
+			{
+				_float4x4 matrix = {};
+				in.read(reinterpret_cast<char*>(&matrix), sizeof(_float4x4));
+				info.boneOffsetMatrices.push_back(matrix);
+			}
+		}
+
+		infoList.push_back(info);
+	}
+
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalList = {};
+
+	_uint skeletalCount = 0;
+	in.read(reinterpret_cast<char*>(&skeletalCount), sizeof(_uint));
+
+	for (_uint i = 0; i < skeletalCount; ++i)
+	{
+		CSkinnedMeshBuffer::SKINNEDSKELETAL skeletal{};
+		in.read(reinterpret_cast<char*>(&skeletal.nodeId), sizeof(_uint));
+
+		_uint nameLen = 0;
+		in.read(reinterpret_cast<char*>(&nameLen), sizeof(_uint));
+		if (nameLen > 0)
+		{
+			skeletal.name.resize(nameLen);
+			in.read(reinterpret_cast<char*>(skeletal.name.data()), sizeof(wchar_t) * nameLen);
+		}
+
+		in.read(reinterpret_cast<char*>(&skeletal.transformation), sizeof(_float4x4));
+		in.read(reinterpret_cast<char*>(&skeletal.parentId), sizeof(_int));
+		in.read(reinterpret_cast<char*>(&skeletal.numMeshes), sizeof(_uint));
+
+		_uint childCount = 0;
+		in.read(reinterpret_cast<char*>(&childCount), sizeof(_uint));
+		if (childCount > 0)
+		{
+			skeletal.childsId.resize(childCount);
+			in.read(reinterpret_cast<char*>(skeletal.childsId.data()), sizeof(_int) * childCount);
+		}
+		skeletal.numChild = childCount;
+
+		_uint meshCount = 0;
+		in.read(reinterpret_cast<char*>(&meshCount), sizeof(_uint));
+		skeletal.numMeshes = meshCount;
+		if (meshCount > 0)
+		{
+			skeletal.meshsId.resize(meshCount);
+			in.read(reinterpret_cast<char*>(skeletal.meshsId.data()), sizeof(_int) * meshCount);
+		}
+
+		skeletalList.push_back(skeletal);
+	}
+
+	resultBuffer.initList = infoList;
+	resultBuffer.skeletalList = skeletalList;
+
+	in.close();
+
+	return resultBuffer;
+}
+
+HRESULT CResources::SaveNaviMeshBufferInfos(const wstring& _filePath, CNaviMesh::NaviMeshBufferInitiaizeInfo _info)
+{
+	namespace fs = filesystem;
+
+	ofstream ofs(_filePath, ios::binary);
+
+	if (!ofs.is_open())
+		return E_FAIL;
+
+	auto write = [&](const void* data, size_t sz)
+		{
+			ofs.write(reinterpret_cast<const char*>(data), sz);
+		};
+
+	const uint32_t kMagic = 'MVAN'; // "NAVM" little-endian
+	const uint32_t kVersion = 1;
+	write(&kMagic, sizeof(kMagic));
+	write(&kVersion, sizeof(kVersion));
+
+	uint32_t nameLen = static_cast<uint32_t>(_info.meshName.size());
+	write(&nameLen, sizeof(nameLen));
+	if (nameLen)
+		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar 그대로 기록
+
+	write(&_info.desc, sizeof(_info.desc));
+
+	uint32_t vbSize = static_cast<uint32_t>(_info.buffer.size());
+	write(&vbSize, sizeof(vbSize));
+	if (vbSize)
+		write(_info.buffer.data(), vbSize);
+
+	uint32_t idxCount = static_cast<uint32_t>(_info.indices.size());
+	write(&idxCount, sizeof(idxCount));
+	if (idxCount)
+		write(_info.indices.data(), idxCount * sizeof(_uint));
+
+	uint32_t polyCount = static_cast<uint32_t>(_info.polygons.size());
+	write(&polyCount, sizeof(polyCount));
+
+	for (const auto& poly : _info.polygons)
+	{
+		write(&poly.index, sizeof(poly.index));
+
+		uint32_t vCnt = static_cast<uint32_t>(poly.vertices.size());
+		write(&vCnt, sizeof(vCnt));
+		if (vCnt)
+			write(poly.vertices.data(), vCnt * sizeof(vector3));
+
+		uint32_t nCnt = static_cast<uint32_t>(poly.neighbors.size());
+		write(&nCnt, sizeof(nCnt));
+		if (nCnt)
+			write(poly.neighbors.data(), nCnt * sizeof(_uint));
+	}
+
+	ofs.close();
+	CDebug::Log(L"[SaveNaviMeshBufferInfos] save Complete: " + _filePath);
+	return S_OK;
+}
+
+CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wstring& _binFileName, const _bool _walkable)
+{
+	CNaviMesh::NaviMeshBufferInitiaizeInfo info{};
+
+	wstring filePath = L"BinaryAssets/NaviMeshData/" + _binFileName + (_walkable ? L".wanavmeshdata" : L".wuanavmeshdata");
+
+	ifstream ifs(filePath, ios::binary);
+
+	if (!ifs.is_open())
+	{
+		CDebug::LogError(L"[ReadNaviBufferInfos] not found file: " + _binFileName);
+		return info;
+	}
+
+	auto read = [&](void* dst, size_t sz) -> bool
+		{
+			ifs.read(reinterpret_cast<char*>(dst), sz);
+			return ifs && (ifs.gcount() == static_cast<streamsize>(sz));
+		};
+
+	//---------------- 1) 헤더 -----------------------------------------------
+	uint32_t magic = 0, version = 0;
+	if (!read(&magic, sizeof(magic)) ||
+		!read(&version, sizeof(version)) ||
+		magic != 'MVAN' || version != 1)
+	{
+		CDebug::LogError(L"[ReadNaviBufferInfos] failed heder parsing");
+		return {};
+	}
+
+	//---------------- 2) Mesh 이름 ------------------------------------------
+	uint32_t nameLen = 0;
+	if (!read(&nameLen, sizeof(nameLen)))
+		return {};
+	if (nameLen)
+	{
+		info.meshName.resize(nameLen, L'\0');
+		if (!read(info.meshName.data(), nameLen * sizeof(wchar_t)))
+			return {};
+	}
+
+	//---------------- 3) MeshBufferDesc -------------------------------------
+	if (!read(&info.desc, sizeof(info.desc)))
+		return {};
+
+	//---------------- 4) Vertex Buffer --------------------------------------
+	uint32_t vbSize = 0;
+	if (!read(&vbSize, sizeof(vbSize)))
+		return {};
+	if (vbSize)
+	{
+		info.buffer.resize(vbSize);
+		if (!read(info.buffer.data(), vbSize))
+			return {};
+	}
+
+	//---------------- 5) Index Buffer ---------------------------------------
+	uint32_t idxCount = 0;
+	if (!read(&idxCount, sizeof(idxCount)))
+		return {};
+	if (idxCount)
+	{
+		info.indices.resize(idxCount);
+		if (!read(info.indices.data(), idxCount * sizeof(_uint)))
+			return {};
+	}
+
+	//---------------- 6) Polygon 리스트 --------------------------------------
+	uint32_t polyCount = 0;
+	if (!read(&polyCount, sizeof(polyCount)))
+		return {};
+	if (polyCount)
+		info.polygons.resize(polyCount);
+
+	for (uint32_t i = 0; i < polyCount; ++i)
+	{
+		auto& poly = info.polygons[i];
+
+		// 6-1) 인덱스
+		if (!read(&poly.index, sizeof(poly.index)))
+			return {};
+
+		// 6-2) Vertex들
+		uint32_t vCnt = 0;
+		if (!read(&vCnt, sizeof(vCnt)))
+			return {};
+		if (vCnt)
+		{
+			poly.vertices.resize(vCnt);
+			if (!read(poly.vertices.data(), vCnt * sizeof(vector3)))
+				return {};
+		}
+
+		// 6-3) Neighbor들
+		uint32_t nCnt = 0;
+		if (!read(&nCnt, sizeof(nCnt)))
+			return {};
+		if (nCnt)
+		{
+			poly.neighbors.resize(nCnt);
+			if (!read(poly.neighbors.data(), nCnt * sizeof(_uint)))
+				return {};
+		}
+	}
+
+	CDebug::Log(L"[ReadNaviBufferInfos] Load complete : " + _binFileName +
+		L" | Poly " + to_wstring(polyCount) +
+		L", Vertex " + to_wstring(info.desc.vertextCount) +
+		L", Index " + to_wstring(info.desc.indexCount));
+
+	return info;
+}
+
+HRESULT CResources::SaveAnimationClipBufferInfos(const wstring& _filePath, vector<CAnimationClip::AnimationClipInitInfo> _infoList)
+{
+	ofstream out(_filePath, ios::binary);
+	if (!out.is_open())
+		return E_FAIL;
+
+	_uint clipCount = static_cast<_uint>(_infoList.size());
+	out.write(reinterpret_cast<const char*>(&clipCount), sizeof(_uint));
+
+	for (const auto& clip : _infoList)
+	{
+		_uint nameLen = static_cast<_uint>(clip.name.size());
+		out.write(reinterpret_cast<const char*>(&nameLen), sizeof(_uint));
+		if (nameLen)
+			out.write(reinterpret_cast<const char*>(clip.name.data()),
+				sizeof(wchar_t) * nameLen);
+
+		out.write(reinterpret_cast<const char*>(&clip.duration), sizeof(_float));
+		out.write(reinterpret_cast<const char*>(&clip.ticksPerSecond), sizeof(_float));
+
+		_uint trackCount = static_cast<_uint>(clip.tracks.size());
+		out.write(reinterpret_cast<const char*>(&trackCount), sizeof(_uint));
+
+		for (const auto& track : clip.tracks)
+		{
+			_uint nodeLen = static_cast<_uint>(track.nodeName.size());
+			out.write(reinterpret_cast<const char*>(&nodeLen), sizeof(_uint));
+			if (nodeLen)
+				out.write(reinterpret_cast<const char*>(track.nodeName.data()),
+					sizeof(wchar_t) * nodeLen);
+
+			_uint keyCount = static_cast<_uint>(track.keyframes.size());
+			out.write(reinterpret_cast<const char*>(&keyCount), sizeof(_uint));
+
+			for (const auto& key : track.keyframes)
+			{
+				out.write(reinterpret_cast<const char*>(&key.timeStamp), sizeof(double));
+				out.write(reinterpret_cast<const char*>(&key.position), sizeof(vector3));
+				out.write(reinterpret_cast<const char*>(&key.rotation), sizeof(_float4));
+				out.write(reinterpret_cast<const char*>(&key.scaling), sizeof(vector3));
+			}
+		}
+	}
+
+	out.close();
+	CDebug::Log(L"Save complete animation clip data: " + _filePath);
+
+	return S_OK;
+}
+
+vector<CAnimationClip::AnimationClipInitInfo> CResources::ReadAnimationClipBufferInfos(const wstring& _binFileName)
+{
+	vector<CAnimationClip::AnimationClipInitInfo> clips;
+
+	ifstream in(L"BinaryAssets/AnimationClipData/" + _binFileName, ios::binary);
+	if (!in.is_open())
+	{
+		CDebug::LogError(L"ReadAnimationClipBufferInfos failed - can not open: " + _binFileName);
+		return {};
+	}
+	_uint clipCount = 0;
+	in.read(reinterpret_cast<char*>(&clipCount), sizeof(_uint));
+	clips.reserve(clipCount);
+
+	for (_uint c = 0; c < clipCount; ++c)
+	{
+		CAnimationClip::AnimationClipInitInfo clip{};
+
+		_uint nameLen = 0;
+		in.read(reinterpret_cast<char*>(&nameLen), sizeof(_uint));
+		if (nameLen)
+		{
+			clip.name.resize(nameLen);
+			in.read(reinterpret_cast<char*>(clip.name.data()),
+				sizeof(wchar_t) * nameLen);
+		}
+
+		in.read(reinterpret_cast<char*>(&clip.duration), sizeof(_float));
+		in.read(reinterpret_cast<char*>(&clip.ticksPerSecond), sizeof(_float));
+
+		_uint trackCount = 0;
+		in.read(reinterpret_cast<char*>(&trackCount), sizeof(_uint));
+		clip.tracks.reserve(trackCount);
+
+		for (_uint t = 0; t < trackCount; ++t)
+		{
+			CAnimationClip::NodeTrack track{};
+
+			_uint nodeLen = 0;
+			in.read(reinterpret_cast<char*>(&nodeLen), sizeof(_uint));
+			if (nodeLen)
+			{
+				track.nodeName.resize(nodeLen);
+				in.read(reinterpret_cast<char*>(track.nodeName.data()),
+					sizeof(wchar_t) * nodeLen);
+			}
+
+			_uint keyCount = 0;
+			in.read(reinterpret_cast<char*>(&keyCount), sizeof(_uint));
+			track.keyframes.reserve(keyCount);
+
+			for (_uint k = 0; k < keyCount; ++k)
+			{
+				CAnimationClip::Keyframe key{};
+				in.read(reinterpret_cast<char*>(&key.timeStamp), sizeof(_double));
+				in.read(reinterpret_cast<char*>(&key.position), sizeof(vector3));
+				in.read(reinterpret_cast<char*>(&key.rotation), sizeof(_float4));
+				in.read(reinterpret_cast<char*>(&key.scaling), sizeof(vector3));
+				track.keyframes.emplace_back(move(key));
+			}
+
+			clip.tracks.emplace_back(move(track));
+		}
+
+		clips.emplace_back(move(clip));
+	}
+
+	in.close();
+
+	return clips;
+}
+
+CEngineResource* CResources::AddSceneResource(const wstring& _name, CEngineResource* _resource, const _bool _tempScene)
+{
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() :
+		CSceneManager::Get_CrtScene();
+
+	if (!_tempScene)
+		targetScene->Add_Resource(_name, _resource);
+	else
+		targetScene->Add_TempResource(_name, _resource);
+
+	return _resource;
+}
+
+vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vector<CMeshBuffer::MeshBufferInitiaizeInfo> _infoList, _int _filter, void* _desc, const _bool _tempScene)
+{
+	_float scaleFactor = 1.f;
+
+	if (_desc) 
+		scaleFactor = *reinterpret_cast<_float*>(_desc);
+
+	vector<MeshBundle> resultList = {};
+	resultList.reserve(_infoList.size());
+
+	for (_uint i = 0; i < _infoList.size(); ++i)
+	{
+		MeshBundle newBundle{};
+
+		if (_filter & FILTER_MESHBUFFER)
+		{
+			CMeshBuffer* newBuffer = CMeshBuffer::Create();
+			newBuffer->Initialize_Custom(_infoList[i], _desc);
+			newBundle.meshBuffer = newBuffer;
+
+			// 인스턴싱 데이터 적용
+			const auto& worlds = _infoList[i].instanceWorlds;
+			if (!worlds.empty())
+			{
+				const _uint cap = static_cast<_uint>(worlds.size());
+
+				if (SUCCEEDED(newBuffer->CreateInstanceBuffer(cap, D3D11_USAGE_DYNAMIC)))
+				{
+					auto& inst = newBuffer->Get_InstancingDesc();
+					inst.count = cap;
+					inst.data.resize(cap);
+
+					// _float4x4 -> MeshInstaceData 변환
+					for (_uint k = 0; k < cap; ++k)
+					{
+						const _float4x4& m = worlds[k];
+
+						MeshInstanceData id = {};
+						id.row0 = { m._11, m._12, m._13, m._14 };
+						id.row1 = { m._21, m._22, m._23, m._24 };
+						id.row2 = { m._31, m._32, m._33, m._34 };
+						id.row3 = { m._41, m._42, m._43, m._44 };
+
+						inst.data[k] = id;
+					}
+
+					newBuffer->UpdateInstanceBuffer();
+				}
+			}
+		}
+
+		if (_filter & FILTER_MATERIAL)
+		{
+			CTexture* newTex = CTexture::Create();
+			newTex->Initialize(_infoList[i].diffuseMapPath, _infoList[i].diffuseMapPath, nullptr);
+			newBundle.texture = newTex;
+		}
+
+		resultList.push_back(newBundle);
+	}
+
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() : CSceneManager::Get_CrtScene();
+
+	if (!_tempScene) 
+		targetScene->Add_MeshBundle(_name, resultList);
+	else             
+		targetScene->Add_TempMeshBundle(_name, resultList);
+
+	CDebug::Log(L"Create Scene resource successfully: " + _name);
+	return resultList;
+}
+
+vector<SkinnedMeshBundle> CResources::CreateSceneSkinnedBundle(const wstring& _name, vector<CSkinnedMeshBuffer::SkinnedBufferInitiaizeInfo> _infoList, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> _skelList, _int _filter, void* _desc, const _bool _tempScene)
+{
+	if (_infoList.size() <= 0)
+	{
+		CDebug::LogError(L"Failed create SceneSkinnedBundle - Empty list: " + _name);
+		return {};
+	}
+
+	_float scaleFactor = 1.f;
+
+	if (_desc)
+		scaleFactor = *reinterpret_cast<_float*>(_desc);
+
+	vector<SkinnedMeshBundle> resultList = {};
+
+	for (_uint i = 0; i < _infoList.size(); ++i)
+	{
+		SkinnedMeshBundle newBundle;
+
+		if (_filter & FILTER_MESHBUFFER)
+		{
+			CSkinnedMeshBuffer* newBuffer = CSkinnedMeshBuffer::Create();
+			newBuffer->Initiailize_Custom(_infoList[i], _skelList, _desc);
+
+			newBundle.meshBuffer = newBuffer;
+		}
+
+		if (_filter & FILTER_MATERIAL)
+		{
+			CTexture* newTex = CTexture::Create();
+			newTex->Initialize(_infoList[i].diffuseMapPath, _infoList[i].diffuseMapPath, nullptr);
+
+			newBundle.texture = newTex;
+		}
+
+		resultList.push_back(newBundle);
+	}
+
+	CScene* targetScene = _tempScene ? CSceneManager::Get_TempScene() : CSceneManager::Get_CrtScene();
+
+	if (!_tempScene)
+	{
+		targetScene->Add_SkinnedBundle(_name, resultList);
+		targetScene->Add_SkinnedMeshBone(_name, _skelList);
+	}
+	else
+	{
+		targetScene->Add_TempSkinnedBundle(_name, resultList);
+		targetScene->Add_TempSkinnedMeshBone(_name, _skelList);
+	}
+
+	CDebug::Log(L"Create Scene resource successfully: " + _name);
+
+	return resultList;
+}
+
+CNaviMesh* CResources::CreateNaviMesh(const wstring& _name, CNaviMesh::NaviMeshBufferInitiaizeInfo _info)
+{
+	CNaviMesh* naviMesh = CNaviMesh::Create();
+	
+	if (FAILED(naviMesh->Initialize_Custom(_info, nullptr)))
+	{
+		CDebug::LogError(L"CreateNaviMesh failure - Navimesh Initaize failed: " + _name);
+		Safe_Release(naviMesh);
+		return nullptr;
+	}
+
+	CSceneManager::Get_TempScene()->Add_TempResource(_name, naviMesh);
+
+	return naviMesh;
+}
+
+vector<MeshBundle> CResources::LoadMeshBuffersOnScene(const wstring& _name)
+{
+	vector<MeshBundle> r = {};
+
+	if (CSceneManager::Get_CrtScene())
+		r = CSceneManager::Get_CrtScene()->Find_MeshInfoResource(_name);
+
+	return r;
+}
+
+vector<SkinnedMeshBundle> CResources::LoadSkinnedMeshBuffersOnScene(const wstring& _name)
+{
+	vector<SkinnedMeshBundle> r = {};
+
+	if (CSceneManager::Get_CrtScene())
+		r = CSceneManager::Get_CrtScene()->Find_SkinnedMeshInfoResource(_name);
+
+	return r;
+}
+
+vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> CResources::LoadSkinnedBonesOnScene(const wstring& _name)
+{
+	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> r = {};
+
+	if (CSceneManager::Get_CrtScene())
+		r = CSceneManager::Get_CrtScene()->Find_SkinnedBonesResource(_name);
+
+	return r;
+}
+
+_bool CResources::FileExists(const wstring& _path)
+{
+	const string path = CEngineString::WStringToString(_path);
+	return FileExists(path);
+}
+
+_bool CResources::FileExists(const string& _path)
+{
+	DWORD attrib = GetFileAttributesA(_path.c_str());
+	return (attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY);
+}
+
+void CResources::Ready_GameResources()
+{
+	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Line (Mesh Buffer)", L"Line"));
+	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Rect (Mesh Buffer)", L"Rect"));
+	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"LineRect (Mesh Buffer)", L"LineRect"));
+	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (Mesh Buffer)", L"Cube"));
+	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (Mesh Buffer)", L"Quad"));
+
+	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"Circle (Texture)", L"../EngineResources/Image/Circle.png"));
+	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
+
+	{
+		CShader::SHADERDESC lineDefferdShaderDesc = { L"../EngineResources/Shader/Defferd.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
+		LoadResourceComplete_Game(CreateGameResource<CShader>(L"Defferd (Shader)", L"", &lineDefferdShaderDesc));
+
+		CShader::SHADERDESC lineDefferdShadingShaderDesc = { L"../EngineResources/Shader/DefferdShading.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
+		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdShading (Shader)", L"", &lineDefferdShadingShaderDesc));
+
+		CShader::SHADERDESC lineDefferdCombineShaderDesc = { L"../EngineResources/Shader/DefferdCombine.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
+		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdCombine (Shader)", L"", &lineDefferdCombineShaderDesc));
+	}
+
+	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexBuffer::numElements, VertexBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
+
+	CShader* dlShader = LoadOnGame<CShader>(L"DefaultLine (Shader)");
+	CMaterial::MATERIALDESC dlMatDesc = { dlShader, false };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc));
+
+	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
+
+	CShader::SHADERDESC skyBoxShaderDesc = { L"../EngineResources/Shader/Skybox.hlsl", L"",  VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"SkyBox (Shader)", L"", &skyBoxShaderDesc));
+
+	CShader* skyBoxShader = LoadOnGame<CShader>(L"SkyBox (Shader)");
+	CMaterial::MATERIALDESC skyMatDesc = { skyBoxShader, false };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"SkyBoxMaterial (Material)", L"", &skyMatDesc));
+
+	CSkyBox::SKYBOXBUFFERDESC dskyDesk = { L"DefaultSky (Texture)" };
+	LoadResourceComplete_Game(CreateGameResource<CSkyBox>(L"DefaultSky (SkyBox)", L"", &dskyDesk));
+
+	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
+	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
+	litMatDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
+	litMatDesc.customFloatValues.push_back({ L"gCalcLight", 1.f });
+	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
+	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
+
+	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));
+
+	CShader* ulcShader = LoadOnGame<CShader>(L"UnlitColor (Shader)");
+	CMaterial::MATERIALDESC ulcMatDesc = { ulcShader, false };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"UnlitMaterial (Material)", L"", &ulcMatDesc));
+
+	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResources/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Outline (Shader)", L"", &outlineShaderDesc));
+
+	CShader::SHADERDESC dUIShaderDesc = { L"../EngineResources/Shader/DefaultUI.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultUI (Shader)", L"", &dUIShaderDesc));
+
+	CShader* duiShader = LoadOnGame<CShader>(L"DefaultUI (Shader)");
+	CMaterial::MATERIALDESC duiMatDesc = { duiShader, false };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc));
+
+	wstring dfPath = L"BinaryAssets/FontData/LiberationSans.spritefont";
+	CFont* defaultFont = CreateGameResource<CFont>(L"Sans (Font)", L"", &dfPath);
+	LoadResourceComplete_Game(defaultFont);
+
+	CShader::SHADERDESC meshEffectShaderDesc = { L"../EngineResources/Shader/MeshEffect.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"MeshEffect (Shader)", L"", &meshEffectShaderDesc));
+
+	CShader* meShader = LoadOnGame<CShader>(L"MeshEffect (Shader)");
+	CMaterial::MATERIALDESC meMatDesc = { meShader, false, true };
+	meMatDesc.customFloatValues.push_back({ L"gTime", 0.f });
+	meMatDesc.customFloatValues.push_back({ L"gDistortionAmount", 0.5f });
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"MeshEffectMaterial (Material)", L"", &meMatDesc));
+
+	CShader::SHADERDESC particleEffectShaderDesc = { L"../EngineResources/Shader/Particle.hlsl", L"", VetexParticleBuffer::numElements, VetexParticleBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"ParticleEffect (Shader)", L"", &particleEffectShaderDesc));
+
+	CShader* ptcShader = LoadOnGame<CShader>(L"ParticleEffect (Shader)");
+	CMaterial::MATERIALDESC ptcMatDesc = { ptcShader, false, true };
+	ptcMatDesc.customFloatValues.push_back({ L"time", 0.f });
+	ptcMatDesc.customFloatValues.push_back({ L"lifeTime", 0.f });
+	ptcMatDesc.customVector2Values.push_back({ L"startEndSpeed", {1.f, 1.f} });
+	ptcMatDesc.customVector4Values.push_back({ L"startColor", ColorValue::white().f4Color()});
+	ptcMatDesc.customVector4Values.push_back({ L"endColor", ColorValue::white().f4Color()});
+
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"ParticleMaterial (Material)", L"", &ptcMatDesc));
+}
+
+void CResources::TraverseSkeleton(aiNode* _node, const _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)
+{
+	using SKIN = CSkinnedMeshBuffer::SKINNEDSKELETAL;
+
+	SKIN nodeInfo{};
+	nodeInfo.nodeId = static_cast<_int>(_outList.size());
+	nodeInfo.parentId = _parentId;
+	nodeInfo.name = CEngineString::StringToWString(_node->mName.C_Str());
+
+	// Transform
+	aiMatrix4x4 mat = _node->mTransformation;
+	nodeInfo.transformation = _float4x4
+	(
+		mat.a1, mat.b1, mat.c1, mat.d1,
+		mat.a2, mat.b2, mat.c2, mat.d2,
+		mat.a3, mat.b3, mat.c3, mat.d3,
+		mat.a4, mat.b4, mat.c4, mat.d4
+	);
+
+	// Mesh indices
+	nodeInfo.numMeshes = _node->mNumMeshes;
+	for (_uint i = 0; i < _node->mNumMeshes; ++i)
+		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
+
+	// 미리 push 해서 자식이 parentId 참고 가능
+	_outList.push_back(nodeInfo);
+	_int currentId = nodeInfo.nodeId;
+
+	// 자식 노드들 순회
+	for (_uint i = 0; i < _node->mNumChildren; ++i)
+	{
+		// 재귀 이전에 outList size를 얻어 자식 ID 추정
+		_int childId = static_cast<_int>(_outList.size());
+		_outList[currentId].childsId.push_back(childId);
+		_outList[currentId].numChild++;
+
+		TraverseSkeleton(_node->mChildren[i], currentId, _outList);
+	}
+}

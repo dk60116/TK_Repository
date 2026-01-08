@@ -80,6 +80,7 @@ HRESULT CDragon::Initialize(void* _desc)
 		Add_Sound(L"Attack");
 		Add_Sound(L"Dead");
 	}
+
 	CGameObject* fireBallProtoObj = m_pGameObject->Get_Scene()->Add_GameObject(L"FireBall ProtoType");
 	m_pFireBallProto = fireBallProtoObj->AddComponent<CME_FireBall>();
 	m_pFireBallProto->Get_GameObject()->SetActive(false);
@@ -114,7 +115,8 @@ void CDragon::Start()
 	__super::Start();
 
 	m_pFireBallProto->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position());
-	//m_pFireBreath->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position() + vector3::up() * 2.f);
+	//m_pFireBallProto->Get_Transform()->Set_Position(CGameManager::GetInstance().Get_Player()->Get_Transform()->Get_Position() + vector3::up() * 2.f);
+	//m_pFireBallProto->Get_GameObject()->SetActive(true);
 }
 
 void CDragon::Update()

@@ -168,7 +168,6 @@ float4 PSMain(VSOut input) : SV_TARGET
     float3x3 TBN = float3x3(T, B, N);
     
     float4 nm = gNormalmap.Sample(gSampler, tillingUV);
-
     
     if (any(nm))
     {

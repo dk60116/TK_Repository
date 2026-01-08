@@ -12,6 +12,11 @@ class ENGINE_DLL CCamera : public CComponent
 public:
 	enum ViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
+	struct Frustum
+	{
+		_float4 plans[6];
+	};
+
 protected:
 	explicit CCamera();
 	~CCamera();
@@ -42,6 +47,7 @@ public:
 	void Add_RenderTarget_UI(class CUI* _ui);
 
 protected:
+	HRESULT InitShadowMap();
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
@@ -49,6 +55,7 @@ protected:
 
 public:
 	void RenderMesh();
+	void RenderShadowPass();
 	void RenderUI();
 
 public:
@@ -70,6 +77,7 @@ protected:
 
 private:
 	static const ColorValue s_vDefaultCameraColor;
+	class CShadowMap* m_pShadowMap;
 };
 
 NS_END

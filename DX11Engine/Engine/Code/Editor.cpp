@@ -70,10 +70,10 @@ HRESULT CEditor::Initialize()
 		projectBox->AddRef();
 	}
 
-	CHierachyBox* hierachyBox = CHierachyBox::Create();
+	CHierarchyBox* hierachyBox = CHierarchyBox::Create();
 	if (hierachyBox)
 	{
-		GetInstance().m_mBoxList.emplace(L"Hierachy", hierachyBox);
+		GetInstance().m_mBoxList.emplace(L"Hierarchy", hierachyBox);
 		hierachyBox->AddRef();
 	}
 

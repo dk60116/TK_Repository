@@ -1,5 +1,6 @@
 #include "cpch.h"
 #include "ME_SwordSlash.h"
+#include "WoodenSword.h"
 
 CME_SwordSlash::CME_SwordSlash()
 {
@@ -101,4 +102,6 @@ void CME_SwordSlash::PlayCombo(const _uint _index)
 	default:
 		break;
 	}
+
+	dynamic_cast<CWoodenSword*>(CGameManager::GetInstance().Get_Player()->Get_EqupWeapon())->PlaySwingSound();
 }

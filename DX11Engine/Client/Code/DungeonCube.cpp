@@ -73,7 +73,7 @@ void CDungeonCube::LateUpdate()
 {
 	m_bSliding = (abs(m_pRigidBody->Get_CollisionVector().x + m_pRigidBody->Get_CollisionVector().z)) > 0.f;
 
-	if (m_bSliding && !m_bPrevSliding)
+	if ((m_bSliding && !m_bPrevSliding) && m_pRigidBody->UseGravity())
 		PlaySoundEffect(L"Rock");
 	else if (!m_bSliding && m_bPrevSliding)
 		StopSound();

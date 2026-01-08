@@ -132,6 +132,7 @@ void CDungeon::Update()
     __super::Update();
 
     CullingLights();
+    CullingObjects();
 
     if (m_pGameObject->Get_Scene()->Get_PassedTime() > 0.1f)
     {
@@ -156,15 +157,21 @@ void CDungeon::Update()
 
 void CDungeon::LateUpdate()
 {
-    if (!m_bAttachedChapterColliders)
+    if (m_bUpdated)
     {
-        for (TRAVERSAL_ITER(m_vChapterList, it))
-            (*it)->AttachColliders();
+        if (!m_bAttachedChapterColliders)
+        {
+            for (TRAVERSAL_ITER(m_vChapterList, it))
+                (*it)->AttachColliders();
 
-        CCollisionManager::Set_CollisionFilter(L"DungeonChapter", L"Map", false);
+            CCollisionManager::Set_CollisionFilter(L"DungeonChapter", L"Map", false);
 
-        m_bAttachedChapterColliders = true;
+            m_bAttachedChapterColliders = true;
+        }
     }
+
+    if (!m_bUpdated)
+        m_bUpdated = true;
 }
 
 void CDungeon::OnDestroy()
@@ -974,5 +981,67 @@ void CDungeon::CullingLights()
 #endif
 
     for (_uint i = 0; i < m_vLightList.size(); ++i)
-        m_vLightList[i]->SetEnabled(i < count);
+        m_vLightList[i]->Get_GameObject()->SetActive(i < count);
+}
+
+void CDungeon::CullingObjects()
+{
+    CTransform* playerTf = CGameManager::GetInstance().Get_Player()->Get_Transform();
+    const vector3 playerPos = playerTf->Get_Position();
+    const vector3 standardPos = playerPos + playerTf->Get_Directions().forward * 20.f;
+
+    //sort(m_vGateList.begin(), m_vGateList.end(),
+    //    [&playerPos](const auto& a, const auto& b)
+    //    {
+    //        _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), playerPos);
+    //        _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), playerPos);
+    //        return distA < distB;
+    //    });
+
+    //for (size_t i = 0; i < m_vGateList.size(); ++i)
+    //    m_vGateList[i]->Get_GameObject()->SetActive(i < 15);
+
+    sort(m_vDungeonTriggerList.begin(), m_vDungeonTriggerList.end(),
+        [&standardPos](const auto& a, const auto& b)
+        {
+            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), standardPos);
+            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), standardPos);
+            return distA < distB;
+        });
+
+    for (size_t i = 0; i < m_vDungeonTriggerList.size(); ++i)
+        m_vDungeonTriggerList[i]->Get_GameObject()->SetActive(i < 6);
+
+    sort(m_vChestList.begin(), m_vChestList.end(),
+        [&standardPos](const auto& a, const auto& b)
+        {
+            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), standardPos);
+            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), standardPos);
+            return distA < distB;
+        });
+
+    for (size_t i = 0; i < m_vChestList.size(); ++i)
+        m_vChestList[i]->Get_GameObject()->SetActive(i < 4);
+
+    sort(m_vFootSwitchList.begin(), m_vFootSwitchList.end(),
+        [&standardPos](const auto& a, const auto& b)
+        {
+            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), standardPos);
+            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), standardPos);
+            return distA < distB;
+        });
+
+    for (size_t i = 0; i < m_vFootSwitchList.size(); ++i)
+        m_vFootSwitchList[i]->Get_GameObject()->SetActive(i < 2);
+
+    sort(m_vMovingPlatList.begin(), m_vMovingPlatList.end(),
+        [&standardPos](const auto& a, const auto& b)
+        {
+            _float distA = vector3::Distance(a->Get_Transform()->Get_Position(), standardPos);
+            _float distB = vector3::Distance(b->Get_Transform()->Get_Position(), standardPos);
+            return distA < distB;
+        });
+
+    for (size_t i = 0; i < m_vMovingPlatList.size(); ++i)
+        m_vMovingPlatList[i]->Get_GameObject()->SetActive(i < 1);
 }

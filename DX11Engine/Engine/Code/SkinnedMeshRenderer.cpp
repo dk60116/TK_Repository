@@ -225,6 +225,10 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	ResetShaderResources();
 }
 
+void CSkinnedMeshRenderer::Render_Shadow(const _matrix& lightVP, _bool alphaCutout)
+{
+}
+
 void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 {
 	return;

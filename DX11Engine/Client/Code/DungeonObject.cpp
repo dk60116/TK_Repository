@@ -70,6 +70,11 @@ void CDungeonObject::Update()
 {
 }
 
+void CDungeonObject::OnDisable()
+{
+	StopSound();
+}
+
 void CDungeonObject::OnDestroy()
 {
 	Safe_Release(m_pChapter);

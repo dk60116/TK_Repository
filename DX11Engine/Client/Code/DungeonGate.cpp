@@ -53,7 +53,7 @@ void CDungeonGate::Awake()
 	if (!m_pBody)
 	{
 		m_pBody = Get_Transform()->Get_Child();
-		m_pBody->Get_GameObject()->SetLayer(L"Map");
+		//m_pBody->Get_GameObject()->SetLayer(L"Map");
 	}
 
 	if (!m_pBodyCollider)
@@ -137,8 +137,19 @@ void CDungeonGate::Update()
 	}
 }
 
+void CDungeonGate::OnEnable()
+{
+	__super::OnEnable();
+
+	if (m_pLockRenderer)
+		m_pLockRenderer->Get_GameObject()->SetActive(m_bLock);
+}
+
 void CDungeonGate::OnTriggerStay(CCollider* _other)
 {
+	if (!_other->Get_GameObject()->CompareTag(L"Player"))
+		return;
+
 	if (CInput::GetKeyDown(E))
 	{
 		if (m_bLock)
@@ -189,14 +200,14 @@ void CDungeonGate::Open()
 			(*it)->m_bIsOpenDoor = true;
 
 		if (!m_bComplete)
-		{
-			m_pAudioSource->SetLoop(false);
 			PlaySoundEffect(L"Gate");
-		}
 	}
 
 	if (m_bLock)
+	{
 		m_bIsOpenLock = true;
+		PlaySoundEffect(L"Lock");
+	}
 }
 
 void CDungeonGate::Close()

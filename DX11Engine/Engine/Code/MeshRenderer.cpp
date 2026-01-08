@@ -273,6 +273,10 @@ void CMeshRenderer::Render_Outline(CCamera* _cam)
 {
 }
 
+void CMeshRenderer::Render_Shadow(const _matrix& lightVP, _bool alphaCutout)
+{
+}
+
 CMeshFilter* CMeshRenderer::Get_MeshFilter()
 {
 	return m_pMeshFilter;

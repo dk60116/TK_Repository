@@ -21,6 +21,7 @@ protected:
 public:
 	virtual void Render_WithCamera(class CCamera* _cam) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
+	virtual void Render_Shadow(const _matrix& lightVP, _bool alphaCutout = false) PURE;
 
 public:
 	CMaterial* Get_Material();
@@ -36,6 +37,7 @@ protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
 	_float m_fScaleFactor;
+	_bool m_bShadowTarget;
 	_bool m_bNoneCulling;
 };
 

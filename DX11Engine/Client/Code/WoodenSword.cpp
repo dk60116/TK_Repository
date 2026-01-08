@@ -21,6 +21,12 @@ CComponent* CWoodenSword::Clone() const
 	return clone;
 }
 
+void CWoodenSword::PlaySwingSound()
+{
+	m_pAudioSource->SetClip(CResources::LoadOnScene<CAudioClip>(L"SwingSound (Audio)"));
+	m_pAudioSource->Play();
+}
+
 HRESULT CWoodenSword::Initialize(void* _desc)
 {
 	m_sStat.type = CGameManager::WeaponType::Sword;

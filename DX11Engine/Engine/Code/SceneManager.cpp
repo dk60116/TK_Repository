@@ -219,7 +219,7 @@ _uint CSceneManager::NameToIndex(const wstring& _name)
 	for (TRAVERSAL_ITER(GetInstance().m_vLayerFlags, it))
 	{
 		if ((*it).name == _name)
-			return (*it).value;
+			return (*it).index;
 	}
 
 	return 0;

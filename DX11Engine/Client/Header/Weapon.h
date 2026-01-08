@@ -42,5 +42,6 @@ protected:
 	CTransform* m_pTargetHand;
 	CCollider *m_pCollider;
 	CPlayer::HandType m_eHandType;
+	CAudioSource* m_pAudioSource;
 };
 

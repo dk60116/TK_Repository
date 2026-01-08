@@ -1784,6 +1784,11 @@ namespace Engine
         _matrix lights[MAX_LIGHT];
     };
 
+    struct ShadowCB
+    {
+        _matrix lightVP;
+    };
+
     struct ImageCB
     {
         _float4 values;

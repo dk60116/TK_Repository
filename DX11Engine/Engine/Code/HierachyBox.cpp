@@ -1,18 +1,18 @@
 #include "epch.h"
 #include "HierachyBox.h"
 
-CHierachyBox::CHierachyBox()
+CHierarchyBox::CHierarchyBox()
 {
 }
 
-CHierachyBox::~CHierachyBox()
+CHierarchyBox::~CHierarchyBox()
 {
 	OnDestroy();
 }
 
-CHierachyBox* CHierachyBox::Create()
+CHierarchyBox* CHierarchyBox::Create()
 {
-	CHierachyBox* newBox = new CHierachyBox();
+	CHierarchyBox* newBox = new CHierarchyBox();
 
 	if (FAILED(newBox->Initialize()))
 	{
@@ -21,12 +21,12 @@ CHierachyBox* CHierachyBox::Create()
 		return nullptr;
 	}
 
-	newBox->m_strBoxName = L"Hierachy";
+	newBox->m_strBoxName = L"Hierarchy";
 
 	return newBox;
 }
 
-void CHierachyBox::Render()
+void CHierarchyBox::Render()
 {
 	CEditor& editor = CEditor::GetInstance();
 	const CEditor::EDITORWINOPTION& editorOption = editor.Get_Options();
@@ -69,11 +69,11 @@ void CHierachyBox::Render()
 	ImGui::End();
 }
 
-void CHierachyBox::OnDestroy()
+void CHierarchyBox::OnDestroy()
 {
 }
 
-void CHierachyBox::RenderObjectHierarchy(CGameObject* _obj)
+void CHierarchyBox::RenderObjectHierarchy(CGameObject* _obj)
 {
 	if (!_obj)
 		return;

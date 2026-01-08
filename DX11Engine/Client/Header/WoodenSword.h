@@ -11,6 +11,8 @@ public:
 	static CWoodenSword* Create();
 	CComponent* Clone() const override;
 
+	void PlaySwingSound();
+
 public:
 	HRESULT Initialize(void* _desc) override;
 	void Awake() override;

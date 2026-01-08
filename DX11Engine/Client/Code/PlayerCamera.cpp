@@ -174,7 +174,7 @@ void CPlayerCamera::ObstacleHandlling()
 
 	m_sRaycast.origin = myTF->Get_Position();
 	m_sRaycast.dir = myTF->Get_Directions().forward;
-	m_sRaycast.maxDist = 10.f;
+	m_sRaycast.maxDist = 6.f;
 
 	auto hits = CPhysics::Raycast(m_sRaycast, CSceneManager::NameToLayer(L"Map"));
 
