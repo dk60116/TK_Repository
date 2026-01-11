@@ -16,6 +16,17 @@ public:
 		D3D11_VIEWPORT viewport;
 	};
 
+	struct GBufferSet
+	{
+		HWND hwnd = nullptr;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> textures[3];
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> rtvs[3];
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srvs[3];
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> dsv;
+		D3D11_VIEWPORT viewport;
+	};
+
 	SINGLETONCLASS(CGraphicDevice);
 
 public:
@@ -26,8 +37,11 @@ public:
 	static HRESULT Ready_GraphicDevice(HWND _hWnd, vector2Int _resolution);
 
 	static void Set_RenderTarget(HWND _hWnd);
+	static void Set_GBufferRenderTargets(HWND _hWnd);
 	static HRESULT Clear_BackBuffer_View(const ColorValue* _clearColor);
 	static HRESULT Clear_DepthStencil_View();
+	static HRESULT Clear_GBuffer_Views();
+	static HRESULT Clear_GBuffer_Depth();
 	static HRESULT Present();
 
 public:
@@ -36,6 +50,7 @@ public:
 	static SpriteBatch* Get_SpriteBatch();
 
 	static HRESULT Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin = vector2Int::zero(), vector2Int _offsetMax = vector2Int::zero());
+	static const GBufferSet* Get_GBufferSet(HWND _hWnd);
 
 	static const D3D11_VIEWPORT* Get_CurrentViewport();
 	static const D3D11_VIEWPORT* Get_GameViewport();
@@ -47,6 +62,7 @@ public:
 private:
 	static HRESULT Ready_BackBufferRenderTargetView();
 	static HRESULT Ready_DepthStencilView(_uint _winWidth, _uint _winHeight);
+	static HRESULT Ready_GBufferSet(HWND _hWnd, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin, vector2Int _offsetMax);
 
 private:
 	ID3D11Device* m_pDevice;
@@ -59,6 +75,7 @@ private:
 	ID3D11DepthStencilView* m_pDepthStencilView;
 
 	unordered_map<HWND, SwapChainSet> m_mSwapChains;
+	unordered_map<HWND, GBufferSet> m_mGBufferSets;
 
 	HWND m_hCrtWndow;
 

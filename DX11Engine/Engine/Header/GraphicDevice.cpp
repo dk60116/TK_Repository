@@ -143,6 +143,22 @@ void CGraphicDevice::Set_RenderTarget(HWND _hWnd)
 	GetInstance().m_hCrtWndow = _hWnd;
 }
 
+void CGraphicDevice::Set_GBufferRenderTargets(HWND _hWnd)
+{
+	auto it = GetInstance().m_mGBufferSets.find(_hWnd);
+
+	if (it == GetInstance().m_mGBufferSets.end())
+		return;
+
+	const GBufferSet& gb = it->second;
+
+	ID3D11RenderTargetView* rtvs[] = { gb.rtvs[0].Get(), gb.rtvs[1].Get(), gb.rtvs[2].Get() };
+	GetInstance().m_pContext->OMSetRenderTargets(_countof(rtvs), rtvs, gb.dsv.Get());
+	GetInstance().m_pContext->RSSetViewports(1, &gb.viewport);
+
+	GetInstance().m_hCrtWndow = _hWnd;
+}
+
 HRESULT CGraphicDevice::Clear_BackBuffer_View(const ColorValue* _clearColor)
 {
 	auto it = GetInstance().m_mSwapChains.find(GetInstance().m_hCrtWndow);
@@ -164,6 +180,35 @@ HRESULT CGraphicDevice::Clear_DepthStencil_View()
 
 	const SwapChainSet& sc = it->second;
 	GetInstance().m_pContext->ClearDepthStencilView(sc.dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	return S_OK;
+}
+
+HRESULT CGraphicDevice::Clear_GBuffer_Views()
+{
+	auto it = GetInstance().m_mGBufferSets.find(GetInstance().m_hCrtWndow);
+	if (it == GetInstance().m_mGBufferSets.end())
+		return E_FAIL;
+
+	const GBufferSet& gb = it->second;
+	const _float albedoClear[4] = { 0.f, 0.f, 0.f, 1.f };
+	const _float normalClear[4] = { 0.5f, 0.5f, 1.f, 1.f };
+	const _float positionClear[4] = { 0.f, 0.f, 0.f, 1.f };
+
+	GetInstance().m_pContext->ClearRenderTargetView(gb.rtvs[0].Get(), albedoClear);
+	GetInstance().m_pContext->ClearRenderTargetView(gb.rtvs[1].Get(), normalClear);
+	GetInstance().m_pContext->ClearRenderTargetView(gb.rtvs[2].Get(), positionClear);
+
+	return S_OK;
+}
+
+HRESULT CGraphicDevice::Clear_GBuffer_Depth()
+{
+	auto it = GetInstance().m_mGBufferSets.find(GetInstance().m_hCrtWndow);
+	if (it == GetInstance().m_mGBufferSets.end())
+		return E_FAIL;
+
+	const GBufferSet& gb = it->second;
+	GetInstance().m_pContext->ClearDepthStencilView(gb.dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	return S_OK;
 }
 
@@ -196,7 +241,7 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	SwapChainSet sc{};
 	sc.hwnd = _hWnd;
 
-	// DXGI Factory »ı¼º
+	// DXGI Factory ìƒì„±
 	ComPtr<IDXGIDevice> dxgiDevice;
 	GetInstance().m_pDevice->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
 
@@ -206,7 +251,7 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	ComPtr<IDXGIFactory> factory;
 	adapter->GetParent(IID_PPV_ARGS(&factory));
 
-	// ½º¿ÒÃ¼ÀÎ »ı¼º
+	// ìŠ¤ì™‘ì²´ì¸ ìƒì„±
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferCount = 1;
 	sd.BufferDesc.Width = _winWidth;
@@ -225,13 +270,26 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 
 	sc.swapChain = swapChain;
 
-	// RTV »ı¼º
+	// RTV ìƒì„±
 	ComPtr<ID3D11Texture2D> backBuffer;
 	swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
 
 	GetInstance().m_pDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, &sc.rtv);
 
-	// DSV »ı¼º
+	if (FAILED(Ready_GBufferSet(_hWnd, _winWidth, _winHeight, _offsetMin, _offsetMax)))
+		return E_FAIL;
+
+const CGraphicDevice::GBufferSet* CGraphicDevice::Get_GBufferSet(HWND _hWnd)
+{
+	auto it = GetInstance().m_mGBufferSets.find(_hWnd);
+
+	if (it == GetInstance().m_mGBufferSets.end())
+		return nullptr;
+
+	return &it->second;
+}
+
+	// DSV ìƒì„±
 	D3D11_TEXTURE2D_DESC depthDesc = {};
 	depthDesc.Width = _winWidth;
 	depthDesc.Height = _winHeight;
@@ -246,7 +304,7 @@ HRESULT CGraphicDevice::Add_SwapChain(HWND _hWnd, WINMODE _isWindowed, _uint _wi
 	GetInstance().m_pDevice->CreateTexture2D(&depthDesc, nullptr, &depthTex);
 	GetInstance().m_pDevice->CreateDepthStencilView(depthTex.Get(), nullptr, &sc.dsv);
 
-	// ºäÆ÷Æ® ¼³Á¤
+	// ë·°í¬íŠ¸ ì„¤ì •
 	sc.viewport.TopLeftX = static_cast<FLOAT>(_offsetMin.x);
 	sc.viewport.TopLeftY = static_cast<FLOAT>(_offsetMin.y);
 	sc.viewport.Width = static_cast<FLOAT>(_winWidth - _offsetMax.x);
@@ -327,8 +385,8 @@ HRESULT CGraphicDevice::Ready_DepthStencilView(_uint _winWidth, _uint _winHeight
 	D3D11_TEXTURE2D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	/* ±íÀÌ ¹öÆÛÀÇ ÇÈ¼¿Àº ¹é¹öÆÛÀÇ ÇÈ¼¿°ú °¹¼ö°¡ µ¿ÀÏÇØ¾ß¸¸ ±íÀÌ ÅØ½ºÆ®°¡ °¡´ÉÇØÁø´Ù. */
-	/* ÇÈ¼¿ÀÇ ¼ö°¡ ´Ù¸£¸é ¾Æ¿¡ ·»´õ¸µÀ» ¸øÇÔ. */
+	/* ê¹Šì´ ë²„í¼ì˜ í”½ì…€ì€ ë°±ë²„í¼ì˜ í”½ì…€ê³¼ ê°¯ìˆ˜ê°€ ë™ì¼í•´ì•¼ë§Œ ê¹Šì´ í…ìŠ¤íŠ¸ê°€ ê°€ëŠ¥í•´ì§„ë‹¤. */
+	/* í”½ì…€ì˜ ìˆ˜ê°€ ë‹¤ë¥´ë©´ ì•„ì— ë Œë”ë§ì„ ëª»í•¨. */
 	TextureDesc.Width = _winWidth;
 	TextureDesc.Height = _winHeight;
 	TextureDesc.MipLevels = 1;
@@ -338,9 +396,67 @@ HRESULT CGraphicDevice::Ready_DepthStencilView(_uint _winWidth, _uint _winHeight
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.SampleDesc.Count = 1;
 
-	/* µ¿Àû? Á¤Àû?  */
-	TextureDesc.Usage = D3D11_USAGE_DEFAULT /* Á¤Àû */;
-	/* ÃßÈÄ¿¡ ¾î¶² ¿ëµµ·Î ¹ÙÀÎµù µÉ ¼ö ÀÖ´Â ViewÅ¸ÀÔÀÇ ÅØ½ºÃÄ¸¦ ¸¸µé±âÀ§ÇÑ Texture2DÀÔ´Ï±î? */
+
+HRESULT CGraphicDevice::Ready_GBufferSet(HWND _hWnd, _uint _winWidth, _uint _winHeight, vector2Int _offsetMin, vector2Int _offsetMax)
+{
+	GBufferSet gb{};
+	gb.hwnd = _hWnd;
+
+	const DXGI_FORMAT formats[3] = {
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_FORMAT_R16G16B16A16_FLOAT,
+		DXGI_FORMAT_R16G16B16A16_FLOAT
+	};
+
+	for (int i = 0; i < 3; ++i)
+	{
+		D3D11_TEXTURE2D_DESC texDesc = {};
+		texDesc.Width = _winWidth;
+		texDesc.Height = _winHeight;
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = formats[i];
+		texDesc.SampleDesc.Count = 1;
+		texDesc.Usage = D3D11_USAGE_DEFAULT;
+		texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+		if (FAILED(GetInstance().m_pDevice->CreateTexture2D(&texDesc, nullptr, &gb.textures[i])))
+			return E_FAIL;
+		if (FAILED(GetInstance().m_pDevice->CreateRenderTargetView(gb.textures[i].Get(), nullptr, &gb.rtvs[i])))
+			return E_FAIL;
+		if (FAILED(GetInstance().m_pDevice->CreateShaderResourceView(gb.textures[i].Get(), nullptr, &gb.srvs[i])))
+			return E_FAIL;
+	}
+
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	depthDesc.Width = _winWidth;
+	depthDesc.Height = _winHeight;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	if (FAILED(GetInstance().m_pDevice->CreateTexture2D(&depthDesc, nullptr, &gb.depthTexture)))
+		return E_FAIL;
+	if (FAILED(GetInstance().m_pDevice->CreateDepthStencilView(gb.depthTexture.Get(), nullptr, &gb.dsv)))
+		return E_FAIL;
+
+	gb.viewport.TopLeftX = static_cast<FLOAT>(_offsetMin.x);
+	gb.viewport.TopLeftY = static_cast<FLOAT>(_offsetMin.y);
+	gb.viewport.Width = static_cast<FLOAT>(_winWidth - _offsetMax.x);
+	gb.viewport.Height = static_cast<FLOAT>(_winHeight - _offsetMax.y);
+	gb.viewport.MinDepth = 0.0f;
+	gb.viewport.MaxDepth = 1.0f;
+
+	GetInstance().m_mGBufferSets[_hWnd] = move(gb);
+
+	return S_OK;
+}
+	/* ë™ì ? ì •ì ?  */
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT /* ì •ì  */;
+	/* ì¶”í›„ì— ì–´ë–¤ ìš©ë„ë¡œ ë°”ì¸ë”© ë  ìˆ˜ ìˆëŠ” Viewíƒ€ì…ì˜ í…ìŠ¤ì³ë¥¼ ë§Œë“¤ê¸°ìœ„í•œ Texture2Dì…ë‹ˆê¹Œ? */
 	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL
 		/*| D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE*/;
 	TextureDesc.CPUAccessFlags = 0;

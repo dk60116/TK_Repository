@@ -45,6 +45,7 @@ protected:
 
 public:
 	void RenderMesh();
+	void RenderMesh_Deferred();
 	void RenderUI();
 
 public:

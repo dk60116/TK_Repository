@@ -37,6 +37,7 @@ private:
 public:
 	void Bind_Matrix(const _fmatrix _world);
 	void Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
+	void Bind_Camera_Deferred(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
 	void Bind_Light(_matrix* _lights, const _uint _count);
 	void Bind_CustomValues();
 
@@ -46,6 +47,7 @@ public:
 
 public:
 	void Set_Shader(CShader* _shader);
+	void Set_DeferredShader(CShader* _shader);
 	void Set_Texture(CTexture* _texture, _int _index = 0);
 	void Set_BaseColor(const _float4& _color);
 
@@ -63,6 +65,7 @@ private:
 
 private:
 	CShader* m_pShader;
+	CShader* m_pDeferredShader;
 
 	ID3D11Buffer* m_pMatrixBuffer;
 	ID3D11Buffer* m_pCameraBuffer;
@@ -83,4 +86,3 @@ private:
 };
 
 NS_END
-

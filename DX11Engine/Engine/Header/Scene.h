@@ -7,6 +7,9 @@
 
 NS_BEGIN(Engine)
 
+class CMaterial;
+class CMeshBuffer;
+
 class ENGINE_DLL CScene abstract : public UObject
 {
     friend class CSceneManager;
@@ -111,6 +114,8 @@ public:
 public:
     ID3D11DepthStencilState* Get_MeshStencillState() const;
     ID3D11DepthStencilState* Get_UIStencillState() const;
+    void Set_UseDeferredRendering(const _bool _useDeferred);
+    const _bool Is_UseDeferredRendering() const;
 
 protected:
     HRESULT PreLoadResources();
@@ -143,10 +148,13 @@ protected:
 protected:
     _uint m_iUniqueObjectCount;
     _bool m_bUseNavi;
+    _bool m_bUseDeferredRendering;
 
     ID3D11DepthStencilState* m_pSkyBoxDepthStencillState, * m_pMeshDepthStencilState,* m_pUIDepthStencilState;
     ID3D11RasterizerState* m_pSkyBoxResterizerState, * m_pMeshResterizerState, * m_pUIResterizerState;
     ID3D11BlendState* m_pBlendingState, * m_pNoneBlendingState;
+    CMaterial* m_pDeferredLightMaterial;
+    CMeshBuffer* m_pDeferredQuad;
 };
 
 NS_END

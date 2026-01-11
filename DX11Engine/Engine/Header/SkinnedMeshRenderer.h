@@ -38,6 +38,7 @@ public:
 public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;
+	void Render_Deferred(const _float3& _camPos, const _matrix& _view, const _matrix& _proj) override;
 
 public:
 	CMeshBuffer* Get_MeshBuffer() override;
@@ -57,4 +58,3 @@ private:
 };
 
 NS_END
-

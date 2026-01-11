@@ -62,7 +62,12 @@ void CRenderer::Set_Material(CMaterial* _material)
 	m_pMaterial = _material;
 
 	if (m_pMaterial)
+	{
 		m_pMaterial->AddRef();
+		CShader* gbufferShader = CResources::LoadOnGame<CShader>(L"GBuffer (Shader)");
+		if (gbufferShader)
+			m_pMaterial->Set_DeferredShader(gbufferShader);
+	}
 }
 
 const _bool CRenderer::Is_UseInstancing() const

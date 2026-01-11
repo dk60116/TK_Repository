@@ -4,6 +4,7 @@
 
 CMaterial::CMaterial()
 	: m_pShader(nullptr)
+	, m_pDeferredShader(nullptr)
 	, m_pMatrixBuffer(nullptr)
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
@@ -25,6 +26,7 @@ CMaterial::CMaterial()
 
 CMaterial::CMaterial(const CMaterial& _other)
 	: m_pShader(_other.m_pShader)
+	, m_pDeferredShader(_other.m_pDeferredShader)
 	, m_pMatrixBuffer(nullptr)
 	, m_pCameraBuffer(nullptr)
 	, m_pMaterialBuffer(nullptr)
@@ -45,6 +47,8 @@ CMaterial::CMaterial(const CMaterial& _other)
 
 	if (m_pShader)
 		m_pShader->AddRef();
+	if (m_pDeferredShader)
+		m_pDeferredShader->AddRef();
 
 	Create_ConstantBuffer();
 }
@@ -121,6 +125,7 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 void CMaterial::OnDestroy()
 {
 	Safe_Release(m_pShader);
+	Safe_Release(m_pDeferredShader);
 	Safe_Release(m_pMatrixBuffer);
 	Safe_Release(m_pCameraBuffer);
 	Safe_Release(m_pMaterialBuffer);
@@ -177,6 +182,41 @@ void CMaterial::Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _
 		Bind_CustomValues();
 }
 
+void CMaterial::Bind_Camera_Deferred(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount)
+{
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+	if (m_pDeferredShader)
+		m_pDeferredShader->Bind();
+	else if (m_pShader)
+		m_pShader->Bind();
+
+	Bind_Texture();
+
+	// b1: PerCamera
+	CameraCB camCB = {};
+	camCB.camPos = _camPos;
+	camCB.view = XMMatrixTranspose(_view);
+	camCB.proj = XMMatrixTranspose(_projection);
+	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &camCB, 0, 0);
+	context->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+	context->PSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+
+	// b2: PerMaterial
+	MaterialCB mat = {};
+
+	mat.baseColor = m_vBaseColor;
+	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
+	mat.boneCount = _boneCount;
+
+	context->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
+	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+	context->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+
+	if (m_vCustomBufferByteList.size() > 0)
+		Bind_CustomValues();
+}
+
 void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 {
 	if (!_lights || !m_bUseLight || !m_pLightBuffer)
@@ -186,7 +226,7 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 
 	LightCB buffer = {};
 
-	// µ¥ÀÌÅÍ º¹»ç
+	// ë°ì´í„° ë³µì‚¬
 	const _uint maxCount = min(_count, 64u);
 	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
 
@@ -198,7 +238,7 @@ void CMaterial::Bind_CustomValues()
 {
 	m_vCustomBufferByteList.clear();
 
-	// ¼ø¼­ Áß¿ä: HLSL°ú ÀÏÄ¡ÇØ¾ß ÇÔ
+	// ìˆœì„œ ì¤‘ìš”: HLSLê³¼ ì¼ì¹˜í•´ì•¼ í•¨
 	for (const auto& [key, value] : m_mFloatValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
@@ -216,9 +256,9 @@ void CMaterial::Bind_CustomValues()
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(_float));
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(_float));
 	}
-	// TODO: Vector3, Vector4, Matrix µîµµ Ãß°¡ °¡´É
+	// TODO: Vector3, Vector4, Matrix ë“±ë„ ì¶”ê°€ ê°€ëŠ¥
 
-	// Á¤·Ä ¸ÂÃß±â (16¹ÙÀÌÆ® ´ÜÀ§)
+	// ì •ë ¬ ë§ì¶”ê¸° (16ë°”ì´íŠ¸ ë‹¨ìœ„)
 	while (m_vCustomBufferByteList.size() % 16 != 0)
 		m_vCustomBufferByteList.push_back(0);
 
@@ -328,6 +368,20 @@ void CMaterial::Set_Shader(CShader* _shader)
 	{
 		m_pShader = _shader;
 		m_pShader->AddRef();
+	}
+}
+
+void CMaterial::Set_DeferredShader(CShader* _shader)
+{
+	if (_shader == m_pDeferredShader)
+		return;
+
+	Safe_Release(m_pDeferredShader);
+
+	if (_shader)
+	{
+		m_pDeferredShader = _shader;
+		m_pDeferredShader->AddRef();
 	}
 }
 

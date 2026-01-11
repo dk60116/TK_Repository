@@ -19,6 +19,7 @@ protected:
 public:
 	virtual void Render_WithCamera(class CCamera* _cam) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
+	virtual void Render_Deferred(const _float3& _camPos, const _matrix& _view, const _matrix& _proj) PURE;
 
 public:
 	CMaterial* Get_Material();
@@ -41,4 +42,3 @@ protected:
 };
 
 NS_END
-

@@ -104,7 +104,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 
     m_pMaterial->Bind_Matrix(matWorld);
 
-    // Ä«¸Ş¶ó/¸ÓÆ¼¸®¾ó ¹ÙÀÎµù (PS¿¡µµ b1 ¼¼ÆÃµÇµµ·Ï ±¸ÇöµÇ¾î ÀÖÀ½)
+    // ì¹´ë©”ë¼/ë¨¸í‹°ë¦¬ì–¼ ë°”ì¸ë”© (PSì—ë„ b1 ì„¸íŒ…ë˜ë„ë¡ êµ¬í˜„ë˜ì–´ ìˆìŒ)
     m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
 
     // Light
@@ -137,7 +137,56 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
     // ------- Draw -------
     if (m_bUseInstancing)
     {
-        // ÀÎ½ºÅÏ½º ¸ñ·ÏÀÌ ºñ¾îÀÖÀ¸¸é ÀÚ±â ÀÚ½Å¸¸ 1°³ ÀÎ½ºÅÏ½º·Î ±×·ÁÁÜ (ÀÌÀü µ¿ÀÛ°ú µ¿ÀÏ)
+
+void CMeshRenderer::Render_Deferred(const _float3& _camPos, const _matrix& _view, const _matrix& _proj)
+{
+	if (!m_pMeshFilter)
+	{
+		CDebug::LogError(L"MeshRenderer: No MeshFilter assigned: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+	if (!m_pMaterial)
+	{
+		CDebug::LogError(L"MeshRenderer: No material assigned: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
+	if (!pBuffer)
+		return;
+
+	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
+
+	m_pMaterial->Bind_Matrix(matWorld);
+	m_pMaterial->Bind_Camera_Deferred(_camPos, _view, _proj, 0);
+
+	if (m_bUseInstancing)
+	{
+		const bool hasList = !m_vInstanceWorlds.empty();
+
+		vector<MeshInstanceData> instances;
+		if (hasList)
+		{
+			instances.reserve(m_vInstanceWorlds.size());
+			for (const _float4x4& w : m_vInstanceWorlds)
+			{
+				_matrix m = XMLoadFloat4x4(&w);
+				instances.push_back(MatrixToInstanceData(m));
+			}
+		}
+		else
+		{
+			instances.push_back(MatrixToInstanceData(matWorld));
+		}
+
+		if (SUCCEEDED(pBuffer->UpdateInstanceBuffer(instances, true)))
+			pBuffer->RenderInstanced(static_cast<_uint>(instances.size()));
+	}
+	else
+		pBuffer->Render();
+}
+
+        // ì¸ìŠ¤í„´ìŠ¤ ëª©ë¡ì´ ë¹„ì–´ìˆìœ¼ë©´ ìê¸° ìì‹ ë§Œ 1ê°œ ì¸ìŠ¤í„´ìŠ¤ë¡œ ê·¸ë ¤ì¤Œ (ì´ì „ ë™ì‘ê³¼ ë™ì¼)
         const bool hasList = !m_vInstanceWorlds.empty();
 
         vector<MeshInstanceData> instances;

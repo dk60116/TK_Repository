@@ -1,6 +1,8 @@
 #include "epch.h"
 #include "Scene.h"
 #include "EditorCamera.h"
+#include "Material.h"
+#include "MeshBuffer.h"
 
 CScene::CScene()
 	: m_iSceneIndex(0)
@@ -33,6 +35,9 @@ CScene::CScene()
 	, m_pUIResterizerState(nullptr)
 	, m_pBlendingState(nullptr)
 	, m_pNoneBlendingState(nullptr)
+	, m_bUseDeferredRendering(false)
+	, m_pDeferredLightMaterial(nullptr)
+	, m_pDeferredQuad(nullptr)
 {
 	m_strName = L"Scene";
 
@@ -182,6 +187,14 @@ HRESULT CScene::Initialize()
 		if (FAILED(m_pDevice->CreateBlendState(&noneBlendingDesc, &m_pNoneBlendingState)))
 			return E_FAIL;
 	}
+
+	m_pDeferredLightMaterial = CResources::LoadOnGame<CMaterial>(L"DeferredLightMaterial (Material)");
+	if (m_pDeferredLightMaterial)
+		m_pDeferredLightMaterial->AddRef();
+
+	m_pDeferredQuad = CResources::LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)");
+	if (m_pDeferredQuad)
+		m_pDeferredQuad->AddRef();
 
 	CDebug::Log(CDebug::MemoryUseLog());
 
@@ -371,15 +384,18 @@ void CScene::Render_Game()
 	if (Get_Camera())
 		backgroudColor = Get_Camera()->Get_BackgroundColor();
 
-	CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
-	CGraphicDevice::Clear_DepthStencil_View();
+	const _bool useDeferred = m_bUseDeferredRendering && m_pDeferredLightMaterial && m_pDeferredQuad;
 
-	if (m_pSkyBox)
+	if (useDeferred)
 	{
-		m_pContext->RSSetState(m_pSkyBoxResterizerState);
-		m_pContext->OMSetDepthStencilState(m_pSkyBoxDepthStencillState, 0);
-
-		RenderSkyBox(m_lCameraList.back());
+		CGraphicDevice::Clear_GBuffer_Views();
+		CGraphicDevice::Clear_GBuffer_Depth();
+		CGraphicDevice::Set_GBufferRenderTargets(CDisplay::Get_GameWindow());
+	}
+	else
+	{
+		CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
+		CGraphicDevice::Clear_DepthStencil_View();
 	}
 
 	for (TRAVERSAL_ITER(m_lObjectList, it))
@@ -398,10 +414,88 @@ void CScene::Render_Game()
 	m_pContext->RSSetState(m_pMeshResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
 
-	for (TRAVERSAL_ITER(m_lCameraList, it))
+	if (useDeferred)
 	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
-			(*it)->RenderMesh();
+		for (TRAVERSAL_ITER(m_lCameraList, it))
+		{
+			if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+				(*it)->RenderMesh_Deferred();
+		}
+
+		CGraphicDevice::Set_RenderTarget(CDisplay::Get_GameWindow());
+
+		if (m_pDeferredLightMaterial && m_pDeferredQuad)
+		{
+			CCamera* camera = Get_Camera();
+			if (camera)
+			{
+				vector3 camWorldPos = camera->Get_Transform()->Get_Position();
+				_float3 camPos = camWorldPos.toFloat3();
+				_matrix view = camera->Get_ViewMatrix();
+				_matrix proj = camera->Get_ProjectionMatrix();
+
+				_matrix identity = XMMatrixIdentity();
+				m_pDeferredLightMaterial->Bind_Matrix(identity);
+				m_pDeferredLightMaterial->Bind_Camera(camPos, view, proj);
+
+				list<CLight*> lights = Get_LightList();
+				const _uint lightCount = static_cast<_uint>(lights.size());
+				vector<_matrix> vLightInfos;
+				vLightInfos.reserve(lightCount);
+
+				_uint index = 0;
+				for (TRAVERSAL_ITER(lights, itLight))
+				{
+					if (!(*itLight))
+						continue;
+
+					_float4x4 lightInfo = (*itLight)->To_LightInfo();
+					lightInfo._44 = (index == 0) ? static_cast<_float>(lightCount) : 0.f;
+					vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));
+					++index;
+				}
+
+				if (!vLightInfos.empty())
+					m_pDeferredLightMaterial->Bind_Light(vLightInfos.data(), lightCount);
+			}
+
+			const CGraphicDevice::GBufferSet* gbuffer = CGraphicDevice::Get_GBufferSet(CDisplay::Get_GameWindow());
+			if (gbuffer)
+			{
+				ID3D11ShaderResourceView* srvs[] = { gbuffer->srvs[0].Get(), gbuffer->srvs[1].Get(), gbuffer->srvs[2].Get() };
+				m_pContext->PSSetShaderResources(0, _countof(srvs), srvs);
+			}
+
+			m_pContext->RSSetState(m_pMeshResterizerState);
+			m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
+			m_pDeferredQuad->Render();
+
+			ID3D11ShaderResourceView* nullSrvs[3] = { nullptr, nullptr, nullptr };
+			m_pContext->PSSetShaderResources(0, 3, nullSrvs);
+		}
+
+		if (m_pSkyBox)
+		{
+			m_pContext->RSSetState(m_pSkyBoxResterizerState);
+			m_pContext->OMSetDepthStencilState(m_pSkyBoxDepthStencillState, 0);
+			RenderSkyBox(m_lCameraList.back());
+		}
+	}
+	else
+	{
+		if (m_pSkyBox)
+		{
+			m_pContext->RSSetState(m_pSkyBoxResterizerState);
+			m_pContext->OMSetDepthStencilState(m_pSkyBoxDepthStencillState, 0);
+
+			RenderSkyBox(m_lCameraList.back());
+		}
+
+		for (TRAVERSAL_ITER(m_lCameraList, it))
+		{
+			if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+				(*it)->RenderMesh();
+		}
 	}
 
 	m_pContext->RSSetState(m_pUIResterizerState);
@@ -426,6 +520,10 @@ void CScene::SceneRelease()
 
 	Safe_Release(m_pSkyBox);
 	m_pSkyBox = nullptr;
+	Safe_Release(m_pDeferredLightMaterial);
+	m_pDeferredLightMaterial = nullptr;
+	Safe_Release(m_pDeferredQuad);
+	m_pDeferredQuad = nullptr;
 
 	m_lCameraList.clear();
 	m_lLightList.clear();
@@ -1014,4 +1112,14 @@ ID3D11DepthStencilState* CScene::Get_MeshStencillState() const
 ID3D11DepthStencilState* CScene::Get_UIStencillState() const
 {
 	return m_pUIDepthStencilState;
+}
+
+void CScene::Set_UseDeferredRendering(const _bool _useDeferred)
+{
+	m_bUseDeferredRendering = _useDeferred;
+}
+
+const _bool CScene::Is_UseDeferredRendering() const
+{
+	return m_bUseDeferredRendering;
 }

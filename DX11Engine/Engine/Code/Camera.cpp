@@ -175,6 +175,22 @@ void CCamera::RenderMesh()
 	m_vMeshList.clear();
 }
 
+void CCamera::RenderMesh_Deferred()
+{
+	vector3 cPos = Get_Transform()->Get_Position();
+	_float3 camPos = cPos.toFloat3();
+	_matrix matView = Get_ViewMatrix();
+	_matrix matProj = Get_ProjectionMatrix();
+
+	for (TRAVERSAL_ITER(m_vMeshList, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_Deferred(camPos, matView, matProj);
+	}
+
+	m_vMeshList.clear();
+}
+
 void CCamera::RenderUI()
 {
 	_matrix viewMat = XMMatrixTranslation(50.f, 50.f, 0.f);
