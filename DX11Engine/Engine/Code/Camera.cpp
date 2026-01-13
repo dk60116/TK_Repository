@@ -305,15 +305,17 @@ void CCamera::Bind_RenderTarget()
 
 void CCamera::RenderMesh()
 {
-	//Bind_RenderTarget();
+	Bind_RenderTarget();
 
-	//CDisplay::RenderTargetRender(L"Combine");
+	CDisplay::RenderTargetRender(L"Combine");
 	//CDisplay::RenderTargetRender(L"Diffuse");
 	//CDisplay::RenderTargetRender(L"Normal");
 	//CDisplay::RenderTargetRender(L"Depth");
 	//CDisplay::RenderTargetRender(L"Shading");
 
 	//RenderShadowPass();
+
+	return;
 
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
 
