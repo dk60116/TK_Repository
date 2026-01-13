@@ -204,16 +204,13 @@ void CCamera::Bind_RenderTarget()
 	
 	auto* dfRT = CDisplay::Get_RenderTarget(L"Diffuse");
 	auto* nmRT = CDisplay::Get_RenderTarget(L"Normal");
-	auto* dpRT = CDisplay::Get_RenderTarget(L"Depth");
 	auto* sdRT = CDisplay::Get_RenderTarget(L"Shading");
-	auto* spRT = CDisplay::Get_RenderTarget(L"Specular");
 	auto* cbRT = CDisplay::Get_RenderTarget(L"Combine");
 
 	ID3D11RenderTargetView* rtvs[] =
 	{
 		dfRT->Get_RTV(), // SV_TARGET0
 		nmRT->Get_RTV(), // SV_TARGET1
-		dpRT->Get_RTV(),
 	};
 	
 	ID3D11DepthStencilView* dsv = dfRT->Get_DSV(); 
@@ -230,9 +227,7 @@ void CCamera::Bind_RenderTarget()
 
 	dfRT->Clear();
 	nmRT->Clear();
-	dpRT->Clear();
 	sdRT->Clear();
-	spRT->Clear();
 	cbRT->Clear();
 
 	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))

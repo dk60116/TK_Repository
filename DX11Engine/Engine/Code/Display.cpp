@@ -89,11 +89,7 @@ HRESULT CDisplay::CreateRenderTargets()
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Normal", vector2Int::zero(), screenResolution, ColorValue::black()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Depth", vector2Int::zero(), screenResolution, ColorValue::black()))
-		return E_FAIL;
 	if (!CreateRenderTarget(L"Shading", vector2Int::zero(), screenResolution, ColorValue::white(), L"Shading"))
-		return E_FAIL;
-	if (!CreateRenderTarget(L"Specular", vector2Int::zero(), screenResolution, ColorValue::black()))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Combine", vector2Int::zero(), screenResolution, ColorValue(0, 0, 0, 0), L"Combine"))
 		return E_FAIL;
