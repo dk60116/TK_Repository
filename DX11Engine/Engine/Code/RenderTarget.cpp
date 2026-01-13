@@ -48,8 +48,8 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 	m_pMeshBuffer->AddRef();
 	m_pDefferdShader->AddRef();
 
-	textureDesc.Width = CDisplay::Get_ScreenResolution().x;
-	textureDesc.Height = CDisplay::Get_ScreenResolution().y;
+	textureDesc.Width = static_cast<UINT>(_size.x);
+	textureDesc.Height = static_cast<UINT>(_size.y);
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = _pixelFormat;
@@ -77,8 +77,8 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 		return E_FAIL;
 
 	D3D11_TEXTURE2D_DESC depthDesc{};
-	depthDesc.Width = CDisplay::Get_ScreenResolution().x;
-	depthDesc.Height = CDisplay::Get_ScreenResolution().y;
+	depthDesc.Width = static_cast<UINT>(_size.x);
+	depthDesc.Height = static_cast<UINT>(_size.y);
 	depthDesc.MipLevels = 1;
 	depthDesc.ArraySize = 1;
 	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -103,8 +103,8 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 
 	m_sViewPort.TopLeftX = 0;
 	m_sViewPort.TopLeftY = 0;
-	m_sViewPort.Width = static_cast<_float>(CDisplay::Get_ScreenResolution().x);
-	m_sViewPort.Height = static_cast<_float>(CDisplay::Get_ScreenResolution().y);
+	m_sViewPort.Width = static_cast<_float>(_size.x);
+	m_sViewPort.Height = static_cast<_float>(_size.y);
 	m_sViewPort.MinDepth = 0.0f;
 	m_sViewPort.MaxDepth = 1.0f;
 
@@ -205,7 +205,7 @@ HRESULT CRenderTarget::Ready_Debug(const vector2Int _pos, const vector2Int _size
 		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bd.ByteWidth = sizeof(MatCB); // 16¹ÙÀÌÆ® ¹è¼ö
+		bd.ByteWidth = sizeof(MatCB); // 16ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½
 		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerMaterial)))
 			return E_FAIL;
 	}
@@ -248,7 +248,7 @@ HRESULT CRenderTarget::Render()
 	if (!ctx) 
 		return E_FAIL;
 
-	// 0) ÇöÀç OM/VP »óÅÂ ÀúÀå
+	// 0) ï¿½ï¿½ï¿½ï¿½ OM/VP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	ID3D11RenderTargetView* prevRTV = nullptr;
 	ID3D11DepthStencilView* prevDSV = nullptr;
 	ctx->OMGetRenderTargets(1, &prevRTV, &prevDSV);
@@ -257,17 +257,17 @@ HRESULT CRenderTarget::Render()
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&numVP, &vp);
 
-	// 1) ÇÁ¸®ºä´Â ±íÀÌ ºÒÇÊ¿ä ¡æ DSV = nullptr ·Î ¹ÙÀÎµù (ÄÃ·¯ Å¸°ÙÀº À¯Áö: º¸Åë ¹é¹öÆÛ)
+	// 1) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ DSV = nullptr ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ (ï¿½Ã·ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½)
 	ctx->OMSetRenderTargets(1, &prevRTV, nullptr);
 
-	// 2) Á÷±³ Åõ¿µ ±¸¼º (ÇöÀç ºäÆ÷Æ® Å©±â ±âÁØ)
+	// 2) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	_matrix V = XMMatrixIdentity();
 	_matrix P = XMMatrixOrthographicOffCenterLH(
 		-vp.Width * 0.5f, vp.Width * 0.5f,
 		-vp.Height * 0.5f, vp.Height * 0.5f,
 		0.0f, 1.0f);
 
-	// 3) »ó¼ö¹öÆÛ ¾÷µ¥ÀÌÆ® (b0: world, b1: cam(view/proj), b2: material)
+	// 3) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® (b0: world, b1: cam(view/proj), b2: material)
 	_matrix W = XMLoadFloat4x4(&m_vWorldMatrix);
 	_matrix WT = XMMatrixTranspose(W);
 	ctx->UpdateSubresource(m_pCBPerObject, 0, nullptr, &WT, 0, 0);
@@ -285,8 +285,8 @@ HRESULT CRenderTarget::Render()
 	mat.useTexture = 1;
 	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
 
-	// 4) ¼ÎÀÌ´õ / CB / SRV ¹ÙÀÎµù
-	m_pDefferdShader->Bind(); // VSMain/PSMain(ÇÁ¸®ºä¿ë) ¹ÙÀÎµùµÇµµ·Ï
+	// 4) ï¿½ï¿½ï¿½Ì´ï¿½ / CB / SRV ï¿½ï¿½ï¿½Îµï¿½
+	m_pDefferdShader->Bind(); // VSMain/PSMain(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½Îµï¿½ï¿½Çµï¿½ï¿½ï¿½
 
 	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 	ctx->VSSetConstantBuffers(1, 1, &m_pCBPerCamera);
@@ -295,14 +295,14 @@ HRESULT CRenderTarget::Render()
 	ctx->PSSetShaderResources(0, 1, &m_pSRV);
 	ctx->PSSetSamplers(0, 1, &m_pDebugSampler);
 
-	// 5) Á÷»ç°¢Çü µå·Î¿ì
+	// 5) ï¿½ï¿½ï¿½ç°¢ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½
 	m_pMeshBuffer->Render();
 
-	// 6) SRV ¾ð¹ÙÀÎµå (ÀÌÈÄ ÀÌ ÅØ½ºÃ³¸¦ RTV·Î ¾µ ¶§ Ãæµ¹ ¹æÁö)
+	// 6) SRV ï¿½ï¿½ï¿½ï¿½Îµï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø½ï¿½Ã³ï¿½ï¿½ RTVï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½)
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	ctx->PSSetShaderResources(0, 1, nullSRV);
 
-	// 7) »óÅÂ º¹¿ø
+	// 7) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
 	Safe_Release(prevRTV);
 	Safe_Release(prevDSV);
@@ -317,13 +317,13 @@ void CRenderTarget::Bind_Rect()
 {
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 
-	// ÇöÀç VP Å©±â
+	// ï¿½ï¿½ï¿½ï¿½ VP Å©ï¿½ï¿½
 	_uint n = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&n, &vp);
 
-	// VS¿¡¼­ ortho P¸¦ ¾²°í ÀÖÀ¸¹Ç·Î,
-	// È­¸éÀ» ²Ë Ã¤¿ì·Á¸é (0,0) ±âÁØÀ¸·Î vp.Width, vp.Height Å©±â·Î ½ºÄÉÀÏ¸¸ ÁÖ¸é µË´Ï´Ù.
+	// VSï¿½ï¿½ï¿½ï¿½ ortho Pï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½,
+	// È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ (0,0) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vp.Width, vp.Height Å©ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ö¸ï¿½ ï¿½Ë´Ï´ï¿½.
 	_matrix W = XMMatrixScaling(vp.Width, vp.Height, 1.0f);
 
 	_matrix WT = XMMatrixTranspose(W);
@@ -353,12 +353,12 @@ void CRenderTarget::Bind_Shader()
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 
-	// ÇöÀç ¼³Á¤µÈ VP °¡Á®¿À±â (ÀÌ¹Ì Shading/Combine¿ë VP·Î ¹Ù²ï »óÅÂ¿¡¼­ È£ÃâµÊ)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ VP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½Ì¹ï¿½ Shading/Combineï¿½ï¿½ VPï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½)
 	_uint n = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&n, &vp);
 
-	// Á÷±³ Åõ¿µ & ¿ùµå
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ & ï¿½ï¿½ï¿½ï¿½
 	_matrix V = XMMatrixIdentity();
 	_matrix P = XMMatrixOrthographicOffCenterLH(
 		-vp.Width * 0.5f, vp.Width * 0.5f,
@@ -381,7 +381,7 @@ void CRenderTarget::Bind_Shader()
 	ctx->UpdateSubresource(m_pCBPerCamera, 0, nullptr, &cam, 0, 0);
 	ctx->VSSetConstantBuffers(1, 1, &m_pCBPerCamera);
 
-	// b2: PerMaterial (ÅØ½ºÃ³ »ç¿ë ÇÃ·¡±× µî)
+	// b2: PerMaterial (ï¿½Ø½ï¿½Ã³ ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½)
 	struct MatCB { XMFLOAT4 baseColor; UINT useTexture; UINT _pad[3]; };
 	MatCB mat{};
 	mat.baseColor = XMFLOAT4(1, 1, 1, 1);
@@ -389,7 +389,7 @@ void CRenderTarget::Bind_Shader()
 	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
 	ctx->PSSetConstantBuffers(2, 1, &m_pCBPerMaterial);
 
-	// »ùÇÃ·¯(s0) ²À ¹ÙÀÎµå (¾øÀ¸¸é Sample()°¡ 0À» ¹ÝÈ¯)
+	// ï¿½ï¿½ï¿½Ã·ï¿½(s0) ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Sample()ï¿½ï¿½ 0ï¿½ï¿½ ï¿½ï¿½È¯)
 	if (m_pDebugSampler)
 		ctx->PSSetSamplers(0, 1, &m_pDebugSampler);
 }
@@ -403,7 +403,7 @@ HRESULT CRenderTarget::Bind_Light()
 	if (!scene) 
 		return E_FAIL;
 
-	// 1) ¶óÀÌÆ® ¼öÁý
+	// 1) ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 	list<CLight*> lights = scene->Get_LightList();
 	const _uint total = static_cast<_uint>(min<size_t>(lights.size(), 64));
 
