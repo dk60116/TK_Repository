@@ -28,6 +28,11 @@ void CRenderer::OnDestroy()
 	Safe_Release(m_pOutlineMat);
 }
 
+void CRenderer::Render_GBuffer(CCamera* _cam, CShader* _gbufferShader)
+{
+	Render_WithCamera(_cam);
+}
+
 HRESULT CRenderer::Initialize(void* _desc)
 {
 	if (FAILED(__super::Initialize(_desc)))

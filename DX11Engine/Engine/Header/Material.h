@@ -38,6 +38,7 @@ private:
 public:
 	void Bind_Matrix(const _fmatrix _world);
 	void Bind_Camera(const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
+	void Bind_CameraWithShader(class CShader* _shader, const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount = 0);
 	void Bind_Light(_matrix* _lights, const _uint _count);
 	void Bind_Shadow(const _fmatrix _world, const _fmatrix _lightVP, const _bool _alphaCutout);
 	void Bind_CustomValues();
@@ -87,4 +88,3 @@ private:
 };
 
 NS_END
-

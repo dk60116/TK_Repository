@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "Object.h"
 #include "Renderer.h"
 #include "SkinnedMeshBuffer.h"
@@ -125,6 +127,12 @@ public:
 
 protected:
     HRESULT PreLoadResources();
+    HRESULT InitializeDeferredResources();
+    HRESULT CreateGBuffer(_uint _width, _uint _height);
+    void ReleaseGBuffer();
+    void BindGBufferTargets();
+    void ClearGBufferTargets(const ColorValue& _clearColor);
+    void RenderDeferredLighting(CCamera* _camera);
 
 protected:
     ID3D11Device* m_pDevice;
@@ -160,6 +168,24 @@ protected:
     ID3D11BlendState* m_pBlendingState, * m_pNoneBlendingState;
     
     _float m_fPassedTime;
+
+    struct GBufferTarget
+    {
+        ID3D11Texture2D* texture = nullptr;
+        ID3D11RenderTargetView* rtv = nullptr;
+        ID3D11ShaderResourceView* srv = nullptr;
+    };
+
+    array<GBufferTarget, 3> m_gbufferTargets = {};
+    ID3D11Texture2D* m_pGBufferDepth = nullptr;
+    ID3D11DepthStencilView* m_pGBufferDSV = nullptr;
+    ID3D11ShaderResourceView* m_pGBufferDepthSRV = nullptr;
+    _uint m_gbufferWidth = 0;
+    _uint m_gbufferHeight = 0;
+    _bool m_bUseDeferred = true;
+    class CShader* m_pDeferredGBufferShader = nullptr;
+    class CMaterial* m_pDeferredLightingMaterial = nullptr;
+    class CMeshBuffer* m_pDeferredQuad = nullptr;
 };
 
 NS_END

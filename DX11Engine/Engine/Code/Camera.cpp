@@ -207,6 +207,40 @@ void CCamera::RenderMesh()
 			(*it)->Render_WithCamera(this);
 	}
 
+	RenderMesh_ForwardTransparent();
+
+	m_vMeshList_Lit.clear();
+	m_vMeshList_NoneCull.clear();
+}
+
+void CCamera::RenderMesh_GBuffer(CShader* _gbufferShader)
+{
+	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
+	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
+
+	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
+
+	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_GBuffer(this, _gbufferShader);
+	}
+
+	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingNoneCullResterState());
+
+	for (TRAVERSAL_ITER(m_vMeshList_NoneCull, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_GBuffer(this, _gbufferShader);
+	}
+
+	m_vMeshList_Lit.clear();
+	m_vMeshList_NoneCull.clear();
+}
+
+void CCamera::RenderMesh_ForwardTransparent()
+{
 	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_BlendingResterState());
 	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
@@ -222,7 +256,7 @@ void CCamera::RenderMesh()
 		return da > db;
 		});
 
-	for (auto* r : sorted) 
+	for (auto* r : sorted)
 	{
 		if (r->Get_GameObject()->IsRecursiveActive() && r->Get_Enabled())
 			r->Render_WithCamera(this);
@@ -231,9 +265,7 @@ void CCamera::RenderMesh()
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
 	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
 	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
-	
-	m_vMeshList_Lit.clear();
-	m_vMeshList_NoneCull.clear();
+
 	m_vMeshList_Blend.clear();
 }
 

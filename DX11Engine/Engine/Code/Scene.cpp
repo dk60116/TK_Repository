@@ -250,6 +250,9 @@ HRESULT CScene::Initialize()
 		wuanm->Get_Material()->Set_BaseColor(ColorValue(166, 29, 212, 255).f4Color());
 	}
 
+	if (FAILED(InitializeDeferredResources()))
+		m_bUseDeferred = false;
+
 	CDebug::Log(L"Load scene Complete: " + m_strSceneName);
 
 	m_bSceneStarted = true;
@@ -437,6 +440,72 @@ void CScene::Render_Game()
 	if (Get_Camera())
 		backgroudColor = Get_Camera()->Get_BackgroundColor();
 
+	if (m_bUseDeferred)
+	{
+		vector2Int res = CDisplay::Get_ScreenResolution();
+		if (res.x != static_cast<_int>(m_gbufferWidth) || res.y != static_cast<_int>(m_gbufferHeight))
+		{
+			if (FAILED(CreateGBuffer(res.x, res.y)))
+				m_bUseDeferred = false;
+		}
+
+		if (m_bUseDeferred)
+		{
+			BindGBufferTargets();
+			ClearGBufferTargets(backgroudColor);
+
+			for (TRAVERSAL_ITER(m_lObjectList, it))
+			{
+				if ((*it)->ActiveSelf())
+					(*it)->Render();
+			}
+
+			for (TRAVERSAL_ITER(m_lCameraList, it))
+				(*it)->OnPreCull();
+			for (TRAVERSAL_ITER(m_lCameraList, it))
+				(*it)->OnPreRender();
+
+			_float blendFactor[4] = { 1.f,1.f,1.f,1.f };
+			m_pContext->OMSetBlendState(m_pNoneBlendingState, blendFactor, 0xFFFFFFFF);
+			m_pContext->RSSetState(m_pMeshResterizerState);
+			m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
+
+			for (TRAVERSAL_ITER(m_lCameraList, it))
+			{
+				if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+					(*it)->RenderMesh_GBuffer(m_pDeferredGBufferShader);
+			}
+
+			CGraphicDevice::Set_RenderTarget(CDisplay::Get_GameWindow());
+			RenderDeferredLighting(Get_Camera());
+
+			if (m_pSkyBox && !m_lCameraList.empty())
+			{
+				m_pContext->RSSetState(m_pSkyBoxResterizerState);
+				m_pContext->OMSetDepthStencilState(m_pSkyBoxDepthStencillState, 0);
+				RenderSkyBox(m_lCameraList.back());
+			}
+
+			for (TRAVERSAL_ITER(m_lCameraList, it))
+			{
+				if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+					(*it)->RenderMesh_ForwardTransparent();
+			}
+
+			m_pContext->RSSetState(m_pUIResterizerState);
+			m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
+
+			for (TRAVERSAL_ITER(m_lCameraList, it))
+			{
+				if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+					(*it)->RenderUI();
+			}
+
+			m_lLightList.clear();
+			return;
+		}
+	}
+
 	CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::Clear_DepthStencil_View();
 
@@ -485,6 +554,11 @@ void CScene::Render_Game()
 void CScene::SceneRelease()
 {
 	m_bSceneStarted = false;
+
+	ReleaseGBuffer();
+	Safe_Release(m_pDeferredGBufferShader);
+	Safe_Release(m_pDeferredLightingMaterial);
+	Safe_Release(m_pDeferredQuad);
 
 	Safe_Release(m_pSkyBox);
 	m_pSkyBox = nullptr;
@@ -1071,6 +1145,196 @@ HRESULT CScene::PreLoadResources()
 	CSceneLoader::GetInstance().StartLoading(nameList, fileList, formatList);
 
 	return S_OK;
+}
+
+HRESULT CScene::InitializeDeferredResources()
+{
+	Safe_Release(m_pDeferredGBufferShader);
+	Safe_Release(m_pDeferredLightingMaterial);
+	Safe_Release(m_pDeferredQuad);
+
+	m_pDeferredGBufferShader = CResources::LoadOnGame<CShader>(L"DeferredGBuffer (Shader)");
+	m_pDeferredLightingMaterial = CResources::LoadOnGame<CMaterial>(L"DeferredLightingMaterial (Material)");
+	m_pDeferredQuad = CResources::LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)");
+
+	if (m_pDeferredGBufferShader)
+		m_pDeferredGBufferShader->AddRef();
+	if (m_pDeferredLightingMaterial)
+		m_pDeferredLightingMaterial->AddRef();
+	if (m_pDeferredQuad)
+		m_pDeferredQuad->AddRef();
+
+	return (m_pDeferredGBufferShader && m_pDeferredLightingMaterial && m_pDeferredQuad) ? S_OK : E_FAIL;
+}
+
+HRESULT CScene::CreateGBuffer(_uint _width, _uint _height)
+{
+	ReleaseGBuffer();
+
+	if (_width == 0 || _height == 0)
+		return E_FAIL;
+
+	D3D11_TEXTURE2D_DESC desc = {};
+	desc.Width = _width;
+	desc.Height = _height;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.SampleDesc.Count = 1;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	const DXGI_FORMAT formats[3] =
+	{
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_FORMAT_R16G16B16A16_FLOAT,
+		DXGI_FORMAT_R16G16B16A16_FLOAT
+	};
+
+	for (size_t i = 0; i < m_gbufferTargets.size(); ++i)
+	{
+		desc.Format = formats[i];
+
+		if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_gbufferTargets[i].texture)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateRenderTargetView(m_gbufferTargets[i].texture, nullptr, &m_gbufferTargets[i].rtv)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_gbufferTargets[i].texture, nullptr, &m_gbufferTargets[i].srv)))
+			return E_FAIL;
+	}
+
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	depthDesc.Width = _width;
+	depthDesc.Height = _height;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	depthDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&depthDesc, nullptr, &m_pGBufferDepth)))
+		return E_FAIL;
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Texture2D.MipSlice = 0;
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(m_pGBufferDepth, &dsvDesc, &m_pGBufferDSV)))
+		return E_FAIL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pGBufferDepth, &srvDesc, &m_pGBufferDepthSRV)))
+		return E_FAIL;
+
+	m_gbufferWidth = _width;
+	m_gbufferHeight = _height;
+
+	return S_OK;
+}
+
+void CScene::ReleaseGBuffer()
+{
+	for (auto& target : m_gbufferTargets)
+	{
+		Safe_Release(target.texture);
+		Safe_Release(target.rtv);
+		Safe_Release(target.srv);
+	}
+
+	Safe_Release(m_pGBufferDepth);
+	Safe_Release(m_pGBufferDSV);
+	Safe_Release(m_pGBufferDepthSRV);
+
+	m_gbufferWidth = 0;
+	m_gbufferHeight = 0;
+}
+
+void CScene::BindGBufferTargets()
+{
+	array<ID3D11RenderTargetView*, 3> rtvs =
+	{
+		m_gbufferTargets[0].rtv,
+		m_gbufferTargets[1].rtv,
+		m_gbufferTargets[2].rtv
+	};
+
+	m_pContext->OMSetRenderTargets(static_cast<UINT>(rtvs.size()), rtvs.data(), m_pGBufferDSV);
+
+	const D3D11_VIEWPORT* vp = CGraphicDevice::Get_GameViewport();
+	if (vp)
+		m_pContext->RSSetViewports(1, vp);
+}
+
+void CScene::ClearGBufferTargets(const ColorValue& _clearColor)
+{
+	const auto clear = _clearColor.dvColor();
+
+	for (auto& target : m_gbufferTargets)
+	{
+		if (target.rtv)
+			m_pContext->ClearRenderTargetView(target.rtv, reinterpret_cast<const _float*>(&clear));
+	}
+
+	if (m_pGBufferDSV)
+		m_pContext->ClearDepthStencilView(m_pGBufferDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+}
+
+void CScene::RenderDeferredLighting(CCamera* _camera)
+{
+	if (!m_pDeferredLightingMaterial || !m_pDeferredQuad || !m_pDeferredGBufferShader || !_camera)
+		return;
+
+	const _matrix world = XMMatrixIdentity();
+
+	vector3 cPos = _camera->Get_Transform()->Get_Position();
+	_float3 camPos = cPos.toFloat3();
+	_matrix matView = _camera->Get_ViewMatrix();
+	_matrix matProj = _camera->Get_ProjectionMatrix();
+
+	m_pDeferredLightingMaterial->Bind_Matrix(world);
+	m_pDeferredLightingMaterial->Bind_Camera(camPos, matView, matProj, 0);
+
+	list<CLight*> lights = Get_LightList();
+	if (!lights.empty())
+	{
+		vector<_matrix> vLightInfos = {};
+		_uint index = 0;
+
+		for (TRAVERSAL_ITER(lights, it))
+		{
+			if (!(*it))
+				continue;
+
+			_float4x4 lightInfo = (*it)->To_LightInfo();
+			lightInfo._44 = (index == 0) ? static_cast<_float>(lights.size()) : 0.f;
+			vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));
+			++index;
+		}
+
+		m_pDeferredLightingMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(vLightInfos.size()));
+	}
+
+	ID3D11ShaderResourceView* srvs[] =
+	{
+		m_gbufferTargets[0].srv,
+		m_gbufferTargets[1].srv,
+		m_gbufferTargets[2].srv
+	};
+
+	m_pContext->PSSetShaderResources(0, _countof(srvs), srvs);
+
+	m_pDeferredQuad->Render();
+
+	array<ID3D11ShaderResourceView*, 3> nullSrvs = { nullptr, nullptr, nullptr };
+	m_pContext->PSSetShaderResources(0, static_cast<UINT>(nullSrvs.size()), nullSrvs.data());
 }
 
 ID3D11DepthStencilState* CScene::Get_MeshStencillState() const

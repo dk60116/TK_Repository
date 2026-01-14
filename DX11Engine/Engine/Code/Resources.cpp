@@ -1718,6 +1718,12 @@ void CResources::Ready_GameResources()
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
 
+	CShader::SHADERDESC deferredGBufferShaderDesc = { L"../EngineResources/Shader/DeferredGBuffer.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredGBuffer (Shader)", L"", &deferredGBufferShaderDesc));
+
+	CShader::SHADERDESC deferredLightingShaderDesc = { L"../EngineResources/Shader/DeferredLighting.hlsl", L"", VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredLighting (Shader)", L"", &deferredLightingShaderDesc));
+
 	CShader::SHADERDESC skyBoxShaderDesc = { L"../EngineResources/Shader/Skybox.hlsl", L"",  VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"SkyBox (Shader)", L"", &skyBoxShaderDesc));
 
@@ -1735,6 +1741,10 @@ void CResources::Ready_GameResources()
 	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
 	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
+
+	CShader* deferredLightingShader = LoadOnGame<CShader>(L"DeferredLighting (Shader)");
+	CMaterial::MATERIALDESC deferredLightingMatDesc = { deferredLightingShader, true };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DeferredLightingMaterial (Material)", L"", &deferredLightingMatDesc));
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));

@@ -53,6 +53,8 @@ protected:
 
 public:
 	void RenderMesh();
+	void RenderMesh_GBuffer(class CShader* _gbufferShader);
+	void RenderMesh_ForwardTransparent();
 	void RenderShadowPass();
 	void RenderUI();
 
