@@ -209,7 +209,7 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 
 	LightCB buffer = {};
 
-	// µ¥ÀÌÅÍ º¹»ç
+	// ë°ì´í„° ë³µì‚¬
 	const _uint maxCount = min(_count, MAX_LIGHT);
 	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
 
@@ -222,30 +222,30 @@ void CMaterial::Bind_Shadow(const _fmatrix _world, const _fmatrix _lightVP, cons
 {
 	//ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
 
-	//// 1) DepthOnly ¼ÎÀÌ´õ ¹ÙÀÎµù
-	////  - ÇÁ·ÎÁ§Æ® ¼ÎÀÌ´õ ¸Å´ÏÀú¿¡ ¸ÂÃç ±³Ã¼ÇÏ¼¼¿ä.
-	////  - ¿¹: "VS_DepthOnly", "PS_DepthOnly_Null" / "PS_DepthOnly_AlphaTest"
+	//// 1) DepthOnly ì…°ì´ë” ë°”ì¸ë”©
+	////  - í”„ë¡œì íŠ¸ ì…°ì´ë” ë§¤ë‹ˆì €ì— ë§ì¶° êµì²´í•˜ì„¸ìš”.
+	////  - ì˜ˆ: "VS_DepthOnly", "PS_DepthOnly_Null" / "PS_DepthOnly_AlphaTest"
 	//{
 	//	CShader* vsDepth = CShaderManager::Get()->Get(L"VS_DepthOnly");
 	//	CShader* psDepth = nullptr;
 	//	if (alphaCutout)
 	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_AlphaTest");
 	//	else
-	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_Null"); // È¤Àº PS »ı·« °¡´É
+	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_Null"); // í˜¹ì€ PS ìƒëµ ê°€ëŠ¥
 
 	//	if (vsDepth) 
-	//		vsDepth->BindVS();     // ÀÔ·Â ·¹ÀÌ¾Æ¿ô Æ÷ÇÔ
+	//		vsDepth->BindVS();     // ì…ë ¥ ë ˆì´ì•„ì›ƒ í¬í•¨
 	//	if (psDepth) 
 	//		psDepth->BindPS();
 	//	else         
-	//		ctx->PSSetShader(nullptr, nullptr, 0); // ¿ÏÀü depth-only
+	//		ctx->PSSetShader(nullptr, nullptr, 0); // ì™„ì „ depth-only
 	//}
 
 	//// 2) b0 : World
 	//MatrixCB m = {};
 	//m.world = XMMatrixTranspose(_world);
 	//ctx->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &m, 0, 0);
-	//ctx->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer); // VS¸¸À¸·Îµµ ÃæºĞ
+	//ctx->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer); // VSë§Œìœ¼ë¡œë„ ì¶©ë¶„
 
 	//// 3) b5 : LightVP
 	//ShadowCB s = {};
@@ -253,14 +253,14 @@ void CMaterial::Bind_Shadow(const _fmatrix _world, const _fmatrix _lightVP, cons
 	//ctx->UpdateSubresource(m_pShadowBuffer, 0, nullptr, &s, 0, 0);
 	//ctx->VSSetConstantBuffers(5, 1, &m_pShadowBuffer);
 
-	//// 4) ¾ËÆÄ ÄÆ¾Æ¿ôÀÌ¸é º£ÀÌ½º ÅØ½ºÃ³ t0 ¹ÙÀÎµù(»ùÇÃ·¯´Â Bind_Texture¿¡¼­ ¸¸µé´ø ±âº» s0 »ç¿ë)
+	//// 4) ì•ŒíŒŒ ì»·ì•„ì›ƒì´ë©´ ë² ì´ìŠ¤ í…ìŠ¤ì²˜ t0 ë°”ì¸ë”©(ìƒ˜í”ŒëŸ¬ëŠ” Bind_Textureì—ì„œ ë§Œë“¤ë˜ ê¸°ë³¸ s0 ì‚¬ìš©)
 	//if (_alphaCutout)
 	//{
 	//	ID3D11ShaderResourceView* base = Get_DiffuseSRV();
 	//	ctx->PSSetShaderResources(0, 1, &base);
 
-	//	// »ùÇÃ·¯(¼±Çü ·¡ÇÎ) ÇÏ³ª´Â ±âº»ÀûÀ¸·Î ¸¸µé¾î µÎ¼ÌÀ¸´Ï Àç»ç¿ë:
-	//	// CMaterial::Bind_Texture()¸¦ ºÎ¸£Áö ¾Ê´Â ÀÌÀ¯: ºÒÇÊ¿äÇÑ CB/ÅØ½ºÃ³±îÁö ´ë°Å ¹ÙÀÎµùµÇ±â ¶§¹®
+	//	// ìƒ˜í”ŒëŸ¬(ì„ í˜• ë˜í•‘) í•˜ë‚˜ëŠ” ê¸°ë³¸ì ìœ¼ë¡œ ë§Œë“¤ì–´ ë‘ì…¨ìœ¼ë‹ˆ ì¬ì‚¬ìš©:
+	//	// CMaterial::Bind_Texture()ë¥¼ ë¶€ë¥´ì§€ ì•ŠëŠ” ì´ìœ : ë¶ˆí•„ìš”í•œ CB/í…ìŠ¤ì²˜ê¹Œì§€ ëŒ€ê±° ë°”ì¸ë”©ë˜ê¸° ë•Œë¬¸
 	//	static ID3D11SamplerState* s0 = nullptr;
 	//	
 	//	if (!s0)
@@ -293,7 +293,7 @@ void CMaterial::Bind_CustomValues()
 
 	m_vCustomBufferByteList.clear();
 
-	// ¼ø¼­ Áß¿ä: HLSL°ú ÀÏÄ¡ÇØ¾ß ÇÔ
+	// ìˆœì„œ ì¤‘ìš”: HLSLê³¼ ì¼ì¹˜í•´ì•¼ í•¨
 	for (const auto& [key, value] : m_mFloatValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
@@ -332,7 +332,7 @@ void CMaterial::Bind_CustomValues()
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pw, pw + sizeof(_float));
 	}
 
-	// Á¤·Ä ¸ÂÃß±â (16¹ÙÀÌÆ® ´ÜÀ§)
+	// ì •ë ¬ ë§ì¶”ê¸° (16ë°”ì´íŠ¸ ë‹¨ìœ„)
 	while (m_vCustomBufferByteList.size() % 16 != 0)
 		m_vCustomBufferByteList.push_back(0);
 
@@ -548,4 +548,41 @@ void CMaterial::Bind_Texture() const
 	}
 
 	context->PSSetSamplers(0, 1, &gSamplerState);
+}
+
+void CMaterial::Bind_CameraWithShader(CShader* _shader, const _float3 _camPos, const _fmatrix _view, const _cmatrix _projection, const _uint _boneCount)
+{
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
+	if (_shader)
+		_shader->Bind();
+	else if (m_pShader)
+		m_pShader->Bind();
+
+	Bind_Texture();
+
+	// b1: PerCamera
+	CameraCB camCB = {};
+	camCB.camPos = _camPos;
+	camCB.view = XMMatrixTranspose(_view);
+	camCB.proj = XMMatrixTranspose(_projection);
+	_matrix viewInv = XMMatrixInverse(nullptr, _view);
+	camCB.viewInv = XMMatrixTranspose(viewInv);
+	context->UpdateSubresource(m_pCameraBuffer, 0, nullptr, &camCB, 0, 0);
+	context->PSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+	context->VSSetConstantBuffers(1, 1, &m_pCameraBuffer);
+
+	// b2: PerMaterial
+	MaterialCB mat = {};
+
+	mat.baseColor = m_vBaseColor;
+	mat.useTexture = (!m_vTextureList.empty() && m_vTextureList[0] != nullptr);
+	mat.boneCount = _boneCount;
+
+	context->UpdateSubresource(m_pMaterialBuffer, 0, nullptr, &mat, 0, 0);
+	context->PSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+	context->VSSetConstantBuffers(2, 1, &m_pMaterialBuffer);
+
+	if (m_vCustomBufferByteList.size() > 0)
+		Bind_CustomValues();
 }
