@@ -44,7 +44,7 @@ HRESULT CSkinnedMeshRenderer::Initialize(void* _desc)
 
 	auto mat = m_pMaterial;
 
-	// º» Çà·Ä »ó¼ö ¹öÆÛ »ı¼º (ÃÖ´ë º» °¹¼ö = 128 °¡Á¤)
+	// ë³¸ í–‰ë ¬ ìƒìˆ˜ ë²„í¼ ìƒì„± (ìµœëŒ€ ë³¸ ê°¯ìˆ˜ = 128 ê°€ì •)
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	desc.ByteWidth = sizeof(XMMATRIX) * 128;
@@ -165,35 +165,35 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	// ¿ùµå, ºä, ÇÁ·ÎÁ§¼Ç ¸ÅÆ®¸¯½º
+	// ì›”ë“œ, ë·°, í”„ë¡œì ì…˜ ë§¤íŠ¸ë¦­ìŠ¤
 	vector3 cPos = _cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
-	// º» Çà·Ä °è»ê
-	// m_vBones: °¢ º» Transform
-	// m_pMeshBuffer->m_vBoneOffsetMatrices: ¿ª ¹ÙÀÎµåÆ÷Áî Çà·Ä
+	// ë³¸ í–‰ë ¬ ê³„ì‚°
+	// m_vBones: ê° ë³¸ Transform
+	// m_pMeshBuffer->m_vBoneOffsetMatrices: ì—­ ë°”ì¸ë“œí¬ì¦ˆ í–‰ë ¬
 	_matrix boneMatrices[128] = {};
 
 	for (_uint i = 0; i < static_cast<_uint>(m_vBones.size()); ++i)
 	{
 		if (m_vBones[i])
 		{
-			// ÇöÀç º»ÀÇ ¿ùµå Çà·Ä
+			// í˜„ì¬ ë³¸ì˜ ì›”ë“œ í–‰ë ¬
 			_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
 
-			// ¿ª ¹ÙÀÎµå Æ÷Áî
+			// ì—­ ë°”ì¸ë“œ í¬ì¦ˆ
 			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
 
-			if (m_pGameObject) // ¸Ş½Ã Transform
+			if (m_pGameObject) // ë©”ì‹œ Transform
 			{
 				_matrix meshWorldInv = XMMatrixInverse(nullptr, m_pGameObject->Get_Transform()->Get_WorldMatrix());
 				boneWorld = boneWorld * meshWorldInv;
 			}
 
-			// ÃÖÁ¾ º» Çà·Ä
+			// ìµœì¢… ë³¸ í–‰ë ¬
 			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
 		}
 		else
@@ -202,7 +202,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		}
 	}
 
-	// 3) º» ¸ÅÆ®¸¯½º ¹öÆÛ¿¡ ¾÷·Îµå
+	// 3) ë³¸ ë§¤íŠ¸ë¦­ìŠ¤ ë²„í¼ì— ì—…ë¡œë“œ
 	D3D11_MAPPED_SUBRESOURCE mappedRes;
 	if (SUCCEEDED(m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
 	{
@@ -210,16 +210,16 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
 	}
 
-	// 4) ¸ÓÆ¼¸®¾ó ¹ÙÀÎµù
+	// 4) ë¨¸í‹°ë¦¬ì–¼ ë°”ì¸ë”©
 	m_pMaterial->Bind_Matrix(matWorld);
 	m_pMaterial->Bind_Camera(camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
-	// 5) º» »ó¼ö ¹öÆÛ ¹ÙÀÎµù (b3 ½½·Ô)
+	// 5) ë³¸ ìƒìˆ˜ ë²„í¼ ë°”ì¸ë”© (b3 ìŠ¬ë¡¯)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
 	Bind_InstanceData(XMMatrixIdentity(), m_pMeshBuffer);
 
-	// 6) ¸Ş½Ã ·»´õ¸µ
+	// 6) ë©”ì‹œ ë Œë”ë§
 	m_pMeshBuffer->Render();
 
 	ResetShaderResources();
@@ -258,10 +258,10 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 	ID3D11DepthStencilState* outlineStencil;
 	m_pDevice->CreateDepthStencilState(&dsDesc, &outlineStencil);
 
-	// ¿ùµå, ºä, ÇÁ·ÎÁ§¼Ç
+	// ì›”ë“œ, ë·°, í”„ë¡œì ì…˜
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 
-	// ½ºÄÉÀÏ¾÷ (Á¶±İ Å©°Ô)
+	// ìŠ¤ì¼€ì¼ì—… (ì¡°ê¸ˆ í¬ê²Œ)
 	_matrix scale = XMMatrixScaling(1.03f, 1.03f, 1.03f);
 	matWorld = scale * matWorld;
 
@@ -274,21 +274,21 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 
 	m_pContext->RSSetState(CGraphicDevice::GetInstance().Get_Rasterizer_CullFront());
 
-	// ¾Æ¿ô¶óÀÎ ¸ÓÆ¼¸®¾ó ¹ÙÀÎµù (´Ü»ö ¼ÎÀÌ´õ)
+	// ì•„ì›ƒë¼ì¸ ë¨¸í‹°ë¦¬ì–¼ ë°”ì¸ë”© (ë‹¨ìƒ‰ ì…°ì´ë”)
 
 	//if (m_pOutlineMat)
 	//{
 	//	m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
 	//	m_pOutlineMat->Bind(matWorld, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
-	//	// º» »ó¼ö ¹öÆÛ ¹ÙÀÎµù
+	//	// ë³¸ ìƒìˆ˜ ë²„í¼ ë°”ì¸ë”©
 	//	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
-	//	// ¸Ş½Ã ·»´õ¸µ
+	//	// ë©”ì‹œ ë Œë”ë§
 	//	m_pMeshBuffer->Render();
 	//}
 
-	// 5) »óÅÂ º¹¿ø
+	// 5) ìƒíƒœ ë³µì›
 	m_pContext->OMSetDepthStencilState(nullptr, 0);
 	m_pContext->RSSetState(nullptr);
 }
@@ -350,4 +350,73 @@ const wstring CSkinnedMeshRenderer::Get_RootBoneName() const
 void CSkinnedMeshRenderer::Set_ApplyRootMotion(const _bool _value)
 {
 	m_bApplyRootMotion = _value;
+}
+
+void CSkinnedMeshRenderer::Render_GBuffer(CCamera* _cam, CShader* _gbufferShader)
+{
+	if (!_cam)
+	{
+		CDebug::LogError("Skinned MeshRenderer: No Camera assigned.");
+		return;
+	}
+
+	if (!m_pMaterial)
+	{
+		CDebug::LogError(L"Skinned MeshRenderer - No material assigned: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	if (!m_pMeshBuffer)
+	{
+		CDebug::LogError(L"Skinned MeshRenderer - No MeshBuffer assigned :" + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	vector3 cPos = _cam->Get_Transform()->Get_Position();
+	_float3 camPos = cPos.toFloat3();
+	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
+	_matrix matView = _cam->Get_ViewMatrix();
+	_matrix matProj = _cam->Get_ProjectionMatrix();
+
+	_matrix boneMatrices[128] = {};
+
+	for (_uint i = 0; i < static_cast<_uint>(m_vBones.size()); ++i)
+	{
+		if (m_vBones[i])
+		{
+			_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
+			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
+
+			if (m_pGameObject)
+			{
+				_matrix meshWorldInv = XMMatrixInverse(nullptr, m_pGameObject->Get_Transform()->Get_WorldMatrix());
+				boneWorld = boneWorld * meshWorldInv;
+			}
+
+			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
+		}
+		else
+		{
+			boneMatrices[i] = XMMatrixIdentity();
+		}
+	}
+
+	D3D11_MAPPED_SUBRESOURCE mappedRes;
+	if (SUCCEEDED(m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
+	{
+		memcpy(mappedRes.pData, boneMatrices, sizeof(_matrix) * m_vBones.size());
+		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
+	}
+
+	CShader* gbufferShader = CResources::LoadOnGame<CShader>(L"DeferredGBufferSkinned (Shader)");
+
+	m_pMaterial->Bind_Matrix(matWorld);
+	m_pMaterial->Bind_CameraWithShader(gbufferShader, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
+
+	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+
+	Bind_InstanceData(XMMatrixIdentity(), m_pMeshBuffer);
+	m_pMeshBuffer->Render();
+
+	ResetShaderResources();
 }
