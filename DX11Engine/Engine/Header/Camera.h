@@ -51,8 +51,6 @@ protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
-	void Bind_RenderTarget();
-
 public:
 	void RenderMesh();
 	void RenderShadowPass();

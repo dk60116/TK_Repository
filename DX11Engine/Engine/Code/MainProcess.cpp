@@ -42,9 +42,6 @@ HRESULT CMainProcess::Initialize()
     if (FAILED(CCollisionManager::Initialize()))
         return E_FAIL;
 
-    if (FAILED(CDisplay::CreateRenderTargets()))
-        return E_FAIL;
-
 #ifndef _CLIENT_BUILD
     CEditor::EDITORWINOPTION sOption = CEditor::Get_Options();
 

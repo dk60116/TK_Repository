@@ -120,7 +120,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		};
 	DFS(aiScene->mRootNode, aiMatrix4x4());
 
-	// ¸Ş½Ã´ç 1°³ Áö¿À¸ŞÆ®¸® + ÀÎ½ºÅÏ½º ¿ùµåÇà·Äµé(instanceWorlds)
+	// ë©”ì‹œë‹¹ 1ê°œ ì§€ì˜¤ë©”íŠ¸ë¦¬ + ì¸ìŠ¤í„´ìŠ¤ ì›”ë“œí–‰ë ¬ë“¤(instanceWorlds)
 	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
 	bufferInfoList.reserve(aiScene->mNumMeshes);
 
@@ -128,7 +128,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	{
 		const aiMesh* mesh = aiScene->mMeshes[mi];
 
-		// ÀÌ mesh¸¦ ÂüÁ¶ÇÏ´Â ³ëµå°¡ ÇÏ³ªµµ ¾øÀ¸¸é identity 1°³ Ãß°¡
+		// ì´ meshë¥¼ ì°¸ì¡°í•˜ëŠ” ë…¸ë“œê°€ í•˜ë‚˜ë„ ì—†ìœ¼ë©´ identity 1ê°œ ì¶”ê°€
 		if (meshRefs[mi].empty())
 		{
 			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
@@ -137,7 +137,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 
 		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
-		// ÀÌ¸§
+		// ì´ë¦„
 		wstring baseName = meshRefs[mi][0].nodeName;
 		if (baseName.empty())
 			baseName = CMeshBuffer::FindMeshName(aiScene, mi);
@@ -145,7 +145,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			baseName = L"Mesh_" + to_wstring(mi);
 		info.meshName = baseName;
 
-		// Áö¿À¸ŞÆ®¸®
+		// ì§€ì˜¤ë©”íŠ¸ë¦¬
 		vector<VTX>   vertices;
 		vector<_uint> indices;
 
@@ -186,7 +186,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			}
 		}
 
-		// Desc + µ¥ÀÌÅÍ
+		// Desc + ë°ì´í„°
 		CMeshBuffer::MESHBUFFERDESC desc{};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
@@ -220,7 +220,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 
 		info.aabb = { minSize, maxSize };
 
-		// ÀÎ½ºÅÏ½º ¿ùµå Çà·Äµé ÀúÀå
+		// ì¸ìŠ¤í„´ìŠ¤ ì›”ë“œ í–‰ë ¬ë“¤ ì €ì¥
 		info.instanceWorlds.reserve(meshRefs[mi].size());
 		for (const auto& r : meshRefs[mi])
 		{
@@ -235,7 +235,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			info.instanceWorlds.push_back(w);
 		}
 
-		// ¸ÓÆ¼¸®¾ó
+		// ë¨¸í‹°ë¦¬ì–¼
 		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
 		{
 			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
@@ -252,7 +252,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		bufferInfoList.push_back(move(info));
 	}
 
-	// ÆÄÀÏ¸í ±¸¼º
+	// íŒŒì¼ëª… êµ¬ì„±
 	auto split = CEngineString::Split(_filePath, L"/");
 	wstring folder = split[split.size() - 2];
 	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
@@ -434,7 +434,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierarchy;
 	unordered_map<aiNode*, _uint> nodeToIdMap;
 
-	// ¸ğµç ³ëµå¿¡ ´ëÇØ transformation/childsId/meshsId/numChild/numMeshes¸¦ Ã¤¿ì´Â DFS
+	// ëª¨ë“  ë…¸ë“œì— ëŒ€í•´ transformation/childsId/meshsId/numChild/numMeshesë¥¼ ì±„ìš°ëŠ” DFS
 	function<void(aiNode*, const _int, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>&)> TraverseSkeleton =
 		[&](aiNode* node, const _int parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& out)
 		{
@@ -443,7 +443,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			n.parentId = parentId;
 			n.name = CEngineString::StringToWString(node->mName.C_Str());
 
-			// ·ÎÄÃ Æ®·£½ºÆû º¹»ç
+			// ë¡œì»¬ íŠ¸ëœìŠ¤í¼ ë³µì‚¬
 			const aiMatrix4x4& m = node->mTransformation;
 			_float4x4 t = _float4x4
 			(
@@ -454,20 +454,20 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			);
 			n.transformation = t;
 
-			// ÀÌ ³ëµå¿¡ ¿¬°áµÈ ¸Ş½Ã ÀÎµ¦½º
+			// ì´ ë…¸ë“œì— ì—°ê²°ëœ ë©”ì‹œ ì¸ë±ìŠ¤
 			n.numMeshes = (_uint)node->mNumMeshes;
 			n.meshsId.reserve(node->mNumMeshes);
 			for (_uint mi = 0; mi < node->mNumMeshes; ++mi)
 				n.meshsId.push_back(node->mMeshes[mi]);
 
-			// ¿ì¼± Çª½ÃÇÑ µÚ ÀÚ½Ä Àç±Í
+			// ìš°ì„  í‘¸ì‹œí•œ ë’¤ ìì‹ ì¬ê·€
 			out.push_back(n);
 			nodeToIdMap[node] = (_uint)n.nodeId;
 
 			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
 				TraverseSkeleton(node->mChildren[ci], n.nodeId, out);
 
-			// ÀÚ½Ä id ¸ñ·Ï/°³¼ö Ã¤¿ì±â
+			// ìì‹ id ëª©ë¡/ê°œìˆ˜ ì±„ìš°ê¸°
 			out[n.nodeId].childsId.reserve(node->mNumChildren);
 			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
 			{
@@ -605,12 +605,12 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring& _filePath)
 
 HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 {
-	// 1. ½ÇÇàÆÄÀÏ À§Ä¡ ¾ò±â
+	// 1. ì‹¤í–‰íŒŒì¼ ìœ„ì¹˜ ì–»ê¸°
 	wchar_t exeDir[MAX_PATH] = {};
 	GetModuleFileNameW(NULL, exeDir, MAX_PATH);
 	PathRemoveFileSpecW(exeDir);
 
-	// 2. »ó´ë°æ·Î¸¦ Àı´ë°æ·Î·Î º¯È¯
+	// 2. ìƒëŒ€ê²½ë¡œë¥¼ ì ˆëŒ€ê²½ë¡œë¡œ ë³€í™˜
 	wchar_t fullFontPath[MAX_PATH] = {};
 	wcscpy_s(fullFontPath, exeDir);
 	PathAppendW(fullFontPath, _filePath.c_str());
@@ -622,7 +622,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 		return E_FAIL;
 	}
 
-	// 3. %WINDIR%\Fonts Æú´õ·Î º¹»ç
+	// 3. %WINDIR%\Fonts í´ë”ë¡œ ë³µì‚¬
 	wchar_t fontsDir[MAX_PATH] = {};
 	GetWindowsDirectoryW(fontsDir, MAX_PATH);
 	PathAppendW(fontsDir, L"Fonts");
@@ -637,7 +637,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 		return E_FAIL;
 	}
 
-	// 4. ÆùÆ® µî·Ï
+	// 4. í°íŠ¸ ë“±ë¡
 	if (AddFontResourceExW(installedFontPath, FR_NOT_ENUM, 0) == 0)
 	{
 		CDebug::LogError("AddFontResourceExW failed");
@@ -654,7 +654,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 
 	CDebug::Log(L"OutFilePath: " + outfilePath);
 
-	// 5. Ãâ·Â ÆÄÀÏ °æ·Î (¿¹½Ã·Î µ¿ÀÏ À§Ä¡¿¡ ÀúÀå)
+	// 5. ì¶œë ¥ íŒŒì¼ ê²½ë¡œ (ì˜ˆì‹œë¡œ ë™ì¼ ìœ„ì¹˜ì— ì €ì¥)
 	wchar_t spriteOutput[MAX_PATH] = {};
 	wcscpy_s(spriteOutput, exeDir);
 	PathAppendW(spriteOutput, outfilePath.c_str());
@@ -662,11 +662,11 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 	wchar_t outputFullPath[MAX_PATH] = {};
 	GetFullPathNameW(spriteOutput, MAX_PATH, outputFullPath, nullptr);
 
-	// 6. MakeSpriteFont.exe ½ÇÇà (ÆùÆ® ÀÌ¸§À¸·Î È£ÃâÇØ¾ß ÇÔ)
+	// 6. MakeSpriteFont.exe ì‹¤í–‰ (í°íŠ¸ ì´ë¦„ìœ¼ë¡œ í˜¸ì¶œí•´ì•¼ í•¨)
 	wstring cmdLine = L"\"";
 	cmdLine += exeDir;
 	cmdLine += L"\\..\\..\\Engine\\Tools\\MakeSpriteFont.exe\" /FontSize:32 /FontStyle:Regular ";
-	cmdLine += L"\"Liberation Sans\" ";  // ½ÇÁ¦ ÆùÆ® ÆĞ¹Ğ¸® ÀÌ¸§
+	cmdLine += L"\"Liberation Sans\" ";  // ì‹¤ì œ í°íŠ¸ íŒ¨ë°€ë¦¬ ì´ë¦„
 	cmdLine += L"\"" + wstring(outputFullPath) + L"\"";
 
 	CDebug::Log(L"[RUNNING]: " + cmdLine);
@@ -690,7 +690,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
 
-	// 7. ÆùÆ® Á¦°Å ¹× ÆÄÀÏ »èÁ¦
+	// 7. í°íŠ¸ ì œê±° ë° íŒŒì¼ ì‚­ì œ
 	RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
 	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
 	DeleteFileW(installedFontPath);
@@ -889,7 +889,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	{
 		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
-		// ÀÌ¸§
+		// ì´ë¦„
 		_uint nameCount = 0;
 		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
 		if (nameCount > 0) {
@@ -897,7 +897,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
 		}
 
-		// ¹öÆÛ
+		// ë²„í¼
 		_uint bufferSize = 0;
 		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
 		if (bufferSize > 0) {
@@ -905,7 +905,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
 		}
 
-		// ÀÎµ¦½º
+		// ì¸ë±ìŠ¤
 		_uint indexCount = 0;
 		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
 		if (indexCount > 0) {
@@ -934,7 +934,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 		// AABB
 		in.read(reinterpret_cast<char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
 
-		// instancing (Ç×»ó Á¸ÀçÇÑ´Ù°í °¡Á¤)
+		// instancing (í•­ìƒ ì¡´ì¬í•œë‹¤ê³  ê°€ì •)
 		_uint instCount = 0;
 		if (!in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint))) {
 			CDebug::LogError(L"ReadMeshBufferInfos: failed to read instCount, file: " + _binFileName);
@@ -1225,7 +1225,7 @@ HRESULT CResources::SaveNaviMeshBufferInfos(const wstring& _filePath, CNaviMesh:
 	uint32_t nameLen = static_cast<uint32_t>(_info.meshName.size());
 	write(&nameLen, sizeof(nameLen));
 	if (nameLen)
-		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar ±×´ë·Î ±â·Ï
+		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar ê·¸ëŒ€ë¡œ ê¸°ë¡
 
 	write(&_info.desc, sizeof(_info.desc));
 
@@ -1282,7 +1282,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 			return ifs && (ifs.gcount() == static_cast<streamsize>(sz));
 		};
 
-	//---------------- 1) Çì´õ -----------------------------------------------
+	//---------------- 1) í—¤ë” -----------------------------------------------
 	uint32_t magic = 0, version = 0;
 	if (!read(&magic, sizeof(magic)) ||
 		!read(&version, sizeof(version)) ||
@@ -1292,7 +1292,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 		return {};
 	}
 
-	//---------------- 2) Mesh ÀÌ¸§ ------------------------------------------
+	//---------------- 2) Mesh ì´ë¦„ ------------------------------------------
 	uint32_t nameLen = 0;
 	if (!read(&nameLen, sizeof(nameLen)))
 		return {};
@@ -1329,7 +1329,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 			return {};
 	}
 
-	//---------------- 6) Polygon ¸®½ºÆ® --------------------------------------
+	//---------------- 6) Polygon ë¦¬ìŠ¤íŠ¸ --------------------------------------
 	uint32_t polyCount = 0;
 	if (!read(&polyCount, sizeof(polyCount)))
 		return {};
@@ -1340,11 +1340,11 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 	{
 		auto& poly = info.polygons[i];
 
-		// 6-1) ÀÎµ¦½º
+		// 6-1) ì¸ë±ìŠ¤
 		if (!read(&poly.index, sizeof(poly.index)))
 			return {};
 
-		// 6-2) Vertexµé
+		// 6-2) Vertexë“¤
 		uint32_t vCnt = 0;
 		if (!read(&vCnt, sizeof(vCnt)))
 			return {};
@@ -1355,7 +1355,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 				return {};
 		}
 
-		// 6-3) Neighborµé
+		// 6-3) Neighborë“¤
 		uint32_t nCnt = 0;
 		if (!read(&nCnt, sizeof(nCnt)))
 			return {};
@@ -1530,7 +1530,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 			newBuffer->Initialize_Custom(_infoList[i], _desc);
 			newBundle.meshBuffer = newBuffer;
 
-			// ÀÎ½ºÅÏ½Ì µ¥ÀÌÅÍ Àû¿ë
+			// ì¸ìŠ¤í„´ì‹± ë°ì´í„° ì ìš©
 			const auto& worlds = _infoList[i].instanceWorlds;
 			if (!worlds.empty())
 			{
@@ -1542,7 +1542,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 					inst.count = cap;
 					inst.data.resize(cap);
 
-					// _float4x4 -> MeshInstaceData º¯È¯
+					// _float4x4 -> MeshInstaceData ë³€í™˜
 					for (_uint k = 0; k < cap; ++k)
 					{
 						const _float4x4& m = worlds[k];
@@ -1707,17 +1707,7 @@ void CResources::Ready_GameResources()
 	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"Circle (Texture)", L"../EngineResources/Image/Circle.png"));
 	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
 
-	{
-		CShader::SHADERDESC lineDefferdShaderDesc = { L"../EngineResources/Shader/Defferd.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-		LoadResourceComplete_Game(CreateGameResource<CShader>(L"Defferd (Shader)", L"", &lineDefferdShaderDesc));
-
-		CShader::SHADERDESC lineDefferdShadingShaderDesc = { L"../EngineResources/Shader/DefferdShading.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdShading (Shader)", L"", &lineDefferdShadingShaderDesc));
-
-		CShader::SHADERDESC lineDefferdCombineShaderDesc = { L"../EngineResources/Shader/DefferdCombine.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdCombine (Shader)", L"", &lineDefferdCombineShaderDesc));
-	}
-
+	
 	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexBuffer::numElements, VertexBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
 
@@ -1814,14 +1804,14 @@ void CResources::TraverseSkeleton(aiNode* _node, const _int _parentId, vector<CS
 	for (_uint i = 0; i < _node->mNumMeshes; ++i)
 		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
 
-	// ¹Ì¸® push ÇØ¼­ ÀÚ½ÄÀÌ parentId Âü°í °¡´É
+	// ë¯¸ë¦¬ push í•´ì„œ ìì‹ì´ parentId ì°¸ê³  ê°€ëŠ¥
 	_outList.push_back(nodeInfo);
 	_int currentId = nodeInfo.nodeId;
 
-	// ÀÚ½Ä ³ëµåµé ¼øÈ¸
+	// ìì‹ ë…¸ë“œë“¤ ìˆœíšŒ
 	for (_uint i = 0; i < _node->mNumChildren; ++i)
 	{
-		// Àç±Í ÀÌÀü¿¡ outList size¸¦ ¾ò¾î ÀÚ½Ä ID ÃßÁ¤
+		// ì¬ê·€ ì´ì „ì— outList sizeë¥¼ ì–»ì–´ ìì‹ ID ì¶”ì •
 		_int childId = static_cast<_int>(_outList.size());
 		_outList[currentId].childsId.push_back(childId);
 		_outList[currentId].numChild++;

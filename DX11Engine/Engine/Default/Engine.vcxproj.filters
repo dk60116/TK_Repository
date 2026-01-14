@@ -229,9 +229,6 @@
     <ClInclude Include="..\Header\AudioClip.h">
       <Filter>Resource\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\RenderTarget.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\ShadowMap.h">
       <Filter>Render</Filter>
     </ClInclude>
@@ -580,9 +577,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\FMODSystem.cpp">
       <Filter>System\FMod</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\RenderTarget.cpp">
-      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ShadowMap.cpp">
       <Filter>Render</Filter>
