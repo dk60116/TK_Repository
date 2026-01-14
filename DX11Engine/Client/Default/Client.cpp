@@ -6,6 +6,7 @@
 #include "MainScene.h"
 #include "LoadingScene.h"
 #include "GameScene.h"
+#include <new>
 
 #define MAX_LOADSTRING 100
 
@@ -143,13 +144,19 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    if (FAILED(CGameManager::GetInstance().Initialize()))
        return FALSE;
 
-   CMainScene* mainScene = new CMainScene();
+   CMainScene* mainScene = new (std::nothrow) CMainScene();
+   if (!mainScene)
+       return FALSE;
    CSceneManager::CreateScene(mainScene, L"Main Scene");
 
-   CLoadingScene* loadingScene = new CLoadingScene();
+   CLoadingScene* loadingScene = new (std::nothrow) CLoadingScene();
+   if (!loadingScene)
+       return FALSE;
    CSceneManager::CreateScene(loadingScene, L"Loading Scene");
 
-   CGameScene* gameScene = new CGameScene();
+   CGameScene* gameScene = new (std::nothrow) CGameScene();
+   if (!gameScene)
+       return FALSE;
    CSceneManager::CreateScene(gameScene, L"Game Scene");
 
    CSceneManager::LoadScene(L"Main Scene");
