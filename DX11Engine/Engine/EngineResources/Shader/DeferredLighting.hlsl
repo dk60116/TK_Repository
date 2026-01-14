@@ -48,7 +48,7 @@ VSOut VSMain(VSIn input)
     VSOut o;
     float2 pos = input.posL.xy * 2.0f;
     o.posH = float4(pos, 0.0f, 1.0f);
-    o.uv = input.uv;
+    o.uv = input.posL.xy + 0.5f;
     return o;
 }
 

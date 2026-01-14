@@ -1312,6 +1312,9 @@ void CScene::RenderDeferredLighting(CCamera* _camera)
 	m_pDeferredLightingMaterial->Bind_Matrix(world);
 	m_pDeferredLightingMaterial->Bind_Camera(camPos, matView, matProj, 0);
 
+	m_pContext->RSSetState(m_pMeshResterizerState);
+	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
+
 	list<CLight*> lights = Get_LightList();
 	if (!lights.empty())
 	{
