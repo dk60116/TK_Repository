@@ -1686,12 +1686,18 @@ vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> CResources::LoadSkinnedBonesOnScene(
 
 _bool CResources::FileExists(const wstring& _path)
 {
-	const string path = CEngineString::WStringToString(_path);
-	return FileExists(path);
+	if (_path.empty())
+		return false;
+
+	DWORD attrib = GetFileAttributesW(_path.c_str());
+	return (attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY);
 }
 
 _bool CResources::FileExists(const string& _path)
 {
+	if (_path.empty())
+		return false;
+
 	DWORD attrib = GetFileAttributesA(_path.c_str());
 	return (attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY);
 }

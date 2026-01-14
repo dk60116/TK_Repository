@@ -54,17 +54,22 @@ void CSceneManager::Release()
 CScene* CSceneManager::CreateScene(CScene* _newScene, wstring _name)
 {
 	CScene* newScene = dynamic_cast<CScene*>(_newScene);
+	if (!newScene)
+	{
+		CDebug::LogError(L"Create Scene Fail: Invalid scene instance.");
+		return nullptr;
+	}
 	newScene->Set_SceneName(_name);
 
 	GetInstance().m_mSceneList.emplace(_name, newScene);
 
 	newScene->AddRef();
 
-	string filePath = "../Assets/Scenes/" + CEngineString::WStringToString(_name) + ".scene";
+	wstring filePath = L"../Assets/Scenes/" + _name + L".scene";
 
 	if (!CResources::FileExists(filePath))
 	{
-		ofstream outFile(filePath);
+		ofstream outFile(CEngineString::WStringToString(filePath));
 
 		if (outFile.is_open())
 		{
