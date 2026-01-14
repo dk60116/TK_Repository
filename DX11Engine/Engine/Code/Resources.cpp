@@ -1718,8 +1718,11 @@ void CResources::Ready_GameResources()
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
 
-	CShader::SHADERDESC deferredGBufferShaderDesc = { L"../EngineResources/Shader/DeferredGBuffer.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredGBuffer (Shader)", L"", &deferredGBufferShaderDesc));
+	CShader::SHADERDESC deferredGBufferStaticShaderDesc = { L"../EngineResources/Shader/DeferredGBufferStatic.hlsl", L"", VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredGBufferStatic (Shader)", L"", &deferredGBufferStaticShaderDesc));
+
+	CShader::SHADERDESC deferredGBufferSkinnedShaderDesc = { L"../EngineResources/Shader/DeferredGBuffer.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredGBufferSkinned (Shader)", L"", &deferredGBufferSkinnedShaderDesc));
 
 	CShader::SHADERDESC deferredLightingShaderDesc = { L"../EngineResources/Shader/DeferredLighting.hlsl", L"", VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredLighting (Shader)", L"", &deferredLightingShaderDesc));

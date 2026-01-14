@@ -476,7 +476,17 @@ void CScene::Render_Game()
 					(*it)->RenderMesh_GBuffer(m_pDeferredGBufferShader);
 			}
 
-			CGraphicDevice::Set_RenderTarget(CDisplay::Get_GameWindow());
+			ID3D11RenderTargetView* backBufferRTV = CGraphicDevice::Get_RTV();
+			if (backBufferRTV)
+			{
+				m_pContext->OMSetRenderTargets(1, &backBufferRTV, m_pGBufferDSV);
+
+				const D3D11_VIEWPORT* vp = CGraphicDevice::Get_GameViewport();
+				if (vp)
+					m_pContext->RSSetViewports(1, vp);
+			}
+
+			CGraphicDevice::Clear_BackBuffer_View(&backgroudColor);
 			RenderDeferredLighting(Get_Camera());
 
 			if (m_pSkyBox && !m_lCameraList.empty())
@@ -1153,7 +1163,7 @@ HRESULT CScene::InitializeDeferredResources()
 	Safe_Release(m_pDeferredLightingMaterial);
 	Safe_Release(m_pDeferredQuad);
 
-	m_pDeferredGBufferShader = CResources::LoadOnGame<CShader>(L"DeferredGBuffer (Shader)");
+	m_pDeferredGBufferShader = CResources::LoadOnGame<CShader>(L"DeferredGBufferStatic (Shader)");
 	m_pDeferredLightingMaterial = CResources::LoadOnGame<CMaterial>(L"DeferredLightingMaterial (Material)");
 	m_pDeferredQuad = CResources::LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)");
 

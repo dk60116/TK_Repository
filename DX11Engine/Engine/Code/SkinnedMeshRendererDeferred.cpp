@@ -57,8 +57,10 @@ void CSkinnedMeshRenderer::Render_GBuffer(CCamera* _cam, CShader* _gbufferShader
 		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
 	}
 
+	CShader* gbufferShader = CResources::LoadOnGame<CShader>(L"DeferredGBufferSkinned (Shader)");
+
 	m_pMaterial->Bind_Matrix(matWorld);
-	m_pMaterial->Bind_CameraWithShader(_gbufferShader, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
+	m_pMaterial->Bind_CameraWithShader(gbufferShader, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
