@@ -88,6 +88,8 @@ HRESULT CDisplay::CreateRenderTargets()
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Normal", vector2Int(200, 0), vector2(200, 200), ColorValue::black()))
 		return E_FAIL;
+	if (!CreateRenderTarget(L"NormalPreview", vector2Int(200, 0), vector2(200, 200), ColorValue::black()))
+		return E_FAIL;
 	if (!CreateRenderTarget(L"Depth", vector2Int(400, 0), vector2(200, 200), ColorValue::black()))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Shading", vector2Int(0, 200), vector2Int(200, 200), ColorValue::white(), L"Shading"))

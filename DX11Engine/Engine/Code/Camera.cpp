@@ -204,6 +204,7 @@ void CCamera::Bind_RenderTarget()
 	
 	auto* dfRT = CDisplay::Get_RenderTarget(L"Diffuse");
 	auto* nmRT = CDisplay::Get_RenderTarget(L"Normal");
+	auto* nmPreviewRT = CDisplay::Get_RenderTarget(L"NormalPreview");
 	auto* dpRT = CDisplay::Get_RenderTarget(L"Depth");
 	auto* sdRT = CDisplay::Get_RenderTarget(L"Shading");
 	auto* spRT = CDisplay::Get_RenderTarget(L"Specular");
@@ -212,7 +213,7 @@ void CCamera::Bind_RenderTarget()
 	ID3D11RenderTargetView* rtvs[] =
 	{
 		dfRT->Get_RTV(), // SV_TARGET0
-		nmRT->Get_RTV(), // SV_TARGET1
+		nmPreviewRT->Get_RTV(), // SV_TARGET1
 		dpRT->Get_RTV(),
 	};
 	
@@ -230,6 +231,7 @@ void CCamera::Bind_RenderTarget()
 
 	dfRT->Clear();
 	nmRT->Clear();
+	nmPreviewRT->Clear();
 	dpRT->Clear();
 	sdRT->Clear();
 	spRT->Clear();
@@ -380,8 +382,8 @@ void CCamera::RenderMesh()
 
 #ifndef _CLIENT_BUILD
 	auto* diffuseRT = CDisplay::Get_RenderTarget(L"Diffuse");
-	auto* normalRT = CDisplay::Get_RenderTarget(L"Normal");
-	if (diffuseRT || normalRT)
+	auto* normalPreviewRT = CDisplay::Get_RenderTarget(L"NormalPreview");
+	if (diffuseRT || normalPreviewRT)
 	{
 		const vector2Int resolution = CDisplay::Get_ScreenResolution();
 		const _int debugSize = 200;
@@ -395,10 +397,10 @@ void CCamera::RenderMesh()
 			diffusePos.y
 		);
 
-		if (normalRT)
+		if (normalPreviewRT)
 		{
-			normalRT->Update_DebugRect(normalPos, vector2Int(debugSize, debugSize));
-			normalRT->Render();
+			normalPreviewRT->Update_DebugRect(normalPos, vector2Int(debugSize, debugSize));
+			normalPreviewRT->Render();
 		}
 
 		if (diffuseRT)
