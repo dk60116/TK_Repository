@@ -45,6 +45,9 @@ HRESULT CRenderTarget::Initialize(const wstring& _name, const vector2Int _pos, c
 	m_pMeshBuffer = CResources::LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)");
 	m_pDefferdShader = CResources::LoadOnGame<CShader>((wstring)L"Defferd" + _psName + L" (Shader)");
 
+	if (!m_pMeshBuffer || !m_pDefferdShader)
+		return E_FAIL;
+
 	m_pMeshBuffer->AddRef();
 	m_pDefferdShader->AddRef();
 
