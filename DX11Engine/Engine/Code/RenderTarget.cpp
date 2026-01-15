@@ -321,7 +321,7 @@ HRESULT CRenderTarget::Render()
 	struct MatCB { XMFLOAT4 baseColor; UINT useTexture; UINT _pad[3]; };
 	MatCB mat{};
 	mat.baseColor = XMFLOAT4(1, 1, 1, 1);
-	mat.useTexture = 1;
+	mat.useTexture = (m_strTargetName == L"Normal") ? 2 : 1;
 	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
 
 	// 4) ̴ / CB / SRV ε

@@ -1,4 +1,4 @@
-// »ó¼ö ¹öÆÛ
+// ìƒìˆ˜ ë²„í¼
 cbuffer PerObject : register(b0)
 {
     float4x4 world;
@@ -20,11 +20,11 @@ cbuffer PerMaterial : register(b2)
     uint useTexture;
 };
 
-// ÅØ½ºÃ³ & »ùÇÃ·¯
+// í…ìŠ¤ì²˜ & ìƒ˜í”ŒëŸ¬
 Texture2D gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
-// ¹öÅØ½º ÀÔÃâ·Â
+// ë²„í…ìŠ¤ ì…ì¶œë ¥
 struct VSIn
 {
     float3 posL : POSITION;
@@ -38,7 +38,14 @@ struct VSOut
     float3 posW : TEXCOORD1;
 };
 
-// ¹öÅØ½º ¼ÎÀÌ´õ
+    if (useTexture == 2)
+    {
+        float3 normal = gTexture.Sample(gSampler, i.uv).xyz;
+        normal = normal * 0.5f + 0.5f;
+        return float4(normal, 1.0f);
+    }
+
+// ë²„í…ìŠ¤ ì…°ì´ë”
 VSOut VSMain(VSIn v)
 {
     VSOut o;
@@ -53,7 +60,7 @@ VSOut VSMain(VSIn v)
     return o;
 }
 
-// ÇÈ¼¿ ¼ÎÀÌ´õ
+// í”½ì…€ ì…°ì´ë”
 float4 PSMain(VSOut i) : SV_TARGET
 {
     return (useTexture != 0) ? gTexture.Sample(gSampler, i.uv) * baseColor : baseColor;
