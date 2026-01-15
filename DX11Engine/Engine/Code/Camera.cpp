@@ -19,7 +19,7 @@ CCamera::CCamera()
 	, m_vUIList({})
 	, m_vMeshList_Blend({})
 	, m_pShadowMap(nullptr)
-	, m_bUseDeferred(false)
+	, m_bUseDeferred(true)
 {
 	m_strName = L"Camera";
 }
