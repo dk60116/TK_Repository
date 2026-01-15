@@ -46,6 +46,14 @@ public:
 	const _bool IsUseLight() const;
 	const _bool IsTransparent() const;
 	class CTexture* Get_Texture(_int _index) const;
+	_bool Try_GetFloatValue(const wstring& _key, _float& _outValue) const
+	{
+		auto it = m_mFloatValues.find(_key);
+		if (it == m_mFloatValues.end())
+			return false;
+		_outValue = it->second;
+		return true;
+	}
 
 public:
 	void Set_Shader(CShader* _shader);
@@ -87,4 +95,3 @@ private:
 };
 
 NS_END
-
