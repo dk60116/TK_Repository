@@ -209,60 +209,31 @@ void CMaterial::Bind_Light(_matrix* _lights, const _uint _count)
 
 	LightCB buffer = {};
 
-	// µ¥ÀÌÅÍ º¹»ç
-	const _uint maxCount = min(_count, MAX_LIGHT);
-	memcpy(buffer.lights, _lights, sizeof(_matrix) * maxCount);
+	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
 
-	context->UpdateSubresource(m_pLightBuffer, 0, nullptr, &buffer, 0, 0);
-	context->VSSetConstantBuffers(4, 1, &m_pLightBuffer);
-	context->PSSetConstantBuffers(4, 1, &m_pLightBuffer);
-}
+	if (m_pShader)
+		m_pShader->Bind();
 
-void CMaterial::Bind_Shadow(const _fmatrix _world, const _fmatrix _lightVP, const _bool _alphaCutout)
-{
-	//ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
+	Bind_Texture();
 
-	//// 1) DepthOnly ¼ÎÀÌ´õ ¹ÙÀÎµù
-	////  - ÇÁ·ÎÁ§Æ® ¼ÎÀÌ´õ ¸Å´ÏÀú¿¡ ¸ÂÃç ±³Ã¼ÇÏ¼¼¿ä.
-	////  - ¿¹: "VS_DepthOnly", "PS_DepthOnly_Null" / "PS_DepthOnly_AlphaTest"
-	//{
-	//	CShader* vsDepth = CShaderManager::Get()->Get(L"VS_DepthOnly");
-	//	CShader* psDepth = nullptr;
-	//	if (alphaCutout)
-	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_AlphaTest");
-	//	else
-	//		psDepth = CShaderManager::Get()->Get(L"PS_DepthOnly_Null"); // È¤Àº PS »ı·« °¡´É
+	// b0 : World
+	MatrixCB m = {};
+	m.world = XMMatrixTranspose(_world);
+	ctx->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &m, 0, 0);
+	ctx->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
+	ctx->PSSetConstantBuffers(0, 1, &m_pMatrixBuffer);
 
-	//	if (vsDepth) 
-	//		vsDepth->BindVS();     // ÀÔ·Â ·¹ÀÌ¾Æ¿ô Æ÷ÇÔ
-	//	if (psDepth) 
-	//		psDepth->BindPS();
-	//	else         
-	//		ctx->PSSetShader(nullptr, nullptr, 0); // ¿ÏÀü depth-only
-	//}
+	// b5 : LightVP
+	ShadowCB s = {};
+	s.lightVP = XMMatrixTranspose(_lightVP);
+	ctx->UpdateSubresource(m_pShadowBuffer, 0, nullptr, &s, 0, 0);
+	ctx->VSSetConstantBuffers(5, 1, &m_pShadowBuffer);
 
-	//// 2) b0 : World
-	//MatrixCB m = {};
-	//m.world = XMMatrixTranspose(_world);
-	//ctx->UpdateSubresource(m_pMatrixBuffer, 0, nullptr, &m, 0, 0);
-	//ctx->VSSetConstantBuffers(0, 1, &m_pMatrixBuffer); // VS¸¸À¸·Îµµ ÃæºĞ
-
-	//// 3) b5 : LightVP
-	//ShadowCB s = {};
-	//s.lightVP = XMMatrixTranspose(_lightVP);
-	//ctx->UpdateSubresource(m_pShadowBuffer, 0, nullptr, &s, 0, 0);
-	//ctx->VSSetConstantBuffers(5, 1, &m_pShadowBuffer);
-
-	//// 4) ¾ËÆÄ ÄÆ¾Æ¿ôÀÌ¸é º£ÀÌ½º ÅØ½ºÃ³ t0 ¹ÙÀÎµù(»ùÇÃ·¯´Â Bind_Texture¿¡¼­ ¸¸µé´ø ±âº» s0 »ç¿ë)
-	//if (_alphaCutout)
-	//{
-	//	ID3D11ShaderResourceView* base = Get_DiffuseSRV();
-	//	ctx->PSSetShaderResources(0, 1, &base);
-
-	//	// »ùÇÃ·¯(¼±Çü ·¡ÇÎ) ÇÏ³ª´Â ±âº»ÀûÀ¸·Î ¸¸µé¾î µÎ¼ÌÀ¸´Ï Àç»ç¿ë:
-	//	// CMaterial::Bind_Texture()¸¦ ºÎ¸£Áö ¾Ê´Â ÀÌÀ¯: ºÒÇÊ¿äÇÑ CB/ÅØ½ºÃ³±îÁö ´ë°Å ¹ÙÀÎµùµÇ±â ¶§¹®
-	//	static ID3D11SamplerState* s0 = nullptr;
-	//	
+	if (_alphaCutout)
+	{
+		ID3D11ShaderResourceView* base = Get_DiffuseSRV();
+		ctx->PSSetShaderResources(0, 1, &base);
+	}
 	//	if (!s0)
 	//	{
 	//		D3D11_SAMPLER_DESC sd = {};
@@ -293,7 +264,7 @@ void CMaterial::Bind_CustomValues()
 
 	m_vCustomBufferByteList.clear();
 
-	// ¼ø¼­ Áß¿ä: HLSL°ú ÀÏÄ¡ÇØ¾ß ÇÔ
+	// ìˆœì„œ ì¤‘ìš”: HLSLê³¼ ì¼ì¹˜í•´ì•¼ í•¨
 	for (const auto& [key, value] : m_mFloatValues)
 	{
 		const BYTE* p = reinterpret_cast<const BYTE*>(&value);
@@ -332,7 +303,7 @@ void CMaterial::Bind_CustomValues()
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pw, pw + sizeof(_float));
 	}
 
-	// Á¤·Ä ¸ÂÃß±â (16¹ÙÀÌÆ® ´ÜÀ§)
+	// ì •ë ¬ ë§ì¶”ê¸° (16ë°”ì´íŠ¸ ë‹¨ìœ„)
 	while (m_vCustomBufferByteList.size() % 16 != 0)
 		m_vCustomBufferByteList.push_back(0);
 
