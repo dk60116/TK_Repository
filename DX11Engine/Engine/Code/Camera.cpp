@@ -305,6 +305,33 @@ void CCamera::Bind_RenderTarget()
 
 void CCamera::RenderMesh()
 {
+	unordered_map<CMaterial*, _float> calcLightRestore;
+	auto forceAlbedoOnly = [&](const vector<CRenderer*>& renderers)
+		{
+			for (auto* renderer : renderers)
+			{
+				if (!renderer)
+					continue;
+
+				CMaterial* material = renderer->Get_Material();
+				if (!material)
+					continue;
+
+				_float currentValue = 0.f;
+				if (!material->Try_GetFloatValue(L"gCalcLight", currentValue))
+					continue;
+
+				if (!calcLightRestore.count(material))
+					calcLightRestore.emplace(material, currentValue);
+
+				material->Set_FloatValue(L"gCalcLight", 0.f);
+			}
+		};
+
+	forceAlbedoOnly(m_vMeshList_Lit);
+	forceAlbedoOnly(m_vMeshList_NoneCull);
+	forceAlbedoOnly(m_vMeshList_Blend);
+
 	Bind_RenderTarget();
 
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
@@ -347,6 +374,9 @@ void CCamera::RenderMesh()
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
 	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
 	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
+
+	for (const auto& [material, value] : calcLightRestore)
+		material->Set_FloatValue(L"gCalcLight", value);
 
 #ifndef _CLIENT_BUILD
 	auto* diffuseRT = CDisplay::Get_RenderTarget(L"Diffuse");
