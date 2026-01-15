@@ -20,6 +20,7 @@ CCamera::CCamera()
 	, m_vMeshList_Blend({})
 	, m_pShadowMap(nullptr)
 	, m_bUseDeferred(true)
+	, m_bDeferredGBuffer(false)
 {
 	m_strName = L"Camera";
 }
@@ -128,6 +129,11 @@ const _bool CCamera::Get_UseDeferred() const
 void CCamera::Set_UseDeferred(const _bool _useDeferred)
 {
 	m_bUseDeferred = _useDeferred;
+}
+
+const _bool CCamera::IsDeferredGBuffer() const
+{
+	return m_bDeferredGBuffer;
 }
 
 void CCamera::Add_RenderTarget_Mesh(CRenderer* _mesh)
@@ -240,6 +246,7 @@ void CCamera::Bind_RenderTarget(const _bool _includeTransparent)
 	spRT->Clear();
 	cbRT->Clear();
 
+	m_bDeferredGBuffer = true;
 	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
@@ -265,6 +272,7 @@ void CCamera::Bind_RenderTarget(const _bool _includeTransparent)
 
 		m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
 	}
+	m_bDeferredGBuffer = false;
 
 	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
 

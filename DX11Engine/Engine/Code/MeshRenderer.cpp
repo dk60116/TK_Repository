@@ -97,19 +97,19 @@ void CMeshRenderer::Render_Gizmo()
 	if (!vp || !dl) 
 		return;
 
-	// ¦¡¦¡ Ä«¸Ş¶ó Çà·Ä
+	// â”€â”€ ì¹´ë©”ë¼ í–‰ë ¬
 	const _matrix view = editorCam->Get_ViewMatrix();
 	const _matrix proj = editorCam->Get_ProjectionMatrix();
 	const _matrix VP = XMMatrixMultiply(view, proj);
 
 	const wstring name = m_pGameObject->Get_ObjectName();
 
-	// ¦¡¦¡ ·ÎÄÃ AABB
+	// â”€â”€ ë¡œì»¬ AABB
 	const auto aabb = pBuffer->Get_AABB();
 	const vector3& mn = aabb.min;
 	const vector3& mx = aabb.max;
 
-	// ¦¡¦¡ ·ÎÄÃ ²ÀÁşÁ¡ 8°³
+	// â”€â”€ ë¡œì»¬ ê¼­ì§“ì  8ê°œ
 	const vector3 localCorners[8] =
 	{
 		{mn.x, mn.y, mn.z}, {mx.x, mn.y, mn.z}, {mx.x, mx.y, mn.z}, {mn.x, mx.y, mn.z} ,
@@ -143,7 +143,7 @@ void CMeshRenderer::Render_Gizmo()
 
 	auto DrawBoxWithWorld = [&](const _matrix& W, ImU32 color, _float thickness)
 		{
-			// ·ÎÄÃ ¡æ ¿ùµå
+			// ë¡œì»¬ â†’ ì›”ë“œ
 			vector3 wc[8];
 
 			for (int i = 0; i < 8; ++i)
@@ -153,7 +153,7 @@ void CMeshRenderer::Render_Gizmo()
 				wc[i] = vector3(XMVectorGetX(vw), XMVectorGetY(vw), XMVectorGetZ(vw));
 			}
 
-			// 12°³ ¿§Áö ±×¸®±â
+			// 12ê°œ ì—£ì§€ ê·¸ë¦¬ê¸°
 			DrawEdge(wc[0], wc[1], color, thickness); DrawEdge(wc[1], wc[2], color, thickness);
 			DrawEdge(wc[2], wc[3], color, thickness); DrawEdge(wc[3], wc[0], color, thickness);
 
@@ -204,13 +204,13 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	// MeshBuffer °¡Á®¿À±â
+	if (m_pMaterial->IsUseLight() && !_cam->IsDeferredGBuffer())
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
 
 	if (!pBuffer)
 		return;
 
-	// World / View / Projection Çà·Ä °è»ê
+	// World / View / Projection í–‰ë ¬ ê³„ì‚°
 
 	vector3 cPos = _cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();

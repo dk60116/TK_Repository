@@ -42,6 +42,7 @@ public:
 	void Set_BackgroundColor(const ColorValue& _color);
 	const _bool Get_UseDeferred() const;
 	void Set_UseDeferred(const _bool _useDeferred);
+	const _bool IsDeferredGBuffer() const;
 
 	void Add_RenderTarget_Mesh(class CRenderer* _mesh);
 	void Add_RenderTarget_NoneCullMesh(class CRenderer* _mesh);
@@ -77,6 +78,7 @@ protected:
 	vector<CRenderer*> m_vMeshList_Lit, m_vMeshList_NoneCull, m_vMeshList_Blend;
 	vector<CUI*> m_vUIList;
 	_bool m_bUseDeferred;
+	_bool m_bDeferredGBuffer;
 
 private:
 	static const ColorValue s_vDefaultCameraColor;
