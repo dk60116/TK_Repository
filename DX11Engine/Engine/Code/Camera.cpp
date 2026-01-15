@@ -305,57 +305,28 @@ void CCamera::Bind_RenderTarget()
 
 void CCamera::RenderMesh()
 {
-	//Bind_RenderTarget();
+	Bind_RenderTarget();
 
-	//CDisplay::RenderTargetRender(L"Combine");
-	//CDisplay::RenderTargetRender(L"Diffuse");
-	//CDisplay::RenderTargetRender(L"Normal");
-	//CDisplay::RenderTargetRender(L"Depth");
-	//CDisplay::RenderTargetRender(L"Shading");
-
-	//RenderShadowPass();
-
-	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
-
-	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
+#ifndef _CLIENT_BUILD
+	auto* diffuseRT = CDisplay::Get_RenderTarget(L"Diffuse");
+	if (diffuseRT)
 	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
-			(*it)->Render_WithCamera(this);
+		const vector2Int resolution = CDisplay::Get_ScreenResolution();
+		const vector2Int fullScreenPos = vector2Int(0, 0);
+		diffuseRT->Update_DebugRect(fullScreenPos, resolution);
+		diffuseRT->Render();
+
+		const _int debugSize = 200;
+		const _int debugMargin = 16;
+		const vector2Int debugPos = vector2Int(
+			resolution.x - debugSize - debugMargin,
+			resolution.y - debugSize - debugMargin
+		);
+		diffuseRT->Update_DebugRect(debugPos, vector2Int(debugSize, debugSize));
+		diffuseRT->Render();
 	}
+#endif
 
-	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingNoneCullResterState());
-
-	for (TRAVERSAL_ITER(m_vMeshList_NoneCull, it))
-	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
-			(*it)->Render_WithCamera(this);
-	}
-
-	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
-	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_BlendingResterState());
-	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
-	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_TransparentStencillState(), 0);
-
-	vector<CRenderer*> sorted(m_vMeshList_Blend.begin(), m_vMeshList_Blend.end());
-	const vector3 camPos = Get_Transform()->Get_Position();
-
-	sort(sorted.begin(), sorted.end(), [&](CRenderer* a, CRenderer* b)
-		{
-		const _float da = (a->Get_Transform()->Get_Position() - camPos).lengthSq();
-		const _float db = (b->Get_Transform()->Get_Position() - camPos).lengthSq();
-		return da > db;
-		});
-
-	for (auto* r : sorted) 
-	{
-		if (r->Get_GameObject()->IsRecursiveActive() && r->Get_Enabled())
-			r->Render_WithCamera(this);
-	}
-
-	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
-	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
-	m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
-	
 	m_vMeshList_Lit.clear();
 	m_vMeshList_NoneCull.clear();
 	m_vMeshList_Blend.clear();

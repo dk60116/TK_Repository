@@ -35,6 +35,10 @@ public:
 	HRESULT Bind_Light();
 	void Clear();
 
+#ifndef _CLIENT_BUILD
+	void Update_DebugRect(const vector2Int _pos, const vector2Int _size);
+#endif
+
 private:
 	wstring m_strTargetName;
 
@@ -62,4 +66,3 @@ private:
 };
 
 NS_END
-

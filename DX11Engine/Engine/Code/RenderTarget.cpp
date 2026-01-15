@@ -205,7 +205,7 @@ HRESULT CRenderTarget::Ready_Debug(const vector2Int _pos, const vector2Int _size
 		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bd.ByteWidth = sizeof(MatCB); // 16바이트 배수
+		bd.ByteWidth = sizeof(MatCB); // 16트 
 		if (FAILED(dev->CreateBuffer(&bd, nullptr, &m_pCBPerMaterial)))
 			return E_FAIL;
 	}
@@ -238,6 +238,45 @@ HRESULT CRenderTarget::Ready_Debug(const vector2Int _pos, const vector2Int _size
 }
 #endif
 
+#ifndef _CLIENT_BUILD
+void CRenderTarget::Update_DebugRect(const vector2Int _pos, const vector2Int _size)
+{
+	_uint numViewports = 1;
+	D3D11_VIEWPORT vp{};
+	CGraphicDevice::GetInstance().Get_Context()->RSGetViewports(&numViewports, &vp);
+
+	const _float targetWidth = static_cast<float>(_size.x);
+	const _float targetHeight = static_cast<float>(_size.y);
+	const _float targetAspect = targetWidth / targetHeight;
+
+	const _float vpWidth = vp.Width;
+	const _float vpHeight = vp.Height;
+	const _float vpAspect = vpWidth / vpHeight;
+
+	_float scaleX = 1.0f;
+	_float scaleY = 1.0f;
+
+	if (targetAspect > 1.0f)
+	{
+		scaleX = targetWidth;
+		scaleY = targetWidth / targetAspect;
+	}
+	else
+	{
+		scaleY = targetHeight;
+		scaleX = targetHeight * targetAspect;
+	}
+
+	_matrix S = XMMatrixScaling(scaleX, scaleY, 1.f);
+	_matrix T = XMMatrixTranslation(
+		_pos.x - vpWidth * 0.5f + scaleX * 0.5f,
+		-(_pos.y - vpHeight * 0.5f + scaleY * 0.5f),
+		0.f
+	);
+	XMStoreFloat4x4(&m_vWorldMatrix, XMMatrixMultiply(S, T));
+}
+#endif
+
 HRESULT CRenderTarget::Render()
 {
 #ifndef _CLIENT_BUILD
@@ -248,7 +287,7 @@ HRESULT CRenderTarget::Render()
 	if (!ctx) 
 		return E_FAIL;
 
-	// 0) 현재 OM/VP 상태 저장
+	// 0)  OM/VP  
 	ID3D11RenderTargetView* prevRTV = nullptr;
 	ID3D11DepthStencilView* prevDSV = nullptr;
 	ctx->OMGetRenderTargets(1, &prevRTV, &prevDSV);
@@ -257,17 +296,17 @@ HRESULT CRenderTarget::Render()
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&numVP, &vp);
 
-	// 1) 프리뷰는 깊이 불필요 → DSV = nullptr 로 바인딩 (컬러 타겟은 유지: 보통 백버퍼)
+	// 1)   却  DSV = nullptr  琯 (첨 타 :  )
 	ctx->OMSetRenderTargets(1, &prevRTV, nullptr);
 
-	// 2) 직교 투영 구성 (현재 뷰포트 크기 기준)
+	// 2)    ( 트 크 )
 	_matrix V = XMMatrixIdentity();
 	_matrix P = XMMatrixOrthographicOffCenterLH(
 		-vp.Width * 0.5f, vp.Width * 0.5f,
 		-vp.Height * 0.5f, vp.Height * 0.5f,
 		0.0f, 1.0f);
 
-	// 3) 상수버퍼 업데이트 (b0: world, b1: cam(view/proj), b2: material)
+	// 3)  트 (b0: world, b1: cam(view/proj), b2: material)
 	_matrix W = XMLoadFloat4x4(&m_vWorldMatrix);
 	_matrix WT = XMMatrixTranspose(W);
 	ctx->UpdateSubresource(m_pCBPerObject, 0, nullptr, &WT, 0, 0);
@@ -285,8 +324,8 @@ HRESULT CRenderTarget::Render()
 	mat.useTexture = 1;
 	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
 
-	// 4) 셰이더 / CB / SRV 바인딩
-	m_pDefferdShader->Bind(); // VSMain/PSMain(프리뷰용) 바인딩되도록
+	// 4) 甄 / CB / SRV 琯
+	m_pDefferdShader->Bind(); // VSMain/PSMain() 琯풩
 
 	ctx->VSSetConstantBuffers(0, 1, &m_pCBPerObject);
 	ctx->VSSetConstantBuffers(1, 1, &m_pCBPerCamera);
@@ -295,14 +334,14 @@ HRESULT CRenderTarget::Render()
 	ctx->PSSetShaderResources(0, 1, &m_pSRV);
 	ctx->PSSetSamplers(0, 1, &m_pDebugSampler);
 
-	// 5) 직사각형 드로우
+	// 5) 怜� 恝
 	m_pMeshBuffer->Render();
 
-	// 6) SRV 언바인드 (이후 이 텍스처를 RTV로 쓸 때 충돌 방지)
+	// 6) SRV 琯 (  灣처 RTV   役� )
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	ctx->PSSetShaderResources(0, 1, nullSRV);
 
-	// 7) 상태 복원
+	// 7)  
 	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
 	Safe_Release(prevRTV);
 	Safe_Release(prevDSV);
@@ -317,13 +356,13 @@ void CRenderTarget::Bind_Rect()
 {
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 
-	// 현재 VP 크기
+	//  VP 크
 	_uint n = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&n, &vp);
 
-	// VS에서 ortho P를 쓰고 있으므로,
-	// 화면을 꽉 채우려면 (0,0) 기준으로 vp.Width, vp.Height 크기로 스케일만 주면 됩니다.
+	// VS ortho P  퓐,
+	// 화  채 (0,0)  vp.Width, vp.Height 크 玖 寧 絳求.
 	_matrix W = XMMatrixScaling(vp.Width, vp.Height, 1.0f);
 
 	_matrix WT = XMMatrixTranspose(W);
@@ -353,12 +392,12 @@ void CRenderTarget::Bind_Shader()
 
 	auto* ctx = CGraphicDevice::GetInstance().Get_Context();
 
-	// 현재 설정된 VP 가져오기 (이미 Shading/Combine용 VP로 바뀐 상태에서 호출됨)
+	//   VP  (譴 Shading/Combine VP 侮 쩔 호)
 	_uint n = 1;
 	D3D11_VIEWPORT vp{};
 	ctx->RSGetViewports(&n, &vp);
 
-	// 직교 투영 & 월드
+	//   & 
 	_matrix V = XMMatrixIdentity();
 	_matrix P = XMMatrixOrthographicOffCenterLH(
 		-vp.Width * 0.5f, vp.Width * 0.5f,
@@ -381,7 +420,7 @@ void CRenderTarget::Bind_Shader()
 	ctx->UpdateSubresource(m_pCBPerCamera, 0, nullptr, &cam, 0, 0);
 	ctx->VSSetConstantBuffers(1, 1, &m_pCBPerCamera);
 
-	// b2: PerMaterial (텍스처 사용 플래그 등)
+	// b2: PerMaterial (灣처  첨 )
 	struct MatCB { XMFLOAT4 baseColor; UINT useTexture; UINT _pad[3]; };
 	MatCB mat{};
 	mat.baseColor = XMFLOAT4(1, 1, 1, 1);
@@ -389,7 +428,7 @@ void CRenderTarget::Bind_Shader()
 	ctx->UpdateSubresource(m_pCBPerMaterial, 0, nullptr, &mat, 0, 0);
 	ctx->PSSetConstantBuffers(2, 1, &m_pCBPerMaterial);
 
-	// 샘플러(s0) 꼭 바인드 (없으면 Sample()가 0을 반환)
+	// 첨(s0)  琯 ( Sample() 0 환)
 	if (m_pDebugSampler)
 		ctx->PSSetSamplers(0, 1, &m_pDebugSampler);
 }
@@ -403,7 +442,7 @@ HRESULT CRenderTarget::Bind_Light()
 	if (!scene) 
 		return E_FAIL;
 
-	// 1) 라이트 수집
+	// 1) 트 
 	list<CLight*> lights = scene->Get_LightList();
 	const _uint total = static_cast<_uint>(min<size_t>(lights.size(), 64));
 
