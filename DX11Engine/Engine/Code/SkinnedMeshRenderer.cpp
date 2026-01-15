@@ -165,35 +165,27 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	// 월드, 뷰, 프로젝션 매트릭스
 	vector3 cPos = _cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
-	// 본 행렬 계산
-	// m_vBones: 각 본 Transform
-	// m_pMeshBuffer->m_vBoneOffsetMatrices: 역 바인드포즈 행렬
+	const _uint boneCount = static_cast<_uint>(m_vBones.size());
 	_matrix boneMatrices[128] = {};
+	const _uint maxBones = min<_uint>(boneCount, 128);
 
-	for (_uint i = 0; i < static_cast<_uint>(m_vBones.size()); ++i)
+	for (_uint i = 0; i < maxBones; ++i)
 	{
 		if (m_vBones[i])
 		{
-			// 현재 본의 월드 행렬
 			_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
-
-			// 역 바인드 포즈
 			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
-
-			if (m_pGameObject) // 메시 Transform
+			if (m_pGameObject)
 			{
 				_matrix meshWorldInv = XMMatrixInverse(nullptr, m_pGameObject->Get_Transform()->Get_WorldMatrix());
 				boneWorld = boneWorld * meshWorldInv;
 			}
-
-			// 최종 본 행렬
 			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
 		}
 		else
@@ -202,25 +194,34 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		}
 	}
 
-	if (!m_pMeshBuffer || !m_pMaterial)
-		return;
+		auto* dst = reinterpret_cast<_matrix*>(mappedRes.pData);
+		for (_uint i = 0; i < maxBones; ++i)
+			dst[i] = boneMatrices[i];
 
-	const _uint boneCount = static_cast<_uint>(m_vBones.size());
-	vector<_matrix> boneMatrices(boneCount);
-
-	if (boneCount > 0)
-	{
-		for (_uint i = 0; i < boneCount; ++i)
-			boneMatrices[i] = m_vBones[i]->Get_Transform()->Get_WorldMatrix();
-	}
-
-	D3D11_MAPPED_SUBRESOURCE mappedRes;
+	m_pMaterial->Bind_Camera(camPos, matView, matProj, boneCount);
+	_matrix boneMatrices[128] = {};
+	const _uint maxBones = min<_uint>(boneCount, 128);
+	for (_uint i = 0; i < maxBones; ++i)
+		if (m_vBones[i])
+		{
+			_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
+			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
+			if (m_pGameObject)
+			{
+				_matrix meshWorldInv = XMMatrixInverse(nullptr, m_pGameObject->Get_Transform()->Get_WorldMatrix());
+				boneWorld = boneWorld * meshWorldInv;
+			}
+			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
+		}
+		else
+		{
+			boneMatrices[i] = XMMatrixIdentity();
+		}
 	if (SUCCEEDED(m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
 	{
-		if (boneCount > 0)
-			memcpy(mappedRes.pData, boneMatrices.data(), sizeof(_matrix) * boneCount);
-		else
-			memset(mappedRes.pData, 0, sizeof(_matrix));
+		auto* dst = reinterpret_cast<_matrix*>(mappedRes.pData);
+		for (_uint i = 0; i < maxBones; ++i)
+			dst[i] = boneMatrices[i];
 		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
 	}
 
