@@ -353,10 +353,6 @@ void CCamera::RenderMesh()
 	if (diffuseRT)
 	{
 		const vector2Int resolution = CDisplay::Get_ScreenResolution();
-		const vector2Int fullScreenPos = vector2Int(0, 0);
-		diffuseRT->Update_DebugRect(fullScreenPos, resolution);
-		diffuseRT->Render();
-
 		const _int debugSize = 200;
 		const _int debugMargin = 16;
 		const vector2Int debugPos = vector2Int(
