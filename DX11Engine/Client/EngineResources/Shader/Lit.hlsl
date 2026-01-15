@@ -1,4 +1,4 @@
-// »ó¼ö ¹öÆÛ
+// ìƒìˆ˜ ë²„í¼
 cbuffer PerObject : register(b0)
 {
     float4x4 world;
@@ -36,7 +36,7 @@ cbuffer PerCustomValue : register(b10)
     float cPadding;
 };
 
-// ¶óÀÌÆ® Á¤ÀÇ
+// ë¼ì´íŠ¸ ì •ì˜
 #define MAX_LIGHTS 256
 
 #define LIGHT_TYPE_DIRECTIONAL 0
@@ -49,12 +49,12 @@ cbuffer PerLight : register(b4)
     float4x4 gLight[MAX_LIGHTS];
 };
 
-// ÅØ½ºÃ³ & »ùÇÃ·¯
+// í…ìŠ¤ì²˜ & ìƒ˜í”ŒëŸ¬
 Texture2D gBasemap : register(t0);
 Texture2D gNormalmap : register(t1);
 SamplerState gSampler : register(s0);
 
-// ¹öÅØ½º ÀÔÃâ·Â
+// ë²„í…ìŠ¤ ì…ì¶œë ¥
 struct VSIn
 {
     float3 posL : POSITION;
@@ -79,12 +79,12 @@ struct VSOut
     float2 uv : TEXCOORD0;
 };
 
-// ¹öÅØ½º ¼ÎÀÌ´õ
+// ë²„í…ìŠ¤ ì…°ì´ë”
 VSOut VSMain(VSIn v)
 {
     VSOut o;
 
-    // ½ºÅ² Æ÷Áö¼Ç
+    // ìŠ¤í‚¨ í¬ì§€ì…˜
     float4 skinnedPos = float4(v.posL, 1);
     if (boneCount)
     {
@@ -98,7 +98,7 @@ VSOut VSMain(VSIn v)
         }
     }
 
-    // ½ºÅ² ³ë¸Ö
+    // ìŠ¤í‚¨ ë…¸ë©€
     float3 skinnedN = v.normalL;
     
     if (boneCount)
@@ -132,9 +132,22 @@ VSOut VSMain(VSIn v)
         worldMatrix = world;
     }
     
-    // ¿ùµå º¯È¯
+struct PSOut
+{
+    float4 color : SV_TARGET0;
+    float4 normal : SV_TARGET1;
+};
 
-    float4 posW = mul(skinnedPos, worldMatrix);
+PSOut PSMain(VSOut input)
+
+    float3 normalDebug = N * 0.5f + 0.5f;
+
+    {
+        PSOut outData;
+        outData.color = texColor;
+        outData.normal = float4(normalDebug, 1.0f);
+        return outData;
+    }
     float3 normalW = normalize(mul(skinnedN, (float3x3) worldMatrix));
     float3 tangentW = normalize(mul(v.tangentL, (float3x3) worldMatrix));
 
@@ -142,7 +155,7 @@ VSOut VSMain(VSIn v)
     float4 posV = mul(posW, gView);
     o.posH = mul(posV, gProj);
 
-    // Ãâ·Â
+    // ì¶œë ¥
     o.posW = posW.xyz;
     o.normalW = normalW;
     o.tangentW = tangentW;
@@ -151,7 +164,7 @@ VSOut VSMain(VSIn v)
     return o;
 }
 
-// ÇÈ¼¿ ¼ÎÀÌ´õ
+// í”½ì…€ ì…°ì´ë”
 float4 PSMain(VSOut input) : SV_TARGET
 {
     float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
@@ -239,5 +252,8 @@ float4 PSMain(VSOut input) : SV_TARGET
   
     finalColor = saturate(finalColor);
 
-    return float4(finalColor, texColor.a);
+    PSOut outData;
+    outData.color = float4(finalColor, texColor.a);
+    outData.normal = float4(normalDebug, 1.0f);
+    return outData;
 }
