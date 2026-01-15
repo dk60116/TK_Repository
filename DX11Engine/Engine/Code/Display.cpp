@@ -76,8 +76,6 @@ _float CDisplay::Get_Aspect()
 CRenderTarget* CDisplay::CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color, const wstring& _psName)
 {
 	CRenderTarget* newTarget = CRenderTarget::Create(_name, _pos, _size, DXGI_FORMAT_R8G8B8A8_UNORM, _color, _psName);
-	if (!newTarget)
-		return nullptr;
 	newTarget->AddRef();
 	GetInstance().m_mRenderTargetList.emplace(newTarget->m_strTargetName, newTarget);
 
