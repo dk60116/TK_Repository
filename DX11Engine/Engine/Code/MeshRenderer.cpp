@@ -205,6 +205,8 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	}
 
 	if (m_pMaterial->IsUseLight() && !_cam->IsDeferredGBuffer())
+	{
+	}
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
 
 	if (!pBuffer)
