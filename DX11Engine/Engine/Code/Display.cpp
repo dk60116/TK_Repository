@@ -86,18 +86,18 @@ HRESULT CDisplay::CreateRenderTargets()
 {
 	const auto res = CDisplay::Get_ScreenResolution();
 	const _int miniSize = 200;
-	const _int baseX = 0;
-	const _int baseY = res.y - (miniSize * 2);
+	const _int baseX = (res.x > (miniSize * 3)) ? (res.x - (miniSize * 3)) : 0;
+	const _int baseY = (res.y > (miniSize * 2)) ? (res.y - (miniSize * 2)) : 0;
 
 	if (!CreateRenderTarget(L"Diffuse", vector2Int(baseX, baseY), vector2Int(miniSize, miniSize), ColorValue::magenta()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Normal", vector2Int(baseX + miniSize, baseY), vector2(miniSize, miniSize), ColorValue::black()))
+	if (!CreateRenderTarget(L"Normal", vector2Int(baseX + miniSize, baseY), vector2(miniSize, miniSize), ColorValue(30, 144, 255, 255)))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Depth", vector2Int(baseX + (miniSize * 2), baseY), vector2(miniSize, miniSize), ColorValue::black()))
+	if (!CreateRenderTarget(L"Depth", vector2Int(baseX + (miniSize * 2), baseY), vector2(miniSize, miniSize), ColorValue(0, 200, 0, 255)))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Shading", vector2Int(baseX, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue::white(), L"Shading"))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Specular", vector2Int(baseX + miniSize, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue::black()))
+	if (!CreateRenderTarget(L"Specular", vector2Int(baseX + miniSize, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(255, 215, 0, 255)))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Combine", vector2Int(0, 0), CDisplay::Get_ScreenResolution(), ColorValue(0, 0, 0, 0), L"Combine"))
 		return E_FAIL;
