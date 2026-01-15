@@ -1,6 +1,7 @@
 #include "epch.h"
 #include "Camera.h"
 #include "ShadowMap.h"
+#include "Light.h"
 
 const ColorValue CCamera::s_vDefaultCameraColor = ColorValue(49, 77, 121, 255);
 
@@ -313,7 +314,7 @@ void CCamera::RenderMesh()
 	//CDisplay::RenderTargetRender(L"Depth");
 	//CDisplay::RenderTargetRender(L"Shading");
 
-	//RenderShadowPass();
+	RenderShadowPass();
 
 	m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
 
@@ -365,6 +366,86 @@ void CCamera::RenderShadowPass()
 {
 	if (!m_pShadowMap) 
 		return;
+
+	auto* scene = CSceneManager::Get_CrtScene();
+	if (!scene)
+		return;
+
+	const auto& lights = scene->Get_LightList();
+	if (lights.empty())
+		return;
+
+	CLight* mainLight = nullptr;
+	for (auto* light : lights)
+	{
+		if (!light)
+			continue;
+		if (light->Get_Type() == CLight::Type::Directional)
+		{
+			mainLight = light;
+			break;
+		}
+	}
+
+	if (!mainLight)
+		return;
+
+	ID3D11RenderTargetView* oldRTV[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
+	ID3D11DepthStencilView* oldDSV = nullptr;
+	m_pContext->OMGetRenderTargets(D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT, oldRTV, &oldDSV);
+
+	_uint oldNumVP = 0;
+	m_pContext->RSGetViewports(&oldNumVP, nullptr);
+	vector<D3D11_VIEWPORT> oldVPs(oldNumVP);
+	if (oldNumVP)
+		m_pContext->RSGetViewports(&oldNumVP, oldVPs.data());
+
+	m_pShadowMap->Clear();
+	m_pShadowMap->Bind_DSV();
+
+	vector3 camPos = Get_Transform()->Get_Position();
+	vector3 lightDir = mainLight->Get_Transform()->Get_Directions().forward;
+	if (lightDir.lengthSq() < 1e-6f)
+		lightDir = vector3(0.f, -1.f, 0.f);
+	else
+		lightDir = lightDir.normalized();
+
+	const _float shadowDistance = 100.f;
+	const vector3 lightPos = camPos - lightDir * shadowDistance;
+	const _vector eye = XMVectorSet(lightPos.x, lightPos.y, lightPos.z, 1.f);
+	const _vector at = XMVectorSet(camPos.x, camPos.y, camPos.z, 1.f);
+	const _vector up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	const _matrix lightView = XMMatrixLookAtLH(eye, at, up);
+	const _matrix lightProj = XMMatrixOrthographicLH(shadowDistance * 2.f, shadowDistance * 2.f, 0.1f, shadowDistance * 4.f);
+	const _matrix lightVP = XMMatrixMultiply(lightView, lightProj);
+
+	for (TRAVERSAL_ITER(m_vMeshList_Lit, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_Shadow(lightVP);
+	}
+
+	for (TRAVERSAL_ITER(m_vMeshList_NoneCull, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+			(*it)->Render_Shadow(lightVP);
+	}
+
+	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
+	while (oldCount > 0 && !oldRTV[oldCount - 1])
+		--oldCount;
+	m_pContext->OMSetRenderTargets(oldCount, oldRTV, oldDSV);
+
+	if (oldNumVP)
+		m_pContext->RSSetViewports(oldNumVP, oldVPs.data());
+
+	for (_uint i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+	{
+		if (oldRTV[i])
+			oldRTV[i]->Release();
+	}
+	if (oldDSV)
+		oldDSV->Release();
 }
 
 void CCamera::RenderUI()
