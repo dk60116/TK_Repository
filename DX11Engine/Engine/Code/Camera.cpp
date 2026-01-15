@@ -380,17 +380,32 @@ void CCamera::RenderMesh()
 
 #ifndef _CLIENT_BUILD
 	auto* diffuseRT = CDisplay::Get_RenderTarget(L"Diffuse");
-	if (diffuseRT)
+	auto* normalRT = CDisplay::Get_RenderTarget(L"Normal");
+	if (diffuseRT || normalRT)
 	{
 		const vector2Int resolution = CDisplay::Get_ScreenResolution();
 		const _int debugSize = 200;
 		const _int debugMargin = 16;
-		const vector2Int debugPos = vector2Int(
+		const vector2Int diffusePos = vector2Int(
 			resolution.x - debugSize - debugMargin,
 			resolution.y - debugSize - debugMargin
 		);
-		diffuseRT->Update_DebugRect(debugPos, vector2Int(debugSize, debugSize));
-		diffuseRT->Render();
+		const vector2Int normalPos = vector2Int(
+			diffusePos.x - debugSize - debugMargin,
+			diffusePos.y
+		);
+
+		if (normalRT)
+		{
+			normalRT->Update_DebugRect(normalPos, vector2Int(debugSize, debugSize));
+			normalRT->Render();
+		}
+
+		if (diffuseRT)
+		{
+			diffuseRT->Update_DebugRect(diffusePos, vector2Int(debugSize, debugSize));
+			diffuseRT->Render();
+		}
 	}
 #endif
 
