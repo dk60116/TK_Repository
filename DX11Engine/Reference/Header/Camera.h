@@ -40,6 +40,8 @@ public:
 	void SetFar(const _float _value);
 	const ColorValue& Get_BackgroundColor() const;
 	void Set_BackgroundColor(const ColorValue& _color);
+	const _bool Get_UseDeferred() const;
+	void Set_UseDeferred(const _bool _useDeferred);
 
 	void Add_RenderTarget_Mesh(class CRenderer* _mesh);
 	void Add_RenderTarget_NoneCullMesh(class CRenderer* _mesh);
@@ -51,7 +53,7 @@ protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
 
-	void Bind_RenderTarget();
+	void Bind_RenderTarget(const _bool _includeTransparent);
 
 public:
 	void RenderMesh();
@@ -74,6 +76,7 @@ protected:
 
 	vector<CRenderer*> m_vMeshList_Lit, m_vMeshList_NoneCull, m_vMeshList_Blend;
 	vector<CUI*> m_vUIList;
+	_bool m_bUseDeferred;
 
 private:
 	static const ColorValue s_vDefaultCameraColor;

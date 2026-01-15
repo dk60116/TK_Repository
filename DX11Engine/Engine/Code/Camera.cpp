@@ -19,6 +19,7 @@ CCamera::CCamera()
 	, m_vUIList({})
 	, m_vMeshList_Blend({})
 	, m_pShadowMap(nullptr)
+	, m_bUseDeferred(false)
 {
 	m_strName = L"Camera";
 }
@@ -119,6 +120,16 @@ void CCamera::Set_BackgroundColor(const ColorValue& _color)
 	m_vBackgroundColor = _color;
 }
 
+const _bool CCamera::Get_UseDeferred() const
+{
+	return m_bUseDeferred;
+}
+
+void CCamera::Set_UseDeferred(const _bool _useDeferred)
+{
+	m_bUseDeferred = _useDeferred;
+}
+
 void CCamera::Add_RenderTarget_Mesh(CRenderer* _mesh)
 {
 	m_vMeshList_Lit.push_back(_mesh);
@@ -189,7 +200,7 @@ void CCamera::Bind_ProjectionMatrix()
 	}
 }
 
-void CCamera::Bind_RenderTarget()
+void CCamera::Bind_RenderTarget(const _bool _includeTransparent)
 {
 	ID3D11RenderTargetView* oldRTV[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
 	ID3D11DepthStencilView* oldDSV = nullptr;
@@ -247,16 +258,19 @@ void CCamera::Bind_RenderTarget()
 			(*it)->Render_WithCamera(this);
 	}
 
-	const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
-	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
-
-	for (TRAVERSAL_ITER(m_vMeshList_Blend, it))
+	if (_includeTransparent)
 	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
-			(*it)->Render_WithCamera(this);
-	}
+		const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+		m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
 
-	m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
+		for (TRAVERSAL_ITER(m_vMeshList_Blend, it))
+		{
+			if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enabled())
+				(*it)->Render_WithCamera(this);
+		}
+
+		m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
+	}
 
 	auto sdRTV = sdRT->Get_RTV();
 	auto sdVP = sdRT->Get_VP();
@@ -283,6 +297,7 @@ void CCamera::Bind_RenderTarget()
 	auto sdSRV = sdRT->Get_SRV();
 	m_pContext->PSSetShaderResources(1, 1, &dfSRV);
 	m_pContext->PSSetShaderResources(4, 1, &sdSRV);
+	cbRT->Bind_Rect();
 
 	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
 
@@ -305,6 +320,42 @@ void CCamera::Bind_RenderTarget()
 
 void CCamera::RenderMesh()
 {
+	if (m_bUseDeferred)
+	{
+		Bind_RenderTarget(false);
+		CDisplay::RenderTargetRender(L"Combine");
+
+		m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_BlendingResterState());
+		const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+		m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_BlendingState(), blendFactor, 0xFFFFFFFF);
+		m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_TransparentStencillState(), 0);
+
+		vector<CRenderer*> sorted(m_vMeshList_Blend.begin(), m_vMeshList_Blend.end());
+		const vector3 camPos = Get_Transform()->Get_Position();
+
+		sort(sorted.begin(), sorted.end(), [&](CRenderer* a, CRenderer* b)
+			{
+			const _float da = (a->Get_Transform()->Get_Position() - camPos).lengthSq();
+			const _float db = (b->Get_Transform()->Get_Position() - camPos).lengthSq();
+			return da > db;
+			});
+
+		for (auto* r : sorted)
+		{
+			if (r->Get_GameObject()->IsRecursiveActive() && r->Get_Enabled())
+				r->Render_WithCamera(this);
+		}
+
+		m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_NoneBlendingResterState());
+		m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
+		m_pContext->OMSetDepthStencilState(CSceneManager::Get_CrtScene()->Get_MeshStencillState(), 0);
+
+		m_vMeshList_Lit.clear();
+		m_vMeshList_NoneCull.clear();
+		m_vMeshList_Blend.clear();
+		return;
+	}
+
 	//Bind_RenderTarget();
 
 	//CDisplay::RenderTargetRender(L"Combine");
