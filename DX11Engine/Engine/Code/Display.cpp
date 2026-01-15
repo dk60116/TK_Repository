@@ -84,15 +84,20 @@ CRenderTarget* CDisplay::CreateRenderTarget(wstring _name, vector2Int _pos, vect
 
 HRESULT CDisplay::CreateRenderTargets()
 {
-	if (!CreateRenderTarget(L"Diffuse", vector2Int::zero(), vector2Int(200, 200), ColorValue::magenta()))
+	const auto res = CDisplay::Get_ScreenResolution();
+	const _int miniSize = 200;
+	const _int baseX = 0;
+	const _int baseY = res.y - (miniSize * 2);
+
+	if (!CreateRenderTarget(L"Diffuse", vector2Int(baseX, baseY), vector2Int(miniSize, miniSize), ColorValue::magenta()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Normal", vector2Int(200, 0), vector2(200, 200), ColorValue::black()))
+	if (!CreateRenderTarget(L"Normal", vector2Int(baseX + miniSize, baseY), vector2(miniSize, miniSize), ColorValue::black()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Depth", vector2Int(400, 0), vector2(200, 200), ColorValue::black()))
+	if (!CreateRenderTarget(L"Depth", vector2Int(baseX + (miniSize * 2), baseY), vector2(miniSize, miniSize), ColorValue::black()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Shading", vector2Int(0, 200), vector2Int(200, 200), ColorValue::white(), L"Shading"))
+	if (!CreateRenderTarget(L"Shading", vector2Int(baseX, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue::white(), L"Shading"))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Specular", vector2Int(200, 200), vector2Int(200, 200), ColorValue::black()))
+	if (!CreateRenderTarget(L"Specular", vector2Int(baseX + miniSize, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue::black()))
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Combine", vector2Int(0, 0), CDisplay::Get_ScreenResolution(), ColorValue(0, 0, 0, 0), L"Combine"))
 		return E_FAIL;

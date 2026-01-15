@@ -324,6 +324,11 @@ void CCamera::RenderMesh()
 	{
 		Bind_RenderTarget(false);
 		CDisplay::RenderTargetRender(L"Combine");
+		CDisplay::RenderTargetRender(L"Diffuse");
+		CDisplay::RenderTargetRender(L"Normal");
+		CDisplay::RenderTargetRender(L"Depth");
+		CDisplay::RenderTargetRender(L"Shading");
+		CDisplay::RenderTargetRender(L"Specular");
 
 		m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_BlendingResterState());
 		const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
