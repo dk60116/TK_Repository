@@ -91,15 +91,15 @@ HRESULT CDisplay::CreateRenderTargets()
 
 	if (!CreateRenderTarget(L"Diffuse", vector2Int(baseX, baseY), vector2Int(miniSize, miniSize), ColorValue::magenta()))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Normal", vector2Int(baseX + miniSize, baseY), vector2(miniSize, miniSize), ColorValue(30, 144, 255, 255)))
+	if (!CreateRenderTarget(L"Normal", vector2Int(baseX + miniSize, baseY), vector2(miniSize, miniSize), ColorValue(0, 0, 0, 255)))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Depth", vector2Int(baseX + (miniSize * 2), baseY), vector2(miniSize, miniSize), ColorValue(0, 200, 0, 255)))
+	if (!CreateRenderTarget(L"Depth", vector2Int(baseX + (miniSize * 2), baseY), vector2(miniSize, miniSize), ColorValue(0, 0, 0, 255)))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Shading", vector2Int(baseX, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue::white(), L"Shading"))
+	if (!CreateRenderTarget(L"Shading", vector2Int(baseX, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(0, 0, 0, 255), L"Shading"))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Specular", vector2Int(baseX + miniSize, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(255, 215, 0, 255)))
+	if (!CreateRenderTarget(L"Specular", vector2Int(baseX + miniSize, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(0, 0, 0, 255)))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Combine", vector2Int(baseX + (miniSize * 2), baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(0, 0, 0, 0), L"Combine"))
+	if (!CreateRenderTarget(L"Combine", vector2Int(baseX + (miniSize * 2), baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(0, 0, 0, 255), L"Combine"))
 		return E_FAIL;
 
 	return S_OK;

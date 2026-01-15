@@ -220,13 +220,6 @@ void CCamera::Bind_RenderTarget(const _bool _includeTransparent)
 	auto* spRT = CDisplay::Get_RenderTarget(L"Specular");
 	auto* cbRT = CDisplay::Get_RenderTarget(L"Combine");
 
-	ID3D11RenderTargetView* rtvs[] =
-	{
-		dfRT->Get_RTV(), // SV_TARGET0
-		nmRT->Get_RTV(), // SV_TARGET1
-		dpRT->Get_RTV(),
-	};
-	
 	ID3D11DepthStencilView* dsv = dfRT->Get_DSV(); 
 
 	ID3D11ShaderResourceView* nullSRV[16] = {};
@@ -234,7 +227,8 @@ void CCamera::Bind_RenderTarget(const _bool _includeTransparent)
 	m_pContext->VSSetShaderResources(0, 16, nullSRV);
 	m_pContext->GSSetShaderResources(0, 16, nullSRV);
 
-	m_pContext->OMSetRenderTargets(_countof(rtvs), rtvs, dsv);
+	ID3D11RenderTargetView* rtv = dfRT->Get_RTV();
+	m_pContext->OMSetRenderTargets(1, &rtv, dsv);
 
 	D3D11_VIEWPORT vp = dfRT->Get_VP();
 	m_pContext->RSSetViewports(1, &vp);
@@ -272,33 +266,6 @@ void CCamera::Bind_RenderTarget(const _bool _includeTransparent)
 		m_pContext->OMSetBlendState(CSceneManager::Get_CrtScene()->Get_NoneBlendingState(), blendFactor, 0xFFFFFFFF);
 	}
 
-	auto sdRTV = sdRT->Get_RTV();
-	auto sdVP = sdRT->Get_VP();
-
-	m_pContext->OMSetRenderTargets(1, &sdRTV, nullptr);
-	m_pContext->RSSetViewports(1, &sdVP);
-
-	auto nmSRV = nmRT->Get_SRV();
-	m_pContext->PSSetShaderResources(2, 1, &nmSRV);
-
-	sdRT->Bind_Light();
-	sdRT->Bind_Shader();
-	sdRT->Bind_Rect();
-
-	auto cbRTV = cbRT->Get_RTV();
-	auto cbVP = cbRT->Get_VP();
-
-	m_pContext->OMSetRenderTargets(1, &cbRTV, nullptr);
-	m_pContext->RSSetViewports(1, &cbVP);
-
-	cbRT->Bind_Shader();
-
-	auto dfSRV = dfRT->Get_SRV();
-	auto sdSRV = sdRT->Get_SRV();
-	m_pContext->PSSetShaderResources(1, 1, &dfSRV);
-	m_pContext->PSSetShaderResources(4, 1, &sdSRV);
-	cbRT->Bind_Rect();
-
 	_uint oldCount = D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
 
 	while (oldCount > 0 && !oldRTV[oldCount - 1]) 
@@ -323,11 +290,11 @@ void CCamera::RenderMesh()
 	if (m_bUseDeferred)
 	{
 		Bind_RenderTarget(false);
-		auto* cbRT = CDisplay::Get_RenderTarget(L"Combine");
-		cbRT->Bind_Shader();
-		auto cbSRV = cbRT->Get_SRV();
-		m_pContext->PSSetShaderResources(0, 1, &cbSRV);
-		cbRT->Bind_Rect();
+		auto* dfRT = CDisplay::Get_RenderTarget(L"Diffuse");
+		dfRT->Bind_Shader();
+		auto dfSRV = dfRT->Get_SRV();
+		m_pContext->PSSetShaderResources(0, 1, &dfSRV);
+		dfRT->Bind_Rect();
 		ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 		m_pContext->PSSetShaderResources(0, 1, nullSRV);
 
