@@ -50,7 +50,7 @@ namespace Engine
 
         const _float2& toFloat2()
         {
-            return XMFLOAT2(x, y);;
+            return XMFLOAT2(x, y);
         }
 
         _vector& toXMVector()
