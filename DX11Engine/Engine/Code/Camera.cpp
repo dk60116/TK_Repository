@@ -323,12 +323,20 @@ void CCamera::RenderMesh()
 	if (m_bUseDeferred)
 	{
 		Bind_RenderTarget(false);
-		CDisplay::RenderTargetRender(L"Combine");
+		auto* cbRT = CDisplay::Get_RenderTarget(L"Combine");
+		cbRT->Bind_Shader();
+		auto cbSRV = cbRT->Get_SRV();
+		m_pContext->PSSetShaderResources(0, 1, &cbSRV);
+		cbRT->Bind_Rect();
+		ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+		m_pContext->PSSetShaderResources(0, 1, nullSRV);
+
 		CDisplay::RenderTargetRender(L"Diffuse");
 		CDisplay::RenderTargetRender(L"Normal");
 		CDisplay::RenderTargetRender(L"Depth");
 		CDisplay::RenderTargetRender(L"Shading");
 		CDisplay::RenderTargetRender(L"Specular");
+		CDisplay::RenderTargetRender(L"Combine");
 
 		m_pContext->RSSetState(CSceneManager::Get_CrtScene()->Get_BlendingResterState());
 		const _float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };

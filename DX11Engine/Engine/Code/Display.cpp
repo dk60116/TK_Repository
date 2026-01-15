@@ -99,7 +99,7 @@ HRESULT CDisplay::CreateRenderTargets()
 		return E_FAIL;
 	if (!CreateRenderTarget(L"Specular", vector2Int(baseX + miniSize, baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(255, 215, 0, 255)))
 		return E_FAIL;
-	if (!CreateRenderTarget(L"Combine", vector2Int(0, 0), CDisplay::Get_ScreenResolution(), ColorValue(0, 0, 0, 0), L"Combine"))
+	if (!CreateRenderTarget(L"Combine", vector2Int(baseX + (miniSize * 2), baseY + miniSize), vector2Int(miniSize, miniSize), ColorValue(0, 0, 0, 0), L"Combine"))
 		return E_FAIL;
 
 	return S_OK;
