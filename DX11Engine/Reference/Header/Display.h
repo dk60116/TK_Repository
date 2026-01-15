@@ -1,7 +1,6 @@
 #pragma once
 
 #include "epch.h"
-#include "RenderTarget.h"
 
 NS_BEGIN(Engine)
 
@@ -20,16 +19,6 @@ public:
 	static vector2Int Get_ScreenResolution();
 	static _float Get_Aspect();
 
-public:
-	static CRenderTarget* CreateRenderTarget(wstring _name, vector2Int _pos, vector2Int _size, ColorValue _color, const wstring& _psName = L"");
-	static HRESULT CreateRenderTargets();
-
-	static CRenderTarget* Get_RenderTarget(const wstring& _name);
-	static const _uint Get_RenderTargetCount();
-
-	static void RenderTargetRender(const wstring& _name);
-	static void ClearTargetRender(const wstring& _name);
-
 private:
 	HINSTANCE m_hInst;
 	HWND m_hGameWindow;
@@ -37,8 +26,6 @@ private:
 	_bool m_bIsFullScreen;
 	_uint m_iWidth, m_iHeight;
 
-	map<wstring, CRenderTarget*> m_mRenderTargetList;
 };
 
 NS_END
-

@@ -194,7 +194,6 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\ProjectBox.h" />
     <ClInclude Include="..\Header\Random.h" />
     <ClInclude Include="..\Header\Renderer.h" />
-    <ClInclude Include="..\Header\RenderTarget.h" />
     <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
@@ -276,7 +275,6 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\ProjectBox.cpp" />
     <ClCompile Include="..\Code\Random.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
-    <ClCompile Include="..\Code\RenderTarget.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\imgui.cpp">

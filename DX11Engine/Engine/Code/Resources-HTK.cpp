@@ -120,7 +120,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		};
 	DFS(aiScene->mRootNode, aiMatrix4x4());
 
-	// 메시당 1개 지오메트리 + 인스턴스 월드행렬들(instanceWorlds)
+	// 聘척 1 트 + 館絿 캔(instanceWorlds)
 	vector<CMeshBuffer::MeshBufferInitiaizeInfo> bufferInfoList;
 	bufferInfoList.reserve(aiScene->mNumMeshes);
 
@@ -128,7 +128,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 	{
 		const aiMesh* mesh = aiScene->mMeshes[mi];
 
-		// 이 mesh를 참조하는 노드가 하나도 없으면 identity 1개 추가
+		//  mesh 求 弱� 毬  identity 1 煞
 		if (meshRefs[mi].empty())
 		{
 			MeshRef ref; ref.g = aiMatrix4x4(); ref.nodeName = L"";
@@ -137,7 +137,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 
 		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
-		// 이름
+		// 見
 		wstring baseName = meshRefs[mi][0].nodeName;
 		if (baseName.empty())
 			baseName = CMeshBuffer::FindMeshName(aiScene, mi);
@@ -145,7 +145,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			baseName = L"Mesh_" + to_wstring(mi);
 		info.meshName = baseName;
 
-		// 지오메트리
+		// 트
 		vector<VTX>   vertices;
 		vector<_uint> indices;
 
@@ -186,7 +186,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			}
 		}
 
-		// Desc + 데이터
+		// Desc + 
 		CMeshBuffer::MESHBUFFERDESC desc{};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
@@ -220,7 +220,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 
 		info.aabb = { minSize, maxSize };
 
-		// 인스턴스 월드 행렬들 저장
+		// 館絿  캔 
 		info.instanceWorlds.reserve(meshRefs[mi].size());
 		for (const auto& r : meshRefs[mi])
 		{
@@ -235,7 +235,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 			info.instanceWorlds.push_back(w);
 		}
 
-		// 머티리얼
+		// 티
 		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
 		{
 			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
@@ -252,7 +252,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring& _filePath)
 		bufferInfoList.push_back(move(info));
 	}
 
-	// 파일명 구성
+	// 玖 
 	auto split = CEngineString::Split(_filePath, L"/");
 	wstring folder = split[split.size() - 2];
 	wstring fileNoExt = CEngineString::Split(split.back(), L".")[0];
@@ -434,7 +434,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 	vector<CSkinnedMeshBuffer::SKINNEDSKELETAL> skeletalHierarchy;
 	unordered_map<aiNode*, _uint> nodeToIdMap;
 
-	// 모든 노드에 대해 transformation/childsId/meshsId/numChild/numMeshes를 채우는 DFS
+	//  恙�  transformation/childsId/meshsId/numChild/numMeshes 채 DFS
 	function<void(aiNode*, const _int, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>&)> TraverseSkeleton =
 		[&](aiNode* node, const _int parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& out)
 		{
@@ -443,7 +443,7 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			n.parentId = parentId;
 			n.name = CEngineString::StringToWString(node->mName.C_Str());
 
-			// 로컬 트랜스폼 복사
+			//  트 
 			const aiMatrix4x4& m = node->mTransformation;
 			_float4x4 t = _float4x4
 			(
@@ -454,20 +454,20 @@ HRESULT CResources::ConvertFBXToSkinnedBufferData(const wstring& _filePath)
 			);
 			n.transformation = t;
 
-			// 이 노드에 연결된 메시 인덱스
+			//  恙�  聘 琯
 			n.numMeshes = (_uint)node->mNumMeshes;
 			n.meshsId.reserve(node->mNumMeshes);
 			for (_uint mi = 0; mi < node->mNumMeshes; ++mi)
 				n.meshsId.push_back(node->mMeshes[mi]);
 
-			// 우선 푸시한 뒤 자식 재귀
+			// 耳� 푸  黴 
 			out.push_back(n);
 			nodeToIdMap[node] = (_uint)n.nodeId;
 
 			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
 				TraverseSkeleton(node->mChildren[ci], n.nodeId, out);
 
-			// 자식 id 목록/개수 채우기
+			// 黴 id / 채
 			out[n.nodeId].childsId.reserve(node->mNumChildren);
 			for (_uint ci = 0; ci < node->mNumChildren; ++ci)
 			{
@@ -605,12 +605,12 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring& _filePath)
 
 HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 {
-	// 1. 실행파일 위치 얻기
+	// 1.  치 
 	wchar_t exeDir[MAX_PATH] = {};
 	GetModuleFileNameW(NULL, exeDir, MAX_PATH);
 	PathRemoveFileSpecW(exeDir);
 
-	// 2. 상대경로를 절대경로로 변환
+	// 2. 罐 管 환
 	wchar_t fullFontPath[MAX_PATH] = {};
 	wcscpy_s(fullFontPath, exeDir);
 	PathAppendW(fullFontPath, _filePath.c_str());
@@ -622,7 +622,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 		return E_FAIL;
 	}
 
-	// 3. %WINDIR%\Fonts 폴더로 복사
+	// 3. %WINDIR%\Fonts  
 	wchar_t fontsDir[MAX_PATH] = {};
 	GetWindowsDirectoryW(fontsDir, MAX_PATH);
 	PathAppendW(fontsDir, L"Fonts");
@@ -637,7 +637,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 		return E_FAIL;
 	}
 
-	// 4. 폰트 등록
+	// 4. 트 
 	if (AddFontResourceExW(installedFontPath, FR_NOT_ENUM, 0) == 0)
 	{
 		CDebug::LogError("AddFontResourceExW failed");
@@ -654,7 +654,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 
 	CDebug::Log(L"OutFilePath: " + outfilePath);
 
-	// 5. 출력 파일 경로 (예시로 동일 위치에 저장)
+	// 5.    (첨  치 )
 	wchar_t spriteOutput[MAX_PATH] = {};
 	wcscpy_s(spriteOutput, exeDir);
 	PathAppendW(spriteOutput, outfilePath.c_str());
@@ -662,11 +662,11 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 	wchar_t outputFullPath[MAX_PATH] = {};
 	GetFullPathNameW(spriteOutput, MAX_PATH, outputFullPath, nullptr);
 
-	// 6. MakeSpriteFont.exe 실행 (폰트 이름으로 호출해야 함)
+	// 6. MakeSpriteFont.exe  (트 見 호瞞 )
 	wstring cmdLine = L"\"";
 	cmdLine += exeDir;
 	cmdLine += L"\\..\\..\\Engine\\Tools\\MakeSpriteFont.exe\" /FontSize:32 /FontStyle:Regular ";
-	cmdLine += L"\"Liberation Sans\" ";  // 실제 폰트 패밀리 이름
+	cmdLine += L"\"Liberation Sans\" ";  //  트 橘龜 見
 	cmdLine += L"\"" + wstring(outputFullPath) + L"\"";
 
 	CDebug::Log(L"[RUNNING]: " + cmdLine);
@@ -690,7 +690,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring& _filePath)
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
 
-	// 7. 폰트 제거 및 파일 삭제
+	// 7. 트    
 	RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
 	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
 	DeleteFileW(installedFontPath);
@@ -889,7 +889,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 	{
 		CMeshBuffer::MeshBufferInitiaizeInfo info{};
 
-		// 이름
+		// 見
 		_uint nameCount = 0;
 		in.read(reinterpret_cast<char*>(&nameCount), sizeof(_uint));
 		if (nameCount > 0) {
@@ -897,7 +897,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			in.read(reinterpret_cast<char*>(info.meshName.data()), sizeof(wchar_t) * nameCount);
 		}
 
-		// 버퍼
+		// 
 		_uint bufferSize = 0;
 		in.read(reinterpret_cast<char*>(&bufferSize), sizeof(_uint));
 		if (bufferSize > 0) {
@@ -905,7 +905,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 			in.read(reinterpret_cast<char*>(info.buffer.data()), bufferSize);
 		}
 
-		// 인덱스
+		// 琯
 		_uint indexCount = 0;
 		in.read(reinterpret_cast<char*>(&indexCount), sizeof(_uint));
 		if (indexCount > 0) {
@@ -934,7 +934,7 @@ vector<CMeshBuffer::MeshBufferInitiaizeInfo> CResources::ReadMeshBufferInfos(con
 		// AABB
 		in.read(reinterpret_cast<char*>(&info.aabb), sizeof(CMeshBuffer::MeshAABBInfo));
 
-		// instancing (항상 존재한다고 가정)
+		// instancing (瘤 磯鳴 )
 		_uint instCount = 0;
 		if (!in.read(reinterpret_cast<char*>(&instCount), sizeof(_uint))) {
 			CDebug::LogError(L"ReadMeshBufferInfos: failed to read instCount, file: " + _binFileName);
@@ -1225,7 +1225,7 @@ HRESULT CResources::SaveNaviMeshBufferInfos(const wstring& _filePath, CNaviMesh:
 	uint32_t nameLen = static_cast<uint32_t>(_info.meshName.size());
 	write(&nameLen, sizeof(nameLen));
 	if (nameLen)
-		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar 그대로 기록
+		write(_info.meshName.data(), nameLen * sizeof(wchar_t)); // wchar 榴 
 
 	write(&_info.desc, sizeof(_info.desc));
 
@@ -1282,7 +1282,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 			return ifs && (ifs.gcount() == static_cast<streamsize>(sz));
 		};
 
-	//---------------- 1) 헤더 -----------------------------------------------
+	//---------------- 1)  -----------------------------------------------
 	uint32_t magic = 0, version = 0;
 	if (!read(&magic, sizeof(magic)) ||
 		!read(&version, sizeof(version)) ||
@@ -1292,7 +1292,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 		return {};
 	}
 
-	//---------------- 2) Mesh 이름 ------------------------------------------
+	//---------------- 2) Mesh 見 ------------------------------------------
 	uint32_t nameLen = 0;
 	if (!read(&nameLen, sizeof(nameLen)))
 		return {};
@@ -1329,7 +1329,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 			return {};
 	}
 
-	//---------------- 6) Polygon 리스트 --------------------------------------
+	//---------------- 6) Polygon 트 --------------------------------------
 	uint32_t polyCount = 0;
 	if (!read(&polyCount, sizeof(polyCount)))
 		return {};
@@ -1340,11 +1340,11 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 	{
 		auto& poly = info.polygons[i];
 
-		// 6-1) 인덱스
+		// 6-1) 琯
 		if (!read(&poly.index, sizeof(poly.index)))
 			return {};
 
-		// 6-2) Vertex들
+		// 6-2) Vertex
 		uint32_t vCnt = 0;
 		if (!read(&vCnt, sizeof(vCnt)))
 			return {};
@@ -1355,7 +1355,7 @@ CNaviMesh::NaviMeshBufferInitiaizeInfo CResources::ReadNaviBufferInfos(const wst
 				return {};
 		}
 
-		// 6-3) Neighbor들
+		// 6-3) Neighbor
 		uint32_t nCnt = 0;
 		if (!read(&nCnt, sizeof(nCnt)))
 			return {};
@@ -1530,7 +1530,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 			newBuffer->Initialize_Custom(_infoList[i], _desc);
 			newBundle.meshBuffer = newBuffer;
 
-			// 인스턴싱 데이터 적용
+			// 館絿  
 			const auto& worlds = _infoList[i].instanceWorlds;
 			if (!worlds.empty())
 			{
@@ -1542,7 +1542,7 @@ vector<MeshBundle> CResources::CreateSceneMeshBundle(const wstring& _name, vecto
 					inst.count = cap;
 					inst.data.resize(cap);
 
-					// _float4x4 -> MeshInstaceData 변환
+					// _float4x4 -> MeshInstaceData 환
 					for (_uint k = 0; k < cap; ++k)
 					{
 						const _float4x4& m = worlds[k];
@@ -1707,17 +1707,6 @@ void CResources::Ready_GameResources()
 	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"Circle (Texture)", L"../EngineResources/Image/Circle.png"));
 	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
 
-	{
-		CShader::SHADERDESC lineDefferdShaderDesc = { L"../EngineResources/Shader/Defferd.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-		LoadResourceComplete_Game(CreateGameResource<CShader>(L"Defferd (Shader)", L"", &lineDefferdShaderDesc));
-
-		CShader::SHADERDESC lineDefferdShadingShaderDesc = { L"../EngineResources/Shader/DefferdShading.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdShading (Shader)", L"", &lineDefferdShadingShaderDesc));
-
-		CShader::SHADERDESC lineDefferdCombineShaderDesc = { L"../EngineResources/Shader/DefferdCombine.hlsl", L"",  VertexDefferdBuffer::numElements, VertexDefferdBuffer::elementDesc };
-		LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefferdCombine (Shader)", L"", &lineDefferdCombineShaderDesc));
-	}
-
 	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexBuffer::numElements, VertexBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
 
@@ -1814,14 +1803,14 @@ void CResources::TraverseSkeleton(aiNode* _node, const _int _parentId, vector<CS
 	for (_uint i = 0; i < _node->mNumMeshes; ++i)
 		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
 
-	// 미리 push 해서 자식이 parentId 참고 가능
+	// 見 push 漫 黴 parentId  
 	_outList.push_back(nodeInfo);
 	_int currentId = nodeInfo.nodeId;
 
-	// 자식 노드들 순회
+	// 黴  회
 	for (_uint i = 0; i < _node->mNumChildren; ++i)
 	{
-		// 재귀 이전에 outList size를 얻어 자식 ID 추정
+		//   outList size  黴 ID 
 		_int childId = static_cast<_int>(_outList.size());
 		_outList[currentId].childsId.push_back(childId);
 		_outList[currentId].numChild++;
