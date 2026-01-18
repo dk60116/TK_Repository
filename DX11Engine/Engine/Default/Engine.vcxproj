@@ -161,6 +161,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\Camera.h" />
     <ClInclude Include="..\Header\Canvas.h" />
     <ClInclude Include="..\Header\Component.h" />
+    <ClInclude Include="..\Header\RenderTarget.h" />
     <ClInclude Include="..\Header\Display.h" />
     <ClInclude Include="..\Header\Editor.h" />
     <ClInclude Include="..\Header\EditorBox.h" />
@@ -178,6 +179,7 @@ call copy.bat</Command>
     <ClInclude Include="..\Header\ProjectBox.h" />
     <ClInclude Include="..\Header\Random.h" />
     <ClInclude Include="..\Header\Renderer.h" />
+    <ClInclude Include="..\Header\RenderTargetManager.h" />
     <ClInclude Include="..\Header\Resources.h" />
     <ClInclude Include="..\Header\GameObject.h" />
     <ClInclude Include="..\Header\GraphicDevice.h" />
@@ -224,6 +226,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Canvas.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
+    <ClCompile Include="..\Code\RenderTarget.cpp" />
     <ClCompile Include="..\Code\Display.cpp" />
     <ClCompile Include="..\Code\Editor.cpp" />
     <ClCompile Include="..\Code\EditorBox.cpp" />
@@ -248,6 +251,7 @@ call copy.bat</Command>
     <ClCompile Include="..\Code\ProjectBox.cpp" />
     <ClCompile Include="..\Code\Random.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
+    <ClCompile Include="..\Code\RenderTargetManager.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\imgui.cpp">

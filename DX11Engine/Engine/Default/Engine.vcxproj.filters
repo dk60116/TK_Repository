@@ -175,6 +175,12 @@
     <ClInclude Include="..\Header\Random.h">
       <Filter>System\Random</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\RenderTarget.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\RenderTargetManager.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -281,6 +287,9 @@
     </Filter>
     <Filter Include="System\Random">
       <UniqueIdentifier>{71d9ef5a-ecf0-4d3a-8ff6-8bae57cf54fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{06aaef00-f80b-4eeb-afe7-71bad4cbe70a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -466,6 +475,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Random.cpp">
       <Filter>System\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\RenderTarget.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\RenderTargetManager.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

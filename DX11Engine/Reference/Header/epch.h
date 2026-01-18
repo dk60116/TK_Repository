@@ -14,6 +14,8 @@
 #include "EngineString.h"
 #include "Random.h"
 #include "GraphicDevice.h"
+#include "RenderTarget.h"
+#include "RenderTargetManager.h"
 #include "EngineTime.h"
 #include "Input.h"
 #include "MainProcess.h"

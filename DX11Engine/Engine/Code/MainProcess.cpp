@@ -23,6 +23,8 @@ HRESULT CMainProcess::Initialize()
         return E_FAIL;
     if (FAILED(CGraphicDevice::GetInstance().Initialize()))
         return E_FAIL;
+    if (FAILED(CRenderTargetManager::GetInstance().Initialize()))
+        return E_FAIL;
     if (FAILED(CRandom::GetInstance().Initialize()))
         return E_FAIL;
     if (FAILED(CEditor::GetInstance().Initialize()))

@@ -327,8 +327,6 @@ HRESULT CGraphicDevice::Ready_DepthStencilView(_uint _winWidth, _uint _winHeight
 	D3D11_TEXTURE2D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	/* 깊이 버퍼의 픽셀은 백버퍼의 픽셀과 갯수가 동일해야만 깊이 텍스트가 가능해진다. */
-	/* 픽셀의 수가 다르면 아에 렌더링을 못함. */
 	TextureDesc.Width = _winWidth;
 	TextureDesc.Height = _winHeight;
 	TextureDesc.MipLevels = 1;
@@ -338,20 +336,14 @@ HRESULT CGraphicDevice::Ready_DepthStencilView(_uint _winWidth, _uint _winHeight
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.SampleDesc.Count = 1;
 
-	/* 동적? 정적?  */
-	TextureDesc.Usage = D3D11_USAGE_DEFAULT /* 정적 */;
-	/* 추후에 어떤 용도로 바인딩 될 수 있는 View타입의 텍스쳐를 만들기위한 Texture2D입니까? */
-	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL
-		/*| D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE*/;
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	TextureDesc.CPUAccessFlags = 0;
 	TextureDesc.MiscFlags = 0;
 
 	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
 		return E_FAIL;
-
-	/* RenderTargetView */
-	/* ShaderResourceView */
-	/* DepthStencilView */
 
 	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDepthStencilView)))
 		return E_FAIL;
