@@ -55,11 +55,11 @@ HRESULT CCamera::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	// Quad
-	CMeshBuffer* quad = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)");
+	// Debug rect (POSITION/UV only for DeferredPresent)
+	CMeshBuffer* quad = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)");
 	if (!quad)
 	{
-		CDebug::LogError(L"Not found Quad (Mesh Buffer)");
+		CDebug::LogError(L"Not found Rect (Mesh Buffer)");
 		return E_FAIL;
 	}
 	quad->AddRef();
