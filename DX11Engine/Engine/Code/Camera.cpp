@@ -145,16 +145,16 @@ HRESULT CCamera::Initialize()
 			return E_FAIL;
 	}
 
-	// Blend: AlphaBlend (선택, 지금은 그냥 덮어쓰기여도 됨)
+	// Blend: Opaque (debug thumbnail should be visible even with alpha=0)
 	{
 		D3D11_BLEND_DESC bs = {};
 		bs.AlphaToCoverageEnable = FALSE;
 		bs.IndependentBlendEnable = FALSE;
 
 		D3D11_RENDER_TARGET_BLEND_DESC rt = {};
-		rt.BlendEnable = TRUE;
-		rt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		rt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		rt.BlendEnable = FALSE;
+		rt.SrcBlend = D3D11_BLEND_ONE;
+		rt.DestBlend = D3D11_BLEND_ZERO;
 		rt.BlendOp = D3D11_BLEND_OP_ADD;
 		rt.SrcBlendAlpha = D3D11_BLEND_ONE;
 		rt.DestBlendAlpha = D3D11_BLEND_ZERO;
