@@ -9,6 +9,13 @@ class ENGINE_DLL CCamera : public CComponent
 {
 	friend class CGameObject;
 
+	struct RTDebugDisplay
+	{
+		CRenderTarget::RTType type;
+		CMeshBuffer* quad;
+		CMaterial* material;
+	};
+
 public:
 	enum ViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
@@ -47,6 +54,8 @@ public:
 	void RenderMesh();
 	void RenderUI();
 
+	void RenderRTDebugDisplay();
+
 public:
 	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
 	CPhysics::Ray ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist = 999999.f);
@@ -66,6 +75,13 @@ protected:
 
 private:
 	static const ColorValue s_vDefaultCameraColor;
+
+private:
+	map<CRenderTarget::RTType, RTDebugDisplay> m_mRTDebugDisplays;
+
+	ID3D11DepthStencilState* m_pRTDebugDS;
+	ID3D11RasterizerState* m_pRTDebugRS;
+	ID3D11BlendState* m_pRTDebugBS;
 };
 
 NS_END

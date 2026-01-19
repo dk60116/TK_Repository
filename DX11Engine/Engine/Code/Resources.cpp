@@ -1341,6 +1341,13 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC dlMatDesc = { dlShader, false };
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc));
 
+	CShader::SHADERDESC deferredPresentShaderDesc = { L"../EngineResources/Shader/DeferredPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredPresent (Shader)", L"", &deferredPresentShaderDesc));
+
+	CShader* deferredPresentShader = LoadOnGame<CShader>(L"DeferredPresent (Shader)");
+	CMaterial::MATERIALDESC deferredPresentMatDesc = { deferredPresentShader, true };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DeferredPresentMaterial (Material)", L"", &deferredPresentMatDesc));
+
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
 

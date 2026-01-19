@@ -381,6 +381,12 @@ void CScene::Render_Game()
 		if ((*it)->IsRecursiveActive())
 			(*it)->OnPostRender();
 	}
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+			(*it)->RenderRTDebugDisplay();
+	}
 }
 
 void CScene::SceneRelease()
