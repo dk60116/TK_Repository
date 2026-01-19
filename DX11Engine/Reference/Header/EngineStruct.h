@@ -50,7 +50,7 @@ namespace Engine
 
         const _float2& toFloat2()
         {
-            return XMFLOAT2(x, y);;
+            return XMFLOAT2(x, y);
         }
 
         _vector& toXMVector()
@@ -1281,7 +1281,7 @@ namespace Engine
         _float3 normal;
         _float2 uv;
         _float3 tangent;
-        UINT boneIndices[4] = { 0,0,0,0 };
+        _uint boneIndices[4] = { 0,0,0,0 };
         _float boneWeights[4] = { 0,0,0,0 };
 
         static const _uint numElements = 6;

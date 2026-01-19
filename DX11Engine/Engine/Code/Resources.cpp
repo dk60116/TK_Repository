@@ -1368,6 +1368,13 @@ void CResources::Ready_GameResources()
 	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
 
+	CShader::SHADERDESC g_BufferlitShaderDesc = { L"../EngineResources/Shader/GBufferLit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game(CreateGameResource<CShader>(L"G_BufferLit (Shader)", L"", &g_BufferlitShaderDesc));
+
+	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"g_BufferLit (Shader)");
+	CMaterial::MATERIALDESC g_BufferLitDesc = { g_BufferLitShader, false };
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"G_BufferLit (Material)", L"", &g_BufferLitDesc));
+
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));
 

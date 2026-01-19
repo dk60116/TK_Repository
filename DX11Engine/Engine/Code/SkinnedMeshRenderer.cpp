@@ -24,15 +24,29 @@ CSkinnedMeshRenderer* CSkinnedMeshRenderer::Create()
 
 CComponent* CSkinnedMeshRenderer::Clone() const
 {
-	CSkinnedMeshRenderer* clone = new CSkinnedMeshRenderer();
+	auto* clone = new CSkinnedMeshRenderer();
 
 	clone->m_pMeshBuffer = this->m_pMeshBuffer;
-	clone->m_vBones = this->m_vBones;
-	clone->m_pRootBone = nullptr;
-	clone->m_pBoneMatrixBuffer = clone->m_pBoneMatrixBuffer;
+	if (clone->m_pMeshBuffer)
+		clone->m_pMeshBuffer->AddRef();
 
+	clone->m_vBones.clear();
+	clone->m_vBones.reserve(this->m_vBones.size());
+	for (auto* b : this->m_vBones)
+	{
+		if (b) b->AddRef();
+		clone->m_vBones.push_back(b);
+	}
+
+	clone->m_pRootBone = this->m_pRootBone;
+	if (clone->m_pRootBone)
+		clone->m_pRootBone->AddRef();
+
+	clone->m_pBoneMatrixBuffer = this->m_pBoneMatrixBuffer;
 	if (clone->m_pBoneMatrixBuffer)
 		clone->m_pBoneMatrixBuffer->AddRef();
+
+	clone->m_bApplyRootMotion = this->m_bApplyRootMotion;
 
 	return clone;
 }
@@ -166,59 +180,86 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	// 월드, 뷰, 프로젝션 매트릭스
+	// 1) World / View / Proj
 	vector3 cPos = _cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();
+
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
-	// 본 행렬 계산
-	// m_vBones: 각 본 Transform
-	// m_pMeshBuffer->m_vBoneOffsetMatrices: 역 바인드포즈 행렬
-	_matrix boneMatrices[128] = {};
+	// 2) Bone Count Clamp
+	const _uint boneCount = min<_uint>(static_cast<_uint>(m_vBones.size()), 128u);
 
-	for (_uint i = 0; i < m_vBones.size(); ++i)
+	// 3) Bone Matrices (항상 128개)
+	_matrix boneMatrices[128];
+	for (int i = 0; i < 128; ++i)
+		boneMatrices[i] = XMMatrixIdentity();
+
+	// 메시 월드 역행렬은 루프 밖에서 1회 계산
+	_matrix meshWorldInv = XMMatrixIdentity();
 	{
-		if (m_vBones[i])
+		// m_pGameObject는 여기까지 왔으면 유효하다고 가정하지만, 안전하게 체크
+		if (m_pGameObject && m_pGameObject->Get_Transform())
 		{
-			// 현재 본의 월드 행렬
-			_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
-
-			// 역 바인드 포즈
-			_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
-
-			if (m_pGameObject) // 메시 Transform
-			{
-				_matrix meshWorldInv = XMMatrixInverse(nullptr, m_pGameObject->Get_Transform()->Get_WorldMatrix());
-				boneWorld = boneWorld * meshWorldInv;
-			}
-
-			// 최종 본 행렬
-			boneMatrices[i] = XMMatrixTranspose(invBindPose * boneWorld);
-		}
-		else
-		{
-			boneMatrices[i] = XMMatrixIdentity();
+			_matrix meshWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
+			meshWorldInv = XMMatrixInverse(nullptr, meshWorld);
 		}
 	}
 
-	// 3) 본 매트릭스 버퍼에 업로드
-	D3D11_MAPPED_SUBRESOURCE mappedRes;
-	if (SUCCEEDED(m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes)))
+	// 4) Bone matrices 계산
+	// 목표: 셰이더가 mul(pos, gBones[idx]) 패턴(행 벡터 스타일)일 때
+	// CPU에서 Transpose해서 올린 행렬을 사용하도록 맞춘다.
+	for (_uint i = 0; i < boneCount; ++i)
 	{
-		memcpy(mappedRes.pData, boneMatrices, sizeof(XMMATRIX) * m_vBones.size());
+		if (!m_vBones[i])
+			continue;
+
+		// 현재 본 월드
+		_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
+
+		// 역 바인드 포즈(Offset)
+		// (m_vBoneOffsetMatrices의 인덱스가 m_vBones와 동일한 순서라는 전제)
+		_matrix invBindPose = XMMatrixIdentity();
+		invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
+
+		// bone을 mesh local로 변환
+		// (boneWorld * meshWorldInv) : boneWorld → meshLocal
+		_matrix boneMeshLocal = boneWorld * meshWorldInv;
+
+		// 최종 본 행렬
+		// (invBindPose * currentBone) 형태 유지
+		boneMatrices[i] = XMMatrixTranspose(invBindPose * boneMeshLocal);
+	}
+
+	// 5) Bone buffer upload (항상 128개 업로드)
+	if (!m_pBoneMatrixBuffer)
+	{
+		CDebug::LogError(L"Skinned MeshRenderer - BoneMatrixBuffer is null: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	D3D11_MAPPED_SUBRESOURCE mappedRes = {};
+	HRESULT hrMap = m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
+	if (SUCCEEDED(hrMap))
+	{
+		memcpy(mappedRes.pData, boneMatrices, sizeof(XMMATRIX) * 128);
 		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
 	}
+	else
+	{
+		CDebug::LogError(L"Skinned MeshRenderer - Failed Map BoneMatrixBuffer: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
 
-	// 4) 머티리얼 바인딩
+	// 6) Material bind (boneCount는 클램프한 값으로)
 	m_pMaterial->Bind_Matrix(matWorld);
-	m_pMaterial->Bind_Camera(camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
+	m_pMaterial->Bind_Camera(camPos, matView, matProj, boneCount);
 
-	// 5) 본 상수 버퍼 바인딩 (b3 슬롯)
+	// 7) Bones CB bind (b3)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
-	// 6) 메시 렌더링
+	// 8) Draw
 	m_pMeshBuffer->Render();
 }
 

@@ -330,81 +330,47 @@ void CCamera::RenderUI()
 
 void CCamera::RenderRTDebugDisplay()
 {
-	if (m_mRTDebugDisplays.empty())
-		return;
-
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
-	if (!context)
+	if (!context || m_mRTDebugDisplays.empty())
 		return;
 
-	// ------------------------------------------------------------
-	// 1) 기존 파이프라인 상태 백업
-	// ------------------------------------------------------------
-	ID3D11DepthStencilState* prevDS = nullptr;
-	UINT prevStencilRef = 0;
-
+	// 상태 백업
+	ID3D11DepthStencilState* prevDS = nullptr; UINT prevStencilRef = 0;
 	ID3D11RasterizerState* prevRS = nullptr;
-
-	ID3D11BlendState* prevBS = nullptr;
-	FLOAT prevBlendFactor[4] = {};
-	UINT prevSampleMask = 0;
+	ID3D11BlendState* prevBS = nullptr; FLOAT prevBlendFactor[4] = {}; UINT prevSampleMask = 0;
 
 	context->OMGetDepthStencilState(&prevDS, &prevStencilRef);
 	context->RSGetState(&prevRS);
 	context->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
 
-	// ------------------------------------------------------------
-	// 2) 디버그 오버레이용 상태 적용 (Initialize에서 만든 상태 사용)
-	// ------------------------------------------------------------
+	// 디버그 상태 적용
 	context->OMSetDepthStencilState(m_pRTDebugDS, 0);
 	context->RSSetState(m_pRTDebugRS);
+	const FLOAT bf[4] = { 0,0,0,0 };
+	context->OMSetBlendState(m_pRTDebugBS, bf, 0xFFFFFFFF);
 
-	const FLOAT blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-	context->OMSetBlendState(m_pRTDebugBS, blendFactor, 0xFFFFFFFF);
-
-	// ------------------------------------------------------------
-	// 3) 화면 전체 뷰포트로 설정
-	// ------------------------------------------------------------
+	// 뷰포트
 	auto res = CDisplay::GetInstance().Get_ScreenResolution();
-	const float screenW = static_cast<float>(res.x);
-	const float screenH = static_cast<float>(res.y);
+	float screenW = (float)res.x;
+	float screenH = (float)res.y;
 
 	D3D11_VIEWPORT vp{};
-	vp.TopLeftX = 0.f;
-	vp.TopLeftY = 0.f;
-	vp.Width = screenW;
-	vp.Height = screenH;
-	vp.MinDepth = 0.f;
-	vp.MaxDepth = 1.f;
+	vp.TopLeftX = 0.f; vp.TopLeftY = 0.f;
+	vp.Width = screenW; vp.Height = screenH;
+	vp.MinDepth = 0.f; vp.MaxDepth = 1.f;
 	context->RSSetViewports(1, &vp);
 
-	// ------------------------------------------------------------
-	// 4) 픽셀 좌표계용 Ortho (원점: 좌상단, +x 오른쪽, +y 아래쪽)
-	//    OrthographicOffCenterLH(left, right, bottom, top, near, far)
-	// ------------------------------------------------------------
+	// 픽셀 좌표 Ortho (좌상단 원점)
 	_matrix view = XMMatrixIdentity();
-	_matrix proj = XMMatrixOrthographicOffCenterLH(
-		0.f, screenW,
-		screenH, 0.f,
-		0.f, 1.f
-	);
-
+	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
 	_float3 camPos = { 0.f, 0.f, -1.f };
 
-	// ------------------------------------------------------------
-	// 5) 오른쪽 아래에 3개 사각형 배치 (세로로 쌓기)
-	// ------------------------------------------------------------
 	const float margin = 16.f;
 	const float gap = 12.f;
+	float rectW = min(200.f, screenW * 0.30f);
+	float rectH = min(200.f, screenH * 0.30f);
 
-	float rectW = 200.f;
-	float rectH = 200.f;
-
-	// 화면이 작을 때 자동 축소(너무 큰 값이면 잘림 방지)
-	rectW = min(rectW, screenW * 0.30f);
-	rectH = min(rectH, screenH * 0.30f);
-
-	// 3개 타입(원하시면 바꾸세요)
+	// 원하는 3종 (Albedo/Normal/Depth)
 	CRenderTarget::RTType types[3] =
 	{
 		CRenderTarget::RTType::Albedo,
@@ -422,24 +388,27 @@ void CCamera::RenderRTDebugDisplay()
 		if (!disp.quad || !disp.material)
 			continue;
 
-		// 오른쪽 아래 기준: 같은 x, y는 위로 쌓음
-		const float cx = screenW - margin - rectW * 0.5f;
-		const float cy = screenH - margin - rectH * 0.5f - i * (rectH + gap);
+		// 패널 위치(오른쪽 아래에서 위로 쌓기)
+		float cx = screenW - margin - rectW * 0.5f;
+		float cy = screenH - margin - rectH * 0.5f - i * (rectH + gap);
 
-		_matrix world =
-			XMMatrixScaling(rectW, rectH, 1.f) *
-			XMMatrixTranslation(cx, cy, 0.f);
+		_matrix world = XMMatrixScaling(rectW, rectH, 1.f) * XMMatrixTranslation(cx, cy, 0.f);
 
-		// "일단 흰색" 확인용: 현재 PSMain이 return white이므로 그대로 흰색 출력됨
+		// 머티리얼/셰이더 바인드 (VS/PS 세팅)
 		disp.material->Bind_Matrix(world);
 		disp.material->Bind_Camera(camPos, view, proj, 0);
+
+		// 여기서 렌더타겟 SRV를 PS 슬롯 0에 직접 바인딩
+		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(types[i]);
+		context->PSSetShaderResources(0, 1, &srv);
 
 		disp.quad->Render();
 	}
 
-	// ------------------------------------------------------------
-	// 6) 파이프라인 상태 복원
-	// ------------------------------------------------------------
+	// SRV 해제(경고/바인딩 충돌 방지)
+	CRenderTargetManager::GetInstance().Unbind_AllSRVs_PS(context);
+
+	// 상태 복원
 	context->OMSetDepthStencilState(prevDS, prevStencilRef);
 	context->RSSetState(prevRS);
 	context->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);

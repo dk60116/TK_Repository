@@ -72,6 +72,10 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 	if (_desc)
 	{
 		MATERIALDESC* matDesc = reinterpret_cast<MATERIALDESC*>(_desc);
+
+		if (!matDesc->shaderPointer)
+			return E_FAIL;
+
 		Set_Shader(matDesc->shaderPointer);
 		m_bUseLight = matDesc->usingRight;
 

@@ -24,7 +24,7 @@ HRESULT CRenderer::Initialize()
 
 	if (!m_pMaterial)
 	{
-		Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"G_BufferLit (Material)"));
 	}
 
 	if (!m_pOutlineMat)

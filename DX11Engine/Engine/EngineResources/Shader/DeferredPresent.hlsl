@@ -1,6 +1,3 @@
-// DeferredPresent.hlsl
-// 목적: SRV(t0) 텍스처를 그대로 출력 (디퍼드 디버그 썸네일/프레젠트 용)
-
 cbuffer PerObject : register(b0)
 {
     float4x4 world;
@@ -20,9 +17,7 @@ SamplerState gSampler : register(s0);
 struct VSIn
 {
     float3 posL : POSITION; // VertexTexNormalTangentBuffer.position
-    float3 normal : NORMAL; // VertexTexNormalTangentBuffer.normal (unused)
     float2 uv : TEXCOORD0; // VertexTexNormalTangentBuffer.uv
-    float3 tangent : TANGENT; // VertexTexNormalTangentBuffer.tangent (unused)
 };
 
 struct VSOut

@@ -343,7 +343,7 @@ vector<CMeshRenderer*> CGameObject::CreateMeshHierachy(vector<MeshBundle> _meshI
 		renderers.push_back(ren);
 
 		ren->Get_MeshFilter()->Set_MeshBuffer(_meshInfos[i].meshBuffer);
-		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		ren->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"G_BufferLit (Material)"));
 
 		if (!_meshInfos[i].texture)
 			continue;
@@ -376,7 +376,7 @@ vector<CSkinnedMeshRenderer*> CGameObject::CreateSkinnedMeshHierachy(vector<Skin
 		g->Get_Transform()->SetParent(rootTf);
 		auto* r = g->AddComponent<CSkinnedMeshRenderer>();
 		r->Set_MeshBuffer(si.meshBuffer);
-		r->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"LitMaterial (Material)"));
+		r->Set_Material(CResources::GetInstance().CloneOnGame<CMaterial>(L"G_BufferLit (Material)"));
 		if (si.texture) 
 			r->Get_Material()->Set_Texture(si.texture, 0);
 		renderers.push_back(r);
