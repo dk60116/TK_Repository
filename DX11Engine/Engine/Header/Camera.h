@@ -80,6 +80,7 @@ private:
 	map<CRenderTarget::RTType, RTDebugDisplay> m_mRTDebugDisplays;
 
 	CMaterial* m_pGBufferMaterial;
+	CMaterial* m_pGBufferSkinnedMaterial;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
 	ID3D11RasterizerState* m_pRTDebugRS;

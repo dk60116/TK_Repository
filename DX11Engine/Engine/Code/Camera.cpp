@@ -1,5 +1,6 @@
 #include "epch.h"
 #include "Camera.h"
+#include "SkinnedMeshRenderer.h"
 
 const ColorValue CCamera::s_vDefaultCameraColor = ColorValue(49, 77, 121, 255);
 
@@ -17,6 +18,7 @@ CCamera::CCamera()
 	, m_vUIList({})
 	, m_mRTDebugDisplays({})
 	, m_pGBufferMaterial(nullptr)
+	, m_pGBufferSkinnedMaterial(nullptr)
 	, m_pRTDebugDS(nullptr)
 	, m_pRTDebugRS(nullptr)
 	, m_pRTDebugBS(nullptr)
@@ -72,16 +74,27 @@ HRESULT CCamera::Initialize()
 	}
 	presentMat->AddRef();
 
-	// GBuffer Material (UnlitColor.hlsl)
-	m_pGBufferMaterial = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
+	// GBuffer Materials
+	m_pGBufferMaterial = CResources::GetInstance().LoadOnGame<CMaterial>(L"GBufferAlbedoMaterial (Material)");
 	if (!m_pGBufferMaterial)
 	{
 		quad->Release();
 		presentMat->Release();
-		CDebug::LogError(L"Not found UnlitMaterial (Material)");
+		CDebug::LogError(L"Not found GBufferAlbedoMaterial (Material)");
 		return E_FAIL;
 	}
 	m_pGBufferMaterial->AddRef();
+
+	m_pGBufferSkinnedMaterial = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
+	if (!m_pGBufferSkinnedMaterial)
+	{
+		quad->Release();
+		presentMat->Release();
+		Safe_Release(m_pGBufferMaterial);
+		CDebug::LogError(L"Not found UnlitMaterial (Material)");
+		return E_FAIL;
+	}
+	m_pGBufferSkinnedMaterial->AddRef();
 
 	// 4개 디스플레이 등록
 	auto PushDisplay = [&](CRenderTarget::RTType type)
@@ -180,6 +193,7 @@ void CCamera::OnDestroy()
 	m_mRTDebugDisplays.clear();
 
 	Safe_Release(m_pGBufferMaterial);
+	Safe_Release(m_pGBufferSkinnedMaterial);
 
 	Safe_Release(m_pRTDebugDS);
 	Safe_Release(m_pRTDebugRS);
@@ -295,7 +309,7 @@ void CCamera::RenderMesh()
 		return;
 	}
 
-	if (!m_pGBufferMaterial)
+	if (!m_pGBufferMaterial || !m_pGBufferSkinnedMaterial)
 	{
 		CDebug::LogError(L"GBuffer material is missing.");
 		m_vMeshList.clear();
@@ -319,11 +333,15 @@ void CCamera::RenderMesh()
 		if (!sourceMat)
 			continue;
 
-		m_pGBufferMaterial->Set_BaseColor(sourceMat->Get_BaseColor());
-		m_pGBufferMaterial->Set_Texture(sourceMat->Get_TextureSafe(0), 0);
+		CMaterial* targetMat = dynamic_cast<CSkinnedMeshRenderer*>(renderer)
+			? m_pGBufferSkinnedMaterial
+			: m_pGBufferMaterial;
+
+		targetMat->Set_BaseColor(sourceMat->Get_BaseColor());
+		targetMat->Set_Texture(sourceMat->Get_TextureSafe(0), 0);
 
 		sourceMat->AddRef();
-		renderer->Set_Material(m_pGBufferMaterial);
+		renderer->Set_Material(targetMat);
 		renderer->Render_WithCamera(this);
 		renderer->Set_Material(sourceMat);
 		Safe_Release(sourceMat);
