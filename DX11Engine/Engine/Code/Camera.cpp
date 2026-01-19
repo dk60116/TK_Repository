@@ -16,6 +16,7 @@ CCamera::CCamera()
 	, m_vMeshList({})
 	, m_vUIList({})
 	, m_mRTDebugDisplays({})
+	, m_pGBufferMaterial(nullptr)
 	, m_pRTDebugDS(nullptr)
 	, m_pRTDebugRS(nullptr)
 	, m_pRTDebugBS(nullptr)
@@ -61,7 +62,7 @@ HRESULT CCamera::Initialize()
 	}
 	quad->AddRef();
 
-	// Present Material (DeferredPresent.hlslÀ» »ç¿ëÇÏ´Â ¸ÓÆ¼¸®¾ó)
+	// Present Material (DeferredPresent.hlslì„ ì‚¬ìš©í•˜ëŠ” ë¨¸í‹°ë¦¬ì–¼)
 	CMaterial* presentMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredPresentMaterial (Material)");
 	if (!presentMat)
 	{
@@ -71,7 +72,18 @@ HRESULT CCamera::Initialize()
 	}
 	presentMat->AddRef();
 
-	// 4°³ µğ½ºÇÃ·¹ÀÌ µî·Ï
+	// GBuffer Material (UnlitColor.hlsl)
+	m_pGBufferMaterial = CResources::GetInstance().LoadOnGame<CMaterial>(L"UnlitMaterial (Material)");
+	if (!m_pGBufferMaterial)
+	{
+		quad->Release();
+		presentMat->Release();
+		CDebug::LogError(L"Not found UnlitMaterial (Material)");
+		return E_FAIL;
+	}
+	m_pGBufferMaterial->AddRef();
+
+	// 4ê°œ ë””ìŠ¤í”Œë ˆì´ ë“±ë¡
 	auto PushDisplay = [&](CRenderTarget::RTType type)
 		{
 			RTDebugDisplay desc = {};
@@ -87,11 +99,11 @@ HRESULT CCamera::Initialize()
 	PushDisplay(CRenderTarget::RTType::Depth);
 	PushDisplay(CRenderTarget::RTType::Shading);
 
-	// ·ÎÄÃ ÂüÁ¶ ÇØÁ¦ (entryµéÀÌ AddRef ÇßÀ¸¹Ç·Î)
+	// ë¡œì»¬ ì°¸ì¡° í•´ì œ (entryë“¤ì´ AddRef í–ˆìœ¼ë¯€ë¡œ)
 	quad->Release();
 	presentMat->Release();
 
-	// Debug pipeline states »ı¼º
+	// Debug pipeline states ìƒì„±
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
 	if (!device)
 		return E_FAIL;
@@ -120,7 +132,7 @@ HRESULT CCamera::Initialize()
 			return E_FAIL;
 	}
 
-	// Blend: AlphaBlend (¼±ÅÃ, Áö±İÀº ±×³É µ¤¾î¾²±â¿©µµ µÊ)
+	// Blend: AlphaBlend (ì„ íƒ, ì§€ê¸ˆì€ ê·¸ëƒ¥ ë®ì–´ì“°ê¸°ì—¬ë„ ë¨)
 	{
 		D3D11_BLEND_DESC bs = {};
 		bs.AlphaToCoverageEnable = FALSE;
@@ -166,6 +178,8 @@ void CCamera::OnDestroy()
 	}
 
 	m_mRTDebugDisplays.clear();
+
+	Safe_Release(m_pGBufferMaterial);
 
 	Safe_Release(m_pRTDebugDS);
 	Safe_Release(m_pRTDebugRS);
@@ -271,10 +285,48 @@ void CCamera::Bind_ProjectionMatrix()
 
 void CCamera::RenderMesh()
 {
+	if (m_vMeshList.empty())
+		return;
+
+	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+	if (!context)
+	{
+		m_vMeshList.clear();
+		return;
+	}
+
+	if (!m_pGBufferMaterial)
+	{
+		CDebug::LogError(L"GBuffer material is missing.");
+		m_vMeshList.clear();
+		return;
+	}
+
+	CRenderTargetManager& rtManager = CRenderTargetManager::GetInstance();
+	const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
+
+	rtManager.Bind_RenderTarget(CRenderTarget::RTType::Albedo, context, vp);
+	rtManager.Clear_RenderTarget(CRenderTarget::RTType::Albedo);
+	rtManager.Clear_RenderTarget(CRenderTarget::RTType::Depth);
+
 	for (TRAVERSAL_ITER(m_vMeshList, it))
 	{
-		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
-			(*it)->Render_WithCamera(this);
+		CRenderer* renderer = *it;
+		if (!renderer || !renderer->Get_GameObject()->IsRecursiveActive() || !renderer->Get_Enable())
+			continue;
+
+		CMaterial* sourceMat = renderer->Get_Material();
+		if (!sourceMat)
+			continue;
+
+		m_pGBufferMaterial->Set_BaseColor(sourceMat->Get_BaseColor());
+		m_pGBufferMaterial->Set_Texture(sourceMat->Get_TextureSafe(0), 0);
+
+		sourceMat->AddRef();
+		renderer->Set_Material(m_pGBufferMaterial);
+		renderer->Render_WithCamera(this);
+		renderer->Set_Material(sourceMat);
+		Safe_Release(sourceMat);
 	}
 
 	m_vMeshList.clear();

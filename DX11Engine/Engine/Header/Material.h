@@ -43,6 +43,13 @@ public:
 public:
 	const _bool IsUseLight() const;
 	class CTexture* Get_Texture(_int _index) const;
+	const _float4& Get_BaseColor() const { return m_vBaseColor; }
+	class CTexture* Get_TextureSafe(_int _index) const
+	{
+		if (_index < 0 || _index >= static_cast<_int>(m_vTextureList.size()))
+			return nullptr;
+		return m_vTextureList[_index];
+	}
 
 public:
 	void Set_Shader(CShader* _shader);
@@ -83,4 +90,3 @@ private:
 };
 
 NS_END
-
