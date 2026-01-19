@@ -1351,6 +1351,13 @@ void CResources::Ready_GameResources()
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
 
+	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
+	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
+	litMatDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
+	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
+	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
+	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
+
 	CShader::SHADERDESC skyBoxShaderDesc = { L"../EngineResources/Shader/Skybox.hlsl", L"",  VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"SkyBox (Shader)", L"", &skyBoxShaderDesc));
 
@@ -1361,17 +1368,10 @@ void CResources::Ready_GameResources()
 	CSkyBox::SKYBOXBUFFERDESC dskyDesk = { L"DefaultSky (Texture)" };
 	LoadResourceComplete_Game(CreateGameResource<CSkyBox>(L"DefaultSky (SkyBox)", L"", &dskyDesk));
 
-	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
-	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
-	litMatDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
-	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
-	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
-
 	CShader::SHADERDESC g_BufferlitShaderDesc = { L"../EngineResources/Shader/GBufferLit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game(CreateGameResource<CShader>(L"G_BufferLit (Shader)", L"", &g_BufferlitShaderDesc));
 
-	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"g_BufferLit (Shader)");
+	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"G_BufferLit (Shader)");
 	CMaterial::MATERIALDESC g_BufferLitDesc = { g_BufferLitShader, false };
 	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"G_BufferLit (Material)", L"", &g_BufferLitDesc));
 

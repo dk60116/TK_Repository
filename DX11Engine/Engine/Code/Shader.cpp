@@ -94,6 +94,7 @@ HRESULT CShader::Initialize(const wstring& _name, const wstring& _filePath, void
 
 	hr = device->CreateInputLayout(m_sInfo.layout, m_sInfo.layoutCount,
 		vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_pInputLayout);
+
 	if (FAILED(hr))
 		return hr;
 
