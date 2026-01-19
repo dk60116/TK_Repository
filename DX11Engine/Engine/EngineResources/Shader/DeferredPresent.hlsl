@@ -1,6 +1,5 @@
 // DeferredPresent.hlsl
 // 목적: SRV(t0) 텍스처를 그대로 출력 (디퍼드 디버그 썸네일/프레젠트 용)
-// 필요 최소: b0(world), b1(view/proj), POSITION/UV, t0/s0
 
 cbuffer PerObject : register(b0)
 {
@@ -9,10 +8,10 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos; // 사용 안 함(엔진 바인딩 호환)
+    float3 pos;
+    float _pad0;
     float4x4 view;
     float4x4 proj;
-    float cpadding;
 };
 
 Texture2D gTexture : register(t0);
@@ -20,8 +19,10 @@ SamplerState gSampler : register(s0);
 
 struct VSIn
 {
-    float3 posL : POSITION;
-    float2 uv : TEXCOORD0;
+    float3 posL : POSITION; // VertexTexNormalTangentBuffer.position
+    float3 normal : NORMAL; // VertexTexNormalTangentBuffer.normal (unused)
+    float2 uv : TEXCOORD0; // VertexTexNormalTangentBuffer.uv
+    float3 tangent : TANGENT; // VertexTexNormalTangentBuffer.tangent (unused)
 };
 
 struct VSOut
@@ -42,5 +43,9 @@ VSOut VSMain(VSIn v)
 
 float4 PSMain(VSOut input) : SV_Target
 {
-    return gTexture.Sample(gSampler, input.uv);
+    // 1) "무조건 보이기" 확인용
+    return float4(1.f, 1.f, 1.f, 1.f);
+
+    // 2) 텍스처 출력으로 바꾸려면 아래로 교체
+    // return gTexture.Sample(gSampler, input.uv);
 }

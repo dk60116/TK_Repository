@@ -1,3 +1,5 @@
+// Camera.cpp
+
 #include "epch.h"
 #include "Camera.h"
 
@@ -76,8 +78,10 @@ HRESULT CCamera::Initialize()
 		{
 			RTDebugDisplay desc = {};
 			desc.type = type;
-			desc.quad = quad;        desc.quad->AddRef();
-			desc.material = presentMat; desc.material->AddRef();
+			desc.quad = quad;          
+			desc.quad->AddRef();
+			desc.material = presentMat; 
+			desc.material->AddRef();
 
 			m_mRTDebugDisplays[type] = desc;
 		};
@@ -120,7 +124,7 @@ HRESULT CCamera::Initialize()
 			return E_FAIL;
 	}
 
-	// Blend: AlphaBlend (선택, 지금은 그냥 덮어쓰기여도 됨)
+	// Blend: AlphaBlend
 	{
 		D3D11_BLEND_DESC bs = {};
 		bs.AlphaToCoverageEnable = FALSE;
@@ -175,14 +179,12 @@ void CCamera::OnDestroy()
 _matrix CCamera::Get_ViewMatrix() const
 {
 	_matrix result = XMLoadFloat4x4(&m_vViewMatrix);
-
 	return result;
 }
 
 _matrix CCamera::Get_ProjectionMatrix() const
 {
 	_matrix result = XMLoadFloat4x4(&m_vProjMatrix);
-
 	return result;
 }
 
@@ -229,7 +231,6 @@ void CCamera::Add_RenderTarget_UI(CUI* _ui)
 void CCamera::Bind_ViewMatrix()
 {
 	_matrix inverseWorldMatrix = Get_Transform()->Get_InverseWorldMatrix();
-
 	XMStoreFloat4x4(&m_vViewMatrix, inverseWorldMatrix);
 }
 
@@ -249,6 +250,7 @@ void CCamera::Bind_ProjectionMatrix()
 		XMStoreFloat4x4(&m_vProjMatrix, projMat);
 	}
 	break;
+
 	case CCamera::ORTHOGRAPHIC:
 	{
 		const _float fHalfHeight = m_fSize * 0.5f;
@@ -264,6 +266,7 @@ void CCamera::Bind_ProjectionMatrix()
 		XMStoreFloat4x4(&m_vProjMatrix, projMat);
 	}
 	break;
+
 	default:
 		break;
 	}
@@ -334,161 +337,116 @@ void CCamera::RenderRTDebugDisplay()
 	if (!context)
 		return;
 
-	ID3D11RenderTargetView* oldRTV[8] = {};
-	ID3D11DepthStencilView* oldDSV = nullptr;
-	context->OMGetRenderTargets(8, oldRTV, &oldDSV);
+	// ------------------------------------------------------------
+	// 1) 기존 파이프라인 상태 백업
+	// ------------------------------------------------------------
+	ID3D11DepthStencilState* prevDS = nullptr;
+	UINT prevStencilRef = 0;
 
-	ID3D11RenderTargetView* backRTV = CGraphicDevice::GetInstance().Get_BackBuffer_RTV();
-	ID3D11DepthStencilView* backDSV = CGraphicDevice::GetInstance().Get_DepthStencil_DSV();
-	if (!backRTV)
-	{
-		for (int i = 0; i < 8; ++i) Safe_Release(oldRTV[i]);
-		Safe_Release(oldDSV);
-		return;
-	}
+	ID3D11RasterizerState* prevRS = nullptr;
 
-	context->OMSetRenderTargets(1, &backRTV, backDSV);
+	ID3D11BlendState* prevBS = nullptr;
+	FLOAT prevBlendFactor[4] = {};
+	UINT prevSampleMask = 0;
 
-	UINT oldVpCount = 1;
-	D3D11_VIEWPORT oldVp = {};
-	context->RSGetViewports(&oldVpCount, &oldVp);
+	context->OMGetDepthStencilState(&prevDS, &prevStencilRef);
+	context->RSGetState(&prevRS);
+	context->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
 
-	const auto res = CDisplay::GetInstance().Get_ScreenResolution();
-	const float screenW = (float)res.x;
-	const float screenH = (float)res.y;
-	if (screenW <= 0.f || screenH <= 0.f)
-	{
-		context->RSSetViewports(1, &oldVp);
-		context->OMSetRenderTargets(8, oldRTV, oldDSV);
-		for (int i = 0; i < 8; ++i) Safe_Release(oldRTV[i]);
-		Safe_Release(oldDSV);
-		return;
-	}
-
-	float thumbW = screenW * 0.22f;
-	float thumbH = screenH * 0.22f;
-	thumbW = max(160.f, min(360.f, thumbW));
-	thumbH = max(90.f, min(240.f, thumbH));
-
-	const float margin = 10.f;
-	const float gap = 8.f;
-
-	const _matrix view = XMMatrixIdentity();
-	const _matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
-	const _float3 camPos = _float3(0.f, 0.f, 0.f);
-
-	const float blendFactor[4] = { 0,0,0,0 };
+	// ------------------------------------------------------------
+	// 2) 디버그 오버레이용 상태 적용 (Initialize에서 만든 상태 사용)
+	// ------------------------------------------------------------
 	context->OMSetDepthStencilState(m_pRTDebugDS, 0);
 	context->RSSetState(m_pRTDebugRS);
+
+	const FLOAT blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
 	context->OMSetBlendState(m_pRTDebugBS, blendFactor, 0xFFFFFFFF);
 
-	CRenderTarget::RTType order[4] =
+	// ------------------------------------------------------------
+	// 3) 화면 전체 뷰포트로 설정
+	// ------------------------------------------------------------
+	auto res = CDisplay::GetInstance().Get_ScreenResolution();
+	const float screenW = static_cast<float>(res.x);
+	const float screenH = static_cast<float>(res.y);
+
+	D3D11_VIEWPORT vp{};
+	vp.TopLeftX = 0.f;
+	vp.TopLeftY = 0.f;
+	vp.Width = screenW;
+	vp.Height = screenH;
+	vp.MinDepth = 0.f;
+	vp.MaxDepth = 1.f;
+	context->RSSetViewports(1, &vp);
+
+	// ------------------------------------------------------------
+	// 4) 픽셀 좌표계용 Ortho (원점: 좌상단, +x 오른쪽, +y 아래쪽)
+	//    OrthographicOffCenterLH(left, right, bottom, top, near, far)
+	// ------------------------------------------------------------
+	_matrix view = XMMatrixIdentity();
+	_matrix proj = XMMatrixOrthographicOffCenterLH(
+		0.f, screenW,
+		screenH, 0.f,
+		0.f, 1.f
+	);
+
+	_float3 camPos = { 0.f, 0.f, -1.f };
+
+	// ------------------------------------------------------------
+	// 5) 오른쪽 아래에 3개 사각형 배치 (세로로 쌓기)
+	// ------------------------------------------------------------
+	const float margin = 16.f;
+	const float gap = 12.f;
+
+	float rectW = 200.f;
+	float rectH = 200.f;
+
+	// 화면이 작을 때 자동 축소(너무 큰 값이면 잘림 방지)
+	rectW = min(rectW, screenW * 0.30f);
+	rectH = min(rectH, screenH * 0.30f);
+
+	// 3개 타입(원하시면 바꾸세요)
+	CRenderTarget::RTType types[3] =
 	{
 		CRenderTarget::RTType::Albedo,
 		CRenderTarget::RTType::Normal,
-		CRenderTarget::RTType::Depth,
-		CRenderTarget::RTType::Shading
+		CRenderTarget::RTType::Depth
 	};
 
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
-		auto it = m_mRTDebugDisplays.find(order[i]);
+		auto it = m_mRTDebugDisplays.find(types[i]);
 		if (it == m_mRTDebugDisplays.end())
 			continue;
 
-		RTDebugDisplay& dp = it->second;
-		if (!dp.quad || !dp.material)
+		RTDebugDisplay& disp = it->second;
+		if (!disp.quad || !disp.material)
 			continue;
 
-		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(order[i]);
-		if (!srv)
-			continue;
-
-		const int col = i % 2;
-		const int row = i / 2;
-
-		const float x = margin + col * (thumbW + gap);
-		const float y = (screenH - margin - thumbH) - row * (thumbH + gap);
-
-		D3D11_VIEWPORT vp = {};
-		vp.TopLeftX = x;
-		vp.TopLeftY = y;
-		vp.Width = thumbW;
-		vp.Height = thumbH;
-		vp.MinDepth = 0.f;
-		vp.MaxDepth = 1.f;
-		context->RSSetViewports(1, &vp);
-
-		const float cx = x + thumbW * 0.5f;
-		const float cy = y + thumbH * 0.5f;
+		// 오른쪽 아래 기준: 같은 x, y는 위로 쌓음
+		const float cx = screenW - margin - rectW * 0.5f;
+		const float cy = screenH - margin - rectH * 0.5f - i * (rectH + gap);
 
 		_matrix world =
-			XMMatrixScaling(thumbW, thumbH, 1.f) *
+			XMMatrixScaling(rectW, rectH, 1.f) *
 			XMMatrixTranslation(cx, cy, 0.f);
 
-		dp.material->Bind_Matrix(world);
-		dp.material->Bind_Camera(camPos, view, proj, 0);
+		// "일단 흰색" 확인용: 현재 PSMain이 return white이므로 그대로 흰색 출력됨
+		disp.material->Bind_Matrix(world);
+		disp.material->Bind_Camera(camPos, view, proj, 0);
 
-		context->PSSetShaderResources(0, 1, &srv);
-
-		dp.quad->Render();
-
-		context->PSSetShaderResources(0, 1, nullSRV);
+		disp.quad->Render();
 	}
 
-	context->RSSetViewports(1, &oldVp);
+	// ------------------------------------------------------------
+	// 6) 파이프라인 상태 복원
+	// ------------------------------------------------------------
+	context->OMSetDepthStencilState(prevDS, prevStencilRef);
+	context->RSSetState(prevRS);
+	context->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
 
-	context->OMSetBlendState(nullptr, blendFactor, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(nullptr, 0);
-	context->RSSetState(nullptr);
-
-	context->OMSetRenderTargets(8, oldRTV, oldDSV);
-
-	for (int i = 0; i < 8; ++i) Safe_Release(oldRTV[i]);
-		Safe_Release(oldDSV);
-}
-
-CPhysics::Ray CCamera::ScreenPointToRay(const vector2Int& _pixel, _float _maxDist)
-{
-	auto res = CDisplay::GetInstance().Get_ScreenResolution();
-	_float w = static_cast<float>(res.x);
-	_float h = static_cast<float>(res.y);
-
-	_float xNdc = 2.0f * _pixel.x / w - 1.0f;
-	_float yNdc = -2.0f * _pixel.y / h + 1.0f;
-
-	_vector ptNear = XMVectorSet(xNdc, yNdc, 0.f, 1.f);
-	_vector ptFar = XMVectorSet(xNdc, yNdc, 1.f, 1.f);
-
-	_matrix view = XMLoadFloat4x4(&m_vViewMatrix);
-	_matrix proj = XMLoadFloat4x4(&m_vProjMatrix);
-	_matrix invVP = XMMatrixInverse(nullptr, view * proj);
-
-	ptNear = XMVector4Transform(ptNear, invVP);
-	ptFar = XMVector4Transform(ptFar, invVP);
-	ptNear /= XMVectorGetW(ptNear);
-	ptFar /= XMVectorGetW(ptFar);
-
-	_float3 origin, dir;
-	XMStoreFloat3(&origin, ptNear);
-
-	if (m_eCamViewMode == PERSPECTIVE)
-	{
-		_vector rayDir = XMVectorSubtract(ptFar, ptNear);
-		rayDir = XMVector3Normalize(rayDir);
-		XMStoreFloat3(&dir, rayDir);
-	}
-	else
-	{
-		XMStoreFloat3(&origin, ptNear);
-		dir = Get_Transform()->Get_Directions().forward;
-	}
-
-	vector3 resultDir = vector3(dir);
-
-	return CPhysics::Ray{ origin, resultDir.normalized(), _maxDist };
+	Safe_Release(prevDS);
+	Safe_Release(prevRS);
+	Safe_Release(prevBS);
 }
 
 CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist)
@@ -524,7 +482,6 @@ CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float 
 
 		XMStoreFloat3(&origin, camPos);
 		XMStoreFloat3(&dir, rayDir);
-		XMStoreFloat3(&dir, rayDir);
 	}
 	else
 	{
@@ -535,6 +492,5 @@ CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float 
 	vector3 resultDir = vector3(dir);
 
 	CPhysics::Ray result = { origin, resultDir.normalized(), _maxDist };
-
 	return result;
 }
