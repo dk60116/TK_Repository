@@ -159,16 +159,16 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     m_width = width;
     m_height = height;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Albedo].Create(CRenderTarget::RTType::Albedo, device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::Albedo] .Create(CRenderTarget::RTType::Albedo, device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Albedo].Create(CRenderTarget::RTType::Normal, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::Normal].Create(CRenderTarget::RTType::Normal, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Albedo].Create(CRenderTarget::RTType::Depth, device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::Depth].Create(CRenderTarget::RTType::Depth, device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Albedo].Create(CRenderTarget::RTType::Shading, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::Shading].Create(CRenderTarget::RTType::Shading, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
     return S_OK;
