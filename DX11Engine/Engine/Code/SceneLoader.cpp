@@ -83,9 +83,9 @@ void CSceneLoader::ThreadLoadingLoop()
 		{
 			m_bLoading = true;
 
-			string name = m_mReadyFiles_Name.back();
-			string file = m_mReadyFiles_Path.back();
-			string format = m_mReadyFiles_Format.back();
+			const string name = m_mReadyFiles_Name.back();
+			const string file = m_mReadyFiles_Path.back();
+			const string format = m_mReadyFiles_Format.back();
 
 			m_mReadyFiles_Name.pop_back();
 			m_mReadyFiles_Path.pop_back();
@@ -93,14 +93,14 @@ void CSceneLoader::ThreadLoadingLoop()
 
 			LeaveCriticalSection(&m_pCriticalSection);
 
-			wstring wName = CEngineString::StringToWString(name);
-			wstring wFile = CEngineString::StringToWString(file);
-			wstring wFormat = CEngineString::StringToWString(format);
+			const wstring wName = CEngineString::StringToWString(name);
+			const wstring wFile = CEngineString::StringToWString(file);
+			const wstring wFormat = CEngineString::StringToWString(format);
 
 			if (CEngineString::Contains(wFile, L".png") || CEngineString::Contains(wFile, L".jpg") || CEngineString::Contains(wFile, L".tga"))
 			{
 				if (CEngineString::Contains(wFormat, L"[Texture]"))
-					CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(wName + L" (Texture)", wFile, nullptr, true));
+					CResources::LoadResourceComplete_Scene<CTexture>(wName + L" (Texture)", wFile, nullptr, true);
 			}
 			else if (CEngineString::Contains(wFile, L".fbx"))
 			{
@@ -116,9 +116,9 @@ void CSceneLoader::ThreadLoadingLoop()
 						filter |= FILTER_BONE;
 
 					auto meshDataSplit = CEngineString::Split(wFile, L"/");
-					wstring meshDataFolder = meshDataSplit[meshDataSplit.size() - 2];
-					wstring meshDataTail = meshDataSplit[meshDataSplit.size() - 1];
-					wstring meshDataName = CEngineString::Split(meshDataTail, L".")[0];
+					const wstring meshDataFolder = meshDataSplit[meshDataSplit.size() - 2];
+					const wstring meshDataTail = meshDataSplit[meshDataSplit.size() - 1];
+					const wstring meshDataName = CEngineString::Split(meshDataTail, L".")[0];
 
 					const wstring meshdataPath = meshDataFolder + L"_" + meshDataName + L".meshdata";
 
@@ -159,22 +159,23 @@ void CSceneLoader::ThreadLoadingLoop()
 
 					auto animaitonInfoList = CResources::GetInstance().ReadAnimationClipBufferInfos(animationdataPath);
 
-					CAnimationClip* newClip = CResources::GetInstance().CreateSceneResource<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true);
-					CResources::LoadResourceComplete_Scene(newClip);
+					CResources::LoadResourceComplete_Scene<CAnimationClip>(wName + L" (Animation)", wFile, nullptr, true);
 
-					if (animaitonInfoList.size() > 0)
+					CAnimationClip* newClip = CResources::GetInstance().LoadOnScene<CAnimationClip>(wName + L" (Animation)");
+
+					if (newClip && animaitonInfoList.size() > 0)
 						newClip->Initiailize_Custom(animaitonInfoList[0], nullptr);
 				}
 			}
 			else if (wFile == L"SkyBox")
 			{
 				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
-				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
+				CResources::LoadResourceComplete_Scene<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true);
 			}
 			else if (wFile == L"Terrain")
 			{
 				CMeshBuffer::TERRAINBUFFERDESC terranDesc = FormatToTerrainDesc(wName, wFormat);
-				CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true));
+				CResources::LoadResourceComplete_Scene<CMeshBuffer>(wName + L" (Terrain MeshBuffer)", wFile, &terranDesc, true);
 			}
 
 			++m_iLoadedFile;
@@ -204,7 +205,7 @@ CSkyBox::SKYBOXBUFFERDESC CSceneLoader::FormatToSkyBoxDesc(wstring _name, wstrin
 	wstring texturePath = CEngineString::Erase(_format, L"[");
 	texturePath = CEngineString::Erase(texturePath, L"]");
 
-	CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", texturePath, nullptr, true));
+	CResources::LoadResourceComplete_Scene<CTexture>(_name + L" - Terrain Height map (Texture)", texturePath, nullptr, true);
 
 	terrainDesc.texture = _name + L" - Terrain Height map (Texture)";
 
@@ -229,7 +230,7 @@ CMeshBuffer::TERRAINBUFFERDESC CSceneLoader::FormatToTerrainDesc(wstring _name, 
 	terrainDesc.portrait = static_cast<_uint>(values[2]);
 	terrainDesc.size = values[3];
 	terrainDesc.heightWeight = values[4];
-	CResources::LoadResourceComplete_Scene(CResources::GetInstance().CreateSceneResource<CTexture>(_name + L" - Terrain Height map (Texture)", tokens[5], nullptr, true));
+	CResources::LoadResourceComplete_Scene<CTexture>(_name + L" - Terrain Height map (Texture)", tokens[5], nullptr, true);
 	terrainDesc.heightMap = _name + L" - Terrain Height map (Texture)";
 
 	return terrainDesc;

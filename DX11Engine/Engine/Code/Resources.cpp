@@ -54,22 +54,6 @@ void CResources::Release()
 	m_mGameResourceList.clear();
 }
 
-void CResources::LoadResourceComplete_Game(const CEngineResource* _ptr)
-{
-	if (_ptr)
-		CDebug::Log(L"Create Game resource successfully: " + _ptr->Get_ResourceName());
-	else
-		CDebug::LogError("Failed create Scene resource");
-}
-
-void CResources::LoadResourceComplete_Scene(const CEngineResource* _ptr)
-{
-	if (_ptr)
-		CDebug::Log(L"Create Scene resource successfully: " + _ptr->Get_ResourceName());
-	else
-		CDebug::LogError("Failed create Scene resource");
-}
-
 HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 {
 	Assimp::Importer importer;
@@ -1326,78 +1310,77 @@ _bool CResources::FileExists(const string& _path)
 
 void CResources::Ready_GameResources()
 {
-	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Line (Mesh Buffer)", L"Line"));
-	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Rect (Mesh Buffer)", L"Rect"));
-	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"LineRect (Mesh Buffer)", L"LineRect"));
-	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Cube (Mesh Buffer)", L"Cube"));
-	LoadResourceComplete_Game(CreateGameResource<CMeshBuffer>(L"Quad (Mesh Buffer)", L"Quad"));
+	LoadResourceComplete_Game<CMeshBuffer>(L"Line (Mesh Buffer)", L"Line");
+	LoadResourceComplete_Game<CMeshBuffer>(L"Rect (Mesh Buffer)", L"Rect");
+	LoadResourceComplete_Game<CMeshBuffer>(L"LineRect (Mesh Buffer)", L"LineRect");
+	LoadResourceComplete_Game<CMeshBuffer>(L"Cube (Mesh Buffer)", L"Cube");
+	LoadResourceComplete_Game<CMeshBuffer>(L"Quad (Mesh Buffer)", L"Quad");
 
-	LoadResourceComplete_Game(CreateGameResource<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png"));
+	LoadResourceComplete_Game<CTexture>(L"DefaultSky (Texture)", L"../EngineResources/Image/DefaultSkyBox.png");
 
 	CShader::SHADERDESC lineColorShaderDesc = { L"../EngineResources/Shader/DefaultLine.hlsl", L"",  VertexColorSkinnedBuffer::numElements, VertexColorSkinnedBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"DefaultLine (Shader)", L"", &lineColorShaderDesc);
 
 	CShader* dlShader = LoadOnGame<CShader>(L"DefaultLine (Shader)");
 	CMaterial::MATERIALDESC dlMatDesc = { dlShader, false };
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc));
+	LoadResourceComplete_Game<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc);
 
 	CShader::SHADERDESC deferredPresentShaderDesc = { L"../EngineResources/Shader/DeferredPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DeferredPresent (Shader)", L"", &deferredPresentShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"DeferredPresent (Shader)", L"", &deferredPresentShaderDesc);
 
 	CShader* deferredPresentShader = LoadOnGame<CShader>(L"DeferredPresent (Shader)");
 	CMaterial::MATERIALDESC deferredPresentMatDesc = { deferredPresentShader, false };
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DeferredPresentMaterial (Material)", L"", &deferredPresentMatDesc));
+	LoadResourceComplete_Game<CMaterial>(L"DeferredPresentMaterial (Material)", L"", &deferredPresentMatDesc);
 
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Lit (Shader)", L"", &litShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"Lit (Shader)", L"", &litShaderDesc);
 
 	CShader* litShader = LoadOnGame<CShader>(L"Lit (Shader)");
 	CMaterial::MATERIALDESC litMatDesc = { litShader, true };
 	litMatDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
 	litMatDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
 	litMatDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc));
+	LoadResourceComplete_Game<CMaterial>(L"LitMaterial (Material)", L"", &litMatDesc);
 
 	CShader::SHADERDESC skyBoxShaderDesc = { L"../EngineResources/Shader/Skybox.hlsl", L"",  VertexTexNormalTangentBuffer::numElements, VertexTexNormalTangentBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"SkyBox (Shader)", L"", &skyBoxShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"SkyBox (Shader)", L"", &skyBoxShaderDesc);
 
 	CShader* skyBoxShader = LoadOnGame<CShader>(L"SkyBox (Shader)");
 	CMaterial::MATERIALDESC skyMatDesc = { skyBoxShader, false };
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"SkyBoxMaterial (Material)", L"", &skyMatDesc));
+	LoadResourceComplete_Game<CMaterial>(L"SkyBoxMaterial (Material)", L"", &skyMatDesc);
 
 	CSkyBox::SKYBOXBUFFERDESC dskyDesk = { L"DefaultSky (Texture)" };
-	LoadResourceComplete_Game(CreateGameResource<CSkyBox>(L"DefaultSky (SkyBox)", L"", &dskyDesk));
+	LoadResourceComplete_Game<CSkyBox>(L"DefaultSky (SkyBox)", L"", &dskyDesk);
 
 	CShader::SHADERDESC g_BufferlitShaderDesc = { L"../EngineResources/Shader/GBufferLit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"G_BufferLit (Shader)", L"", &g_BufferlitShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"G_BufferLit (Shader)", L"", &g_BufferlitShaderDesc);
 
 	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"G_BufferLit (Shader)");
 	CMaterial::MATERIALDESC g_BufferLitDesc = { g_BufferLitShader, false };
 	g_BufferLitDesc.customFloatValues.push_back({ L"gSmoothness", 0.f });
 	g_BufferLitDesc.customVector2Values.push_back({ L"gTiling", {1.f, 1.f} });
 	g_BufferLitDesc.customVector2Values.push_back({ L"gOffset", {0.f, 0.f} });
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"G_BufferLit (Material)", L"", &g_BufferLitDesc));
+	LoadResourceComplete_Game<CMaterial>(L"G_BufferLit (Material)", L"", &g_BufferLitDesc);
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc);
 
 	CShader* ulcShader = LoadOnGame<CShader>(L"UnlitColor (Shader)");
 	CMaterial::MATERIALDESC ulcMatDesc = { ulcShader, false };
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"UnlitMaterial (Material)", L"", &ulcMatDesc));
+	LoadResourceComplete_Game<CMaterial>(L"UnlitMaterial (Material)", L"", &ulcMatDesc);
 
 	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResources/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"Outline (Shader)", L"", &outlineShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"Outline (Shader)", L"", &outlineShaderDesc);
 
 	CShader::SHADERDESC dUIShaderDesc = { L"../EngineResources/Shader/DefaultUI.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
-	LoadResourceComplete_Game(CreateGameResource<CShader>(L"DefaultUI (Shader)", L"", &dUIShaderDesc));
+	LoadResourceComplete_Game<CShader>(L"DefaultUI (Shader)", L"", &dUIShaderDesc);
 
 	CShader* duiShader = LoadOnGame<CShader>(L"DefaultUI (Shader)");
 	CMaterial::MATERIALDESC duiMatDesc = { duiShader, false };
-	LoadResourceComplete_Game(CreateGameResource<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc));
+	LoadResourceComplete_Game<CMaterial>(L"DefaultUIMaterial (Material)", L"", &duiMatDesc);
 
 	wstring dfPath = L"BinaryAssets/FontData/LiberationSans.spritefont";
-	CFont* defaultFont = CreateGameResource<CFont>(L"Sans (Font)", L"", &dfPath);
-	LoadResourceComplete_Game(defaultFont);
+	LoadResourceComplete_Game<CFont>(L"Sans (Font)", L"", &dfPath);
 }
 
 void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinnedMeshBuffer::SKINNEDSKELETAL>& _outList)

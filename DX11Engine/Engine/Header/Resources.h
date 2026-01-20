@@ -23,8 +23,10 @@ private:
     void Release();
 
 public:
-    static void LoadResourceComplete_Game(const class CEngineResource* _ptr);
-    static void LoadResourceComplete_Scene(const class CEngineResource* _ptr);
+    template<typename T>
+    static void LoadResourceComplete_Game(const wstring& _name, const wstring& _path, void* _desc = nullptr);
+    template<typename T>
+    static void LoadResourceComplete_Scene(const wstring& _name, const wstring& _path, void* _desc, const bool _tempScene);
 
 public:
     HRESULT ConvertFBXToMeshBufferData(const wstring _filePath);
@@ -83,6 +85,28 @@ private:
 };
 
 NS_END
+
+template<typename T>
+inline void CResources::LoadResourceComplete_Game(const wstring& _name, const wstring& _path, void* _desc)
+{
+    CEngineResource* newResource = GetInstance().CreateGameResource<T>(_name, _path, _desc);
+
+    if (newResource)
+        CDebug::Log(L"Create Game resource successfully: " + newResource->Get_ResourceName());
+    else
+        CDebug::LogError(L"Failed create Scene resource" + _name);
+}
+
+template<typename T>
+inline void CResources::LoadResourceComplete_Scene(const wstring& _name, const wstring& _path, void* _desc, const bool _tempScene)
+{
+    CEngineResource* newResource = GetInstance().CreateSceneResource<T>(_name, _path, _desc, _tempScene);
+
+    if (newResource)
+        CDebug::Log(L"Create Scene resource successfully: " + newResource->Get_ResourceName());
+    else
+        CDebug::LogError(L"Failed create Scene resource" + _name);
+}
 
 template<typename T>
 inline T* CResources::CreateGameResource(const wstring& _name, const wstring& _path, void* _desc)
