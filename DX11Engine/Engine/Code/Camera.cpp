@@ -54,20 +54,20 @@ HRESULT CCamera::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	// Quad
-	CMeshBuffer* quad = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Quad (Mesh Buffer)");
-	if (!quad)
+	// Rect
+	CMeshBuffer* Rect = CResources::GetInstance().LoadOnGame<CMeshBuffer>(L"Rect (Mesh Buffer)");
+	if (!Rect)
 	{
-		CDebug::LogError(L"Not found Quad (Mesh Buffer)");
+		CDebug::LogError(L"Not found Rect (Mesh Buffer)");
 		return E_FAIL;
 	}
-	quad->AddRef();
+	Rect->AddRef();
 
 	// Present Material (DeferredPresent.hlsl을 사용하는 머티리얼)
 	CMaterial* presentMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredPresentMaterial (Material)");
 	if (!presentMat)
 	{
-		quad->Release();
+		Rect->Release();
 		CDebug::LogError(L"Not found DeferredPresentMaterial (Material)");
 		return E_FAIL;
 	}
@@ -78,10 +78,8 @@ HRESULT CCamera::Initialize()
 		{
 			RTDebugDisplay desc = {};
 			desc.type = type;
-			desc.quad = quad;          
-			desc.quad->AddRef();
+			desc.quad = Rect;          
 			desc.material = presentMat; 
-			desc.material->AddRef();
 
 			m_mRTDebugDisplays[type] = desc;
 		};
@@ -92,7 +90,7 @@ HRESULT CCamera::Initialize()
 	PushDisplay(CRenderTarget::RTType::Shading);
 
 	// 로컬 참조 해제 (entry들이 AddRef 했으므로)
-	quad->Release();
+	Rect->Release();
 	presentMat->Release();
 
 	// Debug pipeline states 생성
@@ -349,26 +347,52 @@ void CCamera::RenderRTDebugDisplay()
 	const FLOAT bf[4] = { 0,0,0,0 };
 	context->OMSetBlendState(m_pRTDebugBS, bf, 0xFFFFFFFF);
 
-	// 뷰포트
+	// 스크린 해상도
 	auto res = CDisplay::GetInstance().Get_ScreenResolution();
 	float screenW = (float)res.x;
 	float screenH = (float)res.y;
 
-	D3D11_VIEWPORT vp{};
-	vp.TopLeftX = 0.f; vp.TopLeftY = 0.f;
-	vp.Width = screenW; vp.Height = screenH;
-	vp.MinDepth = 0.f; vp.MaxDepth = 1.f;
-	context->RSSetViewports(1, &vp);
+	// 뷰포트(디버그 출력은 백버퍼 전체)
+	{
+		D3D11_VIEWPORT vp{};
+		vp.TopLeftX = 0.f; vp.TopLeftY = 0.f;
+		vp.Width = screenW; vp.Height = screenH;
+		vp.MinDepth = 0.f; vp.MaxDepth = 1.f;
+		context->RSSetViewports(1, &vp);
+	}
 
 	// 픽셀 좌표 Ortho (좌상단 원점)
 	_matrix view = XMMatrixIdentity();
 	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
 	_float3 camPos = { 0.f, 0.f, -1.f };
 
+	// ------------------------------------------------------------------------------------
+	// 썸네일 크기/비율: "크기는 유지" + "게임 뷰포트 비율 유지"
+	// ------------------------------------------------------------------------------------
 	const float margin = 16.f;
 	const float gap = 12.f;
-	float rectW = min(200.f, screenW * 0.30f);
-	float rectH = min(200.f, screenH * 0.30f);
+
+	// 게임 뷰포트 기준 aspect (없으면 화면 기준)
+	const D3D11_VIEWPORT* gameVP = CGraphicDevice::GetInstance().Get_GameViewport();
+	float srcW = gameVP ? gameVP->Width : screenW;
+	float srcH = gameVP ? gameVP->Height : screenH;
+	float srcAspect = (srcH > 0.f) ? (srcW / srcH) : 1.f;
+
+	// 최대 박스 크기(체감 크기 유지용) + 세로 스택이 화면을 넘지 않도록 제한
+	float maxBox = min(200.f, min(screenW, screenH) * 0.30f);
+
+	// 3개를 아래에서 위로 쌓으므로, 높이 제한 반영(필수에 가깝습니다)
+	float availH = screenH - margin * 2.f - gap * 2.f;
+	maxBox = min(maxBox, availH / 3.f);
+
+	// aspect 유지하며 rectW/rectH 산출 (둘 중 어느 쪽도 maxBox 초과하지 않게)
+	float rectW = maxBox;
+	float rectH = rectW / srcAspect;
+	if (rectH > maxBox)
+	{
+		rectH = maxBox;
+		rectW = rectH * srcAspect;
+	}
 
 	// 원하는 3종 (Albedo/Normal/Depth)
 	CRenderTarget::RTType types[3] =
@@ -392,16 +416,18 @@ void CCamera::RenderRTDebugDisplay()
 		float cx = screenW - margin - rectW * 0.5f;
 		float cy = screenH - margin - rectH * 0.5f - i * (rectH + gap);
 
+		// 쿼드 월드(픽셀 단위 스케일 + 위치)
 		_matrix world = XMMatrixScaling(rectW, rectH, 1.f) * XMMatrixTranslation(cx, cy, 0.f);
 
 		// 머티리얼/셰이더 바인드 (VS/PS 세팅)
 		disp.material->Bind_Matrix(world);
 		disp.material->Bind_Camera(camPos, view, proj, 0);
 
-		// 여기서 렌더타겟 SRV를 PS 슬롯 0에 직접 바인딩
+		// 렌더타겟 SRV를 PS 슬롯 0에 직접 바인딩
 		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(types[i]);
 		context->PSSetShaderResources(0, 1, &srv);
 
+		// 드로우
 		disp.quad->Render();
 	}
 

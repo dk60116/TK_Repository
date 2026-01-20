@@ -120,7 +120,7 @@ VSOut VSMain(VSIn v)
 // «»ºø ºŒ¿Ã¥ı
 float4 PSMain(VSOut input) : SV_TARGET
 {    
-    float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
+    float2 tillingUV = float2(input.uv.x * gTiling.x + gOffset.x* gTiling.x + gOffset.x, input.uv.y * gTiling.y + gOffset.y);
     float4 texColor = useTexture ? gTexture.Sample(gSampler, tillingUV) : float4(1, 1, 1, 1);
 
     float3 N = normalize(input.normalW);

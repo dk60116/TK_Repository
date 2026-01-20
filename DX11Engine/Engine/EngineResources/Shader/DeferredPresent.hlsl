@@ -38,9 +38,8 @@ VSOut VSMain(VSIn v)
 
 float4 PSMain(VSOut input) : SV_Target
 {
-    // 1) "무조건 보이기" 확인용
-    //return float4(1.f, 1.f, 1.f, 1.f);
+    float2 uv = input.uv;
+    uv.y = 1.0f - uv.y; // 상하 플립
 
-    // 2) 텍스처 출력으로 바꾸려면 아래로 교체
-    return gTexture.Sample(gSampler, input.uv);
+    return gTexture.Sample(gSampler, uv);
 }
