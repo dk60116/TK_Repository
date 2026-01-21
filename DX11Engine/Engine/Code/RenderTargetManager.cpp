@@ -96,6 +96,23 @@ void CRenderTargetManager::Bind_RenderTarget(const CRenderTarget::RTType type, I
         context->RSSetViewports(1, vp);
 }
 
+void CRenderTargetManager::Bind_GBuffer(ID3D11DeviceContext* ctx, const D3D11_VIEWPORT* vp)
+{
+    Unbind_AllSRVs_PS(ctx);
+
+    ID3D11RenderTargetView* rtvs[2] =
+    {
+        GetRTV(CRenderTarget::RTType::Albedo),
+        GetRTV(CRenderTarget::RTType::Normal),
+    };
+
+    ID3D11DepthStencilView* dsv = GetDSV(CRenderTarget::RTType::Depth);
+
+    ctx->OMSetRenderTargets(2, rtvs, dsv);
+
+    if (vp) ctx->RSSetViewports(1, vp);
+}
+
 void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 {
     ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
@@ -135,6 +152,23 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
     context->ClearRenderTargetView(rtv, clear);
 }
 
+void CRenderTargetManager::Clear_GBuffer()
+{
+    Clear_RenderTarget(CRenderTarget::RTType::Albedo);
+    Clear_RenderTarget(CRenderTarget::RTType::Normal);
+    Clear_RenderTarget(CRenderTarget::RTType::Depth);
+}
+
+ID3D11RenderTargetView* CRenderTargetManager::GetRTV(const CRenderTarget::RTType type) const
+{
+    auto it = m_rtList.find(type);
+
+    if (it == m_rtList.end())
+        return nullptr;
+
+    return it->second.GetRTV();
+}
+
 ID3D11ShaderResourceView* CRenderTargetManager::GetSRV(const CRenderTarget::RTType type) const
 {
     auto it = m_rtList.find(type);
@@ -143,6 +177,16 @@ ID3D11ShaderResourceView* CRenderTargetManager::GetSRV(const CRenderTarget::RTTy
         return nullptr;
 
     return it->second.GetSRV();
+}
+
+ID3D11DepthStencilView* CRenderTargetManager::GetDSV(const CRenderTarget::RTType type) const
+{
+    auto it = m_rtList.find(type);
+
+    if (it == m_rtList.end())
+        return nullptr;
+
+    return it->second.GetDSV();
 }
 
 void CRenderTargetManager::Unbind_AllSRVs_PS(ID3D11DeviceContext* context)

@@ -82,34 +82,61 @@ HRESULT CMaterial::Initialize(const wstring& _name, wstring _filePath, void* _de
 		for (const auto& [key, value] : matDesc->customFloatValues)
 		{
 			m_mFloatValues.emplace(key, value);
+
 			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-			m_vCustomBufferByteList.push_back(*p);
+
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(float));
 		}
 		for (const auto& [key, value] : matDesc->customIntValues)
 		{
 			m_mIntValues.emplace(key, value);
+
 			const BYTE* p = reinterpret_cast<const BYTE*>(&value);
-			m_vCustomBufferByteList.push_back(value);
+
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), p, p + sizeof(int));
 		}
 		for (const auto& [key, value] : matDesc->customVector2Values)
 		{
 			m_mVector2Values.emplace(key, value);
+
 			const BYTE* pX = reinterpret_cast<const BYTE*>(&value.x);
 			const BYTE* pY = reinterpret_cast<const BYTE*>(&value.y);
+
 			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pX, pX + sizeof(_float));
 			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pY, pY + sizeof(_float));
 		}
 		for (const auto& [key, value] : matDesc->customVector3Values)
 		{
 			m_mVector3Values.emplace(key, value);
+
+			const BYTE* pX = reinterpret_cast<const BYTE*>(&value.x);
+			const BYTE* pY = reinterpret_cast<const BYTE*>(&value.y);
+			const BYTE* pZ = reinterpret_cast<const BYTE*>(&value.z);
+
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pX, pX + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pY, pY + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pZ, pZ + sizeof(_float));
 		}
 		for (const auto& [key, value] : matDesc->customVector4Values)
 		{
 			m_mVector4Values.emplace(key, value);
+
+			const BYTE* pX = reinterpret_cast<const BYTE*>(&value.x);
+			const BYTE* pY = reinterpret_cast<const BYTE*>(&value.y);
+			const BYTE* pZ = reinterpret_cast<const BYTE*>(&value.z);
+			const BYTE* pW = reinterpret_cast<const BYTE*>(&value.w);
+
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pX, pX + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pY, pY + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pZ, pZ + sizeof(_float));
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pW, pW + sizeof(_float));
 		}
 		for (const auto& [key, value] : matDesc->customMatrixValues)
 		{
 			m_mMatrixValues.emplace(key, value);
+
+			const BYTE* pMat = reinterpret_cast<const BYTE*>(&value);
+			m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pMat, pMat + sizeof(_float4x4));
 		}
 	}
 
@@ -219,7 +246,69 @@ void CMaterial::Bind_CustomValues()
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(float));
 		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(float));
 	}
-	// TODO: Vector3, Vector4, Matrix 등도 추가 가능
+	for (const auto& [key, value] : m_mVector3Values)
+	{
+		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
+		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
+		const BYTE* pz = reinterpret_cast<const BYTE*>(&value.z);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pz, pz + sizeof(float));
+	}
+	for (const auto& [key, value] : m_mVector4Values)
+	{
+		const BYTE* px = reinterpret_cast<const BYTE*>(&value.x);
+		const BYTE* py = reinterpret_cast<const BYTE*>(&value.y);
+		const BYTE* pz = reinterpret_cast<const BYTE*>(&value.z);
+		const BYTE* pw = reinterpret_cast<const BYTE*>(&value.w);
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), px, px + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), py, py + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pz, pz + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), pw, pw + sizeof(float));
+	}
+	for (const auto& [key, value] : m_mMatrixValues)
+	{
+		const BYTE* _11 = reinterpret_cast<const BYTE*>(&value._11);
+		const BYTE* _12 = reinterpret_cast<const BYTE*>(&value._12);
+		const BYTE* _13 = reinterpret_cast<const BYTE*>(&value._13);
+		const BYTE* _14 = reinterpret_cast<const BYTE*>(&value._14);
+
+		const BYTE* _21 = reinterpret_cast<const BYTE*>(&value._21);
+		const BYTE* _22 = reinterpret_cast<const BYTE*>(&value._22);
+		const BYTE* _23 = reinterpret_cast<const BYTE*>(&value._23);
+		const BYTE* _24 = reinterpret_cast<const BYTE*>(&value._24);
+
+		const BYTE* _31 = reinterpret_cast<const BYTE*>(&value._31);
+		const BYTE* _32 = reinterpret_cast<const BYTE*>(&value._32);
+		const BYTE* _33 = reinterpret_cast<const BYTE*>(&value._33);
+		const BYTE* _34 = reinterpret_cast<const BYTE*>(&value._34);
+
+		const BYTE* _41 = reinterpret_cast<const BYTE*>(&value._41);
+		const BYTE* _42 = reinterpret_cast<const BYTE*>(&value._42);
+		const BYTE* _43 = reinterpret_cast<const BYTE*>(&value._43);
+		const BYTE* _44 = reinterpret_cast<const BYTE*>(&value._44);
+
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _11, _11 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _12, _12 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _13, _13 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _14, _14 + sizeof(float));
+
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _21, _21 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _22, _22 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _23, _23 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _24, _24 + sizeof(float));
+
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _31, _31 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _32, _32 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _33, _33 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _34, _34 + sizeof(float));
+
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _41, _41 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _42, _42 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _43, _43 + sizeof(float));
+		m_vCustomBufferByteList.insert(m_vCustomBufferByteList.end(), _44, _44 + sizeof(float));
+	}
+	// TODO: Vector4 등도 추가 가능
 
 	// 정렬 맞추기 (16바이트 단위)
 	while (m_vCustomBufferByteList.size() % 16 != 0)
@@ -272,9 +361,9 @@ void CMaterial::Set_FloatValue(const wstring _key, const _float _value)
 
 void CMaterial::Set_IntValue(const wstring _key, const _int _value)
 {
-	auto it = m_mFloatValues.find(_key);
+	auto it = m_mIntValues.find(_key);
 
-	if (it != m_mFloatValues.end())
+	if (it != m_mIntValues.end())
 		m_mIntValues[_key] = _value;
 	else
 		CDebug::LogError(L"Material - Set_IntValue Failed - Key not found: " + _key + L" - " + m_strResourceName);
@@ -310,7 +399,7 @@ void CMaterial::Set_Vector4Value(const wstring _key, const _float4 _value)
 		CDebug::LogError(L"Material - Set_Vector4Value Failed - Key not found: " + _key + L" - " + m_strResourceName);
 }
 
-void CMaterial::SetMatrixValue(const wstring _key, const _float4x4 _value)
+void CMaterial::Set_MatrixValue(const wstring _key, const _float4x4 _value)
 {
 	auto it = m_mMatrixValues.find(_key);
 

@@ -19,7 +19,8 @@ public:
     ~CRenderTarget();
 
 public:
-    HRESULT Create(
+    HRESULT Create
+    (
         RTType type,
         ID3D11Device* device,
         _uint width,
@@ -31,27 +32,27 @@ public:
     void Destroy();
 
 public:
-    RTType GetType() const { return m_type; }
-    _uint GetWidth() const { return m_width; }
-    _uint GetHeight() const { return m_height; }
-    DXGI_FORMAT GetFormat() const { return m_format; }
-    bool IsCreateSRV() const { return m_createSRV; }
+    RTType GetType() const;
+    vector2Int GetWidthHeight() const;
+    DXGI_FORMAT GetFormat() const;
+    bool IsCreateSRV() const;
 
-    ID3D11Texture2D* GetTexture() const { return m_texture; }
-    ID3D11RenderTargetView* GetRTV() const { return m_rtv; }              
-    ID3D11DepthStencilView* GetDSV() const { return m_dsv; }            
-    ID3D11ShaderResourceView* GetSRV() const { return m_srv; }           
+    ID3D11Texture2D* GetTexture() const;
+    ID3D11RenderTargetView* GetRTV() const;
+    ID3D11DepthStencilView* GetDSV() const;
+    ID3D11ShaderResourceView* GetSRV() const;
 
-    bool IsDepth() const { return m_type == RTType::Depth; }
-    bool HasRTV() const { return m_rtv != nullptr; }
-    bool HasDSV() const { return m_dsv != nullptr; }
-    bool HasSRV() const { return m_srv != nullptr; }
+    const bool IsDepth() const;
+    const bool HasRTV() const;
+    const bool HasDSV() const;
+    const bool HasSRV() const;
 
 private:
     HRESULT CreateColor_Internal(ID3D11Device* device);
     HRESULT CreateDepth_Internal(ID3D11Device* device);
 
-    static bool GetDepthTypelessFormats(
+    static bool GetDepthTypelessFormats
+    (
         DXGI_FORMAT dsvFormat,
         DXGI_FORMAT& outTypelessTexFormat,
         DXGI_FORMAT& outDsvFormat,

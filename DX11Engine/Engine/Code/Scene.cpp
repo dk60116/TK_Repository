@@ -62,7 +62,6 @@ HRESULT CScene::Initialize()
 			if (m_pSkyBox)
 			{
 				m_pSkyBox->AddRef();
-
 				m_pSkyBox->Initialize_Scene();
 			}
 		}
@@ -331,45 +330,32 @@ void CScene::Render_Editor()
 
 void CScene::Render_Game()
 {
-	// (멀티 윈도우 스왑체인 구조면) 게임 윈도우 백버퍼를 현재 타겟으로 확정
-		CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
+	CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
 
-	// 최종 백버퍼 클리어 컬러(디버그 프레젠트 배경)
 	ColorValue backgroudColor = ColorValue::black();
 	if (Get_Camera())
 		backgroudColor = Get_Camera()->Get_BackgroundColor();
 
-	// 1) 오브젝트가 렌더러를 카메라 큐로 등록(기존 구조 유지)
+	// 1) Renderer 큐 적재
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-	{
 		if ((*it)->IsActive())
-			(*it)->Render(); // MeshRenderer::Render() -> Camera->Add_RenderTarget_Mesh(this)
-	}
+			(*it)->Render();
 
-	// 2) 카메라 Pre 단계
-	for (TRAVERSAL_ITER(m_lCameraList, it))
-		(*it)->OnPreCull();
-	for (TRAVERSAL_ITER(m_lCameraList, it))
-		(*it)->OnPreRender();
+	// 2) Camera Pre
+	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreCull();
+	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreRender();
 
-	// -----------------------------------------------------------------------------------------
-	// 3) GBuffer Albedo 패스: 백버퍼가 아니라 RTM의 Albedo+Depth에 씬 메쉬를 렌더
-	// -----------------------------------------------------------------------------------------
+	// 3) GBuffer 패스 (MRT 유지!)
 	ID3D11DeviceContext* ctx = m_pContext;
 	const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_GameViewport();
-	if (!vp)
-		vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
+	if (!vp) vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
 
 	auto& RTM = CRenderTargetManager::GetInstance();
 
-	// Albedo RTV + RTM Depth DSV 바인딩 (Bind_RenderTarget 내부에서 PS SRV 언바인드도 수행)
-	RTM.Bind_RenderTarget(CRenderTarget::RTType::Albedo, ctx, vp);
+	RTM.Bind_GBuffer(ctx, vp);
+	RTM.Clear_GBuffer();
 
-	// GBuffer 클리어
-	RTM.Clear_RenderTarget(CRenderTarget::RTType::Albedo);
-	RTM.Clear_RenderTarget(CRenderTarget::RTType::Depth);
-
-	// (선택) SkyBox도 Albedo 타겟에 그리려면 여기서 수행
+	// SkyBox를 GBuffer에 넣을 거면 여기서 (Albedo만 쓰고 싶으면 SkyBox 전용 PS 필요)
 	if (m_pSkyBox && !m_lCameraList.empty())
 	{
 		m_pContext->RSSetState(m_pSkyBoxResterizerState);
@@ -377,47 +363,38 @@ void CScene::Render_Game()
 		RenderSkyBox(m_lCameraList.back());
 	}
 
-	// 메쉬 렌더 상태
 	m_pContext->RSSetState(m_pMeshResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
 
-	// 실제 메쉬 드로우(결과는 Albedo RT에 기록됨)
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+			(*it)->RenderMesh();
+
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
-			(*it)->RenderMesh();
+			(*it)->RenderLightingPass_ToShading(vp);
 	}
 
-	// -----------------------------------------------------------------------------------------
-	// 4) Present/디버그 출력 패스: 다시 백버퍼로 복귀 후, Albedo SRV를 Quad로 샘플링해 그림
-	// -----------------------------------------------------------------------------------------
+	// 4) BackBuffer 복귀 + UI/디버그
 	CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
 	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
 
-	// UI는 백버퍼 위에 얹고 싶으면 여기서 렌더
 	m_pContext->RSSetState(m_pUIResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
-	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderUI();
-	}
 
-	// 오브젝트 PostRender 콜백(기존 구조 유지)
 	for (TRAVERSAL_ITER(m_lObjectList, it))
-	{
 		if ((*it)->IsRecursiveActive())
 			(*it)->OnPostRender();
-	}
 
-	// 디버그 디스플레이(여기서 RTM.GetSRV(Albedo)를 PS t0로 바인딩해서 Quad 출력)
 	for (TRAVERSAL_ITER(m_lCameraList, it))
-	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderRTDebugDisplay();
-	}
 }
 
 void CScene::SceneRelease()

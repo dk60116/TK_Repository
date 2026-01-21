@@ -54,7 +54,7 @@ public:
 	void Set_Vector2Value(const wstring _key, const _float2 _value);
 	void Set_Vector3Value(const wstring _key, const _float3 _value);
 	void Set_Vector4Value(const wstring _key, const _float4 _value);
-	void SetMatrixValue(const wstring _key, const _float4x4 _value);
+	void Set_MatrixValue(const wstring _key, const _float4x4 _value);
 
 private:
 	HRESULT Create_ConstantBuffer();

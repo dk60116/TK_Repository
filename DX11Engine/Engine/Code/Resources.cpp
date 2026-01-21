@@ -1325,13 +1325,6 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC dlMatDesc = { dlShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"DefaultLineMaterial (Material)", L"", &dlMatDesc);
 
-	CShader::SHADERDESC deferredPresentShaderDesc = { L"../EngineResources/Shader/DeferredPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
-	LoadResourceComplete_Game<CShader>(L"DeferredPresent (Shader)", L"", &deferredPresentShaderDesc);
-
-	CShader* deferredPresentShader = LoadOnGame<CShader>(L"DeferredPresent (Shader)");
-	CMaterial::MATERIALDESC deferredPresentMatDesc = { deferredPresentShader, false };
-	LoadResourceComplete_Game<CMaterial>(L"DeferredPresentMaterial (Material)", L"", &deferredPresentMatDesc);
-
 	CShader::SHADERDESC litShaderDesc = { L"../EngineResources/Shader/Lit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"Lit (Shader)", L"", &litShaderDesc);
 
@@ -1354,6 +1347,29 @@ void CResources::Ready_GameResources()
 
 	CShader::SHADERDESC g_BufferlitShaderDesc = { L"../EngineResources/Shader/GBufferLit.hlsl", L"", VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"G_BufferLit (Shader)", L"", &g_BufferlitShaderDesc);
+
+	CShader::SHADERDESC deferredPresentShaderDesc = { L"../EngineResources/Shader/DeferredPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"DeferredPresent (Shader)", L"", &deferredPresentShaderDesc);
+
+	CShader* deferredPresentShader = LoadOnGame<CShader>(L"DeferredPresent (Shader)");
+	CMaterial::MATERIALDESC deferredPresentMatDesc = { deferredPresentShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"DeferredPresent (Material)", L"", &deferredPresentMatDesc);
+
+	CShader::SHADERDESC depthPresentShaderDesc = { L"../EngineResources/Shader/DepthPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"DepthPresent (Shader)", L"", &depthPresentShaderDesc);
+
+	CShader* DepthPresentShader = LoadOnGame<CShader>(L"DepthPresent (Shader)");
+	CMaterial::MATERIALDESC DepthPresentMatDesc = { DepthPresentShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"DepthPresent (Material)", L"", &DepthPresentMatDesc);
+
+	CShader::SHADERDESC deferredShadingShaderDesc = { L"../EngineResources/Shader/DeferredShading.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"DeferredShading (Shader)", L"", &deferredShadingShaderDesc);
+
+	CShader* deferredShadingShader = LoadOnGame<CShader>(L"DeferredShading (Shader)");
+	CMaterial::MATERIALDESC deferredShadingMatDesc = { deferredShadingShader, true };
+	_float4x4 matZero = {};
+	deferredShadingMatDesc.customMatrixValues.push_back({ L"gInvViewProj", matZero });
+	LoadResourceComplete_Game<CMaterial>(L"DeferredShading (Material)", L"", &deferredShadingMatDesc);
 
 	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"G_BufferLit (Shader)");
 	CMaterial::MATERIALDESC g_BufferLitDesc = { g_BufferLitShader, false };

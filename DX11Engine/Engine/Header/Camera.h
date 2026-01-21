@@ -55,6 +55,7 @@ public:
 	void RenderUI();
 
 	void RenderRTDebugDisplay();
+	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 
 public:
 	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
@@ -78,6 +79,10 @@ private:
 
 private:
 	map<CRenderTarget::RTType, RTDebugDisplay> m_mRTDebugDisplays;
+
+	CMeshBuffer* m_pRectBuffer;
+	vector<CMaterial*> m_vRectMats;
+	CMaterial* m_pLightingPassMat;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
 	ID3D11RasterizerState* m_pRTDebugRS;

@@ -33,6 +33,66 @@ void CRenderTarget::Destroy()
     m_createSRV = true;
 }
 
+CRenderTarget::RTType CRenderTarget::GetType() const
+{
+    return m_type;
+}
+
+vector2Int CRenderTarget::GetWidthHeight() const
+{
+    return vector2Int(m_width, m_height);
+}
+
+DXGI_FORMAT CRenderTarget::GetFormat() const
+{
+    return m_format;
+}
+
+bool CRenderTarget::IsCreateSRV() const
+{
+    return m_createSRV;
+}
+
+ID3D11Texture2D* CRenderTarget::GetTexture() const
+{
+    return m_texture;
+}
+
+ID3D11RenderTargetView* CRenderTarget::GetRTV() const
+{
+    return m_rtv;
+}
+
+ID3D11DepthStencilView* CRenderTarget::GetDSV() const
+{
+    return m_dsv;
+}
+
+ID3D11ShaderResourceView* CRenderTarget::GetSRV() const
+{
+    return m_srv;
+}
+
+const bool CRenderTarget::IsDepth() const
+{
+    return m_type == RTType::Depth;
+}
+
+const bool CRenderTarget::HasRTV() const
+{
+    return m_rtv != nullptr;
+}
+
+const bool CRenderTarget::HasDSV() const
+{
+    return m_dsv != nullptr;
+}
+
+const bool CRenderTarget::HasSRV() const
+{
+    return m_srv != nullptr;
+}
+
 HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _uint height, DXGI_FORMAT format, bool createSRV)
 {
     if (!device || width == 0 || height == 0)
@@ -46,8 +106,47 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
     m_format = format;
     m_createSRV = createSRV;
 
-    if (m_type == RTType::Depth)
-        return CreateDepth_Internal(device);
+    if (type == RTType::Depth)
+    {
+        D3D11_TEXTURE2D_DESC td{};
+        td.Width = width;
+        td.Height = height;
+        td.MipLevels = 1;
+        td.ArraySize = 1;
+        td.SampleDesc.Count = 1;
+        td.SampleDesc.Quality = 0;
+        td.Usage = D3D11_USAGE_DEFAULT;
+
+        td.Format = DXGI_FORMAT_R24G8_TYPELESS;
+        td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+
+        HRESULT hr = device->CreateTexture2D(&td, nullptr, &m_texture);
+        if (FAILED(hr)) return E_FAIL;
+
+        // DSV
+        D3D11_DEPTH_STENCIL_VIEW_DESC dsvd{};
+        dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+        dsvd.Texture2D.MipSlice = 0;
+
+        hr = device->CreateDepthStencilView(m_texture, &dsvd, &m_dsv);
+        if (FAILED(hr)) return E_FAIL;
+
+        // SRV (Depth »ùÇÃ¸µ¿ë)
+        if (createSRV)
+        {
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvd{};
+            srvd.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+            srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            srvd.Texture2D.MostDetailedMip = 0;
+            srvd.Texture2D.MipLevels = 1;
+
+            hr = device->CreateShaderResourceView(m_texture, &srvd, &m_srv);
+            if (FAILED(hr)) return E_FAIL;
+        }
+
+        return S_OK;
+    }
 
     return CreateColor_Internal(device);
 }

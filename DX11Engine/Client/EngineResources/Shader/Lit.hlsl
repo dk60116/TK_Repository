@@ -30,7 +30,7 @@ cbuffer PerCustomValue : register(b10)
     float gSmoothness;
     float2 gTiling;
     float2 gOffset;
-}
+};
 
 // 라이트 정의
 #define MAX_LIGHTS 64
