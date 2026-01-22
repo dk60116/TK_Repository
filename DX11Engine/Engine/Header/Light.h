@@ -32,6 +32,7 @@ public:
 	void Set_Type(const Type _type);
 	const _float Get_Intensity() const;
 	void Set_Intensity(const _float _value);
+	void Set_Range(const _float _value);
 	void Set_Color(const ColorValue _color);
 
 	const _float4x4 To_LightInfo();

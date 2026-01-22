@@ -88,15 +88,6 @@ HRESULT CCamera::Initialize()
 	m_vRectMats.push_back(depthMat);
 	depthMat->AddRef();
 
-	m_pLightingPassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredShading (Material)");
-	
-	if (!m_pLightingPassMat)
-	{
-		CDebug::LogError("Not found DeferredShading (Material)");
-		return E_FAIL;
-	}
-	m_pLightingPassMat->AddRef();
-
 	// 4개 디스플레이 등록
 	auto pushDisplay = [&](CRenderTarget::RTType type, CMaterial* mat)
 		{
@@ -479,7 +470,8 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 	if (!m_pLightingPassMat || !m_pRectBuffer) return;
 
 	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
-	if (!ctx) return;
+	if (!ctx) 
+		return;
 
 	auto& RTM = CRenderTargetManager::GetInstance();
 
@@ -551,9 +543,6 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 	XMMATRIX P = XMLoadFloat4x4(&m_vProjMatrix);
 	XMMATRIX invVP = XMMatrixInverse(nullptr, V * P);
 	XMStoreFloat4x4(reinterpret_cast<_float4x4*>(&my), XMMatrixTranspose(invVP));
-
-	m_pLightingPassMat->Set_MatrixValue(L"gInvViewProj", my);
-	//m_pLightingPassMat->Set_Vector3Value(L"gCamPosW", Get_Transform()->Get_Position());
 
 	m_pLightingPassMat->Bind_Matrix(world);
 	m_pLightingPassMat->Bind_Camera(camPos, view, proj, 0);

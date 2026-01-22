@@ -80,6 +80,11 @@ void CLight::Set_Intensity(const _float _value)
 	m_fIntensity = _value;
 }
 
+void CLight::Set_Range(const _float _value)
+{
+	m_fRange = _value;
+}
+
 void CLight::Set_Color(const ColorValue _color)
 {
 	m_vDiffuseColor = _color;

@@ -1365,11 +1365,11 @@ void CResources::Ready_GameResources()
 	CShader::SHADERDESC deferredShadingShaderDesc = { L"../EngineResources/Shader/DeferredShading.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"DeferredShading (Shader)", L"", &deferredShadingShaderDesc);
 
-	CShader* deferredShadingShader = LoadOnGame<CShader>(L"DeferredShading (Shader)");
-	CMaterial::MATERIALDESC deferredShadingMatDesc = { deferredShadingShader, true };
-	_float4x4 matZero = {};
-	deferredShadingMatDesc.customMatrixValues.push_back({ L"gInvViewProj", matZero });
-	LoadResourceComplete_Game<CMaterial>(L"DeferredShading (Material)", L"", &deferredShadingMatDesc);
+	//CShader* deferredShadingShader = LoadOnGame<CShader>(L"DeferredShading (Shader)");
+	//CMaterial::MATERIALDESC deferredShadingMatDesc = { deferredShadingShader, true };
+	//_float4x4 matZero = {};
+	//deferredShadingMatDesc.customMatrixValues.push_back({ L"gInvViewProj", matZero });
+	//LoadResourceComplete_Game<CMaterial>(L"DeferredShading (Material)", L"", &deferredShadingMatDesc);
 
 	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"G_BufferLit (Shader)");
 	CMaterial::MATERIALDESC g_BufferLitDesc = { g_BufferLitShader, false };
