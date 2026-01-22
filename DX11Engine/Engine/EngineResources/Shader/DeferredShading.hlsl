@@ -19,9 +19,15 @@ cbuffer PerMaterial : register(b2)
     float2 padding;
 };
 
+#define MAX_LIGHTS 64
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+#pragma pack_matrix(row_major)
 cbuffer PerLight : register(b4)
 {
-    float4x4 gLights[64];
+    float4x4 gLight[MAX_LIGHTS];
 };
 
 Texture2D gAlbedo : register(t0);
@@ -78,16 +84,16 @@ float3 ReconstructViewPos(float2 uv, float depth)
 
 float3 ApplyLight(float3 albedo, float3 normalV, float3 viewPos, float4x4 lightData)
 {
-    float3 lightPosW = lightData[0].xyz;
-    float range = lightData[0].w;
+    float3 lightPosW = float3(lightData[0][0], lightData[0][1], lightData[0][2]);
+    float range = lightData[0][3];
 
-    float3 lightDirW = lightData[1].xyz;
-    float spotCos = lightData[1].w;
+    float3 lightDirW = float3(lightData[1][0], lightData[1][1], lightData[1][2]);
+    float intensity = lightData[1][3];
 
-    float3 lightColor = lightData[2].xyz;
-    float lightType = lightData[3].x;
-    float attenuation = lightData[3].y;
-    float enabled = lightData[3].z;
+    float3 lightColor = float3(lightData[2][0], lightData[2][1], lightData[2][2]);
+    float lightType = lightData[3][0];
+    float attenuationK = lightData[3][1];
+    float enabled = lightData[3][2];
 
     if (enabled < 0.5f)
         return 0.0f;
@@ -101,9 +107,9 @@ float3 ApplyLight(float3 albedo, float3 normalV, float3 viewPos, float4x4 lightD
     {
         float3 L = normalize(-lightDirV);
         float NdotL = saturate(dot(normalV, L));
-        result = albedo * lightColor * NdotL;
+        result = albedo * lightColor * NdotL * intensity;
     }
-    else
+    else if (lightType < 1.5f)
     {
         float3 toLight = lightPosV - viewPos;
         float dist = length(toLight);
@@ -111,17 +117,8 @@ float3 ApplyLight(float3 albedo, float3 normalV, float3 viewPos, float4x4 lightD
         {
             float3 L = toLight / max(dist, 1e-4f);
             float NdotL = saturate(dot(normalV, L));
-
-            float att = 1.0f / (1.0f + attenuation * dist * dist);
-            att *= saturate(1.0f - dist / range);
-
-            if (lightType > 1.5f)
-            {
-                float spot = saturate((dot(-lightDirV, L) - spotCos) / max(1.0f - spotCos, 1e-4f));
-                att *= spot;
-            }
-
-            result = albedo * lightColor * NdotL * att;
+            float attenuation = saturate(1.0f - dist / range) * attenuationK;
+            result = albedo * lightColor * NdotL * intensity * attenuation;
         }
     }
 
@@ -140,15 +137,15 @@ float4 PSMain(VSOut input) : SV_Target
     float3 normalV = normalize(mul(normalW, (float3x3)view));
     float3 viewPos = ReconstructViewPos(uv, depth);
 
-    int lightCount = (int)gLights[0][3][3];
-    lightCount = clamp(lightCount, 0, 64);
+    int lightCount = (int) gLight[0][3][3];
+    lightCount = clamp(lightCount, 0, MAX_LIGHTS);
 
-    float ambient = gLights[0][2][3];
-    float3 color = albedoSample.rgb * ambient;
+    float ambientK = gLight[0][2][3];
+    float3 color = albedoSample.rgb * ambientK;
 
     for (int i = 0; i < lightCount; ++i)
     {
-        color += ApplyLight(albedoSample.rgb, normalV, viewPos, gLights[i]);
+        color += ApplyLight(albedoSample.rgb, normalV, viewPos, gLight[i]);
     }
 
     return float4(saturate(color), albedoSample.a);
