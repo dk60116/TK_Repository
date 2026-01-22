@@ -69,7 +69,16 @@ HRESULT CCamera::Initialize()
 	}
 	m_pRectBuffer->AddRef();
 
-	// Present Material (DeferredPresent.hlslÀ» »ç¿ëÇÏ´Â ¸ÓÆ¼¸®¾ó)
+	CMaterial* lightingMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredShading (Material)");
+	if (!lightingMat)
+	{
+		CDebug::LogError("Not found DeferredShading (Material)");
+		return E_FAIL;
+	}
+	m_pLightingPassMat = lightingMat;
+	m_pLightingPassMat->AddRef();
+
+	// Present Material (DeferredPresent.hlslì„ ì‚¬ìš©í•˜ëŠ” ë¨¸í‹°ë¦¬ì–¼)
 	CMaterial* presentMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredPresent (Material)");
 	if (!presentMat)
 	{
@@ -88,7 +97,7 @@ HRESULT CCamera::Initialize()
 	m_vRectMats.push_back(depthMat);
 	depthMat->AddRef();
 
-	// 4°³ µğ½ºÇÃ·¹ÀÌ µî·Ï
+	// 4ê°œ ë””ìŠ¤í”Œë ˆì´ ë“±ë¡
 	auto pushDisplay = [&](CRenderTarget::RTType type, CMaterial* mat)
 		{
 			RTDebugDisplay desc = {};
@@ -104,7 +113,7 @@ HRESULT CCamera::Initialize()
 	pushDisplay(CRenderTarget::RTType::Depth, depthMat);
 	pushDisplay(CRenderTarget::RTType::Shading, presentMat);
 
-	// Debug pipeline states »ı¼º
+	// Debug pipeline states ìƒì„±
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
 
 	if (!device)
@@ -350,7 +359,7 @@ void CCamera::RenderRTDebugDisplay()
 	if (!context || m_mRTDebugDisplays.empty())
 		return;
 
-	// »óÅÂ ¹é¾÷
+	// ìƒíƒœ ë°±ì—…
 	ID3D11DepthStencilState* prevDS = nullptr; UINT prevStencilRef = 0;
 	ID3D11RasterizerState* prevRS = nullptr;
 	ID3D11BlendState* prevBS = nullptr; FLOAT prevBlendFactor[4] = {}; UINT prevSampleMask = 0;
@@ -359,18 +368,18 @@ void CCamera::RenderRTDebugDisplay()
 	context->RSGetState(&prevRS);
 	context->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
 
-	// µğ¹ö±× »óÅÂ Àû¿ë
+	// ë””ë²„ê·¸ ìƒíƒœ ì ìš©
 	context->OMSetDepthStencilState(m_pRTDebugDS, 0);
 	context->RSSetState(m_pRTDebugRS);
 	const FLOAT bf[4] = { 0,0,0,0 };
 	context->OMSetBlendState(m_pRTDebugBS, bf, 0xFFFFFFFF);
 
-	// ½ºÅ©¸° ÇØ»óµµ
+	// ìŠ¤í¬ë¦° í•´ìƒë„
 	auto res = CDisplay::GetInstance().Get_ScreenResolution();
 	float screenW = (float)res.x;
 	float screenH = (float)res.y;
 
-	// ºäÆ÷Æ®(µğ¹ö±× Ãâ·ÂÀº ¹é¹öÆÛ ÀüÃ¼)
+	// ë·°í¬íŠ¸(ë””ë²„ê·¸ ì¶œë ¥ì€ ë°±ë²„í¼ ì „ì²´)
 	{
 		D3D11_VIEWPORT vp{};
 		vp.TopLeftX = 0.f; vp.TopLeftY = 0.f;
@@ -379,31 +388,31 @@ void CCamera::RenderRTDebugDisplay()
 		context->RSSetViewports(1, &vp);
 	}
 
-	// ÇÈ¼¿ ÁÂÇ¥ Ortho (ÁÂ»ó´Ü ¿øÁ¡)
+	// í”½ì…€ ì¢Œí‘œ Ortho (ì¢Œìƒë‹¨ ì›ì )
 	_matrix view = XMMatrixIdentity();
 	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
 	_float3 camPos = { 0.f, 0.f, -1.f };
 
 	// ------------------------------------------------------------------------------------
-	// ½æ³×ÀÏ Å©±â/ºñÀ²: "Å©±â´Â À¯Áö" + "°ÔÀÓ ºäÆ÷Æ® ºñÀ² À¯Áö"
+	// ì¸ë„¤ì¼ í¬ê¸°/ë¹„ìœ¨: "í¬ê¸°ëŠ” ìœ ì§€" + "ê²Œì„ ë·°í¬íŠ¸ ë¹„ìœ¨ ìœ ì§€"
 	// ------------------------------------------------------------------------------------
 	const float margin = 16.f;
 	const float gap = 12.f;
 
-	// °ÔÀÓ ºäÆ÷Æ® ±âÁØ aspect (¾øÀ¸¸é È­¸é ±âÁØ)
+	// ê²Œì„ ë·°í¬íŠ¸ ê¸°ì¤€ aspect (ì—†ìœ¼ë©´ í™”ë©´ ê¸°ì¤€)
 	const D3D11_VIEWPORT* gameVP = CGraphicDevice::GetInstance().Get_GameViewport();
 	float srcW = gameVP ? gameVP->Width : screenW;
 	float srcH = gameVP ? gameVP->Height : screenH;
 	float srcAspect = (srcH > 0.f) ? (srcW / srcH) : 1.f;
 
-	// ÃÖ´ë ¹Ú½º Å©±â(Ã¼°¨ Å©±â À¯Áö¿ë) + ¼¼·Î ½ºÅÃÀÌ È­¸éÀ» ³ÑÁö ¾Êµµ·Ï Á¦ÇÑ
+	// ìµœëŒ€ ë°•ìŠ¤ í¬ê¸°(ì²´ê° í¬ê¸° ìœ ì§€ìš©) + ì„¸ë¡œ ìŠ¤íƒì´ í™”ë©´ì„ ë„˜ì§€ ì•Šë„ë¡ ì œí•œ
 	float maxBox = min(200.f, min(screenW, screenH) * 0.30f);
 
-	// 3°³¸¦ ¾Æ·¡¿¡¼­ À§·Î ½×À¸¹Ç·Î, ³ôÀÌ Á¦ÇÑ ¹İ¿µ(ÇÊ¼ö¿¡ °¡±õ½À´Ï´Ù)
+	// 3ê°œë¥¼ ì•„ë˜ì—ì„œ ìœ„ë¡œ ìŒ“ìœ¼ë¯€ë¡œ, ë†’ì´ ì œí•œ ë°˜ì˜(í•„ìˆ˜ì— ê°€ê¹ìŠµë‹ˆë‹¤)
 	float availH = screenH - margin * 2.f - gap * 2.f;
 	maxBox = min(maxBox, availH / 3.f);
 
-	// aspect À¯ÁöÇÏ¸ç rectW/rectH »êÃâ (µÑ Áß ¾î´À ÂÊµµ maxBox ÃÊ°úÇÏÁö ¾Ê°Ô)
+	// aspect ìœ ì§€í•˜ë©° rectW/rectH ì‚°ì¶œ (ë‘˜ ì¤‘ ì–´ëŠ ìª½ë„ maxBox ì´ˆê³¼í•˜ì§€ ì•Šê²Œ)
 	float rectW = maxBox;
 	float rectH = rectW / srcAspect;
 	if (rectH > maxBox)
@@ -412,7 +421,7 @@ void CCamera::RenderRTDebugDisplay()
 		rectW = rectH * srcAspect;
 	}
 
-	// ¿øÇÏ´Â 3Á¾ (Albedo/Normal/Depth)
+	// ì›í•˜ëŠ” 3ì¢… (Albedo/Normal/Depth)
 	CRenderTarget::RTType types[] =
 	{
 		CRenderTarget::RTType::Albedo,
@@ -433,29 +442,29 @@ void CCamera::RenderRTDebugDisplay()
 		if (!disp.quad || !disp.material)
 			continue;
 
-		// ÆĞ³Î À§Ä¡(¿À¸¥ÂÊ ¾Æ·¡¿¡¼­ À§·Î ½×±â)
+		// íŒ¨ë„ ìœ„ì¹˜(ì˜¤ë¥¸ìª½ ì•„ë˜ì—ì„œ ìœ„ë¡œ ìŒ“ê¸°)
 		float cx = screenW - margin - rectW * 0.5f;
 		float cy = screenH - margin - rectH * 0.5f - i * (rectH + gap);
 
-		// Äõµå ¿ùµå(ÇÈ¼¿ ´ÜÀ§ ½ºÄÉÀÏ + À§Ä¡)
+		// ì¿¼ë“œ ì›”ë“œ(í”½ì…€ ë‹¨ìœ„ ìŠ¤ì¼€ì¼ + ìœ„ì¹˜)
 		_matrix world = XMMatrixScaling(rectW, rectH, 1.f) * XMMatrixTranslation(cx, cy, 0.f);
 
-		// ¸ÓÆ¼¸®¾ó/¼ÎÀÌ´õ ¹ÙÀÎµå (VS/PS ¼¼ÆÃ)
+		// ë¨¸í‹°ë¦¬ì–¼/ì…°ì´ë” ë°”ì¸ë“œ (VS/PS ì„¸íŒ…)
 		disp.material->Bind_Matrix(world);
 		disp.material->Bind_Camera(camPos, view, proj, 0);
 
-		// ·»´õÅ¸°Ù SRV¸¦ PS ½½·Ô 0¿¡ Á÷Á¢ ¹ÙÀÎµù
+		// ë Œë”íƒ€ê²Ÿ SRVë¥¼ PS ìŠ¬ë¡¯ 0ì— ì§ì ‘ ë°”ì¸ë”©
 		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(types[i]);
 		context->PSSetShaderResources(0, 1, &srv);
 
-		// µå·Î¿ì
+		// ë“œë¡œìš°
 		disp.quad->Render();
 	}
 
-	// SRV ÇØÁ¦(°æ°í/¹ÙÀÎµù Ãæµ¹ ¹æÁö)
+	// SRV í•´ì œ(ê²½ê³ /ë°”ì¸ë”© ì¶©ëŒ ë°©ì§€)
 	CRenderTargetManager::GetInstance().Unbind_AllSRVs_PS(context);
 
-	// »óÅÂ º¹¿ø
+	// ìƒíƒœ ë³µì›
 	context->OMSetDepthStencilState(prevDS, prevStencilRef);
 	context->RSSetState(prevRS);
 	context->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
@@ -481,13 +490,13 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 
 	if (!srvAlbedo || !srvNormal || !rtvShading) return;
 
-	// SRV hazard Á¦°Å
+	// SRV hazard ì œê±°
 	RTM.Unbind_AllSRVs_PS(ctx);
 
-	// Shading Å¸°Ù¸¸
+	// Shading íƒ€ê²Ÿë§Œ
 	ctx->OMSetRenderTargets(1, &rtvShading, nullptr);
 
-	// vp ¿ì¼± »ç¿ë
+	// vp ìš°ì„  ì‚¬ìš©
 	const D3D11_VIEWPORT* useVP = vp ? vp : CGraphicDevice::GetInstance().Get_GameViewport();
 	if (useVP) ctx->RSSetViewports(1, useVP);
 
@@ -495,13 +504,13 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 	const float clear[4] = { 0,0,0,1 };
 	ctx->ClearRenderTargetView(rtvShading, clear);
 
-	// »óÅÂ(Depth OFF / Cull OFF / Blend OFF)
+	// ìƒíƒœ(Depth OFF / Cull OFF / Blend OFF)
 	ctx->OMSetDepthStencilState(m_pRTDebugDS, 0);
 	ctx->RSSetState(m_pRTDebugRS);
 	const FLOAT bf[4] = { 0,0,0,0 };
 	ctx->OMSetBlendState(nullptr, bf, 0xFFFFFFFF);
 
-	// Ç®½ºÅ©¸° quad Çà·Ä
+	// í’€ìŠ¤í¬ë¦° quad í–‰ë ¬
 	float W = useVP ? useVP->Width : (float)CDisplay::GetInstance().Get_ScreenResolution().x;
 	float H = useVP ? useVP->Height : (float)CDisplay::GetInstance().Get_ScreenResolution().y;
 
@@ -557,7 +566,7 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 	// Draw
 	m_pRectBuffer->Render();
 
-	// Á¤¸®
+	// ì •ë¦¬
 	RTM.Unbind_AllSRVs_PS(ctx);
 }
 
