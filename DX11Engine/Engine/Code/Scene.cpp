@@ -373,7 +373,10 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+		{
 			(*it)->RenderLightingPass_ToShading(vp);
+			(*it)->RenderLightingPass_ToSpecular(vp);
+		}
 	}
 
 	// 4) BackBuffer º¹±Í + UI/µð¹ö±×

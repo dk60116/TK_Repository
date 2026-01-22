@@ -16,6 +16,20 @@ class ENGINE_DLL CCamera : public CComponent
 		CMaterial* material;
 	};
 
+	struct InvViewProjCB
+	{
+		DirectX::XMFLOAT4X4 gInvViewProj;
+	};
+
+	struct SpecularParamsCB
+	{
+		_float3 camPosW; 
+		_float  smoothness;
+
+		_float  specularScale;
+		_float3 pad;
+	};
+
 public:
 	enum ViewMode { PERSPECTIVE, ORTHOGRAPHIC };
 
@@ -56,6 +70,7 @@ public:
 
 	void RenderRTDebugDisplay();
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
+	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
 
 public:
 	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
@@ -82,11 +97,15 @@ private:
 
 	CMeshBuffer* m_pRectBuffer;
 	vector<CMaterial*> m_vRectMats;
-	CMaterial* m_pLightingPassMat;
+	CMaterial* m_pShadingPassMat;
+	CMaterial* m_pSpecularPassMat;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
 	ID3D11RasterizerState* m_pRTDebugRS;
 	ID3D11BlendState* m_pRTDebugBS;
+
+	ID3D11Buffer* m_pInvViewProjCB;
+	ID3D11Buffer* m_pSpecularParamsCB;
 };
 
 NS_END

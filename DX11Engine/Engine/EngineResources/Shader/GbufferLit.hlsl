@@ -7,10 +7,11 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 pos;
+    float3 camPos;
     float4x4 view;
     float4x4 proj;
-    float cpadding;
+    float4x4 gInvViewProj;
+    float cPadding;
 };
 
 cbuffer PerMaterial : register(b2)
@@ -82,16 +83,16 @@ VSOut VSMain(VSIn v)
             {
                 float4x4 M = gBones[idx];
                 skinnedPos += mul(float4(v.posL, 1.0f), M) * w;
-                skinnedN   += mul((float3x3)M, v.normalL) * w;
-                skinnedT   += mul((float3x3)M, v.tangentL) * w;
+                skinnedN += mul(v.normalL, (float3x3) M) * w;
+                skinnedT += mul(v.tangentL, (float3x3) M) * w;
             }
         }
     }
 
     float4 posW4 = mul(skinnedPos, world);
 
-    float3 N = normalize(mul((float3x3)world, skinnedN));
-    float3 T = normalize(mul((float3x3)world, skinnedT));
+    float3 N = normalize(mul(skinnedN, (float3x3) world));
+    float3 T = normalize(mul(skinnedT, (float3x3) world));
 
     // Gram-Schmidt로 T를 N에 직교화(노말맵 품질 안정화)
     T = normalize(T - N * dot(T, N));
@@ -115,6 +116,7 @@ struct PSOut
 {
     float4 Albedo   : SV_Target0;
     float4 Normal   : SV_Target1;
+    float4 Specular : SV_Target2;
 };
 
 PSOut PSMain(VSOut input)
@@ -147,6 +149,8 @@ PSOut PSMain(VSOut input)
 
     // Encode to 0~1
     o.Normal = float4(Nw * 0.5f + 0.5f, 1.0f);
+    
+    o.Specular = float4(1.f, gSmoothness, 0.f, 1.f);
 
     return o;
 }

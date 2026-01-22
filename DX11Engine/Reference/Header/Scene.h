@@ -36,7 +36,7 @@ public:
     struct LightSettings
     {
         wstring skyBox = L"DefaultSky (SkyBox)";
-        _float ambient = 0.1f;
+        _float ambient = 0.2f;
     };
 
 protected:

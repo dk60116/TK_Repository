@@ -20,10 +20,13 @@ CCamera::CCamera()
 	, m_mRTDebugDisplays({})
 	, m_pRectBuffer(nullptr)
 	, m_vRectMats({})
-	, m_pLightingPassMat(nullptr)
+	, m_pShadingPassMat(nullptr)
+	, m_pSpecularPassMat(nullptr)
 	, m_pRTDebugDS(nullptr)
 	, m_pRTDebugRS(nullptr)
 	, m_pRTDebugBS(nullptr)
+	, m_pInvViewProjCB(nullptr)
+	, m_pSpecularParamsCB(nullptr)
 {
 	m_strName = L"Camera";
 }
@@ -88,7 +91,23 @@ HRESULT CCamera::Initialize()
 	m_vRectMats.push_back(depthMat);
 	depthMat->AddRef();
 
-	// 4개 디스플레이 등록
+	m_pShadingPassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredShading (Material)");
+	if (!m_pShadingPassMat)
+	{
+		CDebug::LogError("Not found DeferredShading (Material)");
+		return E_FAIL;
+	}
+	m_pShadingPassMat->AddRef();
+
+	m_pSpecularPassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredSpecular (Material)");
+	if (!m_pSpecularPassMat)
+	{
+		CDebug::LogError("Not found DeferredSpecular (Material)");
+		return E_FAIL;
+	}
+	m_pSpecularPassMat->AddRef();
+
+	// 5개 디스플레이 등록
 	auto pushDisplay = [&](CRenderTarget::RTType type, CMaterial* mat)
 		{
 			RTDebugDisplay desc = {};
@@ -103,6 +122,7 @@ HRESULT CCamera::Initialize()
 	pushDisplay(CRenderTarget::RTType::Normal, presentMat);
 	pushDisplay(CRenderTarget::RTType::Depth, depthMat);
 	pushDisplay(CRenderTarget::RTType::Shading, presentMat);
+	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
 
 	// Debug pipeline states 생성
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
@@ -156,6 +176,19 @@ HRESULT CCamera::Initialize()
 			return E_FAIL;
 	}
 
+	D3D11_BUFFER_DESC bd{};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.ByteWidth = sizeof(InvViewProjCB);
+
+	D3D11_BUFFER_DESC bdSpec{};
+	bdSpec.Usage = D3D11_USAGE_DEFAULT;
+	bdSpec.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bdSpec.ByteWidth = sizeof(SpecularParamsCB);
+	device->CreateBuffer(&bdSpec, nullptr, &m_pSpecularParamsCB);
+
+	device->CreateBuffer(&bd, nullptr, &m_pInvViewProjCB);
+
 	return S_OK;
 }
 
@@ -183,13 +216,16 @@ void CCamera::OnDestroy()
 
 	m_vRectMats.clear();
 
-	Safe_Release(m_pLightingPassMat);
+	Safe_Release(m_pShadingPassMat);
+	Safe_Release(m_pSpecularPassMat);
 
 	m_mRTDebugDisplays.clear();
 
 	Safe_Release(m_pRTDebugDS);
 	Safe_Release(m_pRTDebugRS);
 	Safe_Release(m_pRTDebugBS);
+	Safe_Release(m_pInvViewProjCB);
+	Safe_Release(m_pSpecularParamsCB);
 }
 
 _matrix CCamera::Get_ViewMatrix() const
@@ -418,7 +454,8 @@ void CCamera::RenderRTDebugDisplay()
 		CRenderTarget::RTType::Albedo,
 		CRenderTarget::RTType::Normal,
 		CRenderTarget::RTType::Depth,
-		CRenderTarget::RTType::Shading
+		CRenderTarget::RTType::Shading,
+		CRenderTarget::RTType::Specular
 	};
 
 	const int kCount = (int)(sizeof(types) / sizeof(types[0]));
@@ -467,98 +504,239 @@ void CCamera::RenderRTDebugDisplay()
 
 void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 {
-	if (!m_pLightingPassMat || !m_pRectBuffer) return;
+	if (!m_pShadingPassMat || !m_pRectBuffer || !m_pInvViewProjCB)
+		return;
 
 	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
-	if (!ctx) 
+	if (!ctx) return;
+
+	auto& RTM = CRenderTargetManager::GetInstance();
+
+	ID3D11ShaderResourceView* srvAlbedo = RTM.GetSRV(CRenderTarget::RTType::Albedo);
+	ID3D11ShaderResourceView* srvNormal = RTM.GetSRV(CRenderTarget::RTType::Normal);
+	ID3D11ShaderResourceView* srvDepth = RTM.GetSRV(CRenderTarget::RTType::Depth);
+	ID3D11RenderTargetView* rtvShading = RTM.GetRTV(CRenderTarget::RTType::Shading);
+
+	if (!srvAlbedo || !srvNormal || !srvDepth || !rtvShading)
+		return;
+
+	ID3D11RenderTargetView* prevRTV = nullptr;
+	ID3D11DepthStencilView* prevDSV = nullptr;
+	ctx->OMGetRenderTargets(1, &prevRTV, &prevDSV);
+
+	D3D11_VIEWPORT prevVP{};
+	UINT prevVPCount = 1;
+	ctx->RSGetViewports(&prevVPCount, &prevVP);
+
+	ID3D11DepthStencilState* prevDS = nullptr; UINT prevStencilRef = 0;
+	ID3D11RasterizerState* prevRS = nullptr;
+	ID3D11BlendState* prevBS = nullptr; FLOAT prevBlendFactor[4] = {}; UINT prevSampleMask = 0;
+
+	ctx->OMGetDepthStencilState(&prevDS, &prevStencilRef);
+	ctx->RSGetState(&prevRS);
+	ctx->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
+
+	RTM.Unbind_AllSRVs_PS(ctx);
+
+	ctx->OMSetRenderTargets(1, &rtvShading, nullptr);
+
+	const D3D11_VIEWPORT* useVP = vp ? vp : CGraphicDevice::GetInstance().Get_GameViewport();
+	if (useVP) ctx->RSSetViewports(1, useVP);
+
+	const float clear[4] = { 0.f, 0.f, 0.f, 1.f };
+	ctx->ClearRenderTargetView(rtvShading, clear);
+
+	if (m_pRTDebugDS) ctx->OMSetDepthStencilState(m_pRTDebugDS, 0);
+	if (m_pRTDebugRS) ctx->RSSetState(m_pRTDebugRS);
+	const FLOAT bf[4] = { 0,0,0,0 };
+	ctx->OMSetBlendState(nullptr, bf, 0xFFFFFFFF);
+
+	float W = useVP ? useVP->Width : (float)CDisplay::GetInstance().Get_ScreenResolution().x;
+	float H = useVP ? useVP->Height : (float)CDisplay::GetInstance().Get_ScreenResolution().y;
+
+	_matrix v = XMMatrixIdentity();
+	_matrix p = XMMatrixOrthographicOffCenterLH(0.f, W, H, 0.f, 0.f, 1.f);
+	_matrix w = XMMatrixScaling(W, H, 1.f) * XMMatrixTranslation(W * 0.5f, H * 0.5f, 0.f);
+	_float3 dummyCamPos = { 0.f, 0.f, -1.f };
+
+	_matrix realView = Get_ViewMatrix();
+	_matrix realProj = Get_ProjectionMatrix();
+	_matrix invVP = XMMatrixInverse(nullptr, realView * realProj);
+
+	InvViewProjCB invCB{};
+	XMStoreFloat4x4(&invCB.gInvViewProj, invVP);
+	ctx->UpdateSubresource(m_pInvViewProjCB, 0, nullptr, &invCB, 0, 0);
+	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
+
+	m_pShadingPassMat->Bind_Matrix(w);
+	m_pShadingPassMat->Bind_Camera(dummyCamPos, v, p, 0);
+
+	list<CLight*> lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightList();
+	vector<_matrix> vLightInfos;
+	vLightInfos.reserve(lights.size());
+
+	_uint index = 0;
+	for (TRAVERSAL_ITER(lights, it))
+	{
+		if (!(*it)) continue;
+		_float4x4 lightInfo = (*it)->To_LightInfo();
+		lightInfo._44 = (index == 0) ? (_float)lights.size() : 0.f;
+		vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));
+		++index;
+	}
+	if (!vLightInfos.empty())
+		m_pShadingPassMat->Bind_Light(vLightInfos.data(), (_uint)vLightInfos.size());
+
+	ID3D11ShaderResourceView* srvs[3] = { srvAlbedo, srvNormal, srvDepth };
+	ctx->PSSetShaderResources(0, 3, srvs);
+
+	m_pRectBuffer->Render();
+
+	RTM.Unbind_AllSRVs_PS(ctx);
+
+	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
+	if (prevVPCount > 0) ctx->RSSetViewports(1, &prevVP);
+
+	ctx->OMSetDepthStencilState(prevDS, prevStencilRef);
+	ctx->RSSetState(prevRS);
+	ctx->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
+
+	Safe_Release(prevRTV);
+	Safe_Release(prevDSV);
+	Safe_Release(prevDS);
+	Safe_Release(prevRS);
+	Safe_Release(prevBS);
+}
+
+void CCamera::RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp)
+{
+	if (!m_pSpecularPassMat || !m_pRectBuffer || !m_pInvViewProjCB || !m_pSpecularParamsCB)
+		return;
+
+	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
+	if (!ctx)
 		return;
 
 	auto& RTM = CRenderTargetManager::GetInstance();
 
 	ID3D11ShaderResourceView* srvAlbedo = RTM.GetSRV(CRenderTarget::RTType::Albedo);
 	ID3D11ShaderResourceView* srvNormal = RTM.GetSRV(CRenderTarget::RTType::Normal);
-	ID3D11RenderTargetView* rtvShading = RTM.GetRTV(CRenderTarget::RTType::Shading);
+	ID3D11ShaderResourceView* srvDepth = RTM.GetSRV(CRenderTarget::RTType::Depth);
+	ID3D11RenderTargetView* rtvSpec = RTM.GetRTV(CRenderTarget::RTType::Specular);
 
-	if (!srvAlbedo || !srvNormal || !rtvShading) return;
+	if (!srvAlbedo || !srvNormal || !srvDepth || !rtvSpec)
+		return;
 
-	// SRV hazard 제거
+	// ---------------------------------------------------------------------
+	// State backup
+	// ---------------------------------------------------------------------
+	ID3D11RenderTargetView* prevRTV = nullptr;
+	ID3D11DepthStencilView* prevDSV = nullptr;
+	ctx->OMGetRenderTargets(1, &prevRTV, &prevDSV);
+
+	D3D11_VIEWPORT prevVP{};
+	UINT prevVPCount = 1;
+	ctx->RSGetViewports(&prevVPCount, &prevVP);
+
+	ID3D11DepthStencilState* prevDS = nullptr; UINT prevStencilRef = 0;
+	ID3D11RasterizerState* prevRS = nullptr;
+	ID3D11BlendState* prevBS = nullptr; FLOAT prevBlendFactor[4] = {}; UINT prevSampleMask = 0;
+
+	ctx->OMGetDepthStencilState(&prevDS, &prevStencilRef);
+	ctx->RSGetState(&prevRS);
+	ctx->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
+
 	RTM.Unbind_AllSRVs_PS(ctx);
+	ctx->OMSetRenderTargets(1, &rtvSpec, nullptr);
 
-	// Shading 타겟만
-	ctx->OMSetRenderTargets(1, &rtvShading, nullptr);
-
-	// vp 우선 사용
 	const D3D11_VIEWPORT* useVP = vp ? vp : CGraphicDevice::GetInstance().Get_GameViewport();
-	if (useVP) ctx->RSSetViewports(1, useVP);
+	if (useVP)
+		ctx->RSSetViewports(1, useVP);
 
-	// Clear
-	const float clear[4] = { 0,0,0,1 };
-	ctx->ClearRenderTargetView(rtvShading, clear);
+	const float clear[4] = { 0.f, 0.f, 0.f, 1.f };
+	ctx->ClearRenderTargetView(rtvSpec, clear);
 
-	// 상태(Depth OFF / Cull OFF / Blend OFF)
-	ctx->OMSetDepthStencilState(m_pRTDebugDS, 0);
-	ctx->RSSetState(m_pRTDebugRS);
+	if (m_pRTDebugDS) 
+		ctx->OMSetDepthStencilState(m_pRTDebugDS, 0);
+	if (m_pRTDebugRS) 
+		ctx->RSSetState(m_pRTDebugRS);
+
 	const FLOAT bf[4] = { 0,0,0,0 };
 	ctx->OMSetBlendState(nullptr, bf, 0xFFFFFFFF);
 
-	// 풀스크린 quad 행렬
 	float W = useVP ? useVP->Width : (float)CDisplay::GetInstance().Get_ScreenResolution().x;
 	float H = useVP ? useVP->Height : (float)CDisplay::GetInstance().Get_ScreenResolution().y;
 
-	_matrix view = XMMatrixIdentity();
-	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, W, H, 0.f, 0.f, 1.f);
-	_float3 camPos = { 0.f, 0.f, -1.f };
+	_matrix v = XMMatrixIdentity();
+	_matrix p = XMMatrixOrthographicOffCenterLH(0.f, W, H, 0.f, 0.f, 1.f);
+	_matrix w = XMMatrixScaling(W, H, 1.f) * XMMatrixTranslation(W * 0.5f, H * 0.5f, 0.f);
+	_float3 dummyCamPos = { 0.f, 0.f, -1.f };
 
-	float cx = W * 0.5f;
-	float cy = H * 0.5f;
-	_matrix world = XMMatrixScaling(W, H, 1.f) * XMMatrixTranslation(cx, cy, 0.f);
+	_matrix realView = Get_ViewMatrix();
+	_matrix realProj = Get_ProjectionMatrix();
+	_matrix invVP = XMMatrixInverse(nullptr, realView * realProj);
+
+	InvViewProjCB invCB{};
+	XMStoreFloat4x4(&invCB.gInvViewProj, invVP);
+	ctx->UpdateSubresource(m_pInvViewProjCB, 0, nullptr, &invCB, 0, 0);
+	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB); // HLSL register(b5)와 일치 필요
+
+	_matrix invView = XMMatrixInverse(nullptr, realView);
+
+	_float3 camPosW{};
+	XMStoreFloat3(&camPosW, invView.r[3]);
+
+	SpecularParamsCB specCB{};
+	specCB.camPosW = camPosW;
+	specCB.smoothness = 0.7f;     // 원하는 값으로 튜닝 / Material 값으로 연결 권장
+	specCB.specularScale = 2.0f;  // 하이라이트 강도
+	specCB.pad = _float3{ 0.f, 0.f, 0.f };
+
+	ctx->UpdateSubresource(m_pSpecularParamsCB, 0, nullptr, &specCB, 0, 0);
+	ctx->PSSetConstantBuffers(6, 1, &m_pSpecularParamsCB);
+
+	m_pSpecularPassMat->Bind_Matrix(w);
+	m_pSpecularPassMat->Bind_Camera(dummyCamPos, v, p, 0);
 
 	list<CLight*> lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightList();
-	const _uint lightCount = static_cast<_uint>(lights.size());
 
-	vector<_matrix> vLightInfos = {};
+	vector<_matrix> vLightInfos;
+	vLightInfos.reserve(lights.size());
 
 	_uint index = 0;
-
 	for (TRAVERSAL_ITER(lights, it))
 	{
-		if (!(*it))
-			continue;
+		if (!(*it)) continue;
 
 		_float4x4 lightInfo = (*it)->To_LightInfo();
-
-		if (index == 0)
-			lightInfo._44 = static_cast<_float>(lights.size());
-		else
-			lightInfo._44 = 0.f;
+		lightInfo._44 = (index == 0) ? (_float)lights.size() : 0.f; // 첫 원소에 lightCount 전달 패턴 유지
 
 		vLightInfos.push_back(XMLoadFloat4x4(&lightInfo));
-
 		++index;
 	}
 
-	m_pLightingPassMat->Bind_Light(vLightInfos.data(), lightCount);
-	_float4x4 my;
-	XMMATRIX V = XMLoadFloat4x4(&m_vViewMatrix);
-	XMMATRIX P = XMLoadFloat4x4(&m_vProjMatrix);
-	XMMATRIX invVP = XMMatrixInverse(nullptr, V * P);
-	XMStoreFloat4x4(reinterpret_cast<_float4x4*>(&my), XMMatrixTranspose(invVP));
-
-	m_pLightingPassMat->Bind_Matrix(world);
-	m_pLightingPassMat->Bind_Camera(camPos, view, proj, 0);
-
-	ID3D11ShaderResourceView* srvDepth = RTM.GetSRV(CRenderTarget::RTType::Depth);
-	if (!srvDepth)
-		return;
+	if (!vLightInfos.empty())
+		m_pSpecularPassMat->Bind_Light(vLightInfos.data(), (_uint)vLightInfos.size());
 
 	ID3D11ShaderResourceView* srvs[3] = { srvAlbedo, srvNormal, srvDepth };
 	ctx->PSSetShaderResources(0, 3, srvs);
 
-	// Draw
 	m_pRectBuffer->Render();
 
-	// 정리
 	RTM.Unbind_AllSRVs_PS(ctx);
+
+	ctx->OMSetRenderTargets(1, &prevRTV, prevDSV);
+	if (prevVPCount > 0) ctx->RSSetViewports(1, &prevVP);
+
+	ctx->OMSetDepthStencilState(prevDS, prevStencilRef);
+	ctx->RSSetState(prevRS);
+	ctx->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
+
+	Safe_Release(prevRTV);
+	Safe_Release(prevDSV);
+	Safe_Release(prevDS);
+	Safe_Release(prevRS);
+	Safe_Release(prevBS);
 }
 
 CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist)

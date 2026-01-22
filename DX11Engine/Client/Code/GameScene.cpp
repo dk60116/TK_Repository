@@ -32,7 +32,6 @@ HRESULT CGameScene::Initialize()
 	CGameObject* lightObject2 = Add_GameObject(L"Point Light");
 	CLight* pointLight = lightObject2->AddComponent<CLight>();
 	pointLight->Set_Type(CLight::Type::point);
-	pointLight->Set_Range(3.f);
 
 	CGameObject* hudObject = Add_GameObject(L"Player HUD");
 	m_pHUD = hudObject->AddComponent<CPlayerHUD>();

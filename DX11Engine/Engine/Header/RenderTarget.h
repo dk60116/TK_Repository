@@ -11,7 +11,8 @@ public:
         Albedo,
         Normal,
         Depth,
-        Shading
+        Shading,
+        Specular
     };
 
 public:
