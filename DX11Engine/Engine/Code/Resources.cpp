@@ -139,7 +139,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 			}
 		}
 
-		/* 3-3. ¹öÆÛ desc + µ¥ÀÌÅÍ ÀúÀå */
+		/* 3-3. ë²„í¼ desc + ë°ì´í„° ì €ì¥ */
 		CMeshBuffer::MESHBUFFERDESC desc{};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
@@ -152,7 +152,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 		info.indices.assign(indices.begin(), indices.end());
 		info.desc = desc;
 
-		/* 3-4. ¸ÓÆ¼¸®¾ó(¿É¼Ç) */
+		/* 3-4. ë¨¸í‹°ë¦¬ì–¼(ì˜µì…˜) */
 		if (hasMaterial && mesh->mMaterialIndex < aiScene->mNumMaterials)
 		{
 			aiMaterial* mat = aiScene->mMaterials[mesh->mMaterialIndex];
@@ -485,12 +485,12 @@ HRESULT CResources::ConvertFBXToAnimationClipData(const wstring _filePath)
 
 HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 {
-	// 1. ½ÇÇàÆÄÀÏ À§Ä¡ ¾ò±â
+	// 1. ì‹¤í–‰íŒŒì¼ ìœ„ì¹˜ ì–»ê¸°
 	wchar_t exeDir[MAX_PATH] = {};
 	GetModuleFileNameW(NULL, exeDir, MAX_PATH);
 	PathRemoveFileSpecW(exeDir);
 
-	// 2. »ó´ë°æ·Î¸¦ Àı´ë°æ·Î·Î º¯È¯
+	// 2. ìƒëŒ€ê²½ë¡œë¥¼ ì ˆëŒ€ê²½ë¡œë¡œ ë³€í™˜
 	wchar_t fullFontPath[MAX_PATH] = {};
 	wcscpy_s(fullFontPath, exeDir);
 	PathAppendW(fullFontPath, _filePath.c_str());
@@ -502,7 +502,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 		return E_FAIL;
 	}
 
-	// 3. %WINDIR%\Fonts Æú´õ·Î º¹»ç
+	// 3. %WINDIR%\Fonts í´ë”ë¡œ ë³µì‚¬
 	wchar_t fontsDir[MAX_PATH] = {};
 	GetWindowsDirectoryW(fontsDir, MAX_PATH);
 	PathAppendW(fontsDir, L"Fonts");
@@ -517,7 +517,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 		return E_FAIL;
 	}
 
-	// 4. ÆùÆ® µî·Ï
+	// 4. í°íŠ¸ ë“±ë¡
 	if (AddFontResourceExW(installedFontPath, FR_NOT_ENUM, 0) == 0)
 	{
 		CDebug::LogError("AddFontResourceExW failed");
@@ -534,7 +534,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 
 	CDebug::Log(L"OutFilePath: " + outfilePath);
 
-	// 5. Ãâ·Â ÆÄÀÏ °æ·Î (¿¹½Ã·Î µ¿ÀÏ À§Ä¡¿¡ ÀúÀå)
+	// 5. ì¶œë ¥ íŒŒì¼ ê²½ë¡œ (ì˜ˆì‹œë¡œ ë™ì¼ ìœ„ì¹˜ì— ì €ì¥)
 	wchar_t spriteOutput[MAX_PATH] = {};
 	wcscpy_s(spriteOutput, exeDir);
 	PathAppendW(spriteOutput, outfilePath.c_str());
@@ -542,11 +542,11 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	wchar_t outputFullPath[MAX_PATH] = {};
 	GetFullPathNameW(spriteOutput, MAX_PATH, outputFullPath, nullptr);
 
-	// 6. MakeSpriteFont.exe ½ÇÇà (ÆùÆ® ÀÌ¸§À¸·Î È£ÃâÇØ¾ß ÇÔ)
+	// 6. MakeSpriteFont.exe ì‹¤í–‰ (í°íŠ¸ ì´ë¦„ìœ¼ë¡œ í˜¸ì¶œí•´ì•¼ í•¨)
 	wstring cmdLine = L"\"";
 	cmdLine += exeDir;
 	cmdLine += L"\\..\\..\\Engine\\Tools\\MakeSpriteFont.exe\" /FontSize:32 /FontStyle:Regular ";
-	cmdLine += L"\"Liberation Sans\" ";  // ½ÇÁ¦ ÆùÆ® ÆĞ¹Ğ¸® ÀÌ¸§
+	cmdLine += L"\"Liberation Sans\" ";  // ì‹¤ì œ í°íŠ¸ íŒ¨ë°€ë¦¬ ì´ë¦„
 	cmdLine += L"\"" + wstring(outputFullPath) + L"\"";
 
 	CDebug::Log(L"[RUNNING]: " + cmdLine);
@@ -570,7 +570,7 @@ HRESULT CResources::ConvertOTFTTFToSpriteFont(const wstring _filePath)
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
 
-	// 7. ÆùÆ® Á¦°Å ¹× ÆÄÀÏ »èÁ¦
+	// 7. í°íŠ¸ ì œê±° ë° íŒŒì¼ ì‚­ì œ
 	RemoveFontResourceExW(installedFontPath, FR_NOT_ENUM, 0);
 	SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
 	DeleteFileW(installedFontPath);
@@ -1365,11 +1365,9 @@ void CResources::Ready_GameResources()
 	CShader::SHADERDESC deferredShadingShaderDesc = { L"../EngineResources/Shader/DeferredShading.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"DeferredShading (Shader)", L"", &deferredShadingShaderDesc);
 
-	//CShader* deferredShadingShader = LoadOnGame<CShader>(L"DeferredShading (Shader)");
-	//CMaterial::MATERIALDESC deferredShadingMatDesc = { deferredShadingShader, true };
-	//_float4x4 matZero = {};
-	//deferredShadingMatDesc.customMatrixValues.push_back({ L"gInvViewProj", matZero });
-	//LoadResourceComplete_Game<CMaterial>(L"DeferredShading (Material)", L"", &deferredShadingMatDesc);
+	CShader* deferredShadingShader = LoadOnGame<CShader>(L"DeferredShading (Shader)");
+	CMaterial::MATERIALDESC deferredShadingMatDesc = { deferredShadingShader, true };
+	LoadResourceComplete_Game<CMaterial>(L"DeferredShading (Material)", L"", &deferredShadingMatDesc);
 
 	CShader* g_BufferLitShader = LoadOnGame<CShader>(L"G_BufferLit (Shader)");
 	CMaterial::MATERIALDESC g_BufferLitDesc = { g_BufferLitShader, false };
@@ -1423,14 +1421,14 @@ void CResources::TraverseSkeleton(aiNode* _node, _int _parentId, vector<CSkinned
 	for (_uint i = 0; i < _node->mNumMeshes; ++i)
 		nodeInfo.meshsId.push_back(_node->mMeshes[i]);
 
-	// ¹Ì¸® push ÇØ¼­ ÀÚ½ÄÀÌ parentId Âü°í °¡´É
+	// ë¯¸ë¦¬ push í•´ì„œ ìì‹ì´ parentId ì°¸ê³  ê°€ëŠ¥
 	_outList.push_back(nodeInfo);
 	_int currentId = nodeInfo.nodeId;
 
-	// ÀÚ½Ä ³ëµåµé ¼øÈ¸
+	// ìì‹ ë…¸ë“œë“¤ ìˆœíšŒ
 	for (_uint i = 0; i < _node->mNumChildren; ++i)
 	{
-		// Àç±Í ÀÌÀü¿¡ outList size¸¦ ¾ò¾î ÀÚ½Ä ID ÃßÁ¤
+		// ì¬ê·€ ì´ì „ì— outList sizeë¥¼ ì–»ì–´ ìì‹ ID ì¶”ì •
 		_int childId = static_cast<_int>(_outList.size());
 		_outList[currentId].childsId.push_back(childId);
 		_outList[currentId].numChild++;
