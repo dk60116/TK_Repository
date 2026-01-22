@@ -101,7 +101,7 @@ float3 ApplyLight(float3 albedo, float3 normalV, float3 viewPos, float4x4 lightD
     float3 result = 0.0f;
 
     float3 lightPosV = mul(float4(lightPosW, 1.0f), view).xyz;
-    float3 lightDirV = normalize(mul(lightDirW, (float3x3)view));
+    float3 lightDirV = normalize(mul((float3x3)view, lightDirW));
 
     if (lightType < 0.5f)
     {
@@ -134,7 +134,7 @@ float4 PSMain(VSOut input) : SV_Target
     float3 normalW = DecodeNormal(gNormal.Sample(gSampler, uv).xyz);
     float depth = gDepth.SampleLevel(gSampler, uv, 0);
 
-    float3 normalV = normalize(mul(normalW, (float3x3)view));
+    float3 normalV = normalize(mul((float3x3)view, normalW));
     float3 viewPos = ReconstructViewPos(uv, depth);
 
     int lightCount = (int) gLight[0][3][3];
