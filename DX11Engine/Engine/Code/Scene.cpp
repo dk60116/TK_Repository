@@ -389,6 +389,7 @@ void CScene::Render_Game()
 		{
 			(*it)->RenderLightingPass_ToShading(vp);
 			(*it)->RenderLightingPass_ToSpecular(vp);
+			(*it)->RenderCombine(vp);
 		}
 	}
 
@@ -397,6 +398,12 @@ void CScene::Render_Game()
 	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
 
+	// (추가) Combine Present를 먼저 백버퍼에 출력
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+			(*it)->RenderDisplay();
+
+	// 그 다음 UI
 	m_pContext->RSSetState(m_pUIResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
 
@@ -404,10 +411,7 @@ void CScene::Render_Game()
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderUI();
 
-	for (TRAVERSAL_ITER(m_lObjectList, it))
-		if ((*it)->IsRecursiveActive())
-			(*it)->OnPostRender();
-
+	// 이후 디버그(썸네일)
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderRTDebugDisplay();

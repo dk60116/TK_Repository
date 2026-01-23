@@ -13,7 +13,8 @@ public:
         Material,
         Depth,
         Shading,
-        Specular
+        Specular,
+        Combine
     };
 
 public:

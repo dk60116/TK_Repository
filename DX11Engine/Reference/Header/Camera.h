@@ -67,10 +67,13 @@ protected:
 public:
 	void RenderMesh();
 	void RenderUI();
+	void RenderDisplay();
 
 	void RenderRTDebugDisplay();
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
+
+	void RenderCombine(const D3D11_VIEWPORT* vp);
 
 public:
 	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
@@ -100,6 +103,7 @@ private:
 
 	CMaterial* m_pShadingPassMat;
 	CMaterial* m_pSpecularPassMat;
+	CMaterial* m_pCombinePassMat;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
 	ID3D11RasterizerState* m_pRTDebugRS;
