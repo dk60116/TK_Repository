@@ -97,6 +97,8 @@ public:
     const list<class CLight*>& Get_LightList();
     CLight* Add_Light(CLight* _light);
 
+    vector<_matrix>& Get_LightData();
+
     class CCanvas* Get_Canvas(const _int _index) const;
     const list <CCanvas*>& Get_CanvasList();
     CCanvas* Add_Canvas(CCanvas* _canvas);
@@ -139,6 +141,8 @@ protected:
     ID3D11DepthStencilState* m_pSkyBoxDepthStencillState, * m_pMeshDepthStencilState,* m_pUIDepthStencilState;
     ID3D11RasterizerState* m_pSkyBoxResterizerState, * m_pMeshResterizerState, * m_pUIResterizerState;
     ID3D11BlendState* m_pBlendingState, * m_pNoneBlendingState;
+
+    vector<_matrix> m_vLightData;
 };
 
 NS_END

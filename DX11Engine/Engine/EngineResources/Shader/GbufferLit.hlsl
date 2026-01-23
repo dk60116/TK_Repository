@@ -150,7 +150,8 @@ PSOut PSMain(VSOut input)
     // Encode to 0~1
     o.Normal = float4(Nw * 0.5f + 0.5f, 1.0f);
     
-    o.Specular = float4(1.f, gSmoothness, 0.f, 1.f);
+    float f0 = 0.04f;
+    o.Specular = float4(0.f, gSmoothness, 0.f, 1.f);
 
     return o;
 }

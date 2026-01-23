@@ -14,10 +14,10 @@ cbuffer PerObject : register(b0)
 
 cbuffer PerCamera : register(b1)
 {
-    float3 camPos; // 사용 안 함(바인딩 호환)
-    float4x4 view; // 사용 안 함
-    float4x4 proj; // 사용 안 함
+    float3 camPos; 
     float cpadding;
+    float4x4 view; 
+    float4x4 proj; 
 };
 
 #pragma pack_matrix(row_major)
@@ -31,9 +31,8 @@ cbuffer PerCustomValue : register(b5)
     float4x4 gInvViewProj;
 };
 
-Texture2D gAlbedo : register(t0);
-Texture2D gNormal : register(t1);
-Texture2D<float> gDepth : register(t2);
+Texture2D gNormal : register(t0);
+Texture2D<float> gDepth : register(t1);
 SamplerState gSampler : register(s0);
 
 struct VSIn
@@ -87,12 +86,11 @@ float4 PSMain(VSOut i) : SV_Target
     float2 uvScreen = i.uv;
     float2 uvTex = float2(i.uv.x, 1.0f - i.uv.y);
 
-    float3 albedo = gAlbedo.Sample(gSampler, uvTex).rgb;
     float3 N = DecodeNormal(gNormal.Sample(gSampler, uvTex).xyz);
 
     float depth01 = gDepth.SampleLevel(gSampler, uvTex, 0);
     if (depth01 >= 0.999999f)
-        return float4(albedo, 1);
+        return float4(1.f, 1.f, 1.f, 1);
 
     float2 ndc = float2(uvScreen.x * 2 - 1, uvScreen.y * 2 - 1);
 
@@ -100,12 +98,15 @@ float4 PSMain(VSOut i) : SV_Target
     float4 wpos4 = mul(clip, gInvViewProj);
     float3 posW = wpos4.xyz / wpos4.w;
 
+    float3 V = normalize(camPos - posW);
+
     float3 diffuseSum = 0;
     float3 ambientSum = 0;
+    float3 specularSum = 0;
 
     int lightCount = (int) gLight[0][3][3];
 
-[loop]
+    [loop]
     for (int li = 0; li < lightCount; ++li)
     {
         if (gLight[li][3][2] < 0.5f)
@@ -150,16 +151,17 @@ float4 PSMain(VSOut i) : SV_Target
             att = falloff * invSqNorm;
         }
         else
+        {
             continue;
+        }
 
-        float ndotl = saturate(dot(N, L));
-
-        diffuseSum += lightCol * (ndotl * intensity * att);
-        ambientSum += lightCol * (ambientK * att);
+        float NdotL = saturate(dot(N, L));
+        diffuseSum += lightCol * (NdotL * intensity * att);
     }
 
     float3 globalAmbient = 0.2f;
 
-    float3 lit = albedo * saturate(globalAmbient + ambientSum + diffuseSum);
-    return float4(saturate(lit), 1);
+    // "알베도는 빼고 명암만" 이므로 조명 결과만 출력
+    float3 lit = saturate(globalAmbient + ambientSum + diffuseSum + specularSum);
+    return float4(lit, 1);
 }

@@ -41,5 +41,7 @@ float4 PSMain(VSOut input) : SV_Target
     float2 uv = input.uv;
     uv.y = 1.0f - uv.y; // 상하 플립
 
-    return gTexture.Sample(gSampler, uv);
+    float4 c = gTexture.Sample(gSampler, uv);
+    c.a = 1.0f;
+    return c;
 }

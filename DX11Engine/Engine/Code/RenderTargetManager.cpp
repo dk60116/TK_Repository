@@ -100,15 +100,15 @@ void CRenderTargetManager::Bind_GBuffer(ID3D11DeviceContext* ctx, const D3D11_VI
 {
     Unbind_AllSRVs_PS(ctx);
 
-    ID3D11RenderTargetView* rtvs[3] =
-    {
-        GetRTV(CRenderTarget::RTType::Albedo),
-        GetRTV(CRenderTarget::RTType::Normal),
-        GetRTV(CRenderTarget::RTType::Specular)
-    };
+    auto rtvA = GetRTV(CRenderTarget::RTType::Albedo);
+    auto rtvN = GetRTV(CRenderTarget::RTType::Normal);
+    auto rtvM = GetRTV(CRenderTarget::RTType::Material);
+    auto dsv = GetDSV(CRenderTarget::RTType::Depth);
 
-    ID3D11DepthStencilView* dsv = GetDSV(CRenderTarget::RTType::Depth);
+    if (!rtvA || !rtvN || !rtvM || !dsv)
+        return;
 
+    ID3D11RenderTargetView* rtvs[3] = { rtvA, rtvN, rtvM };
     ctx->OMSetRenderTargets(3, rtvs, dsv);
 
     if (vp) 
@@ -158,6 +158,7 @@ void CRenderTargetManager::Clear_GBuffer()
 {
     Clear_RenderTarget(CRenderTarget::RTType::Albedo);
     Clear_RenderTarget(CRenderTarget::RTType::Normal);
+    Clear_RenderTarget(CRenderTarget::RTType::Material);
     Clear_RenderTarget(CRenderTarget::RTType::Depth);
     Clear_RenderTarget(CRenderTarget::RTType::Specular);
 }
@@ -212,13 +213,16 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     if (FAILED(m_rtList[CRenderTarget::RTType::Normal].Create(CRenderTarget::RTType::Normal, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
+    if (FAILED(m_rtList[CRenderTarget::RTType::Material].Create(CRenderTarget::RTType::Material, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+        return E_FAIL;
+
     if (FAILED(m_rtList[CRenderTarget::RTType::Depth].Create(CRenderTarget::RTType::Depth, device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, true)))
         return E_FAIL;
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Shading].Create(CRenderTarget::RTType::Shading, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
     return S_OK;

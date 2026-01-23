@@ -18,7 +18,7 @@ class ENGINE_DLL CCamera : public CComponent
 
 	struct InvViewProjCB
 	{
-		DirectX::XMFLOAT4X4 gInvViewProj;
+		_float4x4 gInvViewProj;
 	};
 
 	struct SpecularParamsCB
@@ -78,7 +78,7 @@ public:
 
 protected:
 	ViewMode m_eCamViewMode;
-	_float4x4 m_vViewMatrix, m_vProjMatrix;
+	_float4x4 m_vViewMatrix, m_vProjMatrix, m_vVPInverseMatrix;
 
 	_float m_fAspect;
 	ColorValue m_vBackgroundColor;
@@ -97,6 +97,7 @@ private:
 
 	CMeshBuffer* m_pRectBuffer;
 	vector<CMaterial*> m_vRectMats;
+
 	CMaterial* m_pShadingPassMat;
 	CMaterial* m_pSpecularPassMat;
 
@@ -105,7 +106,6 @@ private:
 	ID3D11BlendState* m_pRTDebugBS;
 
 	ID3D11Buffer* m_pInvViewProjCB;
-	ID3D11Buffer* m_pSpecularParamsCB;
 };
 
 NS_END

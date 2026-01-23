@@ -10,6 +10,7 @@ public:
     {
         Albedo,
         Normal,
+        Material,
         Depth,
         Shading,
         Specular

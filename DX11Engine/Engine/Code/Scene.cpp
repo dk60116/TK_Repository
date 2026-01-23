@@ -17,7 +17,9 @@ CScene::CScene()
 	, m_mTempSkinnedBoneList({})
 	, m_lObjectList({})
 	, m_lCameraList({})
+	, m_lLightList({})
 	, m_lCanvasList({})
+	, m_vLightData({})
 	, m_pSkyBox(nullptr)
 	, m_pEditorCamera(nullptr)
 	, m_iUniqueObjectCount(0)
@@ -330,6 +332,17 @@ void CScene::Render_Editor()
 
 void CScene::Render_Game()
 {
+	m_vLightData.clear();
+
+	for (TRAVERSAL_ITER(m_lLightList, it))
+	{
+		if (!(*it))
+			continue;
+		_float4x4 lightInfo = (*it)->To_LightInfo();
+		lightInfo._44 = (_float)m_lLightList.size();
+		m_vLightData.push_back(XMLoadFloat4x4(&lightInfo));
+	}
+
 	CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
 
 	ColorValue backgroudColor = ColorValue::black();
@@ -840,6 +853,11 @@ CLight* CScene::Add_Light(CLight* _light)
 	m_lLightList.push_back(_light);
 
 	return m_lLightList.back();
+}
+
+vector<_matrix>& CScene::Get_LightData()
+{
+	return m_vLightData;
 }
 
 CCanvas* CScene::Get_Canvas(const _int _index) const
