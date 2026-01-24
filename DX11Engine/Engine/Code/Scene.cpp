@@ -365,10 +365,8 @@ void CScene::Render_Game()
 
 	auto& RTM = CRenderTargetManager::GetInstance();
 
-	RTM.Bind_GBuffer(ctx, vp);
-	RTM.Clear_GBuffer();
-
-			(*it)->RenderShadowMask(vp);
+		RTM.Bind_GBuffer(ctx, vp);
+		RTM.Clear_GBuffer();
 	// SkyBox를 GBuffer에 넣을 거면 여기서 (Albedo만 쓰고 싶으면 SkyBox 전용 PS 필요)
 	if (m_pSkyBox && !m_lCameraList.empty())
 	{
@@ -387,11 +385,12 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
-		{
-			(*it)->RenderLightingPass_ToShading(vp);
-			(*it)->RenderLightingPass_ToSpecular(vp);
-			(*it)->RenderCombine(vp);
-		}
+			{
+				(*it)->RenderLightingPass_ToShading(vp);
+				(*it)->RenderLightingPass_ToSpecular(vp);
+				(*it)->RenderShadowMask(vp);
+				(*it)->RenderCombine(vp);
+			}
 	}
 
 	// 4) BackBuffer 복귀 + UI/디버그

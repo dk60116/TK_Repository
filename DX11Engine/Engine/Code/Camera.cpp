@@ -520,7 +520,6 @@ void CCamera::RenderRTDebugDisplay()
 		context->RSSetViewports(1, &vp);
 	}
 
-		CRenderTarget::RTType::ShadowMask,
 	// 픽셀 좌표 Ortho (좌상단 원점)
 	_matrix view = XMMatrixIdentity();
 	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
@@ -537,6 +536,7 @@ void CCamera::RenderRTDebugDisplay()
 
 	CRenderTarget::RTType types[] =
 	{
+		CRenderTarget::RTType::ShadowMask,
 		CRenderTarget::RTType::Albedo,
 		CRenderTarget::RTType::Normal,
 		CRenderTarget::RTType::Material,
