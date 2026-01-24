@@ -19,6 +19,9 @@ class ENGINE_DLL CCamera : public CComponent
 	struct InvViewProjCB
 	{
 		_float4x4 gInvViewProj;
+		_float4x4 gViewProj;
+		_float2 gShadowParams;
+		_float2 gShadowPadding;
 	};
 
 	struct SpecularParamsCB
@@ -72,6 +75,7 @@ public:
 	void RenderRTDebugDisplay();
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
+	void RenderShadowMask(const D3D11_VIEWPORT* vp);
 
 	void RenderCombine(const D3D11_VIEWPORT* vp);
 
@@ -103,6 +107,7 @@ private:
 
 	CMaterial* m_pShadingPassMat;
 	CMaterial* m_pSpecularPassMat;
+	CMaterial* m_pShadowPassMat;
 	CMaterial* m_pCombinePassMat;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;

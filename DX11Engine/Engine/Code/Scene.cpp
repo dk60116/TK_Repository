@@ -349,7 +349,7 @@ void CScene::Render_Game()
 	if (Get_Camera())
 		backgroudColor = Get_Camera()->Get_BackgroundColor();
 
-	// 1) Renderer Å¥ ÀûÀç
+	// 1) Renderer í ì ìž¬
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		if ((*it)->IsActive())
 			(*it)->Render();
@@ -358,7 +358,7 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreCull();
 	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreRender();
 
-	// 3) GBuffer ÆÐ½º (MRT À¯Áö!)
+	// 3) GBuffer íŒ¨ìŠ¤ (MRT ìœ ì§€!)
 	ID3D11DeviceContext* ctx = m_pContext;
 	const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_GameViewport();
 	if (!vp) vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
@@ -368,7 +368,8 @@ void CScene::Render_Game()
 	RTM.Bind_GBuffer(ctx, vp);
 	RTM.Clear_GBuffer();
 
-	// SkyBox¸¦ GBuffer¿¡ ³ÖÀ» °Å¸é ¿©±â¼­ (Albedo¸¸ ¾²°í ½ÍÀ¸¸é SkyBox Àü¿ë PS ÇÊ¿ä)
+			(*it)->RenderShadowMask(vp);
+	// SkyBoxë¥¼ GBufferì— ë„£ì„ ê±°ë©´ ì—¬ê¸°ì„œ (Albedoë§Œ ì“°ê³  ì‹¶ìœ¼ë©´ SkyBox ì „ìš© PS í•„ìš”)
 	if (m_pSkyBox && !m_lCameraList.empty())
 	{
 		m_pContext->RSSetState(m_pSkyBoxResterizerState);
@@ -393,17 +394,17 @@ void CScene::Render_Game()
 		}
 	}
 
-	// 4) BackBuffer º¹±Í + UI/µð¹ö±×
+	// 4) BackBuffer ë³µê·€ + UI/ë””ë²„ê·¸
 	CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
 	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
 
-	// (Ãß°¡) Combine Present¸¦ ¸ÕÀú ¹é¹öÆÛ¿¡ Ãâ·Â
+	// (ì¶”ê°€) Combine Presentë¥¼ ë¨¼ì € ë°±ë²„í¼ì— ì¶œë ¥
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderDisplay();
 
-	// ±× ´ÙÀ½ UI
+	// ê·¸ ë‹¤ìŒ UI
 	m_pContext->RSSetState(m_pUIResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
 
@@ -411,7 +412,7 @@ void CScene::Render_Game()
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderUI();
 
-	// ÀÌÈÄ µð¹ö±×(½æ³×ÀÏ)
+	// ì´í›„ ë””ë²„ê·¸(ì¸ë„¤ì¼)
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderRTDebugDisplay();

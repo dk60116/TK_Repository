@@ -14,6 +14,7 @@ cbuffer PerCamera : register(b1)
 Texture2D gAlbedo : register(t0);
 Texture2D gShading : register(t1);
 Texture2D gSpecular : register(t2);
+Texture2D gShadow : register(t3);
 SamplerState gSampler : register(s0);
 
 struct VSIn
@@ -46,8 +47,9 @@ float4 PSMain(VSOut input) : SV_Target
     float4 a = gAlbedo.Sample(gSampler, uv);
     float4 s = gShading.Sample(gSampler, uv);
     float4 sp = gSpecular.Sample(gSampler, uv);
+    float shadow = gShadow.Sample(gSampler, uv).r;
     
-    float4 as = a * s;
+    float4 as = a * s * shadow;
     
     float4 final = as + sp;
     

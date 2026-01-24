@@ -1,5 +1,5 @@
 // DeferredSpecular_ForwardMatch.hlsl
-// ¸ñÀû: Forward ¼ÎÀÌ´õÀÇ Specular(Reflect-Phong) °è»ê½ÄÀ» Deferred¿¡¼­ µ¿ÀÏÇÏ°Ô ÀçÇö
+// ëª©ì : Forward ì…°ì´ë”ì˜ Specular(Reflect-Phong) ê³„ì‚°ì‹ì„ Deferredì—ì„œ ë™ì¼í•˜ê²Œ ì¬í˜„
 // t1: Normal, t2: Depth, t3: Material(=SpecParams: .g = smoothness/strength), b5: gInvViewProj
 
 #define MAX_LIGHTS 64
@@ -29,6 +29,9 @@ cbuffer PerLight : register(b4)
 cbuffer PerCustomValue : register(b5)
 {
     float4x4 gInvViewProj;
+    float4x4 gViewProj;
+    float2 gShadowParams;
+    float2 gShadowPadding;
 };
 
 Texture2D gNormal : register(t0);
@@ -67,7 +70,7 @@ float3 ReconstructWorldPos(float2 uvScreen, float depth01)
 {
     float2 ndc = float2(uvScreen.x * 2.0f - 1.0f, uvScreen.y * 2.0f - 1.0f);
     float4 clip = float4(ndc, depth01, 1.0f);
-    float4 w = mul(clip, gInvViewProj); // row_major + clip(Çàº¤ÅÍ) * M ÇüÅÂ À¯Áö
+    float4 w = mul(clip, gInvViewProj); // row_major + clip(í–‰ë²¡í„°) * M í˜•íƒœ ìœ ì§€
     return w.xyz / max(w.w, 1e-6f);
 }
 
@@ -87,16 +90,16 @@ float4 PSMain(VSOut i) : SV_Target
     float3 N = DecodeNormal(gNormal.Sample(gSampler, uvTex).xyz);
     float3 posW = ReconstructWorldPos(uvScreen, depth01);
 
-    // ForwardÀÇ gSmoothness¿¡ ÇØ´çÇÏ´Â strength¸¦ Material RT¿¡¼­ °¡Á®¿È
+    // Forwardì˜ gSmoothnessì— í•´ë‹¹í•˜ëŠ” strengthë¥¼ Material RTì—ì„œ ê°€ì ¸ì˜´
     float4 sp = gSpecParams.Sample(gSampler, uvTex);
     float specularStrength = sp.g;
 
-    // Ä«¸Ş¶ó º¤ÅÍ (Forward: V = normalize(pos - input.posW))
+    // ì¹´ë©”ë¼ ë²¡í„° (Forward: V = normalize(pos - input.posW))
     float3 V = normalize(camPos - posW);
 
     float3 specSum = 0;
 
-    // LightCount: gLight[0][3][3] ±Ô¾à À¯Áö
+    // LightCount: gLight[0][3][3] ê·œì•½ ìœ ì§€
     int lightCount = (int) gLight[0][3][3];
 
     [loop]
@@ -127,13 +130,13 @@ float4 PSMain(VSOut i) : SV_Target
             float3 toL = lightPos - posW;
             float dist = length(toL);
 
-            // Forward¿Í µ¿ÀÏÇÑ ÇüÅÂ·Î early-out
+            // Forwardì™€ ë™ì¼í•œ í˜•íƒœë¡œ early-out
             if (range <= 1e-6f || dist >= range)
                 continue;
 
             L = toL / max(dist, 1e-6f);
 
-            // Forward¿Í µ¿ÀÏ: saturate(1 - dist/range) * attenuationK
+            // Forwardì™€ ë™ì¼: saturate(1 - dist/range) * attenuationK
             att = saturate(1.0f - dist / range) * attenuationK;
         }
         else
@@ -152,7 +155,7 @@ float4 PSMain(VSOut i) : SV_Target
         specSum += specular;
     }
 
-    // spec only Ãâ·Â
+    // spec only ì¶œë ¥
     specSum = saturate(specSum);
     return float4(specSum, 1);
 }

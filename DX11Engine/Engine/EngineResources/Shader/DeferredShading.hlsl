@@ -1,6 +1,6 @@
 // DeferredLighting_DiffuseOnly.hlsl
 
-// ¶óÀÌÆ® Á¤ÀÇ
+// ë¼ì´íŠ¸ ì •ì˜
 #define MAX_LIGHTS 64
 
 #define LIGHT_TYPE_DIRECTIONAL 0
@@ -9,7 +9,10 @@
 
 cbuffer PerObject : register(b0)
 {
-    float4x4 world; // fullscreen quad¿ë (±×´ë·Î À¯Áö)
+    float4x4 gViewProj;
+    float2 gShadowParams;
+    float2 gShadowPadding;
+    float4x4 world; // fullscreen quadìš© (ê·¸ëŒ€ë¡œ ìœ ì§€)
 };
 
 cbuffer PerCamera : register(b1)
@@ -51,9 +54,9 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
     float4 posW = mul(float4(v.posL, 1), world);
-    // view/proj¸¦ ¾È ¾²·Á¸é world¿¡¼­ ÀÌ¹Ì clip-space·Î ¸¸µé°Å³ª,
-    // ±âÁ¸ PresentÃ³·³ view/proj¸¦ Identity/Ortho·Î ³Ö¾îµµ µË´Ï´Ù.
-    // ¿©±â¼­´Â ±âÁ¸ Camera::RenderRTDebugDisplay Èå¸§ ±×´ë·Î(view/proj ¹ÙÀÎµù) »ç¿ëÀ» ÀüÁ¦·Î µÓ´Ï´Ù.
+    // view/projë¥¼ ì•ˆ ì“°ë ¤ë©´ worldì—ì„œ ì´ë¯¸ clip-spaceë¡œ ë§Œë“¤ê±°ë‚˜,
+    // ê¸°ì¡´ Presentì²˜ëŸ¼ view/projë¥¼ Identity/Orthoë¡œ ë„£ì–´ë„ ë©ë‹ˆë‹¤.
+    // ì—¬ê¸°ì„œëŠ” ê¸°ì¡´ Camera::RenderRTDebugDisplay íë¦„ ê·¸ëŒ€ë¡œ(view/proj ë°”ì¸ë”©) ì‚¬ìš©ì„ ì „ì œë¡œ ë‘¡ë‹ˆë‹¤.
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
     o.uv = v.uv;
@@ -67,12 +70,12 @@ float3 DecodeNormal(float3 enc01)
 
 float3 ReconstructWorldPos(float2 uv, float depth01)
 {
-    // uv´Â ÀÌ¹Ì y-flip µÈ »óÅÂ¶ó°í °¡Á¤ (uv.y = 1-uv.y Àû¿ë ÈÄ)
+    // uvëŠ” ì´ë¯¸ y-flip ëœ ìƒíƒœë¼ê³  ê°€ì • (uv.y = 1-uv.y ì ìš© í›„)
     float2 ndc;
     ndc.x = uv.x * 2.0f - 1.0f;
     ndc.y = uv.y * 2.0f - 1.0f;
 
-    // D3D NDC z´Â 0..1 ÀÌ¹Ç·Î depth01 ±×´ë·Î »ç¿ë
+    // D3D NDC zëŠ” 0..1 ì´ë¯€ë¡œ depth01 ê·¸ëŒ€ë¡œ ì‚¬ìš©
     float4 clip = float4(ndc, depth01, 1.0f);
 
     float4 world = mul(clip, gInvViewProj);
@@ -161,7 +164,7 @@ float4 PSMain(VSOut i) : SV_Target
 
     float3 globalAmbient = 0.2f;
 
-    // "¾Ëº£µµ´Â »©°í ¸í¾Ï¸¸" ÀÌ¹Ç·Î Á¶¸í °á°ú¸¸ Ãâ·Â
+    // "ì•Œë² ë„ëŠ” ë¹¼ê³  ëª…ì•”ë§Œ" ì´ë¯€ë¡œ ì¡°ëª… ê²°ê³¼ë§Œ ì¶œë ¥
     float3 lit = saturate(globalAmbient + ambientSum + diffuseSum + specularSum);
     return float4(lit, 1);
 }

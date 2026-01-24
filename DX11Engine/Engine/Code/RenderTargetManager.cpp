@@ -146,6 +146,13 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
         clear[2] = 1.0f;
         clear[3] = 1.0f;
     }
+    else if (type == CRenderTarget::RTType::ShadowMask)
+    {
+        clear[0] = 1.0f;
+        clear[1] = 1.0f;
+        clear[2] = 1.0f;
+        clear[3] = 1.0f;
+    }
 
     ID3D11RenderTargetView* rtv = rt.GetRTV();
     if (!rtv)
@@ -162,6 +169,7 @@ void CRenderTargetManager::Clear_GBuffer()
     Clear_RenderTarget(CRenderTarget::RTType::Depth);
     Clear_RenderTarget(CRenderTarget::RTType::Specular);
     Clear_RenderTarget(CRenderTarget::RTType::Combine);
+    Clear_RenderTarget(CRenderTarget::RTType::ShadowMask);
 }
 
 ID3D11RenderTargetView* CRenderTargetManager::GetRTV(const CRenderTarget::RTType type) const
@@ -227,6 +235,9 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
         return E_FAIL;
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+        return E_FAIL;
+
+    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowMask].Create(CRenderTarget::RTType::ShadowMask, device, width, height, DXGI_FORMAT_R16_FLOAT, true)))
         return E_FAIL;
 
     return S_OK;
