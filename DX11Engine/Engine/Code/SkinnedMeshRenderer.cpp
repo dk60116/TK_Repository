@@ -58,7 +58,7 @@ HRESULT CSkinnedMeshRenderer::Initialize()
 
 	auto mat = m_pMaterial;
 
-	// 본 행렬 상수 버퍼 생성 (최대 본 갯수 = 128 가정)
+	//      (ִ   = 128 )
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	desc.ByteWidth = sizeof(XMMATRIX) * 128;
@@ -191,15 +191,15 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	// 2) Bone Count Clamp
 	const _uint boneCount = min<_uint>(static_cast<_uint>(m_vBones.size()), 128u);
 
-	// 3) Bone Matrices (항상 128개)
+	// 3) Bone Matrices (׻ 128)
 	_matrix boneMatrices[128];
 	for (int i = 0; i < 128; ++i)
 		boneMatrices[i] = XMMatrixIdentity();
 
-	// 메시 월드 역행렬은 루프 밖에서 1회 계산
+	// ޽    ۿ 1ȸ 
 	_matrix meshWorldInv = XMMatrixIdentity();
 	{
-		// m_pGameObject는 여기까지 왔으면 유효하다고 가정하지만, 안전하게 체크
+		// m_pGameObject   ȿϴٰ , ϰ üũ
 		if (m_pGameObject && m_pGameObject->Get_Transform())
 		{
 			_matrix meshWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
@@ -207,32 +207,32 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		}
 	}
 
-	// 4) Bone matrices 계산
-	// 목표: 셰이더가 mul(pos, gBones[idx]) 패턴(행 벡터 스타일)일 때
-	// CPU에서 Transpose해서 올린 행렬을 사용하도록 맞춘다.
+	// 4) Bone matrices 
+	// ǥ: ̴ mul(pos, gBones[idx]) (  Ÿ) 
+	// CPU Transposeؼ ø  ϵ .
 	for (_uint i = 0; i < boneCount; ++i)
 	{
 		if (!m_vBones[i])
 			continue;
 
-		// 현재 본 월드
+		//   
 		_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
 
-		// 역 바인드 포즈(Offset)
-		// (m_vBoneOffsetMatrices의 인덱스가 m_vBones와 동일한 순서라는 전제)
+		//  ε (Offset)
+		// (m_vBoneOffsetMatrices ε m_vBones   )
 		_matrix invBindPose = XMMatrixIdentity();
 		invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
 
-		// bone을 mesh local로 변환
-		// (boneWorld * meshWorldInv) : boneWorld → meshLocal
+		// bone mesh local ȯ
+		// (boneWorld * meshWorldInv) : boneWorld  meshLocal
 		_matrix boneMeshLocal = boneWorld * meshWorldInv;
 
-		// 최종 본 행렬
-		// (invBindPose * currentBone) 형태 유지
+		//   
+		// (invBindPose * currentBone)  
 		boneMatrices[i] = XMMatrixTranspose(invBindPose * boneMeshLocal);
 	}
 
-	// 5) Bone buffer upload (항상 128개 업로드)
+	// 5) Bone buffer upload (׻ 128 ε)
 	if (!m_pBoneMatrixBuffer)
 	{
 		CDebug::LogError(L"Skinned MeshRenderer - BoneMatrixBuffer is null: " + m_pGameObject->Get_ObjectNameID());
@@ -252,7 +252,7 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	// 6) Material bind (boneCount는 클램프한 값으로)
+	// 6) Material bind (boneCount Ŭ )
 	m_pMaterial->Bind_Matrix(matWorld);
 	m_pMaterial->Bind_Camera(camPos, matView, matProj, boneCount);
 
@@ -292,10 +292,10 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 	ID3D11DepthStencilState* outlineStencil;
 	m_pDevice->CreateDepthStencilState(&dsDesc, &outlineStencil);
 
-	// 월드, 뷰, 프로젝션
+	// , , 
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 
-	// 스케일업 (조금 크게)
+	// Ͼ ( ũ)
 	_matrix scale = XMMatrixScaling(1.03f, 1.03f, 1.03f);
 	matWorld = scale * matWorld;
 
@@ -308,90 +308,23 @@ void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
 
 	m_pContext->RSSetState(CGraphicDevice::GetInstance().Get_Rasterizer_CullFront());
 
-	// 아웃라인 머티리얼 바인딩 (단색 셰이더)
+	// ƿ Ƽ ε (ܻ ̴)
 
 	//if (m_pOutlineMat)
 	//{
 	//	m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
 	//	m_pOutlineMat->Bind(matWorld, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
 
-	//	// 본 상수 버퍼 바인딩
+	//	//    ε
 	//	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
-	//	// 메시 렌더링
+	//	// ޽ 
 	//	m_pMeshBuffer->Render();
 	//}
 
-	// 5) 상태 복원
+	// 5)  
 	m_pContext->OMSetDepthStencilState(nullptr, 0);
 	m_pContext->RSSetState(nullptr);
-}
-
-void CSkinnedMeshRenderer::Render_ShadowDepth(CMaterial* _shadowMat, const _matrix& _view, const _matrix& _proj)
-{
-	if (!_shadowMat)
-		return;
-
-	if (!m_pMeshBuffer)
-	{
-		CDebug::LogError(L"Skinned MeshRenderer - No MeshBuffer assigned :" + m_pGameObject->Get_ObjectNameID());
-		return;
-	}
-
-	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
-
-	const _uint boneCount = min<_uint>(static_cast<_uint>(m_vBones.size()), 128u);
-
-	_matrix boneMatrices[128];
-	for (int i = 0; i < 128; ++i)
-		boneMatrices[i] = XMMatrixIdentity();
-
-	_matrix meshWorldInv = XMMatrixIdentity();
-	if (m_pGameObject && m_pGameObject->Get_Transform())
-	{
-		_matrix meshWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
-		meshWorldInv = XMMatrixInverse(nullptr, meshWorld);
-	}
-
-	for (_uint i = 0; i < boneCount; ++i)
-	{
-		if (!m_vBones[i])
-			continue;
-
-		_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
-		_matrix invBindPose = XMMatrixIdentity();
-		invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
-
-		_matrix boneMeshLocal = boneWorld * meshWorldInv;
-		boneMatrices[i] = XMMatrixTranspose(invBindPose * boneMeshLocal);
-	}
-
-	if (!m_pBoneMatrixBuffer)
-	{
-		CDebug::LogError(L"Skinned MeshRenderer - BoneMatrixBuffer is null: " + m_pGameObject->Get_ObjectNameID());
-		return;
-	}
-
-	D3D11_MAPPED_SUBRESOURCE mappedRes = {};
-	HRESULT hrMap = m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
-	if (SUCCEEDED(hrMap))
-	{
-		memcpy(mappedRes.pData, boneMatrices, sizeof(XMMATRIX) * 128);
-		m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
-	}
-	else
-	{
-		CDebug::LogError(L"Skinned MeshRenderer - Failed Map BoneMatrixBuffer: " + m_pGameObject->Get_ObjectNameID());
-		return;
-	}
-
-	_float3 camPos = {};
-	_shadowMat->Bind_Matrix(matWorld);
-	_shadowMat->Bind_Camera(camPos, _view, _proj, boneCount);
-
-	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
-
-	m_pMeshBuffer->Render();
 }
 
 CMeshBuffer* CSkinnedMeshRenderer::Get_MeshBuffer()

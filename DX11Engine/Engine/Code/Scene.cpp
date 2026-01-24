@@ -1,8 +1,6 @@
 #include "epch.h"
 #include "Scene.h"
 #include "EditorCamera.h"
-#include "MeshRenderer.h"
-#include "SkinnedMeshRenderer.h"
 
 CScene::CScene()
 	: m_iSceneIndex(0)
@@ -360,14 +358,6 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreCull();
 	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreRender();
 
-	// 3) ShadowDepth Pass
-	ID3D11DeviceContext* ctx = m_pContext;
-	const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_GameViewport();
-	if (!vp) vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
-
-	auto& RTM = CRenderTargetManager::GetInstance();
-
-	CMaterial* shadowMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"ShadowDepth (Material)");
 	CLight* shadowLight = nullptr;
 	for (TRAVERSAL_ITER(m_lLightList, it))
 	{
@@ -384,43 +374,25 @@ void CScene::Render_Game()
 		}
 	}
 
-	if (shadowMat && shadowLight)
+	if (shadowLight)
 	{
-		D3D11_VIEWPORT prevVP{}; _uint prevVPCount = 1;
-		ctx->RSGetViewports(&prevVPCount, &prevVP);
-
-		RTM.Bind_ShadowDepth(ctx, vp);
-
-		ID3D11DepthStencilView* shadowDSV = RTM.GetDSV(CRenderTarget::RTType::ShadowDepth);
-		if (shadowDSV)
-			ctx->ClearDepthStencilView(shadowDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
 		const _matrix shadowView = shadowLight->Get_ShadowView();
 		const _matrix shadowProj = shadowLight->Get_ShadowProj();
 
-		vector<CRenderer*> renderers = Get_MeshObjects();
-		for (auto* renderer : renderers)
+		for (TRAVERSAL_ITER(m_lCameraList, it))
 		{
-			if (!renderer)
-				continue;
-
-			if (!renderer->Get_Enable())
-				continue;
-
-			if (!renderer->Get_GameObject() || !renderer->Get_GameObject()->IsRecursiveActive())
-				continue;
-
-			if (auto* skinned = dynamic_cast<CSkinnedMeshRenderer*>(renderer))
-				skinned->Render_ShadowDepth(shadowMat, shadowView, shadowProj);
-			else if (auto* mesh = dynamic_cast<CMeshRenderer*>(renderer))
-				mesh->Render_ShadowDepth(shadowMat, shadowView, shadowProj);
+			if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+				(*it)->Bind_ShadowCB(shadowView, shadowProj);
 		}
-
-		if (prevVPCount > 0)
-			ctx->RSSetViewports(1, &prevVP);
 	}
 
-	// 4) GBuffer 패스 (MRT 유지!)
+	// 3) GBuffer 패스 (MRT 유지!)
+	ID3D11DeviceContext* ctx = m_pContext;
+	const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_GameViewport();
+	if (!vp) vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
+
+	auto& RTM = CRenderTargetManager::GetInstance();
+
 	RTM.Bind_GBuffer(ctx, vp);
 	RTM.Clear_GBuffer();
 
@@ -449,7 +421,7 @@ void CScene::Render_Game()
 		}
 	}
 
-	// 5) BackBuffer 복귀 + UI/디버그
+	// 4) BackBuffer 복귀 + UI/디버그
 	CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
 	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
