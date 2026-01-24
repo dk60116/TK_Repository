@@ -3,6 +3,15 @@
 #include "CResources.h"
 #include "CMainScene.h"
 
+namespace
+{
+	void RenderShadowPassPlaceholder()
+	{
+		// Placeholder for future shadow-map or stencil shadow rendering.
+		// Intentionally left blank until the shadow pipeline is implemented.
+	}
+}
+
 CMainProcess::CMainProcess()
 	: m_pDevClass(nullptr)
 	, m_pVB(nullptr)
@@ -68,6 +77,8 @@ void CMainProcess::Render_MainApp()
 	m_pDevClass->Get_GraphicDev()->SetRenderState(D3DRS_LIGHTING, CManagement::GetInstance().getCrtScene()->getOptions().lighting);
 
 	m_pDevClass->Get_GraphicDev()->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_STENCIL | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
+
+	RenderShadowPassPlaceholder();
 
 	m_pDevClass->Render_Begin(D3DCOLOR_XRGB(49, 77, 121));
 
