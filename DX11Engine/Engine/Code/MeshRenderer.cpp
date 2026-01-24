@@ -90,13 +90,13 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 		return;
 	}
 
-	// MeshBuffer °¡Á®¿À±â
+	// MeshBuffer ê°€ì ¸ì˜¤ê¸°
 	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
 
 	if (!pBuffer)
 		return;
 
-	// World / View / Projection Çà·Ä °è»ê
+	// World / View / Projection í–‰ë ¬ ê³„ì‚°
 
 	vector3 cPos = _cam->Get_Transform()->Get_Position();
 	_float3 camPos = cPos.toFloat3();
@@ -104,7 +104,7 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	_matrix matView = _cam->Get_ViewMatrix();
 	_matrix matProj = _cam->Get_ProjectionMatrix();
 
-	// ¼ÎÀÌ´õ + ÅØ½ºÃ³ + »ó¼ö ¹öÆÛ ¹ÙÀÎµù
+	// ì…°ì´ë” + í…ìŠ¤ì²˜ + ìƒìˆ˜ ë²„í¼ ë°”ì¸ë”©
 	m_pMaterial->Bind_Matrix(matWorld);
 	m_pMaterial->Bind_Camera(camPos, matView, matProj, 0);
 
@@ -137,12 +137,30 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	//	m_pMaterial->Bind_Light(vLightInfos.data(), static_cast<_uint>(lights.size()));
 	//}
 
-	//½ÇÁ¦ ¸Þ½¬ ·»´õ¸µ (¹öÆÛ ¹ÙÀÎµù ¹× Draw)
+	//ì‹¤ì œ ë©”ì‰¬ ë Œë”ë§ (ë²„í¼ ë°”ì¸ë”© ë° Draw)
 	pBuffer->Render();
 }
 
 void CMeshRenderer::Render_Outline(CCamera* _cam)
 {
+}
+
+void CMeshRenderer::Render_ShadowDepth(CMaterial* _shadowMat, const _matrix& _view, const _matrix& _proj)
+{
+	if (!_shadowMat || !m_pMeshFilter)
+		return;
+
+	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
+	if (!pBuffer)
+		return;
+
+	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
+	_float3 camPos = {};
+
+	_shadowMat->Bind_Matrix(matWorld);
+	_shadowMat->Bind_Camera(camPos, _view, _proj, 0);
+
+	pBuffer->Render();
 }
 
 CMeshFilter* CMeshRenderer::Get_MeshFilter()

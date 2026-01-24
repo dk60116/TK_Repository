@@ -30,6 +30,7 @@ public:
 public:
 	void Render_WithCamera(CCamera* _cam) override;
 	void Render_Outline(CCamera* _cam) override;
+	void Render_ShadowDepth(class CMaterial* _shadowMat, const _matrix& _view, const _matrix& _proj);
 
 public:
 	CMeshFilter* Get_MeshFilter();
@@ -40,4 +41,3 @@ private:
 };
 
 NS_END
-

@@ -1,6 +1,8 @@
 #include "epch.h"
 #include "Scene.h"
 #include "EditorCamera.h"
+#include "MeshRenderer.h"
+#include "SkinnedMeshRenderer.h"
 
 CScene::CScene()
 	: m_iSceneIndex(0)
@@ -349,7 +351,7 @@ void CScene::Render_Game()
 	if (Get_Camera())
 		backgroudColor = Get_Camera()->Get_BackgroundColor();
 
-	// 1) Renderer Å¥ ÀûÀç
+	// 1) Renderer í ì ìž¬
 	for (TRAVERSAL_ITER(m_lObjectList, it))
 		if ((*it)->IsActive())
 			(*it)->Render();
@@ -358,17 +360,71 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreCull();
 	for (TRAVERSAL_ITER(m_lCameraList, it)) (*it)->OnPreRender();
 
-	// 3) GBuffer ÆÐ½º (MRT À¯Áö!)
+	// 3) ShadowDepth Pass
 	ID3D11DeviceContext* ctx = m_pContext;
 	const D3D11_VIEWPORT* vp = CGraphicDevice::GetInstance().Get_GameViewport();
 	if (!vp) vp = CGraphicDevice::GetInstance().Get_CurrentViewport();
 
 	auto& RTM = CRenderTargetManager::GetInstance();
 
+	CMaterial* shadowMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"ShadowDepth (Material)");
+	CLight* shadowLight = nullptr;
+	for (TRAVERSAL_ITER(m_lLightList, it))
+	{
+		if (!(*it))
+			continue;
+
+		if (!(*it)->Get_Enable())
+			continue;
+
+		if ((*it)->Get_GameObject() && (*it)->Get_GameObject()->IsRecursiveActive())
+		{
+			shadowLight = *it;
+			break;
+		}
+	}
+
+	if (shadowMat && shadowLight)
+	{
+		D3D11_VIEWPORT prevVP{}; _uint prevVPCount = 1;
+		ctx->RSGetViewports(&prevVPCount, &prevVP);
+
+		RTM.Bind_ShadowDepth(ctx, vp);
+
+		ID3D11DepthStencilView* shadowDSV = RTM.GetDSV(CRenderTarget::RTType::ShadowDepth);
+		if (shadowDSV)
+			ctx->ClearDepthStencilView(shadowDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+		const _matrix shadowView = shadowLight->Get_ShadowView();
+		const _matrix shadowProj = shadowLight->Get_ShadowProj();
+
+		vector<CRenderer*> renderers = Get_MeshObjects();
+		for (auto* renderer : renderers)
+		{
+			if (!renderer)
+				continue;
+
+			if (!renderer->Get_Enable())
+				continue;
+
+			if (!renderer->Get_GameObject() || !renderer->Get_GameObject()->IsRecursiveActive())
+				continue;
+
+			if (auto* skinned = dynamic_cast<CSkinnedMeshRenderer*>(renderer))
+				skinned->Render_ShadowDepth(shadowMat, shadowView, shadowProj);
+			else if (auto* mesh = dynamic_cast<CMeshRenderer*>(renderer))
+				mesh->Render_ShadowDepth(shadowMat, shadowView, shadowProj);
+		}
+
+		if (prevVPCount > 0)
+			ctx->RSSetViewports(1, &prevVP);
+	}
+
+	// 4) GBuffer íŒ¨ìŠ¤ (MRT ìœ ì§€!)
 	RTM.Bind_GBuffer(ctx, vp);
 	RTM.Clear_GBuffer();
 
-	// SkyBox¸¦ GBuffer¿¡ ³ÖÀ» °Å¸é ¿©±â¼­ (Albedo¸¸ ¾²°í ½ÍÀ¸¸é SkyBox Àü¿ë PS ÇÊ¿ä)
+	// SkyBoxë¥¼ GBufferì— ë„£ì„ ê±°ë©´ ì—¬ê¸°ì„œ (Albedoë§Œ ì“°ê³  ì‹¶ìœ¼ë©´ SkyBox ì „ìš© PS í•„ìš”)
 	if (m_pSkyBox && !m_lCameraList.empty())
 	{
 		m_pContext->RSSetState(m_pSkyBoxResterizerState);
@@ -393,17 +449,17 @@ void CScene::Render_Game()
 		}
 	}
 
-	// 4) BackBuffer º¹±Í + UI/µð¹ö±×
+	// 5) BackBuffer ë³µê·€ + UI/ë””ë²„ê·¸
 	CGraphicDevice::GetInstance().Set_RenderTarget(CDisplay::GetInstance().Get_GameWindow());
 	CGraphicDevice::GetInstance().Clear_BackBuffer_View(&backgroudColor);
 	CGraphicDevice::GetInstance().Clear_DepthStencil_View();
 
-	// (Ãß°¡) Combine Present¸¦ ¸ÕÀú ¹é¹öÆÛ¿¡ Ãâ·Â
+	// (ì¶”ê°€) Combine Presentë¥¼ ë¨¼ì € ë°±ë²„í¼ì— ì¶œë ¥
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderDisplay();
 
-	// ±× ´ÙÀ½ UI
+	// ê·¸ ë‹¤ìŒ UI
 	m_pContext->RSSetState(m_pUIResterizerState);
 	m_pContext->OMSetDepthStencilState(m_pUIDepthStencilState, 0);
 
@@ -411,7 +467,7 @@ void CScene::Render_Game()
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderUI();
 
-	// ÀÌÈÄ µð¹ö±×(½æ³×ÀÏ)
+	// ì´í›„ ë””ë²„ê·¸(ì¸ë„¤ì¼)
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderRTDebugDisplay();
