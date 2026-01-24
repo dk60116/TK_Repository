@@ -2,13 +2,17 @@
 #include "Light.h"
 
 CLight::CLight()
-	: m_eType(Type::Directional)
+	: m_eType(LightType::Directional)
 	, m_fIntensity(1.f)
 	, m_fRange(10.f)
 	, m_fSpotAngle(45.f)
 	, m_fAttenuation(1.f)
 	, m_vDiffuseColor(ColorValue::white())
 	, m_vSpecularColor(ColorValue::white())
+	, m_bCastShadow(true)
+	, m_mShadowView(XMMatrixIdentity())
+	, m_mShadowProj(XMMatrixIdentity())
+	, m_mShadowViewProj(XMMatrixIdentity())
 {
 }
 
@@ -46,6 +50,7 @@ HRESULT CLight::Initialize()
 
 void CLight::Update()
 {
+	UpdateShadowCameraMatrices();
 }
 
 void CLight::Render_Editor()
@@ -60,12 +65,12 @@ void CLight::OnDestroy()
 {
 }
 
-const CLight::Type CLight::Get_Type() const
+const CLight::LightType CLight::Get_Type() const
 {
 	return m_eType;
 }
 
-void CLight::Set_Type(const Type _type)
+void CLight::Set_Type(const LightType _type)
 {
 	m_eType = _type;
 }
@@ -119,4 +124,98 @@ const _float4x4 CLight::To_LightInfo()
 	result._44 = 0.f;
 
 	return result;
+}
+
+const _matrix& CLight::Get_ShadowView() const
+{
+	return m_mShadowView;
+}
+
+const _matrix& CLight::Get_ShadowProj() const
+{
+	return m_mShadowProj;
+}
+
+const _matrix& CLight::Get_ShadowViewProj() const
+{
+	return m_mShadowViewProj;
+}
+
+_vector CLight::SafeUpFromDir(_vector dir)
+{
+	_vector up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_float d = fabsf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(dir), up)));
+	if (d > 0.99f)
+		up = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	return up;
+}
+
+void CLight::UpdateShadowCameraMatrices()
+{
+	// 1) Shadow 사용 여부
+	if (!m_bCastShadow || !m_bEnable || !m_pGameObject || !m_pGameObject->IsActive())
+	{
+		m_mShadowView = XMMatrixIdentity();
+		m_mShadowProj = XMMatrixIdentity();
+		m_mShadowViewProj = XMMatrixIdentity();
+		return;
+	}
+
+	// 2) Scene 옵션
+	CScene* scene = CSceneManager::GetInstance().Get_CrtScene();
+	const auto& ls = scene->Get_LightSetting();
+
+	const _float nearZ = ls.shadowNF.x;
+	const _float farZ = ls.shadowNF.y;
+
+	// 3) Light transform 기반 pos/dir
+	const vector3 pos = Get_Transform()->Get_Position();
+	const vector3 fwd = Get_Transform()->Get_Directions().forward;
+
+	_vector Lpos = XMVectorSet(pos.x, pos.y, pos.z, 1.f);
+	_vector Ldir = XMVectorSet(fwd.x, fwd.y, fwd.z, 0.f);
+	Ldir = XMVector3Normalize(Ldir);
+
+	// 4) Directional에서 "무엇을 바라볼지" (초기버전: 씬 카메라 or 원점)
+	_vector focus = XMVectorZero();
+	if (scene && scene->Get_Camera())
+	{
+		const vector3 camPos = scene->Get_Camera()->Get_Transform()->Get_Position();
+		focus = XMVectorSet(camPos.x, camPos.y, camPos.z, 1.f);
+	}
+
+	_vector up = SafeUpFromDir(Ldir);
+
+	if (m_eType == LightType::Directional)
+	{
+		const float dist = max(m_fRange, 1.f);
+		_vector eye = XMVectorSubtract(focus, XMVectorScale(Ldir, dist));
+
+		m_mShadowView = XMMatrixLookAtLH(eye, focus, up);
+
+		const float halfSize = max(m_fRange, 1.f);
+		const float w = halfSize * 2.f;
+		const float h = halfSize * 2.f;
+
+		m_mShadowProj = XMMatrixOrthographicLH(w, h, nearZ, farZ);
+	}
+	else if (m_eType == LightType::spot)
+	{
+		_vector eye = Lpos;
+		_vector at = XMVectorAdd(Lpos, Ldir);
+
+		m_mShadowView = XMMatrixLookAtLH(eye, at, up);
+
+		float fov = XMConvertToRadians(m_fSpotAngle);
+		fov = clamp(fov, XMConvertToRadians(1.f), XMConvertToRadians(179.f));
+
+		m_mShadowProj = XMMatrixPerspectiveFovLH(fov, 1.f, nearZ, farZ);
+	}
+	else
+	{
+		m_mShadowView = XMMatrixIdentity();
+		m_mShadowProj = XMMatrixIdentity();
+	}
+
+	m_mShadowViewProj = XMMatrixMultiply(m_mShadowView, m_mShadowProj);
 }

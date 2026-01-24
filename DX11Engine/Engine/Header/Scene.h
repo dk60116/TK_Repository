@@ -37,6 +37,8 @@ public:
     {
         wstring skyBox = L"DefaultSky (SkyBox)";
         _float ambient = 0.2f;
+        vector2 shadowMapSize = vector2(1024, 1024);
+        vector2 shadowNF = vector2(1.f, 1000.f);
     };
 
 protected:

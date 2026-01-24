@@ -63,6 +63,7 @@ public:
 protected:
 	void Bind_ViewMatrix();
 	void Bind_ProjectionMatrix();
+	void Bind_ShadowCB(const _matrix& shadowView, const _matrix& shadowProj);
 
 public:
 	void RenderMesh();
@@ -101,15 +102,16 @@ private:
 	CMeshBuffer* m_pRectBuffer;
 	vector<CMaterial*> m_vRectMats;
 
+	CMaterial* m_pCombinePassMat;
 	CMaterial* m_pShadingPassMat;
 	CMaterial* m_pSpecularPassMat;
-	CMaterial* m_pCombinePassMat;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
 	ID3D11RasterizerState* m_pRTDebugRS;
 	ID3D11BlendState* m_pRTDebugBS;
 
 	ID3D11Buffer* m_pInvViewProjCB;
+	ID3D11Buffer* m_pShadowCB;
 };
 
 NS_END

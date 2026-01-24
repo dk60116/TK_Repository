@@ -94,7 +94,7 @@ inline void CResources::LoadResourceComplete_Game(const wstring& _name, const ws
     if (newResource)
         CDebug::Log(L"Create Game resource successfully: " + newResource->Get_ResourceName());
     else
-        CDebug::LogError(L"Failed create Scene resource" + _name);
+        CDebug::LogError(L"Failed create Scene resource: " + _name);
 }
 
 template<typename T>
@@ -105,7 +105,7 @@ inline void CResources::LoadResourceComplete_Scene(const wstring& _name, const w
     if (newResource)
         CDebug::Log(L"Create Scene resource successfully: " + newResource->Get_ResourceName());
     else
-        CDebug::LogError(L"Failed create Scene resource" + _name);
+        CDebug::LogError(L"Failed create Scene resource: " + _name);
 }
 
 template<typename T>

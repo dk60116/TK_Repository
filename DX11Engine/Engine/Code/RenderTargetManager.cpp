@@ -2,8 +2,8 @@
 #include "RenderTargetManager.h"
 
 CRenderTargetManager::CRenderTargetManager()
-    : m_width(0)
-    , m_height(0)
+    : m_iWidth(0)
+    , m_iHeight(0)
     , m_rtList({})
 {
 }
@@ -38,8 +38,8 @@ void CRenderTargetManager::Destroy()
         kv.second.Destroy();
 
     m_rtList.clear();
-    m_width = 0;
-    m_height = 0;
+    m_iWidth = 0;
+    m_iHeight = 0;
 }
 
 HRESULT CRenderTargetManager::Resize(ID3D11Device* device, UINT width, UINT height)
@@ -47,7 +47,7 @@ HRESULT CRenderTargetManager::Resize(ID3D11Device* device, UINT width, UINT heig
     if (!device || width == 0 || height == 0)
         return E_FAIL;
 
-    if (width == m_width && height == m_height)
+    if (width == m_iWidth && height == m_iHeight)
         return S_OK;
 
     Destroy();
@@ -115,6 +115,21 @@ void CRenderTargetManager::Bind_GBuffer(ID3D11DeviceContext* ctx, const D3D11_VI
         ctx->RSSetViewports(1, vp);
 }
 
+void CRenderTargetManager::Bind_ShadowDepth(ID3D11DeviceContext* ctx, const D3D11_VIEWPORT* vp)
+{
+    Unbind_AllSRVs_PS(ctx);
+
+    auto dsv = GetDSV(CRenderTarget::RTType::ShadowDepth);
+
+    if (!dsv) 
+        return;
+
+    ctx->OMSetRenderTargets(0, nullptr, dsv);
+
+    if (vp) 
+        ctx->RSSetViewports(1, vp);
+}
+
 void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 {
     ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
@@ -156,12 +171,12 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 
 void CRenderTargetManager::Clear_GBuffer()
 {
+    Clear_RenderTarget(CRenderTarget::RTType::Combine);
     Clear_RenderTarget(CRenderTarget::RTType::Albedo);
     Clear_RenderTarget(CRenderTarget::RTType::Normal);
     Clear_RenderTarget(CRenderTarget::RTType::Material);
     Clear_RenderTarget(CRenderTarget::RTType::Depth);
     Clear_RenderTarget(CRenderTarget::RTType::Specular);
-    Clear_RenderTarget(CRenderTarget::RTType::Combine);
 }
 
 ID3D11RenderTargetView* CRenderTargetManager::GetRTV(const CRenderTarget::RTType type) const
@@ -194,6 +209,11 @@ ID3D11DepthStencilView* CRenderTargetManager::GetDSV(const CRenderTarget::RTType
     return it->second.GetDSV();
 }
 
+const vector2Int CRenderTargetManager::GetWidthHeight() const
+{
+    return vector2Int(m_iWidth, m_iHeight);
+}
+
 void CRenderTargetManager::Unbind_AllSRVs_PS(ID3D11DeviceContext* context)
 {
     if (!context)
@@ -205,8 +225,11 @@ void CRenderTargetManager::Unbind_AllSRVs_PS(ID3D11DeviceContext* context)
 
 HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _uint height)
 {
-    m_width = width;
-    m_height = height;
+    m_iWidth = width;
+    m_iHeight = height;
+
+    if (FAILED(m_rtList[CRenderTarget::RTType::Combine].Create(CRenderTarget::RTType::Combine, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+        return E_FAIL;
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Albedo] .Create(CRenderTarget::RTType::Albedo, device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, true)))
         return E_FAIL;
@@ -226,7 +249,7 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Combine].Create(CRenderTarget::RTType::Combine, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowDepth].Create(CRenderTarget::RTType::ShadowDepth, device, width, height, DXGI_FORMAT_D32_FLOAT, true)))
         return E_FAIL;
 
     return S_OK;

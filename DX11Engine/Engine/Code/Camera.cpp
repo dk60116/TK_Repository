@@ -21,13 +21,14 @@ CCamera::CCamera()
 	, m_mRTDebugDisplays({})
 	, m_pRectBuffer(nullptr)
 	, m_vRectMats({})
+	, m_pCombinePassMat(nullptr)
 	, m_pShadingPassMat(nullptr)
 	, m_pSpecularPassMat(nullptr)
-	, m_pCombinePassMat(nullptr)
 	, m_pRTDebugDS(nullptr)
 	, m_pRTDebugRS(nullptr)
 	, m_pRTDebugBS(nullptr)
 	, m_pInvViewProjCB(nullptr)
+	, m_pShadowCB(nullptr)
 {
 	m_strName = L"Camera";
 }
@@ -127,6 +128,7 @@ HRESULT CCamera::Initialize()
 			m_mRTDebugDisplays[type] = desc;
 		};
 
+	pushDisplay(CRenderTarget::RTType::Combine, presentMat);
 	pushDisplay(CRenderTarget::RTType::Albedo, presentMat);
 	pushDisplay(CRenderTarget::RTType::Normal, presentMat);
 	pushDisplay(CRenderTarget::RTType::Material, presentMat);
@@ -134,7 +136,6 @@ HRESULT CCamera::Initialize()
 	pushDisplay(CRenderTarget::RTType::Shading, presentMat);
 	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
 	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
-	pushDisplay(CRenderTarget::RTType::Combine, presentMat);
 
 	// Debug pipeline states 생성
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
@@ -188,12 +189,21 @@ HRESULT CCamera::Initialize()
 			return E_FAIL;
 	}
 
-	D3D11_BUFFER_DESC bd{};
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.ByteWidth = sizeof(InvViewProjCB);
+	D3D11_BUFFER_DESC invVPBD = {};
+	invVPBD.Usage = D3D11_USAGE_DEFAULT;
+	invVPBD.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	invVPBD.ByteWidth = sizeof(InvViewProjCB);
 
-	device->CreateBuffer(&bd, nullptr, &m_pInvViewProjCB);
+	if (FAILED(device->CreateBuffer(&invVPBD, nullptr, &m_pInvViewProjCB)))
+		return E_FAIL;
+
+	D3D11_BUFFER_DESC shaderBD = {};
+	shaderBD.Usage = D3D11_USAGE_DEFAULT;
+	shaderBD.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	shaderBD.ByteWidth = sizeof(ShadowCB);
+
+	if (FAILED(device->CreateBuffer(&shaderBD, nullptr, &m_pShadowCB)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -331,6 +341,36 @@ void CCamera::Bind_ProjectionMatrix()
 
 	_matrix inv = XMMatrixInverse(nullptr, Get_ViewMatrix() * Get_ProjectionMatrix());
 	XMStoreFloat4x4(&m_vVPInverseMatrix, inv);
+}
+
+void CCamera::Bind_ShadowCB(const _matrix& shadowView, const _matrix& shadowProj)
+{
+	if (!m_pShadowCB) 
+		return;
+
+	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
+
+	if (!ctx)
+		return;
+
+	_matrix vp = shadowView * shadowProj;
+
+	_vector det{};
+	_matrix invVP = XMMatrixInverse(&det, vp);
+
+	ShadowCB cb{};
+
+	XMStoreFloat4x4(&cb.shadowView, XMMatrixTranspose(shadowView));
+	XMStoreFloat4x4(&cb.shadowProj, XMMatrixTranspose(shadowProj));
+	XMStoreFloat4x4(&cb.shadowViewProj, XMMatrixTranspose(vp));
+	XMStoreFloat4x4(&cb.shadowInvViewProj, XMMatrixTranspose(invVP));
+
+	cb.shadowParams = _float4(0.0005f, 1024.f, 1.f, 1.f);
+
+	ctx->UpdateSubresource(m_pShadowCB, 0, nullptr, &cb, 0, 0);
+
+	ctx->VSSetConstantBuffers(6, 1, &m_pShadowCB);
+	ctx->PSSetConstantBuffers(6, 1, &m_pShadowCB);
 }
 
 void CCamera::RenderMesh()
@@ -849,7 +889,8 @@ void CCamera::RenderCombine(const D3D11_VIEWPORT* vp)
 	if (useVP) ctx->RSSetViewports(1, useVP);
 
 	// --- Clear
-	const _float clear[4] = { (_float)m_vBackgroundColor.r, (_float)m_vBackgroundColor.g, (_float)m_vBackgroundColor.b, 1.f };
+	const _float4 clearColor = m_vBackgroundColor.f4Color();
+	const _float clear[4] = { clearColor.x, clearColor.y, clearColor.z, 1.f };
 	ctx->ClearRenderTargetView(rtvCombine, clear);
 
 	// --- 디버그용 상태 재사용(DepthTest OFF / Cull OFF)

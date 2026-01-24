@@ -28,10 +28,17 @@ HRESULT CGameScene::Initialize()
 
 	CGameObject* lightObject = Add_GameObject(L"Directional Light");
 	m_pDirLight = lightObject->AddComponent<CLight>();
+	m_pDirLight->Set_Color(ColorValue::white());
 
 	CGameObject* lightObject2 = Add_GameObject(L"Point Light");
 	CLight* pointLight = lightObject2->AddComponent<CLight>();
-	pointLight->Set_Type(CLight::Type::point);
+	pointLight->Set_Type(CLight::LightType::point);
+	pointLight->Set_Color(ColorValue::green());
+
+	CGameObject* lightObject3 = Add_GameObject(L"Point Light2");
+	CLight* pointLight2 = lightObject3->AddComponent<CLight>();
+	pointLight2->Set_Type(CLight::LightType::point);
+	pointLight2->Set_Color(ColorValue::red());
 
 	CGameObject* hudObject = Add_GameObject(L"Player HUD");
 	m_pHUD = hudObject->AddComponent<CPlayerHUD>();

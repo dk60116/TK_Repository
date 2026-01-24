@@ -106,43 +106,78 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
     m_format = format;
     m_createSRV = createSRV;
 
-    if (type == RTType::Depth)
+    if (type == RTType::Depth || type == RTType::ShadowDepth)
     {
+        DXGI_FORMAT texFormat = DXGI_FORMAT_UNKNOWN; // Texture2D 실제 포맷 (typeless 권장)
+        DXGI_FORMAT dsvFormat = DXGI_FORMAT_UNKNOWN; // DSV 포맷
+        DXGI_FORMAT srvFormat = DXGI_FORMAT_UNKNOWN; // SRV 포맷 (샘플링용)
+
+        // Depth24 계열
+        if (format == DXGI_FORMAT_D24_UNORM_S8_UINT ||
+            format == DXGI_FORMAT_R24G8_TYPELESS ||
+            format == DXGI_FORMAT_R24_UNORM_X8_TYPELESS)
+        {
+            texFormat = DXGI_FORMAT_R24G8_TYPELESS;
+            dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+            srvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+        }
+        // Depth32 계열 (ShadowMap에 흔히 사용)
+        else if (format == DXGI_FORMAT_D32_FLOAT ||
+            format == DXGI_FORMAT_R32_TYPELESS ||
+            format == DXGI_FORMAT_R32_FLOAT)
+        {
+            texFormat = DXGI_FORMAT_R32_TYPELESS;
+            dsvFormat = DXGI_FORMAT_D32_FLOAT;
+            srvFormat = DXGI_FORMAT_R32_FLOAT;
+        }
+        else
+        {
+            // 지원하지 않는 depth 포맷이 들어온 경우
+            return E_FAIL;
+        }
+
+        m_format = texFormat;
+
         D3D11_TEXTURE2D_DESC td{};
         td.Width = width;
         td.Height = height;
         td.MipLevels = 1;
         td.ArraySize = 1;
+        td.Format = texFormat;
         td.SampleDesc.Count = 1;
         td.SampleDesc.Quality = 0;
         td.Usage = D3D11_USAGE_DEFAULT;
+        td.CPUAccessFlags = 0;
+        td.MiscFlags = 0;
 
-        td.Format = DXGI_FORMAT_R24G8_TYPELESS;
-        td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+        td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        if (createSRV)
+            td.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
 
         HRESULT hr = device->CreateTexture2D(&td, nullptr, &m_texture);
-        if (FAILED(hr)) return E_FAIL;
+        if (FAILED(hr) || !m_texture)
+            return E_FAIL;
 
-        // DSV
         D3D11_DEPTH_STENCIL_VIEW_DESC dsvd{};
-        dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        dsvd.Format = dsvFormat;
         dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         dsvd.Texture2D.MipSlice = 0;
 
         hr = device->CreateDepthStencilView(m_texture, &dsvd, &m_dsv);
-        if (FAILED(hr)) return E_FAIL;
+        if (FAILED(hr) || !m_dsv)
+            return E_FAIL;
 
-        // SRV (Depth 샘플링용)
         if (createSRV)
         {
             D3D11_SHADER_RESOURCE_VIEW_DESC srvd{};
-            srvd.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+            srvd.Format = srvFormat;
             srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvd.Texture2D.MostDetailedMip = 0;
             srvd.Texture2D.MipLevels = 1;
 
             hr = device->CreateShaderResourceView(m_texture, &srvd, &m_srv);
-            if (FAILED(hr)) return E_FAIL;
+            if (FAILED(hr) || !m_srv)
+                return E_FAIL;
         }
 
         return S_OK;

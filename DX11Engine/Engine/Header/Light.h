@@ -9,7 +9,7 @@ class ENGINE_DLL CLight final : public CComponent
 	friend class CGameObject;
 
 public:
-	enum class Type : _uint { Directional = 0, point = 1, spot = 2 };
+	enum class LightType : _uint { Directional = 0, point = 1, spot = 2 };
 
 protected:
 	explicit CLight();
@@ -28,8 +28,8 @@ public:
 	void OnDestroy() override;
 
 public:
-	const Type Get_Type() const;
-	void Set_Type(const Type _type);
+	const LightType Get_Type() const;
+	void Set_Type(const LightType _type);
 	const _float Get_Intensity() const;
 	void Set_Intensity(const _float _value);
 	void Set_Range(const _float _value);
@@ -37,11 +37,28 @@ public:
 
 	const _float4x4 To_LightInfo();
 
+public:
+	const _matrix& Get_ShadowView() const;
+	const _matrix& Get_ShadowProj() const;
+	const _matrix& Get_ShadowViewProj() const;
+
 private:
-	Type m_eType;
+	void UpdateShadowCameraMatrices();
+
+public:
+	static _vector SafeUpFromDir(_vector dir);
+
+private:
+	LightType m_eType;
 
 	_float m_fIntensity, m_fRange, m_fSpotAngle, m_fAttenuation;
 	ColorValue m_vDiffuseColor, m_vSpecularColor;
+
+private:
+	_bool m_bCastShadow;
+	_matrix m_mShadowView;
+	_matrix m_mShadowProj;
+	_matrix m_mShadowViewProj;
 };
 
 NS_END

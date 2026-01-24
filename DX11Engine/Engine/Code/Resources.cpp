@@ -140,7 +140,7 @@ HRESULT CResources::ConvertFBXToMeshBufferData(const wstring _filePath)
 		}
 
 		/* 3-3. 버퍼 desc + 데이터 저장 */
-		CMeshBuffer::MESHBUFFERDESC desc{};
+		CMeshBuffer::MESHBUFFERDESC desc = {};
 		desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		desc.vertexSize = sizeof(VTX);
 		desc.vertextCount = static_cast<_uint>(vertices.size());
@@ -1389,6 +1389,13 @@ void CResources::Ready_GameResources()
 	CShader* deferredCombineShader = LoadOnGame<CShader>(L"DeferredCombine (Shader)");
 	CMaterial::MATERIALDESC deferredCombineMatDesc = { deferredCombineShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"DeferredCombine (Material)", L"", &deferredCombineMatDesc);
+
+	CShader::SHADERDESC shadowDepthShaderDesc = { L"../EngineResources/Shader/ShadowDepth.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"ShadowDepth (Shader)", L"", &shadowDepthShaderDesc);
+
+	CShader* shadowDepthShader = LoadOnGame<CShader>(L"ShadowDepth (Shader)");
+	CMaterial::MATERIALDESC shadowDepthMatDesc = { shadowDepthShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"ShadowDepth (Material)", L"", &shadowDepthMatDesc);
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc);
