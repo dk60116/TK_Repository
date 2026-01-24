@@ -8,13 +8,13 @@ class ENGINE_DLL CRenderTarget final
 public:
     enum class RTType
     {
+        Combine,
         Albedo,
         Normal,
         Material,
         Depth,
         Shading,
-        Specular,
-        Combine
+        Specular
     };
 
 public:

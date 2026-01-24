@@ -127,14 +127,13 @@ HRESULT CCamera::Initialize()
 			m_mRTDebugDisplays[type] = desc;
 		};
 
+	pushDisplay(CRenderTarget::RTType::Combine, presentMat);
 	pushDisplay(CRenderTarget::RTType::Albedo, presentMat);
 	pushDisplay(CRenderTarget::RTType::Normal, presentMat);
 	pushDisplay(CRenderTarget::RTType::Material, presentMat);
 	pushDisplay(CRenderTarget::RTType::Depth, depthMat);
 	pushDisplay(CRenderTarget::RTType::Shading, presentMat);
 	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
-	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
-	pushDisplay(CRenderTarget::RTType::Combine, presentMat);
 
 	// Debug pipeline states »ý¼º
 	ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();

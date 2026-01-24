@@ -208,6 +208,9 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     m_width = width;
     m_height = height;
 
+    if (FAILED(m_rtList[CRenderTarget::RTType::Combine].Create(CRenderTarget::RTType::Combine, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
+        return E_FAIL;
+
     if (FAILED(m_rtList[CRenderTarget::RTType::Albedo] .Create(CRenderTarget::RTType::Albedo, device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, true)))
         return E_FAIL;
 
@@ -224,9 +227,6 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
         return E_FAIL;
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
-        return E_FAIL;
-
-    if (FAILED(m_rtList[CRenderTarget::RTType::Combine].Create(CRenderTarget::RTType::Combine, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
     return S_OK;
