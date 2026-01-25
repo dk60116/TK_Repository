@@ -114,8 +114,8 @@ private:
 
 	ID3D11BlendState* m_pRTDebugBS;
 
-
 	ID3D11Buffer* m_pInvViewProjCB;
+	ID3D11Buffer* m_pShadowCB;
 };
 
 NS_END

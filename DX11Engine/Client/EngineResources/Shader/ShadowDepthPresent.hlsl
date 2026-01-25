@@ -41,14 +41,14 @@ VSOut VSMain(VSIn v)
 
 float4 PSMain(VSOut i) : SV_Target
 {
-    // Shadow map depth는 보통 0(near)~1(far)
-    float d = gShadowDepth.Sample(gSampler, i.uv);
+    float2 uv = i.uv;
+    uv.y = 1.0f - uv.y;
+
+    float d = gShadowDepth.Sample(gSampler, uv);
 
     // 보기 편하게 near를 밝게 보고 싶으면 반전:
-    // d = 1.0f - d;
-
-    // 대비 강화가 필요하면(선택):
-    // d = saturate(pow(d, 20.0f));
+    d = 1.0f - d;
+    d = saturate(pow(d, 20.0f));
 
     d = saturate(d);
     return float4(d, d, d, 1.0f);

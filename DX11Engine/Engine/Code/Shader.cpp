@@ -96,7 +96,10 @@ HRESULT CShader::Initialize(const wstring& _name, const wstring& _filePath, void
 		vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_pInputLayout);
 
 	if (FAILED(hr))
+	{
+		CDebug::LogError(L"Failed Create Shader - Can not CreateInputLayout: " + _filePath);
 		return hr;
+	}
 
 	return S_OK;
 }
