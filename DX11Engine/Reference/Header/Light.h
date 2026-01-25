@@ -37,11 +37,25 @@ public:
 
 	const _float4x4 To_LightInfo();
 
+public:
+	const bool IsCastShadow() const;
+	void Set_ShadowCamera(const _fmatrix& v, const _cmatrix& p, const _float3& pos);
+
+	_matrix Get_ShadowView() const;
+	_matrix Get_ShadowProj() const;
+
 private:
 	Type m_eType;
 
 	_float m_fIntensity, m_fRange, m_fSpotAngle, m_fAttenuation;
 	ColorValue m_vDiffuseColor, m_vSpecularColor;
+
+private:
+	bool m_bCastShadow;
+
+private:
+	_float4x4 m_shadowView;
+	_float4x4 m_shadowProj;
 };
 
 NS_END

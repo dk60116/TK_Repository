@@ -9,6 +9,9 @@ CLight::CLight()
 	, m_fAttenuation(1.f)
 	, m_vDiffuseColor(ColorValue::white())
 	, m_vSpecularColor(ColorValue::white())
+	, m_bCastShadow(true)
+	, m_shadowView()
+	, m_shadowProj()
 {
 }
 
@@ -32,6 +35,9 @@ CComponent* CLight::Clone() const
 	clone->m_fAttenuation = this->m_fAttenuation;
 	clone->m_vDiffuseColor = this->m_vDiffuseColor;
 	clone->m_vSpecularColor = this->m_vSpecularColor;
+	clone->m_bCastShadow = this->m_bCastShadow;
+	clone->m_shadowView = this->m_shadowView;
+	clone->m_shadowProj = this->m_shadowProj;
 
 	return clone;
 }
@@ -119,4 +125,25 @@ const _float4x4 CLight::To_LightInfo()
 	result._44 = 0.f;
 
 	return result;
+}
+
+const bool CLight::IsCastShadow() const
+{
+	return m_bCastShadow;
+}
+
+void CLight::Set_ShadowCamera(const _fmatrix& v, const _cmatrix& p, const _float3& pos)
+{
+	XMStoreFloat4x4(&m_shadowView, v);
+	XMStoreFloat4x4(&m_shadowProj, p);
+}
+
+_matrix CLight::Get_ShadowView() const
+{
+	return XMLoadFloat4x4(&m_shadowView);
+}
+
+_matrix CLight::Get_ShadowProj() const
+{
+	return XMLoadFloat4x4(&m_shadowProj);
 }

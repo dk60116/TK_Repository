@@ -45,6 +45,7 @@ public:
 	HRESULT Initialize() override;
 	void Update() override;
 	void Render() override;
+	void OnPostRender() override;
 	void OnDestroy() override;
 
 public:
@@ -72,12 +73,16 @@ public:
 	void RenderRTDebugDisplay();
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
-
+	void RenderShadowDepth();
+	
 	void RenderCombine(const D3D11_VIEWPORT* vp);
 
 public:
 	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
 	CPhysics::Ray ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist = 999999.f);
+
+private:
+	CMaterial* Add_RectMaterial(const wstring& _path, const wstring& _name);
 
 protected:
 	ViewMode m_eCamViewMode;
@@ -99,15 +104,16 @@ private:
 	map<CRenderTarget::RTType, RTDebugDisplay> m_mRTDebugDisplays;
 
 	CMeshBuffer* m_pRectBuffer;
-	vector<CMaterial*> m_vRectMats;
-
-	CMaterial* m_pShadingPassMat;
-	CMaterial* m_pSpecularPassMat;
-	CMaterial* m_pCombinePassMat;
+	map<wstring, CMaterial*> m_mRectMats;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
+	ID3D11DepthStencilState* m_pShadowDSS;
+
 	ID3D11RasterizerState* m_pRTDebugRS;
+	ID3D11RasterizerState* m_pShadowRS;
+
 	ID3D11BlendState* m_pRTDebugBS;
+
 
 	ID3D11Buffer* m_pInvViewProjCB;
 };

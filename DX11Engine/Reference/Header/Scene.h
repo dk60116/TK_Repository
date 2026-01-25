@@ -90,7 +90,7 @@ public:
     const list <CCamera*>& Get_CameraList();
     CCamera* Add_Camera(CCamera* _camera);
 
-    const list<class CLight*>& Get_LightList();
+    list<class CLight*>& Get_LightList();
     CLight* Add_Light(CLight* _light);
 
     vector<_matrix>& Get_LightData();

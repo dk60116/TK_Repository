@@ -1347,6 +1347,17 @@ namespace Engine
         _matrix lights[64];
     };
 
+    struct ShadowCB
+    {
+        _float4x4 lightView;
+        _float4x4 lightProj;
+        _float4x4 lightViewProj;
+        _float4x4 lightViewProjTex;
+        _float2   shadowInvSize; 
+        _float    shadowBias;
+        _float    pad;
+    };
+
     struct ImageCB
     {
         _float4 values;

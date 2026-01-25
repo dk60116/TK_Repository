@@ -11,6 +11,9 @@ CSkinnedMeshRenderer::CSkinnedMeshRenderer()
 	, m_bApplyRootMotion(false)
 {
 	m_strName = L"Skinned Mesh Renderer";
+
+	m_bCastShadow = true;
+	m_bRenderShadow = true;
 }
 
 CSkinnedMeshRenderer::~CSkinnedMeshRenderer()
@@ -260,6 +263,76 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
 
 	// 8) Draw
+	m_pMeshBuffer->Render();
+}
+
+void CSkinnedMeshRenderer::Render_ShadowDepth(CLight* _light, CMaterial* _mat)
+{
+	if (!_light || !_mat)
+		return;
+
+	if (!m_bCastShadow)
+		return;
+
+	if (!m_pGameObject || !m_pGameObject->IsRecursiveActive() || !m_bEnable)
+		return;
+
+	if (!m_pMeshBuffer || !m_pBoneMatrixBuffer)
+		return;
+
+	const _matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
+	const _matrix lightView = _light->Get_ShadowView();
+	const _matrix lightProj = _light->Get_ShadowProj();
+	const _float3 lightPos = _light->Get_Transform()->Get_Position();
+
+	// Bone Count Clamp
+	const _uint boneCount = min<_uint>((_uint)m_vBones.size(), 128u);
+
+	// Bone Matrices (항상 128개 업로드)
+	_matrix boneMatrices[128];
+	for (int i = 0; i < 128; ++i)
+		boneMatrices[i] = XMMatrixIdentity();
+
+	// meshWorldInv (루프 밖 1회)
+	_matrix meshWorldInv = XMMatrixIdentity();
+	{
+		_matrix meshWorld = matWorld;
+		meshWorldInv = XMMatrixInverse(nullptr, meshWorld);
+	}
+
+	for (_uint i = 0; i < boneCount; ++i)
+	{
+		if (!m_vBones[i])
+			continue;
+
+		_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
+
+		_matrix invBindPose = XMMatrixIdentity();
+		invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]);
+
+		_matrix boneMeshLocal = boneWorld * meshWorldInv;
+
+		// 셰이더가 mul(pos, gBones[idx]) 패턴이면 Transpose 업로드가 맞음
+		boneMatrices[i] = XMMatrixTranspose(invBindPose * boneMeshLocal);
+	}
+
+	// Bone buffer upload
+	D3D11_MAPPED_SUBRESOURCE mapped = {};
+	HRESULT hr = m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+	if (FAILED(hr))
+		return;
+
+	memcpy(mapped.pData, boneMatrices, sizeof(_matrix) * 128);
+	m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
+
+	// ShadowDepth Material bind (b0, b1, b2)
+	_mat->Bind_Matrix(matWorld);
+	_mat->Bind_Camera(lightPos, lightView, lightProj, boneCount);
+
+	// Bones CB bind (b3)
+	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+
+	// Draw
 	m_pMeshBuffer->Render();
 }
 

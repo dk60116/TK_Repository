@@ -6,6 +6,9 @@ CMeshRenderer::CMeshRenderer()
 	, m_pMeshFilter(nullptr)
 {
 	m_strName = L"Mesh Renderer";
+
+	m_bCastShadow = true;
+	m_bRenderShadow = true;
 }
 
 CMeshRenderer::~CMeshRenderer()
@@ -138,6 +141,37 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	//}
 
 	//실제 메쉬 렌더링 (버퍼 바인딩 및 Draw)
+	pBuffer->Render();
+}
+
+void CMeshRenderer::Render_ShadowDepth(CLight* _light, CMaterial* _mat)
+{
+	if (!_light || !_mat)
+		return;
+
+	if (!m_bCastShadow)
+		return;
+
+	if (!m_pGameObject || !m_pGameObject->IsRecursiveActive() || !m_bEnable)
+		return;
+
+	if (!m_pMeshFilter)
+		return;
+
+	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
+	if (!pBuffer)
+		return;
+
+	const _matrix matWorld = Get_Transform()->Get_WorldMatrix();
+	const _matrix lightView = _light->Get_ShadowView();
+	const _matrix lightProj = _light->Get_ShadowProj();
+	const _float3 lightPos = _light->Get_Transform()->Get_Position();
+
+	// ShadowDepth 셰이더는 b0(world), b1(view/proj), b2(boneCount=0) 레이아웃을 기대
+	_mat->Bind_Matrix(matWorld);
+	_mat->Bind_Camera(lightPos, lightView, lightProj, 0 /*boneCount*/);
+
+	// 실제 드로우
 	pBuffer->Render();
 }
 

@@ -60,6 +60,7 @@ void CRenderTargetManager::Bind_RenderTarget(const CRenderTarget::RTType type, I
         return;
 
     auto it = m_rtList.find(type);
+
     if (it == m_rtList.end())
         return;
 
@@ -67,21 +68,23 @@ void CRenderTargetManager::Bind_RenderTarget(const CRenderTarget::RTType type, I
 
     CRenderTarget& rt = it->second;
 
-    if (type == CRenderTarget::RTType::Depth)
+    if (type == CRenderTarget::RTType::Depth || type == CRenderTarget::RTType::ShadowDepth)
     {
         ID3D11DepthStencilView* dsv = rt.GetDSV();
-        if (!dsv)
+
+        if (!dsv) 
             return;
 
         context->OMSetRenderTargets(0, nullptr, dsv);
 
-        if (vp)
+        if (vp) 
             context->RSSetViewports(1, vp);
 
         return;
     }
 
     ID3D11RenderTargetView* rtv = rt.GetRTV();
+
     if (!rtv)
         return;
 
@@ -127,17 +130,19 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 
     CRenderTarget& rt = it->second;
 
-    if (type == CRenderTarget::RTType::Depth)
+    if (type == CRenderTarget::RTType::Depth || type == CRenderTarget::RTType::ShadowDepth)
     {
         ID3D11DepthStencilView* dsv = rt.GetDSV();
+
         if (!dsv)
             return;
 
         context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
         return;
     }
 
-    float clear[4] = { 0, 0, 0, 0 };
+    _float clear[4] = { 0, 0, 0, 0 };
 
     if (type == CRenderTarget::RTType::Normal)
     {
@@ -156,12 +161,13 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 
 void CRenderTargetManager::Clear_GBuffer()
 {
+    Clear_RenderTarget(CRenderTarget::RTType::Combine);
     Clear_RenderTarget(CRenderTarget::RTType::Albedo);
     Clear_RenderTarget(CRenderTarget::RTType::Normal);
     Clear_RenderTarget(CRenderTarget::RTType::Material);
     Clear_RenderTarget(CRenderTarget::RTType::Depth);
     Clear_RenderTarget(CRenderTarget::RTType::Specular);
-    Clear_RenderTarget(CRenderTarget::RTType::Combine);
+    Clear_RenderTarget(CRenderTarget::RTType::ShadowDepth);
 }
 
 ID3D11RenderTargetView* CRenderTargetManager::GetRTV(const CRenderTarget::RTType type) const
@@ -229,8 +235,10 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
-    //if (FAILED(m_rtList[CRenderTarget::RTType::ShadowDepth].Create(CRenderTarget::RTType::ShadowDepth, device, width, height, DXGI_FORMAT_R24G8_TYPELESS, true)))
-    //    return E_FAIL;
+    const _uint sdResolution = CSceneManager::GetInstance().Get_LightSettings().shadowMapSize;
+
+    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowDepth].Create(CRenderTarget::RTType::ShadowDepth, device, sdResolution, sdResolution, DXGI_FORMAT_D32_FLOAT, true)))
+        return E_FAIL;
 
     return S_OK;
 }

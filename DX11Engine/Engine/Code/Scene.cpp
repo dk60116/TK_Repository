@@ -387,6 +387,12 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+			(*it)->RenderShadowDepth();
+	}
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 		{
 			(*it)->RenderLightingPass_ToShading(vp);
 			(*it)->RenderLightingPass_ToSpecular(vp);
@@ -416,6 +422,12 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderRTDebugDisplay();
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+	{
+		if ((*it)->IsRecursiveActive())
+			(*it)->OnPostRender();
+	}
 }
 
 void CScene::SceneRelease()
@@ -840,7 +852,7 @@ CCamera* CScene::Add_Camera(CCamera* _camera)
 	return m_lCameraList.back();
 }
 
-const list<CLight*>& CScene::Get_LightList()
+list<CLight*>& CScene::Get_LightList()
 {
 	return m_lLightList;
 }

@@ -106,43 +106,57 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
     m_format = format;
     m_createSRV = createSRV;
 
-    if (type == RTType::Depth)
+    // Depth 계열: Depth + ShadowDepth
+    if (type == RTType::Depth || type == RTType::ShadowDepth)
     {
-        D3D11_TEXTURE2D_DESC td{};
+        DXGI_FORMAT texFormat, dsvFormat, srvFormat;
+
+        if (type == RTType::ShadowDepth)
+        {
+            // Shadow: 32-bit float depth 추천
+            texFormat = DXGI_FORMAT_R32_TYPELESS;
+            dsvFormat = DXGI_FORMAT_D32_FLOAT;
+            srvFormat = DXGI_FORMAT_R32_FLOAT;
+        }
+        else
+        {
+            // Camera depth: 기존 24/8 유지
+            texFormat = DXGI_FORMAT_R24G8_TYPELESS;
+            dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+            srvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+        }
+
+        D3D11_TEXTURE2D_DESC td = {};
         td.Width = width;
         td.Height = height;
         td.MipLevels = 1;
         td.ArraySize = 1;
         td.SampleDesc.Count = 1;
-        td.SampleDesc.Quality = 0;
         td.Usage = D3D11_USAGE_DEFAULT;
-
-        td.Format = DXGI_FORMAT_R24G8_TYPELESS;
-        td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+        td.Format = texFormat;
+        td.BindFlags = D3D11_BIND_DEPTH_STENCIL | (createSRV ? D3D11_BIND_SHADER_RESOURCE : 0);
 
         HRESULT hr = device->CreateTexture2D(&td, nullptr, &m_texture);
-        if (FAILED(hr)) return E_FAIL;
+        if (FAILED(hr)) return hr;
 
-        // DSV
-        D3D11_DEPTH_STENCIL_VIEW_DESC dsvd{};
-        dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = {};
+        dsvd.Format = dsvFormat;
         dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         dsvd.Texture2D.MipSlice = 0;
 
         hr = device->CreateDepthStencilView(m_texture, &dsvd, &m_dsv);
-        if (FAILED(hr)) return E_FAIL;
+        if (FAILED(hr)) return hr;
 
-        // SRV (Depth 샘플링용)
         if (createSRV)
         {
-            D3D11_SHADER_RESOURCE_VIEW_DESC srvd{};
-            srvd.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
+            srvd.Format = srvFormat;
             srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvd.Texture2D.MostDetailedMip = 0;
             srvd.Texture2D.MipLevels = 1;
 
             hr = device->CreateShaderResourceView(m_texture, &srvd, &m_srv);
-            if (FAILED(hr)) return E_FAIL;
+            if (FAILED(hr)) return hr;
         }
 
         return S_OK;

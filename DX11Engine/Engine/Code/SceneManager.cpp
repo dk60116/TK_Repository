@@ -174,6 +174,8 @@ void CSceneManager::Set_ShadowMapSize(const LightMapSizeOptions size)
 	case SuperHigh:
 		m_sLightSettings.shadowMapSize = 4096;
 		break;
+	case UltraHigh:
+		m_sLightSettings.shadowMapSize = 8192;
 	default:
 		break;
 	}

@@ -18,6 +18,7 @@ protected:
 
 public:
 	virtual void Render_WithCamera(class CCamera* _cam) PURE;
+	virtual void Render_ShadowDepth(class CLight* _light, CMaterial* _mat) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
 
 public:
@@ -25,9 +26,15 @@ public:
 	void Set_Material(CMaterial* _material);
 	virtual CMeshBuffer* Get_MeshBuffer() PURE;
 
+	const bool IsCastShadow() const;
+	const bool IsRenderShadow() const;
+
 protected:
 	CMaterial* m_pMaterial;
 	CMaterial* m_pOutlineMat;
+
+	_bool m_bCastShadow;
+	_bool m_bRenderShadow;
 };
 
 NS_END

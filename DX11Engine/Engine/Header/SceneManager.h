@@ -10,7 +10,7 @@ class ENGINE_DLL CSceneManager final
 	SINGLETONCLASS(CSceneManager);
 
 public:
-	enum LightMapSizeOptions { Low, Middle, High, SuperHigh };
+	enum LightMapSizeOptions { Low, Middle, High, SuperHigh, UltraHigh };
 
 	struct LightSettings
 	{
