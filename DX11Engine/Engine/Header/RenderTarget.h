@@ -15,6 +15,7 @@ public:
         Depth,
         Shading,
         Specular,
+        ShadowDepth,
         ShadowMask
     };
 

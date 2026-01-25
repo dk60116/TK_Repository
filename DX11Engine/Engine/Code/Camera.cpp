@@ -21,9 +21,9 @@ CCamera::CCamera()
 	, m_mRTDebugDisplays({})
 	, m_pRectBuffer(nullptr)
 	, m_vRectMats({})
+	, m_pCombinePassMat(nullptr)
 	, m_pShadingPassMat(nullptr)
 	, m_pSpecularPassMat(nullptr)
-	, m_pCombinePassMat(nullptr)
 	, m_pRTDebugDS(nullptr)
 	, m_pRTDebugRS(nullptr)
 	, m_pRTDebugBS(nullptr)
@@ -92,6 +92,14 @@ HRESULT CCamera::Initialize()
 	m_vRectMats.push_back(depthMat);
 	depthMat->AddRef();
 
+	m_pCombinePassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredCombine (Material)");
+	if (!m_pCombinePassMat)
+	{
+		CDebug::LogError("Not found DeferredCombine (Material)");
+		return E_FAIL;
+	}
+	m_pCombinePassMat->AddRef();
+
 	m_pShadingPassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredShading (Material)");
 	if (!m_pShadingPassMat)
 	{
@@ -107,14 +115,6 @@ HRESULT CCamera::Initialize()
 		return E_FAIL;
 	}
 	m_pSpecularPassMat->AddRef();
-
-	m_pCombinePassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredCombine (Material)");
-	if (!m_pCombinePassMat)
-	{
-		CDebug::LogError("Not found DeferredCombine (Material)");
-		return E_FAIL;
-	}
-	m_pCombinePassMat->AddRef();
 
 	// 5개 디스플레이 등록
 	auto pushDisplay = [&](CRenderTarget::RTType type, CMaterial* mat)
@@ -221,9 +221,9 @@ void CCamera::OnDestroy()
 
 	m_vRectMats.clear();
 
+	Safe_Release(m_pCombinePassMat);
 	Safe_Release(m_pShadingPassMat);
 	Safe_Release(m_pSpecularPassMat);
-	Safe_Release(m_pCombinePassMat);
 
 	m_mRTDebugDisplays.clear();
 

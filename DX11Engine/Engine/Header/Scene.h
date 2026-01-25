@@ -37,6 +37,7 @@ public:
     {
         wstring skyBox = L"DefaultSky (SkyBox)";
         _float ambient = 0.2f;
+        _uint lightMapSize = 2048;
     };
 
 protected:
