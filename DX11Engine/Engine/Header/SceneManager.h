@@ -10,6 +10,15 @@ class ENGINE_DLL CSceneManager final
 	SINGLETONCLASS(CSceneManager);
 
 public:
+	enum LightMapSizeOptions { Low, Middle, High, SuperHigh };
+
+	struct LightSettings
+	{
+		_float ambient = 0.2f;
+		_uint shadowMapSize = 2048;
+	};
+
+public:
 	HRESULT Initialize();
 	void Release();
 
@@ -25,7 +34,13 @@ public:
 	void LoadComplete();
 
 public:
+	const LightSettings& Get_LightSettings();
+
+public:
 	class CCamera* Get_EditorCamera();
+
+public:
+	void Set_ShadowMapSize(const LightMapSizeOptions size);
 
 private:
 	CScene* m_pCrtScene;
@@ -36,6 +51,9 @@ private:
 
 	class CGameObject* m_pEditorCamObj;
 	class CEditorCamera* m_pEditorCamera;
+
+	LightSettings m_sLightSettings;
+	LightMapSizeOptions m_eShadowQuality;
 };
 
 NS_END

@@ -31,6 +31,7 @@ CScene::CScene()
 	, m_pUIResterizerState(nullptr)
 	, m_pBlendingState(nullptr)
 	, m_pNoneBlendingState(nullptr)
+	, m_sEnviromentSetting({})
 {
 	m_strName = L"Scene";
 
@@ -52,14 +53,14 @@ HRESULT CScene::Initialize()
 
 	m_iUniqueObjectCount = 0;
 
-	if (m_sLightSettings.skyBox != L"")
+	if (m_sEnviromentSetting.skyBox != L"")
 	{
 		if (!m_pSkyBox)
 		{
-			m_pSkyBox = CResources::GetInstance().LoadOnGame<CSkyBox>(m_sLightSettings.skyBox);
+			m_pSkyBox = CResources::GetInstance().LoadOnGame<CSkyBox>(m_sEnviromentSetting.skyBox);
 
 			if (!m_pSkyBox)
-				m_pSkyBox = CResources::GetInstance().LoadOnScene<CSkyBox>(m_sLightSettings.skyBox);
+				m_pSkyBox = CResources::GetInstance().LoadOnScene<CSkyBox>(m_sEnviromentSetting.skyBox);
 
 			if (m_pSkyBox)
 			{
@@ -793,11 +794,6 @@ vector<CRenderer*> CScene::Get_MeshObjects()
 	return result;
 }
 
-const CScene::LightSettings& CScene::Get_LightSetting()
-{
-	return m_sLightSettings;
-}
-
 CCamera* CScene::Get_Camera() const
 {
 	if (m_lCameraList.size() <= 0)
@@ -969,4 +965,9 @@ ID3D11DepthStencilState* CScene::Get_MeshStencillState() const
 ID3D11DepthStencilState* CScene::Get_UIStencillState() const
 {
 	return m_pUIDepthStencilState;
+}
+
+const CScene::EnviromentSettings& CScene::Get_EnviromentSetting()
+{
+	return m_sEnviromentSetting;
 }

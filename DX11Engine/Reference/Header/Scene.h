@@ -32,11 +32,9 @@ public:
         SCENERECTINFO rectInfo = {};
     }SCENETRANSFORMINFO;
 
-public:
-    struct LightSettings
+    struct EnviromentSettings
     {
         wstring skyBox = L"DefaultSky (SkyBox)";
-        _float ambient = 0.2f;
     };
 
 protected:
@@ -86,8 +84,6 @@ public:
     vector<CGameObject*> Get_RootObjects();
     vector<CRenderer*> Get_MeshObjects();
 
-    const LightSettings& Get_LightSetting();
-
     class CCamera* Get_Camera() const;
     CCamera* Get_Camera(const _int _index) const;
     CCamera* Get_EditorCamera() const;
@@ -110,6 +106,9 @@ public:
     ID3D11DepthStencilState* Get_MeshStencillState() const;
     ID3D11DepthStencilState* Get_UIStencillState() const;
 
+public:
+    const EnviromentSettings& Get_EnviromentSetting();
+
 protected:
     HRESULT PreLoadResources();
 
@@ -120,7 +119,6 @@ protected:
 protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
-    LightSettings m_sLightSettings;
     class CSkyBox* m_pSkyBox;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;
@@ -143,6 +141,8 @@ protected:
     ID3D11BlendState* m_pBlendingState, * m_pNoneBlendingState;
 
     vector<_matrix> m_vLightData;
+
+    EnviromentSettings m_sEnviromentSetting;
 };
 
 NS_END

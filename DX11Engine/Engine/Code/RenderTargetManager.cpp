@@ -22,8 +22,8 @@ HRESULT CRenderTargetManager::Initialize()
 {
     ID3D11Device* device = CGraphicDevice::GetInstance().Get_Device();
 
-    const int width = CDisplay::GetInstance().Get_ScreenResolution().x;
-    const int height = CDisplay::GetInstance().Get_ScreenResolution().y;
+    const _int width = CDisplay::GetInstance().Get_ScreenResolution().x;
+    const _int height = CDisplay::GetInstance().Get_ScreenResolution().y;
 
     if (!device || width == 0 || height == 0)
         return E_FAIL;
@@ -228,6 +228,9 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
+
+    //if (FAILED(m_rtList[CRenderTarget::RTType::ShadowDepth].Create(CRenderTarget::RTType::ShadowDepth, device, width, height, DXGI_FORMAT_R24G8_TYPELESS, true)))
+    //    return E_FAIL;
 
     return S_OK;
 }

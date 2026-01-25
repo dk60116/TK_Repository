@@ -8,6 +8,8 @@ CSceneManager::CSceneManager()
 	, m_bLoading(false)
 	, m_pEditorCamObj(nullptr)
 	, m_pEditorCamera(nullptr)
+	, m_sLightSettings({})
+	, m_eShadowQuality(High)
 {
 }
 
@@ -24,6 +26,8 @@ CSceneManager& CSceneManager::GetInstance()
 
 HRESULT CSceneManager::Initialize()
 {
+	Set_ShadowMapSize(m_eShadowQuality);
+
 	return S_OK;
 }
 
@@ -142,7 +146,35 @@ void CSceneManager::LoadComplete()
 	m_pCrtScene->Start();
 }
 
+const CSceneManager::LightSettings& CSceneManager::Get_LightSettings()
+{
+	return m_sLightSettings;
+}
+
 CCamera* CSceneManager::Get_EditorCamera()
 {
 	return m_pCrtScene->Get_EditorCamera();
+}
+
+void CSceneManager::Set_ShadowMapSize(const LightMapSizeOptions size)
+{
+	m_eShadowQuality = size;
+
+	switch (size)
+	{
+	case Low:
+		m_sLightSettings.shadowMapSize = 512;
+		break;
+	case Middle:
+		m_sLightSettings.shadowMapSize = 1024;
+		break;
+	case High:
+		m_sLightSettings.shadowMapSize = 2048;
+		break;
+	case SuperHigh:
+		m_sLightSettings.shadowMapSize = 4096;
+		break;
+	default:
+		break;
+	}
 }

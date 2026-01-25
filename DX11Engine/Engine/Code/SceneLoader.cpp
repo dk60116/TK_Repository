@@ -36,8 +36,7 @@ HRESULT CSceneLoader::Initialize()
 {
 	InitializeCriticalSection(&m_pCriticalSection);
 
-	m_hThread = (HANDLE)_beginthreadex(
-		nullptr, 0, ThreadMain, this, 0, nullptr);
+	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, ThreadMain, this, 0, nullptr);
 
 	if (!m_hThread)
 		return E_FAIL;

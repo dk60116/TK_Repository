@@ -14,7 +14,9 @@ public:
         Material,
         Depth,
         Shading,
-        Specular
+        Specular,
+        ShadowDepth,
+        ShadowMask
     };
 
 public:
