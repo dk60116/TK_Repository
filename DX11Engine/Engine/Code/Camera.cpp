@@ -74,6 +74,7 @@ HRESULT CCamera::Initialize()
 	CMaterial* presentMat = Add_RectMaterial(CRenderTarget::RTType::Defalut, L"DeferredPresent (Material)");
 	CMaterial* combineMat = Add_RectMaterial(CRenderTarget::RTType::Combine, L"DeferredCombine (Material)");
 	CMaterial* depthMat = Add_RectMaterial(CRenderTarget::RTType::Depth, L"DepthPresent (Material)");
+	CMaterial* shadowDepthMat = Add_RectMaterial(CRenderTarget::RTType::ShadowDepth, L"ShadowDepth (Material)");
 	CMaterial* shadingtMat = Add_RectMaterial(CRenderTarget::RTType::Shading, L"DeferredShading (Material)");
 	CMaterial* specularMat = Add_RectMaterial(CRenderTarget::RTType::Specular, L"DeferredSpecular (Material)");
 
@@ -93,6 +94,7 @@ HRESULT CCamera::Initialize()
 	pushDisplay(CRenderTarget::RTType::Normal, presentMat);
 	pushDisplay(CRenderTarget::RTType::Material, presentMat);
 	pushDisplay(CRenderTarget::RTType::Depth, depthMat);
+	pushDisplay(CRenderTarget::RTType::ShadowDepth, presentMat);
 	pushDisplay(CRenderTarget::RTType::Shading, presentMat);
 	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
 
@@ -486,6 +488,7 @@ void CCamera::RenderRTDebugDisplay()
 		CRenderTarget::RTType::Normal,
 		CRenderTarget::RTType::Material,
 		CRenderTarget::RTType::Depth,
+		CRenderTarget::RTType::ShadowDepth,
 		CRenderTarget::RTType::Shading,
 		CRenderTarget::RTType::Specular,
 		// Combine은 이미 풀스크린으로 출력했으므로 여기서는 제외

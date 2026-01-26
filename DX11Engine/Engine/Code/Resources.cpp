@@ -1369,6 +1369,13 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC depthPresentMatDesc = { depthPresentShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"DepthPresent (Material)", L"", &depthPresentMatDesc);
 
+	CShader::SHADERDESC deferredCombineShaderDesc = { L"../EngineResources/Shader/DeferredCombine.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"DeferredCombine (Shader)", L"", &deferredCombineShaderDesc);
+
+	CShader* deferredCombineShader = LoadOnGame<CShader>(L"DeferredCombine (Shader)");
+	CMaterial::MATERIALDESC deferredCombineMatDesc = { deferredCombineShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"DeferredCombine (Material)", L"", &deferredCombineMatDesc);
+
 	CShader::SHADERDESC deferredShadingShaderDesc = { L"../EngineResources/Shader/DeferredShading.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"DeferredShading (Shader)", L"", &deferredShadingShaderDesc);
 
@@ -1383,12 +1390,12 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC deferredSpecularMatDesc = { deferredSpecularShader, true };
 	LoadResourceComplete_Game<CMaterial>(L"DeferredSpecular (Material)", L"", &deferredSpecularMatDesc);
 
-	CShader::SHADERDESC deferredCombineShaderDesc = { L"../EngineResources/Shader/DeferredCombine.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
-	LoadResourceComplete_Game<CShader>(L"DeferredCombine (Shader)", L"", &deferredCombineShaderDesc);
+	CShader::SHADERDESC shadowDepthShaderDesc = { L"../EngineResources/Shader/ShadowDepth.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"ShadowDepth (Shader)", L"", &shadowDepthShaderDesc);
 
-	CShader* deferredCombineShader = LoadOnGame<CShader>(L"DeferredCombine (Shader)");
-	CMaterial::MATERIALDESC deferredCombineMatDesc = { deferredCombineShader, false };
-	LoadResourceComplete_Game<CMaterial>(L"DeferredCombine (Material)", L"", &deferredCombineMatDesc);
+	CShader* shadowDepthShader = LoadOnGame<CShader>(L"ShadowDepth (Shader)");
+	CMaterial::MATERIALDESC shadowDepthMatDesc = { shadowDepthShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"ShadowDepth (Material)", L"", &shadowDepthMatDesc);
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc);
