@@ -20,10 +20,7 @@ CCamera::CCamera()
 	, m_vUIList({})
 	, m_mRTDebugDisplays({})
 	, m_pRectBuffer(nullptr)
-	, m_vRectMats({})
-	, m_pShadingPassMat(nullptr)
-	, m_pSpecularPassMat(nullptr)
-	, m_pCombinePassMat(nullptr)
+	, m_mRectMats({})
 	, m_pRTDebugDS(nullptr)
 	, m_pRTDebugRS(nullptr)
 	, m_pRTDebugBS(nullptr)
@@ -74,47 +71,11 @@ HRESULT CCamera::Initialize()
 	m_pRectBuffer->AddRef();
 
 	// Present Material (DeferredPresent.hlsl을 사용하는 머티리얼)
-	CMaterial* presentMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredPresent (Material)");
-	if (!presentMat)
-	{
-		CDebug::LogError("Not found DeferredPresent (Material)");
-		return E_FAIL;
-	}
-	m_vRectMats.push_back(presentMat);
-	presentMat->AddRef();
-
-	CMaterial* depthMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DepthPresent (Material)");
-	if (!depthMat)
-	{
-		CDebug::LogError("Not found DepthPresent (Material)");
-		return E_FAIL;
-	}
-	m_vRectMats.push_back(depthMat);
-	depthMat->AddRef();
-
-	m_pShadingPassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredShading (Material)");
-	if (!m_pShadingPassMat)
-	{
-		CDebug::LogError("Not found DeferredShading (Material)");
-		return E_FAIL;
-	}
-	m_pShadingPassMat->AddRef();
-
-	m_pSpecularPassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredSpecular (Material)");
-	if (!m_pSpecularPassMat)
-	{
-		CDebug::LogError("Not found DeferredSpecular (Material)");
-		return E_FAIL;
-	}
-	m_pSpecularPassMat->AddRef();
-
-	m_pCombinePassMat = CResources::GetInstance().LoadOnGame<CMaterial>(L"DeferredCombine (Material)");
-	if (!m_pCombinePassMat)
-	{
-		CDebug::LogError("Not found DeferredCombine (Material)");
-		return E_FAIL;
-	}
-	m_pCombinePassMat->AddRef();
+	CMaterial* presentMat = Add_RectMaterial(CRenderTarget::RTType::Defalut, L"DeferredPresent (Material)");
+	CMaterial* combineMat = Add_RectMaterial(CRenderTarget::RTType::Combine, L"DeferredCombine (Material)");
+	CMaterial* depthMat = Add_RectMaterial(CRenderTarget::RTType::Depth, L"DepthPresent (Material)");
+	CMaterial* shadingtMat = Add_RectMaterial(CRenderTarget::RTType::Shading, L"DeferredShading (Material)");
+	CMaterial* specularMat = Add_RectMaterial(CRenderTarget::RTType::Specular, L"DeferredSpecular (Material)");
 
 	// 5개 디스플레이 등록
 	auto pushDisplay = [&](CRenderTarget::RTType type, CMaterial* mat)
@@ -216,14 +177,10 @@ void CCamera::OnDestroy()
 
 	Safe_Release(m_pRectBuffer);
 
-	for (TRAVERSAL_ITER(m_vRectMats, it))
-		Safe_Release(*it);
+	for (TRAVERSAL_ITER(m_mRectMats, it))
+		Safe_Release((*it).second);
 
-	m_vRectMats.clear();
-
-	Safe_Release(m_pShadingPassMat);
-	Safe_Release(m_pSpecularPassMat);
-	Safe_Release(m_pCombinePassMat);
+	m_mRectMats.clear();
 
 	m_mRTDebugDisplays.clear();
 
@@ -591,7 +548,7 @@ void CCamera::RenderRTDebugDisplay()
 
 void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 {
-	if (!m_pShadingPassMat || !m_pRectBuffer || !m_pInvViewProjCB)
+	if (!m_mRectMats[CRenderTarget::RTType::Shading] || !m_pRectBuffer || !m_pInvViewProjCB)
 		return;
 
 	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
@@ -657,13 +614,13 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 	ctx->UpdateSubresource(m_pInvViewProjCB, 0, nullptr, &invCB, 0, 0);
 	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
 
-	m_pShadingPassMat->Bind_Matrix(w);
-	m_pShadingPassMat->Bind_Camera(camPos, v, p, 0);
+	m_mRectMats[CRenderTarget::RTType::Shading]->Bind_Matrix(w);
+	m_mRectMats[CRenderTarget::RTType::Shading]->Bind_Camera(camPos, v, p, 0);
 
 	vector<_matrix>& lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightData();
 	
 	if (!lights.empty())
-		m_pShadingPassMat->Bind_Light(lights.data(), (_uint)lights.size());
+		m_mRectMats[CRenderTarget::RTType::Shading]->Bind_Light(lights.data(), (_uint)lights.size());
 
 	ID3D11ShaderResourceView* srvs[3] = { srvNormal, srvDepth, srvMaterial };
 	ctx->PSSetShaderResources(0, 3, srvs);
@@ -689,7 +646,7 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 
 void CCamera::RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp)
 {
-	if (!m_pSpecularPassMat || !m_pRectBuffer || !m_pInvViewProjCB)
+	if (!m_mRectMats[CRenderTarget::RTType::Specular] || !m_pRectBuffer || !m_pInvViewProjCB)
 		return;
 
 	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
@@ -764,14 +721,14 @@ void CCamera::RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp)
 	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
 
 	// --- 머티리얼 바인딩
-	m_pSpecularPassMat->Bind_Matrix(w);
-	m_pSpecularPassMat->Bind_Camera(camPos, v, p, 0);
+	m_mRectMats[CRenderTarget::RTType::Specular]->Bind_Matrix(w);
+	m_mRectMats[CRenderTarget::RTType::Specular]->Bind_Camera(camPos, v, p, 0);
 
 	// --- 라이트 바인딩
 	vector<_matrix>& lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightData();
 
 	if (!lights.empty())
-		m_pSpecularPassMat->Bind_Light(lights.data(), (_uint)lights.size());
+		m_mRectMats[CRenderTarget::RTType::Specular]->Bind_Light(lights.data(), (_uint)lights.size());
 
 	// --- SRV 바인딩: t0=null, t1=Normal, t2=Depth, t3=Material(=gSpecParams)
 	ID3D11ShaderResourceView* srvs[3] = { srvNormal, srvDepth, srvMaterial };
@@ -875,8 +832,8 @@ void CCamera::RenderCombine(const D3D11_VIEWPORT* vp)
 	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
 
 	// --- 머티리얼 바인딩
-	m_pCombinePassMat->Bind_Matrix(w);
-	m_pCombinePassMat->Bind_Camera(camPos, v, p, 0);
+	m_mRectMats[CRenderTarget::RTType::Combine]->Bind_Matrix(w);
+	m_mRectMats[CRenderTarget::RTType::Combine]->Bind_Camera(camPos, v, p, 0);
 
 	// --- SRV 바인딩
 	ID3D11ShaderResourceView* srvs[3] = { srvAlbedo, srvShading, srvSpecular };
@@ -948,4 +905,21 @@ CPhysics::Ray CCamera::ScreenPointToRay_Editor(const vector2Int& _pixel, _float 
 
 	CPhysics::Ray result = { origin, resultDir.normalized(), _maxDist };
 	return result;
+}
+
+CMaterial* CCamera::Add_RectMaterial(const CRenderTarget::RTType _type, const wstring& _path)
+{
+	CMaterial* newMat = CResources::GetInstance().LoadOnGame<CMaterial>(_path);
+
+	if (!newMat)
+	{
+		CDebug::LogError(L"Not found" + _path + L" (Material)");
+		CDebug::LogError(L"Not found" + _path + L" (Material)");
+		return nullptr;
+	}
+
+	m_mRectMats.insert({ _type, newMat });
+	newMat->AddRef();
+
+	return newMat;
 }

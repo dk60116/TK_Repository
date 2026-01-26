@@ -69,6 +69,7 @@ public:
 	void RenderUI();
 	void RenderDisplay();
 
+public:
 	void RenderRTDebugDisplay();
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
@@ -78,6 +79,9 @@ public:
 public:
 	CPhysics::Ray ScreenPointToRay(const vector2Int& _pixel, _float _maxDist = 999999.f);
 	CPhysics::Ray ScreenPointToRay_Editor(const vector2Int& _pixel, _float _maxDist = 999999.f);
+
+private:
+	CMaterial* Add_RectMaterial(const CRenderTarget::RTType _type, const wstring& _path);
 
 protected:
 	ViewMode m_eCamViewMode;
@@ -99,11 +103,7 @@ private:
 	map<CRenderTarget::RTType, RTDebugDisplay> m_mRTDebugDisplays;
 
 	CMeshBuffer* m_pRectBuffer;
-	vector<CMaterial*> m_vRectMats;
-
-	CMaterial* m_pShadingPassMat;
-	CMaterial* m_pSpecularPassMat;
-	CMaterial* m_pCombinePassMat;
+	map<CRenderTarget::RTType, CMaterial*> m_mRectMats;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
 	ID3D11RasterizerState* m_pRTDebugRS;

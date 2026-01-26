@@ -8,6 +8,7 @@ class ENGINE_DLL CRenderTarget final
 public:
     enum class RTType
     {
+        Defalut,
         Combine,
         Albedo,
         Normal,
