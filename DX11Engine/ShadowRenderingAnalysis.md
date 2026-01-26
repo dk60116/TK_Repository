@@ -12,11 +12,11 @@ shadow pipeline. The focus is on code-paths used by `RenderShadowDepth` and `Ren
   depth, shadow depth SRV, and (optionally) normal buffer, and writing a 0–1 shadow factor.
 
 ## 1) Matrix packing mismatch in ShadowMask
-`ShadowMask.hlsl` applies `#pragma pack_matrix(row_major)` globally, so all matrices are
-interpreted as **row-major** in the shader. However, the engine’s material binding path
+`ShadowMask.hlsl` originally applied `#pragma pack_matrix(row_major)` globally, so all matrices
+were interpreted as **row-major** in the shader. However, the engine’s material binding path
 **transposes** the world/view/projection matrices before uploading them to the GPU
-(`Bind_Matrix` and `Bind_Camera`). This means the fullscreen quad shader receives
-`world/view/proj` that are effectively transposed **and then** treated as row-major in HLSL,
+(`Bind_Matrix` and `Bind_Camera`). This means the fullscreen quad shader would receive
+`world/view/proj` that were effectively transposed **and then** treated as row-major in HLSL,
 which results in an unintended double-mismatch.
 
 **Why this matters:**
@@ -36,8 +36,8 @@ which results in an unintended double-mismatch.
   separately uploads `gInvViewProj` and `ShadowCB` without transposes.
 
 ## 2) Normal-based bias is disabled (hardcoded normal)
-`ShadowMask.hlsl` currently uses a **hardcoded normal** (`float3 normalWS = float3(0,1,0)`) for
-bias calculation instead of sampling the normal buffer. This means the shadow bias is
+`ShadowMask.hlsl` previously used a **hardcoded normal** (`float3 normalWS = float3(0,1,0)`) for
+bias calculation instead of sampling the normal buffer. This means the shadow bias was
 independent of actual surface orientation.
 
 **Why this matters:**
@@ -78,10 +78,10 @@ can make Y-flip logic appear incorrect.
 ---
 
 ## Suggested investigation order
-1. **Verify matrix packing for ShadowMask**: either remove `row_major` from the shader or stop
-   transposing `world/view/proj` for this material. Validate by drawing the shadow mask debug
+1. **Verify matrix packing for ShadowMask**: ensure the shader packing convention matches how
+   matrices are uploaded (row-major vs. transposed). Validate by drawing the shadow mask debug
    output and checking for full-screen coverage.
-2. **Enable normal usage** in `ShadowMask.hlsl` and compare acne/peter-panning on sloped
+2. **Use per-pixel normals** in `ShadowMask.hlsl` and compare acne/peter-panning on sloped
    surfaces, then re-tune `gBiasBase` and/or the rasterizer bias.
 3. **Audit shadow map resolution changes**: ensure `CRenderTargetManager::Resize` or a similar
    path recreates `ShadowDepth` when `shadowMapSize` changes.

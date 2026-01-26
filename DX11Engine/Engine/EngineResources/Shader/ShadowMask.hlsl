@@ -1,10 +1,8 @@
 // ShadowMask.hlsl (example)
-// ¸ñÀû: ShadowMask RT¿¡ 0~1 shadow factor¸¦ ±â·Ï
+    float4x4 world;
 
-#pragma pack_matrix(row_major)
-
-cbuffer PerObject : register(b0)
-{
+    float4x4 view;
+    float4x4 proj;
     row_major float4x4 world;
 };
 
@@ -33,7 +31,7 @@ cbuffer PerShadow : register(b6)
 
 Texture2D<float> gDepth : register(t0); // camera depth
 Texture2D<float> gShadowDepth : register(t1); // shadow depth map (light)
-Texture2D gNormal : register(t2); // optional (¾øÀ¸¸é Á¦°Å)
+Texture2D gNormal : register(t2); // optional (ì—†ìœ¼ë©´ ì œê±°)
 SamplerState gSampler : register(s0);
 
 struct VSIn
@@ -65,16 +63,16 @@ float3 ReconstructWorldPos(float2 uv, float depth01)
 {
     // D3D NDC: x,y = -1..1, z = 0..1
     float x = uv.x * 2.0f - 1.0f;
-    float y = (1.0f - uv.y) * 2.0f - 1.0f; // uv ¿øÁ¡(top-left) ±â¹İÀÌ¸é º¸Åë ÀÌ·¸°Ô
+    float y = (1.0f - uv.y) * 2.0f - 1.0f; // uv ì›ì (top-left) ê¸°ë°˜ì´ë©´ ë³´í†µ ì´ë ‡ê²Œ
     float4 p = float4(x, y, depth01, 1.0f);
 
     float4 w = mul(p, gInvViewProj);
     return w.xyz / w.w;
 }
 
-float3 DecodeNormalWS(float4 n) // ´ç½Å GBuffer ±Ô¾à¿¡ ¸Â°Ô ¼öÁ¤
+float3 DecodeNormalWS(float4 n) // ë‹¹ì‹  GBuffer ê·œì•½ì— ë§ê²Œ ìˆ˜ì •
 {
-    // ¿¹½Ã: 0..1 ÀúÀå -> -1..1 º¹¿ø (¿ùµå ³ë¸ÖÀÌ¶ó°í °¡Á¤)
+    // ì˜ˆì‹œ: 0..1 ì €ì¥ -> -1..1 ë³µì› (ì›”ë“œ ë…¸ë©€ì´ë¼ê³  ê°€ì •)
     float3 nn = n.xyz * 2.0f - 1.0f;
     return normalize(nn);
 }
@@ -86,7 +84,7 @@ float ComputeShadow(float3 posWS, float3 normalWS)
 
     float2 suv;
     suv.x = posLS.x * 0.5f + 0.5f;
-    suv.y = -posLS.y * 0.5f + 0.5f; // ÀÌ ºÎºĞÀº ¿£Áø ÁÂÇ¥°è¿¡ µû¶ó flip ÇÊ¿ä
+    suv.y = -posLS.y * 0.5f + 0.5f; // ì´ ë¶€ë¶„ì€ ì—”ì§„ ì¢Œí‘œê³„ì— ë”°ë¼ flip í•„ìš”
 
     if (suv.x < 0 || suv.x > 1 || suv.y < 0 || suv.y > 1)
         return 1.0f;
@@ -124,9 +122,7 @@ float4 PSMain(VSOut i) : SV_Target
 
     float3 posWS = ReconstructWorldPos(uv, depth01);
 
-    float3 normalWS = float3(0, 1, 0);
-    // normal »ç¿ëÇÏ·Á¸é gNormal SRV ¹ÙÀÎµù + DecodeNormalWS ¼öÁ¤
-    // normalWS = DecodeNormalWS(gNormal.Sample(gSampler, uv));
+    float3 normalWS = DecodeNormalWS(gNormal.Sample(gSampler, uv));
 
     float shadow = ComputeShadow(posWS, normalWS);
     return float4(shadow, shadow, shadow, 1.0f);
