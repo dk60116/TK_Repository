@@ -381,13 +381,94 @@ void CCamera::RenderUI()
 
 void CCamera::RenderDisplay()
 {
+	 if (dynamic_cast<CEditorCamera*>(this))
+        return;
+
+    if (!m_pRectBuffer)
+        return;
+
+    ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
+    if (!ctx)
+        return;
+
+    auto& RTM = CRenderTargetManager::GetInstance();
+
+    ID3D11ShaderResourceView* srvCombine = RTM.GetSRV(CRenderTarget::RTType::Combine);
+    if (!srvCombine)
+        return;
+
+    // Combine을 Present할 머티리얼 (현재는 map에 Combine이 presentMat으로 등록되어 있음)
+    CMaterial* presentMat = nullptr;
+    {
+        auto it = m_mRTDebugDisplays.find(CRenderTarget::RTType::Combine);
+        if (it != m_mRTDebugDisplays.end())
+            presentMat = it->second.material;
+    }
+    if (!presentMat)
+        return;
+
+    // --- 상태 백업
+    ID3D11DepthStencilState* prevDS = nullptr; _uint prevStencilRef = 0;
+    ID3D11RasterizerState* prevRS = nullptr;
+    ID3D11BlendState* prevBS = nullptr; _float prevBlendFactor[4] = {}; _uint prevSampleMask = 0;
+
+    ctx->OMGetDepthStencilState(&prevDS, &prevStencilRef);
+    ctx->RSGetState(&prevRS);
+    ctx->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
+
+    D3D11_VIEWPORT prevVP{}; _uint prevVPCount = 1;
+    ctx->RSGetViewports(&prevVPCount, &prevVP);
+
+    // --- 뷰포트 (게임 뷰포트 우선)
+    const D3D11_VIEWPORT* useVP = CGraphicDevice::GetInstance().Get_GameViewport();
+    if (!useVP) useVP = CGraphicDevice::GetInstance().Get_CurrentViewport();
+    if (useVP) ctx->RSSetViewports(1, useVP);
+
+    const float W = useVP ? useVP->Width  : (float)CDisplay::GetInstance().Get_ScreenResolution().x;
+    const float H = useVP ? useVP->Height : (float)CDisplay::GetInstance().Get_ScreenResolution().y;
+
+    // --- Present는 Depth 불필요(OFF), Cull OFF
+    if (m_pRTDebugDS) ctx->OMSetDepthStencilState(m_pRTDebugDS, 0);
+    if (m_pRTDebugRS) ctx->RSSetState(m_pRTDebugRS);
+    const _float bf[4] = { 0,0,0,0 };
+    ctx->OMSetBlendState(nullptr, bf, 0xFFFFFFFF);
+
+    // --- 픽셀 Ortho(좌상단 원점)
+    _matrix v = XMMatrixIdentity();
+    _matrix p = XMMatrixOrthographicOffCenterLH(0.f, W, H, 0.f, 0.f, 1.f);
+    _matrix w = XMMatrixScaling(W, H, 1.f) * XMMatrixTranslation(W * 0.5f, H * 0.5f, 0.f);
+    _float3 camPos = {}; // Present에는 의미 없음
+
+    // --- SRV 충돌 방지 + 바인딩
+    RTM.Unbind_AllSRVs_PS(ctx);
+
+    presentMat->Bind_Matrix(w);
+    presentMat->Bind_Camera(camPos, v, p, 0);
+
+    ctx->PSSetShaderResources(0, 1, &srvCombine);
+    m_pRectBuffer->Render();
+
+    // --- 정리
+    RTM.Unbind_AllSRVs_PS(ctx);
+
+    // --- 상태 복원
+    if (prevVPCount > 0) ctx->RSSetViewports(1, &prevVP);
+    ctx->OMSetDepthStencilState(prevDS, prevStencilRef);
+    ctx->RSSetState(prevRS);
+    ctx->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
+
+    Safe_Release(prevDS);
+    Safe_Release(prevRS);
+    Safe_Release(prevBS);
+}
+
+void CCamera::RenderRTDebugDisplay()
+{
 	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
 	if (!context || m_mRTDebugDisplays.empty())
 		return;
 
-	// -----------------------------
 	// 상태 백업
-	// -----------------------------
 	ID3D11DepthStencilState* prevDS = nullptr;
 	_uint prevStencilRef = 0;
 	ID3D11RasterizerState* prevRS = nullptr;
@@ -399,23 +480,18 @@ void CCamera::RenderDisplay()
 	context->RSGetState(&prevRS);
 	context->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
 
-	// -----------------------------
 	// 디버그 상태 적용
-	// -----------------------------
-	if (m_pRTDebugDS) context->OMSetDepthStencilState(m_pRTDebugDS, 0);
-	if (m_pRTDebugRS) context->RSSetState(m_pRTDebugRS);
-
+	context->OMSetDepthStencilState(m_pRTDebugDS, 0);
+	context->RSSetState(m_pRTDebugRS);
 	const _float bf[4] = { 0,0,0,0 };
-	if (m_pRTDebugBS) context->OMSetBlendState(m_pRTDebugBS, bf, 0xFFFFFFFF);
-	else              context->OMSetBlendState(nullptr, bf, 0xFFFFFFFF);
+	context->OMSetBlendState(m_pRTDebugBS, bf, 0xFFFFFFFF);
 
-	// -----------------------------
-	// 스크린 해상도 & 뷰포트(백버퍼 전체)
-	// -----------------------------
+	// 스크린 해상도
 	auto res = CDisplay::GetInstance().Get_ScreenResolution();
 	_float screenW = (_float)res.x;
 	_float screenH = (_float)res.y;
 
+	// 뷰포트(디버그 출력은 백버퍼 전체)
 	{
 		D3D11_VIEWPORT vp{};
 		vp.TopLeftX = 0.f; vp.TopLeftY = 0.f;
@@ -424,19 +500,13 @@ void CCamera::RenderDisplay()
 		context->RSSetViewports(1, &vp);
 	}
 
-	// -----------------------------
 	// 픽셀 좌표 Ortho (좌상단 원점)
-	// -----------------------------
 	_matrix view = XMMatrixIdentity();
 	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
 	_float3 camPos = { 0.f, 0.f, -1.f };
 
-	// -----------------------------
-	// 썸네일 레이아웃
-	//   - 셀(높이) = screenH/5
-	//   - 썸네일 높이 = 셀 높이의 90% (패딩 총 10%)
-	// -----------------------------
-	const float marginX = 12.f;
+	const float margin = 12.f;
+	const float gap = 10.f;
 
 	// 게임 뷰포트 기준 aspect (없으면 화면 기준)
 	const D3D11_VIEWPORT* gameVP = CGraphicDevice::GetInstance().Get_GameViewport();
@@ -444,14 +514,6 @@ void CCamera::RenderDisplay()
 	float srcH = gameVP ? gameVP->Height : screenH;
 	float srcAspect = (srcH > 0.f) ? (srcW / srcH) : 1.f;
 
-	const float cellH = screenH / 5.f;        // 화면을 정확히 5등분
-	const float padH = cellH * 0.10f;        // Height 패딩 총 10%
-	const float rectH = cellH - padH;         // 실제 썸네일 높이(=90%)
-	float rectW = rectH * srcAspect;          // 가로는 비율 유지
-
-	// -----------------------------
-	// 출력 대상 (Combine은 풀스크린으로 이미 출력했으므로 제외)
-	// -----------------------------
 	CRenderTarget::RTType types[] =
 	{
 		CRenderTarget::RTType::Albedo,
@@ -461,13 +523,24 @@ void CCamera::RenderDisplay()
 		CRenderTarget::RTType::ShadowDepth,
 		CRenderTarget::RTType::Shading,
 		CRenderTarget::RTType::Specular,
+		// Combine은 이미 풀스크린으로 출력했으므로 여기서는 제외
 	};
 	const _int kCount = (_int)(sizeof(types) / sizeof(types[0]));
 
-	// -----------------------------
-	// Draw
-	// -----------------------------
-	for (_int i = 0; i < kCount; ++i)
+	// 썸네일 크기(원하시면 여기 수치만 더 키우면 됩니다)
+	const _uint screenes = CDisplay::GetInstance().Get_ScreenResolution().y;
+	const _float resHeightFive = (CDisplay::GetInstance().Get_ScreenResolution().y / 5.f) * 1.6f;
+	_float maxBox = resHeightFive;
+
+	float rectW = maxBox;
+	float rectH = rectW / srcAspect;
+	if (rectH > maxBox)
+	{
+		rectH = maxBox;
+		rectW = rectH * srcAspect;
+	}
+
+	for (int i = 0; i < kCount; ++i)
 	{
 		auto it = m_mRTDebugDisplays.find(types[i]);
 		if (it == m_mRTDebugDisplays.end())
@@ -477,36 +550,30 @@ void CCamera::RenderDisplay()
 		if (!disp.quad || !disp.material)
 			continue;
 
-		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(types[i]);
-		if (!srv)
-			continue;
+		const bool bRightColumn = (i < 5);
+		const int row = bRightColumn ? i : (i - 5);
 
-		// 첫 5개: 오른쪽 컬럼, 나머지: 왼쪽 컬럼
-		const _bool bRightColumn = (i < 5);
-		const _int row = bRightColumn ? i : (i - 5);
+		float cx = bRightColumn
+			? (screenW - margin - rectW * 0.5f)
+			: (margin + rectW * 0.5f);
 
-		_float cx = bRightColumn
-			? (screenW - marginX - rectW * 0.5f)
-			: (marginX + rectW * 0.5f);
-
-		// 셀 중앙에 배치(패딩은 rectH가 줄어든 만큼 위/아래로 자동 생성)
-		_float cy = screenH - (row + 0.5f) * cellH;
+		float cy = screenH - margin - rectH * 0.5f - row * (rectH + gap);
 
 		_matrix world = XMMatrixScaling(rectW, rectH, 1.f) * XMMatrixTranslation(cx, cy, 0.f);
 
 		disp.material->Bind_Matrix(world);
 		disp.material->Bind_Camera(camPos, view, proj, 0);
 
+		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(types[i]);
 		context->PSSetShaderResources(0, 1, &srv);
+
 		disp.quad->Render();
 	}
 
 	// SRV 해제
 	CRenderTargetManager::GetInstance().Unbind_AllSRVs_PS(context);
 
-	// -----------------------------
 	// 상태 복원
-	// -----------------------------
 	context->OMSetDepthStencilState(prevDS, prevStencilRef);
 	context->RSSetState(prevRS);
 	context->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
@@ -869,134 +936,6 @@ void CCamera::RenderShadowDepthPass(const D3D11_VIEWPORT* vp)
 
 	Safe_Release(prevRTV);
 	Safe_Release(prevDSV);
-	Safe_Release(prevDS);
-	Safe_Release(prevRS);
-	Safe_Release(prevBS);
-}
-
-void CCamera::RenderRTDebugDisplay()
-{
-	ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
-	if (!context || m_mRTDebugDisplays.empty())
-		return;
-
-	// -----------------------------
-	// 상태 백업
-	// -----------------------------
-	ID3D11DepthStencilState* prevDS = nullptr;
-	_uint prevStencilRef = 0;
-	ID3D11RasterizerState* prevRS = nullptr;
-	ID3D11BlendState* prevBS = nullptr;
-	_float prevBlendFactor[4] = {};
-	_uint prevSampleMask = 0;
-
-	context->OMGetDepthStencilState(&prevDS, &prevStencilRef);
-	context->RSGetState(&prevRS);
-	context->OMGetBlendState(&prevBS, prevBlendFactor, &prevSampleMask);
-
-	// -----------------------------
-	// 디버그 상태 적용
-	// -----------------------------
-	if (m_pRTDebugDS) context->OMSetDepthStencilState(m_pRTDebugDS, 0);
-	if (m_pRTDebugRS) context->RSSetState(m_pRTDebugRS);
-
-	const _float bf[4] = { 0,0,0,0 };
-	if (m_pRTDebugBS) context->OMSetBlendState(m_pRTDebugBS, bf, 0xFFFFFFFF);
-	else              context->OMSetBlendState(nullptr, bf, 0xFFFFFFFF);
-
-	// -----------------------------
-	// 스크린 해상도 & 뷰포트(백버퍼 전체)
-	// -----------------------------
-	auto res = CDisplay::GetInstance().Get_ScreenResolution();
-	_float screenW = (_float)res.x;
-	_float screenH = (_float)res.y;
-
-	{
-		D3D11_VIEWPORT vp{};
-		vp.TopLeftX = 0.f; vp.TopLeftY = 0.f;
-		vp.Width = screenW; vp.Height = screenH;
-		vp.MinDepth = 0.f; vp.MaxDepth = 1.f;
-		context->RSSetViewports(1, &vp);
-	}
-
-	// -----------------------------
-	// 픽셀 좌표 Ortho (좌상단 원점)
-	// -----------------------------
-	_matrix view = XMMatrixIdentity();
-	_matrix proj = XMMatrixOrthographicOffCenterLH(0.f, screenW, screenH, 0.f, 0.f, 1.f);
-	_float3 camPos = { 0.f, 0.f, -1.f };
-
-	// -----------------------------
-	// 썸네일 레이아웃
-	//   - 셀(높이) = screenH/5
-	//   - 썸네일 높이 = 셀 높이의 90% (패딩 총 10%)
-	// -----------------------------
-	const float marginX = 12.f;
-
-	// 게임 뷰포트 기준 aspect (없으면 화면 기준)
-	const D3D11_VIEWPORT* gameVP = CGraphicDevice::GetInstance().Get_GameViewport();
-	_float srcW = gameVP ? gameVP->Width : screenW;
-	_float srcH = gameVP ? gameVP->Height : screenH;
-	_float srcAspect = (srcH > 0.f) ? (srcW / srcH) : 1.f;
-
-	const _float cellH = screenH / 5.f;        // 화면을 정확히 5등분
-	const _float padH = cellH * 0.10f;        // Height 패딩 총 10%
-	const _float rectH = cellH - padH;         // 실제 썸네일 높이(=90%)
-	_float rectW = rectH * srcAspect;          // 가로는 비율 유지
-
-	CRenderTarget::RTType types[] =
-	{
-		CRenderTarget::RTType::Albedo,
-		CRenderTarget::RTType::Normal,
-		CRenderTarget::RTType::Material,
-		CRenderTarget::RTType::Depth,
-		CRenderTarget::RTType::ShadowDepth,
-		CRenderTarget::RTType::Shading,
-		CRenderTarget::RTType::Specular,
-	};
-	const _int kCount = (_int)(sizeof(types) / sizeof(types[0]));
-
-	for (_int i = 0; i < kCount; ++i)
-	{
-		auto it = m_mRTDebugDisplays.find(types[i]);
-		if (it == m_mRTDebugDisplays.end())
-			continue;
-
-		RTDebugDisplay& disp = it->second;
-		if (!disp.quad || !disp.material)
-			continue;
-
-		ID3D11ShaderResourceView* srv = CRenderTargetManager::GetInstance().GetSRV(types[i]);
-		if (!srv)
-			continue;
-
-		// 첫 5개: 오른쪽 컬럼, 나머지: 왼쪽 컬럼
-		const _bool bRightColumn = (i < 5);
-		const _int row = bRightColumn ? i : (i - 5);
-
-		_float cx = bRightColumn
-			? (screenW - marginX - rectW * 0.5f)
-			: (marginX + rectW * 0.5f);
-
-		// 셀 중앙에 배치(패딩은 rectH가 줄어든 만큼 위/아래로 자동 생성)
-		_float cy = screenH - (row + 0.5f) * cellH;
-
-		_matrix world = XMMatrixScaling(rectW, rectH, 1.f) * XMMatrixTranslation(cx, cy, 0.f);
-
-		disp.material->Bind_Matrix(world);
-		disp.material->Bind_Camera(camPos, view, proj, 0);
-
-		context->PSSetShaderResources(0, 1, &srv);
-		disp.quad->Render();
-	}
-
-	// SRV 해제
-	CRenderTargetManager::GetInstance().Unbind_AllSRVs_PS(context);
-
-	context->OMSetDepthStencilState(prevDS, prevStencilRef);
-	context->RSSetState(prevRS);
-	context->OMSetBlendState(prevBS, prevBlendFactor, prevSampleMask);
-
 	Safe_Release(prevDS);
 	Safe_Release(prevRS);
 	Safe_Release(prevBS);
