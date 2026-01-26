@@ -9,6 +9,7 @@ public:
     enum class RTType
     {
         Defalut,
+        ShadowDepthPresent,
         Combine,
         Albedo,
         Normal,

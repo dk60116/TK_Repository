@@ -72,8 +72,9 @@ HRESULT CCamera::Initialize()
 
 	// Present Material (DeferredPresent.hlsl을 사용하는 머티리얼)
 	CMaterial* presentMat = Add_RectMaterial(CRenderTarget::RTType::Defalut, L"DeferredPresent (Material)");
+	CMaterial* depthPresentMat = Add_RectMaterial(CRenderTarget::RTType::Depth, L"DepthPresent (Material)");
+	CMaterial* shadowDepthPresentMat = Add_RectMaterial(CRenderTarget::RTType::ShadowDepthPresent, L"ShadowDepthPresent (Material)");
 	CMaterial* combineMat = Add_RectMaterial(CRenderTarget::RTType::Combine, L"DeferredCombine (Material)");
-	CMaterial* depthMat = Add_RectMaterial(CRenderTarget::RTType::Depth, L"DepthPresent (Material)");
 	CMaterial* shadowDepthMat = Add_RectMaterial(CRenderTarget::RTType::ShadowDepth, L"ShadowDepth (Material)");
 	CMaterial* shadingtMat = Add_RectMaterial(CRenderTarget::RTType::Shading, L"DeferredShading (Material)");
 	CMaterial* specularMat = Add_RectMaterial(CRenderTarget::RTType::Specular, L"DeferredSpecular (Material)");
@@ -93,8 +94,8 @@ HRESULT CCamera::Initialize()
 	pushDisplay(CRenderTarget::RTType::Albedo, presentMat);
 	pushDisplay(CRenderTarget::RTType::Normal, presentMat);
 	pushDisplay(CRenderTarget::RTType::Material, presentMat);
-	pushDisplay(CRenderTarget::RTType::Depth, depthMat);
-	pushDisplay(CRenderTarget::RTType::ShadowDepth, presentMat);
+	pushDisplay(CRenderTarget::RTType::Depth, depthPresentMat);
+	pushDisplay(CRenderTarget::RTType::ShadowDepth, shadowDepthPresentMat);
 	pushDisplay(CRenderTarget::RTType::Shading, presentMat);
 	pushDisplay(CRenderTarget::RTType::Specular, presentMat);
 
@@ -551,7 +552,9 @@ void CCamera::RenderRTDebugDisplay()
 
 void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 {
-	if (!m_mRectMats[CRenderTarget::RTType::Shading] || !m_pRectBuffer || !m_pInvViewProjCB)
+	CMaterial* shadingMat = Find_RectMaterial(CRenderTarget::RTType::Shading);
+
+	if (!shadingMat || !m_pRectBuffer || !m_pInvViewProjCB)
 		return;
 
 	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
@@ -617,13 +620,13 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 	ctx->UpdateSubresource(m_pInvViewProjCB, 0, nullptr, &invCB, 0, 0);
 	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
 
-	m_mRectMats[CRenderTarget::RTType::Shading]->Bind_Matrix(w);
-	m_mRectMats[CRenderTarget::RTType::Shading]->Bind_Camera(camPos, v, p, 0);
+	shadingMat->Bind_Matrix(w);
+	shadingMat->Bind_Camera(camPos, v, p, 0);
 
 	vector<_matrix>& lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightData();
 	
 	if (!lights.empty())
-		m_mRectMats[CRenderTarget::RTType::Shading]->Bind_Light(lights.data(), (_uint)lights.size());
+		shadingMat->Bind_Light(lights.data(), (_uint)lights.size());
 
 	ID3D11ShaderResourceView* srvs[3] = { srvNormal, srvDepth, srvMaterial };
 	ctx->PSSetShaderResources(0, 3, srvs);
@@ -649,7 +652,9 @@ void CCamera::RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp)
 
 void CCamera::RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp)
 {
-	if (!m_mRectMats[CRenderTarget::RTType::Specular] || !m_pRectBuffer || !m_pInvViewProjCB)
+	CMaterial* specularMat = Find_RectMaterial(CRenderTarget::RTType::Specular);
+
+	if (!specularMat || !m_pRectBuffer || !m_pInvViewProjCB)
 		return;
 
 	ID3D11DeviceContext* ctx = CGraphicDevice::GetInstance().Get_Context();
@@ -724,14 +729,14 @@ void CCamera::RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp)
 	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
 
 	// --- 머티리얼 바인딩
-	m_mRectMats[CRenderTarget::RTType::Specular]->Bind_Matrix(w);
-	m_mRectMats[CRenderTarget::RTType::Specular]->Bind_Camera(camPos, v, p, 0);
+	specularMat->Bind_Matrix(w);
+	specularMat->Bind_Camera(camPos, v, p, 0);
 
 	// --- 라이트 바인딩
 	vector<_matrix>& lights = CSceneManager::GetInstance().Get_CrtScene()->Get_LightData();
 
 	if (!lights.empty())
-		m_mRectMats[CRenderTarget::RTType::Specular]->Bind_Light(lights.data(), (_uint)lights.size());
+		specularMat->Bind_Light(lights.data(), (_uint)lights.size());
 
 	// --- SRV 바인딩: t0=null, t1=Normal, t2=Depth, t3=Material(=gSpecParams)
 	ID3D11ShaderResourceView* srvs[3] = { srvNormal, srvDepth, srvMaterial };
@@ -756,6 +761,10 @@ void CCamera::RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp)
 	Safe_Release(prevDS);
 	Safe_Release(prevRS);
 	Safe_Release(prevBS);
+}
+
+void CCamera::RenderShadowDepthPass(const D3D11_VIEWPORT* vp)
+{
 }
 
 void CCamera::RenderCombine(const D3D11_VIEWPORT* vp)
@@ -834,9 +843,11 @@ void CCamera::RenderCombine(const D3D11_VIEWPORT* vp)
 	ctx->UpdateSubresource(m_pInvViewProjCB, 0, nullptr, &invCB, 0, 0);
 	ctx->PSSetConstantBuffers(5, 1, &m_pInvViewProjCB);
 
+	CMaterial* combineMat = Find_RectMaterial(CRenderTarget::RTType::Combine);
+
 	// --- 머티리얼 바인딩
-	m_mRectMats[CRenderTarget::RTType::Combine]->Bind_Matrix(w);
-	m_mRectMats[CRenderTarget::RTType::Combine]->Bind_Camera(camPos, v, p, 0);
+	combineMat->Bind_Matrix(w);
+	combineMat->Bind_Camera(camPos, v, p, 0);
 
 	// --- SRV 바인딩
 	ID3D11ShaderResourceView* srvs[3] = { srvAlbedo, srvShading, srvSpecular };
@@ -916,13 +927,27 @@ CMaterial* CCamera::Add_RectMaterial(const CRenderTarget::RTType _type, const ws
 
 	if (!newMat)
 	{
-		CDebug::LogError(L"Not found" + _path + L" (Material)");
-		CDebug::LogError(L"Not found" + _path + L" (Material)");
+		CDebug::LogError((wstring(L"Not found ") + _path));
 		return nullptr;
 	}
 
-	m_mRectMats.insert({ _type, newMat });
+	auto it = m_mRectMats.find(_type);
+
+	if (it != m_mRectMats.end()) 
+		Safe_Release(it->second);
+
+	m_mRectMats[_type] = newMat;
 	newMat->AddRef();
 
 	return newMat;
+}
+
+CMaterial* CCamera::Find_RectMaterial(const CRenderTarget::RTType _type)
+{
+	auto it = m_mRectMats.find(_type);
+
+	if (it == m_mRectMats.end())
+		return nullptr;
+
+	return it->second;
 }

@@ -1369,6 +1369,13 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC depthPresentMatDesc = { depthPresentShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"DepthPresent (Material)", L"", &depthPresentMatDesc);
 
+	CShader::SHADERDESC shadowDepthPresentShaderDesc = { L"../EngineResources/Shader/ShadowDepthPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"ShadowDepthPresent (Shader)", L"", &shadowDepthPresentShaderDesc);
+
+	CShader* shadowDepthPresentShader = LoadOnGame<CShader>(L"ShadowDepthPresent (Shader)");
+	CMaterial::MATERIALDESC shadowDepthPresentMatDesc = { shadowDepthPresentShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"ShadowDepthPresent (Material)", L"", &shadowDepthPresentMatDesc);
+
 	CShader::SHADERDESC deferredCombineShaderDesc = { L"../EngineResources/Shader/DeferredCombine.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"DeferredCombine (Shader)", L"", &deferredCombineShaderDesc);
 

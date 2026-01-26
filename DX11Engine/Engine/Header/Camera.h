@@ -70,9 +70,10 @@ public:
 	void RenderDisplay();
 
 public:
-	void RenderRTDebugDisplay();
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
+	void RenderShadowDepthPass(const D3D11_VIEWPORT* vp);
+	void RenderRTDebugDisplay();
 
 	void RenderCombine(const D3D11_VIEWPORT* vp);
 
@@ -82,6 +83,7 @@ public:
 
 private:
 	CMaterial* Add_RectMaterial(const CRenderTarget::RTType _type, const wstring& _path);
+	CMaterial* Find_RectMaterial(const CRenderTarget::RTType _type);
 
 protected:
 	ViewMode m_eCamViewMode;
