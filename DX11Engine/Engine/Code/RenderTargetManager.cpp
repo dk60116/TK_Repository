@@ -240,7 +240,7 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     if (FAILED(m_rtList[CRenderTarget::RTType::ShadowDepth].Create(CRenderTarget::RTType::ShadowDepth, device, sdResolution, sdResolution, DXGI_FORMAT_D32_FLOAT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowMask].Create(CRenderTarget::RTType::ShadowMask, device, sdResolution, sdResolution, DXGI_FORMAT_R8_UNORM, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowMask].Create(CRenderTarget::RTType::ShadowMask, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
     return S_OK;

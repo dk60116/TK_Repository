@@ -396,6 +396,7 @@ void CScene::Render_Game()
 		{
 			(*it)->RenderLightingPass_ToShading(vp);
 			(*it)->RenderLightingPass_ToSpecular(vp);
+			(*it)->RenderShadowMask(vp);
 			(*it)->RenderCombine(vp);
 		}
 	}

@@ -74,6 +74,7 @@ public:
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
 	void RenderShadowDepth();
+	void RenderShadowMask(const D3D11_VIEWPORT* vp);
 	
 	void RenderCombine(const D3D11_VIEWPORT* vp);
 
@@ -114,8 +115,11 @@ private:
 
 	ID3D11BlendState* m_pRTDebugBS;
 
-
 	ID3D11Buffer* m_pInvViewProjCB;
+	ID3D11Buffer* m_pShadowCB;
+
+	_float4x4 m_vLightViewProj;
+	_float3 m_vLightDirWS;
 };
 
 NS_END

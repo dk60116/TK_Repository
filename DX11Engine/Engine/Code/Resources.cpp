@@ -1408,15 +1408,15 @@ void CResources::Ready_GameResources()
 	LoadResourceComplete_Game<CShader>(L"ShadowMask (Shader)", L"", &shadowMaskShaderDesc);
 
 	CShader* shadowMaskShader = LoadOnGame<CShader>(L"ShadowMask (Shader)");
-	CMaterial::MATERIALDESC shadowMaskMatDesc = { shadowDepthShader, false };
+	CMaterial::MATERIALDESC shadowMaskMatDesc = { shadowMaskShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"ShadowMask (Material)", L"", &shadowMaskMatDesc);
 
-	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
-	LoadResourceComplete_Game<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc);
+	//CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	//LoadResourceComplete_Game<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc);
 
-	CShader* ulcShader = LoadOnGame<CShader>(L"UnlitColor (Shader)");
-	CMaterial::MATERIALDESC ulcMatDesc = { ulcShader, false };
-	LoadResourceComplete_Game<CMaterial>(L"UnlitMaterial (Material)", L"", &ulcMatDesc);
+	//CShader* ulcShader = LoadOnGame<CShader>(L"UnlitColor (Shader)");
+	//CMaterial::MATERIALDESC ulcMatDesc = { ulcShader, false };
+	//LoadResourceComplete_Game<CMaterial>(L"UnlitMaterial (Material)", L"", &ulcMatDesc);
 
 	CShader::SHADERDESC outlineShaderDesc = { L"../EngineResources/Shader/Outline.hlsl", L"",  VertexSkinnedOutlineBuffer::numElements, VertexSkinnedOutlineBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"Outline (Shader)", L"", &outlineShaderDesc);

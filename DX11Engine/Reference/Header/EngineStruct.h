@@ -1349,13 +1349,14 @@ namespace Engine
 
     struct ShadowCB
     {
-        _float4x4 lightView;
-        _float4x4 lightProj;
         _float4x4 lightViewProj;
-        _float4x4 lightViewProjTex;
-        _float2   shadowInvSize; 
-        _float    shadowBias;
-        _float    pad;
+
+        _float3 lightDirWS;    
+        _float biasBase;  
+
+        _float2 shadowTexel;
+        _float strength;
+        _float _pad1;
     };
 
     struct ImageCB

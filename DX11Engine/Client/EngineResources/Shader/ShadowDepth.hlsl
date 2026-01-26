@@ -1,34 +1,41 @@
-#pragma pack_matrix(row_major)
-
+// 상수 버퍼
 cbuffer PerObject : register(b0)
 {
-    row_major float4x4 world;
+    float4x4 world;
 };
 
 cbuffer PerCamera : register(b1)
 {
-    float3 camPos; // 미사용(바인딩 호환)
-    float pad;
-    row_major float4x4 view; // 여기서는 LightView
-    row_major float4x4 proj; // 여기서는 LightProj
+    float3 pos;
+    float cpadding;
+    float4x4 view;
+    float4x4 proj;
 };
 
 cbuffer PerMaterial : register(b2)
 {
-    float4 baseColor; // 미사용
-    uint useTexture; // 미사용
+    float4 baseColor; // rgba 0~1
+    uint useTexture;
     uint boneCount;
-    uint pad0;
+    float2 mpadding;
 };
 
 cbuffer PerBones : register(b3)
 {
-    row_major float4x4 gBones[128];
+    float4x4 gBones[128];
 };
 
+// 텍스처 & 샘플러
+Texture2D gTexture : register(t0);
+SamplerState gSampler : register(s0);
+
+// 버텍스 입출력
 struct VSIn
 {
     float3 posL : POSITION;
+    float3 normalL : NORMAL;
+    float2 uv : TEXCOORD0;
+    float3 tangentL : TANGENT;
     uint4 boneIndices : BLENDINDICES;
     float4 boneWeights : BLENDWEIGHT;
 };
@@ -38,39 +45,52 @@ struct VSOut
     float4 posH : SV_POSITION;
 };
 
+// 버텍스 셰이더
 VSOut VSMain(VSIn v)
 {
     VSOut o;
 
-    float4 skinnedPos = float4(v.posL, 1.0f);
-
-    if (boneCount != 0)
+    // 스킨 포지션
+    float4 skinnedPos = float4(v.posL, 1);
+    if (boneCount)
     {
-        float4 p = 0;
-
+        skinnedPos = 0;
         [unroll]
         for (int i = 0; i < 4; ++i)
         {
             float w = v.boneWeights[i];
             uint idx = v.boneIndices[i];
-
-            if (w > 0.0f && idx < 128)
-            {
-                p += mul(float4(v.posL, 1.0f), gBones[idx]) * w;
-            }
+            skinnedPos += mul(float4(v.posL, 1), gBones[idx]) * w;
         }
-
-        skinnedPos = p;
     }
 
+    // 스킨 노멀
+    float3 skinnedN = v.normalL;
+    if (boneCount)
+    {
+        skinnedN = 0;
+        [loop]
+        for (int i = 0; i < 4; ++i)
+        {
+            float w = v.boneWeights[i];
+            uint idx = v.boneIndices[i];
+            skinnedN += mul((float3x3) gBones[idx], v.normalL) * w;
+        }
+    }
+
+    // 월드 변환
     float4 posW = mul(skinnedPos, world);
+    float3 normalW = normalize(mul((float3x3) world, skinnedN));
+
+    // MVP
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
 
     return o;
 }
 
-float PSMain(VSOut i) : SV_Depth
+// 픽셀 셰이더
+float4 PSMain(VSOut i) : SV_Target
 {
-    return i.posH.z / i.posH.w;
+    return i.posH.z / i.posH.w; // NDC depth (0..1)
 }

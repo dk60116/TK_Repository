@@ -1,17 +1,19 @@
 // ShadowMask.hlsl (example)
 // 목적: ShadowMask RT에 0~1 shadow factor를 기록
 
+#pragma pack_matrix(row_major)
+
 cbuffer PerObject : register(b0)
 {
-    float4x4 world; // fullscreen rect용
+    row_major float4x4 world;
 };
 
 cbuffer PerCamera : register(b1)
 {
-    float3 camPos; // 사용 안 해도 바인딩 호환용
+    float3 camPos;
     float _pad0;
-    float4x4 view;
-    float4x4 proj;
+    row_major float4x4 view;
+    row_major float4x4 proj;
 };
 
 cbuffer PerCustomValue : register(b5)
