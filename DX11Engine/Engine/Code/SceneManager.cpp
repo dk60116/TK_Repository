@@ -8,6 +8,7 @@ CSceneManager::CSceneManager()
 	, m_bLoading(false)
 	, m_pEditorCamObj(nullptr)
 	, m_pEditorCamera(nullptr)
+	, m_sLightSetting({})
 {
 }
 
@@ -145,4 +146,30 @@ void CSceneManager::LoadComplete()
 CCamera* CSceneManager::Get_EditorCamera()
 {
 	return m_pCrtScene->Get_EditorCamera();
+}
+
+const CSceneManager::LightSettings& CSceneManager::Get_LightSetting()
+{
+	return m_sLightSetting;
+}
+
+void CSceneManager::Set_ShadowQuality(const shadowQualityOptions option)
+{
+	m_sLightSetting.shadowQuality = option;
+
+	switch (option)
+	{
+	case Low:
+		m_sLightSetting.shadowMapSize = 512;
+		break;
+	case Middle:
+		m_sLightSetting.shadowMapSize = 1024;
+		break;
+	case High:
+		m_sLightSetting.shadowMapSize = 2048;
+		break;
+	case SuperHight:
+		m_sLightSetting.shadowMapSize = 4096;
+		break;
+	}
 }

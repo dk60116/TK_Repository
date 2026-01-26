@@ -793,7 +793,7 @@ vector<CRenderer*> CScene::Get_MeshObjects()
 	return result;
 }
 
-const CScene::LightSettings& CScene::Get_LightSetting()
+const CScene::EnviromentSettings& CScene::Get_EnviromentSetting()
 {
 	return m_sLightSettings;
 }

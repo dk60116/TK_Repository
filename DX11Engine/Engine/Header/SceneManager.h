@@ -10,6 +10,15 @@ class ENGINE_DLL CSceneManager final
 	SINGLETONCLASS(CSceneManager);
 
 public:
+	enum shadowQualityOptions { Low, Middle, High, SuperHight };
+
+	struct LightSettings
+	{
+		shadowQualityOptions shadowQuality = Middle;
+		_uint shadowMapSize = 1024;
+	};
+
+public:
 	HRESULT Initialize();
 	void Release();
 
@@ -27,6 +36,10 @@ public:
 public:
 	class CCamera* Get_EditorCamera();
 
+public:
+	const LightSettings& Get_LightSetting();
+	void Set_ShadowQuality(const shadowQualityOptions option);
+
 private:
 	CScene* m_pCrtScene;
 	CScene* m_pTempScene;
@@ -36,6 +49,9 @@ private:
 
 	class CGameObject* m_pEditorCamObj;
 	class CEditorCamera* m_pEditorCamera;
+
+private:
+	LightSettings m_sLightSetting;
 };
 
 NS_END

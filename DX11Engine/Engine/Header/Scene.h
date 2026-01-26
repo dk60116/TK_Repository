@@ -33,7 +33,7 @@ public:
     }SCENETRANSFORMINFO;
 
 public:
-    struct LightSettings
+    struct EnviromentSettings
     {
         wstring skyBox = L"DefaultSky (SkyBox)";
         _float ambient = 0.2f;
@@ -86,7 +86,7 @@ public:
     vector<CGameObject*> Get_RootObjects();
     vector<CRenderer*> Get_MeshObjects();
 
-    const LightSettings& Get_LightSetting();
+    const EnviromentSettings& Get_EnviromentSetting();
 
     class CCamera* Get_Camera() const;
     CCamera* Get_Camera(const _int _index) const;
@@ -120,7 +120,7 @@ protected:
 protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
-    LightSettings m_sLightSettings;
+    EnviromentSettings m_sLightSettings;
     class CSkyBox* m_pSkyBox;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;

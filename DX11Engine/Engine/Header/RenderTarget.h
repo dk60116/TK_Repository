@@ -13,6 +13,7 @@ public:
         Normal,
         Material,
         Depth,
+        ShadowDepth,
         Shading,
         Specular,
         ShadowMask

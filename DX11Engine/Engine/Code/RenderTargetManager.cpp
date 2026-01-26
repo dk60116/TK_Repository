@@ -67,7 +67,7 @@ void CRenderTargetManager::Bind_RenderTarget(const CRenderTarget::RTType type, I
 
     CRenderTarget& rt = it->second;
 
-    if (type == CRenderTarget::RTType::Depth)
+    if (type == CRenderTarget::RTType::Depth || type == CRenderTarget::RTType::ShadowDepth)
     {
         ID3D11DepthStencilView* dsv = rt.GetDSV();
         if (!dsv)
@@ -118,10 +118,12 @@ void CRenderTargetManager::Bind_GBuffer(ID3D11DeviceContext* ctx, const D3D11_VI
 void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 {
     ID3D11DeviceContext* context = CGraphicDevice::GetInstance().Get_Context();
+
     if (!context)
         return;
 
     auto it = m_rtList.find(type);
+
     if (it == m_rtList.end())
         return;
 
@@ -136,8 +138,15 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
         context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
         return;
     }
+    else if (type == CRenderTarget::RTType::ShadowDepth)
+    {
+        auto dsv = rt.GetDSV();
+        if (!dsv) return;
+        context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        return;
+    }
 
-    float clear[4] = { 0, 0, 0, 0 };
+    _float clear[4] = { 0, 0, 0, 0 };
 
     if (type == CRenderTarget::RTType::Normal)
     {
@@ -148,6 +157,7 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
     }
 
     ID3D11RenderTargetView* rtv = rt.GetRTV();
+
     if (!rtv)
         return;
 
@@ -221,6 +231,11 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
         return E_FAIL;
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Depth].Create(CRenderTarget::RTType::Depth, device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, true)))
+        return E_FAIL;
+
+    _uint shadowMapSize = CSceneManager::GetInstance().Get_LightSetting().shadowMapSize;
+
+    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowDepth].Create(CRenderTarget::RTType::ShadowDepth, device, shadowMapSize, shadowMapSize, DXGI_FORMAT_R32_TYPELESS, true)))
         return E_FAIL;
 
     if (FAILED(m_rtList[CRenderTarget::RTType::Shading].Create(CRenderTarget::RTType::Shading, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
