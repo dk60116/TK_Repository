@@ -263,68 +263,92 @@ void CSkinnedMeshRenderer::Render_WithCamera(CCamera* _cam)
 	m_pMeshBuffer->Render();
 }
 
-void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
+void CSkinnedMeshRenderer::Render_ShadowDepth(CMaterial* _shadowDepthMat, const CLight::ShadowMatrices& _shadowMatrix)
 {
-	return;
-
-	if (!_cam)
+	if (!_shadowDepthMat)
+	{
+		CDebug::LogError(L"SkinnedMeshRenderer::Render_ShadowDepth - shadowDepthMat is null: " + m_pGameObject->Get_ObjectNameID());
 		return;
+	}
 
-	D3D11_RASTERIZER_DESC rtDesc = {};
-	rtDesc.FillMode = D3D11_FILL_SOLID;
-	rtDesc.CullMode = D3D11_CULL_FRONT;
-	rtDesc.DepthClipEnable = TRUE;
-	rtDesc.DepthBias = 0;
-	rtDesc.SlopeScaledDepthBias = 0;
-	rtDesc.DepthBiasClamp = 0;
-	rtDesc.MultisampleEnable = FALSE;
-	rtDesc.AntialiasedLineEnable = FALSE;
-	rtDesc.ScissorEnable = FALSE;
+	if (!m_pMeshBuffer)
+	{
+		CDebug::LogError(L"SkinnedMeshRenderer::Render_ShadowDepth - No MeshBuffer: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
 
-	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-	dsDesc.DepthEnable = TRUE;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	if (!m_pBoneMatrixBuffer)
+	{
+		CDebug::LogError(L"SkinnedMeshRenderer::Render_ShadowDepth - BoneMatrixBuffer is null: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
 
-	ID3D11RasterizerState* outlineRasterizer;
-	m_pDevice->CreateRasterizerState(&rtDesc, &outlineRasterizer);
-
-	ID3D11DepthStencilState* outlineStencil;
-	m_pDevice->CreateDepthStencilState(&dsDesc, &outlineStencil);
-
-	// 월드, 뷰, 프로젝션
+	// 1) World
 	_matrix matWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
 
-	// 스케일업 (조금 크게)
-	_matrix scale = XMMatrixScaling(1.03f, 1.03f, 1.03f);
-	matWorld = scale * matWorld;
+	// 2) Light View/Proj
+	_matrix matView = XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(&_shadowMatrix.view));
+	_matrix matProj = XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(&_shadowMatrix.proj));
 
-	vector3 cPos = _cam->Get_Transform()->Get_Position();
-	_float3 camPos = cPos.toFloat3();
-	_matrix matView = _cam->Get_ViewMatrix();
-	_matrix matProj = _cam->Get_ProjectionMatrix();
+	// 3) Bone Count Clamp
+	const _uint boneCount = min<_uint>(static_cast<_uint>(m_vBones.size()), 128u);
 
-	m_pContext->OMSetDepthStencilState(CGraphicDevice::GetInstance().Get_DepthStencil_NoWrite(), 0);
+	// 4) Bone Matrices (항상 128개)
+	_matrix boneMatrices[128];
+	for (int i = 0; i < 128; ++i)
+		boneMatrices[i] = XMMatrixIdentity();
 
-	m_pContext->RSSetState(CGraphicDevice::GetInstance().Get_Rasterizer_CullFront());
+	// meshWorldInv 1회 계산
+	_matrix meshWorldInv = XMMatrixIdentity();
+	{
+		if (m_pGameObject && m_pGameObject->Get_Transform())
+		{
+			_matrix meshWorld = m_pGameObject->Get_Transform()->Get_WorldMatrix();
+			meshWorldInv = XMMatrixInverse(nullptr, meshWorld);
+		}
+	}
 
-	// 아웃라인 머티리얼 바인딩 (단색 셰이더)
+	// 5) 본 행렬 계산(기존 Render_WithCamera와 동일한 규칙 유지)
+	for (_uint i = 0; i < boneCount; ++i)
+	{
+		if (!m_vBones[i])
+			continue;
 
-	//if (m_pOutlineMat)
-	//{
-	//	m_pOutlineMat->Set_DiffuseColor(ColorValue::red());
-	//	m_pOutlineMat->Bind(matWorld, camPos, matView, matProj, static_cast<_uint>(m_vBones.size()));
+		_matrix boneWorld = m_vBones[i]->Get_WorldMatrix();
+		_matrix invBindPose = XMLoadFloat4x4(&m_pMeshBuffer->m_vBoneOffsetMatrices[i]); // offset
 
-	//	// 본 상수 버퍼 바인딩
-	//	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+		_matrix boneMeshLocal = boneWorld * meshWorldInv;
 
-	//	// 메시 렌더링
-	//	m_pMeshBuffer->Render();
-	//}
+		// 기존 렌더에서 transpose해서 올렸으므로, shadow에서도 동일하게 유지
+		boneMatrices[i] = XMMatrixTranspose(invBindPose * boneMeshLocal);
+	}
 
-	// 5) 상태 복원
-	m_pContext->OMSetDepthStencilState(nullptr, 0);
-	m_pContext->RSSetState(nullptr);
+	// 6) Bone CB 업로드
+	D3D11_MAPPED_SUBRESOURCE mappedRes = {};
+	HRESULT hr = m_pContext->Map(m_pBoneMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
+	if (FAILED(hr))
+	{
+		CDebug::LogError(L"SkinnedMeshRenderer::Render_ShadowDepth - Failed Map BoneMatrixBuffer: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	memcpy(mappedRes.pData, boneMatrices, sizeof(XMMATRIX) * 128);
+	m_pContext->Unmap(m_pBoneMatrixBuffer, 0);
+
+	// 7) Material bind
+	_float3 dummyPos = { 0.f, 0.f, 0.f };
+	_shadowDepthMat->Bind_Matrix(matWorld);
+	_shadowDepthMat->Bind_Camera(dummyPos, matView, matProj, boneCount);
+
+	// 8) Bones CB bind (b3)
+	m_pContext->VSSetConstantBuffers(3, 1, &m_pBoneMatrixBuffer);
+
+	// 9) Draw
+	m_pMeshBuffer->Render();
+}
+
+void CSkinnedMeshRenderer::Render_Outline(CCamera* _cam)
+{
 }
 
 CMeshBuffer* CSkinnedMeshRenderer::Get_MeshBuffer()

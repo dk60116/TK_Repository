@@ -9,6 +9,13 @@ class ENGINE_DLL CLight final : public CComponent
 	friend class CGameObject;
 
 public:
+	struct ShadowMatrices
+	{
+		_float4x4 view;
+		_float4x4 proj;
+	};
+
+public:
 	enum class Type : _uint { Directional = 0, point = 1, spot = 2 };
 
 protected:
@@ -37,11 +44,20 @@ public:
 
 	const _float4x4 To_LightInfo();
 
+public:
+	const bool IsCastShadow() const;
+	void SetCastShadow(_bool _value);
+
+	void BuildDirectionalShadow(class CCamera* _cam, _float _shadowDistance, ShadowMatrices& _outShadowMatix);
+
 private:
 	Type m_eType;
 
 	_float m_fIntensity, m_fRange, m_fSpotAngle, m_fAttenuation;
 	ColorValue m_vDiffuseColor, m_vSpecularColor;
+
+private:
+	bool m_bCastShadow;
 };
 
 NS_END

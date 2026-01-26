@@ -141,6 +141,40 @@ void CMeshRenderer::Render_WithCamera(CCamera* _cam)
 	pBuffer->Render();
 }
 
+void CMeshRenderer::Render_ShadowDepth(CMaterial* _shadowDepthMat, const CLight::ShadowMatrices& _shadowMatrix)
+{
+	if (!_shadowDepthMat)
+	{
+		CDebug::LogError(L"MeshRenderer::Render_ShadowDepth - shadowDepthMat is null: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	if (!m_pMeshFilter)
+	{
+		CDebug::LogError(L"MeshRenderer::Render_ShadowDepth - No MeshFilter: " + m_pGameObject->Get_ObjectNameID());
+		return;
+	}
+
+	CMeshBuffer* pBuffer = m_pMeshFilter->Get_MeshBuffer();
+	if (!pBuffer)
+		return;
+
+	// World
+	_matrix matWorld = Get_Transform()->Get_WorldMatrix();
+
+	// Light View/Proj (shadow matrices)
+	_matrix matView = XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&_shadowMatrix.view));
+	_matrix matProj = XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&_shadowMatrix.proj));
+
+	// Shadow depth는 camPos 의미 없으므로 더미
+	_float3 dummyPos = { 0.f, 0.f, 0.f };
+
+	_shadowDepthMat->Bind_Matrix(matWorld);
+	_shadowDepthMat->Bind_Camera(dummyPos, matView, matProj, 0);
+
+	pBuffer->Render();
+}
+
 void CMeshRenderer::Render_Outline(CCamera* _cam)
 {
 }

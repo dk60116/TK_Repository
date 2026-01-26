@@ -45,6 +45,7 @@ public:
 	HRESULT Initialize() override;
 	void Update() override;
 	void Render() override;
+	void OnPostRender() override;
 	void OnDestroy() override;
 
 public:
@@ -108,7 +109,9 @@ private:
 	map<CRenderTarget::RTType, CMaterial*> m_mRectMats;
 
 	ID3D11DepthStencilState* m_pRTDebugDS;
+	ID3D11DepthStencilState* m_pRTShadowDepthDS;
 	ID3D11RasterizerState* m_pRTDebugRS;
+	ID3D11RasterizerState* m_pRTShdowDepthRS;
 	ID3D11BlendState* m_pRTDebugBS;
 
 	ID3D11Buffer* m_pInvViewProjCB;

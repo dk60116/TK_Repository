@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Light.h"
 
 NS_BEGIN(Engine)
 
@@ -18,6 +19,7 @@ protected:
 
 public:
 	virtual void Render_WithCamera(class CCamera* _cam) PURE;
+	virtual void Render_ShadowDepth(CMaterial* _shadowDepthMat, const CLight::ShadowMatrices& _shadowMatrix) PURE;
 	virtual void Render_Outline(CCamera* _cam) PURE;
 
 public:

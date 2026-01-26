@@ -9,6 +9,7 @@ CLight::CLight()
 	, m_fAttenuation(1.f)
 	, m_vDiffuseColor(ColorValue::white())
 	, m_vSpecularColor(ColorValue::white())
+	, m_bCastShadow(true)
 {
 }
 
@@ -119,4 +120,56 @@ const _float4x4 CLight::To_LightInfo()
 	result._44 = 0.f;
 
 	return result;
+}
+
+const bool CLight::IsCastShadow() const
+{
+	return m_bCastShadow;
+}
+
+void CLight::SetCastShadow(_bool _value)
+{
+	m_bCastShadow = _value;
+}
+
+void CLight::BuildDirectionalShadow(CCamera* _cam, _float _shadowDistance, ShadowMatrices& _outShadowMatix)
+{
+	if (!_cam)
+		return;
+
+	// 1) 카메라 중심점(간이)
+	vector3 camPos = _cam->Get_Transform()->Get_Position();
+	vector3 camFwd = _cam->Get_Transform()->Get_Directions().forward;
+	camFwd = camFwd.normalized(); // 엔진 함수에 맞게 교체
+
+	vector3 center = camPos + camFwd * (_shadowDistance * 0.5f);
+
+	// 2) 라이트 방향
+	vector3 lightDir = Get_Transform()->Get_Directions().forward;
+	lightDir = lightDir.normalized(); // 필수 권장
+
+	vector3 lightPos = center - lightDir * _shadowDistance;
+
+	_vector eye = XMVectorSet(lightPos.x, lightPos.y, lightPos.z, 1.f);
+	_vector at = XMVectorSet(center.x, center.y, center.z, 1.f);
+
+	// 3) Up 특이점 방지
+	_vector worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector ldir = XMVector3Normalize(XMVectorSet(lightDir.x, lightDir.y, lightDir.z, 0.f));
+
+	_float upDot = fabsf(XMVectorGetX(XMVector3Dot(ldir, worldUp)));
+	_vector up = (upDot > 0.99f) ? XMVectorSet(0.f, 0.f, 1.f, 0.f) : worldUp;
+
+	_matrix V = XMMatrixLookAtLH(eye, at, up);
+
+	// 4) Ortho (간이)
+	_float half = _shadowDistance * 0.5f;
+	_float nearZ = 0.0f;
+	_float farZ = _shadowDistance * 2.0f;
+
+	_matrix P = XMMatrixOrthographicOffCenterLH(-half, half, -half, half, nearZ, farZ);
+
+	// 5) Store (reinterpret_cast 지양)
+	XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&_outShadowMatix.view), V);
+	XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&_outShadowMatix.proj), P);
 }

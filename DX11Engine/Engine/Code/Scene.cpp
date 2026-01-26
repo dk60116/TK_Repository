@@ -380,8 +380,16 @@ void CScene::Render_Game()
 	m_pContext->OMSetDepthStencilState(m_pMeshDepthStencilState, 0);
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
+	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderMesh();
+	}
+
+	for (TRAVERSAL_ITER(m_lCameraList, it))
+	{
+		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
+			(*it)->RenderShadowDepthPass(vp);
+	}
 
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 	{
@@ -400,8 +408,10 @@ void CScene::Render_Game()
 
 	// (추가) Combine Present를 먼저 백버퍼에 출력
 	for (TRAVERSAL_ITER(m_lCameraList, it))
+	{
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderDisplay();
+	}
 
 	// 그 다음 UI
 	m_pContext->RSSetState(m_pUIResterizerState);
@@ -415,6 +425,9 @@ void CScene::Render_Game()
 	for (TRAVERSAL_ITER(m_lCameraList, it))
 		if ((*it)->Get_GameObject()->IsRecursiveActive() && (*it)->Get_Enable())
 			(*it)->RenderRTDebugDisplay();
+
+	for (TRAVERSAL_ITER(m_lObjectList, it))
+		(*it)->OnPostRender();
 }
 
 void CScene::SceneRelease()
