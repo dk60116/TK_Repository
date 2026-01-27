@@ -56,18 +56,18 @@ HRESULT CPlayer::Initialize()
 	m_pGameObject->CreateSkinnedMeshHierachy(CResources::GetInstance().LoadSkinnedMeshBuffersOnScene(L"Link_Model (MeshBuffer)"), CResources::GetInstance().LoadSkinnedBonesOnScene(L"Link_Model (MeshBuffer)"), 0.01f, vector3::up() * 180.f);
 
 	m_pAnimator = m_pGameObject->AddComponent<CAnimator>();
-	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
-	m_pAnimator->Add_Animation(L"Walk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Walk (Animation)"));
-	m_pAnimator->Add_Animation(L"LeftWalk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_LeftWalk (Animation)"));
-	m_pAnimator->Add_Animation(L"RightWalk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_RightWalk (Animation)"));
-	m_pAnimator->Add_Animation(L"BackWalk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_BackWalk (Animation)"));
-	m_pAnimator->Add_Animation(L"CombatBackWalk", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatBackWalk (Animation)"));
-	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Run (Animation)"));
-	m_pAnimator->Add_Animation(L"CombatRun", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatRun (Animation)"));
-	m_pAnimator->Add_Animation(L"CombatIdle", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_CombatIdle (Animation)"));
-	m_pAnimator->Add_Animation(L"Jump", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_Jump (Animation)"));
-	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
-	m_pAnimator->Add_Animation(L"SwordCombo", CResources::GetInstance().LoadOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
+	m_pAnimator->Add_Animation(L"Idle", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_Idle (Animation)"));
+	m_pAnimator->Add_Animation(L"Walk", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_Walk (Animation)"));
+	m_pAnimator->Add_Animation(L"LeftWalk", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_LeftWalk (Animation)"));
+	m_pAnimator->Add_Animation(L"RightWalk", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_RightWalk (Animation)"));
+	m_pAnimator->Add_Animation(L"BackWalk", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_BackWalk (Animation)"));
+	m_pAnimator->Add_Animation(L"CombatBackWalk", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_CombatBackWalk (Animation)"));
+	m_pAnimator->Add_Animation(L"Run", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_Run (Animation)"));
+	m_pAnimator->Add_Animation(L"CombatRun", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_CombatRun (Animation)"));
+	m_pAnimator->Add_Animation(L"CombatIdle", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_CombatIdle (Animation)"));
+	m_pAnimator->Add_Animation(L"Jump", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_Jump (Animation)"));
+	m_pAnimator->Add_Animation(L"SwordAttack1", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_SwordAttack1 (Animation)"));
+	m_pAnimator->Add_Animation(L"SwordCombo", CResources::GetInstance().CloneOnScene<CAnimationClip>(L"Link_AttackCombo (Animation)"));
 
 	m_pAnimator->SetLoop(true);
 

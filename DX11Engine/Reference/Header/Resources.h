@@ -58,12 +58,13 @@ public:
 
     template<typename T>
     T* LoadOnGame(const wstring& _name);
-
     template<typename T>
     T* CloneOnGame(const wstring& _name);
 
     template<typename T>
     T* LoadOnScene(const wstring& _name);
+    template<typename T>
+    T* CloneOnScene(const wstring& _name);
 
     vector<MeshBundle> LoadMeshBuffersOnScene(const wstring& _name);
     vector<SkinnedMeshBundle> LoadSkinnedMeshBuffersOnScene(const wstring& _name);
@@ -197,4 +198,23 @@ inline T* CResources::LoadOnScene(const wstring& _name)
     }
 
     return resultResource;
+}
+
+template<typename T>
+inline T* CResources::CloneOnScene(const wstring& _name)
+{
+    T* proto = LoadOnScene<T>(_name);
+
+    if (!proto)
+    {
+        CDebug::LogError(L"Failed clone Scene resource - not found resource: " + _name);
+        return nullptr;
+    }
+
+    T* clone = T::Clone(*proto);
+
+    if (CSceneManager::GetInstance().Get_CrtScene())
+        CSceneManager::GetInstance().Get_CrtScene()->Add_CloneResourece(clone);
+
+    return clone;
 }
