@@ -487,7 +487,7 @@ CGameObject* CGameObject::Instantiate(const CGameObject* _rhs)
 
 	for (TRAVERSAL_ITER(_rhs->m_lComponentList, it))
 	{
-		if ((*it))
+		if (*it && !dynamic_cast<CTransform*>(*it))
 		{
 			newGameObj->m_lComponentList.push_back((*it)->Clone());
 			newGameObj->m_lComponentList.back()->Set_Object(newGameObj);
