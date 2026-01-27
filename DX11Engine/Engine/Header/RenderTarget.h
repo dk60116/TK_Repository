@@ -10,6 +10,7 @@ public:
     {
         Defalut,
         ShadowDepthPresent,
+        ShadowMaskPresent,
         Combine,
         Albedo,
         Normal,

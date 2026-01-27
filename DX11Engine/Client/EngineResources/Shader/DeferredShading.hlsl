@@ -51,9 +51,6 @@ VSOut VSMain(VSIn v)
 {
     VSOut o;
     float4 posW = mul(float4(v.posL, 1), world);
-    // view/proj를 안 쓰려면 world에서 이미 clip-space로 만들거나,
-    // 기존 Present처럼 view/proj를 Identity/Ortho로 넣어도 됩니다.
-    // 여기서는 기존 Camera::RenderRTDebugDisplay 흐름 그대로(view/proj 바인딩) 사용을 전제로 둡니다.
     float4 posV = mul(posW, view);
     o.posH = mul(posV, proj);
     o.uv = v.uv;

@@ -10,12 +10,12 @@ class ENGINE_DLL CSceneManager final
 	SINGLETONCLASS(CSceneManager);
 
 public:
-	enum shadowQualityOptions { Low, Middle, High, SuperHight };
+	enum shadowQualityOptions { Low, Middle, High, SuperHigh, Ultra };
 
 	struct LightSettings
 	{
-		shadowQualityOptions shadowQuality = Middle;
-		_uint shadowMapSize = 1024;
+		shadowQualityOptions shadowQuality = SuperHigh;
+		_uint shadowMapSize = 0;
 	};
 
 public:

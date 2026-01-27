@@ -52,14 +52,14 @@ HRESULT CScene::Initialize()
 
 	m_iUniqueObjectCount = 0;
 
-	if (m_sLightSettings.skyBox != L"")
+	if (m_sEnviromentSettings.skyBox != L"")
 	{
 		if (!m_pSkyBox)
 		{
-			m_pSkyBox = CResources::GetInstance().LoadOnGame<CSkyBox>(m_sLightSettings.skyBox);
+			m_pSkyBox = CResources::GetInstance().LoadOnGame<CSkyBox>(m_sEnviromentSettings.skyBox);
 
 			if (!m_pSkyBox)
-				m_pSkyBox = CResources::GetInstance().LoadOnScene<CSkyBox>(m_sLightSettings.skyBox);
+				m_pSkyBox = CResources::GetInstance().LoadOnScene<CSkyBox>(m_sEnviromentSettings.skyBox);
 
 			if (m_pSkyBox)
 			{
@@ -397,6 +397,7 @@ void CScene::Render_Game()
 		{
 			(*it)->RenderLightingPass_ToShading(vp);
 			(*it)->RenderLightingPass_ToSpecular(vp);
+			(*it)->RenderShadowMaskPass(vp);
 			(*it)->RenderCombine(vp);
 		}
 	}
@@ -808,7 +809,12 @@ vector<CRenderer*> CScene::Get_MeshObjects()
 
 const CScene::EnviromentSettings& CScene::Get_EnviromentSetting()
 {
-	return m_sLightSettings;
+	return m_sEnviromentSettings;
+}
+
+void CScene::Set_DirectionalLightShadowDist(const _float _value)
+{
+	m_sEnviromentSettings.directionalLightShadowDist = _value;
 }
 
 CCamera* CScene::Get_Camera() const

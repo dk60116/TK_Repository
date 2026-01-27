@@ -37,6 +37,7 @@ public:
     {
         wstring skyBox = L"DefaultSky (SkyBox)";
         _float ambient = 0.2f;
+        _float directionalLightShadowDist = 50.f;
     };
 
 protected:
@@ -88,6 +89,8 @@ public:
 
     const EnviromentSettings& Get_EnviromentSetting();
 
+    void Set_DirectionalLightShadowDist(const _float _value);
+
     class CCamera* Get_Camera() const;
     CCamera* Get_Camera(const _int _index) const;
     CCamera* Get_EditorCamera() const;
@@ -120,7 +123,7 @@ protected:
 protected:
     UINT m_iSceneIndex;
     wstring m_strSceneName;
-    EnviromentSettings m_sLightSettings;
+    EnviromentSettings m_sEnviromentSettings;
     class CSkyBox* m_pSkyBox;
     list <CGameObject*> m_lObjectList;
     list <CCamera*> m_lCameraList;

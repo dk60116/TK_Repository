@@ -96,15 +96,5 @@ VSOut VSMain(VSIn v)
 
 float4 PSMain(VSOut i) : SV_Target
 {
-    // ShadowDepth pass에서는 보통 RTV가 없어서 PS 출력이 사용되지 않습니다.
-    // 다만 "알파 컷아웃"이 필요한 경우에는 아래를 사용하세요.
-
-    // if (useTexture != 0)
-    // {
-    //     float2 uv = i.uv * gTiling + gOffset;
-    //     float a = gTexture.Sample(gSampler, uv).a;
-    //     clip(a - 0.5f); // 임계값은 머티리얼/텍스처에 맞게
-    // }
-
     return 0;
 }

@@ -106,36 +106,37 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
     m_format = format;
     m_createSRV = createSRV;
 
-    // --- Depth (Scene Depth)
     if (type == RTType::Depth)
     {
-        D3D11_TEXTURE2D_DESC td{};
+        D3D11_TEXTURE2D_DESC td = {};
         td.Width = width;
         td.Height = height;
         td.MipLevels = 1;
         td.ArraySize = 1;
-        td.SampleDesc.Count = 1;
-        td.Usage = D3D11_USAGE_DEFAULT;
-
         td.Format = DXGI_FORMAT_R24G8_TYPELESS;
+        td.SampleDesc.Count = 1;
+        td.SampleDesc.Quality = 0;
+        td.Usage = D3D11_USAGE_DEFAULT;
         td.BindFlags = D3D11_BIND_DEPTH_STENCIL | (createSRV ? D3D11_BIND_SHADER_RESOURCE : 0);
+        td.CPUAccessFlags = 0;
+        td.MiscFlags = 0;
 
         HRESULT hr = device->CreateTexture2D(&td, nullptr, &m_texture);
         if (FAILED(hr)) 
             return hr;
 
-        D3D11_DEPTH_STENCIL_VIEW_DESC dsvd{};
+        D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = {};
         dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
         dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         dsvd.Texture2D.MipSlice = 0;
 
         hr = device->CreateDepthStencilView(m_texture, &dsvd, &m_dsv);
-        if (FAILED(hr)) 
+        if (FAILED(hr))
             return hr;
 
         if (createSRV)
         {
-            D3D11_SHADER_RESOURCE_VIEW_DESC srvd{};
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
             srvd.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
             srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvd.Texture2D.MostDetailedMip = 0;
@@ -149,7 +150,6 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
         return S_OK;
     }
 
-    // --- ShadowDepth (ShadowMap Depth)
     if (type == RTType::ShadowDepth)
     {
         D3D11_TEXTURE2D_DESC td{};
@@ -157,18 +157,18 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
         td.Height = height;
         td.MipLevels = 1;
         td.ArraySize = 1;
-        td.SampleDesc.Count = 1;
-        td.Usage = D3D11_USAGE_DEFAULT;
-
-        // typeless로 만들어서 DSV/SRV를 서로 다른 포맷으로 뽑는다
         td.Format = DXGI_FORMAT_R32_TYPELESS;
+        td.SampleDesc.Count = 1;
+        td.SampleDesc.Quality = 0;
+        td.Usage = D3D11_USAGE_DEFAULT;
         td.BindFlags = D3D11_BIND_DEPTH_STENCIL | (createSRV ? D3D11_BIND_SHADER_RESOURCE : 0);
+        td.CPUAccessFlags = 0;
+        td.MiscFlags = 0;
 
         HRESULT hr = device->CreateTexture2D(&td, nullptr, &m_texture);
-        if (FAILED(hr)) 
+        if (FAILED(hr))
             return hr;
 
-        // DSV: D32_FLOAT
         D3D11_DEPTH_STENCIL_VIEW_DESC dsvd{};
         dsvd.Format = DXGI_FORMAT_D32_FLOAT;
         dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
@@ -178,16 +178,46 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
         if (FAILED(hr)) 
             return hr;
 
-        // SRV: R32_FLOAT (샘플링용)
         if (createSRV)
         {
-            D3D11_SHADER_RESOURCE_VIEW_DESC srvd{};
+            D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
             srvd.Format = DXGI_FORMAT_R32_FLOAT;
             srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvd.Texture2D.MostDetailedMip = 0;
             srvd.Texture2D.MipLevels = 1;
 
             hr = device->CreateShaderResourceView(m_texture, &srvd, &m_srv);
+            if (FAILED(hr)) return hr;
+        }
+
+        return S_OK;
+    }
+
+    {
+        D3D11_TEXTURE2D_DESC td = {};
+        td.Width = width;
+        td.Height = height;
+        td.MipLevels = 1;
+        td.ArraySize = 1;
+        td.Format = format;
+        td.SampleDesc.Count = 1;
+        td.SampleDesc.Quality = 0;
+        td.Usage = D3D11_USAGE_DEFAULT;
+        td.BindFlags = D3D11_BIND_RENDER_TARGET | (createSRV ? D3D11_BIND_SHADER_RESOURCE : 0);
+        td.CPUAccessFlags = 0;
+        td.MiscFlags = 0;
+
+        HRESULT hr = device->CreateTexture2D(&td, nullptr, &m_texture);
+        if (FAILED(hr)) 
+            return hr;
+
+        hr = device->CreateRenderTargetView(m_texture, nullptr, &m_rtv);
+        if (FAILED(hr)) 
+            return hr;
+
+        if (createSRV)
+        {
+            hr = device->CreateShaderResourceView(m_texture, nullptr, &m_srv);
             if (FAILED(hr)) 
                 return hr;
         }
@@ -195,8 +225,7 @@ HRESULT CRenderTarget::Create(RTType type, ID3D11Device* device, _uint width, _u
         return S_OK;
     }
 
-    // 그 외 컬러 RT
-    return CreateColor_Internal(device);
+    return E_FAIL;
 }
 
 HRESULT CRenderTarget::CreateColor_Internal(ID3D11Device* device)

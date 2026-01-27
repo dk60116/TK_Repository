@@ -1376,6 +1376,13 @@ void CResources::Ready_GameResources()
 	CMaterial::MATERIALDESC shadowDepthPresentMatDesc = { shadowDepthPresentShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"ShadowDepthPresent (Material)", L"", &shadowDepthPresentMatDesc);
 
+	CShader::SHADERDESC shadowMaskPresentShaderDesc = { L"../EngineResources/Shader/ShadowMaskPresent.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"ShadowMaskPresent (Shader)", L"", &shadowMaskPresentShaderDesc);
+
+	CShader* shadowMaskPresentShader = LoadOnGame<CShader>(L"ShadowMaskPresent (Shader)");
+	CMaterial::MATERIALDESC shadowMaskPresentMatDesc = { shadowMaskPresentShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"ShadowMaskPresent (Material)", L"", &shadowMaskPresentMatDesc);
+
 	CShader::SHADERDESC deferredCombineShaderDesc = { L"../EngineResources/Shader/DeferredCombine.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"DeferredCombine (Shader)", L"", &deferredCombineShaderDesc);
 
@@ -1403,6 +1410,13 @@ void CResources::Ready_GameResources()
 	CShader* shadowDepthShader = LoadOnGame<CShader>(L"ShadowDepth (Shader)");
 	CMaterial::MATERIALDESC shadowDepthMatDesc = { shadowDepthShader, false };
 	LoadResourceComplete_Game<CMaterial>(L"ShadowDepth (Material)", L"", &shadowDepthMatDesc);
+
+	CShader::SHADERDESC shadowMaskShaderDesc = { L"../EngineResources/Shader/ShadowMask.hlsl", L"",  VertexTexColorBuffer::numElements, VertexTexColorBuffer::elementDesc };
+	LoadResourceComplete_Game<CShader>(L"ShadowMask (Shader)", L"", &shadowMaskShaderDesc);
+
+	CShader* shadowMaskShader = LoadOnGame<CShader>(L"ShadowMask (Shader)");
+	CMaterial::MATERIALDESC shadowMaskMatDesc = { shadowMaskShader, false };
+	LoadResourceComplete_Game<CMaterial>(L"ShadowMask (Material)", L"", &shadowMaskMatDesc);
 
 	CShader::SHADERDESC unlitColorShaderDesc = { L"../EngineResources/Shader/UnlitColor.hlsl", L"",  VertexSkinnedBuffer::numElements, VertexSkinnedBuffer::elementDesc };
 	LoadResourceComplete_Game<CShader>(L"UnlitColor (Shader)", L"", &unlitColorShaderDesc);

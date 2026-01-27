@@ -25,6 +25,8 @@ CSceneManager& CSceneManager::GetInstance()
 
 HRESULT CSceneManager::Initialize()
 {
+	Set_ShadowQuality(m_sLightSetting.shadowQuality);
+
 	return S_OK;
 }
 
@@ -160,16 +162,19 @@ void CSceneManager::Set_ShadowQuality(const shadowQualityOptions option)
 	switch (option)
 	{
 	case Low:
-		m_sLightSetting.shadowMapSize = 512;
-		break;
-	case Middle:
 		m_sLightSetting.shadowMapSize = 1024;
 		break;
-	case High:
+	case Middle:
 		m_sLightSetting.shadowMapSize = 2048;
 		break;
-	case SuperHight:
+	case High:
 		m_sLightSetting.shadowMapSize = 4096;
+		break;
+	case SuperHigh:
+		m_sLightSetting.shadowMapSize = 8192;
+		break;
+	case Ultra:
+		m_sLightSetting.shadowMapSize = 16384;
 		break;
 	}
 }

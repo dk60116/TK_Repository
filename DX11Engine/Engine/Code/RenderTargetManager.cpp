@@ -129,20 +129,13 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
 
     CRenderTarget& rt = it->second;
 
-    if (type == CRenderTarget::RTType::Depth)
+    if (type == CRenderTarget::RTType::Depth || type == CRenderTarget::RTType::ShadowDepth)
     {
         ID3D11DepthStencilView* dsv = rt.GetDSV();
         if (!dsv)
             return;
 
         context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-        return;
-    }
-    else if (type == CRenderTarget::RTType::ShadowDepth)
-    {
-        auto dsv = rt.GetDSV();
-        if (!dsv) return;
-        context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, 1.0f, 0);
         return;
     }
 
@@ -152,6 +145,13 @@ void CRenderTargetManager::Clear_RenderTarget(const CRenderTarget::RTType type)
     {
         clear[0] = 0.5f;
         clear[1] = 0.5f;
+        clear[2] = 1.0f;
+        clear[3] = 1.0f;
+    }
+    else if (type == CRenderTarget::RTType::ShadowMask)
+    {
+        clear[0] = 1.0f;
+        clear[1] = 1.0f;
         clear[2] = 1.0f;
         clear[3] = 1.0f;
     }
@@ -171,6 +171,7 @@ void CRenderTargetManager::Clear_GBuffer()
     Clear_RenderTarget(CRenderTarget::RTType::Material);
     Clear_RenderTarget(CRenderTarget::RTType::Depth);
     Clear_RenderTarget(CRenderTarget::RTType::Specular);
+    Clear_RenderTarget(CRenderTarget::RTType::ShadowMask);
     Clear_RenderTarget(CRenderTarget::RTType::Combine);
 }
 
@@ -230,7 +231,7 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     if (FAILED(m_rtList[CRenderTarget::RTType::Material].Create(CRenderTarget::RTType::Material, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::Depth].Create(CRenderTarget::RTType::Depth, device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::Depth].Create(CRenderTarget::RTType::Depth, device, width, height, DXGI_FORMAT_R24G8_TYPELESS, true)))
         return E_FAIL;
 
     _uint shadowMapSize = CSceneManager::GetInstance().Get_LightSetting().shadowMapSize;
@@ -244,7 +245,7 @@ HRESULT CRenderTargetManager::CreateTargets(ID3D11Device* device, _uint width, _
     if (FAILED(m_rtList[CRenderTarget::RTType::Specular].Create(CRenderTarget::RTType::Specular, device, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true)))
         return E_FAIL;
 
-    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowMask].Create(CRenderTarget::RTType::ShadowMask, device, width, height, DXGI_FORMAT_R8_UNORM, true)))
+    if (FAILED(m_rtList[CRenderTarget::RTType::ShadowMask].Create(CRenderTarget::RTType::ShadowMask, device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, true)))
         return E_FAIL;
 
     return S_OK;

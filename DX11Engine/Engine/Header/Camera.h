@@ -74,6 +74,7 @@ public:
 	void RenderLightingPass_ToShading(const D3D11_VIEWPORT* vp);
 	void RenderLightingPass_ToSpecular(const D3D11_VIEWPORT* vp);
 	void RenderShadowDepthPass(const D3D11_VIEWPORT* vp);
+	void RenderShadowMaskPass(const D3D11_VIEWPORT* vp);
 	void RenderRTDebugDisplay();
 
 	void RenderCombine(const D3D11_VIEWPORT* vp);
@@ -85,6 +86,9 @@ public:
 private:
 	CMaterial* Add_RectMaterial(const CRenderTarget::RTType _type, const wstring& _path);
 	CMaterial* Find_RectMaterial(const CRenderTarget::RTType _type);
+
+protected:
+	void Find_MainLight();
 
 protected:
 	ViewMode m_eCamViewMode;
@@ -115,6 +119,10 @@ private:
 	ID3D11BlendState* m_pRTDebugBS;
 
 	ID3D11Buffer* m_pInvViewProjCB;
+	ID3D11Buffer* m_pShadowCB;
+
+	CLight* m_pMainLight;
+	CLight::ShadowMatrices m_sMainLightMatrix;
 };
 
 NS_END
