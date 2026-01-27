@@ -37,12 +37,12 @@ HRESULT CMonster::Initialize()
 	m_pBaseMap = CResources::GetInstance().LoadOnScene<CTexture>(m_strName + L"_BaseMap (Texture)");
 	m_pBaseMap->AddRef();
 
-	Add_Animation(L"Idle");
-	Add_Animation(L"Walk");
-	Add_Animation(L"LookAround");
-	Add_Animation(L"Find");
-	Add_Animation(L"Run");
-	Add_Animation(L"Attack01");
+	//Add_Animation(L"Idle");
+	//Add_Animation(L"Walk");
+	//Add_Animation(L"LookAround");
+	//Add_Animation(L"Find");
+	//Add_Animation(L"Run");
+	//Add_Animation(L"Attack01");
 
 	for (size_t i = 0; i < m_vMeshRenderers.size(); ++i)
 		m_vMeshRenderers[i]->Get_Material()->Set_Texture(m_pBaseMap);

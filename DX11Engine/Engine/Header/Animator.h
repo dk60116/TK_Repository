@@ -25,6 +25,7 @@ private:
 
 public:
     HRESULT Initialize() override;
+    void Awake() override;
     void Update() override;
     void OnDestroy() override;
 
@@ -41,6 +42,7 @@ public:
     void SetSpeed(const _float _value);
 
 public:
+    unordered_map<wstring, CAnimationClip*>& Get_AnimationClipList();
     CAnimationClip* Get_CurrentAnimation();
     AnimatorStateInfo& Get_StateInfo();
 

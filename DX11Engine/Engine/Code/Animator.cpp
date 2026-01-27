@@ -68,6 +68,10 @@ HRESULT CAnimator::Initialize()
 	return S_OK;
 }
 
+void CAnimator::Awake()
+{
+}
+
 void CAnimator::Update()
 {
 	if (!m_bIsPlaying || !m_pSkinnedRenderer || !m_pCrtAnimation)
@@ -281,6 +285,11 @@ void CAnimator::SetLoop(const _bool _loop)
 void CAnimator::SetSpeed(const _float _value)
 {
 	m_fPlaybackSpeed = _value;
+}
+
+unordered_map<wstring, CAnimationClip*>& CAnimator::Get_AnimationClipList()
+{
+	return m_mAnimationList;
 }
 
 CAnimationClip* CAnimator::Get_CurrentAnimation()
